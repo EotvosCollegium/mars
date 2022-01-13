@@ -211,6 +211,12 @@ class User extends Authenticatable implements HasLocalePreference
         return $this->hasMany('App\Models\ImportItem');
     }
 
+    public function profilePicture()
+    {
+        return $this->hasOne('App\Models\File');
+    }
+
+
     /* Role related getters */
 
     public function roles()
