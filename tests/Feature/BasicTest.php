@@ -78,6 +78,7 @@ class BasicTest extends TestCase
             'routers/{ip}',
             'routers/{ip}/edit',
             'routers/{ip}/delete',
+            'application',
 
             //livewire routes, do not need testing
             'livewire/message/{name}',
@@ -114,6 +115,7 @@ class BasicTest extends TestCase
             'faults/add',
             'secretariat/users',
             'report_bug',
+            'application',
 
             //livewire routes, do not need testing
             'livewire/message/{name}',
