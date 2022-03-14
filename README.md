@@ -3,8 +3,9 @@
 
 # Mars
 
-Mars is the [Urán 2.0](https://github.com/kovacsur10/uran) unified information system for Eötvös Collegium. It's a complete 
-rewrite, therefore comes under a new name and repository. Only a few resources are migrated from the Urán system.
+This repo is migrated from https://github.com/luksan47/mars due to administrative reasons. This is the 2.0 version of [Urán](https://github.com/kovacsur10/uran).
+
+*Unified information system for Eötvös Collegium.* 
 
 ## Architecture
 
