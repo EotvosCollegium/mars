@@ -72,7 +72,7 @@
                             <x-input.text s=6 id='year_of_acceptance' locale='user' type='number' min="1895" :max="date('Y')" required/>
                             <x-input.text s=6 id='neptun' locale='user' required/>
                             <x-input.select s=6 id="collegist_status" text="user.status"
-                                :elements="$\App\Models\Role::possibleObjectsFor(\App\Models\Role::COLLEGIST)"
+                                :elements="\App\Models\Role::possibleObjectsFor(\App\Models\Role::COLLEGIST)"
                                 :formatter="function ($object) { return __('role'.$object->name); }" />
                             <div class="col s12">
                                 <div class="input-field s6 inline" style="margin-left:0">
