@@ -3,7 +3,7 @@
 return [
     'add-custom' => 'Egyéni kategória hozzáadása',
     'custom' => 'Egyéni kategóriák',
-    'custom-category' => 'A publikus egyéni kategóriákra mások is szavazhatnak, ezek másoknál is megjelennek. A kategória létrehozása után alul tudsz majd szavazni rá.',
+    'custom-category' => 'A publikus egyéni kategóriákra mások is szavazhatnak, ezek másoknál is megjelennek. Az új kategóriára szavazni majd a kategória létrehozása után tudsz.',
     'mr-and-miss' => 'Mr & Miss',
     'private' => 'Privát',
     'public' => 'Nyilvános',

@@ -15,6 +15,8 @@ class MrAndMissController extends Controller
 {
     public function indexVote(Request $request)
     {
+        $this->authorize('vote', MrAndMissVote::class);
+
         $categories = MrAndMissCategory::where('hidden', false)->get();
 
         return view(
@@ -55,6 +57,9 @@ class MrAndMissController extends Controller
     public function saveVote(Request $request)
     {
         $this->authorize('vote', MrAndMissVote::class);
+
+        if(config('custom.mr_and_miss_deadline') < now())
+            abort(403, "A szavazás már lejárt.");
 
         $categories = MrAndMissCategory::where('hidden', false)->get();
         foreach ($categories as $category) {

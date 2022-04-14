@@ -21,8 +21,6 @@ class MrAndMissPolicy
     {
         if(!($user->isCollegist() && $user->isActive()))
             return Response::deny('Csak a félévben aktív státuszú Collegisták szavazhatnak. Ha te az vagy, írj a rendszergazdáknak!');
-        if(config('custom.mr_and_miss_deadline') < now())
-            return Response::deny('A szavazás már lejárt!');
         return Response::allow();
     }
 
