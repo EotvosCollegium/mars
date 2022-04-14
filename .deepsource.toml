@@ -1,0 +1,19 @@
+version = 1
+
+test_patterns = ["tests/**"]
+
+[[analyzers]]
+name = "terraform"
+enabled = true
+
+[[analyzers]]
+name = "test-coverage"
+enabled = true
+
+[[analyzers]]
+name = "php"
+enabled = true
+
+[[transformers]]
+name = "php-cs-fixer"
+enabled = true
