@@ -222,7 +222,8 @@ class PrintControllerTest extends TestCase
     }
 
     // Helpers
-    private function transfer($reciever, $balance) {
+    private function transfer($reciever, $balance)
+    {
         $response = $this->post('/print/transfer_balance', [
             'user_to_send' => $reciever->id,
             'balance' => $balance,
@@ -237,7 +238,8 @@ class PrintControllerTest extends TestCase
         $this->assertEquals($reciever->printAccount->balance, $receiverBalance);
     }
 
-    private function modify($reciever, $balance) {
+    private function modify($reciever, $balance)
+    {
         $response = $this->post('/print/modify_balance', [
             'user_id_modify' => $reciever->id,
             'balance' => $balance,
@@ -250,6 +252,4 @@ class PrintControllerTest extends TestCase
         $reciever = User::find($reciever->id); // We have to reload the reciever here.
         $this->assertEquals($reciever->printAccount->balance, $receiverBalance);
     }
-
-
 }

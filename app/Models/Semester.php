@@ -30,13 +30,13 @@ class Semester extends Model
 
     private const SEPARATOR = '-';
 
-    const PARTS = [1, 2];
-    const ACTIVE = 'ACTIVE';
-    const INACTIVE = 'INACTIVE';
-    const DEACTIVATED = 'DEACTIVATED';
-    const PASSIVE = 'PASSIVE';
-    const PENDING = 'PENDING';
-    const STATUSES = [
+    public const PARTS = [1, 2];
+    public const ACTIVE = 'ACTIVE';
+    public const INACTIVE = 'INACTIVE';
+    public const DEACTIVATED = 'DEACTIVATED';
+    public const PASSIVE = 'PASSIVE';
+    public const PENDING = 'PENDING';
+    public const STATUSES = [
         self::ACTIVE,
         self::INACTIVE,
         self::DEACTIVATED,
@@ -46,10 +46,10 @@ class Semester extends Model
 
     // Values are in month
     // TODO: change to dates?
-    const START_OF_SPRING_SEMESTER = 2;
-    const END_OF_SPRING_SEMESTER = 7;
-    const START_OF_AUTUMN_SEMESTER = 8;
-    const END_OF_AUTUMN_SEMESTER = 1;
+    public const START_OF_SPRING_SEMESTER = 2;
+    public const END_OF_SPRING_SEMESTER = 7;
+    public const START_OF_AUTUMN_SEMESTER = 8;
+    public const END_OF_AUTUMN_SEMESTER = 1;
 
     /**
      * Returns the existing semesters until the current one (included).
