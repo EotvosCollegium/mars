@@ -62,7 +62,7 @@
                     </div>
                     <div class="row">
                         <x-input.datepicker l=6 id="date_for_sorting" :value="($epistola ? $epistola->date_for_sorting : null)" text="Dátum rendezéshez"/>
-                        <x-input.text l=6 id="category" :value="($epistola ? $epistola->tag : null)" text="Kategória"/>
+                        <x-input.text l=6 id="category" :value="($epistola ? $epistola->category : null)" text="Kategória"/>
                     </div>
                     <div class="row">
                         <div class="col l6 file-field">
