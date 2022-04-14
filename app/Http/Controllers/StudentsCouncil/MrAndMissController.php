@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Auth;
 
 class MrAndMissController extends Controller
 {
-    public function indexVote()
+    public function indexVote(Request $request)
     {
         $this->authorize('view', EpistolaNews::class); // TODO
 
@@ -25,6 +25,8 @@ class MrAndMissController extends Controller
                 'categories' => $categories,
                 'users' => User::collegists(),
                 'miss_first' => rand(0, 1) == 0,
+                'deadline' => config('custom.mr_and_miss_deadline'),
+                'votes' => $request->user()->mrAndMissVotesGiven->where('semester', Semester::current()->id)->all()
             ]
         );
     }

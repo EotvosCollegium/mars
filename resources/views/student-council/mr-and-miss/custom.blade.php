@@ -16,8 +16,7 @@
             <option value="Miss">Miss</option>
           </select>
         </div>
-        <x-input.text s=8 xl=4 id="title" locale="mr-and-miss"/>
-        <x-input.text s=12 xl=4 id="votee" locale="mr-and-miss"/>
+        <x-input.text s=12 xl=8 id="title" locale="mr-and-miss"/>
       </div>
       <blockquote>
         @lang('mr-and-miss.custom-category')

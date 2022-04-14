@@ -12,4 +12,5 @@ return [
     'vote-explanation' => 'TODO: Dominik',
     'voted' => 'Previous custom votes',
     'votee' => 'Votee',
+    'deadline' => 'Deadline: :deadline',
 ];

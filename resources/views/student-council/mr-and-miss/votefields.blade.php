@@ -7,7 +7,10 @@
             {{ $category->title }}
         </div>
         @php
-          $voteInfo = Auth::user()->votedFor($category);
+          $voteInfo['voted'] = in_array($category->id, array_column($votes, 'category'));
+          if($voteInfo['voted']) {
+            $voteInfo['vote'] = $votes[array_search($category->id, array_column($votes, 'category'))];
+          }
         @endphp
         <div class="col s6">
             <div
@@ -36,6 +39,6 @@
   @endif
 @endforeach
 
-<button class="btn waves-effect waves-light" type="submit" id="mr-submit" name="action">@lang('mr-and-miss.vote')
-  <i class="material-icons right">send</i>
+<button class="btn waves-effect waves-light" type="submit" id="mr-submit" name="action">@lang('general.save')
+  <i class="material-icons right">save</i>
 </button>
