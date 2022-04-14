@@ -13,4 +13,6 @@ return [
     'voted' => 'Previous custom votes',
     'votee' => 'Votee',
     'deadline' => 'Deadline: :deadline',
+    'mr-and-miss-results' => 'Results',
+    'mr-and-miss-categories' => 'Categories',
 ];

@@ -15,6 +15,12 @@
             <div class="card">
                 <div class="card-content">
                     <span class="card-title">@lang('mr-and-miss.vote')</span>
+                    @can('manage', \App\Models\MrAndMiss::class)
+                    <p>
+                        <x-input.button :href="route('mr_and_miss.categories')" :text="__('mr-and-miss.mr-and-miss-categories')" />
+                        <x-input.button :href="route('mr_and_miss.results')" :text="__('mr-and-miss.mr-and-miss-results')" />
+                    </p>
+                    @endcan
                     <p>@lang('mr-and-miss.vote-explanation')</p>
                     <blockquote>
                         @lang('mr-and-miss.deadline', ['deadline' => $deadline])

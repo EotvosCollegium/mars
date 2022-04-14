@@ -3,20 +3,18 @@
 namespace App\Http\Controllers\StudentsCouncil;
 
 use App\Http\Controllers\Controller;
-use App\Models\EpistolaNews;
 use App\Models\MrAndMissCategory;
 use App\Models\MrAndMissVote;
 use App\Models\Semester;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class MrAndMissController extends Controller
 {
     public function indexVote(Request $request)
     {
-        $this->authorize('view', EpistolaNews::class); // TODO
-
         $categories = MrAndMissCategory::where('hidden', false)->get();
 
         return view(
@@ -31,9 +29,32 @@ class MrAndMissController extends Controller
         );
     }
 
+    public function indexCategories(Request $request)
+    {
+        $this->authorize('manage', MrAndMissVote::class);
+
+        $categories = MrAndMissCategory::all();
+
+        return view('student-council.mr-and-miss.categories', ['categories' => $categories]);
+    }
+
+    public function indexResults(Request $request)
+    {
+        $this->authorize('manage', MrAndMissVote::class);
+
+        $results = MrAndMissVote::select(DB::raw('count(*) as count, users.name, votee_name, title, mr, custom'))
+                ->where('semester', Semester::current()->id)
+                ->join('mr_and_miss_categories', 'mr_and_miss_categories.id', '=', 'mr_and_miss_votes.category')
+                ->leftJoin('users', 'users.id', '=', 'mr_and_miss_votes.votee_id')
+                ->groupBy(['title', 'users.name', 'votee_name', 'mr', 'custom'])
+                ->get();
+
+        return view('student-council.mr-and-miss.results', ['results' => $results]);
+    }
+
     public function saveVote(Request $request)
     {
-        $this->authorize('view', EpistolaNews::class); // TODO
+        $this->authorize('vote', MrAndMissVote::class);
 
         $categories = MrAndMissCategory::where('hidden', false)->get();
         foreach ($categories as $category) {
@@ -73,7 +94,7 @@ class MrAndMissController extends Controller
 
     public function customVote(Request $request)
     {
-        $this->authorize('view', EpistolaNews::class); // TODO
+        $this->authorize('vote', MrAndMissVote::class);
 
         $request->validate([
             'title' => 'required|max:255',

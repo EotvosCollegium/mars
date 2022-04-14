@@ -13,4 +13,6 @@ return [
     'voted' => 'Leadott egyéni kategóriák',
     'votee' => 'Jelölt',
     'deadline' => 'A szavazás lezárásának határideje: :deadline',
+    'mr-and-miss-results' => 'Eredmények',
+    'mr-and-miss-categories' => 'Katégóriák',
 ];
