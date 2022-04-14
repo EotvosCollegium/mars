@@ -8,7 +8,8 @@ use Illuminate\Queue\SerializesModels;
 
 class NewRegistration extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     public string $recipient;
     public \App\Models\User $user;

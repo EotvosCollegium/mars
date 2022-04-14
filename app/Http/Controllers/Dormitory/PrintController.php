@@ -63,13 +63,15 @@ class PrintController extends Controller
         return redirect()->back()->with('message', __('general.successful_modification'));
     }
 
-    public function admin() {
+    public function admin()
+    {
         $this->authorize('handleAny', PrintAccount::class);
 
         return view('dormitory.print.manage.app', ["users" => User::printers()]);
     }
 
-    public function print(Request $request) {
+    public function print(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'file_to_upload' => 'required|file|mimes:pdf|max:' . config('print.pdf_size_limit'),
             'number_of_copies' => 'required|integer|min:1'
@@ -88,7 +90,8 @@ class PrintController extends Controller
         return $printer->print();
     }
 
-    public function transferBalance(Request $request) {
+    public function transferBalance(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'balance' => 'required|integer|min:1',
             'user_to_send' => 'required|integer|exists:users,id'
@@ -115,7 +118,8 @@ class PrintController extends Controller
         return redirect()->back()->with('message', __('general.successful_transaction'));
     }
 
-    public function modifyBalance(Request $request) {
+    public function modifyBalance(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'user_id_modify' => 'required|integer|exists:users,id',
             'balance' => 'required|integer',
@@ -152,7 +156,8 @@ class PrintController extends Controller
         return redirect()->back()->with('message', __('general.successful_modification'));
     }
 
-    public function addFreePages(Request $request) {
+    public function addFreePages(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'user_id_free' => 'required|integer|exists:users,id',
             'free_pages' => 'required|integer|min:1',
@@ -221,7 +226,8 @@ class PrintController extends Controller
         return $this->freePagesPaginator($freePages, $columns);
     }
 
-    public function listPrintAccountHistory() {
+    public function listPrintAccountHistory()
+    {
         $this->authorize('viewAny', PrintJob::class);
 
         $columns = ['user.name', 'balance_change', 'free_page_change', 'deadline_change', 'modifier.name', 'modified_at'];
@@ -231,13 +237,14 @@ class PrintController extends Controller
                 ->select('print_account_history.*')
                 ->with('user')
                 ->with('modifier')
-            )->sortable($columns)
+        )->sortable($columns)
             ->filterable($columns)
             ->paginate();
         return $paginator;
     }
 
-    public function cancelPrintJob($id) {
+    public function cancelPrintJob($id)
+    {
         $printJob = PrintJob::findOrFail($id);
 
         $this->authorize('update', $printJob);
@@ -256,7 +263,7 @@ class PrintController extends Controller
             } else {
                 if (strpos($result['output'], "already canceled") !== false) {
                     // TODO: return message and trigger modal?
-                } else if (strpos($result['output'], "already completed") !== false) {
+                } elseif (strpos($result['output'], "already completed") !== false) {
                     $printJob->state = PrintJob::SUCCESS;
                 } else {
                     Log::warning("cannot cancel print job " . $printJob->job_id ." for unknown reasons: " . var_dump($result));
@@ -288,7 +295,8 @@ class PrintController extends Controller
         return $paginator;
     }
 
-    private function updateCompletedPrintingJobs() {
+    private function updateCompletedPrintingJobs()
+    {
         try {
             $result = Commands::updateCompletedPrintingJobs();
             PrintJob::whereIn('job_id', $result)->update(['state' => PrintJob::SUCCESS]);
@@ -304,7 +312,8 @@ class PrintController extends Controller
         return $path;
     }
 
-    private function handleNoBalance() {
-        return back()->withInput()->with('error',  __('print.no_balance'));
+    private function handleNoBalance()
+    {
+        return back()->withInput()->with('error', __('print.no_balance'));
     }
 }

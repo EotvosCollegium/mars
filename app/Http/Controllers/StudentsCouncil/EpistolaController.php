@@ -12,11 +12,9 @@ use Image;
 
 use App\Models\EpistolaNews;
 
-
 class EpistolaController extends Controller
 {
-
-    const IMAGE_TARGET_SIZE = 800;
+    public const IMAGE_TARGET_SIZE = 800;
 
     public function index()
     {
@@ -96,8 +94,9 @@ class EpistolaController extends Controller
             'tag' => 'nullable|max:255|string',
             'picture_upload' => 'nullable|image',
             'picture_path' => ['nullable', 'url', 'max:255', function ($attribute, $value, $fail) use ($request) {
-                if ($request->picture_upload != null && $request->picture_path != null)
+                if ($request->picture_upload != null && $request->picture_path != null) {
                     $fail(__('validation.upload_with_link'));
+                }
             }]
         ]);
         $validator->validate();
@@ -128,8 +127,9 @@ class EpistolaController extends Controller
     public static function getActiveNews()
     {
         return EpistolaNews::where('sent', false)->get()->sortBy(function ($result) {
-            if ($result->valid_until == null)
+            if ($result->valid_until == null) {
                 return PHP_INT_MAX;
+            }
             return $result->valid_until;
         });
     }
@@ -146,8 +146,9 @@ class EpistolaController extends Controller
         $this->authorize('send', EpistolaNews::class);
 
         $unsent = EpistolaNews::where('sent', false)->get()->sortBy(function ($result) {
-            if ($result->valid_until == null)
+            if ($result->valid_until == null) {
                 return PHP_INT_MAX;
+            }
             return $result->valid_until;
         });
 

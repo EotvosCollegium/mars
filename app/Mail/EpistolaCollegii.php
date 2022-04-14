@@ -8,7 +8,8 @@ use Illuminate\Queue\SerializesModels;
 
 class EpistolaCollegii extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     public $epistolas;
 

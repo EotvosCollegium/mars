@@ -10,7 +10,8 @@ use Illuminate\Support\Facades\Mail;
 
 class Router extends Model
 {
-    use NotificationCounter, HasFactory;
+    use NotificationCounter;
+    use HasFactory;
 
     protected $table = 'routers';
     protected $primaryKey = 'ip';
@@ -18,7 +19,7 @@ class Router extends Model
     public $timestamps = false;
 
     // We send a warning to the network admins on the second error.
-    const WARNING_THRESHOLD = 2;
+    public const WARNING_THRESHOLD = 2;
 
     protected $fillable = [
         'ip', 'room', 'failed_for', 'port', 'type', 'serial_number',
