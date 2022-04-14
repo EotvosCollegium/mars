@@ -25,4 +25,5 @@ return [
     'serial_number' => 'Serial number (for computers)',
     'status-cert' => 'Status certificate',
     'successful_request' => 'Your request was successful. You will find the signed certificate at the secretariat.',
+    'personal_computer' => 'Personal computers, laptops',
 ];
