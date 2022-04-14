@@ -117,4 +117,5 @@ class MrAndMissController extends Controller
             ->with('activate_custom', 'true')
             ->with('message', __('general.successful_modification'));
     }
+
 }
