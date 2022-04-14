@@ -835,7 +835,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
     remove: function () {
       return this.each(function (v) {
-        if (!!v.parentNode) {
+        if (v.parentNode) {
           return v.parentNode.removeChild(v);
         }
       });
@@ -1003,7 +1003,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
   return cash;
 });
-;
+
 var Component = function () {
   /**
    * Generic constructor for all components
@@ -1021,7 +1021,7 @@ var Component = function () {
 
     // If exists, destroy and reinitialize in child
     var ins = classDef.getInstance(el);
-    if (!!ins) {
+    if (ins) {
       ins.destroy();
     }
 
@@ -1058,7 +1058,7 @@ var Component = function () {
   return Component;
 }();
 
-; // Required for Meteor package, the use of window prevents export by Meteor
+ // Required for Meteor package, the use of window prevents export by Meteor
 (function (window) {
   if (window.Package) {
     M = {};
@@ -1165,7 +1165,7 @@ M.initializeJqueryWrapper = function (plugin, pluginName, classRef) {
  */
 M.AutoInit = function (context) {
   // Use document.body if no context is given
-  var root = !!context ? context : document.body;
+  var root = context ? context : document.body;
 
   var registry = {
     Autocomplete: root.querySelectorAll('.autocomplete:not(.no-autoinit)'),
@@ -1463,7 +1463,7 @@ try {
     }
   }));
 } catch (err) {}
-; /*
+ /*
   v2.2.0
   2017 Julian Garnier
   Released under the MIT license
@@ -1880,7 +1880,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     return Math.floor(Math.random() * (c - a + 1)) + a;
   };return q;
 });
-;(function ($, anim) {
+(function ($, anim) {
   'use strict';
 
   var _defaults = {
@@ -2188,7 +2188,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     }, {
       key: "getInstance",
       value: function getInstance(el) {
-        var domElem = !!el.jquery ? el[0] : el;
+        var domElem = el.jquery ? el[0] : el;
         return domElem.M_Collapsible;
       }
     }, {
@@ -2207,7 +2207,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     M.initializeJqueryWrapper(Collapsible, 'collapsible', 'M_Collapsible');
   }
 })(cash, M.anime);
-;(function ($, anim) {
+(function ($, anim) {
   'use strict';
 
   var _defaults = {
@@ -2504,9 +2504,9 @@ $jscomp.polyfill = function (e, r, p, m) {
           var $activatableElement = $(focusedElement).find('a, button').first();
 
           // Click a or button tag if exists, otherwise click li tag
-          if (!!$activatableElement.length) {
+          if ($activatableElement.length) {
             $activatableElement[0].click();
-          } else if (!!focusedElement) {
+          } else if (focusedElement) {
             focusedElement.click();
           }
 
@@ -2565,7 +2565,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     }, {
       key: "_moveDropdown",
       value: function _moveDropdown(containerEl) {
-        if (!!this.options.container) {
+        if (this.options.container) {
           $(this.options.container).append(this.dropdownEl);
         } else if (containerEl) {
           if (!containerEl.contains(this.dropdownEl)) {
@@ -2778,7 +2778,7 @@ $jscomp.polyfill = function (e, r, p, m) {
         });
         // Fallback
         if (!closestOverflowParent) {
-          closestOverflowParent = !!this.dropdownEl.offsetParent ? this.dropdownEl.offsetParent : this.dropdownEl.parentNode;
+          closestOverflowParent = this.dropdownEl.offsetParent ? this.dropdownEl.offsetParent : this.dropdownEl.parentNode;
         }
         if ($(closestOverflowParent).css('position') === 'static') $(closestOverflowParent).css('position', 'relative');
 
@@ -2879,7 +2879,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     }, {
       key: "getInstance",
       value: function getInstance(el) {
-        var domElem = !!el.jquery ? el[0] : el;
+        var domElem = el.jquery ? el[0] : el;
         return domElem.M_Dropdown;
       }
     }, {
@@ -2906,7 +2906,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     M.initializeJqueryWrapper(Dropdown, 'dropdown', 'M_Dropdown');
   }
 })(cash, M.anime);
-;(function ($, anim) {
+(function ($, anim) {
   'use strict';
 
   var _defaults = {
@@ -3231,7 +3231,7 @@ $jscomp.polyfill = function (e, r, p, m) {
         this.el.style.zIndex = 1000 + Modal._modalsOpen * 2 + 1;
 
         // Set opening trigger, undefined indicates modal was opened by javascript
-        this._openingTrigger = !!$trigger ? $trigger[0] : undefined;
+        this._openingTrigger = $trigger ? $trigger[0] : undefined;
 
         // onOpenStart callback
         if (typeof this.options.onOpenStart === 'function') {
@@ -3312,7 +3312,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     }, {
       key: "getInstance",
       value: function getInstance(el) {
-        var domElem = !!el.jquery ? el[0] : el;
+        var domElem = el.jquery ? el[0] : el;
         return domElem.M_Modal;
       }
     }, {
@@ -3345,7 +3345,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     M.initializeJqueryWrapper(Modal, 'modal', 'M_Modal');
   }
 })(cash, M.anime);
-;(function ($, anim) {
+(function ($, anim) {
   'use strict';
 
   var _defaults = {
@@ -3829,7 +3829,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     }, {
       key: "getInstance",
       value: function getInstance(el) {
-        var domElem = !!el.jquery ? el[0] : el;
+        var domElem = el.jquery ? el[0] : el;
         return domElem.M_Materialbox;
       }
     }, {
@@ -3848,7 +3848,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     M.initializeJqueryWrapper(Materialbox, 'materialbox', 'M_Materialbox');
   }
 })(cash, M.anime);
-;(function ($) {
+(function ($) {
   'use strict';
 
   var _defaults = {
@@ -3968,7 +3968,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     }, {
       key: "getInstance",
       value: function getInstance(el) {
-        var domElem = !!el.jquery ? el[0] : el;
+        var domElem = el.jquery ? el[0] : el;
         return domElem.M_Parallax;
       }
     }, {
@@ -4011,7 +4011,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     M.initializeJqueryWrapper(Parallax, 'parallax', 'M_Parallax');
   }
 })(cash);
-;(function ($, anim) {
+(function ($, anim) {
   'use strict';
 
   var _defaults = {
@@ -4156,7 +4156,7 @@ $jscomp.polyfill = function (e, r, p, m) {
         }
 
         // Act as regular link if target attribute is specified.
-        if (!!tabLink.attr('target')) {
+        if (tabLink.attr('target')) {
           return;
         }
 
@@ -4331,7 +4331,7 @@ $jscomp.polyfill = function (e, r, p, m) {
       value: function _setupNormalTabs() {
         // Hide Tabs Content
         this.$tabLinks.not(this.$activeTabLink).each(function (link) {
-          if (!!link.hash) {
+          if (link.hash) {
             var $currContent = $(M.escapeHash(link.hash));
             if ($currContent.length) {
               $currContent[0].style.display = 'none';
@@ -4349,7 +4349,7 @@ $jscomp.polyfill = function (e, r, p, m) {
       value: function _teardownNormalTabs() {
         // show Tabs Content
         this.$tabLinks.each(function (link) {
-          if (!!link.hash) {
+          if (link.hash) {
             var $currContent = $(M.escapeHash(link.hash));
             if ($currContent.length) {
               $currContent[0].style.display = '';
@@ -4458,7 +4458,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     }, {
       key: "getInstance",
       value: function getInstance(el) {
-        var domElem = !!el.jquery ? el[0] : el;
+        var domElem = el.jquery ? el[0] : el;
         return domElem.M_Tabs;
       }
     }, {
@@ -4477,7 +4477,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     M.initializeJqueryWrapper(Tabs, 'tabs', 'M_Tabs');
   }
 })(cash, M.anime);
-;(function ($, anim) {
+(function ($, anim) {
   'use strict';
 
   var _defaults = {
@@ -4553,12 +4553,12 @@ $jscomp.polyfill = function (e, r, p, m) {
       key: "_setTooltipContent",
       value: function _setTooltipContent(tooltipContentEl) {
         tooltipContentEl.textContent = this.options.text;
-        if (!!this.options.html) {
+        if (this.options.html) {
           // Warn when using html
           console.warn('The html option is deprecated and will be removed in the future. See https://github.com/materializecss/materialize/pull/49');
           $(tooltipContentEl).append(this.options.html);
         }
-        if (!!this.options.unsafeHTML) {
+        if (this.options.unsafeHTML) {
           $(tooltipContentEl).append(this.options.unsafeHTML);
         }
       }
@@ -4815,7 +4815,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     }, {
       key: "getInstance",
       value: function getInstance(el) {
-        var domElem = !!el.jquery ? el[0] : el;
+        var domElem = el.jquery ? el[0] : el;
         return domElem.M_Tooltip;
       }
     }, {
@@ -4834,7 +4834,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     M.initializeJqueryWrapper(Tooltip, 'tooltip', 'M_Tooltip');
   }
 })(cash, M.anime);
-; /*!
+ /*!
   * Waves v0.7.6
   * http://fian.my.id/Waves
   *
@@ -4843,7 +4843,7 @@ $jscomp.polyfill = function (e, r, p, m) {
   * https://github.com/fians/Waves/blob/master/LICENSE
   */
 
-;(function (window, factory) {
+(function (window, factory) {
   'use strict';
 
   // AMD. Register as an anonymous module.  Wrap in function so we have access
@@ -5445,7 +5445,7 @@ $jscomp.polyfill = function (e, r, p, m) {
   };
 
   return Waves;
-});;(function ($, anim) {
+});(function ($, anim) {
   'use strict';
 
   var _defaults = {
@@ -5471,9 +5471,9 @@ $jscomp.polyfill = function (e, r, p, m) {
       this.options = $.extend({}, Toast.defaults, options);
       this.htmlMessage = this.options.html;
       // Warn when using html
-      if (!!this.options.html) console.warn('The html option is deprecated and will be removed in the future. See https://github.com/materializecss/materialize/pull/49');
+      if (this.options.html) console.warn('The html option is deprecated and will be removed in the future. See https://github.com/materializecss/materialize/pull/49');
       // If the new unsafeHTML is used, prefer that
-      if (!!this.options.unsafeHTML) {
+      if (this.options.unsafeHTML) {
         this.htmlMessage = this.options.unsafeHTML;
       }
       this.message = this.options.text;
@@ -5515,7 +5515,7 @@ $jscomp.polyfill = function (e, r, p, m) {
         toast.classList.add('toast');
 
         // Add custom classes onto toast
-        if (!!this.options.classes.length) {
+        if (this.options.classes.length) {
           $(toast).addClass(this.options.classes);
         }
 
@@ -5524,7 +5524,7 @@ $jscomp.polyfill = function (e, r, p, m) {
         if (typeof HTMLElement === 'object' ? this.htmlMessage instanceof HTMLElement : this.htmlMessage && typeof this.htmlMessage === 'object' && this.htmlMessage !== null && this.htmlMessage.nodeType === 1 && typeof this.htmlMessage.nodeName === 'string') {
           //if the htmlMessage is an HTML node, append it directly
           toast.appendChild(this.htmlMessage);
-        } else if (!!this.htmlMessage.jquery) {
+        } else if (this.htmlMessage.jquery) {
           // Check if it is jQuery object, append the node
           $(toast).append(this.htmlMessage[0]);
         } else {
@@ -5625,7 +5625,7 @@ $jscomp.polyfill = function (e, r, p, m) {
        * Get Instance
        */
       value: function getInstance(el) {
-        var domElem = !!el.jquery ? el[0] : el;
+        var domElem = el.jquery ? el[0] : el;
         return domElem.M_Toast;
       }
 
@@ -5696,7 +5696,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     }, {
       key: "_onDragMove",
       value: function _onDragMove(e) {
-        if (!!Toast._draggedToast) {
+        if (Toast._draggedToast) {
           e.preventDefault();
           var toast = Toast._draggedToast;
           toast.deltaX = Math.abs(toast.xPos - Toast._xPos(e));
@@ -5718,7 +5718,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     }, {
       key: "_onDragEnd",
       value: function _onDragEnd() {
-        if (!!Toast._draggedToast) {
+        if (Toast._draggedToast) {
           var toast = Toast._draggedToast;
           toast.panning = false;
           toast.el.classList.remove('panning');
@@ -5805,7 +5805,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     return new Toast(options);
   };
 })(cash, M.anime);
-;(function ($, anim) {
+(function ($, anim) {
   'use strict';
 
   var _defaults = {
@@ -6425,7 +6425,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     }, {
       key: "getInstance",
       value: function getInstance(el) {
-        var domElem = !!el.jquery ? el[0] : el;
+        var domElem = el.jquery ? el[0] : el;
         return domElem.M_Sidenav;
       }
     }, {
@@ -6453,7 +6453,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     M.initializeJqueryWrapper(Sidenav, 'sidenav', 'M_Sidenav');
   }
 })(cash, M.anime);
-;(function ($, anim) {
+(function ($, anim) {
   'use strict';
 
   var _defaults = {
@@ -6688,7 +6688,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     }, {
       key: "getInstance",
       value: function getInstance(el) {
-        var domElem = !!el.jquery ? el[0] : el;
+        var domElem = el.jquery ? el[0] : el;
         return domElem.M_ScrollSpy;
       }
     }, {
@@ -6771,7 +6771,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     M.initializeJqueryWrapper(ScrollSpy, 'scrollSpy', 'M_ScrollSpy');
   }
 })(cash, M.anime);
-;(function ($) {
+(function ($) {
   'use strict';
 
   var _defaults = {
@@ -7180,7 +7180,7 @@ $jscomp.polyfill = function (e, r, p, m) {
         for (var i = 0; i < matchingData.length; i++) {
           var _entry = matchingData[i];
           var item = document.createElement('li');
-          if (!!_entry.data) {
+          if (_entry.data) {
             var img = document.createElement('img');
             img.classList.add('right', 'circle');
             img.src = _entry.data;
@@ -7193,7 +7193,7 @@ $jscomp.polyfill = function (e, r, p, m) {
             s.innerHTML = parts[0] + '<span class="highlight">' + parts[1] + '</span>' + parts[2];
           } else {
             s.appendChild(document.createTextNode(parts[0]));
-            if (!!parts[1]) {
+            if (parts[1]) {
               var highlight = document.createElement('span');
               highlight.textContent = parts[1];
               highlight.classList.add('highlight');
@@ -7270,7 +7270,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     }, {
       key: "getInstance",
       value: function getInstance(el) {
-        var domElem = !!el.jquery ? el[0] : el;
+        var domElem = el.jquery ? el[0] : el;
         return domElem.M_Autocomplete;
       }
     }, {
@@ -7297,7 +7297,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     M.initializeJqueryWrapper(Autocomplete, 'autocomplete', 'M_Autocomplete');
   }
 })(cash);
-;(function ($) {
+(function ($) {
   // Function to update labels of text fields
   M.updateTextFields = function () {
     var input_selector = 'input[type=text], input[type=password], input[type=email], input[type=url], input[type=tel], input[type=number], input[type=search], input[type=date], input[type=time], textarea';
@@ -7541,7 +7541,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     });
   }); // End of $(document).ready
 })(cash);
-;(function ($, anim) {
+(function ($, anim) {
   'use strict';
 
   var _defaults = {
@@ -7936,7 +7936,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     }, {
       key: "getInstance",
       value: function getInstance(el) {
-        var domElem = !!el.jquery ? el[0] : el;
+        var domElem = el.jquery ? el[0] : el;
         return domElem.M_Slider;
       }
     }, {
@@ -7955,7 +7955,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     M.initializeJqueryWrapper(Slider, 'slider', 'M_Slider');
   }
 })(cash, M.anime);
-;(function ($, anim) {
+(function ($, anim) {
   $(document).on('click', '.card', function (e) {
     if ($(this).children('.card-reveal').length) {
       var $card = $(e.target).closest('.card');
@@ -7989,7 +7989,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     }
   });
 })(cash, M.anime);
-;(function ($) {
+(function ($) {
   'use strict';
 
   var _defaults = {
@@ -8425,7 +8425,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     }, {
       key: "getInstance",
       value: function getInstance(el) {
-        var domElem = !!el.jquery ? el[0] : el;
+        var domElem = el.jquery ? el[0] : el;
         return domElem.M_Chips;
       }
     }, {
@@ -8548,7 +8548,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     });
   });
 })(cash);
-;(function ($) {
+(function ($) {
   'use strict';
 
   var _defaults = {
@@ -8682,7 +8682,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     }, {
       key: "getInstance",
       value: function getInstance(el) {
-        var domElem = !!el.jquery ? el[0] : el;
+        var domElem = el.jquery ? el[0] : el;
         return domElem.M_Pushpin;
       }
     }, {
@@ -8717,7 +8717,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     M.initializeJqueryWrapper(Pushpin, 'pushpin', 'M_Pushpin');
   }
 })(cash);
-;(function ($, anim) {
+(function ($, anim) {
   'use strict';
 
   var _defaults = {
@@ -9097,7 +9097,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     }, {
       key: "getInstance",
       value: function getInstance(el) {
-        var domElem = !!el.jquery ? el[0] : el;
+        var domElem = el.jquery ? el[0] : el;
         return domElem.M_FloatingActionButton;
       }
     }, {
@@ -9116,7 +9116,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     M.initializeJqueryWrapper(FloatingActionButton, 'floatingActionButton', 'M_FloatingActionButton');
   }
 })(cash, M.anime);
-;(function ($) {
+(function ($) {
   'use strict';
 
   var _defaults = {
@@ -10023,7 +10023,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     }, {
       key: "getInstance",
       value: function getInstance(el) {
-        var domElem = !!el.jquery ? el[0] : el;
+        var domElem = el.jquery ? el[0] : el;
         return domElem.M_Datepicker;
       }
     }, {
@@ -10044,7 +10044,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     M.initializeJqueryWrapper(Datepicker, 'datepicker', 'M_Datepicker');
   }
 })(cash);
-;(function ($) {
+(function ($) {
   'use strict';
 
   var _defaults = {
@@ -10660,7 +10660,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     }, {
       key: "getInstance",
       value: function getInstance(el) {
-        var domElem = !!el.jquery ? el[0] : el;
+        var domElem = el.jquery ? el[0] : el;
         return domElem.M_Timepicker;
       }
     }, {
@@ -10681,7 +10681,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     M.initializeJqueryWrapper(Timepicker, 'timepicker', 'M_Timepicker');
   }
 })(cash);
-;(function ($) {
+(function ($) {
   'use strict';
 
   var _defaults = {};
@@ -10832,7 +10832,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     }, {
       key: "getInstance",
       value: function getInstance(el) {
-        var domElem = !!el.jquery ? el[0] : el;
+        var domElem = el.jquery ? el[0] : el;
         return domElem.M_CharacterCounter;
       }
     }, {
@@ -10851,7 +10851,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     M.initializeJqueryWrapper(CharacterCounter, 'characterCounter', 'M_CharacterCounter');
   }
 })(cash);
-;(function ($) {
+(function ($) {
   'use strict';
 
   var _defaults = {
@@ -11619,7 +11619,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     }, {
       key: "getInstance",
       value: function getInstance(el) {
-        var domElem = !!el.jquery ? el[0] : el;
+        var domElem = el.jquery ? el[0] : el;
         return domElem.M_Carousel;
       }
     }, {
@@ -11638,7 +11638,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     M.initializeJqueryWrapper(Carousel, 'carousel', 'M_Carousel');
   }
 })(cash);
-;(function ($) {
+(function ($) {
   'use strict';
 
   var _defaults = {
@@ -11974,7 +11974,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     }, {
       key: "getInstance",
       value: function getInstance(el) {
-        var domElem = !!el.jquery ? el[0] : el;
+        var domElem = el.jquery ? el[0] : el;
         return domElem.M_TapTarget;
       }
     }, {
@@ -11993,7 +11993,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     M.initializeJqueryWrapper(TapTarget, 'tapTarget', 'M_TapTarget');
   }
 })(cash);
-;(function ($) {
+(function ($) {
   'use strict';
 
   var _defaults = {
@@ -12365,7 +12365,7 @@ $jscomp.polyfill = function (e, r, p, m) {
         // add icons
         var iconUrl = option.getAttribute('data-icon');
         var classes = option.getAttribute('class');
-        if (!!iconUrl) {
+        if (iconUrl) {
           var imgEl = $("<img alt=\"\" class=\"" + classes + "\" src=\"" + iconUrl + "\">");
           liEl.prepend(imgEl);
         }
@@ -12498,7 +12498,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     }, {
       key: "getInstance",
       value: function getInstance(el) {
-        var domElem = !!el.jquery ? el[0] : el;
+        var domElem = el.jquery ? el[0] : el;
         return domElem.M_FormSelect;
       }
     }, {
@@ -12517,7 +12517,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     M.initializeJqueryWrapper(FormSelect, 'formSelect', 'M_FormSelect');
   }
 })(cash);
-;(function ($, anim) {
+(function ($, anim) {
   'use strict';
 
   var _defaults = {};
@@ -12796,7 +12796,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     }, {
       key: "getInstance",
       value: function getInstance(el) {
-        var domElem = !!el.jquery ? el[0] : el;
+        var domElem = el.jquery ? el[0] : el;
         return domElem.M_Range;
       }
     }, {

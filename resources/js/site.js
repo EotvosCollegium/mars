@@ -25,7 +25,7 @@ function confirm(heading, question, cancelButtonTxt, okButtonTxt, callback) {
     // });
 
     // confirmModal.modal('show');
-};
+}
 
 function ajaxError(heading, generalMessage, okButton, error) {
     // var errorText = '';
@@ -52,4 +52,4 @@ function ajaxError(heading, generalMessage, okButton, error) {
     //         '</div>');
 
     // confirmModal.modal('show');
-};
+}
