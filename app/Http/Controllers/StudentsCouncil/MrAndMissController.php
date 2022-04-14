@@ -33,7 +33,6 @@ class MrAndMissController extends Controller
 
     public function saveVote(Request $request)
     {
-        //return response()->json($request);
         $this->authorize('view', EpistolaNews::class); // TODO
 
         $categories = MrAndMissCategory::where('hidden', false)->get();
@@ -76,23 +75,18 @@ class MrAndMissController extends Controller
     {
         $this->authorize('view', EpistolaNews::class); // TODO
 
-        $category = MrAndMissCategory::create([
+        $request->validate([
+            'title' => 'required|max:255',
+            'mr-or-miss' => 'required|in:Mr.,Miss'
+        ]);
+
+        MrAndMissCategory::create([
             'title' => $request['mr-or-miss'].' '.$request->title,
-            'mr' => $request['mr-or-miss'] == 'Mr',
+            'mr' => $request['mr-or-miss'] == 'Mr.',
             'created_by' => Auth::user()->id,
             'public' => $request['is-public'] == 'on',
             'custom' => true,
         ]);
-
-        MrAndMissVote::updateOrCreate([
-            'voter' => Auth::user()->id,
-            'category' => $category->id,
-            'semester' => Semester::current()->id,
-        ], [
-            'votee_id' => null,
-            'votee_name' => $request['votee'],
-        ]);
-
         return redirect()->back()
             ->with('activate_custom', 'true')
             ->with('message', __('general.successful_modification'));
