@@ -88,11 +88,11 @@ class TransactionFactory extends Factory
                     $payment_type_name = PaymentType::findOrFail($attributes['payment_type_id'])->name;
                     return in_array($payment_type_name, [PaymentType::KKT, PaymentType::NETREG, PaymentType::PRINT]);
                 })
-                ?   function (array $attributes) {
+                ? function (array $attributes) {
                     return \App\Models\Semester::findOrFail($attributes['semester_id'])
                         ->getStartDate()->addDays($this->faker->numberBetween(1, 100));
                 }
-                :   null, //not in checkout
+        : null, //not in checkout
             'created_at' => function (array $attributes) {
                 return \App\Models\Semester::findOrFail($attributes['semester_id'])
                     ->getStartDate()->addDays($this->faker->numberBetween(1, 100));

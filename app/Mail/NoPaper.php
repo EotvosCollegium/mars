@@ -8,7 +8,8 @@ use Illuminate\Queue\SerializesModels;
 
 class NoPaper extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     public string $recipient;
     public string $reporter;

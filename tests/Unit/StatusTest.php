@@ -8,7 +8,6 @@ use Tests\TestCase;
 
 class StatusTest extends TestCase
 {
-
     // TODO
     public function testCurrentSemester()
     {

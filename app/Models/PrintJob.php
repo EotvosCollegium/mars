@@ -14,11 +14,11 @@ class PrintJob extends Model
     public $incrementing = true;
     public $timestamps = true;
 
-    const QUEUED = 'QUEUED';
-    const ERROR = 'ERROR';
-    const CANCELLED = 'CANCELLED';
-    const SUCCESS = 'SUCCESS';
-    const STATES = [
+    public const QUEUED = 'QUEUED';
+    public const ERROR = 'ERROR';
+    public const CANCELLED = 'CANCELLED';
+    public const SUCCESS = 'SUCCESS';
+    public const STATES = [
         self::QUEUED,
         self::ERROR,
         self::CANCELLED,

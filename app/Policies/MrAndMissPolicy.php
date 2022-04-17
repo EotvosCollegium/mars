@@ -22,8 +22,9 @@ class MrAndMissPolicy
      */
     public function vote(User $user)
     {
-        if(!($user->isCollegist() && $user->isActive()))
+        if (!($user->isCollegist() && $user->isActive())) {
             return Response::deny('Csak a félévben aktív státuszú Collegisták szavazhatnak. Ha te az vagy, írj a rendszergazdáknak!');
+        }
         return Response::allow();
     }
 

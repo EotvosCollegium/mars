@@ -8,7 +8,8 @@ use Illuminate\Queue\SerializesModels;
 
 class ChangedPrintBalance extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     public $recipient; //User model
     public $amount; //how much the balance has changed

@@ -122,8 +122,9 @@ class UsersTableSeeder extends Seeder
         }
         for ($x = 0; $x < rand(1, 3); $x++) {
             $workshop = rand(1, count(Workshop::ALL));
-            if ($user->workshops()->where('workshop_users.workshop_id', $workshop)->count() == 0)
+            if ($user->workshops()->where('workshop_users.workshop_id', $workshop)->count() == 0) {
                 $user->workshops()->attach($workshop);
+            }
         }
     }
 

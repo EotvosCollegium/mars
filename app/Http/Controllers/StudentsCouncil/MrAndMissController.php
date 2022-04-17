@@ -75,8 +75,9 @@ class MrAndMissController extends Controller
     {
         $this->authorize('vote', MrAndMissVote::class);
 
-        if(config('custom.mr_and_miss_deadline') < now())
+        if (config('custom.mr_and_miss_deadline') < now()) {
             abort(403, "A szavazás már lejárt.");
+        }
 
         $categories = MrAndMissCategory::where('hidden', false)->get();
         foreach ($categories as $category) {
@@ -139,5 +140,4 @@ class MrAndMissController extends Controller
             ->with('activate_custom', 'true') //go to the custom category page
             ->with('message', __('general.successful_modification'));
     }
-
 }
