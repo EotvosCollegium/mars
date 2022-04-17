@@ -10,10 +10,10 @@ class MacAddress extends Model
 {
     use HasFactory;
 
-    const REQUESTED = 'REQUESTED';
-    const APPROVED = 'APPROVED';
-    const REJECTED = 'REJECTED';
-    const STATES = [self::APPROVED, self::REJECTED, self::REQUESTED];
+    public const REQUESTED = 'REQUESTED';
+    public const APPROVED = 'APPROVED';
+    public const REJECTED = 'REJECTED';
+    public const STATES = [self::APPROVED, self::REJECTED, self::REQUESTED];
 
     protected $table = 'mac_addresses';
 
@@ -46,7 +46,7 @@ class MacAddress extends Model
         if ($this->state == MacAddress::APPROVED) {
             $last_ip = self::max('ip') ?? config('custom.physical-first-ip');
             $bytes = explode('.', $last_ip);
-            if($bytes[3] == "255") {
+            if ($bytes[3] == "255") {
                 $bytes[2] = strval(intval($bytes[2]) + 1); // Assuming it's safe
                 $bytes[3] = "1";
             } else {

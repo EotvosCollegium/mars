@@ -9,12 +9,12 @@ class PaymentType extends Model
 {
     protected $fillable = ['name'];
 
-    const INCOME = 'INCOME';
-    const EXPENSE = 'EXPENSE';
-    const KKT = 'KKT';
-    const NETREG = 'NETREG';
-    const PRINT = 'PRINT';
-    const TYPES = [
+    public const INCOME = 'INCOME';
+    public const EXPENSE = 'EXPENSE';
+    public const KKT = 'KKT';
+    public const NETREG = 'NETREG';
+    public const PRINT = 'PRINT';
+    public const TYPES = [
         self::INCOME,
         self::EXPENSE,
         self::KKT,

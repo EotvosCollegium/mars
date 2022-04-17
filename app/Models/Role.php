@@ -9,39 +9,39 @@ use Illuminate\Support\Facades\Cache;
 class Role extends Model
 {
     // General roles
-    const PRINT_ADMIN = 'print-admin';
-    const NETWORK_ADMIN = 'internet-admin';
-    const COLLEGIST = 'collegist';
-    const TENANT = 'tenant';
-    const WORKSHOP_ADMINISTRATOR = 'workshop-administrator';
-    const WORKSHOP_LEADER = 'workshop-leader';
-    const SECRETARY = 'secretary';
-    const DIRECTOR = 'director';
-    const STAFF = 'staff';
-    const LOCALE_ADMIN = 'locale-admin';
-    const PERMISSION_HANDLER = 'permission-handler';
-    const STUDENT_COUNCIL = 'student-council';
+    public const PRINT_ADMIN = 'print-admin';
+    public const NETWORK_ADMIN = 'internet-admin';
+    public const COLLEGIST = 'collegist';
+    public const TENANT = 'tenant';
+    public const WORKSHOP_ADMINISTRATOR = 'workshop-administrator';
+    public const WORKSHOP_LEADER = 'workshop-leader';
+    public const SECRETARY = 'secretary';
+    public const DIRECTOR = 'director';
+    public const STAFF = 'staff';
+    public const LOCALE_ADMIN = 'locale-admin';
+    public const PERMISSION_HANDLER = 'permission-handler';
+    public const STUDENT_COUNCIL = 'student-council';
 
     //Students' Committe role's objects
-    const PRESIDENT = 'president';
-    const VICE_PRESIDENT = 'vice-president';
-    const ECONOMIC_LEADER = 'economic-leader';
-    const ECONOMIC_MEMBER = 'economic-member';
-    const CULTURAL_LEADER = 'cultural-leader';
-    const CULTURAL_MEMBER = 'cultural-member';
-    const COMMUNITY_LEADER = 'community-leader';
-    const COMMUNITY_MEMBER = 'community-member';
-    const COMMUNICATION_LEADER = 'communication-leader';
-    const COMMUNICATION_MEMBER = 'communication-member';
-    const SPORT_LEADER = 'sport-leader';
-    const SPORT_MEMBER = 'sport-member';
-    const SCIENCE_LEADER = 'science-leader';
-    const SCIENCE_MEMBER = 'science-member';
-    const STUDENT_COUNCIL_LEADERS = [
+    public const PRESIDENT = 'president';
+    public const VICE_PRESIDENT = 'vice-president';
+    public const ECONOMIC_LEADER = 'economic-leader';
+    public const ECONOMIC_MEMBER = 'economic-member';
+    public const CULTURAL_LEADER = 'cultural-leader';
+    public const CULTURAL_MEMBER = 'cultural-member';
+    public const COMMUNITY_LEADER = 'community-leader';
+    public const COMMUNITY_MEMBER = 'community-member';
+    public const COMMUNICATION_LEADER = 'communication-leader';
+    public const COMMUNICATION_MEMBER = 'communication-member';
+    public const SPORT_LEADER = 'sport-leader';
+    public const SPORT_MEMBER = 'sport-member';
+    public const SCIENCE_LEADER = 'science-leader';
+    public const SCIENCE_MEMBER = 'science-member';
+    public const STUDENT_COUNCIL_LEADERS = [
         self::PRESIDENT,
         self::VICE_PRESIDENT
     ];
-    const COMMITTEE_LEADERS = [
+    public const COMMITTEE_LEADERS = [
         self::ECONOMIC_LEADER,
         self::CULTURAL_LEADER,
         self::COMMUNITY_LEADER,
@@ -49,7 +49,7 @@ class Role extends Model
         self::SPORT_LEADER,
         self::SCIENCE_LEADER
     ];
-    const COMMITTEE_MEMBERS = [
+    public const COMMITTEE_MEMBERS = [
         self::ECONOMIC_MEMBER,
         self::CULTURAL_MEMBER,
         self::COMMUNITY_MEMBER,
@@ -59,11 +59,11 @@ class Role extends Model
     ];
 
     // Module-related roles
-    const PRINTER = 'printer';
-    const INTERNET_USER = 'internet-user';
+    public const PRINTER = 'printer';
+    public const INTERNET_USER = 'internet-user';
 
     // all roles
-    const ALL = [
+    public const ALL = [
         self::PRINT_ADMIN,
         self::NETWORK_ADMIN,
         self::COLLEGIST,
@@ -129,14 +129,15 @@ class Role extends Model
     public static function canBeAttached($roleId, $objectId = null): bool
     {
         $role = self::findOrFail($roleId);
-        if($role->canHaveObject())
-        {
-            if($objectId == null) return false;
+        if ($role->canHaveObject()) {
+            if ($objectId == null) {
+                return false;
+            }
             $object = $role->possibleObjects()->firstWhere('id', $objectId)->name;
         }
 
         if (self::isUnique($role->name, ($object ?? null))) {
-            return User::whereHas('roles', function (Builder $query)  use ($roleId, $objectId){
+            return User::whereHas('roles', function (Builder $query) use ($roleId, $objectId) {
                 $query->where('id', $roleId)->where('role_users.object_id', $objectId);
             })->count() < 1;
         }
@@ -163,7 +164,7 @@ class Role extends Model
 
     public static function getUsers(string $roleName, string $objectName = null)
     {
-        if(isset($objectName)){
+        if (isset($objectName)) {
             return User::whereHas('roles', function ($q) use ($roleName, $objectName) {
                 $q->where('role_id', Role::getId($roleName))
                     ->where('object_id', Role::getObjectIdByName($roleName, $objectName));

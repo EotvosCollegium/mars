@@ -18,7 +18,6 @@ use Illuminate\Support\Facades\Storage;
 
 class DocumentController extends Controller
 {
-
     public function index()
     {
         Gate::authorize('document.any');
@@ -126,14 +125,18 @@ class DocumentController extends Controller
 
     private function downloadDocument($result)
     {
-        if (!$result['success']) return $result['redirect'];
+        if (!$result['success']) {
+            return $result['redirect'];
+        }
         $document = $result['pdf'];
         return response()->download($document);
     }
 
     private function printDocument($result, $filename)
     {
-        if (!$result['success']) return $result['redirect'];
+        if (!$result['success']) {
+            return $result['redirect'];
+        }
         $document = $result['pdf'];
         $printer = new Printer($filename, $document, /* $use_free_pages */ true);
         return $printer->print();
@@ -166,15 +169,16 @@ class DocumentController extends Controller
     {
         $user = Auth::user();
 
-        if(!$user->hasPersonalInformation()) {
+        if (!$user->hasPersonalInformation()) {
             return [
                 'success' => false,
-                'redirect' => back()->withInput()->with('error',  __('document.missing_personal_info'))
+                'redirect' => back()->withInput()->with('error', __('document.missing_personal_info'))
             ];
         }
         $info = $user->personalInformation;
 
-        $pdf = $this->generatePDF('latex.register-statement',
+        $pdf = $this->generatePDF(
+            'latex.register-statement',
             [ 'name' => $user->name,
               'address' => $user->zip_code . ' ' . $info->getAddress(),
               'phone' => $info->phone_number,
@@ -182,7 +186,8 @@ class DocumentController extends Controller
               'place_and_of_birth' => $info->getPlaceAndDateOfBirth(),
               'mothers_name' => $info->mothers_name,
               'date' => date("Y.m.d"),
-        ]);
+        ]
+        );
         return ['success' => true, 'pdf' => $pdf];
     }
 
@@ -194,37 +199,40 @@ class DocumentController extends Controller
         if ($items->isEmpty()) {
             return [
                 'success' => false,
-                'redirect' => back()->withInput()->with('error',  __('document.missing_items'))
+                'redirect' => back()->withInput()->with('error', __('document.missing_items'))
             ];
         }
 
-        $pdf = $this->generatePDF('latex.import',
+        $pdf = $this->generatePDF(
+            'latex.import',
             [ 'name' => $user->name,
               'items' => $items,
               'date' => date("Y.m.d"),
-        ]);
+        ]
+        );
         return ['success' => true, 'pdf' => $pdf];
     }
 
     private function generateStatusCertificate($user)
     {
-        if(!$user->hasPersonalInformation()) {
+        if (!$user->hasPersonalInformation()) {
             return [
                 'success' => false,
-                'redirect' => back()->withInput()->with('error',  __('document.missing_personal_info'))
+                'redirect' => back()->withInput()->with('error', __('document.missing_personal_info'))
             ];
         }
 
-        if(!$user->hasEducationalInformation()) {
+        if (!$user->hasEducationalInformation()) {
             return [
                 'success' => false,
-                'redirect' => back()->withInput()->with('error',  __('document.missing_educational_info'))
+                'redirect' => back()->withInput()->with('error', __('document.missing_educational_info'))
             ];
         }
         $personalInfo = $user->personalInformation;
         $educationalInfo = $user->educationalInformation;
 
-        $pdf = $this->generatePDF('latex.status-cert',
+        $pdf = $this->generatePDF(
+            'latex.status-cert',
             [ 'name' => $user->name,
               'address' => $user->zip_code . ' ' . $personalInfo->getAddress(),
               'place_and_date_of_birth' => $personalInfo->getPlaceAndDateOfBirth(),
@@ -233,7 +241,8 @@ class DocumentController extends Controller
               'from' => $educationalInfo->year_of_acceptance,
               'until' => Semester::current()->getEndDate()->format('Y.m.d.'), // TODO: check active semesters
               // TODO: add status
-        ]);
+        ]
+        );
 
         return ['success' => true, 'pdf' => $pdf];
     }

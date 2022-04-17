@@ -30,14 +30,14 @@ class EventTrigger extends Model
     ];
 
     // Signal for setting the default activation date to the next semester.
-    const INTERNET_ACTIVATION_SIGNAL = 0;
+    public const INTERNET_ACTIVATION_SIGNAL = 0;
     // Signal for notifying the students to make a statement regarding their status
     // in the next semester.
-    const SEND_STATUS_STATEMENT_REQUEST = 1;
+    public const SEND_STATUS_STATEMENT_REQUEST = 1;
     // Deadline for the above signal; when triggered, everyone who did not make a
     // statement will be set to inactive.
-    const DEACTIVATE_STATUS_SIGNAL = 2;
-    const SIGNALS = [
+    public const DEACTIVATE_STATUS_SIGNAL = 2;
+    public const SIGNALS = [
         self::INTERNET_ACTIVATION_SIGNAL,
         self::SEND_STATUS_STATEMENT_REQUEST,
         self::DEACTIVATE_STATUS_SIGNAL,

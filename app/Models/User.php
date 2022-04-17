@@ -13,7 +13,9 @@ use InvalidArgumentException;
 
 class User extends Authenticatable implements HasLocalePreference
 {
-    use NotificationCounter, Notifiable, HasFactory;
+    use NotificationCounter;
+    use Notifiable;
+    use HasFactory;
 
     /**
      * The attributes that are mass assignable.
