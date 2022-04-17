@@ -13,6 +13,10 @@ use Illuminate\Support\Facades\DB;
 
 class MrAndMissController extends Controller
 {
+    /**
+     * Show the page for voting.
+     * Accessible by collegists.
+     */
     public function indexVote(Request $request)
     {
         $this->authorize('vote', MrAndMissVote::class);
@@ -31,6 +35,12 @@ class MrAndMissController extends Controller
         );
     }
 
+    /**
+     * Show the categories.
+     * Accessible by MrAndMiss managers.
+     *
+     * @return Illuminate\View\View
+     */
     public function indexCategories(Request $request)
     {
         $this->authorize('manage', MrAndMissVote::class);
@@ -40,6 +50,10 @@ class MrAndMissController extends Controller
         return view('student-council.mr-and-miss.categories', ['categories' => $categories]);
     }
 
+    /**
+     * Show the results.
+     * Accessible by MrAndMiss managers.
+     */
     public function indexResults(Request $request)
     {
         $this->authorize('manage', MrAndMissVote::class);
@@ -54,6 +68,9 @@ class MrAndMissController extends Controller
         return view('student-council.mr-and-miss.results', ['results' => $results]);
     }
 
+    /**
+     * Save the votes entered.
+     */
     public function saveVote(Request $request)
     {
         $this->authorize('vote', MrAndMissVote::class);
@@ -90,6 +107,8 @@ class MrAndMissController extends Controller
             }
         }
 
+
+        //Not sure if we use this or not.
         if ($request['title'] != null && $request['votee'] != null) {
             return $this->customVote($request);
         }
@@ -97,6 +116,9 @@ class MrAndMissController extends Controller
         return redirect()->back()->with('message', __('general.successful_modification'));
     }
 
+    /**
+     * Save a new custom category.
+     */
     public function customVote(Request $request)
     {
         $this->authorize('vote', MrAndMissVote::class);
@@ -114,7 +136,7 @@ class MrAndMissController extends Controller
             'custom' => true,
         ]);
         return redirect()->back()
-            ->with('activate_custom', 'true')
+            ->with('activate_custom', 'true') //go to the custom category page
             ->with('message', __('general.successful_modification'));
     }
 

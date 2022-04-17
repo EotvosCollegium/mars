@@ -7,6 +7,9 @@ use App\Models\Role;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
 
+/**
+ * Policy for MrAndMissVote Model.
+ */
 class MrAndMissPolicy
 {
     use HandlesAuthorization;
