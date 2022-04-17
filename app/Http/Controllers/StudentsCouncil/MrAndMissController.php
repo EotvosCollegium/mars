@@ -21,8 +21,23 @@ class MrAndMissController extends Controller
     {
         $this->authorize('vote', MrAndMissVote::class);
 
-        $categories = MrAndMissCategory::where('hidden', false)->get();
+        $categories = MrAndMissVote::select(['mr_and_miss_categories.id', 'mr_and_miss_categories.title', 'public', 'custom', 'votee_id', 'mr', 'votee_name as custom_name'])
+            ->rightJoin('mr_and_miss_categories', function ($join) {
+                $join->on('mr_and_miss_categories.id', '=', 'mr_and_miss_votes.category')
+                    ->where('voter', Auth::user()->id);
+            })
+            ->where('hidden', false)
+            ->where(function ($query) {
+                return $query->whereNull('semester')
+                             ->orWhere('semester', Semester::current()->id);
+            })
+            ->where(function ($query) {
+                return $query->where('mr_and_miss_categories.public', true)
+                             ->orWhere('mr_and_miss_categories.created_by', Auth::user()->id);
+            })
+            ->get();
 
+        //return response()->json($categories);
         return view(
             'student-council.mr-and-miss.vote',
             [
@@ -30,7 +45,6 @@ class MrAndMissController extends Controller
                 'users' => User::collegists(),
                 'miss_first' => rand(0, 1) == 0,
                 'deadline' => config('custom.mr_and_miss_deadline'),
-                'votes' => $request->user()->mrAndMissVotesGiven->where('semester', Semester::current()->id)->all()
             ]
         );
     }

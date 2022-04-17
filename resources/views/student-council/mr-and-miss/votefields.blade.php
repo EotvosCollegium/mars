@@ -1,33 +1,24 @@
 @foreach ($categories as $category)
-@if (($custom == true && $category->custom == true) ||
-    ($custom == false && $category->mr == $genderCheck && $category->custom == false))
-    @if ($category->public || $category->created_by == Auth::user()->id)
     <div class="row scale-transition" style="margin:0">
         <div class="col s5" style="padding: 0.8rem;">
             {{ $category->title }}
         </div>
-        @php
-        $voteInfo['voted'] = in_array($category->id, array_column($votes, 'category'));
-        if($voteInfo['voted']) {
-            $voteInfo['vote'] = $votes[array_search($category->id, array_column($votes, 'category'))];
-        }
-        @endphp
         <div class="col s6">
             <div
             id="select-ui-{{ $category->id }}"
-            @if ($voteInfo['voted'] && $voteInfo['vote']->votee_id === null)
+            @if ($category->custom_name !== null)
                 hidden
             @endif
             >
             <x-input.select only-input :id="'select-' . $category->id" :elements="$users" without-placeholder allow-empty without-label
-                :default="($voteInfo['voted'] && $voteInfo['vote']->votee_id !== null ? $voteInfo['vote']->votee_id : null)"
+                :default="$category->votee_id"
                 />
             </div>
             <textarea id="raw-{{ $category->id }}" name="raw-{{ $category->id }}" class="materialize-textarea mr-textarea"
-            @if (!($voteInfo['voted'] && $voteInfo['vote']->votee_name !== null))
+            @if ($category->custom_name === null)
                 hidden
             @endif
-            >@if ($voteInfo['voted'] && $voteInfo['vote']->votee_name !== null){{ $voteInfo['vote']->votee_name }}@endif</textarea>
+            >{{ $category->custom_name }}</textarea>
         </div>
         <div class="col s1">
             <button class="btn-floating waves-effect waves-light right input-changer" id="button-{{ $category->id }}">
@@ -35,8 +26,6 @@
             </button>
         </div>
     </div>
-    @endif
-@endif
 @endforeach
 
 <button class="btn waves-effect waves-light" type="submit" id="mr-submit" name="action">@lang('general.save')

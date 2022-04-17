@@ -47,30 +47,19 @@
                             <div id="tab1">
                                 @include(
                                     'student-council.mr-and-miss.votefields',
-                                    [
-                                        'genderCheck' => !$miss_first,
-                                        'custom' => false,
-                                        'votes' => $votes,
-                                    ]
+                                    ['categories' => $categories->where('mr', !$miss_first)->where('custom', false)]
                                 )
                             </div>
                             <div id="tab2">
                                 @include(
                                     'student-council.mr-and-miss.votefields',
-                                    [
-                                        'genderCheck' => $miss_first,
-                                        'custom' => false,
-                                        'votes' => $votes,
-                                    ]
+                                    ['categories' => $categories->where('mr', $miss_first)->where('custom', false)]
                                 )
                             </div>
                             <div id="tab3">
                                 @include(
                                     'student-council.mr-and-miss.votefields',
-                                    [
-                                        'custom' => true,
-                                        'votes' => $votes,
-                                    ]
+                                    ['categories' => $categories->where('custom', true)]
                                 )
                             </div>
                         </form>
@@ -119,6 +108,7 @@
         $('.input-changer').click(function(event) {
             event.stopImmediatePropagation();
             event.preventDefault();
+
             var id = event.target.dataset.number;
             var rawInput = document.getElementById("raw-" + id);
             var selectInput = document.getElementById("select-ui-" + id);
