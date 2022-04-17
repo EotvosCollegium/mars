@@ -20,11 +20,11 @@ class Fault extends Model
         'updated_at',
     ];
 
-    const UNSEEN = 'UNSEEN';
-    const SEEN = 'SEEN';
-    const DONE = 'DONE';
-    const WONT_FIX = 'WONT_FIX';
-    const STATES = [self::UNSEEN, self::SEEN, self::DONE, self::WONT_FIX];
+    public const UNSEEN = 'UNSEEN';
+    public const SEEN = 'SEEN';
+    public const DONE = 'DONE';
+    public const WONT_FIX = 'WONT_FIX';
+    public const STATES = [self::UNSEEN, self::SEEN, self::DONE, self::WONT_FIX];
 
     public static function getState($value)
     {
