@@ -35,7 +35,7 @@ class Printer
     {
         // Getting the number of pages from the document
         $errors = $this->setPages();
-        if($errors !=  null) {
+        if ($errors !=  null) {
             return $errors;
         }
 
@@ -49,7 +49,7 @@ class Printer
 
         // Check balance
         if (!$this->print_account->hasEnoughMoney($this->cost)) {
-            return back()->withInput()->with('error',  __('print.no_balance'));
+            return back()->withInput()->with('error', __('print.no_balance'));
         }
 
         // Print document
@@ -108,7 +108,8 @@ class Printer
         return back()->with('message', __('print.success'));
     }
 
-    private function printFile() {
+    private function printFile()
+    {
         $printer_name = config('print.printer_name');
         $state = PrintJob::QUEUED;
         try {

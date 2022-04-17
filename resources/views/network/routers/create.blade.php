@@ -2,7 +2,7 @@
 
 @section('title')
 <a href="#!" class="breadcrumb">@lang('admin.admin')</a>
-<a href="{{ route('routers') }}" class="breadcrumb">@lang('router.router_monitor')</a>
+<a href="{{ route('routers') }}" class="breadcrumb" style="cursor: pointer">@lang('router.router_monitor')</a>
 <a href="#!" class="breadcrumb">@lang('general.add_new')</a>
 @endsection
 @section('admin_module') active @endsection

@@ -9,7 +9,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class WifiConnection extends Model
 {
-    use HasFactory, NotificationCounter;
+    use HasFactory;
+    use NotificationCounter;
 
     protected $table = 'wifi_connections';
     protected $primaryKey = 'id';

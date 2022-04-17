@@ -9,4 +9,6 @@ return [
 
     'physical-first-ip' => env('PHYSICAL_FIRST_IP', '192.168.1.1'),
     'physical-last-ip' => env('PHYSICAL_LAST_IP', '192.168.2.255'),
+
+    'mr_and_miss_deadline' => env('MR_AND_MISS_DEADLINE'),
 ];

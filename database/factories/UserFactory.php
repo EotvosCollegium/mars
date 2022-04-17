@@ -8,8 +8,8 @@ use App\Models\PersonalInformation;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
-class UserFactory extends Factory {
-
+class UserFactory extends Factory
+{
     /**
      * The name of the factory's corresponding model.
      *
@@ -48,5 +48,4 @@ class UserFactory extends Factory {
             $user->personalInformation()->save(PersonalInformation::factory()->make(['user_id' => $user->id]));
         });
     }
-
 }

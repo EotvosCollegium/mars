@@ -13,7 +13,7 @@
         "laravel-mix": "^6.0.6",
         "axios": "^0.21",
         "lodash": "^4.17.21",
-        "minimist": "^1.2.5",
+        "minimist": "^1.2.6",
         "popper.js": "^1.12",
         "resolve-url-loader": "^4.0.0",
         "sass": "^1.27.0",
@@ -24,7 +24,7 @@
     "dependencies": {
         "jquery": "^3.6.0",
         "@materializecss/materialize": "^1.1.0-alpha",
-        "moment": "^2.29.1",
+        "moment": "^2.29.2",
         "tabulator-tables": "^4.9.3"
     }
 }

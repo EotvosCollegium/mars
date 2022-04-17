@@ -6,26 +6,26 @@ use Illuminate\Database\Eloquent\Model;
 
 class Workshop extends Model
 {
-    const ANGOL = 'Angol-amerikai műhely';
-    const BIOLOGIA = 'Biológia-kémia műhely';
-    const BOLLOK = 'Bollók János Klasszika-filológia műhely';
-    const FILOZOFIA = 'Filozófia műhely';
-    const AURELION = 'Aurélien Sauvageot Francia műhely';
-    const GAZDALKODASTUDOMANYI = 'Gazdálkodástudományi műhely';
-    const GERMANISZTIKA = 'Germanisztika műhely';
-    const INFORMATIKA = 'Informatika műhely';
-    const MAGYAR = 'Magyar műhely';
-    const MATEMATIKA = 'Matematika-fizika műhely';
-    const MENDOL = 'Mendöl Tibor földrajz-, föld- és környezettudományi műhely';
-    const OLASZ = 'Olasz műhely';
-    const ORIENTALISZTIKA = 'Orientalisztika műhely';
-    const SKANDINAVISZTIKA = 'Skandinavisztika műhely';
-    const SPANYOL = 'Spanyol műhely';
-    const SZLAVISZTIKA = 'Szlavisztika műhely';
-    const TARSADALOMTUDOMANYI = 'Társadalomtudományi műhely';
-    const TORTENESZ = 'Történész műhely';
+    public const ANGOL = 'Angol-amerikai műhely';
+    public const BIOLOGIA = 'Biológia-kémia műhely';
+    public const BOLLOK = 'Bollók János Klasszika-filológia műhely';
+    public const FILOZOFIA = 'Filozófia műhely';
+    public const AURELION = 'Aurélien Sauvageot Francia műhely';
+    public const GAZDALKODASTUDOMANYI = 'Gazdálkodástudományi műhely';
+    public const GERMANISZTIKA = 'Germanisztika műhely';
+    public const INFORMATIKA = 'Informatika műhely';
+    public const MAGYAR = 'Magyar műhely';
+    public const MATEMATIKA = 'Matematika-fizika műhely';
+    public const MENDOL = 'Mendöl Tibor földrajz-, föld- és környezettudományi műhely';
+    public const OLASZ = 'Olasz műhely';
+    public const ORIENTALISZTIKA = 'Orientalisztika műhely';
+    public const SKANDINAVISZTIKA = 'Skandinavisztika műhely';
+    public const SPANYOL = 'Spanyol műhely';
+    public const SZLAVISZTIKA = 'Szlavisztika műhely';
+    public const TARSADALOMTUDOMANYI = 'Társadalomtudományi műhely';
+    public const TORTENESZ = 'Történész műhely';
 
-    const ALL = [
+    public const ALL = [
         self::ANGOL,
         self::BIOLOGIA,
         self::BOLLOK,
