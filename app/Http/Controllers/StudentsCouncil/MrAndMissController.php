@@ -21,7 +21,7 @@ class MrAndMissController extends Controller
     {
         $this->authorize('vote', MrAndMissVote::class);
 
-        $categories = MrAndMissCategory::select(['mr_and_miss_categories.id', 'title', 'mr', 'custom', 'votee_id', 'votee_name'])
+        $categories = MrAndMissCategory::select(['mr_and_miss_categories.id', 'title', 'mr', 'custom', 'votee_id', 'votee_name as custom_name'])
             ->where('hidden', false)
             ->where(function ($query) {
                 $query->where('public', true)
