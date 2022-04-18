@@ -31,7 +31,9 @@ class MrAndMissController extends Controller
                 $join->on('mr_and_miss_categories.id', '=', 'mr_and_miss_votes.category')
                      ->where('mr_and_miss_votes.voter', Auth::user()->id)
                      ->where('semester', Semester::current()->id);
-            })->get();
+            })
+            ->orderBy('mr_and_miss_categories.id')
+            ->get();
 
 
         return view(
@@ -48,16 +50,60 @@ class MrAndMissController extends Controller
     /**
      * Show the categories.
      * Accessible by MrAndMiss managers.
-     *
-     * @return Illuminate\View\View
      */
     public function indexCategories(Request $request)
     {
         $this->authorize('manage', MrAndMissVote::class);
 
-        $categories = MrAndMissCategory::all();
+        return view('student-council.mr-and-miss.categories', ['categories' => MrAndMissCategory::where('custom', false)->get()]);
+    }
 
-        return view('student-council.mr-and-miss.categories', ['categories' => $categories]);
+    /**
+     * Edit the categories' hidden status.
+     * Accessible by MrAndMiss managers.
+     */
+    public function editCategories(Request $request)
+    {
+        $this->authorize('manage', MrAndMissVote::class);
+
+        $request->validate([
+            'enabled_categories' => 'required|array',
+            'enabled_categories.*' => 'required|integer|exists:mr_and_miss_categories,id',
+        ]);
+
+        MrAndMissCategory::where('custom', false)
+            ->whereIn('id', $request->input('enabled_categories'))
+            ->update(['hidden' => false]);
+        MrAndMissCategory::where('custom', false)
+            ->whereNotIn('id', $request->input('enabled_categories'))
+            ->update(['hidden' => true]);
+
+        return back()->with('message', __('general.successful_modification'));
+    }
+
+
+    /**
+     * Create a new category.
+     * Accessible by MrAndMiss managers.
+     */
+    public function createCategory(Request $request)
+    {
+        $this->authorize('manage', MrAndMissVote::class);
+
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'mr' => 'required|in:Mr.,Miss',
+        ]);
+
+        MrAndMissCategory::create([
+            'title' => $request->input('mr') . " " . $request->input('title'),
+            'mr' => $request->input('mr') == "Mr.",
+            'hidden' => false,
+            'custom' => false,
+            'public' => true
+        ]);
+
+        return back()->with('message', __('general.successful_modification'));
     }
 
     /**
@@ -73,6 +119,7 @@ class MrAndMissController extends Controller
                 ->join('mr_and_miss_categories', 'mr_and_miss_categories.id', '=', 'mr_and_miss_votes.category')
                 ->leftJoin('users', 'users.id', '=', 'mr_and_miss_votes.votee_id')
                 ->groupBy(['title', 'users.name', 'votee_name', 'mr', 'custom'])
+                ->orderBy('mr_and_miss_categories.id')
                 ->get();
 
         return view('student-council.mr-and-miss.results', ['results' => $results]);
