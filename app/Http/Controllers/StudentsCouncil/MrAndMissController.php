@@ -21,23 +21,19 @@ class MrAndMissController extends Controller
     {
         $this->authorize('vote', MrAndMissVote::class);
 
-        $categories = MrAndMissVote::select(['mr_and_miss_categories.id', 'mr_and_miss_categories.title', 'public', 'custom', 'votee_id', 'mr', 'votee_name as custom_name'])
-            ->rightJoin('mr_and_miss_categories', function ($join) {
-                $join->on('mr_and_miss_categories.id', '=', 'mr_and_miss_votes.category')
-                    ->where('voter', Auth::user()->id);
-            })
+        $categories = MrAndMissCategory::select(['mr_and_miss_categories.id', 'title', 'mr', 'custom', 'votee_id', 'votee_name'])
             ->where('hidden', false)
             ->where(function ($query) {
-                return $query->whereNull('semester')
-                             ->orWhere('semester', Semester::current()->id);
+                $query->where('public', true)
+                      ->orWhere('created_by', Auth::user()->id);
             })
-            ->where(function ($query) {
-                return $query->where('mr_and_miss_categories.public', true)
-                             ->orWhere('mr_and_miss_categories.created_by', Auth::user()->id);
-            })
-            ->get();
+            ->leftJoin('mr_and_miss_votes', function ($join) {
+                $join->on('mr_and_miss_categories.id', '=', 'mr_and_miss_votes.category')
+                     ->where('mr_and_miss_votes.voter', Auth::user()->id)
+                     ->where('semester', Semester::current()->id);
+            })->get();
 
-        //return response()->json($categories);
+
         return view(
             'student-council.mr-and-miss.vote',
             [
