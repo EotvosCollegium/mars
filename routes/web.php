@@ -184,5 +184,7 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::post('/community_committee/mr_and_miss/vote', [MrAndMissController::class, 'saveVote'])->name('mr_and_miss.vote.save');
     Route::post('/community_committee/mr_and_miss/vote/custom', [MrAndMissController::class, 'customVote'])->name('mr_and_miss.vote.custom');
     Route::get('/community_committee/mr_and_miss/categories', [MrAndMissController::class, 'indexCategories'])->name('mr_and_miss.categories');
+    Route::post('/community_committee/mr_and_miss/categories', [MrAndMissController::class, 'createCategory'])->name('mr_and_miss.categories.create');
+    Route::post('/community_committee/mr_and_miss/categories/create', [MrAndMissController::class, 'editCategories'])->name('mr_and_miss.categories.edit');
     Route::get('/community_committee/mr_and_miss/results', [MrAndMissController::class, 'indexResults'])->name('mr_and_miss.results');
 });
