@@ -55,21 +55,33 @@
 <script type="text/javascript" src="{{ mix('js/jquery.min.js') }}"></script>
 <script>
     $( document ).ready(function() {
+        var lastFillColor = "#ffffff"
         $("path").hover(function(e) {
             if(this.id.indexOf('room')>-1){
+                lastFillColor=$(this).css('fill');
                 $(this).css({'fill': '#002868', 'cursor' : 'pointer'});
                 $('#info-box').css('display','block');
+                people=$(this).data('info').split(';');
+                htmlString='';
+                
+                people.forEach(element => {
+                    if(element!=''){
+                        htmlString+='<li>'+element+'</li>';
+                    }
+                });
                 $('#info-box').html(
                     '<p>Lakók:</p>'+
                     '<ol>'+
-                    //  {{}}   
-                    '</ol>'
+                    htmlString
+                    +'</ol>'
                 );
+                // $('#info-box').html();
             }
         }, function(e){
             if(this.id.indexOf('room')>-1){
-                $(this).css('fill', 'white');
+                $(this).css('fill', lastFillColor);
                 $('#info-box').css('display','none');
+                $('#info-box').html('');
             }
         });
         $(document).mousemove(function(e) {
@@ -77,13 +89,26 @@
             $('#info-box').css('left',e.pageX+10);
         }).mouseover();
         $("#name").submit(function(e){
-            num=$('#nameInput').val();
-            $('#room'+num).addClass('blink');
-            $('#room'+num).css('fill', 'red');
+            name=$('#nameInput').val();
+            console.log(name);
+            // console.log($('[data-info*='+name+']').data('info'));
+            //TODO multiple names
+            lastFillColor=$('[data-info*='+name+' i]').css('fill');
+            $('[data-info*='+name+' i]').addClass('blink');
+            $('[data-info*='+name+' i]').css('fill', 'red');
             setTimeout(function(){
-                $('#room'+num).removeClass('blink');
-                $('#room'+num).css('fill', 'white');
+                $('[data-info*='+name+' i]').removeClass('blink');
+                $('[data-info*='+name+' i]').css('fill', lastFillColor);
             }, 5000)
+
+            // num=$('#nameInput').val();
+            // lastFillColor=$('#room'+num).css('fill');
+            // $('#room'+num).addClass('blink');
+            // $('#room'+num).css('fill', 'red');
+            // setTimeout(function(){
+            //     $('#room'+num).removeClass('blink');
+            //     $('#room'+num).css('fill', lastFillColor);
+            // }, 5000)
 
         });
     });
@@ -95,6 +120,32 @@
         <div class="card">
             <div class="card-content">
                 <div id="info-box"></div>
+                {{-- {{$users}} --}}
+                @php
+                    $roomNumbers=[235,234,233,232,231,230,229,228,227,226,225,224,223,222,221,220,219,218,217,216,215,214,213,212,211,210,209,208,207,206,2052,2051,204 ];
+                    $colorArray=array();
+                    foreach ($roomNumbers as $number) {
+                        $color="#ffffff";
+                        switch ($users->where('room_id', $number)->count()) {
+                            case 0:
+                                $color="#11f709";
+                                break;
+                            case 1:
+                                $color="#2bb505";
+                                break;
+                            case 2:
+                                $color="#f0fc0a";
+                                break;
+                            case 3:
+                                $color="#fc4f05";
+                                break;
+                        }    
+                        array_push($colorArray, [ "id" => $number, "color" => $color]);
+                    }
+                    $roomColors=collect($colorArray);
+                @endphp
+                {{-- {{$users}} --}}
+                {{-- {{$roomColors->where('id',223)->pluck('color')->join(',')}} --}}
                 <svg
                     id="em2"
                     preserveAspectRatio="xMinYMin meet"
@@ -123,59 +174,69 @@
                         style="display:inline"
                         id="g117">
                         <path
-                        style="fill:#ffffff;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-                        d="M 2.811655,3.3889 92.42713,3.20181 93.17548,66.81196 2.998744,66.99905 Z"
-                        id="room233"
-                        data-info="" />
+                        style="fill: {{$roomColors->where('id',235)->pluck('color')->join(',')}} ;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+                        d="m 147.05702,69.05702 0.93545,52.75901 89.80256,-0.18709 -0.37418,-52.94609 z"
+                        id="room235" 
+                        data-info="{{ $users->where('room_id', 235)->pluck('user.name')->join(';') }}"/>
                         <path
-                        style="fill:#ffffff;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-                        d="M 2.624568,69.80537 3.372923,123.12565 92.9884,122.56439 92.8949,69.4312 Z"
-                        id="room232"
-                        sodipodi:nodetypes="ccccc" />
-                        <path
-                        style="fill:#ffffff;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-                        d="m 3.560011,125.74489 0.748354,50.13976 88.680035,-1e-5 v -50.13975 z"
-                        id="room231"
-                        sodipodi:nodetypes="ccccc" />
-                        <path
-                        style="fill:#ffffff;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+                        style="fill: {{$roomColors->where('id',234)->pluck('color')->join(',')}};stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
                         d="m 146.30867,3.01473 0.93545,63.42305 h 90.36382 L 237.04667,3.57599 Z"
                         id="room234"
-                        sodipodi:nodetypes="ccccc" />
+                        sodipodi:nodetypes="ccccc" 
+                        data-info="{{ $users->where('room_id', 234)->pluck('user.name')->join(';') }}"/>
                         <path
-                        style="fill:#ffffff;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-                        d="m 147.05702,69.05702 0.93545,52.75901 89.80256,-0.18709 -0.37418,-52.94609 z"
-                        id="room235" />
+                        style="fill: {{$roomColors->where('id',233)->pluck('color')->join(',')}};stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+                        d="M 2.811655,3.3889 92.42713,3.20181 93.17548,66.81196 2.998744,66.99905 Z"
+                        id="room233"
+                        data-info="{{ $users->where('room_id', 233)->pluck('user.name')->join(';') }}" />
+                        <path
+                        style="fill: {{$roomColors->where('id',232)->pluck('color')->join(',')}};stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+                        d="M 2.624568,69.80537 3.372923,123.12565 92.9884,122.56439 92.8949,69.4312 Z"
+                        id="room232"
+                        sodipodi:nodetypes="ccccc"
+                        data-info="{{ $users->where('room_id', 232)->pluck('user.name')->join(';') }}" />
+                        <path
+                        style="fill: {{$roomColors->where('id',231)->pluck('color')->join(',')}};stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+                        d="m 3.560011,125.74489 0.748354,50.13976 88.680035,-1e-5 v -50.13975 z"
+                        id="room231"
+                        sodipodi:nodetypes="ccccc"
+                        data-info="{{ $users->where('room_id', 231)->pluck('user.name')->join(';') }}" />
                         <path
                         style="fill:#808080;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
                         d="m 147.61829,124.62236 0.37418,50.32685 89.80256,0.18709 -0.18709,-50.51394 z"
                         id="fiukonyha" />
                         <path
-                        style="fill:#ffffff;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+                        style="fill: {{$roomColors->where('id',230)->pluck('color')->join(',')}};stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
                         d="m 3.934189,178.87809 0.374177,62.67468 89.989654,-0.18708 -1.12253,-63.23598 z"
-                        id="room230" />
+                        id="room230"
+                        data-info="{{ $users->where('room_id', 230)->pluck('user.name')->join(';') }}" />
                         <path
-                        style="fill:#ffffff;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+                        style="fill: {{$roomColors->where('id',229)->pluck('color')->join(',')}};stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
                         d="m 4.121276,244.17202 0.748355,52.57191 89.989649,-0.37417 -0.56126,-52.19774 z"
-                        id="room229" />
+                        id="room229"
+                        data-info="{{ $users->where('room_id', 229)->pluck('user.name')->join(';') }}" />
                         <path
-                        style="fill:#ffffff;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+                        style="fill: {{$roomColors->where('id',228)->pluck('color')->join(',')}};stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
                         d="m 4.682542,299.55026 v 61.17799 l 90.738008,-0.18708 -0.56126,-60.80382 z"
                         id="room228"
-                        sodipodi:nodetypes="ccccc" />
+                        sodipodi:nodetypes="ccccc" 
+                        data-info="{{ $users->where('room_id', 228)->pluck('user.name')->join(';') }}"/>
                         <path
-                        style="fill:#ffffff;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+                        style="fill: {{$roomColors->where('id',227)->pluck('color')->join(',')}};stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
                         d="m 3.560012,425.27387 26.753679,-0.18709 -0.374177,54.44281 -26.379504,0.37417 z"
                         id="room227"
-                        sodipodi:nodetypes="ccccc" />
+                        sodipodi:nodetypes="ccccc" 
+                        data-info="{{ $users->where('room_id', 227)->pluck('user.name')->join(';') }}"/>
                         <path
-                        style="fill:#ffffff;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+                        style="fill: {{$roomColors->where('id',226)->pluck('color')->join(',')}};stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
                         d="m 3.934189,482.33592 -1.122534,55.9395 80.635225,-0.74834 0.56126,-55.19116 z"
-                        id="room226" />
+                        id="room226" 
+                        data-info="{{ $users->where('room_id', 226)->pluck('user.name')->join(';') }}"/>
                         <path
-                        style="fill:#ffffff;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+                        style="fill: {{$roomColors->where('id',225)->pluck('color')->join(',')}};stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
                         d="m 87.18865,482.1488 -0.56127,55.75245 54.44281,-0.18709 0.37417,-69.597 h -22.45064 v 13.84456 z"
-                        id="room225" />
+                        id="room225" 
+                        data-info="{{ $users->where('room_id', 225)->pluck('user.name')->join(';') }}"/>
                         <path
                         style="fill:#808080;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
                         d="m 147.80538,178.3168 0.56126,63.42306 14.40583,-0.37417 -0.37418,-15.52835 3.55469,-0.18711 v 16.08963 h 72.21623 l -0.18709,-63.61015 h -72.59041 l 0.56127,34.79851 -3.18051,-0.56126 -0.18709,-34.61142 z"
@@ -185,25 +246,30 @@
                         d="m 148.17955,246.23 0.56127,46.39799 h 30.68255 v -5.98683 h 3.55468 l -0.18709,5.98683 55.56534,-0.18708 0.18709,-46.21091 -56.3137,0.18709 0.37418,28.25038 -3.1805,-0.56126 -0.37418,-27.68912 z"
                         id="em2fiuwc" />
                         <path
-                        style="fill:#ffffff;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+                        style="fill: {{$roomColors->where('id',224)->pluck('color')->join(',')}};stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
                         d="m 148.92791,421.53207 h 51.44939 l -0.18709,92.04765 -51.44939,0.37417 z"
-                        id="room224" />
+                        id="room224" 
+                        data-info="{{ $users->where('room_id', 224)->pluck('user.name')->join(';') }}"/>
                         <path
-                        style="fill:#ffffff;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+                        style="fill: {{$roomColors->where('id',223)->pluck('color')->join(',')}};stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
                         d="m 202.62236,421.53207 43.40458,0.3742 0.18709,91.86053 h -44.15294 v -92.23473 z"
-                        id="room223" />
+                        id="room223" 
+                        data-info="{{ $users->where('room_id', 223)->pluck('user.name')->join(';') }}"/>
                         <path
-                        style="fill:#ffffff;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+                        style="fill: {{$roomColors->where('id',222)->pluck('color')->join(',')}};stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
                         d="m 248.45907,421.53207 47.89472,0.18712 0.56126,91.86053 -48.45598,0.18708 z"
-                        id="room222" />
+                        id="room222" 
+                        data-info="{{ $users->where('room_id', 222)->pluck('user.name')->join(';') }}"/>
                         <path
-                        style="fill:#ffffff;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+                        style="fill: {{$roomColors->where('id',221)->pluck('color')->join(',')}};stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
                         d="m 298.41177,421.53207 h 46.39797 v 92.04765 l -46.39797,0.18708 z"
-                        id="room221" />
+                        id="room221" 
+                        data-info="{{ $users->where('room_id', 221)->pluck('user.name')->join(';') }}"/>
                         <path
-                        style="fill:#ffffff;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+                        style="fill: {{$roomColors->where('id',220)->pluck('color')->join(',')}};stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
                         d="m 346.49355,421.53207 51.07522,0.18712 -0.3742,92.04761 h -50.51393 z"
-                        id="room220" />
+                        id="room220" 
+                        data-info="{{ $users->where('room_id', 220)->pluck('user.name')->join(';') }}"/>
                         <path
                         style="fill:#808080;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
                         d="m 4.121276,367.65055 0.374179,46.39799 90.738005,-0.37417 -0.37418,-46.02382 z"
@@ -213,76 +279,92 @@
                         d="M 404.49104,421.53207 V 522.37288 H 593.45061 L 593.2635,421.90627 Z"
                         id="tarsalgo" />
                         <path
-                        style="fill:#ffffff;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+                        style="fill: {{$roomColors->where('id',218)->pluck('color')->join(',')}};stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
                         d="m 599.99871,421.71919 0.37417,92.42179 55.75242,0.18708 -0.18709,-92.79599 z"
-                        id="room218" />
+                        id="room218" 
+                        data-info="{{ $users->where('room_id', 218)->pluck('user.name')->join(';') }}"/>
                         <path
-                        style="fill:#ffffff;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+                        style="fill: {{$roomColors->where('id',217)->pluck('color')->join(',')}};stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
                         d="m 659.3058,421.71919 40.03699,0.18708 0.18709,92.60888 -40.22408,-0.37417 z"
-                        id="room217" />
+                        id="room217" 
+                        data-info="{{ $users->where('room_id', 217)->pluck('user.name')->join(';') }}"  />
                         <path
-                        style="fill:#ffffff;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+                        style="fill:{{$roomColors->where('id',216)->pluck('color')->join(',')}};stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
                         d="m 702.33621,421.90627 38.35318,0.18709 0.37417,92.04762 -38.54027,0.18708 z"
-                        id="room216" />
+                        id="room216"
+                        data-info="{{ $users->where('room_id', 216)->pluck('user.name')->join(';') }}" />
                         <path
-                        style="fill:#ffffff;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+                        style="fill: {{$roomColors->where('id',215)->pluck('color')->join(',')}};stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
                         d="m 744.05698,421.90627 45.83673,0.37418 0.74835,92.2347 -46.02382,-0.18709 -0.37417,-91.48635 z"
-                        id="room215" />
+                        id="room215" 
+                        data-info="{{ $users->where('room_id', 215)->pluck('user.name')->join(';') }}"/>
                         <path
-                        style="fill:#ffffff;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+                        style="fill:{{$roomColors->where('id',214)->pluck('color')->join(',')}};stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
                         d="m 794.19674,422.28045 55.56533,0.37417 0.74838,92.42179 -56.5008,-0.56126 -0.37417,-92.2347 z"
-                        id="room214" />
+                        id="room214" 
+                        data-info="{{ $users->where('room_id', 214)->pluck('user.name')->join(';') }}"/>
                         <path
-                        style="fill:#ffffff;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+                        style="fill:{{$roomColors->where('id',213)->pluck('color')->join(',')}};stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
                         d="m 858.55526,472.79438 21.141,0.37417 -0.18708,10.66406 23.19901,0.93544 -0.18709,54.62989 -44.34004,-0.37417 -0.56126,-66.22939 z"
-                        id="room213" />
+                        id="room213" 
+                        data-info="{{ $users->where('room_id', 213)->pluck('user.name')->join(';') }}"/>
                         <path
-                        style="fill:#ffffff;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+                        style="fill:{{$roomColors->where('id',212)->pluck('color')->join(',')}};stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
                         d="m 905.7016,484.39387 90.3638,0.18709 -0.9354,54.81698 h -89.4284 z"
-                        id="room212" />
+                        id="room212" 
+                        data-info="{{ $users->where('room_id', 212)->pluck('user.name')->join(';') }}"/>
                         <path
-                        style="fill:#ffffff;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+                        style="fill:{{$roomColors->where('id',211)->pluck('color')->join(',')}};stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
                         d="m 965.0087,425.27386 0.74835,56.31368 30.12125,-0.56126 0.1871,-55.19116 z"
-                        id="room211" />
+                        id="room211" 
+                        data-info="{{ $users->where('room_id', 211)->pluck('user.name')->join(';') }}"/>
                         <path
                         style="fill:#808080;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
                         d="m 907.1983,372.14069 0.37417,41.72077 88.49293,0.56126 v -41.90786 z"
                         id="em2lanylepcso" />
                         <path
-                        style="fill:#ffffff;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+                        style="fill:{{$roomColors->where('id',210)->pluck('color')->join(',')}};stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
                         d="m 904.94934,364.60233 90.74186,0.42898 0.7484,-53.88156 -91.67735,-0.71625 z"
                         id="room210"
-                        sodipodi:nodetypes="ccccc" />
+                        sodipodi:nodetypes="ccccc" 
+                        data-info="{{ $users->where('room_id', 210)->pluck('user.name')->join(';') }}"/>
                         <path
-                        style="fill:#ffffff;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+                        style="fill:{{$roomColors->where('id',209)->pluck('color')->join(',')}};stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
                         d="m 904.70746,245.80103 -0.1777,62.00384 91.53564,-0.20979 v -61.92634 z"
                         id="room209"
-                        sodipodi:nodetypes="ccccc" />
+                        sodipodi:nodetypes="ccccc" 
+                        data-info="{{ $users->where('room_id', 209)->pluck('user.name')->join(';') }}"/>
                         <path
-                        style="fill:#ffffff;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+                        style="fill:{{$roomColors->where('id',208)->pluck('color')->join(',')}};stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
                         d="m 904.95323,189.72921 0.155,53.32029 90.77007,-0.74835 0.7484,-52.19774 z"
                         id="room208"
-                        sodipodi:nodetypes="ccccc" />
+                        sodipodi:nodetypes="ccccc" 
+                        data-info="{{ $users->where('room_id', 208)->pluck('user.name')->join(';') }}"/>
                         <path
-                        style="fill:#ffffff;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+                        style="fill:{{$roomColors->where('id',207)->pluck('color')->join(',')}};stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
                         d="m 904.95323,134.91224 0.18711,51.82355 91.67346,-0.37417 -0.1871,-52.01065 -91.48636,-0.37418 z"
-                        id="room207" />
+                        id="room207"
+                        data-info="{{ $users->where('room_id', 207)->pluck('user.name')->join(';') }}" />
                         <path
-                        style="fill:#ffffff;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+                        style="fill:{{$roomColors->where('id',206)->pluck('color')->join(',')}};stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
                         d="m 905.14034,68.49576 0.37418,62.6747 H 996.4396 V 68.68285 Z"
-                        id="room206" />
+                        id="room206" 
+                        data-info="{{ $users->where('room_id', 206)->pluck('user.name')->join(';') }}"/>
                         <path
-                        style="fill:#ffffff;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+                        style="fill:{{$roomColors->where('id',2052)->pluck('color')->join(',')}};stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
                         d="m 904.76614,2.45346 0.56129,63.23597 90.73797,-0.37418 V 3.20181 Z"
-                        id="room205B" />
+                        id="room205B" 
+                        data-info="{{ $users->where('room_id', 2052)->pluck('user.name')->join(';') }}"/>
                         <path
-                        style="fill:#ffffff;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+                        style="fill: {{$roomColors->where('id',2051)->pluck('color')->join(',')}};stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
                         d="m 758.64989,1.7051 91.11218,0.37418 -0.18709,63.42306 -90.73801,0.18709 z"
-                        id="room205A" />
+                        id="room205A" 
+                        data-info="{{ $users->where('room_id', 2051)->pluck('user.name')->join(';') }}"/>
                         <path
-                        style="fill:#ffffff;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+                        style="fill: {{$roomColors->where('id',204)->pluck('color')->join(',')}};stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
                         d="m 758.83697,68.68285 -0.74834,62.86179 h 91.67344 V 68.30867 Z"
-                        id="room204" />
+                        id="room204" 
+                        data-info="{{ $users->where('room_id', 204)->pluck('user.name')->join(';') }}"/>
                         <path
                         style="fill:#808080;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
                         d="m 758.27571,134.72515 -0.18708,51.82355 91.29927,0.18709 -0.37418,-52.01064 z"
@@ -464,7 +546,7 @@
                         class="fix-stroke"
                         sodipodi:role="line"
                         id="tspan11606-5-7"
-                        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Roboto;-inkscape-font-specification:Roboto;stroke:#ffffff;stroke-width:0.882398"
+                        style="fill:white;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Roboto;-inkscape-font-specification:Roboto;"
                         x="472.29047"
                         y="474.10614">Társalgó</tspan></text>
                     <text
@@ -476,7 +558,7 @@
                         class="fix-stroke"
                         sodipodi:role="line"
                         id="tspan11606-5-8"
-                        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Roboto;-inkscape-font-specification:Roboto;stroke:#ffffff;stroke-width:0.882398"
+                        style="fill:white;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Roboto;-inkscape-font-specification:Roboto;"
                         x="779.20709"
                         y="222.22284">Fürdő</tspan></text>
                     <text
@@ -488,7 +570,7 @@
                         class="fix-stroke"
                         sodipodi:role="line"
                         id="tspan11606-5-8-5"
-                        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Roboto;-inkscape-font-specification:Roboto;stroke:#ffffff;stroke-width:0.882398"
+                        style="fill:white;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Roboto;-inkscape-font-specification:Roboto;"
                         x="183.22842"
                         y="216.07962">Fürdő</tspan></text>
                     <text
@@ -548,7 +630,7 @@
                         class="fix-stroke"
                         sodipodi:role="line"
                         id="tspan11606-5-70"
-                        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Roboto;-inkscape-font-specification:Roboto;stroke:#ffffff;stroke-width:0.882398"
+                        style="fill:white;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Roboto;-inkscape-font-specification:Roboto;"
                         x="777.09045"
                         y="276.19785">WC</tspan></text>
                     <text
@@ -560,7 +642,7 @@
                         class="fix-stroke"
                         sodipodi:role="line"
                         id="tspan11606-5-70-5"
-                        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Roboto;-inkscape-font-specification:Roboto;stroke:#ffffff;stroke-width:0.882398"
+                        style="fill:white;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Roboto;-inkscape-font-specification:Roboto;"
                         x="925.80682"
                         y="398.43533">Lépcsők</tspan></text>
                     <text
@@ -572,7 +654,7 @@
                         class="fix-stroke"
                         sodipodi:role="line"
                         id="tspan11606-5-70-5-0"
-                        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Roboto;-inkscape-font-specification:Roboto;stroke:#ffffff;stroke-width:0.882398"
+                        style="fill:white;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Roboto;-inkscape-font-specification:Roboto;"
                         x="23.186848"
                         y="395.16049">Lépcsők</tspan></text>
                     <text
@@ -584,7 +666,7 @@
                         class="fix-stroke"
                         sodipodi:role="line"
                         id="tspan11606-5-70-7"
-                        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Roboto;-inkscape-font-specification:Roboto;stroke:#ffffff;stroke-width:0.882398"
+                        style="fill:white;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Roboto;-inkscape-font-specification:Roboto;"
                         x="199.79013"
                         y="275.66864">WC</tspan></text>
                     <text
@@ -596,7 +678,7 @@
                         class="fix-stroke"
                         sodipodi:role="line"
                         id="tspan11606-5-3"
-                        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Roboto;-inkscape-font-specification:Roboto;stroke:#ffffff;stroke-width:0.882398"
+                        style="fill:white;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Roboto;-inkscape-font-specification:Roboto"
                         x="783.96967"
                         y="166.66034">Konyha</tspan></text>
                     <text
@@ -608,7 +690,7 @@
                         class="fix-stroke"
                         sodipodi:role="line"
                         id="tspan11606-5-3-7"
-                        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Roboto;-inkscape-font-specification:Roboto;stroke:#ffffff;stroke-width:0.882398"
+                        style="fill:white;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Roboto;-inkscape-font-specification:Roboto"
                         x="169.0278"
                         y="154.31729">Konyha</tspan></text>
                     <text
@@ -725,6 +807,7 @@
                 <div class="row">
                     <form id="name", onsubmit="return false;" style="vertical-align: top">
                         <x-input.text l=9  id="nameInput" text="rooms.name" type="text" />
+                        {{-- <x-input.select l=9 id="nameInput" text="general.user" :elements="$users" :formatter="function($user) { return $user->user; }"/> --}}
                         <x-input.button l=3 class="right coli blue" text="rooms.search" />
                     </form>
                 </div>

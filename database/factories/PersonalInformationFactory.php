@@ -21,6 +21,7 @@ class PersonalInformationFactory extends Factory
             'zip_code' => $this->faker->postcode,
             'city' => $this->faker->city,
             'street_and_number' => $this->faker->streetAddress,
+            'room_id' => $this->faker->regexify('[2-3][0-2][0-9]'),
         ];
     }
 }
