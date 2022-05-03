@@ -14,6 +14,7 @@
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Dormitory\FaultController;
 use App\Http\Controllers\Dormitory\PrintController;
+use App\Http\Controllers\Dormitory\RoomAssignmentController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\Network\AdminCheckoutController;
@@ -144,6 +145,13 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::get('/faults/table', [FaultController::class, 'GetFaults'])->name('faults.table');
     Route::post('/faults/add', [FaultController::class, 'addFault'])->name('faults.add');
     Route::post('/faults/update', [FaultController::class, 'updateStatus'])->name('faults.update');
+
+    /** Rooms */
+    Route::get('/rooms', [RoomAssignmentController::class, 'index'])->name('rooms');
+    Route::get('/rooms/{room}', function(Request $request){
+        return view('dormitory.rooms.app');
+    });
+
 
     /** WIP: Secretariat */
     Route::get('/secretariat/users', [SecretariatController::class, 'list'])->name('secretariat.users');
