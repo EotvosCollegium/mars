@@ -35,6 +35,16 @@ class UserPolicy
         return $user->hasAnyRole([Role::NETWORK_ADMIN, Role::SECRETARY]) || $user->id == $target->id;
     }
 
+    /** Application related policies */
+    public function viewApplication(User $user, User $target)
+    {
+        return $user->hasAnyRole([Role::NETWORK_ADMIN, Role::SECRETARY])
+            || $user->id == $target->id
+            || $user->workshops()->pluck('id')
+                ->intersect($target->workshops()->pluck('id'))->count() > 0;
+                //has common workshop
+    }
+
     /** Permission related policies */
     public function viewPermissionFor(User $user, User $target)
     {

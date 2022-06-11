@@ -136,6 +136,8 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
         Route::get('/secretariat/registrations/accept/{id}', [RegistrationsController::class, 'accept'])->name('secretariat.registrations.accept');
         Route::get('/secretariat/registrations/reject/{id}', [RegistrationsController::class, 'reject'])->name('secretariat.registrations.reject');
     });
+    /** Application handling */
+    Route::get('/applications', [ApplicationController::class, 'showApplications'])->name('applications');
 
     /** Permission handling */
     Route::middleware(['can:permission.handle'])->group(function () {

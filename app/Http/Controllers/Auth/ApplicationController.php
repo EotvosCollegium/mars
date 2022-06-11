@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ApplicationForm;
 use App\Models\EducationalInformation;
 use App\Models\Faculty;
+use App\Models\User;
 use App\Models\Workshop;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -165,6 +166,21 @@ class ApplicationController extends Controller
                 break;
         }
         return redirect()->back()->with('message', __('general.successful_modification'));
+    }
+
+    public function showApplications(Request $request)
+    {
+        if($request->has('id'))
+        {
+            return view('auth.application.applications_details', [
+                'user' => User::withoutGlobalScope('verified')->with('application')->findOrFail($request->id)
+            ]);
+        } else {
+            return view('auth.application.applications', [
+                'applications' => ApplicationForm::where('status', ApplicationForm::STATUS_SUBMITTED)->with('user')->get()
+            ]);
+        }
+
     }
 
     public static function getApplicationDeadline() : Carbon

@@ -1,7 +1,8 @@
 {{-- All the application's data for finalization and for the admission committes to show --}}
+@can('viewApplication', $user)
 <div class="card">
     <div class="card-content">
-        <div class="row">
+        <div class="row" style="margin-bottom: 0">
             <div class="col s12 xl4">
                 @if ($user->profilePicture)
                     <img src="{{ url($user->profilePicture?->path) }}" style="max-width:300px">
@@ -10,6 +11,7 @@
                 @endif
             </div>
             <div class="col s12 xl8">
+                <span class="right">@include('auth.application.status', ['status' => $user->application->status])</span>
                 <div class="card-title">{{ $user->name }}</div>
                 <p style="margin-bottom: 5px"><a href="mailto:{{ $user->email }}">{{ $user->email }}</a></p>
                 <p style="margin-bottom: 5px">{{ $user->personalInformation->phone_number }}</p>
@@ -20,7 +22,7 @@
                 <p style="margin-bottom: 5px">
                     @forelse ($user->workshops as $workshop)
                         <span class="new badge {{ $workshop->color() }} scale-transition tag"
-                            style="float:none;padding:4px;margin:0 10px 0px 2px;" data-badge-caption="">
+                              style="float:none;padding:4px;margin:0 10px 0px 2px;" data-badge-caption="">
                             <nobr>@lang('role.'.$workshop->name) </nobr>
                         </span>
                     @empty
@@ -30,13 +32,13 @@
                 <p>
                     @if ($user->isResident())
                         <span class="new badge coli blue tag" style="float:none;padding:4px;margin:0 10px 0px 2px;"
-                            data-badge-caption="">
+                              data-badge-caption="">
                             @lang('role.resident')
                         </span>
                     @endif
                     @if ($user->isExtern())
                         <span class="new badge coli orange tag" style="float:none;padding:4px;margin:0 10px 0px 2px;"
-                            data-badge-caption="">
+                              data-badge-caption="">
                             @lang('role.extern')
                         </span>
                     @endif
@@ -44,8 +46,8 @@
                         <span style="font-style:italic;color:red">hiányzó státusz</span>
                     @endif
                 </p>
-
             </div>
+            @if($expanded ?? true)
             <div class="col s12">
                 <table>
                     <tbody>
@@ -215,7 +217,6 @@
                                         <div class="col" style="margin-top: 5px">
                                             <a href="{{ url($file->path) }}">{{ $file->name }}</a>
                                         </div>
-                                        </form>
                                     </div>
                                 @empty
                                     <span style="font-style:italic;color:red">hiányzó adat</span>
@@ -228,6 +229,8 @@
                     </tbody>
                 </table>
             </div>
+            @endif
         </div>
     </div>
 </div>
+@endcan

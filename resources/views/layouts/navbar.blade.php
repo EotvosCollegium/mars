@@ -51,7 +51,10 @@
         @can('document.any')
         <li><a class="waves-effect" href="{{ route('documents') }}"><i class="material-icons left">assignment</i>@lang('document.documents')</a></li>
         @endcan
-
+        <!-- applications page -->
+        @if(Auth::user()->isCollegist())
+            <li><a class="waves-effect" href="{{ route('applications') }}"><i class="material-icons left">person_search</i>Felvételi</a></li>
+        @endif
         <!-- collapsible modules -->
         <li class="no-padding">
             <ul class="collapsible collapsible-accordion">
