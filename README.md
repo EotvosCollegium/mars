@@ -1,5 +1,6 @@
-[![Build Status](https://travis-ci.com/luksan47/mars.svg?branch=uran-2.x)](https://travis-ci.com/luksan47/mars)
-[![StyleCI](https://github.styleci.io/repos/211704659/shield?branch=uran-2.x&style=plastic)](https://github.styleci.io/repos/211704659)
+[![Build Status](https://app.travis-ci.com/EotvosCollegium/mars.svg?branch=development)](https://app.travis-ci.com/EotvosCollegium/mars)
+[![DeepSource](https://deepsource.io/gh/EotvosCollegium/mars.svg/?label=active+issues&show_trend=true&token=s1njz51FCL5qKVRJ9_xmr-7j)](https://deepsource.io/gh/EotvosCollegium/mars/?ref=repository-badge)
+[![DeepSource](https://deepsource.io/gh/EotvosCollegium/mars.svg/?label=resolved+issues&show_trend=true&token=s1njz51FCL5qKVRJ9_xmr-7j)](https://deepsource.io/gh/EotvosCollegium/mars/?ref=repository-badge)
 
 # Mars
 
