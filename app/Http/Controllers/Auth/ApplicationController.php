@@ -102,7 +102,7 @@ class ApplicationController extends Controller
                 ]);
                 $user->faculties()->sync($request->faculty);
                 break;
-            case self::EDUCATIONAL_ROUTE:
+            case self::QUESTIONS_ROUTE:
                 $request->validate([
                     'status' => 'nullable|in:extern,resident',
                     'workshop' => 'array',
@@ -169,11 +169,11 @@ class ApplicationController extends Controller
 
     public static function getApplicationDeadline() : Carbon
     {
-        return Carbon::parse(config('app.application_deadline'));
+        return Carbon::parse(config('custom.application_deadline'));
     }
 
     public static function isDeadlineExtended() : bool
     {
-        return config('app.application_extended');
+        return config('custom.application_extended');
     }
 };

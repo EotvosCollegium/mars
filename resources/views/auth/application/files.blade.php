@@ -55,8 +55,8 @@
                     <li style="list-style-type: circle !important">Hagyományos önéletrajz</li>
                     <li style="list-style-type: circle !important">Felvételi határozat (Neptun: Tanulmányok - Hivatalos
                         bejegyzések menüpont alatt letölthető)</li>
-                    <li style="list-style-type: circle !important">Érettségi bizonyítvány másolata</li>
-                    <li style="list-style-type: circle !important">Opcionális: oklevelek, igazolások, ajánlások</li>
+                    <li style="list-style-type: circle !important">Érettségi bizonyítvány másolata vagy lezárt egyetemi félévek esetén az eddigi tanulmányok eredményei</li>
+                    <li style="list-style-type: circle !important">Opcionális: oklevelek, igazolások, szaktanári ajánlások</li>
                 </ul>
             </blockquote>
 
