@@ -14,6 +14,6 @@ class Radio extends Input
      */
     public function render()
     {
-        return view('components.input.checkbox');
+        return view('components.input.radio');
     }
 }

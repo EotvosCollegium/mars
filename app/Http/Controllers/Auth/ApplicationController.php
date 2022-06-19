@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ApplicationForm;
 use App\Models\EducationalInformation;
 use App\Models\Faculty;
+use App\Models\Role;
 use App\Models\User;
 use App\Models\Workshop;
 use Carbon\Carbon;
@@ -80,7 +81,6 @@ class ApplicationController extends Controller
                     'faculty' => 'required|array',
                     'faculty.*' => 'exists:faculties,id',
                     'educational_email' => 'required|string|email|max:255',
-                    'high_school_address' => 'required|string',
                     'programs' => 'required|array',
                     'programs.*' => 'nullable|string'
                 ]);
@@ -93,7 +93,6 @@ class ApplicationController extends Controller
                     'program' => $request->programs,
                 ]);
                 ApplicationForm::updateOrCreate(['user_id' => $user->id],[
-                    'high_school_address' => $request->high_school_address,
                     'graduation_average' => $request->graduation_average,
                     'semester_average' => $request->semester_average,
                     'language_exam' => $request->language_exam,
@@ -172,14 +171,61 @@ class ApplicationController extends Controller
     {
         if($request->has('id'))
         {
+            // return one application in detail
+            $user = User::withoutGlobalScope('verified')->with('application')->findOrFail($request->id);
+            $this->authorize('viewApplication', $user);
             return view('auth.application.applications_details', [
-                'user' => User::withoutGlobalScope('verified')->with('application')->findOrFail($request->id)
+                'user' => $user,
+                'admin' => auth()->user()->hasAnyRole([Role::NETWORK_ADMIN, Role::SECRETARY])
             ]);
         } else {
+            //return all applications that can be visible
+            if(auth()->user()->hasAnyRole([Role::NETWORK_ADMIN, Role::SECRETARY]))
+            {
+                $admin = true;
+                $workshops = Workshop::all();
+                $applications = ApplicationForm::select('*');
+                if ($request->has('workshop') && $request->workshop !== "null") {
+                    //filter by workshop
+                    $applications->join('workshop_users', 'application_forms.user_id', '=', 'workshop_users.user_id')
+                        ->where('workshop_id', $request->workshop);
+                }
+                if ($request->has('status')) {
+                    $applications->where('status', $request->status);
+                }
+            } else {
+                $admin = false;
+                $workshops = auth()->user()->workshops;
+                $applications = ApplicationForm::where('status', ApplicationForm::STATUS_SUBMITTED);
+                if ($request->has('workshop') && $request->workshop !== "null") {
+                    // filter by selected workshop
+                    $applications->join('workshop_users', 'application_forms.user_id', '=', 'workshop_users.user_id')
+                        ->where('workshop_id', $request->workshop);
+                } else {
+                    // filter by user's workshops
+                    $applications->join('workshop_users', 'application_forms.user_id', '=', 'workshop_users.user_id')
+                        ->whereIn('workshop_id', $workshops->pluck('id'));
+                }
+            }
+
             return view('auth.application.applications', [
-                'applications' => ApplicationForm::where('status', ApplicationForm::STATUS_SUBMITTED)->with('user')->get()
+                'applications' => $applications->with('user')->get(),
+                'workshop' => $request->workshop,
+                'workshops' => $workshops,
+                'status' => $request->status,
+                'admin' => $admin
             ]);
         }
+    }
+
+    public function editApplication(Request $request)
+    {
+        $application = ApplicationForm::findOrFail($request->application);
+        if($request->has('note'))
+        {
+            $application->update(['note' => $request->note]);
+        }
+        return redirect()->back();
 
     }
 

@@ -3,16 +3,18 @@
 namespace App\Models;
 
 use App\Utils\DataCompresser;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class ApplicationForm extends Model
 {
+    use HasFactory;
+
     protected $table = 'application_forms';
 
     protected $fillable = [
         'user_id',
         'status',
-        'high_school_address',
         'graduation_average',
         'semester_average',
         'language_exam',
@@ -23,6 +25,7 @@ class ApplicationForm extends Model
         'question_2',
         'question_3',
         'question_4',
+        'note'
     ];
 
     public const STATUS_IN_PROGRESS = 'in_progress';
@@ -30,8 +33,8 @@ class ApplicationForm extends Model
     public const STATUS_BANISHED = 'banished';
 
     public const STATUSES = [
-        self::STATUS_IN_PROGRESS,
         self::STATUS_SUBMITTED,
+        self::STATUS_IN_PROGRESS,
         self::STATUS_BANISHED,
     ];
 
@@ -155,10 +158,6 @@ class ApplicationForm extends Model
             return false;
         }
         if (! isset($educationalInformation->program)) {
-            return false;
-        }
-
-        if (! isset($this->high_school_address)) {
             return false;
         }
         if (! isset($this->graduation_average)) {

@@ -6,7 +6,11 @@
         <i class="green-text">Véglegesítve</i>
         @break
     @case(App\Models\ApplicationForm::STATUS_BANISHED)
-        <i class="green-text">Véglegesítve</i>
+        @if($admin ?? false)
+            <i class="red-text">Elutasítva</i>
+        @else
+            <i class="green-text">Véglegesítve</i>
+        @endif
         @break
     @default
         <i>Ismeretlen</i>

@@ -11,7 +11,7 @@
                 @endif
             </div>
             <div class="col s12 xl8">
-                <span class="right">@include('auth.application.status', ['status' => $user->application->status])</span>
+                <span class="right">@include('auth.application.status', ['status' => $user->application->status, 'admin' => $admin ?? false])</span>
                 <div class="card-title">{{ $user->name }}</div>
                 <p style="margin-bottom: 5px"><a href="mailto:{{ $user->email }}">{{ $user->email }}</a></p>
                 <p style="margin-bottom: 5px">{{ $user->personalInformation->phone_number }}</p>
@@ -78,8 +78,7 @@
                             <th scope="row">@lang('user.high_school')</th>
                             <td>
                                 {{ $user->educationalInformation?->high_school }}<br>
-                                <small>{{ $user->application?->high_school_address }}</small>
-                                @if(!isset($user->educationalInformation?->high_school) || !isset($user->application?->high_school_address)) <span style="font-style:italic;color:red">hiányzó adat</span> @endif
+                                @if(!isset($user->educationalInformation?->high_school)) <span style="font-style:italic;color:red">hiányzó adat</span> @endif
                             </td>
                         </tr>
                         <tr>

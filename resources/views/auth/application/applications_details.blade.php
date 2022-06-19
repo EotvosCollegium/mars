@@ -6,12 +6,20 @@
 @endsection
 
 @section('content')
-    @include('auth.application.application', ['user' => $user, 'expanded' => true])
+    @include('auth.application.application', ['user' => $user, 'expanded' => true, 'admin' => $admin ?? false])
     <div class="card">
-        <div class="card-content">
-            <div class="row">
-                <x-input.textarea id="note" text="Megjegyzés" helper="A megjegyzéseket a felvételiző nem látja."/>
+        <form method="POST" route="{{route('applications.edit')}}">
+            <div class="card-content">
+                <div class="row">
+                    @csrf
+                    <input type="hidden" name="application" value="{{$user->application->id}}"/>
+                    <x-input.textarea id="note"
+                                      text="Megjegyzés"
+                                      helper="A megjegyzéseket a felvételiző nem látja, de azok láthatóak a többi felvételiztető számára (akár más műhelyekből is)."
+                                      :value="$user->application->note"/>
+                </div>
+                <x-input.button floating class="right" icon="save"/>
             </div>
-        </div>
+        </form>
     </div>
 @endsection

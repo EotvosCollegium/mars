@@ -138,6 +138,7 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     });
     /** Application handling */
     Route::get('/applications', [ApplicationController::class, 'showApplications'])->name('applications');
+    Route::post('/applications', [ApplicationController::class, 'editApplication'])->name('applications.edit');
 
     /** Permission handling */
     Route::middleware(['can:permission.handle'])->group(function () {

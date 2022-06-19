@@ -17,7 +17,6 @@ class CreateApplicationsTable extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained();
             $table->string('status')->default('in_progress');
-            $table->text('high_school_address')->nullable();
             $table->string('graduation_average')->nullable();
             $table->text('semester_average')->nullable();
             $table->text('language_exam')->nullable();
@@ -28,6 +27,7 @@ class CreateApplicationsTable extends Migration
             $table->text('question_2')->nullable();
             $table->text('question_3')->nullable();
             $table->text('question_4')->nullable();
+            $table->text('note')->nullable();
             $table->timestamps();
         });
     }

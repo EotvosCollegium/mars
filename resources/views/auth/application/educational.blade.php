@@ -13,8 +13,6 @@
                         :value="$user->educationalInformation?->high_school" required />
                     <x-input.text s=12 m=6 id='year_of_graduation' locale='user' type='number' min="1895" :max="date('Y')"
                         :value="$user->educationalInformation?->year_of_graduation" required />
-                    <x-input.text s=12 m=12 id='high_school_address' locale='application' text="Középiskola címe"
-                        :value="$user->application?->high_school_address" required />
 
                     <x-input.text s=6 id='neptun' locale='user' :value="$user->educationalInformation?->neptun" required />
                     <x-input.text s=6 id='educational_email' locale='user' :value="$user->educationalInformation?->email"
