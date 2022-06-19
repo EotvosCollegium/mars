@@ -44,6 +44,10 @@ class UserPolicy
                 ->intersect($target->workshops()->pluck('id'))->count() > 0;
                 //has common workshop
     }
+    public function viewAnyApplication(User $user)
+    {
+        return $user->hasAnyRole([Role::NETWORK_ADMIN, Role::SECRETARY, Role::COLLEGIST]);
+    }
 
     /** Permission related policies */
     public function viewPermissionFor(User $user, User $target)

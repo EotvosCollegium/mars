@@ -52,11 +52,16 @@
             <blockquote>
                 A pályázatnak az alábbiakat kell tartalmaznia:
                 <ul style="margin-left:20px;margin-top:0">
-                    <li style="list-style-type: circle !important">Hagyományos önéletrajz</li>
-                    <li style="list-style-type: circle !important">Felvételi határozat (Neptun: Tanulmányok - Hivatalos
-                        bejegyzések menüpont alatt letölthető)</li>
-                    <li style="list-style-type: circle !important">Érettségi bizonyítvány másolata vagy lezárt egyetemi félévek esetén az eddigi tanulmányok eredményei</li>
-                    <li style="list-style-type: circle !important">Opcionális: oklevelek, igazolások, szaktanári ajánlások</li>
+                    <li style="list-style-type: circle !important">Önéletrajz (hagyományos, leíró jellegű)</li>
+                    <li style="list-style-type: circle !important">Elsőéves egyetemistaként:<br/>
+                        Szakfelvételi engedély/felvételi határozat (Neptun: Tanulmányok - Hivatalos
+                        bejegyzések menüpont alatt letölthető)<br/>
+                            Érettségi bizonyítvány másolata
+                    </li>
+                    <li style="list-style-type: circle !important">Lezárt egyetemi félévek esetén:<br/>
+                        Diploma másolata vagy leckekönyv/törzslap kivonat az eddigi eredményekről
+                    </li>
+                    <li style="list-style-type: circle !important">Opcionális: oklevelek, igazolások, szaktanári ajánlás</li>
                 </ul>
             </blockquote>
 

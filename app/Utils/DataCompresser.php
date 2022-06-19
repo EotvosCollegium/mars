@@ -4,7 +4,7 @@ namespace App\Utils;
 
 class DataCompresser
 {
-    const DELIMETER = '|';
+    private const DELIMETER = '|';
 
     /**
      * Compress an array to a delimeter separated string.

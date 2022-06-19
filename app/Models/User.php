@@ -11,6 +11,13 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
 use InvalidArgumentException;
 
+/**
+ * @property int $id
+ * @property string $name
+ * @property string $password
+ * @property string $remember_token
+ * @property bool $verified
+ */
 class User extends Authenticatable implements HasLocalePreference
 {
     use NotificationCounter;
