@@ -34,7 +34,7 @@ class EducationalInformation extends Model
         return $this->belongsTo('App\Models\User');
     }
 
-    public function getProgramAttribute($value) : string|null
+    public function getProgramAttribute($value) : ?string
     {
         return DataCompresser::decompressData($value);
     }
