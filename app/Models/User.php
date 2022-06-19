@@ -10,6 +10,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
 use InvalidArgumentException;
+use Ramsey\Collection\Collection;
 
 /**
  * @property int $id
@@ -17,6 +18,9 @@ use InvalidArgumentException;
  * @property string $password
  * @property string $remember_token
  * @property bool $verified
+ * @property Collection $workshops
+ * @property Collection $faculties
+ * @property EducationalInformation $educationalInformation
  */
 class User extends Authenticatable implements HasLocalePreference
 {

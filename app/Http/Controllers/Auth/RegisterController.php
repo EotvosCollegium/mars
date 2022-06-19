@@ -127,7 +127,6 @@ class RegisterController extends Controller
             'street_and_number' => $data['street_and_number'],
         ]);
 
-        //TODO change collegist and tenant role into role group
         $user->roles()->attach(Role::getId(Role::PRINTER));
         $user->roles()->attach(Role::getId(Role::INTERNET_USER));
         $user->roles()->attach(Role::getId($data['user_type']));

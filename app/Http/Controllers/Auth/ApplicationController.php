@@ -42,13 +42,18 @@ class ApplicationController extends Controller
             'countries' => require base_path('countries.php'),
             'user' => $request->user()
         ];
-        return match ($request->input('page')) {
-            self::EDUCATIONAL_ROUTE => view('auth.application.educational', $data),
-            self::QUESTIONS_ROUTE => view('auth.application.questions', $data),
-            self::FILES_ROUTE => view('auth.application.files', $data),
-            self::SUBMIT_ROUTE => view('auth.application.submit', $data),
-            default => view('auth.application.personal', $data),
-        };
+        switch ($request->input('page')) {
+            case (self::EDUCATIONAL_ROUTE):
+                return view('auth.application.educational', $data);
+            case (self::QUESTIONS_ROUTE):
+                return view('auth.application.questions', $data);
+            case (self::FILES_ROUTE):
+                return view('auth.application.files', $data);
+            case (self::SUBMIT_ROUTE):
+                return view('auth.application.submit', $data);
+            default:
+                return view('auth.application.personal', $data);
+        }
     }
 
     /**

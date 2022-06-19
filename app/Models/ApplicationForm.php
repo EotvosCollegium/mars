@@ -49,12 +49,12 @@ class ApplicationForm extends Model
     |--------------------------------------------------------------------------
     */
 
-    public function user()
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo('App\Models\User')->withoutGlobalScope('verified');
     }
 
-    public function files()
+    public function files(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany('App\Models\File');
     }
@@ -65,7 +65,7 @@ class ApplicationForm extends Model
     |--------------------------------------------------------------------------
     */
 
-    public function getSemesterAverageAttribute($value)
+    public function getSemesterAverageAttribute($value): ?string
     {
         return DataCompresser::decompressData($value);
     }
@@ -75,7 +75,7 @@ class ApplicationForm extends Model
         $this->attributes['semester_average'] = DataCompresser::compressData($value);
     }
 
-    public function getLanguageExamAttribute($value)
+    public function getLanguageExamAttribute($value): ?string
     {
         return DataCompresser::decompressData($value);
     }
@@ -85,7 +85,7 @@ class ApplicationForm extends Model
         $this->attributes['language_exam'] = DataCompresser::compressData($value);
     }
 
-    public function getCompetitionAttribute($value)
+    public function getCompetitionAttribute($value): ?string
     {
         return DataCompresser::decompressData($value);
     }
@@ -95,7 +95,7 @@ class ApplicationForm extends Model
         $this->attributes['competition'] = DataCompresser::compressData($value);
     }
 
-    public function getPublicationAttribute($value)
+    public function getPublicationAttribute($value): ?string
     {
         return DataCompresser::decompressData($value);
     }
@@ -105,7 +105,7 @@ class ApplicationForm extends Model
         $this->attributes['publication'] = DataCompresser::compressData($value);
     }
 
-    public function getForeignStudiesAttribute($value)
+    public function getForeignStudiesAttribute($value): ?string
     {
         return DataCompresser::decompressData($value);
     }

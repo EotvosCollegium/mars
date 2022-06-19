@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * @attribute string|null $program
- * @attribute string $programs
+ * @property string|null $program
+ * @property string $programs
  *
  */
 class EducationalInformation extends Model
