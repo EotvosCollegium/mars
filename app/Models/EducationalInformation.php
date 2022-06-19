@@ -6,6 +6,11 @@ use App\Utils\DataCompresser;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @attribute string|null $program
+ * @attribute string $programs
+ *
+ */
 class EducationalInformation extends Model
 {
     use HasFactory;
@@ -29,7 +34,7 @@ class EducationalInformation extends Model
         return $this->belongsTo('App\Models\User');
     }
 
-    public function getProgramAttribute($value)
+    public function getProgramAttribute($value) : string|null
     {
         return DataCompresser::decompressData($value);
     }

@@ -13,6 +13,11 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Request;
 use Tests\TestCase;
 
+/**
+ * Test registration functions.
+ *
+ * @return void
+ */
 class RegistrationTest extends TestCase
 {
     use RefreshDatabase;
@@ -25,7 +30,7 @@ class RegistrationTest extends TestCase
     public function test_register_collegist()
     {
         $controller = new RegisterController();
-        $user_data = User::factory()->make()->only('name', 'email');
+        $user_data = User::factory()->make()->only(['name', 'email']);
         $personal_info_data = PersonalInformation::factory()->make()->toArray();
         $controller->create(array_merge([
             'password' => 'secret',
@@ -70,7 +75,7 @@ class RegistrationTest extends TestCase
     {
         $controller = new RegisterController();
 
-        $user_data = User::factory()->make()->only('name', 'email');
+        $user_data = User::factory()->make()->only(['name', 'email']);
         $personal_info_data = PersonalInformation::factory()->make()->toArray();
         $controller->create(array_merge([
             'password' => 'secret',

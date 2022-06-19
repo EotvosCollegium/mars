@@ -5,7 +5,12 @@ namespace App\Models;
 use App\Utils\DataCompresser;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
+/**
+ * @property User $user
+ * @property Collection $files
+ */
 class ApplicationForm extends Model
 {
     use HasFactory;
@@ -116,29 +121,30 @@ class ApplicationForm extends Model
     |--------------------------------------------------------------------------
     */
 
-    public function isReadyToSubmit()
+    public function isReadyToSubmit(): bool
     {
-        $educationalInformation = $this->user->educationalInformation;
+        $user = $this->user;
+        $educationalInformation = $user->educationalInformation;
 
         if (! isset($educationalInformation)) {
             return false;
         }
 
-        if (! isset($this->user->profilePicture)) {
+        if (! isset($user->profilePicture)) {
             return false;
         }
         if (count($this->files) < 2) {
             return false;
         }
 
-        if ($this->user->workshops->count() == 0) {
+        if ($user->workshops->count() == 0) {
             return false;
         }
-        if ($this->user->faculties->count() == 0) {
+        if ($user->faculties->count() == 0) {
             return false;
         }
 
-        if (! $this->user->isResident() && ! $this->user->isExtern()) {
+        if (!$user->isResident() && !$user->isExtern()) {
             return false;
         }
 

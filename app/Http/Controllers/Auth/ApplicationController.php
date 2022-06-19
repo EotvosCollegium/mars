@@ -103,7 +103,7 @@ class ApplicationController extends Controller
         if($request->has('id'))
         {
             // return one application in detail
-            $user = (new User)->withoutGlobalScope('verified')
+            $user = User::withoutGlobalScope('verified')
                 ->with('application')->findOrFail($request->input('id'));
             $this->authorize('viewApplication', $user);
             return view('auth.application.applications_details', [
@@ -116,7 +116,7 @@ class ApplicationController extends Controller
             if($authUser->hasAnyRole([Role::NETWORK_ADMIN, Role::SECRETARY]))
             {
                 $workshops = Workshop::all();
-                $applications = (new ApplicationForm)->select('*');
+                $applications = ApplicationForm::select('*');
                 if ($request->has('workshop') && $request->input('workshop') !== "null") {
                     //filter by workshop
                     $applications->join('workshop_users', 'application_forms.user_id', '=', 'workshop_users.user_id')
@@ -127,7 +127,7 @@ class ApplicationController extends Controller
                 }
             } else {
                 $workshops = $authUser->workshops;
-                $applications = (new ApplicationForm)->where('status', ApplicationForm::STATUS_SUBMITTED);
+                $applications = ApplicationForm::where('status', ApplicationForm::STATUS_SUBMITTED);
                 if ($request->has('workshop') && $request->input('workshop') !== "null") {
                     // filter by selected workshop
                     $applications->join('workshop_users', 'application_forms.user_id', '=', 'workshop_users.user_id')
@@ -158,7 +158,7 @@ class ApplicationController extends Controller
     public function editApplication(Request $request): RedirectResponse
     {
         $this->authorize('viewAnyApplication');
-        $application = (new ApplicationForm)->findOrFail($request->input('application'));
+        $application = ApplicationForm::findOrFail($request->input('application'));
         if($request->has('note'))
         {
             $application->update(['note' => $request->input('note')]);
@@ -222,7 +222,7 @@ class ApplicationController extends Controller
             'programs' => 'required|array',
             'programs.*' => 'nullable|string'
         ]);
-        (new EducationalInformation)->updateOrCreate(['user_id' => $user->id], [
+        EducationalInformation::updateOrCreate(['user_id' => $user->id], [
             'year_of_graduation' => $request->input('year_of_graduation'),
             'high_school' => $request->input('high_school'),
             'neptun' => $request->input('neptun'),
@@ -230,7 +230,7 @@ class ApplicationController extends Controller
             'email' => $request->input('educational_email'),
             'program' => $request->input('programs'),
         ]);
-        (new ApplicationForm)->updateOrCreate(['user_id' => $user->id], [
+        ApplicationForm::updateOrCreate(['user_id' => $user->id], [
             'graduation_average' => $request->input('graduation_average'),
             'semester_average' => $request->input('semester_average'),
             'language_exam' => $request->input('language_exam'),
@@ -259,7 +259,7 @@ class ApplicationController extends Controller
             $user->setExtern();
         }
         $user->workshops()->sync($request->input('workshop'));
-        (new ApplicationForm)->updateOrCreate(['user_id' => $user->id], [
+        ApplicationForm::updateOrCreate(['user_id' => $user->id], [
             'question_1' => $request->input('question_1'),
             'question_2' => $request->input('question_2'),
             'question_3' => $request->input('question_3'),
