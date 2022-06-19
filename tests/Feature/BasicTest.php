@@ -32,6 +32,7 @@ class BasicTest extends TestCase
         'register/guest',
         'secretariat/user/update_password',
         'secretariat/user/update',
+        'application'
     ];
 
     /**
