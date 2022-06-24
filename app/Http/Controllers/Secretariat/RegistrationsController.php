@@ -92,6 +92,21 @@ class RegistrationsController extends Controller
         return redirect()->route('secretariat.registrations')->with('message', __('general.successful_modification'));
     }
 
+    public function invite(Request $request)
+    {
+        $user=new User();
+        $user->name=$request->name;
+        $user->email=$request->email;
+        $user->password=\Hash::make(\Str::random(32));
+        try {
+            $user->save();
+            \Invytr::invite($user);
+            return redirect()->back()->with('message', __('registration.successfully_invited'));
+        } catch (\Illuminate\Database\QueryException $e) {
+            return redirect()->back()->with('error', __('registration.used_email'));
+        }
+    }
+
     public function show(Request $request)
     {
         $user = User::withoutGlobalScope('verified')->findOrFail($request->id);
