@@ -34,6 +34,9 @@ class ApplicationController extends Controller
      */
     public function showApplicationForm(Request $request): View
     {
+        if(!$request->user()->application) {
+            $request->user()->application()->create();
+        }
         $data = [
             'workshops' => Workshop::all(),
             'faculties' => Faculty::all(),
