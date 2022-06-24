@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\ApplicationForm;
 use App\Models\User;
 use App\Models\PrintAccount;
 use App\Models\PersonalInformation;
@@ -46,6 +47,9 @@ class UserFactory extends Factory
         })->afterCreating(function (User $user) {
             $user->printAccount()->save(PrintAccount::factory()->make(['user_id' => $user->id]));
             $user->personalInformation()->save(PersonalInformation::factory()->make(['user_id' => $user->id]));
+            if(!$user->verified) {
+                $user->application()->create(['status' => $this->faker->randomElement(ApplicationForm::STATUSES)]);
+            }
         });
     }
 }

@@ -58,8 +58,11 @@ class HomeController extends Controller
         abort(403);
     }
 
-    public function verification()
+    public function verification(Request $request)
     {
+        if($request->user()->isCollegist()) {
+            return redirect('application');
+        }
         return view('auth.verification');
     }
 

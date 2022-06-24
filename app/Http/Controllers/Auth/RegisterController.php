@@ -4,13 +4,10 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Mail\NewRegistration;
-use App\Models\EducationalInformation;
-use App\Models\Faculty;
 use App\Models\PersonalInformation;
 use App\Models\Role;
-use App\Models\Semester;
 use App\Models\User;
-use App\Models\Workshop;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -52,8 +49,6 @@ class RegisterController extends Controller
     {
         return view('auth.register', [
             'user_type' => Role::COLLEGIST,
-            'faculties' => Faculty::all(),
-            'workshops' => Workshop::all(),
             'countries' => require base_path('countries.php'),
         ]);
     }
@@ -62,11 +57,27 @@ class RegisterController extends Controller
     {
         return view('auth.register', [
             'user_type' => Role::TENANT,
-            'faculties' => Faculty::all(),
-            'workshops' => Workshop::all(),
             'countries' => require base_path('countries.php'),
         ]);
     }
+
+    public const USER_RULES = [
+        'name' => 'required|string|max:255',
+        'email' => 'required|string|email|max:255|unique:users',
+        'password' => 'required|string|min:8|confirmed',
+    ];
+
+    public const PERSONAL_INFORMATION_RULES = [
+        'place_of_birth' => 'required|string|max:255',
+        'date_of_birth' => 'required|date_format:Y-m-d',
+        'mothers_name' => 'required|string|max:255',
+        'phone_number' => 'required|string|min:8|max:18',
+        'country' => 'required|string|max:255',
+        'county' => 'required|string|max:255',
+        'zip_code' => 'required|string|max:31',
+        'city' => 'required|string|max:255',
+        'street_and_number' => 'required|string|max:255',
+    ];
 
     /**
      * Get a validator for an incoming registration request.
@@ -77,38 +88,13 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         //TODO sync with Secretartiat/UserController
-        $common = [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-            'place_of_birth' => 'required|string|max:255',
-            'date_of_birth' => 'required|date_format:Y-m-d',
-            'mothers_name' => 'required|string|max:255',
-            'phone_number' => 'required|string|min:8|max:18',
-            'country' => 'required|string|max:255',
-            'county' => 'required|string|max:255',
-            'zip_code' => 'required|string|max:31',
-            'city' => 'required|string|max:255',
-            'street_and_number' => 'required|string|max:255',
-            'user_type' => 'required|exists:roles,name',
-        ];
-        $informationOfStudies = [
-            'year_of_graduation' => 'required|integer|between:1895,'.date('Y'),
-            'high_school' => 'required|string|max:255',
-            'neptun' => 'required|string|size:6',
-            'year_of_acceptance' => 'required|integer|between:1895,'.date('Y'),
-            'faculty' => 'required|array|exists:faculties,id',
-            'workshop' => 'required|array|exists:workshops,id',
-            'collegist_status' => 'required|integer|between:1,2',
-            'educational_email' => 'required|string|email|max:255|unique:educational_information,email',
-        ];
+        $common = self::USER_RULES + self::PERSONAL_INFORMATION_RULES + ['user_type' => 'required|exists:roles,name'];
+
         switch ($data['user_type']) {
             case Role::TENANT:
                 return Validator::make($data, $common + ['tenant_until'=>'required|date_format:Y-m-d']);
             case Role::COLLEGIST:
-                $data['educational_email'] = $data['educational_email'].'@student.elte.hu';
-
-                return Validator::make($data, array_merge($common, $informationOfStudies));
+                return Validator::make($data, $common);
             default:
                 throw new AuthorizationException();
         }
@@ -120,7 +106,7 @@ class RegisterController extends Controller
      * @param  array  $data
      * @return \App\Models\User
      */
-    protected function create(array $data)
+    public function create(array $data)
     {
         $user = User::create([
             'name' => $data['name'],
@@ -141,51 +127,28 @@ class RegisterController extends Controller
             'street_and_number' => $data['street_and_number'],
         ]);
 
-        //TODO change collegist and tenant role into role group
-        switch ($data['user_type']) {
-            case Role::TENANT:
-                $user->roles()->attach(Role::getId(Role::TENANT));
-                $user->roles()->attach(Role::getId(Role::PRINTER));
-                $user->roles()->attach(Role::getId(Role::INTERNET_USER));
-                break;
-            case Role::COLLEGIST:
-                $user->roles()->attach(Role::getId(Role::COLLEGIST), ['object_id' => $data['collegist_status']]);
-                $user->roles()->attach(Role::getId(Role::PRINTER));
-                $user->roles()->attach(Role::getId(Role::INTERNET_USER));
-                EducationalInformation::create([
-                    'user_id' => $user->id,
-                    'year_of_graduation' => $data['year_of_graduation'],
-                    'high_school' => $data['high_school'],
-                    'neptun' => $data['neptun'],
-                    'year_of_acceptance' => $data['year_of_acceptance'],
-                    'email' => $data['educational_email'].'@student.elte.hu',
-                ]);
-                foreach ($data['faculty'] as $key => $faculty) {
-                    $user->faculties()->attach($faculty);
-                }
-                foreach ($data['workshop'] as $key => $workshop) {
-                    $user->workshops()->attach($workshop);
-                }
-                $user->setStatus(Semester::ACTIVE, 'Activated through registration');
-                break;
-            default:
-                throw new AuthorizationException();
-        }
-        $user->internetAccess->setWifiUsername();
+        $user->roles()->attach(Role::getId(Role::PRINTER));
+        $user->roles()->attach(Role::getId(Role::INTERNET_USER));
+        $user->roles()->attach(Role::getId($data['user_type']));
 
-        // Send confirmation mail.
-        Mail::to($user)->queue(new \App\Mail\Confirmation($user->name));
-        // Send notification about new tenant to the staff and network admins.
-        if (! $user->isCollegist()) {
-            $users_to_notify = User::whereHas('roles', function ($q) {
-                $q->whereIn('role_id', [
-                    Role::getId(Role::NETWORK_ADMIN),
-                    Role::getId(Role::STAFF),
-                ]);
-            })->get();
-            foreach ($users_to_notify as $person) {
-                Mail::to($person)->send(new NewRegistration($person->name, $user));
+        if ($data['user_type'] == Role::TENANT) {
+            $user->internetAccess->setWifiUsername();
+            // Send confirmation mail.
+            Mail::to($user)->queue(new \App\Mail\Confirmation($user->name));
+            // Send notification about new tenant to the staff and network admins.
+            if (! $user->isCollegist()) {
+                $users_to_notify = User::whereHas('roles', function ($q) {
+                    $q->whereIn('role_id', [
+                        Role::getId(Role::NETWORK_ADMIN),
+                        Role::getId(Role::STAFF),
+                    ]);
+                })->get();
+                foreach ($users_to_notify as $person) {
+                    Mail::to($person)->send(new NewRegistration($person->name, $user));
+                }
             }
+        } else {
+            $user->application()->create();
         }
 
         return $user;

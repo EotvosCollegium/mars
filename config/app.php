@@ -108,6 +108,7 @@ return [
 
     'locale_cookie_lifespan' => 9600,
 
+
     /*
     |--------------------------------------------------------------------------
     | Application Fallback Locale
