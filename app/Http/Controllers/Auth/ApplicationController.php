@@ -117,7 +117,7 @@ class ApplicationController extends Controller
             ]);
         } else {
             //return all applications that can be visible
-            $this->authorize('viewAnyApplication');
+            //$this->authorize('viewAnyApplication');
             if($authUser->hasAnyRole([Role::NETWORK_ADMIN, Role::SECRETARY]))
             {
                 $workshops = Workshop::all();
@@ -162,7 +162,7 @@ class ApplicationController extends Controller
      */
     public function editApplication(Request $request): RedirectResponse
     {
-        $this->authorize('viewAnyApplication');
+        //$this->authorize('viewAnyApplication');
         $application = ApplicationForm::findOrFail($request->input('application'));
         if($request->has('note'))
         {

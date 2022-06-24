@@ -63,10 +63,11 @@ class UserPolicy
      */
     public function viewApplication(User $user, User $target): bool
     {
-        return $user->hasAnyRole([Role::NETWORK_ADMIN, Role::SECRETARY])
+        return (isset($target->application))
+            && ($user->hasAnyRole([Role::NETWORK_ADMIN, Role::SECRETARY])
             || $user->id == $target->id
             || $user->workshops()->pluck('id')
-                ->intersect($target->workshops()->pluck('id'))->count() > 0;
+                ->intersect($target->workshops()->pluck('id'))->count() > 0);
                 //has common workshop
     }
 

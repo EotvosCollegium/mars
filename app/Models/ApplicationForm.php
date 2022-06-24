@@ -65,7 +65,7 @@ class ApplicationForm extends Model
     |--------------------------------------------------------------------------
     */
 
-    public function getSemesterAverageAttribute($value): ?string
+    public function getSemesterAverageAttribute($value)
     {
         return DataCompresser::decompressData($value);
     }
@@ -75,7 +75,7 @@ class ApplicationForm extends Model
         $this->attributes['semester_average'] = DataCompresser::compressData($value);
     }
 
-    public function getLanguageExamAttribute($value): ?string
+    public function getLanguageExamAttribute($value)
     {
         return DataCompresser::decompressData($value);
     }
@@ -85,7 +85,7 @@ class ApplicationForm extends Model
         $this->attributes['language_exam'] = DataCompresser::compressData($value);
     }
 
-    public function getCompetitionAttribute($value): ?string
+    public function getCompetitionAttribute($value)
     {
         return DataCompresser::decompressData($value);
     }
@@ -95,7 +95,7 @@ class ApplicationForm extends Model
         $this->attributes['competition'] = DataCompresser::compressData($value);
     }
 
-    public function getPublicationAttribute($value): ?string
+    public function getPublicationAttribute($value)
     {
         return DataCompresser::decompressData($value);
     }
@@ -105,7 +105,7 @@ class ApplicationForm extends Model
         $this->attributes['publication'] = DataCompresser::compressData($value);
     }
 
-    public function getForeignStudiesAttribute($value): ?string
+    public function getForeignStudiesAttribute($value)
     {
         return DataCompresser::decompressData($value);
     }
