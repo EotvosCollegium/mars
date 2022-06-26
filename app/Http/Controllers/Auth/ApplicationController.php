@@ -33,9 +33,10 @@ class ApplicationController extends Controller
      */
     public function showApplicationForm(Request $request): View
     {
-        if (!$request->user()->application) {
-            $request->user()->application()->create();
+        if ($request->user()->isCollegist() && $request->user()->verified == 1) {
+            abort(403);
         }
+
         $data = [
             'workshops' => Workshop::all(),
             'faculties' => Faculty::all(),
@@ -118,7 +119,7 @@ class ApplicationController extends Controller
             ]);
         } else {
             //return all applications that can be visible
-            //$this->authorize('viewAnyApplication');
+            $this->authorize('viewAnyApplication', User::class);
             if ($authUser->hasAnyRole([Role::NETWORK_ADMIN, Role::SECRETARY])) {
                 $workshops = Workshop::all();
                 $applications = ApplicationForm::select('*');
@@ -165,7 +166,7 @@ class ApplicationController extends Controller
      */
     public function editApplication(Request $request): RedirectResponse
     {
-        //$this->authorize('viewAnyApplication');
+        $this->authorize('viewAnyApplication');
         $application = ApplicationForm::findOrFail($request->input('application'));
         if ($request->has('note')) {
             $application->update(['note' => $request->input('note')]);
