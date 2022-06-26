@@ -47,7 +47,7 @@ class UserFactory extends Factory
         })->afterCreating(function (User $user) {
             $user->printAccount()->save(PrintAccount::factory()->make(['user_id' => $user->id]));
             $user->personalInformation()->save(PersonalInformation::factory()->make(['user_id' => $user->id]));
-            if(!$user->verified) {
+            if (!$user->verified) {
                 $user->application()->create(['status' => $this->faker->randomElement(ApplicationForm::STATUSES)]);
             }
         });
