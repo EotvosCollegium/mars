@@ -11,6 +11,7 @@
 |
 */
 
+use App\Http\Controllers\Auth\ApplicationController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Dormitory\FaultController;
 use App\Http\Controllers\Dormitory\PrintController;
@@ -40,6 +41,11 @@ Route::get('/setlocale/{locale}', [HomeController::class, 'setLocale'])->name('s
 Auth::routes();
 
 Route::get('/register/guest', [RegisterController::class, 'showTenantRegistrationForm'])->name('register.guest');
+
+Route::middleware(['auth', 'only_hungarian'])->group(function () {
+    Route::get('/application', [ApplicationController::class, 'showApplicationForm'])->name('application');
+    Route::post('/application', [ApplicationController::class, 'storeApplicationForm'])->name('application.store');
+});
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/secretariat/user/update_password', [UserController::class, 'updatePassword'])->name('secretariat.user.update_password');
@@ -130,6 +136,9 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
         Route::get('/secretariat/registrations/accept/{id}', [RegistrationsController::class, 'accept'])->name('secretariat.registrations.accept');
         Route::get('/secretariat/registrations/reject/{id}', [RegistrationsController::class, 'reject'])->name('secretariat.registrations.reject');
     });
+    /** Application handling */
+    Route::get('/applications', [ApplicationController::class, 'showApplications'])->name('applications');
+    Route::post('/applications', [ApplicationController::class, 'editApplication'])->name('applications.edit');
 
     /** Permission handling */
     Route::middleware(['can:permission.handle'])->group(function () {

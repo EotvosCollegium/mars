@@ -21,25 +21,13 @@ class RegistrationsController extends Controller
 
     public function index()
     {
-        $users = [];
-        $user = Auth::user();
-        if ($user->hasRole(Role::NETWORK_ADMIN)) {
-            $users = User::withoutGlobalScope('verified')->where('verified', false)->with('educationalInformation')->get();
-        } elseif ($user->hasAnyRole([Role::SECRETARY, Role::DIRECTOR])) {
-            $users = User::withoutGlobalScope('verified')->where('verified', false)
-            ->whereHas('roles', function (Builder $query) {
+        $users = User::withoutGlobalScope('verified')
+            ->where('verified', false)
+            ->whereDoesntHave('roles', function (Builder $query) {
                 $query->where('name', Role::COLLEGIST);
             })
-            ->with('educationalInformation')
+            ->with(['personalInformation'])
             ->get();
-        } elseif ($user->hasRole(Role::STAFF)) {
-            $users = User::withoutGlobalScope('verified')->where('verified', false)
-            ->whereHas('roles', function (Builder $query) {
-                $query->where('name', Role::TENANT);
-            })
-            ->with('educationalInformation')
-            ->get();
-        }
 
         return view('secretariat.registrations.list', ['users' => $users]);
     }

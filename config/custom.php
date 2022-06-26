@@ -11,4 +11,8 @@ return [
     'physical-last-ip' => env('PHYSICAL_LAST_IP', '192.168.2.255'),
 
     'mr_and_miss_deadline' => env('MR_AND_MISS_DEADLINE'),
+
+    'application_deadline' => env('APPLICATION_DEADLINE'), //registration deadline for new collegists
+    'application_extended' => env('APPLICATION_EXTENDED', false), //is the registration deadline extended?
+
 ];
