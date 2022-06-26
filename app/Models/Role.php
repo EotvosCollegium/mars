@@ -15,6 +15,7 @@ class Role extends Model
     public const TENANT = 'tenant';
     public const WORKSHOP_ADMINISTRATOR = 'workshop-administrator';
     public const WORKSHOP_LEADER = 'workshop-leader';
+    public const APPLICATION_COMMITTEE_MEMBER = 'application-committee';
     public const SECRETARY = 'secretary';
     public const DIRECTOR = 'director';
     public const STAFF = 'staff';
@@ -70,6 +71,7 @@ class Role extends Model
         self::TENANT,
         self::WORKSHOP_ADMINISTRATOR,
         self::WORKSHOP_LEADER,
+        self::APPLICATION_COMMITTEE_MEMBER,
         self::SECRETARY,
         self::DIRECTOR,
         self::STAFF,
@@ -196,6 +198,7 @@ class Role extends Model
         return in_array($name, [
             self::WORKSHOP_ADMINISTRATOR,
             self::WORKSHOP_LEADER,
+            self::APPLICATION_COMMITTEE_MEMBER,
             self::LOCALE_ADMIN,
             self::STUDENT_COUNCIL,
             self::COLLEGIST
@@ -218,10 +221,8 @@ class Role extends Model
      */
     public static function possibleObjectsFor($name)
     {
-        if (in_array($name, [self::WORKSHOP_ADMINISTRATOR, self::WORKSHOP_LEADER])) {
-            return Cache::remember('workshop.all', 60 * 60 * 24, function () {
-                return Workshop::all();
-            });
+        if (in_array($name, [self::WORKSHOP_ADMINISTRATOR, self::WORKSHOP_LEADER, self::APPLICATION_COMMITTEE_MEMBER])) {
+            return Workshop::all();
         }
         if ($name == self::LOCALE_ADMIN) {
             $locales = array_keys(config('app.locales'));
@@ -310,6 +311,8 @@ class Role extends Model
                 return 'deep-orange';
             case self::STUDENT_COUNCIL:
                 return 'green darken-4';
+            case self::APPLICATION_COMMITTEE_MEMBER:
+                return 'light-blue darken-4';
             default:
                 return 'grey';
         }

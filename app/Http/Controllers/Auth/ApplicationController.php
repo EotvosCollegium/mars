@@ -131,10 +131,13 @@ class ApplicationController extends Controller
                         ->where('workshop_id', $request->input('workshop'));
                 }
                 if ($request->has('status')) {
+                    //filter by status
                     $applications->where('status', $request->input('status'));
                 }
+                session()->flash('can_filter_by_status');
             } else {
-                $workshops = $authUser->workshops;
+                $workshops = $authUser->roles()->where('name', Role::APPLICATION_COMMITTEE_MEMBER)->get(['object_id'])->pluck('object_id');
+                $workshops = Workshop::whereIn('id', $workshops)->get();
                 $applications = ApplicationForm::where('status', ApplicationForm::STATUS_SUBMITTED);
                 if ($request->has('workshop') && $request->input('workshop') !== "null") {
                     // filter by selected workshop

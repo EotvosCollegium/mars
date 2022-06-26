@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Workshop;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class UserPolicy
@@ -66,9 +67,11 @@ class UserPolicy
         return (isset($target->application))
             && ($user->hasAnyRole([Role::NETWORK_ADMIN, Role::SECRETARY])
             || $user->id == $target->id
-            || $user->workshops()->pluck('id')
-                ->intersect($target->workshops()->pluck('id'))->count() > 0);
-                //has common workshop
+            ||  $user->roles()
+                    ->where('name', Role::APPLICATION_COMMITTEE_MEMBER)
+                    ->get(['object_id'])->pluck('object_id')
+                    ->intersect($target->workshops()->pluck('id'))->count() > 0);
+                    //has common workshop
     }
 
     /**
@@ -77,7 +80,7 @@ class UserPolicy
      */
     public function viewAnyApplication(User $user): bool
     {
-        return $user->hasAnyRole([Role::NETWORK_ADMIN, Role::SECRETARY, Role::COLLEGIST]);
+        return $user->hasAnyRole([Role::NETWORK_ADMIN, Role::SECRETARY, Role::APPLICATION_COMMITTEE_MEMBER]);
     }
 
     /** Permission related policies */
