@@ -33,7 +33,7 @@ class ApplicationController extends Controller
      */
     public function showApplicationForm(Request $request): View
     {
-        if($request->user()->isCollegist() && $request->user()->verified == 1) {
+        if ($request->user()->isCollegist() && $request->user()->verified == 1) {
             abort(403);
         }
 
