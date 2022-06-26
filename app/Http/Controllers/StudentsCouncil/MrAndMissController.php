@@ -118,7 +118,7 @@ class MrAndMissController extends Controller
                 ->where('semester', Semester::current()->id)
                 ->join('mr_and_miss_categories', 'mr_and_miss_categories.id', '=', 'mr_and_miss_votes.category')
                 ->leftJoin('users', 'users.id', '=', 'mr_and_miss_votes.votee_id')
-                ->groupBy(['title', 'users.name', 'votee_name', 'mr', 'custom'])
+                ->groupBy(['mr_and_miss_categories.id', 'title', 'users.name', 'votee_name', 'mr', 'custom'])
                 ->orderBy('mr_and_miss_categories.id')
                 ->get();
 
