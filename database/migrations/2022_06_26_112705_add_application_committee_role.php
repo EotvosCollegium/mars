@@ -13,7 +13,9 @@ class AddApplicationCommitteeRole extends Migration
      */
     public function up()
     {
-        DB::table('roles')->insert(['name' => 'application-committee']);
+        if(DB::table('roles')->where('name', 'application-committee')->count() == 0){
+            DB::table('roles')->insert(['name' => 'application-committee']);
+        }
     }
 
     /**
