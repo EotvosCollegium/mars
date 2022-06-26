@@ -68,7 +68,7 @@ class UserPolicy
             || $user->id == $target->id
             || $user->workshops()->pluck('id')
                 ->intersect($target->workshops()->pluck('id'))->count() > 0);
-                //has common workshop
+        //has common workshop
     }
 
     /**

@@ -16,7 +16,6 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Storage;
 
-
 class ApplicationController extends Controller
 {
     private const EDUCATIONAL_ROUTE = 'educational';
@@ -34,7 +33,7 @@ class ApplicationController extends Controller
      */
     public function showApplicationForm(Request $request): View
     {
-        if(!$request->user()->application) {
+        if (!$request->user()->application) {
             $request->user()->application()->create();
         }
         $data = [
@@ -63,11 +62,11 @@ class ApplicationController extends Controller
      * @param Request $request
      * @return RedirectResponse
      */
-    public function storeApplicationForm(Request $request) : RedirectResponse
+    public function storeApplicationForm(Request $request): RedirectResponse
     {
         $user = $request->user();
 
-        if(isset($user->application) && $user->application->status == ApplicationForm::STATUS_SUBMITTED) {
+        if (isset($user->application) && $user->application->status == ApplicationForm::STATUS_SUBMITTED) {
             return redirect()->route('application')->with('error', 'Már véglegesítette a jelentkezését!');
         }
 
@@ -105,11 +104,10 @@ class ApplicationController extends Controller
      * @return View
      * @throws AuthorizationException
      */
-    public function showApplications(Request $request) : View
+    public function showApplications(Request $request): View
     {
         $authUser = $request->user();
-        if($request->has('id'))
-        {
+        if ($request->has('id')) {
             // return one application in detail
             $user = User::withoutGlobalScope('verified')
                 ->with('application')->findOrFail($request->input('id'));
@@ -121,8 +119,7 @@ class ApplicationController extends Controller
         } else {
             //return all applications that can be visible
             //$this->authorize('viewAnyApplication');
-            if($authUser->hasAnyRole([Role::NETWORK_ADMIN, Role::SECRETARY]))
-            {
+            if ($authUser->hasAnyRole([Role::NETWORK_ADMIN, Role::SECRETARY])) {
                 $workshops = Workshop::all();
                 $applications = ApplicationForm::select('*');
                 if ($request->has('workshop') && $request->input('workshop') !== "null") {
@@ -167,18 +164,16 @@ class ApplicationController extends Controller
     {
         //$this->authorize('viewAnyApplication');
         $application = ApplicationForm::findOrFail($request->input('application'));
-        if($request->has('note'))
-        {
+        if ($request->has('note')) {
             $application->update(['note' => $request->input('note')]);
         }
         return redirect()->back();
-
     }
 
     /**
      * @return Carbon the application deadline set in .env
      */
-    public static function getApplicationDeadline() : Carbon
+    public static function getApplicationDeadline(): Carbon
     {
         return Carbon::parse(config('custom.application_deadline'));
     }
@@ -186,7 +181,7 @@ class ApplicationController extends Controller
     /**
      * @return bool if the deadline has been extended or not
      */
-    public static function isDeadlineExtended() : bool
+    public static function isDeadlineExtended(): bool
     {
         return config('custom.application_extended');
     }
@@ -200,7 +195,8 @@ class ApplicationController extends Controller
     {
         $request->validate(RegisterController::PERSONAL_INFORMATION_RULES + ['name' => 'required|string|max:255']);
         $user->update(['name' => $request->input('name')]);
-        $user->personalInformation()->update($request->only([
+        $user->personalInformation()->update(
+            $request->only([
             'place_of_birth',
             'date_of_birth',
             'mothers_name',
@@ -263,7 +259,7 @@ class ApplicationController extends Controller
         ]);
         if ($request->input('status') == 'resident') {
             $user->setResident();
-        } else if ($request->input('status') == 'extern') {
+        } elseif ($request->input('status') == 'extern') {
             $user->setExtern();
         }
         $user->workshops()->sync($request->input('workshop'));
