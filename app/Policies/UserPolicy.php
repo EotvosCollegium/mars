@@ -71,7 +71,7 @@ class UserPolicy
                     ->where('name', Role::APPLICATION_COMMITTEE_MEMBER)
                     ->get(['object_id'])->pluck('object_id')
                     ->intersect($target->workshops()->pluck('id'))->count() > 0);
-                    //has common workshop
+        //has common workshop
     }
 
     /**

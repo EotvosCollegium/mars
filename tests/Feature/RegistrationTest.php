@@ -32,7 +32,8 @@ class RegistrationTest extends TestCase
         $controller = new RegisterController();
         $user_data = User::factory()->make()->only(['name', 'email']);
         $personal_info_data = PersonalInformation::factory()->make()->toArray();
-        $controller->create(array_merge([
+        $controller->create(array_merge(
+            [
             'password' => 'secret',
             'password_confirmation' => 'secret',
             'user_type' => 'collegist'],
@@ -77,7 +78,8 @@ class RegistrationTest extends TestCase
 
         $user_data = User::factory()->make()->only(['name', 'email']);
         $personal_info_data = PersonalInformation::factory()->make()->toArray();
-        $controller->create(array_merge([
+        $controller->create(array_merge(
+            [
             'password' => 'secret',
             'password_confirmation' => 'secret',
             'user_type' => 'tenant'],
@@ -108,5 +110,4 @@ class RegistrationTest extends TestCase
         $this->assertTrue($user->hasRoleBase(Role::INTERNET_USER));
         $this->assertTrue($user->hasRoleBase(Role::TENANT));
     }
-
 }
