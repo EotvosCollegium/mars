@@ -14,7 +14,6 @@ return [
     'old_password' => 'Régi jelszó',
     'password' => 'Jelszó',
     'remember' => 'Emlékezz rám',
-    'successfully_invited' => 'Elküldtünk egy meghívót a megadott e-mail-címre.',
+    'set_permissions' => 'Elküldtünk egy meghívót a megadott e-mail-címre. Kérjük, állítsa be az új felhasználó jogosultságait.',
     'tenant_to_collegist' => 'Ez az oldal a Collegium vendégeinek szól. Ha Collegium tagja vagy (bentlakó vagy bejáró), akkor kattints ide!',
-    'used_email' => 'A megadott e-mail-címmel már létezik felhasználó.',
 ];

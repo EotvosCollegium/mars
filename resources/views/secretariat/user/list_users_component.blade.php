@@ -62,26 +62,22 @@
                 <div class="col s12 xl7">
                     <span class="card-title">@lang('registration.invite')</span>
                 </div>
-            </div>
-            <form method="POST" action="{{ route('secretariat.registrations.invite') }}">
-                @csrf
-                <div class="row">
+                <form method="POST" action="{{ route('secretariat.registrations.invite') }}">
+                    @csrf
                     <div class="col s12">
                         <blockquote>@lang('registration.invite_instructions')</blockquote>
                     </div>
-                </div>
-                <div class="row">
                     <div class="col s12 m12 l4">
-                        <x-input.text  id="name" type="text" required :value="config('custom.kkt')" />
+                        <x-input.text  id="name" type="text" required />
                     </div>
                     <div class="col s12 m12 l4">
-                        <x-input.text  id="email" type="email" required :value="config('custom.netreg')" />
+                        <x-input.text  id="email" type="email" required />
                     </div>
                     <div class="col s12 m12 l4">
                         <x-input.button class="right" text="registration.invite_button" />
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
 

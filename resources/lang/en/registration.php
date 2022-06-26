@@ -14,7 +14,6 @@ return [
     'old_password' => 'Old password',
     'password' => 'Password',
     'remember' => 'Remember Me',
-    'successfully_invited' => 'Sent an invitation letter to the given address.',
+    'set_permissions' => 'Sent an invitation letter to the given address. Please set permissions of the new user.',
     'tenant_to_collegist' => 'This page is for the tenants (guests) of the collegium. If you are a collegist member (whether you are a resident or not), click here!',
-    'used_email' => 'There already exists a user with the given address.',
 ];
