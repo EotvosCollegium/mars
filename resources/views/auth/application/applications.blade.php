@@ -11,7 +11,7 @@
         <div class="card-content">
             <div class="row" style="margin-bottom: 0">
                 <x-input.select id="workshop" :elements="$workshops" allow-empty :default="$workshop" text="Műhely" />
-                @if($admin ?? false)
+                @if(session()->has('can_filter_by_status'))
                     <div class="col">
                         @foreach (\App\Models\ApplicationForm::STATUSES as $st)
                             <label>

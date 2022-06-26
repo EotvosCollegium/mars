@@ -2,6 +2,7 @@
 
 return [
     'admin' => 'Admin',
+    'application-committee' => 'Application committee member',
     'collegist' => 'Collegist',
     'communication-committee' => 'Communication Committee',
     'communication-leader' => 'Communication committee leader',
@@ -56,7 +57,7 @@ return [
     'Aurélien Sauvageot Francia műhely' => 'Aurélien Sauvageot French Workshop',
     'Gazdálkodástudományi műhely' => 'Economic Workshop',
     'Germanisztika műhely' => 'German Workshop',
-    'Informatikai műhely' => 'IT Workshop',
+    'Informatika műhely' => 'IT Workshop',
     'Magyar műhely' => 'Hungarian Workshop',
     'Matematika-fizika műhely' => 'Mathematics-Physics Workshop',
     'Mendöl Tibor földrajz-, föld- és környezettudományi műhely' => 'Tibor Mendöl Geography Workshop',
