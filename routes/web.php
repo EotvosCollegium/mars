@@ -30,9 +30,10 @@ use App\Http\Controllers\Secretariat\UserController;
 use App\Http\Controllers\StudentsCouncil\EconomicController;
 use App\Http\Controllers\StudentsCouncil\EpistolaController;
 use App\Http\Controllers\StudentsCouncil\MrAndMissController;
+use App\Models\Room;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Models\PersonalInformation;
+use App\Models\User;
 
 Route::get('/', [HomeController::class, 'welcome'])->name('index');
 Route::get('/verification', [HomeController::class, 'verification'])->name('verification');
@@ -146,12 +147,11 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::post('/faults/update', [FaultController::class, 'updateStatus'])->name('faults.update');
 
     /** Rooms */
-    Route::get('/rooms', [RoomAssignmentController::class, 'index'])->name('rooms');
-    Route::get('/rooms/{room}', function(Request $request){
-        $users=PersonalInformation::join('users as user', 'user.id', '=', 'user_id')
-        ->select('personal_information.*')->with('user')
-        ->whereNotNull('personal_information.room_id')->get();
-        return view('dormitory.rooms.app', ['users' => $users]);
+    Route::get('/rooms', function(Request $request){
+        $users=User::with('personalInformation')->get();
+        $rooms = Room::with('personalInformations')->get();
+        // return response($users->where('personalInformation.room', 207)->pluck('id'));
+        return view('dormitory.rooms.app', ['users' => $users, 'rooms' => $rooms]);
         // return $users;
     });
     /** Documents */

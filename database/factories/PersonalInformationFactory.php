@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\PersonalInformation;
+use App\Models\Room;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PersonalInformationFactory extends Factory
@@ -21,7 +22,7 @@ class PersonalInformationFactory extends Factory
             'zip_code' => $this->faker->postcode,
             'city' => $this->faker->city,
             'street_and_number' => $this->faker->streetAddress,
-            'room_id' => $this->faker->regexify('[2-3][0-2][0-9]'),
+            'room' => Room::all()->random()->name,
         ];
     }
 }
