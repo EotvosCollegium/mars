@@ -7,7 +7,7 @@
     {{-- desktop profile pic --}}
     <div class="card horizontal hide-on-small-only">
         <div class="card-image">
-            <img src="{{ url($user->profilePicture?->path ?? '/img/avatar.png') }}" style="max-width:300px">
+            <img src="{{ url($user->profilePicture ? $user->profilePicture->path : '/img/avatar.png') }}" style="max-width:300px">
         </div>
         <div class="card-stacked">
             <div class="card-content">
@@ -52,21 +52,21 @@
             <blockquote>
                 A pályázatnak az alábbiakat kell tartalmaznia:
                 <ul style="margin-left:20px;margin-top:0">
-                    <li style="list-style-type: circle !important">Önéletrajz (hagyományos, leíró jellegű)</li>
-                    <li style="list-style-type: circle !important">Elsőéves egyetemistaként:<br/>
-                        Szakfelvételi engedély/felvételi határozat (Neptun: Tanulmányok - Hivatalos
+                    <li style="list-style-type: circle !important">önéletrajz (hagyományos, leíró jellegű)</li>
+                    <li style="list-style-type: circle !important">elsőéves egyetemistaként:<br/>
+                        szakfelvételi engedély/felvételi határozat (Neptun: Tanulmányok - Hivatalos
                         bejegyzések menüpont alatt letölthető)<br/>
-                            Érettségi bizonyítvány másolata
+                            érettségi bizonyítvány másolata
                     </li>
-                    <li style="list-style-type: circle !important">Lezárt egyetemi félévek esetén:<br/>
+                    <li style="list-style-type: circle !important">lezárt egyetemi félévek esetén:<br/>
                         Diploma másolata vagy leckekönyv/törzslap kivonat az eddigi eredményekről
                     </li>
-                    <li style="list-style-type: circle !important">Opcionális: oklevelek, igazolások, szaktanári ajánlás</li>
+                    <li style="list-style-type: circle !important">opcionális: oklevelek, igazolások, szaktanári ajánlás</li>
                 </ul>
             </blockquote>
 
             <div style="margin: 0 20px 0 20px;">
-                @forelse ($user->application?->files ?? [] as $file)
+                @forelse ($user->application->files ?? [] as $file)
                     @if (!$loop->first)<div class="divider"></div>@endif
                     <div class="row" style="margin-bottom: 0; padding: 10px">
                         <form method="POST"
