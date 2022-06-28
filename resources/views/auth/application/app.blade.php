@@ -47,7 +47,7 @@
             @endforeach
         </div>
     </div>
-    @if($user->application?->status == App\Models\ApplicationForm::STATUS_IN_PROGRESS)
+    @if($user->application->status == App\Models\ApplicationForm::STATUS_IN_PROGRESS)
         <nav class="nav-extended">
             <div class="nav-content">
                 <ul class="tabs tabs-transparent">

@@ -45,14 +45,14 @@
                             <blockquote class="error">A státusz kitöltése kötelező</blockquote>
                         @enderror
                     </div>
-                    <x-input.textarea id="question_1" locale='application' text="Honnan hallott a Collegiumról?" :value="$user->application?->question_1"/>
-                    <x-input.textarea id="question_2" locale='application' text="Miért kíván a Collegium tagja lenni?" helper="≈300-500 karakter" :value="$user->application?->question_2" />
+                    <x-input.textarea id="question_1" locale='application' text="Honnan hallott a Collegiumról?" :value="$user->application->question_1"/>
+                    <x-input.textarea id="question_2" locale='application' text="Miért kíván a Collegium tagja lenni?" helper="≈300-500 karakter" :value="$user->application->question_2" />
                     <x-input.textarea id="question_3" locale='application'
-                        text="Tervez-e tovább tanulni a diplomája megszerzése után? Milyen tervei vannak az egyetem után?" :value="$user->application?->question_3"/>
+                        text="Tervez-e tovább tanulni a diplomája megszerzése után? Milyen tervei vannak az egyetem után?" :value="$user->application->question_3"/>
                     <x-input.textarea id="question_4" locale='application'
                         text="Részt vett-e közéleti tevékenységben? Ha igen, röviden jellemezze!"
                         helper="Pl. diákönkormányzati tevékenység, önkéntesség, szervezeti tagság. (nem kötelező)"
-                        :value="$user->application?->question_4" />
+                        :value="$user->application->question_4" />
                 </div>
 
             </div>

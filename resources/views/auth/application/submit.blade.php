@@ -6,7 +6,7 @@
 
     @include('auth.application.application')
 
-    @if($user->application?->isReadyToSubmit() ?? false)
+    @if($user->application->isReadyToSubmit() ?? false)
         <div class="card">
             <form method="POST" action="{{ route('application.store', ['page' => 'submit']) }}">
                 @csrf

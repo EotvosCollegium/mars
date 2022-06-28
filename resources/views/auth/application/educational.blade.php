@@ -10,12 +10,12 @@
             <div class="card-content">
                 <div class="row">
                     <x-input.text s=12 m=6 id='high_school' locale='user'
-                        :value="$user->educationalInformation?->high_school" required />
+                        :value="$user->educationalInformation ? $user->educationalInformation->high_school : null" required />
                     <x-input.text s=12 m=6 id='year_of_graduation' locale='user' type='number' min="1895" :max="date('Y')"
-                        :value="$user->educationalInformation?->year_of_graduation" required />
+                        :value="$user->educationalInformation ? $user->educationalInformation->year_of_graduation : null" required />
 
-                    <x-input.text s=6 id='neptun' locale='user' :value="$user->educationalInformation?->neptun" required />
-                    <x-input.text s=6 id='educational_email' locale='user' :value="$user->educationalInformation?->email"
+                    <x-input.text s=6 id='neptun' locale='user' :value="$user->educationalInformation ? $user->educationalInformation->neptun : null" required />
+                    <x-input.text s=6 id='educational_email' locale='user' :value="$user->educationalInformation ? $user->educationalInformation->email : null"
                         required helper="lehetőleg @student.elte.hu-s" />
 
                     <div class="input-field col s12 m6">
@@ -32,11 +32,11 @@
                         @enderror
                     </div>
                     <x-input.text s=12 id='graduation_average' locale='application' type='number' step="0.01" min="0"
-                        max="5" text="Érettségi átlaga" :value="$user->application?->graduation_average" required
+                        max="5" text="Érettségi átlaga" :value="$user->application->graduation_average" required
                         helper='Az összes érettségi tárgy hagyományos átlaga' />
                 </div>
                 <div class="row" style="margin:0">
-                    @livewire('parent-child-form', ['title' => "Szak(ok)", 'name' => 'programs', 'items' => $user->educationalInformation?->program])
+                    @livewire('parent-child-form', ['title' => "Szak(ok)", 'name' => 'programs', 'items' => $user->educationalInformation ? $user->educationalInformation->program : null])
                 </div>
                 <div class="row" style="margin:0">
                     @livewire('parent-child-form', [
@@ -44,7 +44,7 @@
                         'name' => 'semester_average',
                         'helper' => 'Hagyományos átlag a félév(ek)ben',
                         'optional' => true,
-                        'items' => $user->application?->semester_average])
+                        'items' => $user->application->semester_average])
                 </div>
                 <div class="row" style="margin:0">
                     @livewire('parent-child-form', [
@@ -52,28 +52,28 @@
                         'name' => 'language_exam',
                         'helper' => 'Nyelv, szint, típus',
                         'optional' => true,
-                        'items' => $user->application?->language_exam])
+                        'items' => $user->application->language_exam])
                 </div>
                 <div class="row" style="margin:0">
                     @livewire('parent-child-form', [
                         'title' => "Van versenyeredményem",
                         'name' => 'competition',
                         'optional' => true,
-                        'items' => $user->application?->competition])
+                        'items' => $user->application->competition])
                 </div>
                 <div class="row" style="margin:0">
                     @livewire('parent-child-form', [
                         'title' => "Van publikációm",
                         'name' => 'publication',
                         'optional' => true,
-                        'items' => $user->application?->publication])
+                        'items' => $user->application->publication])
                 </div>
                 <div class="row" style="margin:0">
                     @livewire('parent-child-form', [
                         'title' => "Tanultam külföldön",
                         'name' => 'foreign_studies',
                         'optional' => true,
-                        'items' => $user->application?->foreign_studies])
+                        'items' => $user->application->foreign_studies])
                 </div>
 
             </div>
