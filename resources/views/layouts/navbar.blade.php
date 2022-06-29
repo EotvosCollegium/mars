@@ -41,20 +41,22 @@
         <li><a class="waves-effect" href="{{ route('internet') }}"><i class="material-icons left">wifi</i>@lang('internet.internet')</a></li>
         @endif
         <!-- faults page -->
+        @if(Auth::user()->isCollegist())
         <li><a class="waves-effect" href="{{ route('faults') }}"><i class="material-icons left">build</i>@lang('faults.faults')
                 @if (Auth::user()->hasRole(\App\Models\Role::STAFF))
                     @notification(\App\Models\Fault::class)
                 @endif
             </a>
         </li>
+        @endif
         <!-- documents page -->
         @can('document.any')
         <li><a class="waves-effect" href="{{ route('documents') }}"><i class="material-icons left">assignment</i>@lang('document.documents')</a></li>
         @endcan
         <!-- applications page -->
-        @if(Auth::user()->isCollegist())
+        @can('viewAnyApplication', \App\Models\User::class)
             <li><a class="waves-effect" href="{{ route('applications') }}"><i class="material-icons left">person_search</i>Felvételi</a></li>
-        @endif
+        @endcan
         <!-- collapsible modules -->
         <li class="no-padding">
             <ul class="collapsible collapsible-accordion">
@@ -92,7 +94,7 @@
                 </li>
                 @endcan
                 <!-- secretariat module -->
-                @if(Auth::user()->hasElevatedPermissions() || Auth::user()->hasRole(\App\Models\Role::STAFF))
+                @can('viewAny', \App\Models\User::class)
 
                 <li><div class="divider"></div></li>
                 <li class="@yield('secretariat_module')">
@@ -114,18 +116,16 @@
                             @endcan
 
                             <!-- user management -->
-                            @can('viewAny', \App\Models\User::class)
                             <li>
                                 <a class="waves-effect" href="{{ route('secretariat.user.list') }}">
                                     <i class="material-icons left">supervisor_account</i> @lang('admin.user_management')
                                 </a>
                             </li>
-                            @endcan
                         </ul>
                     </div>
                 </li>
-                @endif
-
+                @endcan
+                @if(auth()->user()->isCollegist())
                 {{-- Sysadmin module --}}
                 <li><div class="divider"></div></li>
                 <li class="@yield('admin_module')">
@@ -170,7 +170,9 @@
                         </ul>
                     </div>
                 </li>
-             </ul>
+                @endif
+
+            </ul>
         </li>
     @endif
 

@@ -17,7 +17,8 @@ class UserPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasAnyRole([Role::NETWORK_ADMIN, Role::SECRETARY, Role::PERMISSION_HANDLER]);
+        return $user->hasAnyRole([Role::NETWORK_ADMIN, Role::SECRETARY, Role::PERMISSION_HANDLER])
+            || $user->hasRoleBase(Role::WORKSHOP_LEADER);
     }
 
     /**
@@ -27,7 +28,12 @@ class UserPolicy
      */
     public function view(User $user, User $target): bool
     {
-        return $user->hasAnyRole([Role::NETWORK_ADMIN, Role::SECRETARY, Role::PERMISSION_HANDLER]) || $user->id == $target->id;
+        return $user->id == $target->id
+            || $user->hasAnyRole([Role::NETWORK_ADMIN, Role::SECRETARY, Role::PERMISSION_HANDLER])
+            || $user->roles()
+                ->whereIn('name', [Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR])
+                ->get(['object_id'])->pluck('object_id')
+                ->intersect($target->workshops()->pluck('id'))->count() > 0;
     }
 
     /**
@@ -41,7 +47,11 @@ class UserPolicy
         return $user->hasRole(Role::NETWORK_ADMIN)
             || ($target->hasRole(Role::COLLEGIST) && $user->hasRole(Role::SECRETARY))
             || $user->id == $target->id
-            || ($target->hasRole(Role::TENANT) && $user->hasRole(Role::STAFF));
+            || ($target->hasRole(Role::TENANT) && $user->hasRole(Role::STAFF))
+            || $user->roles()
+                ->whereIn('name', [Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR])
+                ->get(['object_id'])->pluck('object_id')
+                ->intersect($target->workshops()->pluck('id'))->count() > 0;;
     }
 
     /**
@@ -52,7 +62,12 @@ class UserPolicy
     public function viewEducationalInformation(User $user, User $target): bool
     {
         // TODO: later internet admins should be removed
-        return $user->hasAnyRole([Role::NETWORK_ADMIN, Role::SECRETARY]) || $user->id == $target->id;
+        return $user->hasAnyRole([Role::NETWORK_ADMIN, Role::SECRETARY])
+            || $user->id == $target->id
+            || $user->roles()
+                ->whereIn('name', [Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR])
+                ->get(['object_id'])->pluck('object_id')
+                ->intersect($target->workshops()->pluck('id'))->count() > 0;;
     }
 
     /** Application related policies */
