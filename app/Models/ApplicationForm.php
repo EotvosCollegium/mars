@@ -140,8 +140,8 @@ class ApplicationForm extends Model
 
     public function getQuestion1CustomAttribute()
     {
-        foreach($this->question_1 as $answer){
-            if(!in_array($answer,self::QUESTION_1)){
+        foreach ($this->question_1 as $answer) {
+            if (!in_array($answer, self::QUESTION_1)) {
                 return $answer;
             }
         }
