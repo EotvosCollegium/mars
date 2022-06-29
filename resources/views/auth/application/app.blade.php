@@ -6,7 +6,8 @@
     <div class="card">
         <div class="card-content">
             <div class="card-title center-align">Jelentkezés az Eötvös József Collegiumba</div>
-            <p class="center-align"><a href="https://eotvos.elte.hu/felveteli">Pályázati felhívás és egyéb információk</a></p>
+            <p class="center-align"><a href="https://eotvos.elte.hu/felveteli">Pályázati felhívás és egyéb
+                    információk</a></p>
         </div>
     </div>
     <div class="card">
@@ -32,7 +33,8 @@
                         jelentkezését.</p>
                     <p>Kérjük figyeljen a határidőre, mert utána már nem lesz lehetősége véglegesíteni azt.</p>
                     <p>Amennyiben bármi kérdése lenne a felvételivel kapcsolatban, kérjük, írjon a
-                        <a href="mailto:titkarsag@eotvos.elte.hu">titkarsag@eotvos.elte.hu</a> e-mail címre. Ha technikai
+                        <a href="mailto:titkarsag@eotvos.elte.hu">titkarsag@eotvos.elte.hu</a> e-mail címre. Ha
+                        technikai
                         probléma adódna, kérjük, jelezze felénk a <a href="mailto:root@eotvos.elte.hu">root@eotvos.elte.hu</a>
                         e-mail címen.
                     </p>
@@ -47,20 +49,25 @@
             @endforeach
         </div>
     </div>
-    @if($user->application->status == App\Models\ApplicationForm::STATUS_IN_PROGRESS)
+    @if($user->application->status != App\Models\ApplicationForm::STATUS_SUBMITTED)
         <nav class="nav-extended">
             <div class="nav-content">
                 <ul class="tabs tabs-transparent">
-                    <li class="tab"><a href="{{ route('application', ['page' => 'personal']) }}"
-                            class="@yield('personal-active')">Általános információk</a></li>
-                    <li class="tab"><a href="{{ route('application', ['page' => 'educational']) }}"
-                            class="@yield('educational-active')">Tanulmányi információk</a></li>
-                    <li class="tab"><a href="{{ route('application', ['page' => 'questions']) }}"
-                            class="@yield('questions-active')">Felvételihez kapcsolódó kérdések</a></li>
-                    <li class="tab"><a href="{{ route('application', ['page' => 'files']) }}"
-                            class="@yield('files-active')">Fájlok</a></li>
-                    <li class="tab right"><a href="{{ route('application', ['page' => 'submit']) }}"
-                            class="@yield('finalize-active')">Ellenőrzés és véglegesítés</a></li>
+                    <li class="tab">
+                        <a href="{{ route('application', ['page' => 'personal']) }}"
+                           class="@yield('personal-active')">Általános</a></li>
+                    <li class="tab">
+                        <a href="{{ route('application', ['page' => 'educational']) }}"
+                           class="@yield('educational-active')">Tanulmányok</a></li>
+                    <li class="tab">
+                        <a href="{{ route('application', ['page' => 'questions']) }}"
+                           class="@yield('questions-active')">Egyéb kérdések</a></li>
+                    <li class="tab">
+                        <a href="{{ route('application', ['page' => 'files']) }}"
+                           class="@yield('files-active')">Fájlok</a></li>
+                    <li class="tab right">
+                        <a href="{{ route('application', ['page' => 'submit']) }}"
+                           class="@yield('finalize-active')">Ellenőrzés és véglegesítés</a></li>
                 </ul>
             </div>
         </nav>
@@ -68,6 +75,5 @@
     @else
         @include('auth.application.application', ['user' => $user])
     @endif
-
 
 @endsection

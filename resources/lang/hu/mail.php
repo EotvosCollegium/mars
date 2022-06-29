@@ -5,6 +5,7 @@ return [
     'approved_registration' => 'A regisztrációdat jóváhagyták.',
     'dear' => 'Kedves',
     'email_sent' => 'Rendszergazdák értesítve',
+    'invitation' => 'Meghívó az Eötvös Collegium tanulmányi rendszerébe',
     'more_info' => 'Több információ',
     'new-registration-subject' => 'Új regisztráció',
     'new_registration' => ':registered_user vendégként regisztrált az Urán rendszerébe. Fogadd el vagy utasítsd vissza a kérelmét.',

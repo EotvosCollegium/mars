@@ -43,6 +43,19 @@ class ApplicationForm extends Model
         self::STATUS_BANISHED,
     ];
 
+    public const QUESTION_1 = [
+        "tanárom ajánlotta",
+        "ismerősöm ajánlotta",
+        "családtag/rokon ajánlotta",
+        "voltam a Tehetség Táborban",
+        "voltam a Természettudományos Táborban",
+        "kifejezetten szakkollégiumokat kerestem",
+        "kari, egyetemi nyílt napon vagy hasonló rendezvényen láttam",
+        "a Facebook/Instagram hirdetést láttam",
+        "egy Facebook oldalon vagy csoportban posztolták",
+        "az ELTE honlapján olvastam róla"
+    ];
+
     /*
     |--------------------------------------------------------------------------
     | Relations
@@ -113,6 +126,26 @@ class ApplicationForm extends Model
     public function setForeignStudiesAttribute($value)
     {
         $this->attributes['foreign_studies'] = DataCompresser::compressData($value);
+    }
+
+    public function getQuestion1Attribute($value)
+    {
+        return DataCompresser::decompressData($value);
+    }
+
+    public function setQuestion1Attribute($value)
+    {
+        $this->attributes['question_1'] = DataCompresser::compressData($value);
+    }
+
+    public function getQuestion1CustomAttribute()
+    {
+        foreach ($this->question_1 as $answer) {
+            if (!in_array($answer, self::QUESTION_1)) {
+                return $answer;
+            }
+        }
+        return '';
     }
 
     /*

@@ -10,6 +10,7 @@ use App\Models\Role;
 use App\Models\User;
 use App\Models\Workshop;
 use Carbon\Carbon;
+use http\Env\Response;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -33,9 +34,8 @@ class ApplicationController extends Controller
      */
     public function showApplicationForm(Request $request): View
     {
-        if ($request->user()->isCollegist() && $request->user()->verified == 1) {
-            abort(403);
-        }
+        abort_if(!$request->user()->isCollegist(), 403);
+        abort_if($request->user()->verified == 1, 403);
 
         $data = [
             'workshops' => Workshop::all(),
@@ -105,7 +105,7 @@ class ApplicationController extends Controller
      * @return View
      * @throws AuthorizationException
      */
-    public function showApplications(Request $request): View
+    public function showApplications(Request $request)//: View
     {
         $authUser = $request->user();
         if ($request->has('id')) {
@@ -115,12 +115,11 @@ class ApplicationController extends Controller
             $this->authorize('viewApplication', $user);
             return view('auth.application.applications_details', [
                 'user' => $user,
-                'admin' => true
             ]);
         } else {
             //return all applications that can be visible
             $this->authorize('viewAnyApplication', User::class);
-            if ($authUser->hasAnyRole([Role::NETWORK_ADMIN, Role::SECRETARY])) {
+            if ($authUser->hasAnyRole([Role::NETWORK_ADMIN, Role::SECRETARY, Role::DIRECTOR])) {
                 $workshops = Workshop::all();
                 $applications = ApplicationForm::select('*');
                 if ($request->has('workshop') && $request->input('workshop') !== "null") {
@@ -134,8 +133,8 @@ class ApplicationController extends Controller
                 }
                 session()->flash('can_filter_by_status');
             } else {
-                $workshops = $authUser->roles()->where('name', Role::APPLICATION_COMMITTEE_MEMBER)->get(['object_id'])->pluck('object_id');
-                $workshops = Workshop::whereIn('id', $workshops)->get();
+                $workshops = $authUser->roles()->whereIn('name', [Role::APPLICATION_COMMITTEE_MEMBER, Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR])->get(['object_id'])->pluck('object_id');
+                $workshops = Workshop::whereIn('id', $workshops)->distinct()->get();
                 $applications = ApplicationForm::where('status', ApplicationForm::STATUS_SUBMITTED);
                 if ($request->has('workshop') && $request->input('workshop') !== "null") {
                     // filter by selected workshop
@@ -149,11 +148,10 @@ class ApplicationController extends Controller
             }
 
             return view('auth.application.applications', [
-                'applications' => $applications->with('user')->get(),
+                'applications' => $applications->with('user.educationalInformation')->get()->unique(),
                 'workshop' => $request->input('workshop'), //filtered workshop
                 'workshops' => $workshops, //workshops that can be chosen to filter
                 'status' => $request->input('status'), //filtered status
-                'admin' => true
             ]);
         }
     }
@@ -166,10 +164,12 @@ class ApplicationController extends Controller
      */
     public function editApplication(Request $request): RedirectResponse
     {
-        $this->authorize('viewAnyApplication');
+        $this->authorize('viewAnyApplication', User::class);
         $application = ApplicationForm::findOrFail($request->input('application'));
         if ($request->has('note')) {
             $application->update(['note' => $request->input('note')]);
+        } elseif ($request->has('banish')) {
+            $application->update(['status' => ApplicationForm::STATUS_BANISHED]);
         }
         return redirect()->back();
     }
