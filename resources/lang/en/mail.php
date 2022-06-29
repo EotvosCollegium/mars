@@ -5,6 +5,7 @@ return [
     'approved_registration' => 'Your registration have been approved.',
     'dear' => 'Dear',
     'email_sent' => 'System administrators notified.',
+    'invitation' => 'Invitation to Urán',
     'more_info' => 'More information',
     'new-registration-subject' => 'New registration',
     'new_registration' => 'A new tenant, :registered_user just registered to Urán. Approve or deny their request.',

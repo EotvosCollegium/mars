@@ -9,8 +9,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use InvalidArgumentException;
-use Ramsey\Collection\Collection;
 
 /**
  * @property int $id
@@ -18,8 +18,6 @@ use Ramsey\Collection\Collection;
  * @property string $password
  * @property string $remember_token
  * @property bool $verified
- * @property Collection $workshops
- * @property Collection $faculties
  * @property EducationalInformation $educationalInformation
  */
 class User extends Authenticatable implements HasLocalePreference
@@ -636,6 +634,11 @@ class User extends Authenticatable implements HasLocalePreference
         ]);
 
         return $this;
+    }
+
+    public function sendPasswordSetNotification($token)
+    {
+        Mail::to($this)->queue(new \App\Mail\Invitation($this, $token));
     }
 
     public function transactions_payed()
