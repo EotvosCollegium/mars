@@ -65,10 +65,10 @@ class UserPolicy
     public function viewApplication(User $user, User $target): bool
     {
         return (isset($target->application))
-            && ($user->hasAnyRole([Role::NETWORK_ADMIN, Role::SECRETARY])
+            && ($user->hasAnyRole([Role::NETWORK_ADMIN, Role::SECRETARY, Role::DIRECTOR])
             || $user->id == $target->id
-            ||  $user->roles()
-                    ->where('name', Role::APPLICATION_COMMITTEE_MEMBER)
+            || $user->roles()
+                    ->whereIn('name', [Role::APPLICATION_COMMITTEE_MEMBER, Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR])
                     ->get(['object_id'])->pluck('object_id')
                     ->intersect($target->workshops()->pluck('id'))->count() > 0);
         //has common workshop
@@ -83,11 +83,10 @@ class UserPolicy
         return $user->hasAnyRole([
             Role::NETWORK_ADMIN,
             Role::SECRETARY,
-            Role::WORKSHOP_ADMINISTRATOR,
-            Role::WORKSHOP_LEADER,
-            Role::APPLICATION_COMMITTEE_MEMBER,
-            Role::DIRECTOR
-        ]);
+            Role::DIRECTOR])
+            || $user->hasRoleBase(Role::WORKSHOP_ADMINISTRATOR)
+            || $user->hasRoleBase(Role::WORKSHOP_LEADER)
+            || $user->hasRoleBase(Role::APPLICATION_COMMITTEE_MEMBER);
     }
 
     /** Permission related policies */
