@@ -2,9 +2,15 @@
 
 namespace App\Models;
 
+use App\Utils\DataCompresser;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property string|null $program
+ * @property string $programs
+ *
+ */
 class EducationalInformation extends Model
 {
     use HasFactory;
@@ -18,10 +24,32 @@ class EducationalInformation extends Model
         'neptun',
         'year_of_acceptance',
         'email',
+        'program',
     ];
+
+    protected const DELIMETER = '|';
 
     public function user()
     {
         return $this->belongsTo('App\Models\User');
+    }
+
+    public function getProgramAttribute($value)
+    {
+        return DataCompresser::decompressData($value);
+    }
+
+    public function getProgramsAttribute()
+    {
+        if ($this->program === null) {
+            return '';
+        }
+
+        return join(', ', $this->program);
+    }
+
+    public function setProgramAttribute($value)
+    {
+        $this->attributes['program'] = DataCompresser::compressData($value);
     }
 }

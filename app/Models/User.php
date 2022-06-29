@@ -10,7 +10,18 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
 use InvalidArgumentException;
+use Ramsey\Collection\Collection;
 
+/**
+ * @property int $id
+ * @property string $name
+ * @property string $password
+ * @property string $remember_token
+ * @property bool $verified
+ * @property Collection $workshops
+ * @property Collection $faculties
+ * @property EducationalInformation $educationalInformation
+ */
 class User extends Authenticatable implements HasLocalePreference
 {
     use NotificationCounter;
@@ -191,6 +202,11 @@ class User extends Authenticatable implements HasLocalePreference
         return isset($this->educationalInformation);
     }
 
+    public function application()
+    {
+        return $this->hasOne('App\Models\ApplicationForm');
+    }
+
     public function workshops()
     {
         return $this->belongsToMany(Workshop::class, 'workshop_users');
@@ -204,6 +220,11 @@ class User extends Authenticatable implements HasLocalePreference
     public function importItems()
     {
         return $this->hasMany('App\Models\ImportItem');
+    }
+
+    public function profilePicture()
+    {
+        return $this->hasOne('App\Models\File');
     }
 
     /* Role related getters */
@@ -297,6 +318,10 @@ class User extends Authenticatable implements HasLocalePreference
             if ($this->hasRole($roleName, $object->id)) {
                 return true;
             }
+        }
+        // If an applicant has not yet set the extern/resident status, the collegist role does not have an object. This should be the only exception.
+        if ($this->hasRole($roleName)) {
+            return true;
         }
 
         return false;

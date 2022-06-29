@@ -2,6 +2,7 @@
 
 return [
     'admin' => 'Rendszergazda',
+    'application-committee' => 'Felvételiztető',
     'collegist' => 'Collegista',
     'communication-committee' => 'Kommunikációs Bizottság',
     'communication-leader' => 'Kommunikációs bizottsági elnök',
@@ -56,7 +57,7 @@ return [
     'Aurélien Sauvageot Francia műhely' => 'Aurélien Sauvageot Francia műhely',
     'Gazdálkodástudományi műhely' => 'Gazdálkodástudományi műhely',
     'Germanisztika műhely' => 'Germanisztika műhely',
-    'Informatikai műhely' => 'Informatikai műhely',
+    'Informatika műhely' => 'Informatika műhely',
     'Magyar műhely' => 'Magyar műhely',
     'Matematika-fizika műhely' => 'Matematika-fizika műhely',
     'Mendöl Tibor földrajz-, föld- és környezettudományi műhely' => 'Mendöl Tibor földrajz-, föld- és környezettudományi műhely',

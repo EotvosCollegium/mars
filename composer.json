@@ -65,11 +65,7 @@
             "@php artisan key:generate --ansi"
         ],
         "post-update-cmd": [
-            "Illuminate\\Foundation\\ComposerScripts::postUpdate",
-            "@php artisan ide-helper:refresh"
-        ],
-        "post-install-cmd": [
-            "@php artisan ide-helper:refresh"
+            "Illuminate\\Foundation\\ComposerScripts::postUpdate"
         ]
     }
 }

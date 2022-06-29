@@ -6,9 +6,18 @@ use App\View\Components\Input;
 
 class Textarea extends Input
 {
-    public function __construct($id, $locale = null, $text = null, $s = 12, $m = null, $l = null, $xl = null, $onlyInput = false)
+    public $helper;
+
+    /**
+     * Create a new textarea input instance.
+     *
+     * @param  string  $helper  helper message
+     * @return void
+     */
+    public function __construct($id, $locale = null, $helper = null, $text = null, $s = 12, $m = null, $l = null, $xl = null, $onlyInput = false)
     {
         parent::__construct($id, $locale, $text, $s, $m, $l, $xl, $onlyInput);
+        $this->helper = $helper;
     }
 
     /**
