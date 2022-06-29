@@ -80,7 +80,14 @@ class UserPolicy
      */
     public function viewAnyApplication(User $user): bool
     {
-        return $user->hasAnyRole([Role::NETWORK_ADMIN, Role::SECRETARY, Role::APPLICATION_COMMITTEE_MEMBER]);
+        return $user->hasAnyRole([
+            Role::NETWORK_ADMIN,
+            Role::SECRETARY,
+            Role::WORKSHOP_ADMINISTRATOR,
+            Role::WORKSHOP_LEADER,
+            Role::APPLICATION_COMMITTEE_MEMBER,
+            Role::DIRECTOR
+        ]);
     }
 
     /** Permission related policies */
