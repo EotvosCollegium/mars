@@ -168,7 +168,7 @@ class ApplicationController extends Controller
         $application = ApplicationForm::findOrFail($request->input('application'));
         if ($request->has('note')) {
             $application->update(['note' => $request->input('note')]);
-        } else if ($request->has('banish')) {
+        } elseif ($request->has('banish')) {
             $application->update(['status' => ApplicationForm::STATUS_BANISHED]);
         }
         return redirect()->back();
