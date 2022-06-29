@@ -51,7 +51,8 @@ class UserPolicy
             || $user->roles()
                 ->whereIn('name', [Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR])
                 ->get(['object_id'])->pluck('object_id')
-                ->intersect($target->workshops()->pluck('id'))->count() > 0;;
+                ->intersect($target->workshops()->pluck('id'))->count() > 0;
+        ;
     }
 
     /**
@@ -67,7 +68,8 @@ class UserPolicy
             || $user->roles()
                 ->whereIn('name', [Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR])
                 ->get(['object_id'])->pluck('object_id')
-                ->intersect($target->workshops()->pluck('id'))->count() > 0;;
+                ->intersect($target->workshops()->pluck('id'))->count() > 0;
+        ;
     }
 
     /** Application related policies */
