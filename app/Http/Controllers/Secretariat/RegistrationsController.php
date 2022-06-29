@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 
 class RegistrationsController extends Controller
 {
@@ -78,6 +79,24 @@ class RegistrationsController extends Controller
         }
 
         return redirect()->route('secretariat.registrations')->with('message', __('general.successful_modification'));
+    }
+
+    public function invite(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'email' => ['required', 'unique:users,email'],
+        ]);
+        $validator->validate();
+
+        $user=User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => \Hash::make(\Str::random(32)),
+            'verified' => true,
+        ]);
+        \Invytr::invite($user);
+        return redirect()->route('secretariat.permissions.show', ['id' => $user->id])->with('message', __('registration.set_permissions'));
     }
 
     public function show(Request $request)
