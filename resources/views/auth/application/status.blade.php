@@ -6,7 +6,7 @@
         <i class="green-text">Véglegesítve</i>
         @break
     @case(App\Models\ApplicationForm::STATUS_BANISHED)
-        @if($admin ?? false)
+        @can('viewAnyApplication', \App\Models\User::class)
             <i class="red-text">Elutasítva</i>
         @else
             <i class="green-text">Véglegesítve</i>

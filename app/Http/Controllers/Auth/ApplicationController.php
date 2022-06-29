@@ -10,6 +10,7 @@ use App\Models\Role;
 use App\Models\User;
 use App\Models\Workshop;
 use Carbon\Carbon;
+use http\Env\Response;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -115,7 +116,6 @@ class ApplicationController extends Controller
             $this->authorize('viewApplication', $user);
             return view('auth.application.applications_details', [
                 'user' => $user,
-                'admin' => true
             ]);
         } else {
             //return all applications that can be visible
@@ -153,7 +153,6 @@ class ApplicationController extends Controller
                 'workshop' => $request->input('workshop'), //filtered workshop
                 'workshops' => $workshops, //workshops that can be chosen to filter
                 'status' => $request->input('status'), //filtered status
-                'admin' => true
             ]);
         }
     }
@@ -166,10 +165,12 @@ class ApplicationController extends Controller
      */
     public function editApplication(Request $request): RedirectResponse
     {
-        $this->authorize('viewAnyApplication');
+        $this->authorize('viewAnyApplication', User::class);
         $application = ApplicationForm::findOrFail($request->input('application'));
         if ($request->has('note')) {
             $application->update(['note' => $request->input('note')]);
+        } else if ($request->has('banish')) {
+            $application->update(['status' => ApplicationForm::STATUS_BANISHED]);
         }
         return redirect()->back();
     }
