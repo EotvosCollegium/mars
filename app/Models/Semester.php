@@ -14,6 +14,8 @@ use InvalidArgumentException;
  *
  * The status can be verified or not (by default it is not). Users with permission has to
  * confirm that the user can have the given status.
+ *
+ * @property mixed $id
  */
 class Semester extends Model
 {
