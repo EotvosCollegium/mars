@@ -66,7 +66,6 @@ class AddMissingConstraints extends Migration
         Schema::table('print_account_history', function (Blueprint $table) {
             $table->foreignId('user_id')->change()->references('id')->on('users')->cascadeOnDelete();
         });
-
     }
 
     /**
