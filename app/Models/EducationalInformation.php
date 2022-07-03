@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @property string|null $program
  * @property string $programs
+ * @property string $neptun
  *
  */
 class EducationalInformation extends Model
