@@ -6,6 +6,7 @@ use App\Utils\NotificationCounter;
 use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
@@ -25,6 +26,7 @@ class User extends Authenticatable implements HasLocalePreference
     use NotificationCounter;
     use Notifiable;
     use HasFactory;
+    use SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
