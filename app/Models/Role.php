@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -19,6 +20,7 @@ class Role extends Model
     // General roles
     public const PRINT_ADMIN = 'print-admin';
     public const NETWORK_ADMIN = 'internet-admin';
+    public const SYS_ADMIN = 'internet-admin'; //synonym
     public const COLLEGIST = 'collegist';
     public const TENANT = 'tenant';
     public const WORKSHOP_ADMINISTRATOR = 'workshop-administrator';
@@ -29,7 +31,6 @@ class Role extends Model
     public const DIRECTOR = 'director';
     public const STAFF = 'staff';
     public const LOCALE_ADMIN = 'locale-admin';
-    public const PERMISSION_HANDLER = 'permission-handler';
     public const STUDENT_COUNCIL = 'student-council';
 
     //Students' Committe role's objects
@@ -92,7 +93,6 @@ class Role extends Model
         self::PRINTER,
         self::INTERNET_USER,
         self::LOCALE_ADMIN,
-        self::PERMISSION_HANDLER,
         self::STUDENT_COUNCIL,
     ];
 
@@ -102,7 +102,8 @@ class Role extends Model
 
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'role_users')->using(RoleUser::class);
+        return $this->belongsToMany(User::class, 'role_users')
+            ->withPivot(['object_id', 'workshop_id'])->using(RoleUser::class);
     }
 
     public function objects(): HasMany
@@ -252,8 +253,6 @@ class Role extends Model
                 return 'light-green';
             case self::LOCALE_ADMIN:
                 return 'amber';
-            case self::PERMISSION_HANDLER:
-                return 'deep-orange';
             case self::STUDENT_COUNCIL:
                 return 'green darken-4';
             case self::APPLICATION_COMMITTEE_MEMBER:

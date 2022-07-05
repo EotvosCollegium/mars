@@ -21,27 +21,12 @@ class FreePagesPolicy
         }
     }
 
-    public function viewAny(User $user)
-    {
-        return false;
-    }
-
-    public function viewSelf(User $user)
-    {
-        return true;
-    }
-
-    public function view(User $user, FreePages $freePages)
+    public function view(User $user, FreePages $freePages): bool
     {
         return $freePages->user_id == $user->id;
     }
 
-    public function create(User $user)
-    {
-        return false;
-    }
-
-    public function update(User $user, FreePages $freePages)
+    public function update(User $user, FreePages $freePages): bool
     {
         return $freePages->user_id == $user->id;
     }

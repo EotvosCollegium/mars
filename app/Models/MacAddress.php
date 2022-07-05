@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property mixed $user_id
+ */
 class MacAddress extends Model
 {
     use HasFactory;
