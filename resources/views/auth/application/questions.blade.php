@@ -51,7 +51,7 @@
                     <div class="input-field col s12 m6"><p style="margin-bottom:10px"><label style="font-size: 1em">Honnan
                                 hallott a Collegiumról?</label></p>
                         @foreach(\App\Models\ApplicationForm::QUESTION_1 as $answer)
-                            @if(in_array($answer, $user->application->question_1) !== false)
+                            @if(in_array($answer, $user->application->question_1 ?? []) !== false)
                                 <p>
                                     <x-input.checkbox
                                         only-input
