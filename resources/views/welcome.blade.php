@@ -34,8 +34,8 @@
                             <li><a href="{{ url('/home') }}">@lang('general.home')</a></li>
                             @else
                             <li><a href="{{ route('login') }}">@lang('general.login')</a></li>
-                            <li><a href="{{ route('register') }}"><span class="hide-on-small-only">@lang('general.register_collegist')</span></a></li>
-                            <li class="hide-on-small-only"><a href="{{ route('register.guest') }}">@lang('general.register_guest')</a></li>
+                            <li><a href="{{ route('register') }}">@lang('general.register_collegist')</a></li>
+                            <li><a href="{{ route('register.guest') }}">@lang('general.register_guest')</a></li>
                             @endauth
                         </ul>
                     </div>
@@ -64,7 +64,7 @@
         </div>
     </div>
 
-    <div class="links flex-center">
+    <div class="links center-align">
         <a href="#">
             @lang('main.better')</a><br class="mobile-break" />
         <a href="#">
