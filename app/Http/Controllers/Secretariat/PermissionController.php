@@ -10,34 +10,26 @@ use Illuminate\Http\Request;
 
 class PermissionController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('can:permission.handle');
-    }
-
     public function index()
     {
+        $this->authorize('viewAny', User::class);
+
         $users = User::with('roles')->orderBy('name')->get();
 
         return view('secretariat.permissions.list', ['users' => $users]);
     }
 
-    public function show($id)
+    public function show(User $user)
     {
-        $user = User::find($id);
-
-        $this->authorize('viewPermissionFor', $user);
+        $this->authorize('view', $user);
 
         return view('secretariat.permissions.show', ['user' => $user]);
     }
 
-    public function edit(Request $request, $id, $role_id)
+    public function edit(Request $request, User $user, $role_id)
     {
-        $user = User::find($id);
-
-        $this->authorize('updatePermission', [$user, $role_id]);
-        $roleName = Role::find($role_id)->name;
-        $object_id = $request[$roleName] ?? null;
+//TODO??
+        $this->authorize('updatePermission', [$user, $role_id, $request->roleName ?? null]);
 
         if (! Role::canBeAttached($role_id, $object_id)) {
             $user = User::whereHas('roles', function (Builder $query) use ($role_id, $object_id) {

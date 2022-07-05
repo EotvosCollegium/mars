@@ -11,13 +11,13 @@ class LocalePolicy
 {
     use HandlesAuthorization;
 
-    public function viewAny(User $user)
+    public function viewAny(User $user): bool
     {
         return $user->hasRoleBase(Role::LOCALE_ADMIN);
     }
 
-    public function approve(User $user, LocalizationContribution $contribution)
+    public function approve(User $user, LocalizationContribution $contribution): bool
     {
-        return $user->hasRoleWithObjectName(Role::LOCALE_ADMIN, $contribution->language);
+        return $user->hasRole(Role::LOCALE_ADMIN, $contribution->language);
     }
 }

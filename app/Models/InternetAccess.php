@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property mixed $user_id
+ */
 class InternetAccess extends Model
 {
     protected $primaryKey = 'user_id';

@@ -41,9 +41,9 @@
         <li><a class="waves-effect" href="{{ route('internet') }}"><i class="material-icons left">wifi</i>@lang('internet.internet')</a></li>
         @endif
         <!-- faults page -->
-        @if(Auth::user()->isCollegist())
+        @can('view', \App\Models\Fault::class)
         <li><a class="waves-effect" href="{{ route('faults') }}"><i class="material-icons left">build</i>@lang('faults.faults')
-                @if (Auth::user()->hasRole(\App\Models\Role::STAFF))
+                @can('update', \App\Models\Fault::class)
                     @notification(\App\Models\Fault::class)
                 @endif
             </a>
@@ -61,7 +61,7 @@
         <li class="no-padding">
             <ul class="collapsible collapsible-accordion">
                 <!-- students' council module -->
-                @can('viewAny', \App\Models\Checkout::class)
+                @can('is-collegist')
                 <li><div class="divider"></div></li>
                 <li class="@yield('student_council_module')">
                     <a class="collapsible-header waves-effect" style="padding-left:32px">
@@ -125,7 +125,7 @@
                     </div>
                 </li>
                 @endcan
-                @if(auth()->user()->isCollegist())
+                @can('is-collegist')
                 {{-- Sysadmin module --}}
                 <li><div class="divider"></div></li>
                 <li class="@yield('admin_module')">

@@ -5,6 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 
+/**
+ * @property mixed $name
+ */
 class Checkout extends Model
 {
     protected $fillable = ['name', 'password'];

@@ -21,12 +21,15 @@
                         <tr>
                             <td>{{ $role->name() }}</td>
                             <td>
-                                @if($role->canHaveObject())
-                                    {{ __('role.'.$role->object()->name) ?? ''}}
+                                @if($role->pivot->workshop_id)
+                                    {{ $role->pivot->workshop->name }}
+                                @endif
+                                @if($role->pivot->object_id)
+                                    {{ $role->pivot->object->name }}
                                 @endif
                             </td>
                             <td>
-                                <form action="{{ route('secretariat.permissions.remove', ['id' => $user->id, 'role_id' => $role->id, 'object_id' => $role->pivot->object_id]) }}" method="post">
+                                <form action="{{ route('secretariat.permissions.remove', ['user' => $user->id, 'role_id' => $role->id, 'object_id' => $role->pivot->object_id]) }}" method="post">
                                 @csrf
                                 <x-input.button floating class="right red" icon="delete" />
                                 </form>
@@ -43,11 +46,13 @@
                 <span class="card-title">@lang('admin.other_permissions') </span>
                 <div class="row">
                 @foreach (App\Models\Role::all()->sortBy('name') as $role)
-                    @if(!$user->roles->contains($role) || $role->canHaveObject())
-                        <form action="{{ route('secretariat.permissions.edit', ['id' => $user->id, 'role_id' => $role->id]) }}" method="post">
+                    @if(!$user->roles->contains($role) || $role->has_objects || $role->has_workshops)
+                        <form action="{{ route('secretariat.permissions.edit', ['user' => $user->id, 'role_id' => $role->id]) }}" method="post">
                             @csrf
-                            @if($role->canHaveObject())
-                                <x-input.select s=11 without_label :elements="$role->possibleObjects()" :formatter="function($o) { return __('role.'.$o->name); }" :id="$role->name" :placeholder="__('role.'.$role->name)"/>
+                            @if($role->has_objects)
+                                <x-input.select s=11 without_label :elements="$role->objects" :formatter="function($o) { return __('role.'.$o->name); }" :id="$role->name" :placeholder="__('role.'.$role->name)"/>
+                            @elseif($role->has_workshops)
+                                <x-input.select s=11 without_label :elements="\App\Models\Workshop::all()" :formatter="function($o) { return __('role.'.$o->name); }" :id="$role->name" :placeholder="__('role.'.$role->name)"/>
                             @else
                                 <x-input.text s=11 without_label id="blank" :value="__('role.'.$role->name)" disabled/>
                             @endif

@@ -31,6 +31,8 @@ use InvalidArgumentException;
  * @property Collection|Role[] $roles
  * @property Collection|Semester[] $allSemesters
  * @property Collection|Semester[] $activeSemesters
+ * @property Collection|Workshop[] $workshops
+ * @property Collection|WifiConnection[] $wifiConnections
  */
 class User extends Authenticatable implements HasLocalePreference
 {
@@ -222,6 +224,26 @@ class User extends Authenticatable implements HasLocalePreference
         return $this->belongsToMany(Workshop::class, 'workshop_users');
     }
 
+    /**
+     * Return workshop administrators/leaders' workshops.
+     * @return \Illuminate\Support\Collection
+     */
+    public function roleWorkshops(): \Illuminate\Support\Collection
+    {
+        return $this->roles()->whereIn('name', [Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR])
+            ->with('workshops')->pluck('workshop');
+    }
+
+    /**
+     * Return application committee workshops.
+     * @return \Illuminate\Support\Collection
+     */
+    public function applicationWorkshops(): \Illuminate\Support\Collection
+    {
+        return $this->roles()->where('name', Role::APPLICATION_COMMITTEE_MEMBER)
+            ->with('workshops')->pluck('workshop');
+    }
+
     public function faculties()
     {
         return $this->belongsToMany(Faculty::class, 'faculty_users');
@@ -241,7 +263,8 @@ class User extends Authenticatable implements HasLocalePreference
 
     public function roles(): BelongsToMany
     {
-        return $this->belongsToMany(Role::class, 'role_users')->using(RoleUser::class);
+        return $this->belongsToMany(Role::class, 'role_users')
+            ->withPivot(['object_id', 'workshop_id'])->using(RoleUser::class);
     }
 
     /**
@@ -336,80 +359,20 @@ class User extends Authenticatable implements HasLocalePreference
     {
         return self::role(Role::STUDENT_COUNCIL, Role::PRESIDENT)->first();
     }
-//
-//    /**
-//     * @return User|null the director
-//     */
-//    public static function director()
-//    {
-//        return Role::getUsers(Role::DIRECTOR)->first();
-//    }
-//
-//    /**
-//     * @param  string  $roleObjectName  one of Role::COMMITTEE_LEADERS
-//     * @return User|null the committee leader
-//     */
-//    public static function committeeLeader($roleObjectName)
-//    {
-//        if (! in_array($roleObjectName, Role::COMMITTEE_LEADERS)) {
-//            throw new InvalidArgumentException($roleObjectName.' should be one of these: '.implode(', ', Role::COMMITTEE_LEADERS));
-//        }
-//
-//        return Role::getUsers(Role::STUDENT_COUNCIL, $roleObjectName)->first();
-//    }
-//
-//    /**
-//     * @return User|null the Communication Committe's leader
-//     */
-//    public static function communicationLeader()
-//    {
-//        return self::CommitteeLeader(Role::COMMUNICATION_LEADER);
-//    }
-//
-//    /**
-//     * @return User|null the Cultural Committe's leader
-//     */
-//    public static function culturalLeader()
-//    {
-//        return self::CommitteeLeader(Role::CULTURAL_LEADER);
-//    }
-//
-//    /**
-//     * @return User|null the Sport Committe's leader
-//     */
-//    public static function sportLeader()
-//    {
-//        return self::CommitteeLeader(Role::SPORT_LEADER);
-//    }
-//
-//    /**
-//     * @return User|null the Science Committe's leader
-//     */
-//    public static function scienceLeader()
-//    {
-//        return self::CommitteeLeader(Role::SCIENCE_LEADER);
-//    }
-//
-//    /**
-//     * @return User|null the Community Committe's leader
-//     */
-//    public static function communityLeader()
-//    {
-//        return self::CommitteeLeader(Role::COMMUNITY_LEADER);
-//    }
-//
-//    /**
-//     * @return User|null the Communication Committe's leader
-//     */
-//    public static function economicLeader()
-//    {
-//        return self::CommitteeLeader(Role::ECONOMIC_LEADER);
-//    }
-//
-//    public static function printers()
-//    {
-//        return Role::getUsers(Role::PRINTER);
-//    }
+
+    /**
+     * @return User|null the director
+     */
+    public static function director()
+    {
+        return Role::getUsers(Role::DIRECTOR)->first();
+    }
+
+
+    public static function printers()
+    {
+        return Role::firstWhere('name', Role::PRINTER)->getUsers();
+    }
 
     /* Semester related getters */
 

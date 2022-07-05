@@ -14,20 +14,20 @@ class CheckoutPolicy
     /**
      * Determine whether the user can view the checkout.
      */
-    public function view(User $user, Checkout $checkout)
+    public function view(User $user, Checkout $checkout): bool
     {
         return $user->isCollegist();
     }
 
-    public function viewAny(User $user)
+    public function viewAny(User $user): bool
     {
         return $user->isCollegist();
     }
 
-    public function addPayment(User $user, Checkout $checkout)
+    public function addPayment(User $user, Checkout $checkout): bool
     {
         if ($checkout->name === Checkout::STUDENTS_COUNCIL) {
-            return $user->hasRoleWithObjectName(Role::STUDENT_COUNCIL, 'economic-leader');
+            return $user->hasRole(Role::STUDENT_COUNCIL, Role::ECONOMIC_LEADER);
         }
         if ($checkout->name === Checkout::ADMIN) {
             return $user->hasRole(Role::NETWORK_ADMIN);
@@ -36,15 +36,16 @@ class CheckoutPolicy
         return false;
     }
 
-    public function addKKTNetreg(User $user)
+    public function addKKTNetreg(User $user): bool
     {
-        return $user->hasRoleWithObjectNames(Role::STUDENT_COUNCIL, ['economic-member', 'economic-leader']);
+        return $user->hasRole(Role::STUDENT_COUNCIL, Role::ECONOMIC_MEMBER)
+            || $user->hasRole(Role::STUDENT_COUNCIL, Role::ECONOMIC_LEADER);
     }
 
-    public function administrate(User $user, Checkout $checkout)
+    public function administrate(User $user, Checkout $checkout): bool
     {
         if ($checkout->name === Checkout::STUDENTS_COUNCIL) {
-            return $user->hasRoleWithObjectNames(Role::STUDENT_COUNCIL, ['economic-leader']);
+            return $user->hasRole(Role::STUDENT_COUNCIL, Role::ECONOMIC_LEADER);
         }
         if ($checkout->name === Checkout::ADMIN) {
             return $user->hasRole(Role::NETWORK_ADMIN);
@@ -53,7 +54,7 @@ class CheckoutPolicy
         return false;
     }
 
-    public function handleAny(User $user)
+    public function handleAny(User $user): bool
     {
         $checkouts = Checkout::all();
         foreach ($checkouts as $checkout) {

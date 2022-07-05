@@ -6,6 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property PaymentType $type
+ * @property User $receiver
+ * @property mixed $checkout
+ * @property mixed $receiver_id
+ */
 class Transaction extends Model
 {
     use SoftDeletes;

@@ -21,12 +21,12 @@ class InternetAccessPolicy
         }
     }
 
-    public function possess(User $user)
+    public function possess(User $user): bool
     {
         return true;
     }
 
-    public function handleAny(User $user)
+    public function handleAny(User $user): bool
     {
         return false;
     }
@@ -34,7 +34,7 @@ class InternetAccessPolicy
     /**
      * Determine whether the user can view any internet accesses.
      *
-     * @param  \App\Models\User  $user
+     * @param User $user
      * @return mixed
      */
     public function viewAny(User $user)
@@ -45,22 +45,22 @@ class InternetAccessPolicy
     /**
      * Determine whether the user can view the internet access.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\InternetAccess  $internetAccess
+     * @param User $user
+     * @param InternetAccess $internetAccess
      * @return mixed
      */
-    public function view(User $user, InternetAccess $internetAccess)
+    public function view(User $user, InternetAccess $internetAccess) : bool
     {
-        return $internetAccess !== null && $user->id === $internetAccess->user_id;
+        return $user->id === $internetAccess->user_id;
     }
 
     /**
      * Determine whether the user can create internet accesses.
      *
-     * @param  \App\Models\User  $user
+     * @param User $user
      * @return mixed
      */
-    public function create(User $user)
+    public function create(User $user) : bool
     {
         return false;
     }
@@ -68,8 +68,8 @@ class InternetAccessPolicy
     /**
      * Determine whether the user can update the internet access.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\InternetAccess  $internetAccess
+     * @param User $user
+     * @param InternetAccess $internetAccess
      * @return mixed
      */
     public function update(User $user, InternetAccess $internetAccess)
@@ -80,8 +80,8 @@ class InternetAccessPolicy
     /**
      * Determine whether the user can delete the internet access.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\InternetAccess  $internetAccess
+     * @param User $user
+     * @param InternetAccess $internetAccess
      * @return mixed
      */
     public function delete(User $user, InternetAccess $internetAccess)

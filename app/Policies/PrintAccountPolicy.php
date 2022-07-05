@@ -34,12 +34,12 @@ class PrintAccountPolicy
         return false;
     }
 
-    public function view(User $user, PrintAccount $printAccount)
+    public function view(User $user, PrintAccount $printAccount): bool
     {
-        return $printAccount !== null && $user->id === $printAccount->user_id;
+        return $user->id === $printAccount->user_id;
     }
 
-    public function modify(User $user)
+    public function modify(User $user): bool
     {
         return false;
     }

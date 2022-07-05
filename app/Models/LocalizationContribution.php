@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property mixed $language
+ */
 class LocalizationContribution extends Model
 {
     protected $table = 'localization_contributions';
