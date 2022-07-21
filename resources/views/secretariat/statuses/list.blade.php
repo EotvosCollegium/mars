@@ -19,7 +19,7 @@
                         @foreach($collegists as $user)
                         <tr>
                             <td>
-                                <b><a href="{{ route('secretariat.user.show', ['id' => $user->id]) }}" class="black-text" >{{ $user->name }}</a></b>
+                                <b><a href="{{ route('secretariat.user.show', ['user' => $user->id]) }}" class="black-text" >{{ $user->name }}</a></b>
                                 @if($user->hasEducationalInformation())
                                 <br>{{ $user->educationalInformation->neptun ?? '' }}
                                 @endif
@@ -31,7 +31,7 @@
                                 @livewire('edit-status', ['user' => $user, 'semester' => \App\Models\Semester::current()])
                             </td>
                             <td>
-                                <x-input.button :href="route('secretariat.user.semesters', ['id' => $user->id])" class="coli blue right" icon="event_note" floating />
+                                <x-input.button :href="route('secretariat.user.semesters', ['user' => $user->id])" class="coli blue right" icon="event_note" floating />
                             </td>
                         @endforeach
                     </tbody>

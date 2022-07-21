@@ -17,7 +17,7 @@
                     <tbody>
                         @foreach ($users as $user)
                         <tr>
-                            <td><a href="{{ route('secretariat.user.show', ['id' => $user->id]) }}" class="black-text" >{{ $user->name }}</a></td>
+                            <td><a href="{{ route('secretariat.user.show', ['user' => $user->id]) }}" class="black-text" >{{ $user->name }}</a></td>
                             <td>@include('user.roles', ['roles' => $user->roles])</td>
                             <td>
                                 <x-input.button floating :href="route('secretariat.permissions.show', $user->id)"

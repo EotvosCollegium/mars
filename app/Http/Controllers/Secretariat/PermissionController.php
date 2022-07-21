@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Secretariat;
 use App\Http\Controllers\Controller;
 use App\Models\Role;
 use App\Models\User;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
@@ -26,55 +27,36 @@ class PermissionController extends Controller
         return view('secretariat.permissions.show', ['user' => $user]);
     }
 
-    public function edit(Request $request, User $user, $role_id)
+    public function edit(Request $request, User $user, Role $role)
     {
-//TODO??
-        $this->authorize('updatePermission', [$user, $role_id, $request->roleName ?? null]);
+        $object_id = $request->get('object_id') ?? $request->get('workshop_id');
+        $object = $object_id ? $role->getObject($object_id) : null;
 
-        if (! Role::canBeAttached($role_id, $object_id)) {
-            $user = User::whereHas('roles', function (Builder $query) use ($role_id, $object_id) {
-                $query->where('id', $role_id)->where('role_users.object_id', $object_id);
-            })->first();
-            if ($user) {
-                return back()->with('message', __('role.role_unavailable', ['user' => $user->name]));
-            } else {
-                return back()->with('message', __('role.role_can_not_be_attached'));
-            }
+        if($request->user()->cannot('updatePermission', [$user, $role, $object])){
+            return redirect()->back()->with('error', __('role.unauthorized'));
         }
 
-        if ($object_id) {
-            //if adding a collegist role to a collegist
-            if ($roleName == Role::COLLEGIST && $user->isCollegist()) {
-                //just change resident/extern status (object) - not attaching a new role.
-                $user->roles()->where('id', $role_id)->update(['object_id' => $object_id]);
-            }
-            if ($user->roles()->where('id', $role_id)->wherePivot('object_id', $object_id)->count() == 0) {
-                $user->roles()->attach([
-                    $role_id => ['object_id' => $object_id],
-                ]);
-            }
-        } else {
-            if ($user->roles()->where('id', $role_id)->count() == 0) {
-                $user->roles()->attach($role_id);
-            }
-        }
+        if (!$role->isValid($object))
+            $message = __('role.role_can_not_be_attached');
+        else if ($user->addRole($role, $object))
+            $message = __('general.successfully_added');
+        else
+            $message = __('role.role_unavailable');
+        return redirect()->back()->with('message', $message);
 
-        return back();
     }
 
-    public function remove(Request $request, $id, $role_id, $object_id = null)
+    public function remove(Request $request, User $user, Role $role)
     {
-        $user = User::find($id);
+        $object_id = $request->get('object');
+        $object = $object_id ? $role->getObject($object_id) : null;
 
-        $this->authorize('deletePermission', [$user, $role_id]);
-
-        $role = Role::find($role_id);
-        if ($role->canHaveObject()) {
-            $user->roles()->where('id', $role_id)->wherePivot('object_id', $object_id)->detach($role_id);
-        } else {
-            $user->roles()->detach($role_id);
+        if($request->user()->cannot('updatePermission', [$user, $role, $object])){
+            return redirect()->back()->with('error', __('role.unauthorized'));
         }
 
-        return back();
+        $user->removeRole($role, $object ?? null);
+
+        return redirect()->back();
     }
 }

@@ -13,9 +13,6 @@ class FreePagesPolicy
 
     public function before(User $user)
     {
-        if ($user->hasRole(Role::PRINT_ADMIN)) {
-            return true;
-        }
         if (! $user->hasRole(Role::PRINTER)) {
             return false;
         }

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property integer $id
  * @property string $name
  * @property integer $role_id
+ * @property string $translatedName
  */
 class RoleObject extends Model
 {
@@ -21,4 +22,8 @@ class RoleObject extends Model
         return $this->belongsTo(Role::class);
     }
 
+    public function getTranslatedNameAttribute() : string
+    {
+        return __('role.'.$this->name);
+    }
 }

@@ -25,6 +25,8 @@ class RestructureRoleSystem extends Migration
             ->update(['has_objects' => true]);
         DB::table('roles')->whereIn('name', ['workshop-administrator', 'workshop-leader', 'application-committee'])
             ->update(['has_workshops' => true]);
+        DB::table('roles')->where('name', 'permission-handler')->delete();
+        DB::table('roles')->where('name', 'print-admin')->delete();
 
 
         Schema::create('role_objects', function (Blueprint $table) {

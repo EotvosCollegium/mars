@@ -13,9 +13,6 @@ class PrintAccountPolicy
 
     public function before(User $user, $ability)
     {
-        if ($user->hasRole(Role::PRINT_ADMIN)) {
-            return true;
-        }
         if (! $user->hasRole(Role::PRINTER)) {
             return false;
         }

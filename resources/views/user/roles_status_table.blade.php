@@ -4,7 +4,7 @@
         <th>@lang('role.roles')</th>
         <td>@include('user.roles', ['roles' => $user->roles, 'newline' => $newline ?? false])</td>
         <td>
-        @can('updatePermission', $user)
+        @can('updateAnyPermission', $user)
             <x-input.button :href="route('secretariat.permissions.show', $user->id)"
                 floating class="right" icon="edit"/>
         @endcan
@@ -17,8 +17,8 @@
                 @lang("user." . $user->getStatus())
             </span></td>
         <td>
-        @can('updateStatus', $user) {{-- ??? --}}
-            <x-input.button :href="route('secretariat.user.semesters', ['id' => $user->id])" floating class="right" icon="edit"/>
+        @can('updateStatus', $user)
+            <x-input.button :href="route('secretariat.user.semesters', ['user' => $user->id])" floating class="right" icon="edit"/>
         @endcan
         </td>
     </tr>

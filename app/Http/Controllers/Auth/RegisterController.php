@@ -140,7 +140,7 @@ class RegisterController extends Controller
             if (! $user->isCollegist()) {
                 $users_to_notify = User::whereHas('roles', function ($q) {
                     $q->whereIn('role_id', [
-                        Role::getId(Role::NETWORK_ADMIN)
+                        Role::getId(Role::SYS_ADMIN)
                     ]);
                 })->get();
                 foreach ($users_to_notify as $person) {

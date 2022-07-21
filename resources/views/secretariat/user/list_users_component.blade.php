@@ -9,13 +9,13 @@
                 <span class="new badge {{ $r->color() }}" data-badge-caption=""
                     style="float:none;padding:2px 2px 2px 5px;margin:2px;cursor:pointer;"
                     wire:click="deleteRole({{$r->id}})">
-                    <nobr><i>{{ $r->name() }}</i> &cross;</nobr>
+                    <nobr><i>{{ $r->translatedName }}</i> &cross;</nobr>
                 </span>
                 @else
                 <span class="new badge {{ $r->color() }}" data-badge-caption=""
                     style="float:none;padding:2px 2px 2px 5px;margin:2px;cursor:pointer"
                     wire:click="addRole({{$r->id}})">
-                    <nobr>{{ $r->name() }}</nobr>
+                    <nobr>{{ $r->translatedName }}</nobr>
                 </span>
                 @endif
             @endforeach
@@ -76,7 +76,7 @@
             @can('view', $user)
             <div class="row">
                 <div class="col s12 xl3">
-                    <a href="{{ route('secretariat.user.show', ['id' => $user->id]) }}"><b>{{ $user->name }}</b></a><br>
+                    <a href="{{ route('secretariat.user.show', ['user' => $user->id]) }}"><b>{{ $user->name }}</b></a><br>
                     {{ $user->email }}
                     @if($user->hasEducationalInformation())
                     <br>{{ $user->educationalInformation->neptun ?? '' }}
@@ -85,9 +85,7 @@
                 <!-- Workshops -->
                 <div class="col s12 xl4">
                     @if($user->hasEducationalInformation())
-                    @can('viewEducationalInformation', $user)
                         @include('user.workshop_tags', ['user' => $user, 'newline' => true])
-                    @endcan
                     @endif
                 </div>
                 <!-- Roles -->

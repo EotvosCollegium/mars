@@ -9,8 +9,8 @@ $chunks = $roles->chunkWhile(function($current, $key, $chunk) {
 @foreach($chunks as $rolegroup)
     {{-- base role --}}
     <span class="new badge {{ $rolegroup->first()->color() }} tag" data-badge-caption="">
-        <nobr>{{ $rolegroup->first()->name() }}
-            @if($rolegroup->first()->pivot->workshop_id || $rolegroup->first()->pivot->object_id)
+        <nobr>{{ $rolegroup->first()->translatedName }}
+            @if($rolegroup->first()->has_workshops || $rolegroup->first()->has_objects)
                 :
             @endif
         </nobr>
@@ -18,14 +18,9 @@ $chunks = $roles->chunkWhile(function($current, $key, $chunk) {
 
     {{-- objects --}}
     @foreach($rolegroup as $role)
-        @if($role->pivot->object_id)
+        @if($rolegroup->first()->has_workshops || $rolegroup->first()->has_objects)
         <span class="new badge {{ $rolegroup->first()->color() }} tag" data-badge-caption="">
-            <nobr>@lang('role.'.$role->pivot->object->name)</nobr>
-        </span>
-        @endif
-        @if($role->pivot->workshop_id)
-            <span class="new badge {{ $rolegroup->first()->color() }} tag" data-badge-caption="">
-            <nobr>{{$role->pivot->workshop->name }}</nobr>
+            <nobr>{{ $role->pivot->translatedName }}</nobr>
         </span>
         @endif
     @endforeach

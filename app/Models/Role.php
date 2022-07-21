@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\DB;
+use InvalidArgumentException;
 
 /**
  * @property string $name
@@ -18,9 +20,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Role extends Model
 {
     // General roles
-    public const PRINT_ADMIN = 'print-admin';
-    public const NETWORK_ADMIN = 'internet-admin';
-    public const SYS_ADMIN = 'internet-admin'; //synonym
+    public const SYS_ADMIN = 'sys-admin';
     public const COLLEGIST = 'collegist';
     public const TENANT = 'tenant';
     public const WORKSHOP_ADMINISTRATOR = 'workshop-administrator';
@@ -79,8 +79,7 @@ class Role extends Model
 
     // all roles
     public const ALL = [
-        self::PRINT_ADMIN,
-        self::NETWORK_ADMIN,
+        self::SYS_ADMIN,
         self::COLLEGIST,
         self::TENANT,
         self::WORKSHOP_ADMINISTRATOR,
@@ -100,6 +99,7 @@ class Role extends Model
         'name',
     ];
 
+
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'role_users')
@@ -111,29 +111,55 @@ class Role extends Model
         return $this->hasMany(RoleObject::class, 'role_id');
     }
 
-    public function getObject(string $objectName) : RoleObject
+    /**
+     * Returns the role object belonging to the role while checking the validity of the role-object pair.
+     * @param integer|string $object roleObject or workshop name/id
+     * @return RoleObject|Workshop|null
+     * @throws InvalidArgumentException
+     */
+    public function getObject($object = null)
     {
-        /* @var RoleObject|null $object */
-        $object = $this->objects()->where('name', $objectName)->first();
-        if(!$object)
-            throw new InvalidArgumentException($objectName . "role object does not exist for the " . $this->name . " role.");
+        /* @var RoleObject|Workshop|null $object */
+        if($this->has_objects && is_numeric($object)) {
+            $object = $this->objects()->find($object);
+        } else if($this->has_objects){
+            $object = $this->objects()->firstWhere('name', $object);
+        } else if($this->has_workshops && is_numeric($object)){
+            $object = Workshop::find($object);
+        } else if($this->has_workshops){
+            $object = Workshop::firstWhere('name', $object);
+
+        } else if(!isset($object)){
+            $object = null;
+        }
+
+        if(!$this->isValid($object))
+            throw new InvalidArgumentException("Role object/workshop '".$object."' does not exist for the " . $this->name . " role.");
+
         return $object;
     }
-
     /**
-     * @return string the translated role
+     * Checks if a role-object pair is valid.
+     * @param RoleObject|Workshop|null $object
      */
-    public function name(): string
+    public function isValid($object = null): bool
     {
-        return __('role.' . $this->name);
+        if($this->has_objects
+            && $object instanceof RoleObject
+            && $this->objects()->where('id', $object->id)->exists())
+            return true;
+        if($this->has_workshops && $object instanceof Workshop) return true;
+        if(!$this->has_workshops && !$this->has_objects && !isset($object)) return true;
+        return false;
     }
+
 
     /**
      * Returns true if the role can be attached to only one user at a time.
-     * @param RoleObject|null $object. Returns false if the object is null for a role which can have objects.
+     * @param RoleObject|Workshop|null $object. Returns false if the object is null for a role which can have objects.
      * @return bool
      */
-    public function isUnique(RoleObject $object = null): bool
+    public function isUnique($object = null): bool
     {
         switch ($this->name) {
             case self::WORKSHOP_LEADER:
@@ -145,7 +171,7 @@ class Role extends Model
 //            case self::WORKSHOP_LEADER:
 //                return true;
             case self::STUDENT_COUNCIL:
-                return $object && (
+                return isset($object) && (
                         $object->name == self::PRESIDENT
                         || in_array($object->name, self::COMMITTEE_LEADERS)
                     );
@@ -162,11 +188,7 @@ class Role extends Model
      */
     public function canBeAttached($object = null): bool
     {
-        if ($this->has_objects) {
-            if (!isset($object)) {
-                return false;
-            }
-        }
+        if(!$this->isValid($object)) return false;
 
         if ($this->isUnique($object)) {
             if(isset($object) && $object instanceof RoleObject){
@@ -225,13 +247,22 @@ class Role extends Model
         return self::where('name', self::COLLEGIST)->first();
     }
 
+    public static function StudentsCouncil()
+    {
+        return self::where('name', self::STUDENT_COUNCIL)->first();
+
+    }
+
+    public function getTranslatedNameAttribute()
+    {
+        return __('role.'.$this->name);
+    }
+
 
     public function color(): string
     {
         switch ($this->name) {
-            case self::PRINT_ADMIN:
-                return 'red';
-            case self::NETWORK_ADMIN:
+            case self::SYS_ADMIN:
                 return 'pink';
             case self::COLLEGIST:
                 return 'coli';

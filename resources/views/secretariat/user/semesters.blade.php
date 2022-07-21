@@ -16,7 +16,7 @@
         <div class="card">
             <div class="card-content">
                 <span class="card-title">
-                    <a href="{{ route('secretariat.user.show', ['id' => $user->id]) }}" class="black-text" >
+                    <a href="{{ route('secretariat.user.show', ['user' => $user->id]) }}" class="black-text" >
                         {{ $user->name }}</a>
                 </span>
                 <table>

@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Models\Role;
+use App\Models\RoleObject;
 use App\Models\User;
 use App\Models\Workshop;
 use http\Exception\InvalidArgumentException;
@@ -85,20 +86,47 @@ class UserPolicy
     /**
      * @param User $user
      * @param User $target
-     * @param string $roleName
-     * @param string|null $roleObjectName
+     * @param Role|null $role
      * @return bool
      */
-    public function updatePermission(User $user, User $target, string $roleName, string $roleObjectName = null): bool
+    public function updateAnyPermission(User $user, User $target, Role $role = null): bool
     {
-        $role = Role::firstWhere('name', $roleName);
-        if(!$role) throw new InvalidArgumentException($roleName . "role does not exist");
+        if(!isset($role))
+            return $user->hasRole(Role::SECRETARY)
+            || $user->isInStudentsCouncil()
+            || $user->hasAnyRoleBase([Role::WORKSHOP_ADMINISTRATOR, Role::WORKSHOP_LEADER]);
 
-        if($role->name == Role::COLLEGIST) return $user->hasRole(Role::SECRETARY);
+        if($role->name == Role::COLLEGIST)
+            return $user->hasRole(Role::SECRETARY);
+
+        if($role->name == Role::APPLICATION_COMMITTEE_MEMBER)
+            return $user->hasAnyRoleBase([Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR]);
 
         if($role->name == Role::STUDENT_COUNCIL)
         {
-            $object = $role->getObject($roleObjectName);
+            return $user->isInStudentsCouncil();
+        }
+        return false;
+
+    }
+
+    /**
+     * @param User $user
+     * @param User $target
+     * @param Role $role
+     * @param RoleObject|Workshop|null $object
+     * @return bool
+     */
+    public function updatePermission(User $user, User $target, Role $role, $object = null): bool
+    {
+        if($role->name == Role::COLLEGIST)
+            return $user->hasRole(Role::SECRETARY);
+
+        if($role->name == Role::APPLICATION_COMMITTEE_MEMBER)
+            return $user->roleWorkshops()->has($object->id);
+
+        if($role->name == Role::STUDENT_COUNCIL)
+        {
             if($object->name == Role::PRESIDENT)
             {
                 return false;
@@ -107,8 +135,8 @@ class UserPolicy
             {
                 return true;
             }
-            if(in_array($roleObjectName, Role::COMMITTEE_MEMBERS)){
-                $committee = preg_split("-", $roleObjectName)[0];
+            if(in_array($object->name, Role::COMMITTEE_MEMBERS)){
+                $committee = preg_split("-", $object->name)[0];
                 return $user->hasRole(Role::STUDENT_COUNCIL, $committee . "-leader");
             }
         }

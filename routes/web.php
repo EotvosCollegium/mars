@@ -75,8 +75,8 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     /** Permission handling */
     Route::get('/secretariat/permissions', [PermissionController::class, 'index'])->name('secretariat.permissions.list');
     Route::get('/secretariat/permissions/{user}/show', [PermissionController::class, 'show'])->name('secretariat.permissions.show');
-    Route::post('/secretariat/permissions/{user}/edit/{role_id}', [PermissionController::class, 'edit'])->name('secretariat.permissions.edit');
-    Route::post('/secretariat/permissions/{user}/remove/{role_id}/{object_id?}', [PermissionController::class, 'remove'])->name('secretariat.permissions.remove');
+    Route::post('/secretariat/permissions/{user}/edit/{role}', [PermissionController::class, 'edit'])->name('secretariat.permissions.edit');
+    Route::post('/secretariat/permissions/{user}/remove/{role}', [PermissionController::class, 'remove'])->name('secretariat.permissions.remove');
 
 
     /** Localization */

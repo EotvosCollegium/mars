@@ -19,19 +19,15 @@
                     <tbody>
                         @foreach ($user->roles->sortBy('name') as $role)
                         <tr>
-                            <td>{{ $role->name() }}</td>
+                            <td>@lang('role.'.$role->name)</td>
                             <td>
-                                @if($role->pivot->workshop_id)
-                                    {{ $role->pivot->workshop->name }}
-                                @endif
-                                @if($role->pivot->object_id)
-                                    {{ $role->pivot->object->name }}
-                                @endif
+                                {{ $role->pivot->translatedName }}
                             </td>
                             <td>
-                                <form action="{{ route('secretariat.permissions.remove', ['user' => $user->id, 'role_id' => $role->id, 'object_id' => $role->pivot->object_id]) }}" method="post">
+                                <form action="{{ route('secretariat.permissions.remove', ['user' => $user->id, 'role' => $role->id]) }}" method="post">
                                 @csrf
-                                <x-input.button floating class="right red" icon="delete" />
+                                    <input type="hidden" name="object_id" value="{{$role->pivot->workshop_id ?? $role->pivot->object_id}}">
+                                    <x-input.button floating class="right red" icon="delete" />
                                 </form>
                             </td>
                         </tr>
@@ -46,19 +42,21 @@
                 <span class="card-title">@lang('admin.other_permissions') </span>
                 <div class="row">
                 @foreach (App\Models\Role::all()->sortBy('name') as $role)
+                    @can('updateAnyPermission', [$user, $role])
                     @if(!$user->roles->contains($role) || $role->has_objects || $role->has_workshops)
-                        <form action="{{ route('secretariat.permissions.edit', ['user' => $user->id, 'role_id' => $role->id]) }}" method="post">
+                        <form action="{{ route('secretariat.permissions.edit', ['user' => $user->id, 'role'=>$role->id]) }}" method="post">
                             @csrf
                             @if($role->has_objects)
-                                <x-input.select s=11 without_label :elements="$role->objects" :formatter="function($o) { return __('role.'.$o->name); }" :id="$role->name" :placeholder="__('role.'.$role->name)"/>
+                                <x-input.select s=11 without_label :elements="$role->objects" :formatter="function($o) { return $o->translatedName; }" id="{{$role->name}}_object" name="object_id" :placeholder="__('role.'.$role->name)"/>
                             @elseif($role->has_workshops)
-                                <x-input.select s=11 without_label :elements="\App\Models\Workshop::all()" :formatter="function($o) { return __('role.'.$o->name); }" :id="$role->name" :placeholder="__('role.'.$role->name)"/>
+                                <x-input.select s=11 without_label :elements="\App\Models\Workshop::all()" id="{{$role->name}}_workshop" name="workshop_id" :placeholder="__('role.'.$role->name)"/>
                             @else
                                 <x-input.text s=11 without_label id="blank" :value="__('role.'.$role->name)" disabled/>
                             @endif
                             <div class="input-field col s1"><x-input.button floating class="right green" icon="add" /></div>
                         </form>
                     @endif
+                        @endcan
                 @endforeach
                 </div>
             </div>
