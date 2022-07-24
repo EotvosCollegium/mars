@@ -272,6 +272,7 @@ class ApplicationController extends Controller
             'question_2' => $request->input('question_2'),
             'question_3' => $request->input('question_3'),
             'question_4' => $request->input('question_4'),
+            'accommodation' => $request->input('accommodation')
         ]);
     }
 

@@ -51,7 +51,7 @@
                     <div class="input-field col s12 m6"><p style="margin-bottom:10px"><label style="font-size: 1em">Honnan
                                 hallott a Collegiumról?</label></p>
                         @foreach(\App\Models\ApplicationForm::QUESTION_1 as $answer)
-                            @if(in_array($answer, $user->application->question_1) !== false)
+                            @if(in_array($answer, $user->application->question_1 ?? []) !== false)
                                 <p>
                                     <x-input.checkbox
                                         only-input
@@ -77,7 +77,7 @@
                         <div class="input-field" style="margin: 0">
                             <x-input.text only-input id="question_1_other"
                                           :value="$user->application->question_1_custom" name="question_1[]"
-                                          without-label placeholder="Egyéb/bővebben..."/>
+                                          without-label placeholder="egyéb/bővebben..."/>
                         </div>
                     </div>
                     <x-input.textarea id="question_2" locale='application' text="Miért kíván a Collegium tagja lenni?"
@@ -89,6 +89,10 @@
                                       text="Részt vett-e közéleti tevékenységben? Ha igen, röviden jellemezze!"
                                       helper="Pl. diákönkormányzati tevékenység, önkéntesség, szervezeti tagság. (nem kötelező)"
                                       :value="$user->application->question_4"/>
+                    <x-input.textarea id="accommodation" locale='application'
+                                      text="Amennyiben nem tud jelen lenni a felvételi teljes ideje alatt (vasárnap-szerda), kérjük itt indoklással jelezze!"
+                                      helper="A mező üresen hagyása esetén a felvételiző elfogadja, hogy a szállás költségeit fizeti. Változás esetén értesítse a titkárságot!"
+                                      :value="$user->application->accommodation"/>
                 </div>
 
             </div>
