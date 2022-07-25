@@ -50,12 +50,6 @@ class RegistrationsController extends Controller
 
         // Send notification mail.
         Mail::to($user)->queue(new \App\Mail\ApprovedRegistration($user->name));
-        if ($request->next) {
-            $next_user = User::withoutGlobalScope('verified')->where('verified', false)->first();
-            if ($next_user != null) {
-                return redirect()->route('secretariat.registrations.show', ['id' => $next_user->id]);
-            }
-        }
 
         return redirect()->route('secretariat.registrations')->with('message', __('general.successful_modification'));
     }
@@ -71,13 +65,6 @@ class RegistrationsController extends Controller
 
         Cache::decrement('user');
 
-        if ($request->next) {
-            $next_user = User::withoutGlobalScope('verified')->where('verified', false)->first();
-            if ($next_user != null) {
-                return redirect()->route('secretariat.registrations.show', ['id' => $next_user->id]);
-            }
-        }
-
         return redirect()->route('secretariat.registrations')->with('message', __('general.successful_modification'));
     }
 
@@ -89,12 +76,17 @@ class RegistrationsController extends Controller
         ]);
         $validator->validate();
 
-        $user=User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => \Hash::make(\Str::random(32)),
-            'verified' => true,
-        ]);
+        $user = User::firstWhere('email', $request->email);
+        if(!$user)
+        {
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => \Hash::make(\Str::random(32)),
+                'verified' => true,
+            ]);
+        }
+
         \Invytr::invite($user);
         return redirect()->route('secretariat.permissions.show', ['id' => $user->id])->with('message', __('registration.set_permissions'));
     }

@@ -139,13 +139,13 @@ class RegisterController extends Controller
             if (! $user->isCollegist()) {
                 $users_to_notify = User::whereHas('roles', function ($q) {
                     $q->whereIn('role_id', [
-                        Role::getId(Role::NETWORK_ADMIN),
-                        Role::getId(Role::STAFF),
+                        Role::getId(Role::NETWORK_ADMIN)
                     ]);
                 })->get();
                 foreach ($users_to_notify as $person) {
                     Mail::to($person)->send(new NewRegistration($person->name, $user));
                 }
+                Cache::increment('user');
             }
         } else {
             $user->application()->create();
