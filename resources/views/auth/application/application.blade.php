@@ -70,6 +70,15 @@
                         <table>
                             <tbody>
                             <tr>
+                                <th scope="row">A felvételi teljes időtartamában itt lesz?</th>
+                                <td>
+                                    {{ $user->application->accommodation }}
+                                    @if(!$user->application->accommodation)
+                                        <span style="font-style:italic;color:green">Igen</span>
+                                    @endif
+                                </td>
+                            </tr>
+                            <tr>
                                 <th scope="row">@lang('user.place_and_date_of_birth')</th>
                                 <td>
                                     {{ $user->personalInformation->place_of_birth }}
