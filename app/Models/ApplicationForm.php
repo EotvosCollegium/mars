@@ -30,6 +30,7 @@ class ApplicationForm extends Model
         'question_2',
         'question_3',
         'question_4',
+        'accommodation',
         'note'
     ];
 
@@ -47,7 +48,7 @@ class ApplicationForm extends Model
         "tanárom ajánlotta",
         "ismerősöm ajánlotta",
         "családtag/rokon ajánlotta",
-        "voltam a Tehetség Táborban",
+        "voltam a Tehetségtáborban",
         "voltam a Természettudományos Táborban",
         "kifejezetten szakkollégiumokat kerestem",
         "kari, egyetemi nyílt napon vagy hasonló rendezvényen láttam",
@@ -140,7 +141,7 @@ class ApplicationForm extends Model
 
     public function getQuestion1CustomAttribute()
     {
-        foreach ($this->question_1 as $answer) {
+        foreach ($this->question_1 ?? [] as $answer) {
             if (!in_array($answer, self::QUESTION_1)) {
                 return $answer;
             }
