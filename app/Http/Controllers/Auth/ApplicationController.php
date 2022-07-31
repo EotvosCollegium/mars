@@ -119,7 +119,7 @@ class ApplicationController extends Controller
         } else {
             //return all applications that can be visible
             $this->authorize('viewAnyApplication', User::class);
-            if ($authUser->hasAnyRole([Role::NETWORK_ADMIN, Role::SECRETARY, Role::DIRECTOR, Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER])) {
+            if ($authUser->hasAnyRole([Role::NETWORK_ADMIN, Role::SECRETARY, Role::DIRECTOR])) {
                 $workshops = Workshop::all();
                 $applications = ApplicationForm::select('*');
                 if ($request->has('workshop') && $request->input('workshop') !== "null") {
@@ -140,7 +140,7 @@ class ApplicationController extends Controller
                     // filter by selected workshop
                     $applications->join('workshop_users', 'application_forms.user_id', '=', 'workshop_users.user_id')
                         ->where('workshop_id', $request->input('workshop'));
-                } else {
+                } else if(!$authUser->hasRoleBase(Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER)) {
                     // filter by user's workshops
                     $applications->join('workshop_users', 'application_forms.user_id', '=', 'workshop_users.user_id')
                         ->whereIn('workshop_id', $workshops->pluck('id'));
