@@ -119,7 +119,7 @@ class ApplicationController extends Controller
         } else {
             //return all applications that can be visible
             $this->authorize('viewAnyApplication', User::class);
-            if ($authUser->hasAnyRole([Role::NETWORK_ADMIN, Role::SECRETARY, Role::DIRECTOR])) {
+            if ($authUser->hasAnyRole([Role::NETWORK_ADMIN, Role::SECRETARY, Role::DIRECTOR, Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER])) {
                 $workshops = Workshop::all();
                 $applications = ApplicationForm::select('*');
                 if ($request->has('workshop') && $request->input('workshop') !== "null") {
