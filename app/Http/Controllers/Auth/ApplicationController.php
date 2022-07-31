@@ -140,7 +140,7 @@ class ApplicationController extends Controller
                     // filter by selected workshop
                     $applications->join('workshop_users', 'application_forms.user_id', '=', 'workshop_users.user_id')
                         ->where('workshop_id', $request->input('workshop'));
-                } else if(!$authUser->hasRoleBase(Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER)) {
+                } elseif (!$authUser->hasRoleBase(Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER)) {
                     // filter by user's workshops
                     $applications->join('workshop_users', 'application_forms.user_id', '=', 'workshop_users.user_id')
                         ->whereIn('workshop_id', $workshops->pluck('id'));
