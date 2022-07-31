@@ -24,7 +24,7 @@ class AddAggregatedApplicationCommitteeRole extends Migration
      * @return void
      */
     public function down()
-    {        
+    {
         DB::table('roles')->where('name', 'aggregated-application-committee')->delete();
     }
 }
