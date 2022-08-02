@@ -34,8 +34,9 @@ class ApplicationController extends Controller
      */
     public function showApplicationForm(Request $request): View
     {
-        abort_if(!$request->user()->isCollegist(), 403);
-        abort_if($request->user()->verified == 1, 403);
+        if(!isset($request->user()->application)){
+            $request->user()->application()->create();
+        }
 
         $data = [
             'workshops' => Workshop::all(),
