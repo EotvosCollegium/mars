@@ -82,7 +82,7 @@ class UserPolicy
     public function viewApplication(User $user, User $target): bool
     {
         return (isset($target->application))
-            && ($user->hasAnyRole([Role::NETWORK_ADMIN, Role::SECRETARY, Role::DIRECTOR])
+            && ($user->hasAnyRole([Role::NETWORK_ADMIN, Role::SECRETARY, Role::DIRECTOR, Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER])
             || $user->id == $target->id
             || $user->roles()
                     ->whereIn('name', [Role::APPLICATION_COMMITTEE_MEMBER, Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR])
@@ -103,6 +103,7 @@ class UserPolicy
             Role::DIRECTOR])
             || $user->hasRoleBase(Role::WORKSHOP_ADMINISTRATOR)
             || $user->hasRoleBase(Role::WORKSHOP_LEADER)
+            || $user->hasRoleBase(Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER)
             || $user->hasRoleBase(Role::APPLICATION_COMMITTEE_MEMBER);
     }
 

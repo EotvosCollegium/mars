@@ -77,8 +77,7 @@ class RegistrationsController extends Controller
         $validator->validate();
 
         $user = User::firstWhere('email', $request->email);
-        if(!$user)
-        {
+        if (!$user) {
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
