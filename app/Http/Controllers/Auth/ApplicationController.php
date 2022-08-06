@@ -34,7 +34,7 @@ class ApplicationController extends Controller
      */
     public function showApplicationForm(Request $request): View
     {
-        if(!isset($request->user()->application)){
+        if (!isset($request->user()->application)) {
             $request->user()->application()->create();
         }
 
