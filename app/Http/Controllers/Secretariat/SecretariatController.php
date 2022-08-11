@@ -35,7 +35,7 @@ class SecretariatController extends Controller
     public static function showStatusUpdate()
     {
         //TODO policy
-        if(Auth::user()->getStatusIn(Semester::previous()) == Semester::DEACTIVATED){
+        if (Auth::user()->getStatusIn(Semester::previous()) == Semester::DEACTIVATED) {
             abort(403);
         }
         return view('secretariat.statuses.status_update_form');
@@ -59,9 +59,9 @@ class SecretariatController extends Controller
     {
         $users = User::collegists();
         foreach ($users as $user) {
-            if ( $user->getStatusIn(Semester::previous()) == Semester::DEACTIVATED) {
+            if ($user->getStatusIn(Semester::previous()) == Semester::DEACTIVATED) {
                 $user->setStatus(Semester::DEACTIVATED, 'Was deactivated in last semester');
-            }else{
+            } else {
                 Mail::to($user)->queue(new \App\Mail\StatusStatementRequest($user->name));
             }
         }
