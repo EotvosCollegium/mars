@@ -552,7 +552,7 @@ class User extends Authenticatable implements HasLocalePreference
      * Set the collegist to be extern or resident.
      * Only applies for collegists.
      */
-    private function setCollegistRole($objectName)
+    public function setCollegistRole($objectName)
     {
         if ($this->isCollegist()) {
             $collegist_role = Role::getId(Role::COLLEGIST);

@@ -43,7 +43,7 @@ return [
     'sport-leader' => 'Sport committee leader',
     'sport-member' => 'Sport committee member',
     'staff' => 'Staff',
-    'student-council' => 'Students\' Council',
+    'student-council' => 'Students Council',
     'tenant' => 'Tenant',
     'vice_president' => 'Vice president',
     'workshop-administrator' => 'Workshop administrator',

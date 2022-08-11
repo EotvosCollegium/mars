@@ -10,6 +10,8 @@ return [
     'alpha_num' => 'A(z) :attribute kizárólag betűket és számokat tartalmazhat!',
     'array' => 'A(z) :attribute egy tömb kell, hogy legyen!',
     'attributes' => [
+        'collegist_role' => 'bentlakási státusz',
+        'semester_status' => 'szemeszter státusz',
         'name' => 'név',
         'comment' => 'megjegyzés',
         'mac_address' => 'MAC cím',

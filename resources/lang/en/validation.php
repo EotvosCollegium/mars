@@ -10,6 +10,8 @@ return [
     'alpha_num' => 'The :attribute may only contain letters and numbers.',
     'array' => 'The :attribute must be an array.',
     'attributes' => [
+        'collegist_role' => 'residence status',
+        'semester_status' => 'semester status',
         'name' => 'name',
         'comment' => 'comment',
         'mac_address' => 'mac address',
