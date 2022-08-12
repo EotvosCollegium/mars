@@ -34,7 +34,7 @@ class ApplicationController extends Controller
      */
     public function showApplicationForm(Request $request): View
     {
-        if(!isset($request->user()->application)){
+        if (!isset($request->user()->application)) {
             $request->user()->application()->create();
         }
 
@@ -285,7 +285,7 @@ class ApplicationController extends Controller
     public function storeFiles(Request $request, $user): void
     {
         $request->validate([
-            'file' => 'required|file|mimes:pdf,jpg,jpeg,png,gif,svg|max:2048',
+            'file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5240',
             'name' => 'required|string|max:255',
         ]);
         $path = $request->file('file')->store('uploads');
