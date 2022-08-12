@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Cache;
 
-
 class RegisterController extends Controller
 {
     /*
