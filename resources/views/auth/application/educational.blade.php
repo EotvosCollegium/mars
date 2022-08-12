@@ -60,7 +60,7 @@
                     @livewire('parent-child-form', [
                     'title' => "Van nyelvvizsgám",
                     'name' => 'language_exam',
-                    'helper' => 'Nyelv, szint, típus',
+                    'helper' => 'Nyelv, szint, fajta',
                     'optional' => true,
                     'items' => $user->application->language_exam])
                 </div>

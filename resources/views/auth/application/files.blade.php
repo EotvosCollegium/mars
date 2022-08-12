@@ -82,7 +82,7 @@
                             @csrf
 
                             <div class="col s10" style="margin-top: 5px">
-                                <a href="{{ url($file->path) }}">{{ $file->name }}</a>
+                                <a href="{{ url($file->path) }}" target="_blank">{{ $file->name }}</a>
                             </div>
                             <div class="col s2">
                                 <x-input.button floating class="right btn-small" icon="delete"/>

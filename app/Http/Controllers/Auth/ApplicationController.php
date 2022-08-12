@@ -34,8 +34,9 @@ class ApplicationController extends Controller
      */
     public function showApplicationForm(Request $request): View
     {
-        abort_if(!$request->user()->isCollegist(), 403);
-        abort_if($request->user()->verified == 1, 403);
+        if (!isset($request->user()->application)) {
+            $request->user()->application()->create();
+        }
 
         $data = [
             'workshops' => Workshop::all(),
@@ -140,7 +141,7 @@ class ApplicationController extends Controller
                     // filter by selected workshop
                     $applications->join('workshop_users', 'application_forms.user_id', '=', 'workshop_users.user_id')
                         ->where('workshop_id', $request->input('workshop'));
-                } else {
+                } elseif (!$authUser->hasRoleBase(Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER)) {
                     // filter by user's workshops
                     $applications->join('workshop_users', 'application_forms.user_id', '=', 'workshop_users.user_id')
                         ->whereIn('workshop_id', $workshops->pluck('id'));
@@ -284,7 +285,7 @@ class ApplicationController extends Controller
     public function storeFiles(Request $request, $user): void
     {
         $request->validate([
-            'file' => 'required|file|mimes:pdf,jpg,jpeg,png,gif,svg|max:2048',
+            'file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5240',
             'name' => 'required|string|max:255',
         ]);
         $path = $request->file('file')->store('uploads');
