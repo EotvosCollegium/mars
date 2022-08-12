@@ -64,7 +64,7 @@ return [
     'student-council' => 'Students\' Council',
     'sys-admin' => 'System admin',
     'tenant' => 'Tenant',
-    'unathorized' => 'You have no permission to attach/detach this role.',
+    'unauthorized' => 'You have no permission to attach/detach this role.',
     'vice-president' => 'Vice president',
     'workshop-administrator' => 'Workshop administrator',
     'workshop-leader' => 'Workshop leader',

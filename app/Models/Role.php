@@ -113,11 +113,11 @@ class Role extends Model
 
     /**
      * Returns the role object belonging to the role while checking the validity of the role-object pair.
-     * @param integer|string $object roleObject or workshop name/id
+     * @param integer|string|null $object roleObject or workshop name/id
      * @return RoleObject|Workshop|null
      * @throws InvalidArgumentException
      */
-    public function getObject($object = null)
+    public function getObject(int|string $object = null) : Workshop|RoleObject|null
     {
         /* @var RoleObject|Workshop|null $object */
         if($this->has_objects && is_numeric($object)) {
@@ -142,7 +142,7 @@ class Role extends Model
      * Checks if a role-object pair is valid.
      * @param RoleObject|Workshop|null $object
      */
-    public function isValid($object = null): bool
+    public function isValid(Workshop|RoleObject $object = null): bool
     {
         if($this->has_objects
             && $object instanceof RoleObject
@@ -155,65 +155,11 @@ class Role extends Model
 
 
     /**
-     * Returns true if the role can be attached to only one user at a time.
-     * @param RoleObject|Workshop|null $object. Returns false if the object is null for a role which can have objects.
-     * @return bool
-     */
-    public function isUnique($object = null): bool
-    {
-        switch ($this->name) {
-            case self::WORKSHOP_LEADER:
-            case self::WORKSHOP_ADMINISTRATOR:
-            case self::DIRECTOR:
-                return true;
-//            case self::WORKSHOP_ADMINISTRATOR:
-//                return true;
-//            case self::WORKSHOP_LEADER:
-//                return true;
-            case self::STUDENT_COUNCIL:
-                return isset($object) && (
-                        $object->name == self::PRESIDENT
-                        || in_array($object->name, self::COMMITTEE_LEADERS)
-                    );
-            default:
-                return false;
-        }
-    }
-
-    /**
-     * Checks if the specified role can be attached to someone.
-     * Object id is required if the role can have objects.
-     * @param RoleObject|Workshop|null $object
-     * @return bool.
-     */
-    public function canBeAttached($object = null): bool
-    {
-        if(!$this->isValid($object)) return false;
-
-        if ($this->isUnique($object)) {
-            if(isset($object) && $object instanceof RoleObject){
-                return DB::table('role_users')
-                        ->where('role_id', $this->id)
-                        ->where('object_id', $object->id)
-                        ->count() < 1;
-            } else if (isset($object) && $object instanceof Workshop){
-                return DB::table('role_users')
-                        ->where('role_id', $this->id)
-                        ->where('workshop_id', $object->id)
-                        ->count() < 1;
-            } else {
-                DB::table('role_users')->where('role_id', $this->id)->count() < 1;
-            }
-        }
-        return true;
-    }
-
-    /**
      * Returns the users with the given role.
      * @param RoleObject|Workshop|null $object
      * @return Collection|User[]
      */
-    public function getUsers($object = null)
+    public function getUsers(Workshop|RoleObject $object = null): Collection|array
     {
         if($this->has_objects)
         {
@@ -261,37 +207,21 @@ class Role extends Model
 
     public function color(): string
     {
-        switch ($this->name) {
-            case self::SYS_ADMIN:
-                return 'pink';
-            case self::COLLEGIST:
-                return 'coli';
-            case self::TENANT:
-                return 'coli blue';
-            case self::WORKSHOP_ADMINISTRATOR:
-                return 'purple';
-            case self::WORKSHOP_LEADER:
-                return 'deep-purple';
-            case self::SECRETARY:
-                return 'indigo';
-            case self::DIRECTOR:
-                return 'blue';
-            case self::STAFF:
-                return 'cyan';
-            case self::PRINTER:
-                return 'teal';
-            case self::INTERNET_USER:
-                return 'light-green';
-            case self::LOCALE_ADMIN:
-                return 'amber';
-            case self::STUDENT_COUNCIL:
-                return 'green darken-4';
-            case self::APPLICATION_COMMITTEE_MEMBER:
-                return 'light-blue darken-4';
-            case self::AGGREGATED_APPLICATION_COMMITTEE_MEMBER:
-                return 'light-blue darken-5';
-            default:
-                return 'grey';
-        }
+        return match ($this->name) {
+            self::SYS_ADMIN => 'pink',
+            self::COLLEGIST => 'coli',
+            self::TENANT => 'coli blue',
+            self::WORKSHOP_ADMINISTRATOR => 'purple',
+            self::WORKSHOP_LEADER => 'deep-purple',
+            self::SECRETARY => 'indigo',
+            self::DIRECTOR => 'blue',
+            self::STAFF => 'cyan',
+            self::PRINTER => 'teal',
+            self::INTERNET_USER => 'light-green',
+            self::LOCALE_ADMIN => 'amber',
+            self::STUDENT_COUNCIL => 'green darken-4',
+            self::APPLICATION_COMMITTEE_MEMBER => 'light-blue darken-4',
+            default => 'grey',
+        };
     }
 }

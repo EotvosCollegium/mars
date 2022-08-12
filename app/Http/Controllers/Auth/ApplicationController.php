@@ -110,7 +110,7 @@ class ApplicationController extends Controller
      * @return View
      * @throws AuthorizationException
      */
-    public function showApplications(Request $request)//: View
+    public function showApplications(Request $request): View
     {
         $authUser = $request->user();
         if ($request->has('id')) {
@@ -124,7 +124,7 @@ class ApplicationController extends Controller
         } else {
             //return all applications that can be visible
             $this->authorize('viewAnyApplication', User::class);
-            if ($authUser->hasAnyRole([Role::SYS_ADMIN, Role::SECRETARY, Role::DIRECTOR])) {
+            if ($authUser->hasAnyRoleBase([Role::SYS_ADMIN, Role::SECRETARY, Role::DIRECTOR])) {
                 $workshops = Workshop::all();
                 $applications = ApplicationForm::select('*');
                 if ($request->has('workshop') && $request->input('workshop') !== "null") {

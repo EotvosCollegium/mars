@@ -117,7 +117,7 @@ class UserPolicy
      * @param RoleObject|Workshop|null $object
      * @return bool
      */
-    public function updatePermission(User $user, User $target, Role $role, $object = null): bool
+    public function updatePermission(User $user, User $target, Role $role, Workshop|RoleObject $object = null): bool
     {
         if($role->name == Role::COLLEGIST)
             return $user->hasRole(Role::SECRETARY);
@@ -136,7 +136,7 @@ class UserPolicy
                 return true;
             }
             if(in_array($object->name, Role::COMMITTEE_MEMBERS)){
-                $committee = preg_split("-", $object->name)[0];
+                $committee = preg_split("~-~", $object->name)[0];
                 return $user->hasRole(Role::STUDENT_COUNCIL, $committee . "-leader");
             }
         }

@@ -24,11 +24,13 @@
                                 {{ $role->pivot->translatedName }}
                             </td>
                             <td>
+                                @can('updatePermission', [$user, $role, $role->pivot->workshop ?? $role->pivot->object])
                                 <form action="{{ route('secretariat.permissions.remove', ['user' => $user->id, 'role' => $role->id]) }}" method="post">
                                 @csrf
-                                    <input type="hidden" name="object_id" value="{{$role->pivot->workshop_id ?? $role->pivot->object_id}}">
+                                    <input type="hidden" name="object" value="{{$role->pivot->workshop_id ?? $role->pivot->object_id}}">
                                     <x-input.button floating class="right red" icon="delete" />
                                 </form>
+                                @endcan
                             </td>
                         </tr>
                         @endforeach

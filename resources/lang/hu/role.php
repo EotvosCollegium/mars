@@ -64,7 +64,7 @@ return [
     'student-council' => 'Választmány',
     'sys-admin' => 'Rendszergazda',
     'tenant' => 'Vendég',
-    'unathorized' => 'Ezt a jogosultságot nem tudja kezelni!',
+    'unauthorized' => 'Ezt a jogosultságot nem tudja kezelni!',
     'vice-president' => 'Alelnök',
     'workshop-administrator' => 'Műhelytitkár',
     'workshop-leader' => 'Műhelyvezető',
