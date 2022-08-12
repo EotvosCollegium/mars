@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  */
 class SemesterStatus extends Pivot
 {
-    protected  $table = 'semester_status';
+    protected $table = 'semester_status';
 
     public $timestamps = false;
 

@@ -28,7 +28,6 @@ class StatusObserver
     public function updated(SemesterStatus $semesterStatus)
     {
         Mail::to($semesterStatus->user)->queue(new \App\Mail\StatusUpdated($semesterStatus));
-
     }
 
     /**

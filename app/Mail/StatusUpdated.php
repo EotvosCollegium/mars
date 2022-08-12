@@ -32,7 +32,6 @@ class StatusUpdated extends Mailable
         $this->status = __('user.'.$semesterStatus->status);
         $this->comment = $semesterStatus->comment;
         $this->modifier = auth()->user();
-
     }
 
     /**
