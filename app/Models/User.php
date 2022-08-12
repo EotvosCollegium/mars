@@ -443,7 +443,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function allSemesters()
     {
-        return $this->belongsToMany(Semester::class, 'semester_status')->withPivot(['status', 'verified', 'comment']);
+        return $this->belongsToMany(Semester::class, 'semester_status')->withPivot(['status', 'verified', 'comment'])->using(SemesterStatus::class);
     }
 
     /**
@@ -453,7 +453,8 @@ class User extends Authenticatable implements HasLocalePreference
     {
         return $this->belongsToMany(Semester::class, 'semester_status')
             ->wherePivot('status', '=', $status)
-            ->withPivot('verified', 'comment');
+            ->withPivot('verified', 'comment', 'status')
+            ->using(SemesterStatus::class);
     }
 
     /**
@@ -461,7 +462,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function activeSemesters()
     {
-        return $this->semestersWhere(Semester::ACTIVE);
+        return $this->semestersWhere(SemesterStatus::ACTIVE);
     }
 
     /**
@@ -571,7 +572,7 @@ class User extends Authenticatable implements HasLocalePreference
     {
         $semesters = $this->allSemesters;
         if (! $semesters->contains($semester)) {
-            return Semester::INACTIVE;
+            return SemesterStatus::INACTIVE;
         }
 
         return $semesters->find($semester)->pivot->status;

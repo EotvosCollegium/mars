@@ -38,15 +38,15 @@
             @endforeach
             <hr>
             <h6>@lang('admin.statuses')</h6>
-            @foreach (\App\Models\Semester::STATUSES as $s)
+            @foreach (\App\Models\SemesterStatus::STATUSES as $s)
                 @if(in_array($s, $this->statuses))
-                <span class="new badge {{ \App\Models\Semester::colorForStatus($s) }}" data-badge-caption=""
+                <span class="new badge {{ \App\Models\SemesterStatus::color($s) }}" data-badge-caption=""
                     style="float:none;padding:2px 2px 2px 5px;margin:2px;cursor:pointer;"
                     wire:click="deleteStatus('{{$s}}')">
                     <nobr><i>@lang('user.'.$s)</i> &cross;</nobr>
                 </span>
                 @else
-                <span class="new badge {{ \App\Models\Semester::colorForStatus($s) }}" data-badge-caption=""
+                <span class="new badge {{ \App\Models\SemesterStatus::color($s) }}" data-badge-caption=""
                     style="float:none;padding:2px 2px 2px 5px;margin:2px;cursor:pointer"
                     wire:click="addStatus('{{$s}}')">
                     <nobr>@lang('user.'.$s)</nobr>
@@ -102,7 +102,7 @@
                 <div class="col s12 xl1">
                     @if($user->hasEducationalInformation())
                     @can('viewEducationalInformation', $user)
-                        <span class="new badge tag {{ \App\Models\Semester::colorForStatus($user->getStatus()) }}" data-badge-caption="">
+                        <span class="new badge tag {{ \App\Models\SemesterStatus::color($user->getStatus()) }}" data-badge-caption="">
                             @lang("user." . $user->getStatus())
                         </span>
                     @endcan
