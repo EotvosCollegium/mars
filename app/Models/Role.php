@@ -188,15 +188,19 @@ class Role extends Model
     }
 
 
-    public static function Collegist() : Role
+    public static function Collegist() : Role|null
     {
         return self::where('name', self::COLLEGIST)->first();
     }
 
-    public static function StudentsCouncil()
+    public static function StudentsCouncil(): Role|null
     {
         return self::where('name', self::STUDENT_COUNCIL)->first();
+    }
 
+    public static function Director(): Role|null
+    {
+        return self::where('name', self::DIRECTOR)->first();
     }
 
     public function getTranslatedNameAttribute()

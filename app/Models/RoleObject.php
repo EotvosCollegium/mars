@@ -26,4 +26,9 @@ class RoleObject extends Model
     {
         return __('role.'.$this->name);
     }
+
+    public static function president() : RoleObject|null
+    {
+        return self::firstWhere('name', 'president');
+    }
 }

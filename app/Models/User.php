@@ -243,8 +243,9 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function applicationWorkshops(): \Illuminate\Support\Collection
     {
-        return $this->roles()->where('name', Role::APPLICATION_COMMITTEE_MEMBER)
-            ->with('workshops')->pluck('workshop');
+        return Workshop::whereIn('id',
+            $this->roles()->where('name', Role::APPLICATION_COMMITTEE_MEMBER)
+                ->pluck('role_users.workshop_id'))->get();
     }
 
     public function faculties(): BelongsToMany
@@ -321,13 +322,15 @@ class User extends Authenticatable implements HasLocalePreference
 
     /**
      * Decides if the user has a role.
-     * @param string $roleName the role's name
+     * @param string|Role $roleName the role's name
      * @param integer|string|RoleObject|Workshop|null $object
      * @return bool
      */
-    public function hasRole(string $roleName, int|string|Workshop|RoleObject $object = null): bool
+    public function hasRole(Role|string $role, int|string|Workshop|RoleObject $object = null): bool
     {
-        $role = Role::firstWhere('name', $roleName);
+        if(!($role instanceof Role)){
+            $role = Role::firstWhere('name', $role);
+        }
         $object = $role->getObject($object);
         $query = $this->roles()->where('role_id', $role->id);
         if($object instanceof Workshop){
@@ -420,7 +423,12 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public static function president(): ?User
     {
-        return self::role(Role::STUDENT_COUNCIL, Role::PRESIDENT)->first();
+        return self::role(Role::StudentsCouncil(), RoleObject::president())->first();
+    }
+
+    public function isPresident() : bool
+    {
+        return $this->hasRole(Role::StudentsCouncil(), Role::PRESIDENT);
     }
 
     /**
@@ -428,7 +436,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public static function director(): ?User
     {
-        return Role::getUsers(Role::DIRECTOR)->first();
+        return self::role(Role::Director())->first();
     }
 
 

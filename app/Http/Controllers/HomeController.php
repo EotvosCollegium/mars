@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\StudentsCouncil\EpistolaController;
 use App\Models\EpistolaNews;
 use App\Models\Role;
+use App\Models\User;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;

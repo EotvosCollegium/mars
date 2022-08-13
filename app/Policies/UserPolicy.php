@@ -24,7 +24,11 @@ class UserPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasAnyRoleBase([Role::STAFF, Role::SECRETARY, Role::WORKSHOP_ADMINISTRATOR, Role::WORKSHOP_LEADER]);
+        return
+            $user->hasAnyRoleBase([
+                Role::STAFF, Role::SECRETARY, Role::DIRECTOR, Role::WORKSHOP_ADMINISTRATOR, Role::WORKSHOP_LEADER
+            ])
+            || $user->isPresident();
     }
 
     /**
@@ -37,7 +41,9 @@ class UserPolicy
         if($user->id == $target->id) return true;
         if($target->isCollegist())
         {
-            if($user->hasRole(Role::SECRETARY))
+            if($user->hasAnyRoleBase([Role::SECRETARY, Role::DIRECTOR]))
+                return true;
+            if($user->isPresident())
                 return true;
             return $target->workshops
                     ->intersect($user->roleWorkshops())
@@ -58,7 +64,7 @@ class UserPolicy
     public function viewApplication(User $user, User $target): bool
     {
         if(!isset($target->application)) return false;
-        if($user->hasRole(Role::SECRETARY))
+        if($user->hasAnyRoleBase([Role::SECRETARY, Role::DIRECTOR]))
             return true;
         return $target->workshops
                 ->intersect(

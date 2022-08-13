@@ -99,8 +99,8 @@
                 <!-- Status -->
                 <div class="col s12 xl1">
                     @if($user->hasEducationalInformation())
-                    @can('viewEducationalInformation', $user)
-                        <span class="new badge tag {{ \App\Models\SemesterStatus::color($user->getStatus()) }}" data-badge-caption="">
+                    @can('view', $user)
+                        <span class="new badge tag {{ \App\Models\SemesterStatus::colorForStatus($user->getStatus()) }}" data-badge-caption="">
                             @lang("user." . $user->getStatus())
                         </span>
                     @endcan
