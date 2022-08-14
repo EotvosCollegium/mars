@@ -29,9 +29,11 @@
                         <div class="card-title">@lang('user.user_data')</div>
                         <div class="row">
                             <x-input.text id='name' required autocomplete='name' locale='user'/>
-                            <x-input.text l=6 id='place_of_birth' required locale='user'/>
-                            <x-input.datepicker l=6 id='date_of_birth' required locale='user'/>
-                            <x-input.text id='mothers_name' required locale='user'/>
+                            @if ($user_type != \App\Models\Role::TENANT)
+                                <x-input.text l=6 id='place_of_birth' required locale='user'/>
+                                <x-input.datepicker l=6 id='date_of_birth' required locale='user'/>
+                                <x-input.text id='mothers_name' required locale='user'/>
+                            @endif
                             <x-input.text id='phone_number' type='tel' required
                                 pattern="[+][0-9]{1,4}[-\s()0-9]*" minlength="8" maxlength="18"
                                 locale='user' helper='+36 (20) 123-4567'/>
@@ -40,17 +42,20 @@
                             @endif
                         </div>
                     </div>
-                    <div class="divider"></div>
-                    {{--contact information--}}
-                    <div class="section">
-                    <div class="card-title">@lang('user.contact')</div>
-                    <div class="row">
-                        <x-input.select id="country" :elements="$countries" default="Hungary" locale="user"/>
-                        <x-input.text l=6 id='county'        locale='user' required/>
-                        <x-input.text l=6 id='zip_code'      locale='user' type='number' required/>
-                        <x-input.text id='city'              locale='user' required/>
-                        <x-input.text id='street_and_number' locale='user' required/>
-                    </div>
+                    @if ($user_type != \App\Models\Role::TENANT)
+                        <div class="divider"></div>
+                        {{--contact information--}}
+                        <div class="section">
+                        <div class="card-title">@lang('user.contact')</div>
+                        <div class="row">
+                            <x-input.select id="country" :elements="$countries" default="Hungary" locale="user"/>
+                            <x-input.text l=6 id='county'        locale='user' required/>
+                            <x-input.text l=6 id='zip_code'      locale='user' type='number' required/>
+                            <x-input.text id='city'              locale='user' required/>
+                            <x-input.text id='street_and_number' locale='user' required/>
+                        </div>
+                    @endif
+                    
                     <div class="divider"></div>
                     @if($user_type == \App\Models\Role::COLLEGIST)
                         <blockquote>@lang('registration.information')</blockquote>
