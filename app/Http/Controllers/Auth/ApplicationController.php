@@ -34,7 +34,7 @@ class ApplicationController extends Controller
      */
     public function showApplicationForm(Request $request): View
     {
-        if (!isset($request->user()->application)) {
+        if (!$request->user()->application) {
             $request->user()->application()->create();
         }
 
@@ -64,7 +64,7 @@ class ApplicationController extends Controller
      * @param Request $request
      * @return RedirectResponse
      */
-    public function storeApplicationForm(Request $request): RedirectResponse
+    public function storeApplicationForm(Request $request)
     {
         $user = $request->user();
 
@@ -77,12 +77,7 @@ class ApplicationController extends Controller
         }
 
         switch ($request->input('page')) {
-            case self::PERSONAL_ROUTE:
-                $this->storePersonalData($request, $user);
-                break;
-            case self::EDUCATIONAL_ROUTE:
-                $this->storeEducationalData($request, $user);
-                break;
+            //personal and educational data update is in UserController
             case self::QUESTIONS_ROUTE:
                 $this->storeQuestionsData($request, $user);
                 break;
@@ -96,8 +91,7 @@ class ApplicationController extends Controller
                 $this->storeProfilePicture($request, $user);
                 break;
             case self::SUBMIT_ROUTE:
-                $this->submitApplication($user);
-                break;
+                return $this->submitApplication($user);
             default:
                 abort(404);
         }
@@ -183,64 +177,6 @@ class ApplicationController extends Controller
         return config('custom.application_extended');
     }
 
-    /**
-     * @param Request $request
-     * @param User $user
-     * @return void
-     */
-    public function storePersonalData(Request $request, User $user): void
-    {
-        $request->validate(RegisterController::PERSONAL_INFORMATION_RULES + ['name' => 'required|string|max:255']);
-        $user->update(['name' => $request->input('name')]);
-        $user->personalInformation()->update(
-            $request->only([
-            'place_of_birth',
-            'date_of_birth',
-            'mothers_name',
-            'phone_number',
-            'country',
-            'county',
-            'zip_code',
-            'city',
-            'street_and_number'])
-        );
-    }
-
-    /**
-     * @param Request $request
-     * @param User $user
-     * @return void
-     */
-    public function storeEducationalData(Request $request, User $user): void
-    {
-        $request->validate([
-            'year_of_graduation' => 'required|integer|between:1895,' . date('Y'),
-            'high_school' => 'required|string|max:255',
-            'neptun' => 'required|string|size:6',
-            'faculty' => 'required|array',
-            'faculty.*' => 'exists:faculties,id',
-            'educational_email' => 'required|string|email|max:255',
-            'programs' => 'required|array',
-            'programs.*' => 'nullable|string'
-        ]);
-        EducationalInformation::updateOrCreate(['user_id' => $user->id], [
-            'year_of_graduation' => $request->input('year_of_graduation'),
-            'high_school' => $request->input('high_school'),
-            'neptun' => $request->input('neptun'),
-            'year_of_acceptance' => date('Y'),
-            'email' => $request->input('educational_email'),
-            'program' => $request->input('programs'),
-        ]);
-        ApplicationForm::updateOrCreate(['user_id' => $user->id], [
-            'graduation_average' => $request->input('graduation_average'),
-            'semester_average' => $request->input('semester_average'),
-            'language_exam' => $request->input('language_exam'),
-            'competition' => $request->input('competition'),
-            'publication' => $request->input('publication'),
-            'foreign_studies' => $request->input('foreign_studies')
-        ]);
-        $user->faculties()->sync($request->input('faculty'));
-    }
 
     /**
      * @param Request $request
@@ -250,22 +186,27 @@ class ApplicationController extends Controller
     public function storeQuestionsData(Request $request, User $user): void
     {
         $request->validate([
-            'status' => 'nullable|in:extern,resident',
-            'workshop' => 'array',
-            'workshop.*' => 'exists:workshops,id',
+            'status' => 'required|in:extern,resident'
         ]);
         if ($request->input('status') == 'resident') {
             $user->setResident();
         } elseif ($request->input('status') == 'extern') {
             $user->setExtern();
         }
-        $user->workshops()->sync($request->input('workshop'));
+
         ApplicationForm::updateOrCreate(['user_id' => $user->id], [
+            'graduation_average' => $request->input('graduation_average'),
+            'semester_average' => $request->input('semester_average'),
+            'language_exam' => $request->input('language_exam'),
+            'competition' => $request->input('competition'),
+            'publication' => $request->input('publication'),
+            'foreign_studies' => $request->input('foreign_studies'),
             'question_1' => $request->input('question_1'),
             'question_2' => $request->input('question_2'),
             'question_3' => $request->input('question_3'),
             'question_4' => $request->input('question_4'),
-            'accommodation' => $request->input('accommodation')
+            'accommodation' => $request->input('accommodation') === "on",
+            'present' => $request->input('present')
         ]);
     }
 
@@ -323,12 +264,19 @@ class ApplicationController extends Controller
 
     /**
      * @param $user
-     * @return void
+     * @return RedirectResponse
      */
-    public function submitApplication($user): void
+    public function submitApplication($user)
     {
+        if(now() > self::getApplicationDeadline()) {
+            return redirect()->route('application')->with('error', 'A jelentkezési határidő lejárt');
+        }
+        if (isset($user->application) && $user->application->status == ApplicationForm::STATUS_SUBMITTED) {
+            return redirect()->route('application')->with('error', 'Már véglegesítette a jelentkezését!');
+        }
         if ($user->application->isReadyToSubmit()) {
             $user->application->update(['status' => ApplicationForm::STATUS_SUBMITTED]);
+            return redirect()->route('application')->with('message', 'Sikeresen véglegesítette a jelentkezését!');
         } else {
             abort(400);
         }

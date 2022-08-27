@@ -25,6 +25,7 @@ use InvalidArgumentException;
  * @property string $password
  * @property string $remember_token
  * @property bool $verified
+ * @property PersonalInformation $personalInformation
  * @property EducationalInformation $educationalInformation
  * @property FreePages $freePages
  * @property InternetAccess $internetAccess

@@ -14,7 +14,7 @@ class DataCompresser
      * @param  array  $array
      * @return string|null $string
      */
-    public static function compressData($array)
+    public static function compressData($array): ?string
     {
         if ($array === null) {
             return null;
@@ -36,12 +36,12 @@ class DataCompresser
     /**
      * Decompress a delimeter separated string into an array.
      *
+     * @param $string
+     * @return string[]|null $string
      * @author @hamaren2517
      *
-     * @param  array  $array
-     * @return string|null $string
      */
-    public static function decompressData($string)
+    public static function decompressData($string): ?array
     {
         if ($string === null) {
             return null;

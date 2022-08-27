@@ -2,6 +2,11 @@
     @csrf
     <div class="row">
         <x-input.text
+            id="name"
+            locale="user"
+            :value="$user->name"
+            required />
+        <x-input.text
             id="email"
             type="email"
             locale="user"
@@ -37,8 +42,8 @@
         <x-input.select
             id="country"
             :elements="$countries"
-            default="Hungary"
             locale="user"
+            default="Hungary"
             :value="$user->personalInformation?->country" />
         <x-input.text
             l=6 id='county'

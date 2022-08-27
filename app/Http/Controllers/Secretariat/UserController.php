@@ -29,29 +29,59 @@ class UserController extends Controller
         ]);
     }
 
-    public function updatePersonalInformation(Request $request, User $user)
+    public function updatePersonalInformation(Request $request, User $user): \Illuminate\Http\RedirectResponse
     {
-
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|max:225',
+            'name' => 'required|string|max:255',
             'phone_number' => 'required|string|min:8|max:18',
-            'mothers_name' => 'string|max:225',
-            'place_of_birth' => 'string|max:225',
-            'date_of_birth' => 'string|max:225',
-            'country' => 'string|max:255',
-            'county' => 'string|max:255',
-            'zip_code' => 'string|max:31',
-            'city' => 'string|max:255',
-            'street_and_number' => 'string|max:255',
-            'tenant_until'=>'string|max:225',
-            'year_of_graduation' => 'integer|between:1895,' . date('Y'),
-            'high_school' => 'string|max:255',
-            'neptun' => 'string|size:6',
+            'mothers_name' => 'required|string|max:225',
+            'place_of_birth' => 'required|string|max:225',
+            'date_of_birth' => 'required|string|max:225',
+            'country' => 'required|string|max:255',
+            'county' => 'required|string|max:255',
+            'zip_code' => 'required|string|max:31',
+            'city' => 'required|string|max:255',
+            'street_and_number' => 'required|string|max:255',
+            'tenant_until'=>'nullable|string|max:225',
+        ]);
+        if($user->email != $request->email) {
+            if(User::where('email', $request->email)->exists()){
+                $validator->after(function ($validator) {
+                    $validator->errors()->add('email', __('validation.unique', ['attribute' => 'e-mail']));
+                });
+            }
+        }
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+        $user->update(['email' => $request->email, 'name' => $request->name]);
+
+        if (!$user->hasPersonalInformation()) {
+            $user->personalInformation()->create($request->all());
+        } else {
+            $user->personalInformation->update($request->all());
+        }
+
+        return redirect()->back()->with('message', __('general.successful_modification'));
+    }
+
+    public function updateEducationalInformation(Request $request, User $user): \Illuminate\Http\RedirectResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'year_of_graduation' => 'required|integer|between:1895,' . date('Y'),
+            'high_school' => 'required|string|max:255',
+            'neptun' => 'required|string|size:6',
             'faculty' => 'array',
             'faculty.*' => 'exists:faculties,id',
-            'educational_email' => 'required|string|email|max:255',
-            'programs' => 'required|array',
-            'programs.*' => 'nullable|string'
+            'workshop' => 'array',
+            'workshop.*' => 'exists:workshops,id',
+            'email' => 'required|string|email|max:255',
+            'program' => 'required|array|min:1',
+            'program.*' => 'nullable|string'
         ]);
 
         if ($validator->fails()) {
@@ -59,21 +89,21 @@ class UserController extends Controller
                 ->withErrors($validator)
                 ->withInput();
         }
-        if ($request->has('email')) {
-            $user->update(['email' => $request->email]);
+
+        if (!$user->hasEducationalInformation()) {
+            $user->educationalInformation()->create($request->all());
+        } else {
+            $user->educationalInformation->update($request->all());
         }
-        if ($user->hasPersonalInformation() && $request->hasAny(
-            ['place_of_birth', 'date_of_birth', 'mothers_name', 'phone_number', 'country', 'county', 'zip_code', 'city', 'street_and_number', 'tenant_until']
-        )) {
-            $user->personalInformation->update($request->all());
-        }
-        //TODO: educational information
+
+        $user->workshops()->sync($request->input('workshop'));
+        $user->faculties()->sync($request->input('faculties'));
 
         return redirect()->back()->with('message', __('general.successful_modification'));
+
     }
 
-
-    public function updatePassword(Request $request)
+    public function updatePassword(Request $request): \Illuminate\Http\RedirectResponse
     {
         $user = Auth::user();
 
