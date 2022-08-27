@@ -45,6 +45,9 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('is-collegist', function ($user) {
             return $user->isCollegist();
         });
+        Gate::define('is-admin', function ($user) {
+            return $user->isAdmin();
+        });
     }
 
     public function registerPrintingPermissionHandlingPolicies()

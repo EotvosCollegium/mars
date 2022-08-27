@@ -113,49 +113,33 @@ class ApplicationController extends Controller
     public function showApplications(Request $request): View
     {
         $authUser = $request->user();
-        if ($request->has('id')) {
-            // return one application in detail
+        if ($request->has('id')) { // return one application in detail
             $user = User::withoutGlobalScope('verified')
                 ->with('application')->findOrFail($request->input('id'));
             $this->authorize('viewApplication', $user);
             return view('auth.application.applications_details', [
                 'user' => $user,
             ]);
-        } else {
-            //return all applications that can be visible
+        } else { //return all applications that can be visible
             $this->authorize('viewAnyApplication', User::class);
-            if ($authUser->hasAnyRoleBase([Role::SYS_ADMIN, Role::SECRETARY, Role::DIRECTOR])) {
-                $workshops = Workshop::all();
-                $applications = ApplicationForm::select('*');
-                if ($request->has('workshop') && $request->input('workshop') !== "null") {
-                    //filter by workshop
-                    $applications->join('workshop_users', 'application_forms.user_id', '=', 'workshop_users.user_id')
-                        ->where('workshop_id', $request->input('workshop'));
-                }
-                if ($request->has('status')) {
-                    //filter by status
-                    $applications->where('status', $request->input('status'));
-                }
-                session()->flash('can_filter_by_status');
+            $workshops = $authUser->applicationWorkshops();
+            $applications = ApplicationForm::select('*');
+            $applications->join('workshop_users', 'application_forms.user_id', '=', 'workshop_users.user_id');
+            if ($request->has('workshop') && $request->input('workshop') !== "null" && $workshops->contains($request->input('workshop'))) {
+                //filter by workshop selected
+                $applications->where('workshop_id', $request->input('workshop'));
             } else {
-                if ($authUser->hasRoleBase(Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER)) {
-                    $workshops = Workshop::all();
-                } else {
-                    $workshops = $authUser->roles()->whereIn('name', [Role::APPLICATION_COMMITTEE_MEMBER, Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR])->get(['object_id'])->pluck('object_id');
-                    $workshops = Workshop::whereIn('id', $workshops)->distinct()->get();
-                }
-                $applications = ApplicationForm::where('status', ApplicationForm::STATUS_SUBMITTED);
-                if ($request->has('workshop') && $request->input('workshop') !== "null") {
-                    // filter by selected workshop
-                    $applications->join('workshop_users', 'application_forms.user_id', '=', 'workshop_users.user_id')
-                        ->where('workshop_id', $request->input('workshop'));
-                } else {
-                    // filter by user's workshops
-                    $applications->join('workshop_users', 'application_forms.user_id', '=', 'workshop_users.user_id')
-                        ->whereIn('workshop_id', $workshops->pluck('id'));
-                }
+                //filter by accessible workshops
+                $applications->whereIn('workshop_id', $workshops->pluck('id'));
             }
-
+            //hide unfinished
+            if ($authUser->cannot('viewUnfinishedApplications', [User::class])) {
+                $applications->where('status', ApplicationForm::STATUS_SUBMITTED);
+            }
+            //filter by status
+            if ($request->has('status')) {
+                $applications->where('status', $request->input('status'));
+            }
             return view('auth.application.applications', [
                 'applications' => $applications->with('user.educationalInformation')->get()->unique(),
                 'workshop' => $request->input('workshop'), //filtered workshop

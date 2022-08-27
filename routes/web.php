@@ -48,7 +48,7 @@ Route::middleware(['auth', 'only_hungarian'])->group(function () {
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::post('/secretariat/user/update_password', [UserController::class, 'updatePassword'])->name('secretariat.user.update_password');
+    Route::post('/user/update_password', [UserController::class, 'updatePassword'])->name('users.update.password');
 });
 
 Route::middleware(['auth', 'log', 'verified'])->group(function () {
@@ -60,23 +60,13 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::get('/report_bug', [HomeController::class, 'indexReportBug'])->name('index_reportbug');
 
     /** User related routes */
-    Route::get('/user', [UserController::class, 'index'])->name('user');
-    Route::post('/secretariat/user/update', [UserController::class, 'update'])->name('secretariat.user.update');
-    Route::get('/secretariat/user/list', [UserController::class, 'list'])->name('secretariat.user.list');
-    Route::get('/secretariat/user/show/{user}', [UserController::class, 'show'])->name('secretariat.user.show');
-    Route::get('/secretariat/user/semesters/{user}', [UserController::class, 'semesters'])->name('secretariat.user.semesters');
-    Route::get('/secretariat/user/semesters/update/{user}/{semester}/{status}', [UserController::class, 'updateSemesterStatus'])->name('secretariat.user.semesters.update');
-    Route::post('/secretariat/user/setCollegistType', [UserController::class, 'setCollegistType'])->name('secretariat.user.set_collegist_type');
-    Route::get('/secretariat/user/statuses', [SemesterController::class, 'statuses'])->name('secretariat.user.statuses');
-    Route::get('/secretariat/user/semesters/update/{user}/{semester}/{status}', [UserController::class, 'updateSemesterStatus'])->name('secretariat.user.semesters.update');
-    Route::get('/secretariat/user/{user}/workshop/{workshop}/delete', [UserController::class, 'deleteUserWorkshop'])->name('secretariat.user.workshop.delete');
-    Route::post('/secretariat/user/{user}/workshop/add', [UserController::class, 'addUserWorkshop'])->name('secretariat.user.workshop.add');
-
-    /** Permission handling */
-    Route::get('/secretariat/permissions', [PermissionController::class, 'index'])->name('secretariat.permissions.list');
-    Route::get('/secretariat/permissions/{user}/show', [PermissionController::class, 'show'])->name('secretariat.permissions.show');
-    Route::post('/secretariat/permissions/{user}/edit/{role}', [PermissionController::class, 'edit'])->name('secretariat.permissions.edit');
-    Route::post('/secretariat/permissions/{user}/remove/{role}', [PermissionController::class, 'remove'])->name('secretariat.permissions.remove');
+    Route::get('/profile', [UserController::class, 'profile'])->name('profile');
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
+    Route::post('/users/{user}/personal_information', [UserController::class, 'updatePersonalInformation'])->name('users.update.personal');
+    Route::post('/users/{user}/educational_information', [UserController::class, 'updateEducationalInformation'])->name('users.update.educational');
+    Route::post('/users/{user}/roles/{role}', [UserController::class, 'addRole'])->name('users.roles.add');
+    Route::delete('/users/{user}/roles/{role}', [UserController::class, 'deleteRole'])->name('users.roles.delete');
 
 
     /** Localization */
@@ -153,9 +143,6 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::get('/faults/table', [FaultController::class, 'GetFaults'])->name('faults.table');
     Route::post('/faults/add', [FaultController::class, 'addFault'])->name('faults.add');
     Route::post('/faults/update', [FaultController::class, 'updateStatus'])->name('faults.update');
-
-    /** WIP: Secretariat */
-    Route::get('/secretariat/users', [SecretariatController::class, 'list'])->name('secretariat.users');
 
     /** Documents */
     Route::get('/documents', [DocumentController::class, 'index'])->name('documents');

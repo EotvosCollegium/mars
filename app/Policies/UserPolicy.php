@@ -63,13 +63,9 @@ class UserPolicy
      */
     public function viewApplication(User $user, User $target): bool
     {
-        if(!isset($target->application)) return false;
-        if($user->hasAnyRoleBase([Role::SECRETARY, Role::DIRECTOR]))
-            return true;
         return $target->workshops
-                ->intersect(
-                    $user->roleWorkshops()->union($user->applicationWorkshops())
-                )->count()>0;
+                ->intersect($user->applicationWorkshops())
+                ->count()>0;
     }
 
     /**
@@ -85,6 +81,27 @@ class UserPolicy
             Role::WORKSHOP_LEADER,
             Role::APPLICATION_COMMITTEE_MEMBER
         ]);
+    }
+
+    /**
+     * @param User $user
+     * @return bool
+     */
+    public function viewAllApplications(User $user): bool
+    {
+        return $user->hasAnyRoleBase([
+                Role::SECRETARY,
+                Role::DIRECTOR,
+            ]) || $user->isPresident();
+    }
+
+    /**
+     * @param User $user
+     * @return bool
+     */
+    public function viewUnfinishedApplications(User $user): bool
+    {
+        return $this->viewAllApplications($user);
     }
 
     /** Permission related policies */

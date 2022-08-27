@@ -62,7 +62,6 @@
             <ul class="collapsible collapsible-accordion">
                 <!-- students' council module -->
                 @can('is-collegist')
-                <li><div class="divider"></div></li>
                 <li class="@yield('student_council_module')">
                     <a class="collapsible-header waves-effect" style="padding-left:32px">
                         <i class="material-icons left">groups</i> <!-- star icon? -->
@@ -93,41 +92,8 @@
                     </div>
                 </li>
                 @endcan
-                <!-- secretariat module -->
-                @can('viewAny', \App\Models\User::class)
-
-                <li><div class="divider"></div></li>
-                <li class="@yield('secretariat_module')">
-                    <a class="collapsible-header waves-effect" style="padding-left:32px">
-                        <i class="material-icons left">business_center</i>
-                        @lang('general.secretariat')
-                        <i class="material-icons right">arrow_drop_down</i>
-                    </a>
-                    <div class="collapsible-body">
-                        <ul>
-                            <!-- registrations -->
-                            @can('registration.handle')
-                            <li>
-                                <a class="waves-effect" href="{{ route('secretariat.registrations') }}">
-                                    <i class="material-icons left">how_to_reg</i> @lang('admin.handle_registrations')
-                                    @notification(\App\Models\User::class)
-                                </a>
-                            </li>
-                            @endcan
-
-                            <!-- user management -->
-                            <li>
-                                <a class="waves-effect" href="{{ route('secretariat.user.list') }}">
-                                    <i class="material-icons left">supervisor_account</i> @lang('admin.user_management')
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
-                @endcan
                 @can('is-collegist')
                 {{-- Sysadmin module --}}
-                <li><div class="divider"></div></li>
                 <li class="@yield('admin_module')">
                     <a class="collapsible-header waves-effect" style="padding-left:32px">
                         <i class="material-icons left">admin_panel_settings</i>
@@ -171,7 +137,22 @@
                     </div>
                 </li>
                 @endif
-
+                @can('viewAny', \App\Models\User::class)
+                    <!-- user management -->
+                    <li>
+                        <a class="waves-effect" href="{{ route('users.index') }}">
+                            <i class="material-icons left">supervisor_account</i> @lang('admin.user_management')
+                        </a>
+                    </li>
+                @endcan
+                @can('registration.handle')
+                    <li>
+                        <a class="waves-effect" href="{{ route('secretariat.registrations') }}">
+                            <i class="material-icons left">how_to_reg</i> @lang('admin.handle_registrations')
+                            @notification(\App\Models\User::class)
+                        </a>
+                    </li>
+                @endcan
             </ul>
         </li>
     @endif

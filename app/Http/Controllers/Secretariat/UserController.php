@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Secretariat;
 
 use App\Http\Controllers\Controller;
+use App\Models\Faculty;
+use App\Models\Role;
 use App\Models\Semester;
 use App\Models\User;
+use App\Models\Workshop;
 use App\Models\WorkshopBalance;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,31 +16,25 @@ use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
-    public function index()
+    public function profile()
     {
         $user = Auth::user();
 
-        return view('auth.user', ['user' => $user]);
+        return view('auth.user', [
+            'user' => $user,
+            'semesters' => $user->allSemesters,
+            'countries' => require base_path('countries.php'),
+            'faculties' => Faculty::all(),
+            'workshops' => Workshop::all()
+        ]);
     }
 
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
+    public function updatePersonalInformation(Request $request, User $user)
     {
-        $this->middleware('auth');
-    }
-
-    public function update(Request $request)
-    {
-        $user = Auth::user();
 
         $validator = Validator::make($request->all(), [
-            //only one should exist at a time
-            'email' => 'email|max:225|unique:users',
-            'phone_number' => 'string|min:8|max:18',
+            'email' => 'required|email|max:225',
+            'phone_number' => 'required|string|min:8|max:18',
             'mothers_name' => 'string|max:225',
             'place_of_birth' => 'string|max:225',
             'date_of_birth' => 'string|max:225',
@@ -47,6 +44,14 @@ class UserController extends Controller
             'city' => 'string|max:255',
             'street_and_number' => 'string|max:255',
             'tenant_until'=>'string|max:225',
+            'year_of_graduation' => 'integer|between:1895,' . date('Y'),
+            'high_school' => 'string|max:255',
+            'neptun' => 'string|size:6',
+            'faculty' => 'array',
+            'faculty.*' => 'exists:faculties,id',
+            'educational_email' => 'required|string|email|max:255',
+            'programs' => 'required|array',
+            'programs.*' => 'nullable|string'
         ]);
 
         if ($validator->fails()) {
@@ -66,6 +71,7 @@ class UserController extends Controller
 
         return redirect()->back()->with('message', __('general.successful_modification'));
     }
+
 
     public function updatePassword(Request $request)
     {
@@ -109,7 +115,7 @@ class UserController extends Controller
         return response()->json(null, 204);
     }
 
-    public function list()
+    public function index()
     {
         $this->authorize('viewAny', User::class);
 
@@ -122,21 +128,13 @@ class UserController extends Controller
 
         $this->authorize('view', $user);
 
-        return view('secretariat.user.show')->with('user', $user);
-    }
-
-    public function semesters($id)
-    {
-        $user = User::findOrFail($id);
-
-        // TODO
-        $this->authorize('view', $user);
-
-        $semesters = $user->allSemesters->sortByDesc(function ($semester) {
-            return $semester->getStartDate();
-        });
-
-        return view('secretariat.user.semesters')->with('user', $user)->with('semesters', $semesters);
+        return view('secretariat.user.show', [
+            'user' => $user,
+            'semesters' => $user->allSemesters,
+            'countries' => require base_path('countries.php'),
+            'faculties' => Faculty::all(),
+            'workshops' => Workshop::all()
+        ]);
     }
 
     public function updateSemesterStatus($id, $semester, $status)
@@ -187,5 +185,39 @@ class UserController extends Controller
         WorkshopBalance::generateBalances(Semester::current()->id);
 
         return redirect()->back()->with('message', __('general.successfully_added'));
+    }
+
+
+    public function addRole(Request $request, User $user, Role $role)
+    {
+        $object_id = $request->get('object_id') ?? $request->get('workshop_id');
+        $object = $object_id ? $role->getObject($object_id) : null;
+
+        if($request->user()->cannot('updatePermission', [$user, $role, $object])){
+            return redirect()->back()->with('error', __('role.unauthorized'));
+        }
+
+        if (!$role->isValid($object))
+            $message = __('role.role_can_not_be_attached');
+        else if ($user->addRole($role, $object))
+            $message = __('general.successfully_added');
+        else
+            $message = __('role.role_unavailable');
+        return redirect()->back()->with('message', $message);
+
+    }
+
+    public function removeRole(Request $request, User $user, Role $role)
+    {
+        $object_id = $request->get('object');
+        $object = $object_id ? $role->getObject($object_id) : null;
+
+        if($request->user()->cannot('updatePermission', [$user, $role, $object])){
+            return redirect()->back()->with('error', __('role.unauthorized'));
+        }
+
+        $user->removeRole($role, $object ?? null);
+
+        return redirect()->back();
     }
 }

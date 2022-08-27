@@ -243,9 +243,15 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function applicationWorkshops(): \Illuminate\Support\Collection
     {
-        return Workshop::whereIn('id',
-            $this->roles()->where('name', Role::APPLICATION_COMMITTEE_MEMBER)
-                ->pluck('role_users.workshop_id'))->get();
+        if($this->can('viewAllApplications', User::class)) {
+            return Workshop::all();
+        } else {
+            return Workshop::whereIn('id',
+                $this->roles()->whereIn('name', [Role::APPLICATION_COMMITTEE_MEMBER, Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR])
+                    ->pluck('role_users.workshop_id'))
+                ->get();
+        }
+
     }
 
     public function faculties(): BelongsToMany
@@ -296,12 +302,16 @@ class User extends Authenticatable implements HasLocalePreference
      * Scope a query to only include users with the given role.
      *
      * @param Builder $query
-     * @param Role $role
+     * @param Role|string $role
      * @param RoleObject|Workshop|null $object
      * @return Builder
      */
-    public function scopeRole(Builder $query, Role $role, Workshop|RoleObject $object = null) : Builder
+    public function scopeRole(Builder $query, Role|string $role, Workshop|RoleObject $object = null) : Builder
     {
+        if(!$role instanceof Role) {
+            $role = Role::firstWhere('name', $role);
+            if(!$role) throw new InvalidArgumentException("Role '".$role ?? 'null'."' does not exist.");
+        }
         if($object instanceof RoleObject) {
             return $query->whereHas('roles', function ($q) use ($role, $object) {
                 $q->where('role_users.role_id', $role->id)
@@ -322,7 +332,7 @@ class User extends Authenticatable implements HasLocalePreference
 
     /**
      * Decides if the user has a role.
-     * @param string|Role $roleName the role's name
+     * @param Role|string $role
      * @param integer|string|RoleObject|Workshop|null $object
      * @return bool
      */
@@ -404,6 +414,11 @@ class User extends Authenticatable implements HasLocalePreference
     public function isCollegist(): bool
     {
         return $this->hasRoleBase(Role::COLLEGIST);
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->hasRoleBase(Role::SYS_ADMIN);
     }
 
     /**
@@ -573,10 +588,10 @@ class User extends Authenticatable implements HasLocalePreference
     /**
      * Returns the collegist's status in the semester.
      *
-     * @param int $semester id
+     * @param $semester id
      * @return string the status. Returns INACTIVE if the user does not have any status in the given semester.
      */
-    public function getStatusIn(int $semester): string
+    public function getStatusIn($semester): string
     {
         $semesters = $this->allSemesters;
         if (! $semesters->contains($semester)) {
