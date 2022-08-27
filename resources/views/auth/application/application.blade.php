@@ -5,7 +5,7 @@
             <div class="row" style="margin-bottom: 0">
                 <div class="col s12 xl4">
                     @if ($user->profilePicture)
-                        <img src="{{ url($user->profilePicture->path) }}" style="max-width:300px">
+                        <img src="{{ url($user->profilePicture->path) }}" style="max-width:100%">
                     @else
                         <span style="font-style:italic;color:red">hiányzó profilkép</span>
                     @endif

@@ -68,6 +68,10 @@ class ApplicationController extends Controller
     {
         $user = $request->user();
 
+	if(now() > self::getApplicationDeadline()) {
+            return redirect()->route('application')->with('error', 'A jelentkezési határidő lejárt');
+        }
+
         if (isset($user->application) && $user->application->status == ApplicationForm::STATUS_SUBMITTED) {
             return redirect()->route('application')->with('error', 'Már véglegesítette a jelentkezését!');
         }
@@ -134,14 +138,18 @@ class ApplicationController extends Controller
                 }
                 session()->flash('can_filter_by_status');
             } else {
-                $workshops = $authUser->roles()->whereIn('name', [Role::APPLICATION_COMMITTEE_MEMBER, Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR])->get(['object_id'])->pluck('object_id');
-                $workshops = Workshop::whereIn('id', $workshops)->distinct()->get();
+                if($authUser->hasRoleBase(Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER)){
+                    $workshops = Workshop::all();
+                } else {
+                    $workshops = $authUser->roles()->whereIn('name', [Role::APPLICATION_COMMITTEE_MEMBER, Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR])->get(['object_id'])->pluck('object_id');
+                    $workshops = Workshop::whereIn('id', $workshops)->distinct()->get();
+                }
                 $applications = ApplicationForm::where('status', ApplicationForm::STATUS_SUBMITTED);
                 if ($request->has('workshop') && $request->input('workshop') !== "null") {
                     // filter by selected workshop
                     $applications->join('workshop_users', 'application_forms.user_id', '=', 'workshop_users.user_id')
                         ->where('workshop_id', $request->input('workshop'));
-                } elseif (!$authUser->hasRoleBase(Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER)) {
+                } else {
                     // filter by user's workshops
                     $applications->join('workshop_users', 'application_forms.user_id', '=', 'workshop_users.user_id')
                         ->whereIn('workshop_id', $workshops->pluck('id'));
