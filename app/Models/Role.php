@@ -161,27 +161,19 @@ class Role extends Model
      */
     public function getUsers(Workshop|RoleObject $object = null): Collection|array
     {
-        if($this->has_objects)
-        {
-            $object = $this->getObject($object);
+        if(isset($object) && $this->has_objects) {
             return User::whereHas('roles', function ($q) use ($object) {
                 $q->where('role_id', $this->id)
                     ->where('object_id', $object->id);
             })->get();
-
-        }
-        else if($this->has_workshops)
-        {
-            if(!($object instanceof Workshop))
-                throw new InvalidArgumentException("Role object must be a Workshop instance for the " . $this->name . " role.");
+        } else if (isset($object) && $this->has_workshops) {
+            $object = $this->getObject($object);
             return User::whereHas('roles', function ($q) use ($object) {
                 $q->where('role_id', $this->id)
                     ->where('workshop_id', $object->id);
             })->get();
         }
-        if(isset($object)) {
-            throw new InvalidArgumentException($this->name . " role must have an object");
-        }
+
         return User::whereHas('roles', function ($q) use ($object) {
             $q->where('role_id', $this->id);
         })->get();

@@ -28,6 +28,7 @@ class RestructureRoleSystem extends Migration
         DB::table('roles')->where('name', 'permission-handler')->delete();
         DB::table('roles')->where('name', 'print-admin')->delete();
 
+        DB::table('roles')->where('name', 'internet-admin')->update(['name' => 'sys-admin']);
 
         Schema::create('role_objects', function (Blueprint $table) {
             $table->tinyIncrements('id');
@@ -92,6 +93,7 @@ class RestructureRoleSystem extends Migration
         });
 
         //Set student council objects manually
+        DB::table('role_users')->where('role_id', Role::where('name', Role::STUDENT_COUNCIL)->first()->id)->delete();
     }
 
     /**

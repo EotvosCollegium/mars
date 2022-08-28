@@ -128,9 +128,9 @@ class RegisterController extends Controller
             'street_and_number' => $data['street_and_number'] ?? null,
         ]);
 
-        $user->roles()->attach(Role::getId(Role::PRINTER));
-        $user->roles()->attach(Role::getId(Role::INTERNET_USER));
-        $user->roles()->attach(Role::getId($data['user_type']));
+        $user->roles()->attach(Role::firstWhere('name', Role::PRINTER)->id);
+        $user->roles()->attach(Role::firstWhere('name', Role::INTERNET_USER)->id);
+        $user->roles()->attach(Role::firstWhere('name', $data['user_type'])->id);
 
         if ($data['user_type'] == Role::TENANT) {
             $user->internetAccess->setWifiUsername();
@@ -140,7 +140,7 @@ class RegisterController extends Controller
             if (! $user->isCollegist()) {
                 $users_to_notify = User::whereHas('roles', function ($q) {
                     $q->whereIn('role_id', [
-                        Role::getId(Role::SYS_ADMIN)
+                        Role::firstWhere('name', Role::SYS_ADMIN)->id
                     ]);
                 })->get();
                 foreach ($users_to_notify as $person) {

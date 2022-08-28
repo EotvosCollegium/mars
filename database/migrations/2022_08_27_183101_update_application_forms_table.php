@@ -14,8 +14,10 @@ class UpdateApplicationFormsTable extends Migration
     public function up()
     {
         Schema::table('application_forms', function (Blueprint $table) {
-            $table->boolean('accommodation')->change();
-            $table->text('present')->nullable()->after('accommodation');
+            $table->renameColumn('accommodation', 'present');
+        });
+        Schema::table('application_forms', function (Blueprint $table) {
+            $table->boolean('accommodation')->default(false)->after('present');
         });
     }
 

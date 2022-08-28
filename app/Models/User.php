@@ -87,7 +87,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function getUniqueNameAttribute(): string
     {
-        if ($this->hasEducationalInformation() && auth()->user()->can('viewEducationalInformation', $this)) {
+        if ($this->hasEducationalInformation() && auth()->user()->can('view', $this)) {
             return $this->name.' ('.$this->educationalInformation->neptun.')';
         } else {
             return $this->name;
