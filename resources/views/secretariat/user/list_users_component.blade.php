@@ -57,6 +57,13 @@
         </div>
     </div>
 
+    {{-- Export --}}
+    <div class="fixed-action-btn">
+        <a wire:click="exportUsers" class="btn-floating btn-large">
+            <i class="large material-icons">file_download</i>
+        </a>
+    </div>
+
     <div class="card">
         <div class="card-content">
 
