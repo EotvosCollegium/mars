@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Secretariat;
 
 use App\Http\Controllers\Controller;
+use App\Models\Faculty;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Workshop;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -24,8 +26,8 @@ class RegistrationsController extends Controller
     {
         $users = User::withoutGlobalScope('verified')
             ->where('verified', false)
-            ->whereDoesntHave('roles', function (Builder $query) {
-                $query->where('name', Role::COLLEGIST);
+            ->whereHas('roles', function (Builder $query) {
+                $query->where('name', Role::TENANT);
             })
             ->with(['personalInformation'])
             ->get();
@@ -88,17 +90,5 @@ class RegistrationsController extends Controller
 
         \Invytr::invite($user);
         return redirect()->route('secretariat.permissions.show', ['id' => $user->id])->with('message', __('registration.set_permissions'));
-    }
-
-    public function show(Request $request)
-    {
-        $user = User::withoutGlobalScope('verified')->findOrFail($request->id);
-        if ($user->verified) {
-            return redirect()->route('secretariat.registrations');
-        }
-
-        $unverified_users_left = count(User::withoutGlobalScope('verified')->where('verified', false)->get());
-
-        return view('secretariat.registrations.show', ['user' => $user, 'users_left' => $unverified_users_left]);
     }
 }

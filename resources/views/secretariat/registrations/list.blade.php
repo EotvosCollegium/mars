@@ -18,15 +18,14 @@
                         @foreach ($users as $user)
                         <tr>
                             <td>
-                                <b>{{ $user->name }}</b><br>
-                                {{ $user->email }}
-                                @if($user->hasEducationalInformation())
-                                - {{ $user->educationalInformation->neptun ?? '' }}
+                                <b>{{ $user->name }}</b> - {{ $user->email }}
+                                @if($user->hasPersonalInformation())
+                                <br>{{$user->personalInformation->phone_number}}
+                                <br>Tervezett kiköltözés: {{$user->personalInformation->tenant_until ?? '?'}}
                                 @endif
                             </td>
                             <td>
                                 <div class="right">
-                                    <x-input.button :href="route('secretariat.registrations.show',   ['id' => $user->id])" floating icon="search"/>
                                     <x-input.button :href="route('secretariat.registrations.accept', ['id' => $user->id])" floating icon="done" class="green"/>
                                     <x-input.button :href="route('secretariat.registrations.reject', ['id' => $user->id])" floating icon="block" class="red"/>
                                 </div>

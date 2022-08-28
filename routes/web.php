@@ -129,7 +129,6 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     /** Registration handling */
     Route::middleware(['can:registration.handle'])->group(function () {
         Route::get('/secretariat/registrations', [RegistrationsController::class, 'index'])->name('secretariat.registrations');
-        Route::get('/secretariat/registrations/show/{id}', [RegistrationsController::class, 'show'])->name('secretariat.registrations.show');
         Route::get('/secretariat/registrations/accept/{id}', [RegistrationsController::class, 'accept'])->name('secretariat.registrations.accept');
         Route::get('/secretariat/registrations/reject/{id}', [RegistrationsController::class, 'reject'])->name('secretariat.registrations.reject');
         Route::post('/secretariat/registrations/invite', [RegistrationsController::class, 'invite'])->name('secretariat.registrations.invite');
