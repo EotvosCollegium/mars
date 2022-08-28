@@ -17,10 +17,6 @@ class AddMissingConstraints extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->softDeletes();
-        });
-
         Transaction::whereNotIn('receiver_id', User::pluck('id'))->update(['receiver_id' => null]);
         Transaction::whereNotIn('payer_id', User::pluck('id'))->update(['payer_id' => null]);
 
