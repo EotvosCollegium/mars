@@ -30,7 +30,6 @@ return [
     'secretariat' => 'Titkárság',
     'semester' => 'Szemeszter',
     'settings' => 'Beállítások',
-    'show' => 'Mutasd',
     'success' => 'Siker!',
     'successful_modification' => 'Sikeres módosítás!',
     'successful_transaction' => 'Sikeres tranzakció!',

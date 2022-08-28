@@ -2,18 +2,10 @@
 
 namespace App\Http\Controllers\Secretariat;
 
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Validator;
-
-
-
 use App\Http\Controllers\Controller;
 use App\Models\EventTrigger;
 use App\Models\Semester;
 use App\Models\User;
-use App\Models\Role;
 
 // TODO: rename this class
 class SecretariatController extends Controller
@@ -32,39 +24,9 @@ class SecretariatController extends Controller
         return $deadline_event < $statement_event;
     }
 
-    public static function showStatusUpdate()
-    {
-        //TODO policy
-        if (Auth::user()->getStatusIn(Semester::previous()) == Semester::DEACTIVATED) {
-            abort(403);
-        }
-        return view('secretariat.statuses.status_update_form');
-    }
-
-    public static function updateStatus(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'semester_status' => 'required|in:' . Semester::ACTIVE . ',' . Semester::PASSIVE . ',' . Semester::DEACTIVATED,
-            'collegist_role' => 'required|in:resident,extern'
-        ]);
-        $validator->validate();
-
-        $user = Auth::user();
-        $user->setStatus($request->semester_status);
-        $user->setCollegistRole($request->collegist_role);
-        return back()->with('message', 'general.success');
-    }
-
     public static function sendStatementMail()
     {
-        $users = User::collegists();
-        foreach ($users as $user) {
-            if ($user->getStatusIn(Semester::previous()) == Semester::DEACTIVATED) {
-                $user->setStatus(Semester::DEACTIVATED, 'Was deactivated in last semester');
-            } else {
-                Mail::to($user)->queue(new \App\Mail\StatusStatementRequest($user->name));
-            }
-        }
+        //TODO: after #219
     }
 
     /**
@@ -77,7 +39,7 @@ class SecretariatController extends Controller
         $next_semester = Semester::next();
         foreach ($users as $user) {
             if (! $user->isInSemester($next_semester)) {
-                $user->setStatusFor($next_semester, Semester::DEACTIVATED, 'Failed to make a statement');
+                $user->setStatusFor($next_semester, SemesterStatus::INACTIVE, 'Failed to make a statement');
             }
         }
     }
