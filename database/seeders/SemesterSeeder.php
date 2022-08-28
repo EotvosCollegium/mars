@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use App\Models\Semester;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use App\Models\SemesterStatus;
+
 
 class SemesterSeeder extends Seeder
 {
@@ -31,7 +33,9 @@ class SemesterSeeder extends Seeder
         foreach ($semesters as $semester) {
             foreach ($users as $user) {
                 $status = array_rand(SemesterStatus::STATUSES);
-                $user->setStatusFor($semester, SemesterStatus::STATUSES[$status]);
+                SemesterStatus::withoutEvents(function () use($user, $semester, $status) {                    
+                    $user->setStatusFor($semester, SemesterStatus::STATUSES[$status]);        
+                });
             }
         }
     }
