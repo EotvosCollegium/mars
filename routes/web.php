@@ -143,9 +143,6 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::post('/faults/add', [FaultController::class, 'addFault'])->name('faults.add');
     Route::post('/faults/update', [FaultController::class, 'updateStatus'])->name('faults.update');
 
-    /** WIP: Secretariat */
-    Route::get('/secretariat/users', [SecretariatController::class, 'list'])->name('secretariat.users');
-
     /** Status update form */
     Route::get('/secretariat/status-update', [SecretariatController::class, 'showStatusUpdate'])->name('secretariat.status-update.show');
     Route::post('/secretariat/status-update/update', [SecretariatController::class, 'updateStatus'])->name('secretariat.status-update.update');
