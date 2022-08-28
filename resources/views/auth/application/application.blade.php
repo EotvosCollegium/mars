@@ -5,7 +5,7 @@
             <div class="row" style="margin-bottom: 0">
                 <div class="col s12 xl4">
                     @if ($user->profilePicture)
-                        <img src="{{ url($user->profilePicture->path) }}" style="max-width:300px">
+                        <img src="{{ url($user->profilePicture->path) }}" style="max-width:100%">
                     @else
                         <span style="font-style:italic;color:red">hiányzó profilkép</span>
                     @endif
@@ -69,6 +69,15 @@
                     <div class="col s12">
                         <table>
                             <tbody>
+                            <tr>
+                                <th scope="row">A felvételi teljes időtartamában itt lesz?</th>
+                                <td>
+                                    {{ $user->application->accommodation }}
+                                    @if(!$user->application->accommodation)
+                                        <span style="font-style:italic;color:green">Igen</span>
+                                    @endif
+                                </td>
+                            </tr>
                             <tr>
                                 <th scope="row">@lang('user.place_and_date_of_birth')</th>
                                 <td>
@@ -257,7 +266,7 @@
                                         @endif
                                         <div class="row" style="margin-bottom: 0; padding: 10px">
                                             <div class="col" style="margin-top: 5px">
-                                                <a href="{{ url($file->path) }}">{{ $file->name }}</a>
+                                                <a href="{{ url($file->path) }}" target="_blank">{{ $file->name }}</a>
                                             </div>
                                         </div>
                                     @empty

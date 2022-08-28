@@ -16,6 +16,7 @@ class Role extends Model
     public const WORKSHOP_ADMINISTRATOR = 'workshop-administrator';
     public const WORKSHOP_LEADER = 'workshop-leader';
     public const APPLICATION_COMMITTEE_MEMBER = 'application-committee';
+    public const AGGREGATED_APPLICATION_COMMITTEE_MEMBER = 'aggregated-application-committee';
     public const SECRETARY = 'secretary';
     public const DIRECTOR = 'director';
     public const STAFF = 'staff';
@@ -72,6 +73,7 @@ class Role extends Model
         self::WORKSHOP_ADMINISTRATOR,
         self::WORKSHOP_LEADER,
         self::APPLICATION_COMMITTEE_MEMBER,
+        self::AGGREGATED_APPLICATION_COMMITTEE_MEMBER,
         self::SECRETARY,
         self::DIRECTOR,
         self::STAFF,
@@ -110,10 +112,10 @@ class Role extends Model
         switch ($roleName) {
             case self::DIRECTOR:
                 return true;
-            case self::WORKSHOP_ADMINISTRATOR:
-                return true;
-            case self::WORKSHOP_LEADER:
-                return true;
+//            case self::WORKSHOP_ADMINISTRATOR:
+//                return true;
+//            case self::WORKSHOP_LEADER:
+//                return true;
             case self::STUDENT_COUNCIL:
                 return $objectName == self::PRESIDENT || in_array($objectName, self::COMMITTEE_LEADERS);
             default:
@@ -313,6 +315,8 @@ class Role extends Model
                 return 'green darken-4';
             case self::APPLICATION_COMMITTEE_MEMBER:
                 return 'light-blue darken-4';
+            case self::AGGREGATED_APPLICATION_COMMITTEE_MEMBER:
+                return 'light-blue darken-5';
             default:
                 return 'grey';
         }
