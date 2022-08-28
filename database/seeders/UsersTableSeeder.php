@@ -16,6 +16,7 @@ use App\Models\PersonalInformation;
 use App\Models\EducationalInformation;
 use App\Models\RoleObject;
 
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Log;
 
