@@ -70,6 +70,11 @@ return [
             'root' => storage_path('app/latex'),
         ],
 
+        'backup' => [
+            'driver' => 'local',
+            'root' => env('BACKUP_PATH')
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

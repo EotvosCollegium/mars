@@ -30,6 +30,9 @@ class Kernel extends ConsoleKernel
         foreach (\App\Models\Router::all() as $router) {
             $schedule->job(new \App\Jobs\PingRouter($router))->everyFiveMinutes();
         }
+
+        $schedule->command('backup:clean')->daily()->at('01:00');
+        $schedule->command('backup:run')->daily()->at('01:30');
     }
 
     /**
