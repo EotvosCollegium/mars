@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Faculty;
 use App\Models\FreePages;
+use App\Models\RoleObject;
 use App\Models\Workshop;
 use App\Models\Role;
 use App\Models\User;
