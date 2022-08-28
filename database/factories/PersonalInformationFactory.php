@@ -22,7 +22,6 @@ class PersonalInformationFactory extends Factory
             'zip_code' => $this->faker->postcode,
             'city' => $this->faker->city,
             'street_and_number' => $this->faker->streetAddress,
-            'room' => Room::all()->random()->name,
         ];
     }
 }

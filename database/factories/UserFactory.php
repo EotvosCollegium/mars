@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\ApplicationForm;
 use App\Models\User;
+use App\Models\Room;
 use App\Models\PrintAccount;
 use App\Models\PersonalInformation;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -32,6 +33,7 @@ class UserFactory extends Factory
             'password' => bcrypt('asdasdasd'), // password
             'remember_token' => Str::random(10),
             'verified' => $this->faker->boolean($chanceOfGettingTrue = 75),
+            'room' => Room::all()->random()->name,
         ];
     }
 

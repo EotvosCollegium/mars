@@ -17,7 +17,7 @@ class CreateRoomsTable extends Migration
             $table->string('name')->unique();
             $table->integer('capacity');
         });
-        Schema::table('personal_information', function (Blueprint $table) {
+        Schema::table('users', function (Blueprint $table) {
             $table->string('room')->nullable();
             $table->foreign('room')->references('name')->on('rooms');
         });

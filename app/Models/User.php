@@ -48,7 +48,7 @@ class User extends Authenticatable implements HasLocalePreference
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'verified',
+        'name', 'email', 'password', 'verified', 'room'
     ];
 
     /**

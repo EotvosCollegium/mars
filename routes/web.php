@@ -30,6 +30,7 @@ use App\Http\Controllers\Secretariat\UserController;
 use App\Http\Controllers\StudentsCouncil\EconomicController;
 use App\Http\Controllers\StudentsCouncil\EpistolaController;
 use App\Http\Controllers\StudentsCouncil\MrAndMissController;
+use App\Http\Controllers\Dormitory\RoomController;
 use App\Models\Room;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -147,13 +148,10 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::post('/faults/update', [FaultController::class, 'updateStatus'])->name('faults.update');
 
     /** Rooms */
-    Route::get('/rooms', function(Request $request){
-        $users=User::with('personalInformation')->get();
-        $rooms = Room::with('personalInformations')->get();
-        // return response($users->where('personalInformation.room', 207)->pluck('id'));
-        return view('dormitory.rooms.app', ['users' => $users, 'rooms' => $rooms]);
-        // return $users;
-    });
+    Route::get('/rooms', [RoomController::class, 'index'])->name('rooms.index');
+    Route::put('/rooms/{room}/capacity', [RoomController::class, 'updateRoomCapacity'])->name('rooms.update-capacity');
+    Route::put('/rooms/update', [RoomController::class, 'updateResidents'])->name('rooms.update');
+
     /** Documents */
     Route::get('/documents', [DocumentController::class, 'index'])->name('documents');
     Route::get('/documents/register-statement/download', [DocumentController::class, 'downloadRegisterStatement'])->name('documents.register-statement.download');

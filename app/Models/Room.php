@@ -14,13 +14,15 @@ class Room extends Model
 
     public $timestamps = false;
 
-    public function personalInformations()
+    protected $fillable = ['name', 'capacity'];
+
+    public function users()
     {
-        return $this->belongsTo(PersonalInformation::class, 'name', 'room');
+        return $this->belongsTo(User::class, 'name', 'room');
     }
 
     public function residentNumber()
     {
-        return $this->personalInformations()->count();
+        return $this->users()->count();
     }
 }
