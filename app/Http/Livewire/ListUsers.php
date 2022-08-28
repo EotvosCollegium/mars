@@ -2,10 +2,12 @@
 
 namespace App\Http\Livewire;
 
+use App\Exports\UsersExport;
 use App\Models\Semester;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ListUsers extends Component
 {
@@ -17,6 +19,7 @@ class ListUsers extends Component
 
     public function getUsersProperty()
     {
+        \Debugbar::disable();
         $query = User::with(['roles', 'workshops', 'educationalInformation', 'allSemesters']);
 
         foreach ($this->roles as $role) {
@@ -72,6 +75,11 @@ class ListUsers extends Component
     public function deleteWorkshop($workshop_id)
     {
         $this->workshops = \array_diff($this->workshops, [$workshop_id]);
+    }
+
+    public function exportUsers()
+    {
+        return Excel::download(new UsersExport($this->users), 'users.xlsx');
     }
 
     public function render()

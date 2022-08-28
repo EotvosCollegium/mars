@@ -28,8 +28,6 @@ class EducationalInformation extends Model
         'program',
     ];
 
-    protected const DELIMETER = '|';
-
     public function user()
     {
         return $this->belongsTo('App\Models\User');
