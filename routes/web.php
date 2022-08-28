@@ -150,7 +150,7 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     /** Status update form */
     Route::get('/secretariat/status-update', [SecretariatController::class, 'showStatusUpdate'])->name('secretariat.status-update.show');
     Route::post('/secretariat/status-update/update', [SecretariatController::class, 'updateStatus'])->name('secretariat.status-update.update');
-    
+
     /** Documents */
     Route::get('/documents', [DocumentController::class, 'index'])->name('documents');
     Route::get('/documents/register-statement/download', [DocumentController::class, 'downloadRegisterStatement'])->name('documents.register-statement.download');
