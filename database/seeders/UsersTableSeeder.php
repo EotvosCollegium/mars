@@ -13,6 +13,7 @@ use App\Models\WifiConnection;
 use App\Models\PrintAccount;
 use App\Models\PersonalInformation;
 use App\Models\EducationalInformation;
+use App\Models\RoleObject;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Log;
@@ -107,8 +108,8 @@ class UsersTableSeeder extends Seeder
             Role::firstWhere('name', Role::COLLEGIST)->id,
             [
                 'object_id' => rand(
-                    Role::getObjectIdByName(Role::COLLEGIST, 'resident'),
-                    Role::getObjectIdByName(Role::COLLEGIST, 'extern')
+                    RoleObject::firstWhere('name', 'resident')->id,
+                    RoleObject::firstWhere('name', 'extern')->id
                 )
             ]
         );

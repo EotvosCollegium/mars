@@ -21,7 +21,7 @@
                         <blockquote>
                             @lang('secretariat.semester_status_info')
                         </blockquote>
-                        <x-input.select s=12 without_label :elements="[\App\Models\Semester::ACTIVE,\App\Models\Semester::PASSIVE, \App\Models\Semester::DEACTIVATED]" id="semester_status" required :formatter="function($o) { return __('user.'.$o); }" :placeholder="__('secretariat.semester_status')"/>
+                        <x-input.select s=12 without_label :elements="[\App\Models\SemesterStatus::ACTIVE,\App\Models\SemesterStatus::PASSIVE, \App\Models\SemesterStatus::DEACTIVATED]" id="semester_status" required :formatter="function($o) { return __('user.'.$o); }" :placeholder="__('secretariat.semester_status')"/>
                     </div>
                     <div class="row">
                         <x-input.button class="right red" text="general.save" />

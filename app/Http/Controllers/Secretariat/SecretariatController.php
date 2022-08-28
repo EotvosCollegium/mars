@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
 use App\Models\EventTrigger;
 use App\Models\Semester;
+use App\Models\SemesterStatus;
 use App\Models\User;
 use App\Models\Role;
 
@@ -35,7 +36,7 @@ class SecretariatController extends Controller
     public static function showStatusUpdate()
     {
         //TODO policy
-        if (Auth::user()->getStatusIn(Semester::previous()) == Semester::DEACTIVATED) {
+        if (Auth::user()->getStatusIn(Semester::previous()) == SemesterStatus::DEACTIVATED) {
             abort(403);
         }
         return view('secretariat.statuses.status_update_form');
@@ -44,7 +45,7 @@ class SecretariatController extends Controller
     public static function updateStatus(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'semester_status' => 'required|in:' . Semester::ACTIVE . ',' . Semester::PASSIVE . ',' . Semester::DEACTIVATED,
+            'semester_status' => 'required|in:' . SemesterStatus::ACTIVE . ',' . SemesterStatus::PASSIVE . ',' . SemesterStatus::DEACTIVATED,
             'collegist_role' => 'required|in:resident,extern'
         ]);
         $validator->validate();
@@ -59,9 +60,14 @@ class SecretariatController extends Controller
     {
         $users = User::collegists();
         foreach ($users as $user) {
-            if ($user->getStatusIn(Semester::previous()) == Semester::DEACTIVATED) {
-                $user->setStatus(Semester::DEACTIVATED, 'Was deactivated in last semester');
+            if ($user->getStatusIn(Semester::previous()) == SemesterStatus::DEACTIVATED) {
+                SemesterStatus::withoutEvents(function () use($user) {
+                    $user->setStatus(SemesterStatus::DEACTIVATED, 'Was deactivated in last semester');
+                });
             } else {
+                SemesterStatus::withoutEvents(function () use($user) {
+                    $user->setStatus(SemesterStatus::INACTIVE, 'New semester started');
+                });
                 Mail::to($user)->queue(new \App\Mail\StatusStatementRequest($user->name));
             }
         }
@@ -74,10 +80,10 @@ class SecretariatController extends Controller
     public static function finalizeStatements()
     {
         $users = User::collegists();
-        $next_semester = Semester::next();
+        $current_semester = Semester::current();
         foreach ($users as $user) {
-            if (! $user->isInSemester($next_semester)) {
-                $user->setStatusFor($next_semester, Semester::DEACTIVATED, 'Failed to make a statement');
+            if (! $user->isInSemester($current_semester->id) || $user->getStatus() == SemesterStatus::INACTIVE) {
+                $user->setStatus(SemesterStatus::DEACTIVATED, 'Failed to make a statement');
             }
         }
     }
