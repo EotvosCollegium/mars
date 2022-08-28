@@ -19,7 +19,6 @@ class ListUsers extends Component
 
     public function getUsersProperty()
     {
-        \Debugbar::disable();
         $query = User::with(['roles', 'workshops', 'educationalInformation', 'allSemesters']);
 
         foreach ($this->roles as $role) {
