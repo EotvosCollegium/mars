@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'rooms' => 'Szobabeosztás', 
+    'rooms' => 'Szobabeosztás',
     'search' => 'Keresés',
     'search_name' => 'Keress névre vagy szobaszámra',
     'resident1' => '1. lakó',

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Dormitory;
 
-
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -12,7 +11,8 @@ use App\Models\User;
 
 class RoomController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         $this->authorize('viewAny', Room::class);
         $users=User::all();
         $rooms = Room::with('users')->get();
@@ -27,35 +27,35 @@ class RoomController extends Controller
             'type' => 'required|string|in:add,remove'
         ]);
         $validator->validate();
-        $new_capacity=$room->capacity+($request->type=='add'?1:-1);
-        if($new_capacity<$room->residentNumber()){
+        $new_capacity=$room->capacity+($request->type=='add' ? 1 : -1);
+        if ($new_capacity<$room->residentNumber()) {
             return back()->with('error', 'hiba');
         }
-        if($new_capacity>4 || $new_capacity<0){
+        if ($new_capacity>4 || $new_capacity<0) {
             return back()->with('error', 'masikhiba');
         }
-        if($request->type=='add'){
+        if ($request->type=='add') {
             $room->increment('capacity');
             return back();
-        }else{
+        } else {
             $room->decrement('capacity');
         }
 
         return back();
     }
 
-    public function updateResidents(Request $request){
+    public function updateResidents(Request $request)
+    {
         // return $request;
         $rooms=Room::all();
         foreach ($rooms as $room) {
             $userIds=$request->get($room->name);
-            if($userIds!=null){
-                foreach($userIds as $userId){
+            if ($userIds!=null) {
+                foreach ($userIds as $userId) {
                     $user=User::find($userId);
                     $user->update(['room' => $room->name]);
                 }
             }
-            
         }
         return back();
     }
