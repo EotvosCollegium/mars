@@ -68,7 +68,7 @@ class ApplicationController extends Controller
     {
         $user = $request->user();
 
-	if(now() > self::getApplicationDeadline()) {
+        if (now() > self::getApplicationDeadline()) {
             return redirect()->route('application')->with('error', 'A jelentkezési határidő lejárt');
         }
 
@@ -138,7 +138,7 @@ class ApplicationController extends Controller
                 }
                 session()->flash('can_filter_by_status');
             } else {
-                if($authUser->hasRoleBase(Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER)){
+                if ($authUser->hasRoleBase(Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER)) {
                     $workshops = Workshop::all();
                 } else {
                     $workshops = $authUser->roles()->whereIn('name', [Role::APPLICATION_COMMITTEE_MEMBER, Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR])->get(['object_id'])->pluck('object_id');
