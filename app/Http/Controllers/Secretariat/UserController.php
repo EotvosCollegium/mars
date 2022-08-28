@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Secretariat;
 
 use App\Http\Controllers\Controller;
+use App\Models\Faculty;
+use App\Models\Role;
 use App\Models\Semester;
 use App\Models\User;
+use App\Models\Workshop;
 use App\Models\WorkshopBalance;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,40 +16,72 @@ use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
-    public function index()
+    public function profile()
     {
         $user = Auth::user();
 
-        return view('auth.user', ['user' => $user]);
+        return view('auth.user', [
+            'user' => $user,
+            'semesters' => $user->allSemesters,
+            'countries' => require base_path('countries.php'),
+            'faculties' => Faculty::all(),
+            'workshops' => Workshop::all()
+        ]);
     }
 
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
+    public function updatePersonalInformation(Request $request, User $user): \Illuminate\Http\RedirectResponse
     {
-        $this->middleware('auth');
-    }
-
-    public function update(Request $request)
-    {
-        $user = Auth::user();
-
         $validator = Validator::make($request->all(), [
-            //only one should exist at a time
-            'email' => 'email|max:225|unique:users',
-            'phone_number' => 'string|min:8|max:18',
-            'mothers_name' => 'string|max:225',
-            'place_of_birth' => 'string|max:225',
-            'date_of_birth' => 'string|max:225',
-            'country' => 'string|max:255',
-            'county' => 'string|max:255',
-            'zip_code' => 'string|max:31',
-            'city' => 'string|max:255',
-            'street_and_number' => 'string|max:255',
-            'tenant_until'=>'string|max:225',
+            'email' => 'required|email|max:225',
+            'name' => 'required|string|max:255',
+            'phone_number' => 'required|string|min:8|max:18',
+            'mothers_name' => 'required|string|max:225',
+            'place_of_birth' => 'required|string|max:225',
+            'date_of_birth' => 'required|string|max:225',
+            'country' => 'required|string|max:255',
+            'county' => 'required|string|max:255',
+            'zip_code' => 'required|string|max:31',
+            'city' => 'required|string|max:255',
+            'street_and_number' => 'required|string|max:255',
+            'tenant_until'=>'nullable|string|max:225',
+        ]);
+        if ($user->email != $request->email) {
+            if (User::where('email', $request->email)->exists()) {
+                $validator->after(function ($validator) {
+                    $validator->errors()->add('email', __('validation.unique', ['attribute' => 'e-mail']));
+                });
+            }
+        }
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+        $user->update(['email' => $request->email, 'name' => $request->name]);
+
+        if (!$user->hasPersonalInformation()) {
+            $user->personalInformation()->create($request->all());
+        } else {
+            $user->personalInformation->update($request->all());
+        }
+
+        return redirect()->back()->with('message', __('general.successful_modification'));
+    }
+
+    public function updateEducationalInformation(Request $request, User $user): \Illuminate\Http\RedirectResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'year_of_graduation' => 'required|integer|between:1895,' . date('Y'),
+            'high_school' => 'required|string|max:255',
+            'neptun' => 'required|string|size:6',
+            'faculty' => 'array',
+            'faculty.*' => 'exists:faculties,id',
+            'workshop' => 'array',
+            'workshop.*' => 'exists:workshops,id',
+            'email' => 'required|string|email|max:255',
+            'program' => 'required|array|min:1',
+            'program.*' => 'nullable|string'
         ]);
 
         if ($validator->fails()) {
@@ -54,20 +89,21 @@ class UserController extends Controller
                 ->withErrors($validator)
                 ->withInput();
         }
-        if ($request->has('email')) {
-            $user->update(['email' => $request->email]);
+
+        if (!$user->hasEducationalInformation()) {
+            $user->educationalInformation()->create($request->all());
+        } else {
+            $user->educationalInformation->update($request->all());
         }
-        if ($user->hasPersonalInformation() && $request->hasAny(
-            ['place_of_birth', 'date_of_birth', 'mothers_name', 'phone_number', 'country', 'county', 'zip_code', 'city', 'street_and_number', 'tenant_until']
-        )) {
-            $user->personalInformation->update($request->all());
-        }
-        //TODO: educational information
+
+        $user->workshops()->sync($request->input('workshop'));
+        $user->faculties()->sync($request->input('faculties'));
+        WorkshopBalance::generateBalances(Semester::current()->id);
 
         return redirect()->back()->with('message', __('general.successful_modification'));
     }
 
-    public function updatePassword(Request $request)
+    public function updatePassword(Request $request): \Illuminate\Http\RedirectResponse
     {
         $user = Auth::user();
 
@@ -88,28 +124,7 @@ class UserController extends Controller
         return redirect()->back()->with('message', __('general.successful_modification'));
     }
 
-    public function setCollegistType(Request $request)
-    {
-        $this->authorize('viewAny', User::class);
-
-        if ($request->has('resident')) {
-            $user = User::findOrFail($request->user_id);
-
-            if ($request->resident === 'true') {
-                $user->setResident();
-            } else {
-                $user->setExtern();
-            }
-
-            WorkshopBalance::generateBalances(Semester::current()->id);
-        } else {
-            return response()->json(null, 400);
-        }
-
-        return response()->json(null, 204);
-    }
-
-    public function list()
+    public function index()
     {
         $this->authorize('viewAny', User::class);
 
@@ -122,70 +137,44 @@ class UserController extends Controller
 
         $this->authorize('view', $user);
 
-        return view('secretariat.user.show')->with('user', $user);
+        return view('secretariat.user.show', [
+            'user' => $user,
+            'semesters' => $user->allSemesters,
+            'countries' => require base_path('countries.php'),
+            'faculties' => Faculty::all(),
+            'workshops' => Workshop::all()
+        ]);
     }
 
-    public function semesters($id)
+    public function addRole(Request $request, User $user, Role $role)
     {
-        $user = User::findOrFail($id);
+        $object_id = $request->get('object_id') ?? $request->get('workshop_id');
+        $object = $object_id ? $role->getObject($object_id) : null;
+        if ($request->user()->cannot('updatePermission', [$user, $role, $object])) {
+            return redirect()->back()->with('error', __('role.unauthorized'));
+        }
 
-        // TODO
-        $this->authorize('view', $user);
-
-        $semesters = $user->allSemesters->sortByDesc(function ($semester) {
-            return $semester->getStartDate();
-        });
-
-        return view('secretariat.user.semesters')->with('user', $user)->with('semesters', $semesters);
+        if (!$role->isValid($object)) {
+            $message = __('role.role_can_not_be_attached');
+        } elseif ($user->addRole($role, $object)) {
+            $message = __('general.successfully_added');
+        } else {
+            $message = __('role.role_unavailable');
+        }
+        return redirect()->back()->with('message', $message);
     }
 
-    public function updateSemesterStatus($id, $semester, $status)
+    public function removeRole(Request $request, User $user, Role $role)
     {
-        $user = User::findOrFail($id);
-        $semester = Semester::find($semester);
+        $object_id = $request->get('object');
+        $object = $object_id ? $role->getObject($object_id) : null;
 
-        // TODO
-        $this->authorize('view', $user);
+        if ($request->user()->cannot('updatePermission', [$user, $role, $object])) {
+            return redirect()->back()->with('error', __('role.unauthorized'));
+        }
 
-        $user->setStatusFor($semester, $status);
-
-        WorkshopBalance::generateBalances($semester->id);
+        $user->removeRole($role, $object ?? null);
 
         return redirect()->back()->with('message', __('general.successful_modification'));
-    }
-
-    public function deleteUserWorkshop($user, $workshop)
-    {
-        // TODO
-        $this->authorize('viewAny', User::class);
-
-        $user = User::findOrFail($user);
-
-        $user->workshops()->detach($workshop);
-
-        WorkshopBalance::generateBalances(Semester::current()->id);
-    }
-
-    public function addUserWorkshop(Request $request, $user)
-    {
-        // TODO
-        $this->authorize('viewAny', User::class);
-
-        $user = User::findOrFail($user);
-
-        $validator = Validator::make($request->except('_token'), [
-            'workshop_id' => 'required|exists:workshops,id',
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
-        $user->workshops()->attach($request->workshop_id);
-
-        WorkshopBalance::generateBalances(Semester::current()->id);
-
-        return redirect()->back()->with('message', __('general.successfully_added'));
     }
 }

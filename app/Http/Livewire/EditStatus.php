@@ -14,7 +14,7 @@ class EditStatus extends Component
 
     public function mount()
     {
-        $this->status = $this->user->getStatus();
+        $this->status = $this->user->getStatusIn($this->semester);
     }
 
     public function set($status)
@@ -25,6 +25,6 @@ class EditStatus extends Component
 
     public function render()
     {
-        return view('secretariat.statuses.edit_status_component');
+        return view('user.edit_status_component');
     }
 }

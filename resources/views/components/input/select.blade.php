@@ -22,7 +22,8 @@
         @foreach ($elements as $element)
             <option
                 value="{{ $element->id ?? $element }}"
-                @if($default != null && (($element->id ?? $element) == $default || ($element->name ?? $element) == $default)) selected="true" @endif
+                @if($default != null && (($element->id ?? ($element->name ?? $element)) == $default)) selected="true" @endif
+                @if(($element->id ?? ($element->name ?? $element)) == (old($id) ?? $attributes->get('value'))) selected="true" @endif
                 >{{$formatter($element)}}</option>
         @endforeach
     </select>

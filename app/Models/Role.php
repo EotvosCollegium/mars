@@ -3,14 +3,24 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\DB;
+use InvalidArgumentException;
 
+/**
+ * @property string $name
+ * @property boolean $has_objects
+ * @property boolean $has_workshops
+ * @property integer $id
+ */
 class Role extends Model
 {
     // General roles
-    public const PRINT_ADMIN = 'print-admin';
-    public const NETWORK_ADMIN = 'internet-admin';
+    public const SYS_ADMIN = 'sys-admin';
     public const COLLEGIST = 'collegist';
     public const TENANT = 'tenant';
     public const WORKSHOP_ADMINISTRATOR = 'workshop-administrator';
@@ -21,7 +31,6 @@ class Role extends Model
     public const DIRECTOR = 'director';
     public const STAFF = 'staff';
     public const LOCALE_ADMIN = 'locale-admin';
-    public const PERMISSION_HANDLER = 'permission-handler';
     public const STUDENT_COUNCIL = 'student-council';
 
     //Students' Committe role's objects
@@ -64,10 +73,13 @@ class Role extends Model
     public const PRINTER = 'printer';
     public const INTERNET_USER = 'internet-user';
 
+    //collegist related roles
+    public const RESIDENT = 'resident';
+    public const EXTERN = 'extern';
+
     // all roles
     public const ALL = [
-        self::PRINT_ADMIN,
-        self::NETWORK_ADMIN,
+        self::SYS_ADMIN,
         self::COLLEGIST,
         self::TENANT,
         self::WORKSHOP_ADMINISTRATOR,
@@ -80,7 +92,6 @@ class Role extends Model
         self::PRINTER,
         self::INTERNET_USER,
         self::LOCALE_ADMIN,
-        self::PERMISSION_HANDLER,
         self::STUDENT_COUNCIL,
     ];
 
@@ -88,237 +99,130 @@ class Role extends Model
         'name',
     ];
 
-    public function users()
+
+    public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'role_users')->withPivot('object_id');
+        return $this->belongsToMany(User::class, 'role_users')
+            ->withPivot(['object_id', 'workshop_id'])->using(RoleUser::class);
+    }
+
+    public function objects(): HasMany
+    {
+        return $this->hasMany(RoleObject::class, 'role_id');
     }
 
     /**
-     * @return string the translated role
+     * Returns the role object belonging to the role while checking the validity of the role-object pair.
+     * @param integer|string|null $object roleObject or workshop name/id
+     * @return RoleObject|Workshop|null
+     * @throws InvalidArgumentException
      */
-    public function name(): string
+    public function getObject(int|string $object = null): Workshop|RoleObject|null
     {
-        return __('role.' . $this->name);
+        /* @var RoleObject|Workshop|null $object */
+        if ($this->has_objects && is_numeric($object)) {
+            $object = $this->objects()->find($object);
+        } elseif ($this->has_objects) {
+            $object = $this->objects()->firstWhere('name', $object);
+        } elseif ($this->has_workshops && is_numeric($object)) {
+            $object = Workshop::find($object);
+        } elseif ($this->has_workshops) {
+            $object = Workshop::firstWhere('name', $object);
+        } elseif (!isset($object)) {
+            $object = null;
+        }
+
+        if (!$this->isValid($object)) {
+            throw new InvalidArgumentException("Role object/workshop '".$object."' does not exist for the " . $this->name . " role.");
+        }
+
+        return $object;
     }
+    /**
+     * Checks if a role-object pair is valid.
+     * @param RoleObject|Workshop|null $object
+     */
+    public function isValid(Workshop|RoleObject $object = null): bool
+    {
+        if ($this->has_objects
+            && $object instanceof RoleObject
+            && $this->objects()->where('id', $object->id)->exists()) {
+            return true;
+        }
+        if ($this->has_workshops && $object instanceof Workshop) {
+            return true;
+        }
+        if (!$this->has_workshops && !$this->has_objects && !isset($object)) {
+            return true;
+        }
+        return false;
+    }
+
 
     /**
-     * Returns true if the role can be attached to only one user at a time.
-     * @param int $roleId
-     * @param string $objectName optional. Returns false if the object is null for a role which can have objects.
-     * @return bool
+     * Returns the users with the given role.
+     * @param RoleObject|Workshop|null $object
+     * @return Collection|User[]
      */
-    public static function isUnique($roleName, $objectName = null): bool
+    public function getUsers(Workshop|RoleObject $object = null): Collection|array
     {
-        switch ($roleName) {
-            case self::DIRECTOR:
-                return true;
-//            case self::WORKSHOP_ADMINISTRATOR:
-//                return true;
-//            case self::WORKSHOP_LEADER:
-//                return true;
-            case self::STUDENT_COUNCIL:
-                return $objectName == self::PRESIDENT || in_array($objectName, self::COMMITTEE_LEADERS);
-            default:
-                return false;
-        }
-    }
-
-    /**
-     * Checks if the specified role can be attached to someone.
-     * Object id is required if the role can have objects.
-     * @param int $roleId
-     * @param int $objectId optional
-     * @return bool.
-     */
-    public static function canBeAttached($roleId, $objectId = null): bool
-    {
-        $role = self::findOrFail($roleId);
-        if ($role->canHaveObject()) {
-            if ($objectId == null) {
-                return false;
-            }
-            $object = $role->possibleObjects()->firstWhere('id', $objectId)->name;
+        if (isset($object) && $this->has_objects) {
+            return User::whereHas('roles', function ($q) use ($object) {
+                $q->where('role_id', $this->id)
+                    ->where('object_id', $object->id);
+            })->get();
+        } elseif (isset($object) && $this->has_workshops) {
+            $object = $this->getObject($object);
+            return User::whereHas('roles', function ($q) use ($object) {
+                $q->where('role_id', $this->id)
+                    ->where('workshop_id', $object->id);
+            })->get();
         }
 
-        if (self::isUnique($role->name, ($object ?? null))) {
-            return User::whereHas('roles', function (Builder $query) use ($roleId, $objectId) {
-                $query->where('id', $roleId)->where('role_users.object_id', $objectId);
-            })->count() < 1;
-        }
-        return true;
+        return User::whereHas('roles', function ($q) use ($object) {
+            $q->where('role_id', $this->id);
+        })->get();
     }
 
-    /**
-     * Returns the object (with id and name) of the role or null if the role does not have.
-     */
-    public function object()
-    {
-        if (!$this->canHaveObject()) {
-            return null;
-        }
 
-        return $this->possibleObjects()->where('id', $this->pivot->object_id)->first();
+    public static function Collegist(): Role|null
+    {
+        return self::where('name', self::COLLEGIST)->first();
     }
 
-    public static function getObjectIdByName($roleName, $objectName)
+    public static function StudentsCouncil(): Role|null
     {
-        $objects = self::possibleObjectsFor($roleName);
-        return $objects->where('name', $objectName)->first()->id;
+        return self::where('name', self::STUDENT_COUNCIL)->first();
     }
 
-    public static function getUsers(string $roleName, string $objectName = null)
+    public static function Director(): Role|null
     {
-        if (isset($objectName)) {
-            return User::whereHas('roles', function ($q) use ($roleName, $objectName) {
-                $q->where('role_id', Role::getId($roleName))
-                    ->where('object_id', Role::getObjectIdByName($roleName, $objectName));
-            });
-        }
-        return self::firstWhere('name', $roleName)->users;
+        return self::where('name', self::DIRECTOR)->first();
     }
 
-    public static function getId(string $roleName)
+    public function getTranslatedNameAttribute()
     {
-        return self::where('name', $roleName)->first()->id;
+        return __('role.'.$this->name);
     }
 
-    /**
-     * Returns if the role can have objects
-     */
-    public function canHaveObject(): bool
+
+    public function color(): string
     {
-        return self::canHaveObjectFor($this->name);
-    }
-
-    /**
-     * Returns if the role can have objects.
-     * @return string object name
-     */
-    public static function canHaveObjectFor($name): bool
-    {
-        // TODO: PERMISSION_HANDLER could also be there
-        return in_array($name, [
-            self::WORKSHOP_ADMINISTRATOR,
-            self::WORKSHOP_LEADER,
-            self::APPLICATION_COMMITTEE_MEMBER,
-            self::LOCALE_ADMIN,
-            self::STUDENT_COUNCIL,
-            self::COLLEGIST
-        ]);
-    }
-
-    /**
-     * Returns the collection of the possible object for the role.
-     * @return collection of the objects with id (starting from 1, except workshops?) and name.
-     */
-    public function possibleObjects()
-    {
-        return self::possibleObjectsFor($this->name);
-    }
-
-    /**
-     * Returns the collection of the possible object for a role.
-     * @param string $name the role's name
-     * @return collection of the objects with id (starting from 1, except workshops?) and name.
-     */
-    public static function possibleObjectsFor($name)
-    {
-        if (in_array($name, [self::WORKSHOP_ADMINISTRATOR, self::WORKSHOP_LEADER, self::APPLICATION_COMMITTEE_MEMBER])) {
-            return Workshop::all();
-        }
-        if ($name == self::LOCALE_ADMIN) {
-            $locales = array_keys(config('app.locales'));
-
-            return self::toSelectableCollection($locales);
-        }
-
-        if ($name == self::STUDENT_COUNCIL) {
-            $student_council_members = array_merge(self::STUDENT_COUNCIL_LEADERS, self::COMMITTEE_LEADERS, self::COMMITTEE_MEMBERS);
-
-            return self::toSelectableCollection($student_council_members);
-        }
-
-        if ($name == self::COLLEGIST) {
-            $collegists = [
-                'resident',
-                'extern',
-            ];
-
-            return self::toSelectableCollection($collegists);
-        }
-
-        return collect([]);
-    }
-
-    public function hasElevatedPermissions(): bool
-    {
-        return in_array($this->name, [self::PRINT_ADMIN, self::NETWORK_ADMIN, self::PERMISSION_HANDLER, self::SECRETARY, self::DIRECTOR]);
-    }
-
-    public function hasTranslatedName(): bool
-    {
-        return in_array($this->name, [self::WORKSHOP_ADMINISTRATOR, self::WORKSHOP_LEADER]);
-    }
-
-    /**
-     * Create a collection with id and name of the items in an array.
-     * The ids starts at 1.
-     * @param array $items the items in the array will be the name attributes
-     * @return collection
-     */
-    private static function toSelectableCollection(array $items)
-    {
-        $objects = [];
-        $id = 1;
-        foreach ($items as $name) {
-            $objects[] = (object) ['id' => $id++, 'name' => $name];
-        }
-
-        return collect($objects);
-    }
-
-    public function isSysAdmin()
-    {
-        return in_array($this->name, [self::NETWORK_ADMIN]);
-    }
-
-    public function color()
-    {
-        switch ($this->name) {
-            case self::PRINT_ADMIN:
-                return 'red';
-            case self::NETWORK_ADMIN:
-                return 'pink';
-            case self::COLLEGIST:
-                return 'coli';
-            case self::TENANT:
-                return 'coli blue';
-            case self::WORKSHOP_ADMINISTRATOR:
-                return 'purple';
-            case self::WORKSHOP_LEADER:
-                return 'deep-purple';
-            case self::SECRETARY:
-                return 'indigo';
-            case self::DIRECTOR:
-                return 'blue';
-            case self::STAFF:
-                return 'cyan';
-            case self::PRINTER:
-                return 'teal';
-            case self::INTERNET_USER:
-                return 'light-green';
-            case self::LOCALE_ADMIN:
-                return 'amber';
-            case self::PERMISSION_HANDLER:
-                return 'deep-orange';
-            case self::STUDENT_COUNCIL:
-                return 'green darken-4';
-            case self::APPLICATION_COMMITTEE_MEMBER:
-                return 'light-blue darken-4';
-            case self::AGGREGATED_APPLICATION_COMMITTEE_MEMBER:
-                return 'light-blue darken-5';
-            default:
-                return 'grey';
-        }
+        return match ($this->name) {
+            self::SYS_ADMIN => 'pink',
+            self::COLLEGIST => 'coli',
+            self::TENANT => 'coli blue',
+            self::WORKSHOP_ADMINISTRATOR => 'purple',
+            self::WORKSHOP_LEADER => 'deep-purple',
+            self::SECRETARY => 'indigo',
+            self::DIRECTOR => 'blue',
+            self::STAFF => 'cyan',
+            self::PRINTER => 'teal',
+            self::INTERNET_USER => 'light-green',
+            self::LOCALE_ADMIN => 'amber',
+            self::STUDENT_COUNCIL => 'green darken-4',
+            self::APPLICATION_COMMITTEE_MEMBER => 'light-blue darken-4',
+            default => 'grey',
+        };
     }
 }

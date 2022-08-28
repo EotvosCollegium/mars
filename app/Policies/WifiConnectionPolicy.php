@@ -14,29 +14,29 @@ class WifiConnectionPolicy
     /**
      * Determine whether the user can view any models.
      *
-     * @param  \App\Models\User  $user
+     * @param User $user
      * @return mixed
      */
     public function viewAny(User $user)
     {
-        return $user->hasRole(Role::NETWORK_ADMIN);
+        return $user->hasRole(Role::SYS_ADMIN);
     }
 
     /**
      * Determine whether the user can view the model.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\WifiConnection  $wifiConnection
+     * @param User $user
+     * @param WifiConnection $wifiConnection
      * @return mixed
      */
     public function view(User $user, WifiConnection $wifiConnection)
     {
-        return $user->hasRole(Role::NETWORK_ADMIN)
+        return $user->hasRole(Role::SYS_ADMIN)
             || $user->wifiConnections->contains($wifiConnection);
     }
 
-    public function approveAny(User $user)
+    public function approveAny(User $user): bool
     {
-        return $user->hasRole(Role::NETWORK_ADMIN);
+        return $user->hasRole(Role::SYS_ADMIN);
     }
 }

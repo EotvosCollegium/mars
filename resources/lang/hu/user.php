@@ -16,7 +16,6 @@ return [
     'biologia_kemia_muhely' => 'Biológia-kémia műhely',
     'bolcseszettudomanyi_kar' => 'Bölcsészettudományi Kar',
     'bollok_janos_klasszika_filologia_muhely' => 'Bollók János Klasszika-filológia műhely',
-    'change_outdated_data' => 'Ha az alábbi információk elavultak, kérjük, vedd fel a kapcsolatot a titkársággal vagy a rendszergazdákkal.',
     'city' => 'Város',
     'contact' => 'Elérhetőség',
     'country' => 'Ország',

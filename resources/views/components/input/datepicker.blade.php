@@ -13,7 +13,7 @@
         ])}}
     >
     <label for="{{$id}}">{{$label}}</label>
-    @error($attributes->get('value') ?? $id)
+    @error($id)
     <span class="helper-text" data-error="{{ $message }}"></span>
     @enderror
 @if(!$onlyInput)

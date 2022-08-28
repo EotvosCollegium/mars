@@ -11,21 +11,51 @@
             @csrf
             <div class="card-content">
                 <div class="row">
-                    <div class="input-field col s12 m6">
-                        <p style="margin-bottom:10px"><label style="font-size: 1em">Megpályázni kívánt műhely</label>
-                        </p>
-                        @foreach ($workshops as $workshop)
-                            <p>
-                                @php $checked = old('workshop') !== null && in_array($workshop->id, old('workshop')) || in_array($workshop->id, $user->workshops->pluck('id')->toArray()) @endphp
-                                <x-input.checkbox only_input :text="$workshop->name" name="workshop[]"
-                                                  value="{{ $workshop->id }}" :checked='$checked'/>
-                            </p>
-                        @endforeach
-                        @error('workshop')
-                        <blockquote class="error">@lang('user.workshop_must_be_filled')</blockquote>
-                        @enderror
+                    <x-input.text s=12 id='graduation_average' locale='application' type='number' step="0.01" min="0"
+                                  max="5" text="Érettségi átlaga" :value="$user->application->graduation_average"
+                                  required
+                                  helper='Az összes érettségi tárgy hagyományos átlaga'/>
+                    <div class="col s12">
+                        @livewire('parent-child-form', [
+                        'title' => "Van lezárt egyetemi félévem",
+                        'name' => 'semester_average',
+                        'helper' => 'Hagyományos átlag a félév(ek)ben',
+                        'optional' => true,
+                        'items' => $user->application->semester_average])
                     </div>
-                    <div class="input-field col s12 m6">
+                    <div class="col s12">
+                        @livewire('parent-child-form', [
+                        'title' => "Van nyelvvizsgám",
+                        'name' => 'language_exam',
+                        'helper' => 'Nyelv, szint, fajta',
+                        'optional' => true,
+                        'items' => $user->application->language_exam])
+                    </div>
+                    <div class="col s12">
+                        @livewire('parent-child-form', [
+                        'title' => "Van versenyeredményem",
+                        'name' => 'competition',
+                        'helper' => 'Verseny, elért eredmény, év',
+                        'optional' => true,
+                        'items' => $user->application->competition])
+                    </div>
+                    <div class="col s12">
+                        @livewire('parent-child-form', [
+                        'title' => "Van publikációm",
+                        'name' => 'publication',
+                        'helper' => 'Név, kiadó, társszerző (ha van), év',
+                        'optional' => true,
+                        'items' => $user->application->publication])
+                    </div>
+                    <div class="col s12">
+                        @livewire('parent-child-form', [
+                        'title' => "Tanultam külföldön",
+                        'name' => 'foreign_studies',
+                        'helper' => 'Intézmény, képzés, időtartam',
+                        'optional' => true,
+                        'items' => $user->application->foreign_studies])
+                    </div>
+                    <div class="input-field col s12">
                         <p style="margin-bottom:10px"><label style="font-size: 1em">Megpályázni kívánt státusz</label>
                         </p>
                         <p>
@@ -48,7 +78,7 @@
                         <blockquote class="error">A státusz kitöltése kötelező</blockquote>
                         @enderror
                     </div>
-                    <div class="input-field col s12 m6"><p style="margin-bottom:10px"><label style="font-size: 1em">Honnan
+                    <div class="input-field col s12"><p style="margin-bottom:10px"><label style="font-size: 1em">Honnan
                                 hallott a Collegiumról?</label></p>
                         @foreach(\App\Models\ApplicationForm::QUESTION_1 as $answer)
                             @if(in_array($answer, $user->application->question_1 ?? []) !== false)
@@ -74,7 +104,7 @@
                                 </p>
                             @endif
                         @endforeach
-                        <div class="input-field" style="margin: 0">
+                        <div class="input-field" style="margin: 0; padding-left:35px">
                             <x-input.text only-input id="question_1_other"
                                           :value="$user->application->question_1_custom" name="question_1[]"
                                           without-label placeholder="egyéb/bővebben..."/>
@@ -89,10 +119,12 @@
                                       text="Részt vett-e közéleti tevékenységben? Ha igen, röviden jellemezze!"
                                       helper="Pl. diákönkormányzati tevékenység, önkéntesség, szervezeti tagság. (nem kötelező)"
                                       :value="$user->application->question_4"/>
-                    <x-input.textarea id="accommodation" locale='application'
+                    <x-input.textarea id="present"
                                       text="Amennyiben nem tud jelen lenni a felvételi teljes ideje alatt (vasárnap-szerda), kérjük itt indoklással jelezze!"
-                                      helper="A mező üresen hagyása esetén a felvételiző elfogadja, hogy a szállás költségeit fizeti. Változás esetén értesítse a titkárságot!"
-                                      :value="$user->application->accommodation"/>
+                                      :value="$user->application->present"  helper="Változás esetén értesítse a titkárságot!"/>
+                    <x-input.checkbox id="accommodation"
+                                      text="Igényel-e szállást a felvételi idejére?"
+                                      :checked="$user->application->accommodation"/>
                 </div>
 
             </div>

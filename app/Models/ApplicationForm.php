@@ -31,6 +31,7 @@ class ApplicationForm extends Model
         'question_3',
         'question_4',
         'accommodation',
+        'present',
         'note'
     ];
 

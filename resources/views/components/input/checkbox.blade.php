@@ -5,8 +5,12 @@
     <input
         type="checkbox"
         {{$attributes->merge([
-            'class' => "filled-in checkbox-color"
+            'class' => "filled-in checkbox-color",
+            'name' => $id
         ])}}
+        @if($checked)
+            checked
+        @endif
     >
     <span>{{$label}}</span>
 </label>
