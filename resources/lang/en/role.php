@@ -44,7 +44,7 @@ return [
     'sport-leader' => 'Sport committee leader',
     'sport-member' => 'Sport committee member',
     'staff' => 'Staff',
-    'student-council' => 'Students Council',
+    'student-council' => 'Students\' Council',
     'sys-admin' => 'System admin',
     'tenant' => 'Tenant',
     'unauthorized' => 'You have no permission to attach/detach this role.',

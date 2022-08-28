@@ -30,7 +30,6 @@ return [
     'secretariat' => 'Secretariat',
     'semester' => 'Semester',
     'settings' => 'Settings',
-    'show' => 'Show',
     'success' => 'Success!',
     'successful_modification' => 'Successful modification!',
     'successful_transaction' => 'Successful transaction!',
