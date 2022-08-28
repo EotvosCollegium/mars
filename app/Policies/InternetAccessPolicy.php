@@ -49,7 +49,7 @@ class InternetAccessPolicy
      * @param InternetAccess $internetAccess
      * @return mixed
      */
-    public function view(User $user, InternetAccess $internetAccess) : bool
+    public function view(User $user, InternetAccess $internetAccess): bool
     {
         return $user->id === $internetAccess->user_id;
     }
@@ -60,7 +60,7 @@ class InternetAccessPolicy
      * @param User $user
      * @return mixed
      */
-    public function create(User $user) : bool
+    public function create(User $user): bool
     {
         return false;
     }

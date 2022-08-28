@@ -27,7 +27,7 @@ class MacAddressPolicy
      * @param User $user
      * @return mixed
      */
-    public function viewAny(User $user) : bool
+    public function viewAny(User $user): bool
     {
         return false;
     }
@@ -39,7 +39,7 @@ class MacAddressPolicy
      * @param MacAddress $macAddress
      * @return mixed
      */
-    public function view(User $user, MacAddress $macAddress) : bool
+    public function view(User $user, MacAddress $macAddress): bool
     {
         return $user->id === $macAddress->user_id;
     }
@@ -50,7 +50,7 @@ class MacAddressPolicy
      * @param User $user
      * @return mixed
      */
-    public function create(User $user) : bool
+    public function create(User $user): bool
     {
         return true;
     }
@@ -62,7 +62,7 @@ class MacAddressPolicy
      * @param MacAddress $macAddress
      * @return mixed
      */
-    public function update(User $user, MacAddress $macAddress) : bool
+    public function update(User $user, MacAddress $macAddress): bool
     {
         return $user->id === $macAddress->user_id;
     }
@@ -74,7 +74,7 @@ class MacAddressPolicy
      * @param MacAddress $macAddress
      * @return mixed
      */
-    public function delete(User $user, MacAddress $macAddress) : bool
+    public function delete(User $user, MacAddress $macAddress): bool
     {
         return $user->id === $macAddress->user_id;
     }
@@ -85,7 +85,7 @@ class MacAddressPolicy
      * @param User $user
      * @return mixed
      */
-    public function accept(User $user) : bool
+    public function accept(User $user): bool
     {
         return false;
     }

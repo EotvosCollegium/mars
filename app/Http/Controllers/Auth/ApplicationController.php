@@ -268,7 +268,7 @@ class ApplicationController extends Controller
      */
     public function submitApplication($user)
     {
-        if(now() > self::getApplicationDeadline()) {
+        if (now() > self::getApplicationDeadline()) {
             return redirect()->route('application')->with('error', 'A jelentkezési határidő lejárt');
         }
         if (isset($user->application) && $user->application->status == ApplicationForm::STATUS_SUBMITTED) {

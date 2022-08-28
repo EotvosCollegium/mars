@@ -13,7 +13,7 @@ class PrintJobPolicy
 
     public function before(User $user)
     {
-        if($user->hasRole(Role::SYS_ADMIN)) {
+        if ($user->hasRole(Role::SYS_ADMIN)) {
             return true;
         }
         if (! $user->hasRole(Role::PRINTER)) {
@@ -51,7 +51,7 @@ class PrintJobPolicy
      * @param PrintJob $printJob
      * @return bool
      */
-    public function update(User $user, PrintJob $printJob) : bool
+    public function update(User $user, PrintJob $printJob): bool
     {
         return $printJob->user_id === $user->id;
     }

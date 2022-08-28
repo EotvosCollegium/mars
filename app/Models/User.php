@@ -102,9 +102,11 @@ class User extends Authenticatable implements HasLocalePreference
     public function preferredLocale(): string
     {
         //TODO store preferred locale for each user
-        if($this->isCollegist())
+        if ($this->isCollegist()) {
             return 'hu';
-        else return 'en';
+        } else {
+            return 'en';
+        }
     }
 
     /* Printing related getters */
@@ -232,7 +234,8 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function roleWorkshops(): array|Collection
     {
-        return Workshop::whereIn('id',
+        return Workshop::whereIn(
+            'id',
             $this->roles()->whereIn('name', [Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR])
             ->pluck('role_users.workshop_id')
         )->get();
@@ -244,15 +247,16 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function applicationWorkshops(): \Illuminate\Support\Collection
     {
-        if($this->can('viewAllApplications', User::class)) {
+        if ($this->can('viewAllApplications', User::class)) {
             return Workshop::all();
         } else {
-            return Workshop::whereIn('id',
+            return Workshop::whereIn(
+                'id',
                 $this->roles()->whereIn('name', [Role::APPLICATION_COMMITTEE_MEMBER, Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR])
-                    ->pluck('role_users.workshop_id'))
+                    ->pluck('role_users.workshop_id')
+            )
                 ->get();
         }
-
     }
 
     public function faculties(): BelongsToMany
@@ -307,20 +311,21 @@ class User extends Authenticatable implements HasLocalePreference
      * @param RoleObject|Workshop|null $object
      * @return Builder
      */
-    public function scopeRole(Builder $query, Role|string $role, Workshop|RoleObject $object = null) : Builder
+    public function scopeRole(Builder $query, Role|string $role, Workshop|RoleObject $object = null): Builder
     {
-        if(!$role instanceof Role) {
+        if (!$role instanceof Role) {
             $role = Role::firstWhere('name', $role);
-            if(!$role) throw new InvalidArgumentException("Role '".$role ?? 'null'."' does not exist.");
+            if (!$role) {
+                throw new InvalidArgumentException("Role '".$role ?? 'null'."' does not exist.");
+            }
         }
-        if($object instanceof RoleObject) {
+        if ($object instanceof RoleObject) {
             return $query->whereHas('roles', function ($q) use ($role, $object) {
                 $q->where('role_users.role_id', $role->id)
                     ->where('role_users.object_id', $object->id);
             });
         }
-        if($object instanceof Workshop)
-        {
+        if ($object instanceof Workshop) {
             return $query->whereHas('roles', function ($q) use ($role, $object) {
                 $q->where('role_users.role_id', $role->id)
                     ->where('role_users.workshop_id', $object->id);
@@ -339,14 +344,14 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function hasRole(Role|string $role, int|string|Workshop|RoleObject $object = null): bool
     {
-        if(!($role instanceof Role)){
+        if (!($role instanceof Role)) {
             $role = Role::firstWhere('name', $role);
         }
         $object = $role->getObject($object);
         $query = $this->roles()->where('role_id', $role->id);
-        if($object instanceof Workshop){
+        if ($object instanceof Workshop) {
             $query->where('workshop_id', $object->id);
-        } else if ($object instanceof RoleObject){
+        } elseif ($object instanceof RoleObject) {
             $query->where('object_id', $object->id);
         }
         return $query->exists();
@@ -375,14 +380,13 @@ class User extends Authenticatable implements HasLocalePreference
                     $role->id => ['object_id' => $object->id],
                 ]);
             }
-        } else if ($role->has_workshops) {
+        } elseif ($role->has_workshops) {
             if ($this->roles()->where('id', $role->id)->wherePivot('workshop_id', $object->id)->doesntExist()) {
                 $this->roles()->attach([
                     $role->id => ['workshop_id' => $object->id],
                 ]);
             }
-        }
-        else {
+        } else {
             if ($this->roles()->where('id', $role->id)->doesntExist()) {
                 $this->roles()->attach($role->id);
             }
@@ -400,7 +404,7 @@ class User extends Authenticatable implements HasLocalePreference
     {
         if ($role->has_objects && isset($object)) {
             $this->roles()->where('id', $role->id)->wherePivot('object_id', $object->id)->detach();
-        } else if ($role->has_workshops && isset($object)) {
+        } elseif ($role->has_workshops && isset($object)) {
             $this->roles()->where('id', $role->id)->wherePivot('workshop_id', $object->id)->detach();
         } else {
             $this->roles()->detach($role->id);
@@ -442,7 +446,7 @@ class User extends Authenticatable implements HasLocalePreference
         return self::role(Role::StudentsCouncil(), RoleObject::president())->first();
     }
 
-    public function isPresident() : bool
+    public function isPresident(): bool
     {
         return $this->hasRole(Role::StudentsCouncil(), Role::PRESIDENT);
     }

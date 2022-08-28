@@ -17,19 +17,23 @@ class RoleUser extends Pivot
 
     protected $with = ['workshop', 'object'];
 
-    public function workshop() : BelongsTo
+    public function workshop(): BelongsTo
     {
         return $this->belongsTo(Workshop::class);
     }
-    public function object() : BelongsTo
+    public function object(): BelongsTo
     {
         return $this->belongsTo(RoleObject::class);
     }
 
-    public function getTranslatedNameAttribute() : string
+    public function getTranslatedNameAttribute(): string
     {
-        if($this->object_id) return $this->object->translatedName;
-        if($this->workshop_id) return $this->workshop->name;
+        if ($this->object_id) {
+            return $this->object->translatedName;
+        }
+        if ($this->workshop_id) {
+            return $this->workshop->name;
+        }
         return '';
     }
 }

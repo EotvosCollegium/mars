@@ -117,24 +117,24 @@ class Role extends Model
      * @return RoleObject|Workshop|null
      * @throws InvalidArgumentException
      */
-    public function getObject(int|string $object = null) : Workshop|RoleObject|null
+    public function getObject(int|string $object = null): Workshop|RoleObject|null
     {
         /* @var RoleObject|Workshop|null $object */
-        if($this->has_objects && is_numeric($object)) {
+        if ($this->has_objects && is_numeric($object)) {
             $object = $this->objects()->find($object);
-        } else if($this->has_objects){
+        } elseif ($this->has_objects) {
             $object = $this->objects()->firstWhere('name', $object);
-        } else if($this->has_workshops && is_numeric($object)){
+        } elseif ($this->has_workshops && is_numeric($object)) {
             $object = Workshop::find($object);
-        } else if($this->has_workshops){
+        } elseif ($this->has_workshops) {
             $object = Workshop::firstWhere('name', $object);
-
-        } else if(!isset($object)){
+        } elseif (!isset($object)) {
             $object = null;
         }
 
-        if(!$this->isValid($object))
+        if (!$this->isValid($object)) {
             throw new InvalidArgumentException("Role object/workshop '".$object."' does not exist for the " . $this->name . " role.");
+        }
 
         return $object;
     }
@@ -144,12 +144,17 @@ class Role extends Model
      */
     public function isValid(Workshop|RoleObject $object = null): bool
     {
-        if($this->has_objects
+        if ($this->has_objects
             && $object instanceof RoleObject
-            && $this->objects()->where('id', $object->id)->exists())
+            && $this->objects()->where('id', $object->id)->exists()) {
             return true;
-        if($this->has_workshops && $object instanceof Workshop) return true;
-        if(!$this->has_workshops && !$this->has_objects && !isset($object)) return true;
+        }
+        if ($this->has_workshops && $object instanceof Workshop) {
+            return true;
+        }
+        if (!$this->has_workshops && !$this->has_objects && !isset($object)) {
+            return true;
+        }
         return false;
     }
 
@@ -161,12 +166,12 @@ class Role extends Model
      */
     public function getUsers(Workshop|RoleObject $object = null): Collection|array
     {
-        if(isset($object) && $this->has_objects) {
+        if (isset($object) && $this->has_objects) {
             return User::whereHas('roles', function ($q) use ($object) {
                 $q->where('role_id', $this->id)
                     ->where('object_id', $object->id);
             })->get();
-        } else if (isset($object) && $this->has_workshops) {
+        } elseif (isset($object) && $this->has_workshops) {
             $object = $this->getObject($object);
             return User::whereHas('roles', function ($q) use ($object) {
                 $q->where('role_id', $this->id)
@@ -180,7 +185,7 @@ class Role extends Model
     }
 
 
-    public static function Collegist() : Role|null
+    public static function Collegist(): Role|null
     {
         return self::where('name', self::COLLEGIST)->first();
     }

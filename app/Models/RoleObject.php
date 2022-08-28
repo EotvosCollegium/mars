@@ -22,12 +22,12 @@ class RoleObject extends Model
         return $this->belongsTo(Role::class);
     }
 
-    public function getTranslatedNameAttribute() : string
+    public function getTranslatedNameAttribute(): string
     {
         return __('role.'.$this->name);
     }
 
-    public static function president() : RoleObject|null
+    public static function president(): RoleObject|null
     {
         return self::firstWhere('name', 'president');
     }

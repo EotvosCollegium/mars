@@ -90,5 +90,4 @@ class AuthServiceProvider extends ServiceProvider
             return $user->hasAnyRoleBase([Role::SYS_ADMIN, Role::STAFF]);
         });
     }
-
 }

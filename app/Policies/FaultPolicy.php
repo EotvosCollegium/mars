@@ -17,7 +17,7 @@ class FaultPolicy
      * @param User $user
      * @return mixed
      */
-    public function create(User $user) : bool
+    public function create(User $user): bool
     {
         return $user->hasRole(Role::STAFF)
             || $user->isCollegist()
@@ -30,7 +30,7 @@ class FaultPolicy
      * @param User $user
      * @return mixed
      */
-    public function view(User $user) : bool
+    public function view(User $user): bool
     {
         return $this->create($user);
     }

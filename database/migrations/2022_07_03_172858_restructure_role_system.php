@@ -46,22 +46,22 @@ class RestructureRoleSystem extends Migration
         });
 
         $workshop_role_ids = DB::table('roles')->where('has_workshops', true)->select('id')->pluck('id')->toArray();
-        foreach ($workshop_role_ids as $id){
+        foreach ($workshop_role_ids as $id) {
             DB::STATEMENT("UPDATE role_users SET workshop_id = object_id WHERE role_id = ?; ", [$id]);
             DB::STATEMENT("UPDATE role_users SET object_id = null WHERE role_id = ?; ", [$id]);
         }
 
-        foreach (array_keys(config('app.locales')) as $locale)
-        {
+        foreach (array_keys(config('app.locales')) as $locale) {
             DB::table('role_objects')->insert([
                 'role_id' => Role::where('name', 'locale-admin')->first()->id,
                 'name' => $locale
             ]);
         }
 
-        foreach (array_merge(Role::STUDENT_COUNCIL_LEADERS,
-                    array_merge(Role::COMMITTEE_LEADERS, Role::COMMITTEE_MEMBERS)) as $role)
-        {
+        foreach (array_merge(
+            Role::STUDENT_COUNCIL_LEADERS,
+            array_merge(Role::COMMITTEE_LEADERS, Role::COMMITTEE_MEMBERS)
+        ) as $role) {
             DB::table('role_objects')->insert([
                 'role_id' => Role::where('name', 'student-council')->first()->id,
                 'name' => $role

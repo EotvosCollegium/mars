@@ -45,8 +45,8 @@ class UserController extends Controller
             'street_and_number' => 'required|string|max:255',
             'tenant_until'=>'nullable|string|max:225',
         ]);
-        if($user->email != $request->email) {
-            if(User::where('email', $request->email)->exists()){
+        if ($user->email != $request->email) {
+            if (User::where('email', $request->email)->exists()) {
                 $validator->after(function ($validator) {
                     $validator->errors()->add('email', __('validation.unique', ['attribute' => 'e-mail']));
                 });
@@ -101,7 +101,6 @@ class UserController extends Controller
         WorkshopBalance::generateBalances(Semester::current()->id);
 
         return redirect()->back()->with('message', __('general.successful_modification'));
-
     }
 
     public function updatePassword(Request $request): \Illuminate\Http\RedirectResponse
@@ -151,18 +150,18 @@ class UserController extends Controller
     {
         $object_id = $request->get('object_id') ?? $request->get('workshop_id');
         $object = $object_id ? $role->getObject($object_id) : null;
-        if($request->user()->cannot('updatePermission', [$user, $role, $object])){
+        if ($request->user()->cannot('updatePermission', [$user, $role, $object])) {
             return redirect()->back()->with('error', __('role.unauthorized'));
         }
 
-        if (!$role->isValid($object))
+        if (!$role->isValid($object)) {
             $message = __('role.role_can_not_be_attached');
-        else if ($user->addRole($role, $object))
+        } elseif ($user->addRole($role, $object)) {
             $message = __('general.successfully_added');
-        else
+        } else {
             $message = __('role.role_unavailable');
+        }
         return redirect()->back()->with('message', $message);
-
     }
 
     public function removeRole(Request $request, User $user, Role $role)
@@ -170,7 +169,7 @@ class UserController extends Controller
         $object_id = $request->get('object');
         $object = $object_id ? $role->getObject($object_id) : null;
 
-        if($request->user()->cannot('updatePermission', [$user, $role, $object])){
+        if ($request->user()->cannot('updatePermission', [$user, $role, $object])) {
             return redirect()->back()->with('error', __('role.unauthorized'));
         }
 

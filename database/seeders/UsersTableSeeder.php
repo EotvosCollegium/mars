@@ -87,7 +87,7 @@ class UsersTableSeeder extends Seeder
                 foreach ($role->objects as $object) {
                     $user->roles()->attach($role->id, ['object_id' => $object->id]);
                 }
-            } elseif($role->has_workshops) {
+            } elseif ($role->has_workshops) {
                 foreach (Workshop::all() as $workshop) {
                     $user->roles()->attach($role->id, ['workshop_id' => $workshop->id]);
                 }

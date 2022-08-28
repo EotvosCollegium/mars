@@ -34,7 +34,7 @@ class MrAndMissPolicy
      * @param User $user
      * @return mixed
      */
-    public function manage(User $user) : bool
+    public function manage(User $user): bool
     {
         return $user->hasRole(Role::STUDENT_COUNCIL, Role::COMMUNITY_LEADER);
     }

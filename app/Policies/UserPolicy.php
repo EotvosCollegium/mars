@@ -15,7 +15,9 @@ class UserPolicy
 
     public function before(User $user)
     {
-        if($user->hasRole(Role::SYS_ADMIN)) return true;
+        if ($user->hasRole(Role::SYS_ADMIN)) {
+            return true;
+        }
     }
 
     /**
@@ -38,17 +40,20 @@ class UserPolicy
      */
     public function view(User $user, User $target): bool
     {
-        if($user->id == $target->id) return true;
-        if($target->isCollegist())
-        {
-            if($user->hasAnyRoleBase([Role::SECRETARY, Role::DIRECTOR]))
+        if ($user->id == $target->id) {
+            return true;
+        }
+        if ($target->isCollegist()) {
+            if ($user->hasAnyRoleBase([Role::SECRETARY, Role::DIRECTOR])) {
                 return true;
-            if($user->isPresident())
+            }
+            if ($user->isPresident()) {
                 return true;
+            }
             return $target->workshops
                     ->intersect($user->roleWorkshops())
                     ->count()>0;
-        } else if($target->hasRole(Role::TENANT)){
+        } elseif ($target->hasRole(Role::TENANT)) {
             return $user->hasRole(Role::STAFF);
         }
         return false;
@@ -114,23 +119,24 @@ class UserPolicy
      */
     public function updateAnyPermission(User $user, User $target, Role $role = null): bool
     {
-        if(!isset($role))
+        if (!isset($role)) {
             return $user->hasRole(Role::SECRETARY)
             || $user->isInStudentsCouncil()
             || $user->hasAnyRoleBase([Role::WORKSHOP_ADMINISTRATOR, Role::WORKSHOP_LEADER]);
+        }
 
-        if($role->name == Role::COLLEGIST)
+        if ($role->name == Role::COLLEGIST) {
             return $user->hasRole(Role::SECRETARY);
+        }
 
-        if($role->name == Role::APPLICATION_COMMITTEE_MEMBER)
+        if ($role->name == Role::APPLICATION_COMMITTEE_MEMBER) {
             return $user->hasAnyRoleBase([Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR]);
+        }
 
-        if($role->name == Role::STUDENT_COUNCIL)
-        {
+        if ($role->name == Role::STUDENT_COUNCIL) {
             return $user->isInStudentsCouncil();
         }
         return false;
-
     }
 
     /**
@@ -142,23 +148,22 @@ class UserPolicy
      */
     public function updatePermission(User $user, User $target, Role $role, Workshop|RoleObject $object = null): bool
     {
-        if($role->name == Role::COLLEGIST)
+        if ($role->name == Role::COLLEGIST) {
             return $user->hasRole(Role::SECRETARY);
+        }
 
-        if($role->name == Role::APPLICATION_COMMITTEE_MEMBER)
+        if ($role->name == Role::APPLICATION_COMMITTEE_MEMBER) {
             return $user->roleWorkshops()->contains($object->id);
+        }
 
-        if($role->name == Role::STUDENT_COUNCIL)
-        {
-            if($object->name == Role::PRESIDENT)
-            {
+        if ($role->name == Role::STUDENT_COUNCIL) {
+            if ($object->name == Role::PRESIDENT) {
                 return false;
             }
-            if($user->hasRole(Role::STUDENT_COUNCIL, Role::PRESIDENT))
-            {
+            if ($user->hasRole(Role::STUDENT_COUNCIL, Role::PRESIDENT)) {
                 return true;
             }
-            if(in_array($object->name, Role::COMMITTEE_MEMBERS)){
+            if (in_array($object->name, Role::COMMITTEE_MEMBERS)) {
                 $committee = preg_split("~-~", $object->name)[0];
                 return $user->hasRole(Role::STUDENT_COUNCIL, $committee . "-leader");
             }
@@ -175,8 +180,9 @@ class UserPolicy
      */
     public function updateStatus(User $user, User $target): bool
     {
-
-        if($user->hasRole(Role::SECRETARY)) return true;
+        if ($user->hasRole(Role::SECRETARY)) {
+            return true;
+        }
         return $user->roleWorkshops()->intersect($target->workshops)->count() > 0;
     }
 
@@ -188,8 +194,9 @@ class UserPolicy
      */
     public function updateWorkshop(User $user, User $target, Workshop $workshop): bool
     {
-        if($user->hasRole(Role::SECRETARY)) return true;
+        if ($user->hasRole(Role::SECRETARY)) {
+            return true;
+        }
         return $user->roleWorkshops()->has($workshop->id);
     }
-
 }
