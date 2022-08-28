@@ -61,11 +61,11 @@ class SecretariatController extends Controller
         $users = User::collegists();
         foreach ($users as $user) {
             if ($user->getStatusIn(Semester::previous()) == SemesterStatus::DEACTIVATED) {
-                SemesterStatus::withoutEvents(function () use($user) {
+                SemesterStatus::withoutEvents(function () use ($user) {
                     $user->setStatus(SemesterStatus::DEACTIVATED, 'Was deactivated in last semester');
                 });
             } else {
-                SemesterStatus::withoutEvents(function () use($user) {
+                SemesterStatus::withoutEvents(function () use ($user) {
                     $user->setStatus(SemesterStatus::INACTIVE, 'New semester started');
                 });
                 Mail::to($user)->queue(new \App\Mail\StatusStatementRequest($user->name));

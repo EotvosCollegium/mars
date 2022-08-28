@@ -32,7 +32,7 @@ class SemesterSeeder extends Seeder
         foreach ($semesters as $semester) {
             foreach ($users as $user) {
                 $status = array_rand(SemesterStatus::STATUSES);
-                SemesterStatus::withoutEvents(function () use($user, $semester, $status) {
+                SemesterStatus::withoutEvents(function () use ($user, $semester, $status) {
                     $user->setStatusFor($semester, SemesterStatus::STATUSES[$status]);
                 });
             }
