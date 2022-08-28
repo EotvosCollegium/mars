@@ -40,7 +40,7 @@
                         @forelse ($user->workshops as $workshop)
                             <span class="new badge {{ $workshop->color() }} scale-transition tag"
                                   style="float:none;padding:4px;margin:0 10px 0px 2px;" data-badge-caption="">
-                            <nobr>@lang('role.'.$workshop->name) </nobr>
+                            <nobr>{{$workshop->name}} </nobr>
                         </span>
                         @empty
                             <span style="font-style:italic;color:red">hiányzó műhely</span>
@@ -69,15 +69,6 @@
                     <div class="col s12">
                         <table>
                             <tbody>
-                            <tr>
-                                <th scope="row">A felvételi teljes időtartamában itt lesz?</th>
-                                <td>
-                                    {{ $user->application->accommodation }}
-                                    @if(!$user->application->accommodation)
-                                        <span style="font-style:italic;color:green">Igen</span>
-                                    @endif
-                                </td>
-                            </tr>
                             <tr>
                                 <th scope="row">@lang('user.place_and_date_of_birth')</th>
                                 <td>
@@ -275,6 +266,25 @@
                                     @if(count($user->application->files ?? []) > 0 && count($user->application->files ?? []) < 2)
                                         <span
                                             style="font-style:italic;color:red">legalább 2 fájlt fel kell tölteni</span>
+                                    @endif
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">A felvételi teljes időtartamában itt lesz?</th>
+                                <td>
+                                    {{ $user->application->present }}
+                                    @if(!$user->application->present)
+                                        <span style="color:green">Igen</span>
+                                    @endif
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Igényel szállást?</th>
+                                <td>
+                                    @if($user->application->accommodation)
+                                        <span style="color:green">Igen</span>
+                                    @else
+                                        Nem
                                     @endif
                                 </td>
                             </tr>
