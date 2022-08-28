@@ -584,6 +584,8 @@ class User extends Authenticatable implements HasLocalePreference
         $object = $role->getObject($objectName);
         $this->roles()->detach($role->id);
         $this->roles()->attach($role->id, ['object_id' => $object->id]);
+
+        WorkshopBalance::generateBalances(Semester::current()->id);
     }
 
     /**

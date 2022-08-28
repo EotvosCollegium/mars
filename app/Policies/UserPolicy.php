@@ -146,7 +146,7 @@ class UserPolicy
             return $user->hasRole(Role::SECRETARY);
 
         if($role->name == Role::APPLICATION_COMMITTEE_MEMBER)
-            return $user->roleWorkshops()->has($object->id);
+            return $user->roleWorkshops()->contains($object->id);
 
         if($role->name == Role::STUDENT_COUNCIL)
         {

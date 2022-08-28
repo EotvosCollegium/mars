@@ -98,6 +98,7 @@ class UserController extends Controller
 
         $user->workshops()->sync($request->input('workshop'));
         $user->faculties()->sync($request->input('faculties'));
+        WorkshopBalance::generateBalances(Semester::current()->id);
 
         return redirect()->back()->with('message', __('general.successful_modification'));
 
@@ -124,27 +125,6 @@ class UserController extends Controller
         return redirect()->back()->with('message', __('general.successful_modification'));
     }
 
-    public function setCollegistType(Request $request)
-    {
-        $this->authorize('viewAny', User::class);
-
-        if ($request->has('resident')) {
-            $user = User::findOrFail($request->user_id);
-
-            if ($request->resident === 'true') {
-                $user->setResident();
-            } else {
-                $user->setExtern();
-            }
-
-            WorkshopBalance::generateBalances(Semester::current()->id);
-        } else {
-            return response()->json(null, 400);
-        }
-
-        return response()->json(null, 204);
-    }
-
     public function index()
     {
         $this->authorize('viewAny', User::class);
@@ -167,62 +147,10 @@ class UserController extends Controller
         ]);
     }
 
-    public function updateSemesterStatus($id, $semester, $status)
-    {
-        $user = User::findOrFail($id);
-        $semester = Semester::find($semester);
-
-        // TODO
-        $this->authorize('view', $user);
-
-        $user->setStatusFor($semester, $status);
-
-        WorkshopBalance::generateBalances($semester->id);
-
-        return redirect()->back()->with('message', __('general.successful_modification'));
-    }
-
-    public function deleteUserWorkshop($user, $workshop)
-    {
-        // TODO
-        $this->authorize('viewAny', User::class);
-
-        $user = User::findOrFail($user);
-
-        $user->workshops()->detach($workshop);
-
-        WorkshopBalance::generateBalances(Semester::current()->id);
-    }
-
-    public function addUserWorkshop(Request $request, $user)
-    {
-        // TODO
-        $this->authorize('viewAny', User::class);
-
-        $user = User::findOrFail($user);
-
-        $validator = Validator::make($request->except('_token'), [
-            'workshop_id' => 'required|exists:workshops,id',
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
-        $user->workshops()->attach($request->workshop_id);
-
-        WorkshopBalance::generateBalances(Semester::current()->id);
-
-        return redirect()->back()->with('message', __('general.successfully_added'));
-    }
-
-
     public function addRole(Request $request, User $user, Role $role)
     {
         $object_id = $request->get('object_id') ?? $request->get('workshop_id');
         $object = $object_id ? $role->getObject($object_id) : null;
-
         if($request->user()->cannot('updatePermission', [$user, $role, $object])){
             return redirect()->back()->with('error', __('role.unauthorized'));
         }
@@ -248,6 +176,6 @@ class UserController extends Controller
 
         $user->removeRole($role, $object ?? null);
 
-        return redirect()->back();
+        return redirect()->back()->with('message', __('general.successful_modification'));
     }
 }

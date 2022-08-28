@@ -14,7 +14,7 @@ class EditStatus extends Component
 
     public function mount()
     {
-        $this->status = $this->user->getStatus();
+        $this->status = $this->user->getStatusIn($this->semester);
     }
 
     public function set($status)

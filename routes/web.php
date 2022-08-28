@@ -66,7 +66,7 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::post('/users/{user}/personal_information', [UserController::class, 'updatePersonalInformation'])->name('users.update.personal');
     Route::post('/users/{user}/educational_information', [UserController::class, 'updateEducationalInformation'])->name('users.update.educational');
     Route::post('/users/{user}/roles/{role}', [UserController::class, 'addRole'])->name('users.roles.add');
-    Route::delete('/users/{user}/roles/{role}', [UserController::class, 'deleteRole'])->name('users.roles.delete');
+    Route::delete('/users/{user}/roles/{role}', [UserController::class, 'removeRole'])->name('users.roles.delete');
 
 
     /** Localization */
