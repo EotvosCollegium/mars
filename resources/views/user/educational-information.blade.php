@@ -16,7 +16,7 @@
                     </tr>
                     <tr>
                         <th scope="row">@lang('user.program')</th>
-                        <td>{{ $user->educationalInformation->program }}</td>
+                        <td>{{ $user->educationalInformation->programs }}</td>
                     </tr>
                     <tr>
                         <th scope="row">@lang('user.faculty')</th>

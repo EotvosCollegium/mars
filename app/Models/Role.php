@@ -112,10 +112,10 @@ class Role extends Model
         switch ($roleName) {
             case self::DIRECTOR:
                 return true;
-            case self::WORKSHOP_ADMINISTRATOR:
-                return true;
-            case self::WORKSHOP_LEADER:
-                return true;
+//            case self::WORKSHOP_ADMINISTRATOR:
+//                return true;
+//            case self::WORKSHOP_LEADER:
+//                return true;
             case self::STUDENT_COUNCIL:
                 return $objectName == self::PRESIDENT || in_array($objectName, self::COMMITTEE_LEADERS);
             default:

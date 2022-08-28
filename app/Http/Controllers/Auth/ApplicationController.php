@@ -34,8 +34,9 @@ class ApplicationController extends Controller
      */
     public function showApplicationForm(Request $request): View
     {
-        abort_if(!$request->user()->isCollegist(), 403);
-        abort_if($request->user()->verified == 1, 403);
+        if (!isset($request->user()->application)) {
+            $request->user()->application()->create();
+        }
 
         $data = [
             'workshops' => Workshop::all(),
@@ -66,6 +67,10 @@ class ApplicationController extends Controller
     public function storeApplicationForm(Request $request): RedirectResponse
     {
         $user = $request->user();
+
+        if (now() > self::getApplicationDeadline()) {
+            return redirect()->route('application')->with('error', 'A jelentkezési határidő lejárt');
+        }
 
         if (isset($user->application) && $user->application->status == ApplicationForm::STATUS_SUBMITTED) {
             return redirect()->route('application')->with('error', 'Már véglegesítette a jelentkezését!');
@@ -133,14 +138,18 @@ class ApplicationController extends Controller
                 }
                 session()->flash('can_filter_by_status');
             } else {
-                $workshops = $authUser->roles()->whereIn('name', [Role::APPLICATION_COMMITTEE_MEMBER, Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR])->get(['object_id'])->pluck('object_id');
-                $workshops = Workshop::whereIn('id', $workshops)->distinct()->get();
+                if ($authUser->hasRoleBase(Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER)) {
+                    $workshops = Workshop::all();
+                } else {
+                    $workshops = $authUser->roles()->whereIn('name', [Role::APPLICATION_COMMITTEE_MEMBER, Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR])->get(['object_id'])->pluck('object_id');
+                    $workshops = Workshop::whereIn('id', $workshops)->distinct()->get();
+                }
                 $applications = ApplicationForm::where('status', ApplicationForm::STATUS_SUBMITTED);
                 if ($request->has('workshop') && $request->input('workshop') !== "null") {
                     // filter by selected workshop
                     $applications->join('workshop_users', 'application_forms.user_id', '=', 'workshop_users.user_id')
                         ->where('workshop_id', $request->input('workshop'));
-                } elseif (!$authUser->hasRoleBase(Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER)) {
+                } else {
                     // filter by user's workshops
                     $applications->join('workshop_users', 'application_forms.user_id', '=', 'workshop_users.user_id')
                         ->whereIn('workshop_id', $workshops->pluck('id'));
@@ -284,7 +293,7 @@ class ApplicationController extends Controller
     public function storeFiles(Request $request, $user): void
     {
         $request->validate([
-            'file' => 'required|file|mimes:pdf,jpg,jpeg,png,gif,svg|max:2048',
+            'file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5240',
             'name' => 'required|string|max:255',
         ]);
         $path = $request->file('file')->store('uploads');
