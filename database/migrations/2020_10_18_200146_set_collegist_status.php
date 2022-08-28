@@ -19,7 +19,7 @@ class SetCollegistStatus extends Migration
             $extern_id = Role::getObjectIdByName(Role::COLLEGIST, 'extern');
             $collegist->roles()->detach(Role::getId(Role::COLLEGIST));
             $collegist->roles()->attach(Role::getId(Role::COLLEGIST), ['object_id' => $extern_id]);
-            $collegist->setStatusFor(Semester::current(), Semester::ACTIVE);
+            $collegist->setStatusFor(Semester::current(), SemesterStatus::ACTIVE);
         }
     }
 

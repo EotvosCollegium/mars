@@ -30,8 +30,8 @@ class SemesterSeeder extends Seeder
         $semesters = Semester::all()->unique();
         foreach ($semesters as $semester) {
             foreach ($users as $user) {
-                $status = array_rand(Semester::STATUSES);
-                $user->setStatusFor($semester, Semester::STATUSES[$status]);
+                $status = array_rand(SemesterStatus::STATUSES);
+                $user->setStatusFor($semester, SemesterStatus::STATUSES[$status]);
             }
         }
     }

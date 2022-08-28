@@ -55,7 +55,7 @@
                             <ul>
                                 @foreach ($user->allSemesters as $semester)
                                 <li>
-                                    <span class="new badge tooltipped {{ \App\Models\Semester::colorForStatus($user->getStatusIn($semester)) }}"
+                                    <span class="new badge tooltipped {{ \App\Models\SemesterStatus::color($user->getStatusIn($semester)) }}"
                                         data-badge-caption=""
                                         data-position="right"  data-tooltip="@lang('user.'.$user->getStatusIn($semester))"
                                         >

@@ -7,6 +7,8 @@ use App\Events\MacAddressSaved;
 use App\Listeners\AutoApproveMacAddresses;
 use App\Listeners\MailGate;
 use App\Listeners\UpdatePhysicalIP;
+use App\Models\SemesterStatus;
+use App\Observers\StatusObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -44,6 +46,6 @@ class EventServiceProvider extends ServiceProvider
     {
         parent::boot();
 
-        //
+        SemesterStatus::observe(StatusObserver::class);
     }
 }

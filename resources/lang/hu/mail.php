@@ -15,6 +15,7 @@ return [
     'show' => 'Megtekint',
     'status_cert_request' => ':user új tagság igazolást igényelt:',
     'status_certificate_request_subject' => 'Tagságigazolás igénylés',
+    'status_updated' => 'Új státusz a :semester félévre: :status',
     'thank_you_registering' => 'Köszönjük, hogy regisztráltál az :app rendszerbe.',
     'wait_for_approving_registration' => 'Regisztrációdat egy rendszergazda hamarosan kezelni fogja, addig is kérjük türelmed.',
 ];

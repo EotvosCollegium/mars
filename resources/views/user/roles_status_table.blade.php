@@ -13,7 +13,7 @@
     <tr>
         <th>@lang('user.status')</th>
         <td>
-            <span class="new badge {{ \App\Models\Semester::colorForStatus($user->getStatus()) }}" data-badge-caption="">
+            <span class="new badge {{ \App\Models\SemesterStatus::color($user->getStatus()) }}" data-badge-caption="">
                 @lang("user." . $user->getStatus())
             </span></td>
         <td>

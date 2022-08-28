@@ -31,18 +31,6 @@ class Semester extends Model
     private const SEPARATOR = '-';
 
     public const PARTS = [1, 2];
-    public const ACTIVE = 'ACTIVE';
-    public const INACTIVE = 'INACTIVE';
-    public const DEACTIVATED = 'DEACTIVATED';
-    public const PASSIVE = 'PASSIVE';
-    public const PENDING = 'PENDING';
-    public const STATUSES = [
-        self::ACTIVE,
-        self::INACTIVE,
-        self::DEACTIVATED,
-        self::PASSIVE,
-        self::PENDING,
-    ];
 
     // Values are in month
     // TODO: change to dates?
@@ -299,26 +287,6 @@ class Semester extends Model
         return $semester;
     }
 
-    /**
-     * Returns the color belonging to the status.
-     */
-    public static function colorForStatus($status): string
-    {
-        switch ($status) {
-            case self::ACTIVE:
-                return 'green';
-            case self::INACTIVE:
-                return 'grey';
-            case self::DEACTIVATED:
-                return 'brown';
-            case self::PASSIVE:
-                return 'orange';
-            case self::PENDING:
-                return 'lime';
-            default:
-                return 'black';
-        }
-    }
 
     /* Helpers */
 

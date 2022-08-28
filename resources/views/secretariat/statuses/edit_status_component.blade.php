@@ -28,7 +28,7 @@
             <i class="material-icons">directions_run</i>
     </button>
 
-    <span class="new badge {{ \App\Models\Semester::colorForStatus($status) }}" data-badge-caption="" style="margin-left:10px">
+    <span class="new badge {{ \App\Models\SemesterStatus::color($status) }}" data-badge-caption="" style="margin-left:10px">
         @lang("user." . $status)
     </span>
 </div>
