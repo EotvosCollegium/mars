@@ -14,18 +14,31 @@ class FaultPolicy
     /**
      * Determine whether the user can create fault.
      *
-     * @param  \App\Models\User  $user
+     * @param User $user
      * @return mixed
      */
-    public function create(User $user)
+    public function create(User $user): bool
     {
-        return $user->hasRole(Role::STAFF) || $user->hasRoleBase(Role::COLLEGIST) || $user->hasRole(Role::TENANT);
+        return $user->hasRole(Role::STAFF)
+            || $user->isCollegist()
+            || $user->hasRole(Role::TENANT);
+    }
+
+    /**
+     * Determine whether the user can view faults.
+     *
+     * @param User $user
+     * @return mixed
+     */
+    public function view(User $user): bool
+    {
+        return $this->create($user);
     }
 
     /**
      * Determine whether the user can update the status of the fault.
      *
-     * @param  \App\Models\User  $user
+     * @param User $user
      * @return mixed
      */
     public function update(User $user)

@@ -13,7 +13,7 @@ class PrintJobPolicy
 
     public function before(User $user)
     {
-        if ($user->hasRole(Role::PRINT_ADMIN)) {
+        if ($user->hasRole(Role::SYS_ADMIN)) {
             return true;
         }
         if (! $user->hasRole(Role::PRINTER)) {
@@ -24,7 +24,7 @@ class PrintJobPolicy
     /**
      * Determine whether the user can view any print jobs.
      *
-     * @param  \App\Models\User  $user
+     * @param User $user
      * @return mixed
      */
     public function viewAny(User $user)
@@ -35,8 +35,8 @@ class PrintJobPolicy
     /**
      * Determine whether the user can view his/her print jobs.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\PrintJob  $printJob
+     * @param User $user
+     * @param PrintJob $printJob
      * @return mixed
      */
     public function viewSelf(User $user)
@@ -47,11 +47,11 @@ class PrintJobPolicy
     /**
      * Determine whether the user can update the print job.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\PrintJob  $printJob
-     * @return mixed
+     * @param User $user
+     * @param PrintJob $printJob
+     * @return bool
      */
-    public function update(User $user, PrintJob $printJob)
+    public function update(User $user, PrintJob $printJob): bool
     {
         return $printJob->user_id === $user->id;
     }

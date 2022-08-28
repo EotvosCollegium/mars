@@ -4,11 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property mixed $user_id
+ */
 class InternetAccess extends Model
 {
     protected $primaryKey = 'user_id';
 
-    protected $fillable = ['user_id', 'wifi_username', 'wifi_connection_limit'];
+    protected $fillable = ['user_id', 'wifi_username', 'wifi_connection_limit', 'has_internet_until', 'wifi_password'];
     protected $hidden = ['wifi_password'];
 
     protected $dates = [

@@ -82,14 +82,17 @@ class UsersTableSeeder extends Seeder
         for ($x = 0; $x < rand(1, 3); $x++) {
             $user->workshops()->attach(rand(1, count(Workshop::ALL)));
         }
-        foreach (Role::ALL as $role) {
-            if (Role::canHaveObjectFor($role)) {
-                $objects = Role::possibleObjectsFor($role);
-                foreach ($objects as $object) {
-                    $user->roles()->attach(Role::getId($role), ['object_id' => $object->id]);
+        foreach (Role::all() as $role) {
+            if ($role->has_objects) {
+                foreach ($role->objects as $object) {
+                    $user->roles()->attach($role->id, ['object_id' => $object->id]);
+                }
+            } elseif ($role->has_workshops) {
+                foreach (Workshop::all() as $workshop) {
+                    $user->roles()->attach($role->id, ['workshop_id' => $workshop->id]);
                 }
             } else {
-                $user->roles()->attach(Role::getId($role));
+                $user->roles()->attach($role->id);
             }
         }
         $wifi_username = $user->internetAccess->setWifiUsername();
@@ -101,7 +104,7 @@ class UsersTableSeeder extends Seeder
         MacAddress::factory()->count($user->id % 5)->create(['user_id' => $user->id]);
         PrintJob::factory()->count($user->id % 5)->create(['user_id' => $user->id]);
         $user->roles()->attach(
-            Role::getId(Role::COLLEGIST),
+            Role::firstWhere('name', Role::COLLEGIST)->id,
             [
                 'object_id' => rand(
                     Role::getObjectIdByName(Role::COLLEGIST, 'resident'),
@@ -110,8 +113,8 @@ class UsersTableSeeder extends Seeder
             ]
         );
         $user->educationalInformation()->save(EducationalInformation::factory()->make(['user_id' => $user->id]));
-        $user->roles()->attach(Role::getId(Role::PRINTER));
-        $user->roles()->attach(Role::getId(Role::INTERNET_USER));
+        $user->roles()->attach(Role::firstWhere('name', Role::PRINTER)->id);
+        $user->roles()->attach(Role::firstWhere('name', Role::INTERNET_USER)->id);
         $wifi_username = $user->internetAccess->setWifiUsername();
         WifiConnection::factory($user->id % 5)->create(['wifi_username' => $wifi_username]);
         for ($x = 0; $x < rand(1, 3); $x++) {
@@ -130,8 +133,8 @@ class UsersTableSeeder extends Seeder
 
     private function createTenant($user)
     {
-        $user->roles()->attach(Role::getId(Role::TENANT));
-        $user->roles()->attach(Role::getId(Role::INTERNET_USER));
+        $user->roles()->attach(Role::firstWhere('name', Role::TENANT)->id);
+        $user->roles()->attach(Role::firstWhere('name', Role::INTERNET_USER)->id);
         $wifi_username = $user->internetAccess->setWifiUsername();
         WifiConnection::factory($user->id % 5)->create(['wifi_username' => $wifi_username]);
         MacAddress::factory()->count($user->id % 5)->create(['user_id' => $user->id]);
@@ -145,6 +148,6 @@ class UsersTableSeeder extends Seeder
             'password' => bcrypt('asdasdasd'),
             'verified' => true,
         ]);
-        $user->roles()->attach(Role::getId(Role::STAFF));
+        $user->roles()->attach(Role::firstWhere('name', Role::STAFF)->id);
     }
 }

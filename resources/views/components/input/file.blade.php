@@ -9,7 +9,7 @@
 </div>
 <div class="file-path-wrapper">
     <input class="file-path @error($id) invalid @enderror" placeholder="{{ $label }}" type="text" disabled>
-    @error($attributes->get('value') ?? $id)
+    @error($id)
         <span class="helper-text" data-error="{{ $message }}"></span>
     @enderror
 </div>

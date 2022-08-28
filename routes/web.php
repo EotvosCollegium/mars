@@ -48,7 +48,7 @@ Route::middleware(['auth', 'only_hungarian'])->group(function () {
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::post('/secretariat/user/update_password', [UserController::class, 'updatePassword'])->name('secretariat.user.update_password');
+    Route::post('/user/update_password', [UserController::class, 'updatePassword'])->name('users.update.password');
 });
 
 Route::middleware(['auth', 'log', 'verified'])->group(function () {
@@ -60,17 +60,14 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::get('/report_bug', [HomeController::class, 'indexReportBug'])->name('index_reportbug');
 
     /** User related routes */
-    Route::get('/user', [UserController::class, 'index'])->name('user');
-    Route::post('/secretariat/user/update', [UserController::class, 'update'])->name('secretariat.user.update');
-    Route::get('/secretariat/user/list', [UserController::class, 'list'])->name('secretariat.user.list');
-    Route::get('/secretariat/user/show/{id}', [UserController::class, 'show'])->name('secretariat.user.show');
-    Route::get('/secretariat/user/semesters/{id}', [UserController::class, 'semesters'])->name('secretariat.user.semesters');
-    Route::get('/secretariat/user/semesters/update/{id}/{semester}/{status}', [UserController::class, 'updateSemesterStatus'])->name('secretariat.user.semesters.update');
-    Route::post('/secretariat/user/setCollegistType', [UserController::class, 'setCollegistType'])->name('secretariat.user.set_collegist_type');
-    Route::get('/secretariat/user/statuses', [SemesterController::class, 'statuses'])->name('secretariat.user.statuses');
-    Route::get('/secretariat/user/semesters/update/{id}/{semester}/{status}', [UserController::class, 'updateSemesterStatus'])->name('secretariat.user.semesters.update');
-    Route::get('/secretariat/user/{user}/workshop/{workshop}/delete', [UserController::class, 'deleteUserWorkshop'])->name('secretariat.user.workshop.delete');
-    Route::post('/secretariat/user/{user}/workshop/add', [UserController::class, 'addUserWorkshop'])->name('secretariat.user.workshop.add');
+    Route::get('/profile', [UserController::class, 'profile'])->name('profile');
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
+    Route::post('/users/{user}/personal_information', [UserController::class, 'updatePersonalInformation'])->name('users.update.personal');
+    Route::post('/users/{user}/educational_information', [UserController::class, 'updateEducationalInformation'])->name('users.update.educational');
+    Route::post('/users/{user}/roles/{role}', [UserController::class, 'addRole'])->name('users.roles.add');
+    Route::delete('/users/{user}/roles/{role}', [UserController::class, 'removeRole'])->name('users.roles.delete');
+
 
     /** Localization */
     Route::get('/localizations', [LocaleController::class, 'index'])->name('localizations');
@@ -141,14 +138,6 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::get('/applications', [ApplicationController::class, 'showApplications'])->name('applications');
     Route::post('/applications', [ApplicationController::class, 'editApplication'])->name('applications.edit');
 
-    /** Permission handling */
-    Route::middleware(['can:permission.handle'])->group(function () {
-        Route::get('/secretariat/permissions', [PermissionController::class, 'index'])->name('secretariat.permissions.list');
-        Route::get('/secretariat/permissions/{id}/show', [PermissionController::class, 'show'])->name('secretariat.permissions.show');
-        Route::post('/secretariat/permissions/{id}/edit/{role_id}', [PermissionController::class, 'edit'])->name('secretariat.permissions.edit');
-        Route::post('/secretariat/permissions/{id}/remove/{role_id}/{object_id?}', [PermissionController::class, 'remove'])->name('secretariat.permissions.remove');
-    });
-
     /** Faults */
     Route::get('/faults', [FaultController::class, 'index'])->name('faults');
     Route::get('/faults/table', [FaultController::class, 'GetFaults'])->name('faults.table');
@@ -161,7 +150,7 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     /** Status update form */
     Route::get('/secretariat/status-update', [SecretariatController::class, 'showStatusUpdate'])->name('secretariat.status-update.show');
     Route::post('/secretariat/status-update/update', [SecretariatController::class, 'updateStatus'])->name('secretariat.status-update.update');
-
+    
     /** Documents */
     Route::get('/documents', [DocumentController::class, 'index'])->name('documents');
     Route::get('/documents/register-statement/download', [DocumentController::class, 'downloadRegisterStatement'])->name('documents.register-statement.download');

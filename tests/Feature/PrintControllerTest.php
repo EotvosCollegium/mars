@@ -55,7 +55,7 @@ class PrintControllerTest extends TestCase
     {
         $user = User::factory()->create();
         $user->setVerified();
-        $user->roles()->attach(Role::getId(Role::PRINTER));
+        $user->roles()->attach(Role::firstWhere('name', Role::PRINTER)->id);
         $this->actingAs($user);
 
         $response = $this->get('/print');
@@ -95,7 +95,8 @@ class PrintControllerTest extends TestCase
     {
         $user = User::factory()->create();
         $user->setVerified();
-        $user->roles()->attach(Role::getId(Role::PRINT_ADMIN));
+        $user->roles()->attach(Role::firstWhere('name', Role::PRINTER)->id);
+        $user->roles()->attach(Role::firstWhere('name', Role::SYS_ADMIN)->id);
         $this->actingAs($user);
 
         $response = $this->get('/print');
@@ -132,12 +133,12 @@ class PrintControllerTest extends TestCase
     {
         $sender = User::factory()->create();
         $sender->setVerified();
-        $sender->roles()->attach(Role::getId(Role::PRINTER));
+        $sender->roles()->attach(Role::firstWhere('name', Role::PRINTER)->id);
         $this->actingAs($sender);
 
         $reciever = User::factory()->create();
         $reciever->setVerified();
-        $reciever->roles()->attach(Role::getId(Role::PRINTER));
+        $reciever->roles()->attach(Role::firstWhere('name', Role::PRINTER)->id);
 
         // Setting initial valeus
         $this->assertEquals($sender->printAccount->balance, 0);
@@ -176,12 +177,12 @@ class PrintControllerTest extends TestCase
     {
         $sender = User::factory()->create();
         $sender->setVerified();
-        $sender->roles()->attach(Role::getId(Role::PRINT_ADMIN));
+        $sender->roles()->attach(Role::firstWhere('name', Role::SYS_ADMIN)->id);
         $this->actingAs($sender);
 
         $reciever = User::factory()->create();
         $reciever->setVerified();
-        $reciever->roles()->attach(Role::getId(Role::PRINTER));
+        $reciever->roles()->attach(Role::firstWhere('name', Role::PRINTER)->id);
 
         // Asserting initial valeus
         $this->assertEquals($sender->printAccount->balance, 0);

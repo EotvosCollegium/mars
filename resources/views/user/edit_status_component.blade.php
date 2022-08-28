@@ -1,4 +1,8 @@
 <div>
+    <span class="new badge {{ \App\Models\SemesterStatus::color($status) }}" data-badge-caption="" style="margin-right:20px">
+        <b>@lang("user." . $status)</b>
+    </span>
+    @can('updateStatus', $user)
     <button
         class="green tooltipped waves-effect btn-floating"
         wire:click="set('ACTIVE')"
@@ -27,8 +31,5 @@
         data-tooltip="{{__('user.DEACTIVATED')}}">
             <i class="material-icons">directions_run</i>
     </button>
-
-    <span class="new badge {{ \App\Models\Semester::colorForStatus($status) }}" data-badge-caption="" style="margin-left:10px">
-        @lang("user." . $status)
-    </span>
+    @endcan
 </div>

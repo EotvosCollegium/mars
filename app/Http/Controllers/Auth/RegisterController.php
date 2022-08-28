@@ -12,6 +12,7 @@ use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Cache;
 
 class RegisterController extends Controller
 {
@@ -68,15 +69,15 @@ class RegisterController extends Controller
     ];
 
     public const PERSONAL_INFORMATION_RULES = [
-        'place_of_birth' => 'required|string|max:255',
-        'date_of_birth' => 'required|date_format:Y-m-d',
-        'mothers_name' => 'required|string|max:255',
+        'place_of_birth' => 'exclude_if:user_type,tenant|required|string|max:255',
+        'date_of_birth' => 'exclude_if:user_type,tenant|required|date_format:Y-m-d',
+        'mothers_name' => 'exclude_if:user_type,tenant|required|string|max:255',
         'phone_number' => 'required|string|min:8|max:18',
-        'country' => 'required|string|max:255',
-        'county' => 'required|string|max:255',
-        'zip_code' => 'required|string|max:31',
-        'city' => 'required|string|max:255',
-        'street_and_number' => 'required|string|max:255',
+        'country' => 'exclude_if:user_type,tenant|required|string|max:255',
+        'county' => 'exclude_if:user_type,tenant|required|string|max:255',
+        'zip_code' => 'exclude_if:user_type,tenant|required|string|max:31',
+        'city' => 'exclude_if:user_type,tenant|required|string|max:255',
+        'street_and_number' => 'exclude_if:user_type,tenant|required|string|max:255',
     ];
 
     /**
@@ -115,21 +116,21 @@ class RegisterController extends Controller
         ]);
         PersonalInformation::create([
             'user_id' => $user->id,
-            'place_of_birth' => $data['place_of_birth'],
-            'date_of_birth' => $data['date_of_birth'],
+            'place_of_birth' => $data['place_of_birth'] ?? null,
+            'date_of_birth' => $data['date_of_birth'] ?? null,
             'tenant_until' => $data['tenant_until'] ?? null,
-            'mothers_name' => $data['mothers_name'],
+            'mothers_name' => $data['mothers_name'] ?? null,
             'phone_number' => $data['phone_number'],
-            'country' => $data['country'],
-            'county' => $data['county'],
-            'zip_code' => $data['zip_code'],
-            'city' => $data['city'],
-            'street_and_number' => $data['street_and_number'],
+            'country' => $data['country'] ?? null,
+            'county' => $data['county'] ?? null,
+            'zip_code' => $data['zip_code'] ?? null,
+            'city' => $data['city'] ?? null,
+            'street_and_number' => $data['street_and_number'] ?? null,
         ]);
 
-        $user->roles()->attach(Role::getId(Role::PRINTER));
-        $user->roles()->attach(Role::getId(Role::INTERNET_USER));
-        $user->roles()->attach(Role::getId($data['user_type']));
+        $user->roles()->attach(Role::firstWhere('name', Role::PRINTER)->id);
+        $user->roles()->attach(Role::firstWhere('name', Role::INTERNET_USER)->id);
+        $user->roles()->attach(Role::firstWhere('name', $data['user_type'])->id);
 
         if ($data['user_type'] == Role::TENANT) {
             $user->internetAccess->setWifiUsername();
@@ -139,7 +140,7 @@ class RegisterController extends Controller
             if (! $user->isCollegist()) {
                 $users_to_notify = User::whereHas('roles', function ($q) {
                     $q->whereIn('role_id', [
-                        Role::getId(Role::NETWORK_ADMIN)
+                        Role::firstWhere('name', Role::SYS_ADMIN)->id
                     ]);
                 })->get();
                 foreach ($users_to_notify as $person) {

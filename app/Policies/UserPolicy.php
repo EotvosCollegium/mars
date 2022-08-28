@@ -3,13 +3,22 @@
 namespace App\Policies;
 
 use App\Models\Role;
+use App\Models\RoleObject;
 use App\Models\User;
 use App\Models\Workshop;
+use http\Exception\InvalidArgumentException;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class UserPolicy
 {
     use HandlesAuthorization;
+
+    public function before(User $user)
+    {
+        if ($user->hasRole(Role::SYS_ADMIN)) {
+            return true;
+        }
+    }
 
     /**
      * @param User $user
@@ -17,8 +26,11 @@ class UserPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasAnyRole([Role::NETWORK_ADMIN, Role::SECRETARY, Role::PERMISSION_HANDLER])
-            || $user->hasRoleBase(Role::WORKSHOP_LEADER);
+        return
+            $user->hasAnyRoleBase([
+                Role::STAFF, Role::SECRETARY, Role::DIRECTOR, Role::WORKSHOP_ADMINISTRATOR, Role::WORKSHOP_LEADER
+            ])
+            || $user->isPresident();
     }
 
     /**
@@ -28,48 +40,23 @@ class UserPolicy
      */
     public function view(User $user, User $target): bool
     {
-        return $user->id == $target->id
-            || $user->hasAnyRole([Role::NETWORK_ADMIN, Role::SECRETARY, Role::PERMISSION_HANDLER])
-            || $user->roles()
-                ->whereIn('name', [Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR])
-                ->get(['object_id'])->pluck('object_id')
-                ->intersect($target->workshops()->pluck('id'))->count() > 0;
-    }
-
-    /**
-     * @param User $user
-     * @param User $target
-     * @return bool
-     */
-    public function viewPersonalInformation(User $user, User $target): bool
-    {
-        // TODO: later internet admins should be removed
-        return $user->hasRole(Role::NETWORK_ADMIN)
-            || ($target->hasRole(Role::COLLEGIST) && $user->hasRole(Role::SECRETARY))
-            || $user->id == $target->id
-            || ($target->hasRole(Role::TENANT) && $user->hasRole(Role::STAFF))
-            || $user->roles()
-                ->whereIn('name', [Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR])
-                ->get(['object_id'])->pluck('object_id')
-                ->intersect($target->workshops()->pluck('id'))->count() > 0;
-        ;
-    }
-
-    /**
-     * @param User $user
-     * @param User $target
-     * @return bool
-     */
-    public function viewEducationalInformation(User $user, User $target): bool
-    {
-        // TODO: later internet admins should be removed
-        return $user->hasAnyRole([Role::NETWORK_ADMIN, Role::SECRETARY])
-            || $user->id == $target->id
-            || $user->roles()
-                ->whereIn('name', [Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR])
-                ->get(['object_id'])->pluck('object_id')
-                ->intersect($target->workshops()->pluck('id'))->count() > 0;
-        ;
+        if ($user->id == $target->id) {
+            return true;
+        }
+        if ($target->isCollegist()) {
+            if ($user->hasAnyRoleBase([Role::SECRETARY, Role::DIRECTOR])) {
+                return true;
+            }
+            if ($user->isPresident()) {
+                return true;
+            }
+            return $target->workshops
+                    ->intersect($user->roleWorkshops())
+                    ->count()>0;
+        } elseif ($target->hasRole(Role::TENANT)) {
+            return $user->hasRole(Role::STAFF);
+        }
+        return false;
     }
 
     /** Application related policies */
@@ -81,14 +68,9 @@ class UserPolicy
      */
     public function viewApplication(User $user, User $target): bool
     {
-        return (isset($target->application))
-            && ($user->hasAnyRole([Role::NETWORK_ADMIN, Role::SECRETARY, Role::DIRECTOR])
-            || $user->id == $target->id
-            || $user->roles()
-                    ->whereIn('name', [Role::APPLICATION_COMMITTEE_MEMBER, Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR])
-                    ->get(['object_id'])->pluck('object_id')
-                    ->intersect($target->workshops()->pluck('id'))->count() > 0);
-        //has common workshop
+        return $target->workshops
+                ->intersect($user->applicationWorkshops())
+                ->count()>0;
     }
 
     /**
@@ -97,13 +79,34 @@ class UserPolicy
      */
     public function viewAnyApplication(User $user): bool
     {
-        return $user->hasAnyRole([
-            Role::NETWORK_ADMIN,
+        return $user->hasAnyRoleBase([
             Role::SECRETARY,
-            Role::DIRECTOR])
-            || $user->hasRoleBase(Role::WORKSHOP_ADMINISTRATOR)
-            || $user->hasRoleBase(Role::WORKSHOP_LEADER)
-            || $user->hasRoleBase(Role::APPLICATION_COMMITTEE_MEMBER);
+            Role::DIRECTOR,
+            Role::WORKSHOP_ADMINISTRATOR,
+            Role::WORKSHOP_LEADER,
+            Role::APPLICATION_COMMITTEE_MEMBER
+        ]);
+    }
+
+    /**
+     * @param User $user
+     * @return bool
+     */
+    public function viewAllApplications(User $user): bool
+    {
+        return $user->hasAnyRoleBase([
+                Role::SECRETARY,
+                Role::DIRECTOR,
+            ]) || $user->isPresident();
+    }
+
+    /**
+     * @param User $user
+     * @return bool
+     */
+    public function viewUnfinishedApplications(User $user): bool
+    {
+        return $this->viewAllApplications($user);
     }
 
     /** Permission related policies */
@@ -111,36 +114,89 @@ class UserPolicy
     /**
      * @param User $user
      * @param User $target
+     * @param Role|null $role
      * @return bool
      */
-    public function viewPermissionFor(User $user, User $target): bool
+    public function updateAnyPermission(User $user, User $target, Role $role = null): bool
     {
-        return $user->hasRole(Role::PERMISSION_HANDLER) && $user->id !== $target->id;
+        if (!isset($role)) {
+            return $user->hasRole(Role::SECRETARY)
+            || $user->isInStudentsCouncil()
+            || $user->hasAnyRoleBase([Role::WORKSHOP_ADMINISTRATOR, Role::WORKSHOP_LEADER]);
+        }
+
+        if ($role->name == Role::COLLEGIST) {
+            return $user->hasRole(Role::SECRETARY);
+        }
+
+        if ($role->name == Role::APPLICATION_COMMITTEE_MEMBER) {
+            return $user->hasAnyRoleBase([Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR]);
+        }
+
+        if ($role->name == Role::STUDENT_COUNCIL) {
+            return $user->isInStudentsCouncil();
+        }
+        return false;
     }
 
     /**
      * @param User $user
      * @param User $target
-     * @param int $role_id
+     * @param Role $role
+     * @param RoleObject|Workshop|null $object
      * @return bool
      */
-    public function updatePermission(User $user, User $target, int $role_id): bool
+    public function updatePermission(User $user, User $target, Role $role, Workshop|RoleObject $object = null): bool
     {
-        $role = Role::find($role_id);
+        if ($role->name == Role::COLLEGIST) {
+            return $user->hasRole(Role::SECRETARY);
+        }
 
-        return $user->hasRole(Role::PERMISSION_HANDLER) && $user->id !== $target->id;
+        if ($role->name == Role::APPLICATION_COMMITTEE_MEMBER) {
+            return $user->roleWorkshops()->contains($object->id);
+        }
+
+        if ($role->name == Role::STUDENT_COUNCIL) {
+            if ($object->name == Role::PRESIDENT) {
+                return false;
+            }
+            if ($user->hasRole(Role::STUDENT_COUNCIL, Role::PRESIDENT)) {
+                return true;
+            }
+            if (in_array($object->name, Role::COMMITTEE_MEMBERS)) {
+                $committee = preg_split("~-~", $object->name)[0];
+                return $user->hasRole(Role::STUDENT_COUNCIL, $committee . "-leader");
+            }
+        }
+        return false;
     }
 
     /**
      * @param User $user
      * @param User $target
-     * @param int $role_id
+     * @param string $roleName
+     * @param string|null $roleObjectName
      * @return bool
      */
-    public function deletePermission(User $user, User $target, int $role_id): bool
+    public function updateStatus(User $user, User $target): bool
     {
-        $role = Role::find($role_id);
+        if ($user->hasRole(Role::SECRETARY)) {
+            return true;
+        }
+        return $user->roleWorkshops()->intersect($target->workshops)->count() > 0;
+    }
 
-        return $user->hasRole(Role::PERMISSION_HANDLER) && $user->id !== $target->id;
+    /**
+     * @param User $user
+     * @param User $target
+     * @param Workshop $workshop
+     * @return bool
+     */
+    public function updateWorkshop(User $user, User $target, Workshop $workshop): bool
+    {
+        if ($user->hasRole(Role::SECRETARY)) {
+            return true;
+        }
+        return $user->roleWorkshops()->has($workshop->id);
     }
 }

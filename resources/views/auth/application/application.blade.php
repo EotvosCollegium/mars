@@ -5,7 +5,7 @@
             <div class="row" style="margin-bottom: 0">
                 <div class="col s12 xl4">
                     @if ($user->profilePicture)
-                        <img src="{{ url($user->profilePicture->path) }}" style="max-width:300px">
+                        <img src="{{ url($user->profilePicture->path) }}" style="max-width:100%">
                     @else
                         <span style="font-style:italic;color:red">hiányzó profilkép</span>
                     @endif
@@ -14,7 +14,7 @@
                     @can('viewAnyApplication', \App\Models\User::class)
                         <span class="right">
                             @include('auth.application.status', ['status' => $user->application->status])
-                            @if(auth()->user()->hasRoleBase(\App\Models\Role::NETWORK_ADMIN))
+                            @if(auth()->user()->hasRoleBase(\App\Models\Role::SYS_ADMIN))
                                 @if($user->application->status == \App\Models\ApplicationForm::STATUS_SUBMITTED)
                                     <form method="POST" style="display: inline" action="{{route('applications.edit')}}">
                                         @csrf
@@ -40,7 +40,7 @@
                         @forelse ($user->workshops as $workshop)
                             <span class="new badge {{ $workshop->color() }} scale-transition tag"
                                   style="float:none;padding:4px;margin:0 10px 0px 2px;" data-badge-caption="">
-                            <nobr>@lang('role.'.$workshop->name) </nobr>
+                            <nobr>{{$workshop->name}} </nobr>
                         </span>
                         @empty
                             <span style="font-style:italic;color:red">hiányzó műhely</span>
@@ -69,15 +69,6 @@
                     <div class="col s12">
                         <table>
                             <tbody>
-                            <tr>
-                                <th scope="row">A felvételi teljes időtartamában itt lesz?</th>
-                                <td>
-                                    {{ $user->application->accommodation }}
-                                    @if(!$user->application->accommodation)
-                                        <span style="font-style:italic;color:green">Igen</span>
-                                    @endif
-                                </td>
-                            </tr>
                             <tr>
                                 <th scope="row">@lang('user.place_and_date_of_birth')</th>
                                 <td>
@@ -266,7 +257,7 @@
                                         @endif
                                         <div class="row" style="margin-bottom: 0; padding: 10px">
                                             <div class="col" style="margin-top: 5px">
-                                                <a href="{{ url($file->path) }}">{{ $file->name }}</a>
+                                                <a href="{{ url($file->path) }}" target="_blank">{{ $file->name }}</a>
                                             </div>
                                         </div>
                                     @empty
@@ -275,6 +266,25 @@
                                     @if(count($user->application->files ?? []) > 0 && count($user->application->files ?? []) < 2)
                                         <span
                                             style="font-style:italic;color:red">legalább 2 fájlt fel kell tölteni</span>
+                                    @endif
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">A felvételi teljes időtartamában itt lesz?</th>
+                                <td>
+                                    {{ $user->application->present }}
+                                    @if(!$user->application->present)
+                                        <span style="color:green">Igen</span>
+                                    @endif
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Igényel szállást?</th>
+                                <td>
+                                    @if($user->application->accommodation)
+                                        <span style="color:green">Igen</span>
+                                    @else
+                                        Nem
                                     @endif
                                 </td>
                             </tr>

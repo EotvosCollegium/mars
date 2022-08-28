@@ -5,14 +5,15 @@
 @endsection
 
 @section('content')
-    <form id="workshop-filter" method="GET" route="{{route('applications')}}">
-
+    @if($workshops->count() > 1)
+        <form id="workshop-filter" method="GET" route="{{route('applications')}}">
         <div class="card">
             <div class="card-content">
                 <div class="row" style="margin-bottom: 0">
+
                     <x-input.select id="workshop" :elements="$workshops" allow-empty :default="$workshop"
                                     text="Műhely"/>
-                    @if(session()->has('can_filter_by_status'))
+                    @can('viewUnfinishedApplications', \App\models\User::class)
                         <div class="col">
                             @foreach (\App\Models\ApplicationForm::STATUSES as $st)
                                 <label>
@@ -41,8 +42,7 @@
             </div>
         </div>
     </form>
-
-
+    @endif
     @foreach($applications as $application)
         <!-- Todo hire/reject -->
         <a href="{{route('applications', ['id' => $application->user_id])}}">

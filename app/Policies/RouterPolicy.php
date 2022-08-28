@@ -13,7 +13,7 @@ class RouterPolicy
 
     public function before(User $user, $ability)
     {
-        if ($user->hasRole(Role::NETWORK_ADMIN)) {
+        if ($user->hasRole(Role::SYS_ADMIN)) {
             return true;
         }
     }
@@ -21,7 +21,7 @@ class RouterPolicy
     /**
      * Determine whether the user can view any routers.
      *
-     * @param  \App\Models\User  $user
+     * @param User $user
      * @return mixed
      */
     public function viewAny(User $user)
@@ -32,8 +32,8 @@ class RouterPolicy
     /**
      * Determine whether the user can view the router.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Router  $router
+     * @param User $user
+     * @param Router $router
      * @return mixed
      */
     public function view(User $user, Router $router)
@@ -44,35 +44,35 @@ class RouterPolicy
     /**
      * Determine whether the user can create routers.
      *
-     * @param  \App\Models\User  $user
+     * @param User $user
      * @return mixed
      */
     public function create(User $user)
     {
-        return $user->hasRole('internet_admin');
+        return $user->hasRole(Role::SYS_ADMIN);
     }
 
     /**
      * Determine whether the user can update the router.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Router  $router
+     * @param User $user
+     * @param Router $router
      * @return mixed
      */
     public function update(User $user, Router $router)
     {
-        return $user->hasRole('internet_admin');
+        return $user->hasRole(Role::SYS_ADMIN);
     }
 
     /**
      * Determine whether the user can delete the router.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Router  $router
+     * @param User $user
+     * @param Router $router
      * @return mixed
      */
     public function delete(User $user, Router $router)
     {
-        return $user->hasRole('internet_admin');
+        return $user->hasRole(Role::SYS_ADMIN);
     }
 }

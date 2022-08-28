@@ -28,12 +28,12 @@
                     var style = "btn waves-effect btn-fixed-height";
                     var text = "@lang('faults.done')";
                     break;
-            
+
                 case "{{ App\Models\Fault::WONT_FIX }}":
                     var style = "waves-effect btn coli blue btn-fixed-height";
                     var text = "@lang('faults.wont_fix')";
                     break;
-                
+
                 case "{{ App\Models\Fault::UNSEEN }}":
                     var style = "btn-flat waves-effect grey lighten-4 btn-fixed-height";
                     var text = "@lang('faults.reopen')";
@@ -103,10 +103,11 @@
                 @if(Auth::User()->hasRole(\App\Models\Role::STAFF))
                 {title: "", field: "id", headerSort: false, width: 100, formatter: button_formatter, formatterParams: {status: "{{ App\Models\Fault::DONE }}"}},
                 {title: "", field: "id", headerSort: false, width: 200, formatter: button_formatter, formatterParams: {status: "{{ App\Models\Fault::WONT_FIX }}"}},
-                @else
-                {title: "@lang('faults.status')", field: "status", sorter: "string", width: 150, formatter: status_translate},
-                @endif
                 {title: "", field: "id", headerSort: false, width: 130, formatter: button_formatter, formatterParams: {status: "{{ App\Models\Fault::UNSEEN }}"}}
+
+            @else
+                {{--{title: "@lang('faults.status')", field: "status", sorter: "string", width: 150, formatter: status_translate},--}}
+                @endif
             ],
             initialSort: [
                 {column: "created_at", dir: "desc"}

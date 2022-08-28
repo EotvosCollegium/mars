@@ -41,7 +41,13 @@ class AuthServiceProvider extends ServiceProvider
         // General policies without models
         $this->registerDocumentPolicies();
         $this->registerVerificationPolicies();
-        $this->registerPermissionHandlingPolicies();
+
+        Gate::define('is-collegist', function ($user) {
+            return $user->isCollegist();
+        });
+        Gate::define('is-admin', function ($user) {
+            return $user->isAdmin();
+        });
     }
 
     public function registerPrintingPermissionHandlingPolicies()
@@ -81,14 +87,7 @@ class AuthServiceProvider extends ServiceProvider
     public function registerVerificationPolicies()
     {
         Gate::define('registration.handle', function ($user) {
-            return $user->hasAnyRole([Role::NETWORK_ADMIN, Role::SECRETARY, Role::PERMISSION_HANDLER, Role::STAFF]);
-        });
-    }
-
-    public function registerPermissionHandlingPolicies()
-    {
-        Gate::define('permission.handle', function ($user) {
-            return  $user->hasRole(Role::PERMISSION_HANDLER);
+            return $user->hasAnyRoleBase([Role::SYS_ADMIN, Role::STAFF]);
         });
     }
 }
