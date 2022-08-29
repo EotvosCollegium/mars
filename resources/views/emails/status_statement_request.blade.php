@@ -1,10 +1,10 @@
 @component('mail::message')
-<h1>@lang('mail.dear') {{ $recipent??'asd' }}!</h1>
+<h1>@lang('mail.dear') {{ $recipient }}!</h1>
 <p>
-@lang('mail.status_statement_request')<br>
+@lang('secretariat.status_statement_request', ['deadline' => $deadline])<br>
 </p>
 @component('mail::button', ['url' => route('secretariat.status-update.show')])
-@lang('general.show')
+Kitöltés
 @endcomponent
 <p>@lang('mail.administrators')</p>
 @endcomponent

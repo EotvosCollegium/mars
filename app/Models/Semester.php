@@ -38,7 +38,7 @@ class Semester extends Model
     // TODO: change to dates?
     public const START_OF_SPRING_SEMESTER = 2;
     public const END_OF_SPRING_SEMESTER = 7;
-    public const START_OF_AUTUMN_SEMESTER = 8;
+    public const START_OF_AUTUMN_SEMESTER = 9;
     public const END_OF_AUTUMN_SEMESTER = 1;
 
     /**
@@ -94,7 +94,10 @@ class Semester extends Model
     public function getStartDate(): Carbon
     {
         $year = $this->year;
-        $month = $this->isAutumn() ? self::START_OF_AUTUMN_SEMESTER + 1 : self::START_OF_SPRING_SEMESTER + 1;
+        if($this->isSpring()) {
+            $year += 1;
+        }
+        $month = $this->isAutumn() ? self::START_OF_AUTUMN_SEMESTER : self::START_OF_SPRING_SEMESTER;
 
         return Carbon::createFromDate($year, $month, 1)->endOfWeek();
     }
@@ -105,7 +108,7 @@ class Semester extends Model
     public function getEndDate(): Carbon
     {
         $year = $this->year + 1; // end of semester is always in the next year
-        $month = $this->isAutumn() ? self::END_OF_AUTUMN_SEMESTER + 1 : self::END_OF_SPRING_SEMESTER + 1;
+        $month = $this->isAutumn() ? self::END_OF_AUTUMN_SEMESTER : self::END_OF_SPRING_SEMESTER;
 
         return Carbon::createFromDate($year, $month, 1)->endOfWeek();
     }
@@ -133,7 +136,7 @@ class Semester extends Model
      */
     public function activeUsers()
     {
-        return $this->usersWithStatus(self::ACTIVE);
+        return $this->usersWithStatus(SemesterStatus::ACTIVE);
     }
 
     /**
@@ -159,7 +162,7 @@ class Semester extends Model
      */
     public function isActive($user)
     {
-        return $this->hasUserWith($user, self::ACTIVE);
+        return $this->hasUserWith($user, SemesterStatus::ACTIVE);
     }
 
     /**

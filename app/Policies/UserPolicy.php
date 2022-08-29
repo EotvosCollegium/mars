@@ -174,12 +174,13 @@ class UserPolicy
     /**
      * @param User $user
      * @param User $target
-     * @param string $roleName
-     * @param string|null $roleObjectName
      * @return bool
      */
     public function updateStatus(User $user, User $target): bool
     {
+        if (!$target->isCollegist()) {
+            return false;
+        }
         if ($user->hasRole(Role::SECRETARY)) {
             return true;
         }

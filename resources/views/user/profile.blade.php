@@ -26,8 +26,8 @@
             </div>
         </li>
     </ul>
-    @if($user->isCollegist())
-        {{-- Statuses --}}
+    {{-- Statuses --}}
+    @can('updateStatus', $user)
         <ul class="collapsible">
             <li>
                 <div class="collapsible-header"><b>@lang('admin.statuses')</b></div>
@@ -36,7 +36,7 @@
                 </div>
             </li>
         </ul>
-    @endif
+    @endcan
 @endcan
 {{-- Internet --}}
 <ul class="collapsible">

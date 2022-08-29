@@ -6,7 +6,6 @@ use App\Models\Semester;
 use App\Models\User;
 use App\Models\SemesterStatus;
 use Illuminate\Database\Seeder;
-use App\Models\SemesterStatus;
 
 class SemesterSeeder extends Seeder
 {
