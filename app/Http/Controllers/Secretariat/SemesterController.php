@@ -86,5 +86,4 @@ class SemesterController extends Controller
             }
         }
     }
-
 }

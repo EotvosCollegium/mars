@@ -94,7 +94,7 @@ class Semester extends Model
     public function getStartDate(): Carbon
     {
         $year = $this->year;
-        if($this->isSpring()) {
+        if ($this->isSpring()) {
             $year += 1;
         }
         $month = $this->isAutumn() ? self::START_OF_AUTUMN_SEMESTER : self::START_OF_SPRING_SEMESTER;
