@@ -27,43 +27,43 @@ class RoomController extends Controller
             'type' => 'required|string|in:add,remove'
         ]);
         $validator->validate();
-        $new_capacity=$room->capacity+($request->type=='add'?1:-1);
-        if($new_capacity<$room->residentNumber()){
+        $new_capacity=$room->capacity+($request->type=='add' ? 1 : -1);
+        if ($new_capacity<$room->residentNumber()) {
             return back()->with('error', __('rooms.no_capacity_error'));
         }
-        if($new_capacity>4 || $new_capacity<1){
+        if ($new_capacity>4 || $new_capacity<1) {
             return back()->with('error', __('rooms.capacity_bounds_error'));
         }
         if ($request->type=='add') {
             $room->increment('capacity');
-        }else{
+        } else {
             $room->decrement('capacity');
         }
 
         return back();
     }
 
-    public function updateResidents(Request $request){
-        
+    public function updateResidents(Request $request)
+    {
         $this->authorize('updateAny', Room::class);
 
         $rooms=Room::all();
         $users=User::all();
-        foreach ($users as $user){
+        foreach ($users as $user) {
             $user->update(['room' => null]);
         }
         foreach ($rooms as $room) {
-            $userIds=isset($request->rooms[$room->name])?$request->rooms[$room->name]:null;
-            if($userIds!==null){
-                foreach($userIds as $userId){
-                    if($userId!='null'){
+            $userIds=isset($request->rooms[$room->name]) ? $request->rooms[$room->name] : null;
+            if ($userIds!==null) {
+                foreach ($userIds as $userId) {
+                    if ($userId!='null') {
                         $user=User::find($userId);
-                        if($user!=null){
+                        if ($user!=null) {
                             $user->update(['room' => $room->name]);
                         }
                     }
                 }
-            }            
+            }
         }
         return back();
     }

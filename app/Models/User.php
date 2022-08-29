@@ -748,7 +748,8 @@ class User extends Authenticatable implements HasLocalePreference
 
         return ['voted' => false];
     }
-    public function room(){
+    public function room()
+    {
         return $this->belongsTo(\App\Molels\Room::class, 'room', 'name');
     }
 }
