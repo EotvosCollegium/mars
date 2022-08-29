@@ -4,8 +4,8 @@ namespace Database\Seeders;
 
 use App\Models\Semester;
 use App\Models\User;
-use Illuminate\Database\Seeder;
 use App\Models\SemesterStatus;
+use Illuminate\Database\Seeder;
 
 class SemesterSeeder extends Seeder
 {

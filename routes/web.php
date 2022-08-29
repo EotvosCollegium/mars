@@ -23,7 +23,6 @@ use App\Http\Controllers\Network\RouterController;
 use App\Http\Controllers\Secretariat\DocumentController;
 use App\Http\Controllers\Secretariat\PermissionController;
 use App\Http\Controllers\Secretariat\RegistrationsController;
-use App\Http\Controllers\Secretariat\SecretariatController;
 use App\Http\Controllers\Secretariat\SemesterController;
 use App\Http\Controllers\Secretariat\UserController;
 use App\Http\Controllers\StudentsCouncil\EconomicController;
@@ -142,6 +141,10 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::get('/faults/table', [FaultController::class, 'GetFaults'])->name('faults.table');
     Route::post('/faults/add', [FaultController::class, 'addFault'])->name('faults.add');
     Route::post('/faults/update', [FaultController::class, 'updateStatus'])->name('faults.update');
+
+    /** Status update form */
+    Route::get('/secretariat/status-update', [SemesterController::class, 'showStatusUpdate'])->name('secretariat.status-update.show');
+    Route::post('/secretariat/status-update', [SemesterController::class, 'updateStatus'])->name('secretariat.status-update.update');
 
     /** Documents */
     Route::get('/documents', [DocumentController::class, 'index'])->name('documents');
