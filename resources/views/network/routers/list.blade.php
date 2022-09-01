@@ -13,6 +13,8 @@
         <div class="card">
             <div class="card-content">
                 <span class="card-title">@lang('router.router_monitor')</span>
+                <blockquote>@lang('internet.router_descr')</blockquote>
+                <blockquote style="color:red">@lang('internet.router_warn')</blockquote>
                 <table>
                     <thead>
                         <tr>

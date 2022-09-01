@@ -49,4 +49,6 @@ return [
     'wifi_password_reset_warning' => 'You must log in again if you request a new password! It might take a few minutes to update.',
     'wifi_user' => 'Wifi username',
     'your_registered_devices' => 'Your registered devices',
+    'router_descr' => 'If the router is not available in your room, unplug it and plug it back in. If that doesn\'t solve the problem, <a href="root@eotvos.elte.hu">reach out to the system administrators</a>!',
+    'router_warn' => 'Any modification to the router other than the above is prohibited (unplugging, plugging it into another connector, connecting another device to it with a cable, etc.), and is considered vandalism!'
 ];

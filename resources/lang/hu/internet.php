@@ -49,4 +49,6 @@ return [
     'wifi_password_reset_warning' => 'Ha új jelszót igényelsz, mindenhol újra be kell jelentkezned! Az új jelszó beállítása pár percet igénybe vehet.',
     'wifi_user' => 'Wifi felhasználói név',
     'your_registered_devices' => 'Regisztrált eszközeid',
+    'router_descr' => 'Ha a router a szobádban nem elérhető, húzd ki a konnektorból, majd vissza. Ha ez nem oldja meg a problémát, <a href="root@eotvos.elte.hu"> keresd a rendszergazdákat!</a>.',
+    'router_warn' => 'A routereknek a fenti eseten kívül bárminemű módosítása tilos (kihúzni, átdugni másik csatlakozóba, ahhoz más eszközt kábellel csatlakoztni, stb.), és az rongálásnak minősül!'
 ];
