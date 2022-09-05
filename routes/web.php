@@ -15,6 +15,7 @@ use App\Http\Controllers\Auth\ApplicationController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Dormitory\FaultController;
 use App\Http\Controllers\Dormitory\PrintController;
+use App\Http\Controllers\Dormitory\RoomAssignmentController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\Network\AdminCheckoutController;
@@ -28,8 +29,11 @@ use App\Http\Controllers\Secretariat\UserController;
 use App\Http\Controllers\StudentsCouncil\EconomicController;
 use App\Http\Controllers\StudentsCouncil\EpistolaController;
 use App\Http\Controllers\StudentsCouncil\MrAndMissController;
+use App\Http\Controllers\Dormitory\RoomController;
+use App\Models\Room;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Models\User;
 
 Route::get('/', [HomeController::class, 'welcome'])->name('index');
 Route::get('/verification', [HomeController::class, 'verification'])->name('verification');
@@ -141,6 +145,11 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::get('/faults/table', [FaultController::class, 'GetFaults'])->name('faults.table');
     Route::post('/faults/add', [FaultController::class, 'addFault'])->name('faults.add');
     Route::post('/faults/update', [FaultController::class, 'updateStatus'])->name('faults.update');
+
+    /** Rooms */
+    Route::get('/rooms', [RoomController::class, 'index'])->name('rooms');
+    Route::put('/rooms/{room}/capacity', [RoomController::class, 'updateRoomCapacity'])->name('rooms.update-capacity');
+    Route::put('/rooms/update', [RoomController::class, 'updateResidents'])->name('rooms.update');
 
     /** Status update form */
     Route::get('/secretariat/status-update', [SemesterController::class, 'showStatusUpdate'])->name('secretariat.status-update.show');

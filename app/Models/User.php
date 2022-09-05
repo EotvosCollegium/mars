@@ -48,7 +48,7 @@ class User extends Authenticatable implements HasLocalePreference
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'verified',
+        'name', 'email', 'password', 'verified', 'room'
     ];
 
     /**
@@ -748,5 +748,12 @@ class User extends Authenticatable implements HasLocalePreference
         }
 
         return ['voted' => false];
+    }
+    /**
+     * Returns the user's assigned room
+     */
+    public function room()
+    {
+        return $this->belongsTo(\App\Models\Room::class, 'room', 'name');
     }
 }
