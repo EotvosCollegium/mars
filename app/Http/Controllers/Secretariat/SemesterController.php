@@ -60,7 +60,7 @@ class SemesterController extends Controller
         $users = User::collegists();
         $notifiable = collect([]);
         foreach ($users as $user) {
-            if($user->getStatus() != SemesterStatus::INACTIVE /* default */){
+            if ($user->getStatus() != SemesterStatus::INACTIVE /* default */) {
                 continue;
             }
             if ($user->getStatusIn(Semester::previous()) == SemesterStatus::DEACTIVATED) {
