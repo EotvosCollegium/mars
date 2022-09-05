@@ -62,7 +62,7 @@ class FaultController extends Controller
 
     public function notifyStaff(Fault $fault, bool $reopen = false)
     {
-        $staffs = Role::getUsers(Role::STAFF);
+        $staffs = Role::firstWhere('name', Role::STAFF)->getUsers();
         foreach ($staffs as $staff) {
             Mail::to($staff)->queue(new \App\Mail\NewFault($staff->name, $fault, $reopen));
         }

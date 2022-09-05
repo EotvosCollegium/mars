@@ -50,7 +50,7 @@ class SemesterController extends Controller
 
         /* @var User $user */
         $user = Auth::user();
-        $user->setStatus($request->semester_status);
+        $user->setStatus($request->semester_status, "Status statement");
         $user->setCollegist($request->collegist_role);
         return redirect('home')->with('message', __('general.successful_modification'));
     }
@@ -58,18 +58,24 @@ class SemesterController extends Controller
     public static function sendStatementMail()
     {
         $users = User::collegists();
+        $notifiable = collect([]);
         foreach ($users as $user) {
+            if($user->getStatus() != SemesterStatus::INACTIVE /* default */){
+                continue;
+            }
             if ($user->getStatusIn(Semester::previous()) == SemesterStatus::DEACTIVATED) {
                 SemesterStatus::withoutEvents(function () use ($user) {
                     $user->setStatus(SemesterStatus::DEACTIVATED, 'Was deactivated in last semester');
                 });
-            } else {
-                SemesterStatus::withoutEvents(function () use ($user) {
-                    $user->setStatus(SemesterStatus::INACTIVE, 'New semester started');
-                });
-                Mail::to($user)->queue(new \App\Mail\StatusStatementRequest($user->name));
+                continue;
             }
+            SemesterStatus::withoutEvents(function () use ($user) {
+                $user->setStatus(SemesterStatus::INACTIVE, 'Default status');
+            });
+            $notifiable->push($user);
         }
+        Mail::bcc($notifiable)->queue(new \App\Mail\StatusStatementRequest());
+        return $notifiable;
     }
 
     /**

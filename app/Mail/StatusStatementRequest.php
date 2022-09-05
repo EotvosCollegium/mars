@@ -12,7 +12,6 @@ class StatusStatementRequest extends Mailable
     use Queueable;
     use SerializesModels;
 
-    public $recipient;
     public $deadline;
 
     /**
@@ -20,9 +19,8 @@ class StatusStatementRequest extends Mailable
      *
      * @return void
      */
-    public function __construct($recipient)
+    public function __construct()
     {
-        $this->recipient = $recipient;
         $this->deadline = \App\Models\EventTrigger::statementDeadline()->format('Y-m-d');
     }
 
