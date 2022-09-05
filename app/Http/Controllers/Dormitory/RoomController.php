@@ -22,7 +22,7 @@ class RoomController extends Controller
         return view('dormitory.rooms.app', ['users' => $users, 'rooms' => $rooms]);
     }
     /**
-     * Updates the capacity of the room. 
+     * Updates the capacity of the room.
      * Returns an error if the new capacity is out of bounds.
      */
     public function updateRoomCapacity(Room $room, Request $request)

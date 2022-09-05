@@ -750,7 +750,7 @@ class User extends Authenticatable implements HasLocalePreference
         return ['voted' => false];
     }
     /**
-     * Returns the user's assigned room 
+     * Returns the user's assigned room
      */
     public function room()
     {
