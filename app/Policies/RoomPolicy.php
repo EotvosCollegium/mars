@@ -23,7 +23,8 @@ class RoomPolicy
             Role::DIRECTOR,
             Role::SECRETARY,
             Role::STAFF,
-            Role::COLLEGIST
+            Role::COLLEGIST,
+            Role::SYS_ADMIN
         ]);
     }
 
@@ -39,6 +40,7 @@ class RoomPolicy
         return $user->hasAnyRoleBase([
             Role::SECRETARY,
             Role::STAFF,
+            Role::SYS_ADMIN
         ]) || $user->isPresident();
     }
 }

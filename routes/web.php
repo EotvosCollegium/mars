@@ -148,7 +148,7 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::post('/faults/update', [FaultController::class, 'updateStatus'])->name('faults.update');
 
     /** Rooms */
-    Route::get('/rooms', [RoomController::class, 'index'])->name('rooms.index');
+    Route::get('/rooms', [RoomController::class, 'index'])->name('rooms');
     Route::put('/rooms/{room}/capacity', [RoomController::class, 'updateRoomCapacity'])->name('rooms.update-capacity');
     Route::put('/rooms/update', [RoomController::class, 'updateResidents'])->name('rooms.update');
 

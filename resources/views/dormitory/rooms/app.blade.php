@@ -5,6 +5,7 @@
 
 <style>
 
+/* Blinking animation for finding users */
 .fix-stroke {
    paint-order: stroke fill;
 }
@@ -56,6 +57,7 @@
 <script>
     $( document ).ready(function() {
         var lastFillColor = "#FFFFFF"
+        // The rooms can be paths polygons and rects
         $("path, polygon, rect").hover(function(e) {
             if(this.id.indexOf('room')>-1){
                 lastFillColor=$(this).css('fill');
@@ -69,6 +71,7 @@
                         htmlString+='<li>'+element+'</li>';
                     }
                 });
+                // The info-box is the box appearing when hovering over a room. It gets its infos from the data-info property.
                 $('#info-box').html(
                     '<p>Szobaszám: '+this.id.replace('room','')+'</p>'+
                     '<p>Lakók:</p>'+
@@ -89,13 +92,13 @@
             $('#info-box').css('top',e.pageY-$(document).scrollTop()+10);
             $('#info-box').css('left',e.pageX+10);
         }).mouseover();
+        // If the search button is hit, search for the name or the room number and add blink propertz to the matching room
         $("#name").submit(function(e){
             query=$('#nameInput').val();
             query2=query;
             if(query.trim().length>0 && !isNaN(query)){
                 query2='room'+query;
             }
-            console.log(query);
             $('#room'+query).addClass('blink');
             $('[data-info*='+String(query2)+' i]').addClass('blink');
             setTimeout(function(){
@@ -113,6 +116,7 @@
         <div class="card">
             <div class="card-content">
                 <div id="info-box"></div>
+                {{-- This code gets the colors for each room depending on the empty space in the room. --}}
                 @php
                     $colorArray=array();
                     foreach ($rooms as $room) {
@@ -121,13 +125,20 @@
                     }
                     $roomColors=collect($colorArray);
                 @endphp
+                {{-- The goal was to make an interactive map of the Collegium and show the room occupation on it.
+                    This can be achieved by using an svg (vector graphic image) and modifying its style properties 
+                    using javascript. The problem with this is that the info shown by the javascript all has to be put inside
+                    of the HTML when creating the file as javascript cannot access the database. This is the reason the data-info
+                    tag is used. The dynamic styling is accomplished with JQuery.
+                    The svg file was created with Adobe Illustrator, drawing over a plan of the building. First I used
+                    gimp, but using Illustrator resulted in a much cleaner code (it created style properties for example). --}}
                 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                         viewBox="0 0 1047.8 670" style="enable-background:new 0 0 1047.8 750;" xml:space="preserve">
                     <style type="text/css">
                         .st0{fill:none;}
                         .st1{fill:#FFFFFF;stroke:#000000;stroke-width:0.25;}
                         .st2{fill:#808080;stroke:#000000;stroke-width:0.25;}
-                        .st4{font-family:'RobotoSlab-Regular'; font-size:16px; fill:#000000;stroke:#FFFFFF;stroke-width:0.0; }
+                        .st4{font-family:'RobotoSlab-Regular'; font-size:16px; fill:#000000;stroke:#FFFFFF;stroke-width:0.0; pointer-events: none}
                         .st8{fill:#FFFFFF;font-size:14.1184px;font-family:'RobotoSlab-Regular';}
                         .st9{fill:#C6C6C6;}
                         .st10{font-family:'MyriadPro-Regular';}
@@ -328,7 +339,6 @@
                                 $width=floor(12/$room->capacity);
                                 $users_in_room=$users->where('room', $room->name)->pluck('id');
                             @endphp
-                            {{-- {{$users}} --}}
                             @for ($i = 1; $i <= $room->capacity; $i++)
                                 @if ($users_in_room->count()>=$i)
                                     <x-input.select form="update-all" :s="$width" allowEmpty="true" name="rooms[{{$room->name}}][]" id="{{$room->name}}_person_{{$i}}" :elements="$users" :default="$users_in_room[$i-1]" text="rooms.resident{{$i}}"/>

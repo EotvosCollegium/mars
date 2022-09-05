@@ -29,7 +29,8 @@ class Room extends Model
     public function color()
     {
         $color="#ffffff";
-        switch ($this->capacity-$this->residentNumber()) {
+        // Assigns colors depending on the empty spaces left in the room
+        switch ($this->capacity - $this->residentNumber()) {
             case 3:
                 $color="#11f709";
                 break;

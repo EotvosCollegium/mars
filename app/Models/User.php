@@ -750,6 +750,6 @@ class User extends Authenticatable implements HasLocalePreference
     }
     public function room()
     {
-        return $this->belongsTo(\App\Molels\Room::class, 'room', 'name');
+        return $this->belongsTo(\App\Models\Room::class, 'room', 'name');
     }
 }

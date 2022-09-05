@@ -53,6 +53,10 @@
         @can('document.any')
         <li><a class="waves-effect" href="{{ route('documents') }}"><i class="material-icons left">assignment</i>@lang('document.documents')</a></li>
         @endcan
+        <!-- rooms page -->
+        @can('viewAny', \App\Models\Room::class)
+        <li><a class="waves-effect" href="{{ route('rooms') }}"><i class="material-icons left">bed</i>@lang('rooms.rooms')</a></li>
+        @endcan
         <!-- applications page -->
         @can('viewAnyApplication', \App\Models\User::class)
             <li><a class="waves-effect" href="{{ route('applications') }}"><i class="material-icons left">person_search</i>Felvételi</a></li>
