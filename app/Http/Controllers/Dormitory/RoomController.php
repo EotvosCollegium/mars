@@ -11,6 +11,9 @@ use App\Models\User;
 
 class RoomController extends Controller
 {
+    /**
+     * Returns the room assignment page
+     */
     public function index()
     {
         $this->authorize('viewAny', Room::class);
@@ -18,7 +21,10 @@ class RoomController extends Controller
         $rooms = Room::with('users')->get();
         return view('dormitory.rooms.app', ['users' => $users, 'rooms' => $rooms]);
     }
-
+    /**
+     * Updates the capacity of the room. 
+     * Returns an error if the new capacity is out of bounds.
+     */
     public function updateRoomCapacity(Room $room, Request $request)
     {
         $this->authorize('updateAny', Room::class);
@@ -42,7 +48,10 @@ class RoomController extends Controller
 
         return back();
     }
-
+    /**
+     * Updates the residents of all rooms.
+     * First it sets all users' rooms to null and sets the correct values after.
+     */
     public function updateResidents(Request $request)
     {
         $this->authorize('updateAny', Room::class);
@@ -56,6 +65,7 @@ class RoomController extends Controller
             $userIds=isset($request->rooms[$room->name]) ? $request->rooms[$room->name] : null;
             if ($userIds!==null) {
                 foreach ($userIds as $userId) {
+                    // $userId can be 'null' if one of the users has been taken out of the assignment.
                     if ($userId!='null') {
                         $user=User::find($userId);
                         if ($user!=null) {

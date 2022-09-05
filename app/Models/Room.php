@@ -16,20 +16,27 @@ class Room extends Model
 
     protected $fillable = ['name', 'capacity'];
 
+    /**
+     * Returns the users assigned to this room
+     */
     public function users()
     {
         return $this->belongsTo(User::class, 'name', 'room');
     }
 
+    /**
+     * Returns the number of users that are assigned to this room
+     */
     public function residentNumber()
     {
         return $this->users()->count();
     }
-
+    /**
+     * Assigns colors depending on the empty spaces left in the room
+     */
     public function color()
     {
         $color="#ffffff";
-        // Assigns colors depending on the empty spaces left in the room
         switch ($this->capacity - $this->residentNumber()) {
             case 3:
                 $color="#11f709";
