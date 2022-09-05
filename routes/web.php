@@ -24,7 +24,6 @@ use App\Http\Controllers\Network\RouterController;
 use App\Http\Controllers\Secretariat\DocumentController;
 use App\Http\Controllers\Secretariat\PermissionController;
 use App\Http\Controllers\Secretariat\RegistrationsController;
-use App\Http\Controllers\Secretariat\SecretariatController;
 use App\Http\Controllers\Secretariat\SemesterController;
 use App\Http\Controllers\Secretariat\UserController;
 use App\Http\Controllers\StudentsCouncil\EconomicController;
@@ -151,6 +150,10 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::get('/rooms', [RoomController::class, 'index'])->name('rooms');
     Route::put('/rooms/{room}/capacity', [RoomController::class, 'updateRoomCapacity'])->name('rooms.update-capacity');
     Route::put('/rooms/update', [RoomController::class, 'updateResidents'])->name('rooms.update');
+
+    /** Status update form */
+    Route::get('/secretariat/status-update', [SemesterController::class, 'showStatusUpdate'])->name('secretariat.status-update.show');
+    Route::post('/secretariat/status-update', [SemesterController::class, 'updateStatus'])->name('secretariat.status-update.update');
 
     /** Documents */
     Route::get('/documents', [DocumentController::class, 'index'])->name('documents');

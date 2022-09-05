@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Http\Controllers\Secretariat\SecretariatController;
+use App\Http\Controllers\Secretariat\SemesterController;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
@@ -47,7 +48,7 @@ class EventTrigger extends Model
     {
         $now = Carbon::now();
         $events = EventTrigger::where('date', '<=', $now)
-                              ->where('date', '>', $now->subHours(1));
+                              ->get();
         foreach ($events as $event) {
             $event->handleSignal();
         }
@@ -96,42 +97,33 @@ class EventTrigger extends Model
 
     private function handleInternetActivationSignal()
     {
-        $months_to_add = Semester::current()->isSpring() ? 7 : 5;
-        $current_date = Carbon::instance($this->date);
-        $current_data = Carbon::parse($this->data);
         $this->update([
             // Update the new trigger date
-            'date' => $current_date->addMonth($months_to_add),
+            'date' => Semester::next()->getStartDate()->addMonth(1),
             // Update the new activation deadline
-            'data' => $current_data->addMonth($months_to_add),
+            'data' => Semester::next()->getStartDate()->addMonth(1),
         ]);
     }
 
     private function handleSendStatusStatementRequest()
     {
-        $months_to_add = Semester::current()->isSpring() ? 7 : 5;
-        $current_date = Carbon::instance($this->date);
-
         // Triggering the event
-        SecretariatController::sendStatementMail();
+        SemesterController::sendStatementMail();
 
         $this->update([
             // Update the new trigger date
-            'date' => $current_date->addMonth($months_to_add),
+            'date' => Semester::next()->getStartDate(),
         ]);
     }
 
     private function deactivateStatus()
     {
-        $months_to_add = Semester::current()->isSpring() ? 7 : 5;
-        $current_date = Carbon::instance($this->date);
-
         // Triggering the event
-        SecretariatController::finalizeStatements();
+        SemesterController::finalizeStatements();
 
         $this->update([
             // Update the new trigger date
-            'date' => $current_date->addMonth($months_to_add),
+            'date' => Semester::next()->getStartDate()->addMonth(1),
         ]);
     }
 }

@@ -2,7 +2,7 @@
     <h1>Kedves {{ $recipient->name }}!</h1>
     <p>
         A {{ $semester }} félévre a státuszod <i>{{ $status }}</i> lett.<br>
-        Módosító: {{$modifier->name}}.
+        Módosító: {{$modifier?->name??'Automatikus'}}.
         @if($comment)
             <br>
             Megjegyzés: {{$comment}}.

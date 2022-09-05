@@ -18,7 +18,7 @@ class StatusUpdated extends Mailable
     public string $semester;
     public string $status;
     public ?string $comment;
-    public User $modifier;
+    public ?User $modifier;
 
     /**
      * Create a new message instance.

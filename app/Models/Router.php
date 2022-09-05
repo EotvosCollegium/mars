@@ -49,7 +49,7 @@ class Router extends Model
     public function sendWarning()
     {
         if ($this->failed_for == self::WARNING_THRESHOLD) {
-            $internet_admins = Role::getUsers(Role::SYS_ADMIN);
+            $internet_admins = Role::firstWhere('name', Role::SYS_ADMIN)->getUsers();
             foreach ($internet_admins as $admin) {
                 Mail::to($admin)->queue(new \App\Mail\RouterWarning($admin, $this));
             }

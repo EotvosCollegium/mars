@@ -26,8 +26,8 @@
             </div>
         </li>
     </ul>
+    {{-- Statuses --}}
     @if($user->isCollegist())
-        {{-- Statuses --}}
         <ul class="collapsible">
             <li>
                 <div class="collapsible-header"><b>@lang('admin.statuses')</b></div>

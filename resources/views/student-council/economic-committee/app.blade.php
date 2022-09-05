@@ -52,6 +52,7 @@
                         </tbody></table>
                     </div>
                 </div>
+                {{--
                 <div class="row">
                     <div class="col s12">
                         <table class="highlight responsive-table centered" style="display: block;overflow-x:auto;">
@@ -92,6 +93,7 @@
                         @endif
                     </div>
                 </div>
+                --}}
             </div>
         </div>
     </div>

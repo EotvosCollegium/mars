@@ -14,10 +14,7 @@ use App\Models\WifiConnection;
 use App\Models\PrintAccount;
 use App\Models\PersonalInformation;
 use App\Models\EducationalInformation;
-
-
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Log;
 
 class UsersTableSeeder extends Seeder
 {
