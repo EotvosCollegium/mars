@@ -63,6 +63,9 @@ class SemesterController extends Controller
             if ($user->getStatus() != SemesterStatus::INACTIVE /* default */) {
                 continue;
             }
+            if ($user->getStatus() != SemesterStatus::DEACTIVATED) {
+                continue;
+            }
             if ($user->getStatusIn(Semester::previous()) == SemesterStatus::DEACTIVATED) {
                 SemesterStatus::withoutEvents(function () use ($user) {
                     $user->setStatus(SemesterStatus::DEACTIVATED, 'Was deactivated in last semester');
@@ -74,7 +77,12 @@ class SemesterController extends Controller
             });
             $notifiable->push($user);
         }
-        Mail::bcc($notifiable)->queue(new \App\Mail\StatusStatementRequest());
+
+        foreach($notifiable->chunk(80) as $users2) 
+        {
+            //gmail can only send max 100 bcc recipients
+            Mail::bcc($users2)->queue(new \App\Mail\StatusStatementRequest());
+        }
         return $notifiable;
     }
 
