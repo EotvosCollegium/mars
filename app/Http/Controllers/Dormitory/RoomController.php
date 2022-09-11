@@ -17,7 +17,8 @@ class RoomController extends Controller
     public function index()
     {
         $this->authorize('viewAny', Room::class);
-        $users=User::all();
+        $users=User::active()->resident()->get();
+
         $rooms = Room::with('users')->get();
         return view('dormitory.rooms.app', ['users' => $users, 'rooms' => $rooms]);
     }

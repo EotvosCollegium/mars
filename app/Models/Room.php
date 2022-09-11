@@ -16,6 +16,10 @@ class Room extends Model
 
     protected $fillable = ['name', 'capacity'];
 
+    protected $with = ['users'];
+
+    protected $withCount = ['users'];
+
     /**
      * Returns the users assigned to this room
      */
@@ -29,8 +33,10 @@ class Room extends Model
      */
     public function residentNumber()
     {
-        return $this->users()->count();
+        //check if count already eager loaded
+        return $this->users_count ?? $this->users()->count();
     }
+
     /**
      * Assigns colors depending on the empty spaces left in the room
      */
