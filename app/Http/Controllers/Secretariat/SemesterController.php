@@ -78,8 +78,7 @@ class SemesterController extends Controller
             $notifiable->push($user);
         }
 
-        foreach($notifiable->chunk(80) as $users2) 
-        {
+        foreach ($notifiable->chunk(80) as $users2) {
             //gmail can only send max 100 bcc recipients
             Mail::bcc($users2)->queue(new \App\Mail\StatusStatementRequest());
         }
