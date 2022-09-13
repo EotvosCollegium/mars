@@ -636,7 +636,7 @@ class User extends Authenticatable implements HasLocalePreference
         return $query->role(Role::COLLEGIST, RoleObject::firstWhere('name', Role::RESIDENT));
     }
 
-        /**
+    /**
      * Scope a query to only include extern users.
      *
      * @param Builder $query
