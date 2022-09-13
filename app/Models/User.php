@@ -416,6 +416,11 @@ class User extends Authenticatable implements HasLocalePreference
         return Role::collegist()->getUsers();
     }
 
+    public function scopeCollegist(): Builder
+    {
+        return $this->role(Role::COLLEGIST);
+    }
+
     public function isCollegist(): bool
     {
         return $this->hasRoleBase(Role::COLLEGIST);
@@ -531,6 +536,17 @@ class User extends Authenticatable implements HasLocalePreference
     }
 
     /**
+     * Scope a query to only include active users in the current semester.
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->activeIn(Semester::current()->id);
+    }
+
+    /**
      * Decides if the user is active in the current semester.
      *
      * @return bool
@@ -607,6 +623,28 @@ class User extends Authenticatable implements HasLocalePreference
         }
 
         return $semesters->find($semester)->pivot->status;
+    }
+
+    /**
+     * Scope a query to only include resident users.
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeResident(Builder $query): Builder
+    {
+        return $query->role(Role::COLLEGIST, RoleObject::firstWhere('name', Role::RESIDENT));
+    }
+
+    /**
+     * Scope a query to only include extern users.
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeExtern(Builder $query): Builder
+    {
+        return $query->role(Role::COLLEGIST, RoleObject::firstWhere('name', Role::EXTERN));
     }
 
     /**
