@@ -89,6 +89,6 @@ class RegistrationsController extends Controller
         }
 
         \Invytr::invite($user);
-        return redirect()->route('secretariat.permissions.show', ['id' => $user->id])->with('message', __('registration.set_permissions'));
+        return redirect()->route('users.show', ['user' => $user->id])->with('message', __('registration.set_permissions'));
     }
 }
