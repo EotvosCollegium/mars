@@ -43,6 +43,5 @@ class ChangeRolesToNewRegulations extends Migration
      */
     public function down()
     {
-        
     }
 }

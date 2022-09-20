@@ -50,7 +50,7 @@ class UserPolicy
             if ($user->isPresident() || $user->hasRole(Role::STUDENT_COUNCIL, Role::SCIENCE_VICE_PRESIDENT)) {
                 return true;
             }
-            if($user->isStudentsCouncilSecretary()){
+            if ($user->isStudentsCouncilSecretary()) {
                 return true;
             }
             return $target->workshops
@@ -133,21 +133,19 @@ class UserPolicy
             return $user->hasRole(Role::SECRETARY);
         }
 
-        if($role->name == Role::WORKSHOP_LEADER)
-        {
+        if ($role->name == Role::WORKSHOP_LEADER) {
             return $user->hasRole(Role::SECRETARY) || $user->hasRole(Role::DIRECTOR);
         }
 
-        if($role->name == Role::WORKSHOP_ADMINISTRATOR)
-        {
+        if ($role->name == Role::WORKSHOP_ADMINISTRATOR) {
             return $user->hasRoleBase(Role::WORKSHOP_LEADER) || $user->hasRole(Role::STUDENT_COUNCIL_SECRETARY) || $user->hasRole(Role::SECRETARY) || $user->hasRole(Role::STUDENT_COUNCIL, Role::SCIENCE_VICE_PRESIDENT);
         }
 
-        if($role->name == Role::STUDENT_COUNCIL_SECRETARY){
+        if ($role->name == Role::STUDENT_COUNCIL_SECRETARY) {
             return $user->isStudentsCouncilSecretary();
         }
 
-        if($role->name == Role::BOARD_OF_TRUSTEES_MEMBER){
+        if ($role->name == Role::BOARD_OF_TRUSTEES_MEMBER) {
             return $user->isStudentsCouncilSecretary();
         }
 
@@ -178,26 +176,24 @@ class UserPolicy
             return $user->roleWorkshops()->contains($object->id);
         }
 
-        if($role->name == Role::WORKSHOP_LEADER)
-        {
+        if ($role->name == Role::WORKSHOP_LEADER) {
             return $user->hasRole(Role::SECRETARY) || $user->hasRole(Role::DIRECTOR);
         }
 
-        if($role->name == Role::WORKSHOP_ADMINISTRATOR)
-        {
+        if ($role->name == Role::WORKSHOP_ADMINISTRATOR) {
             return $user->hasRoleBase(Role::WORKSHOP_LEADER) || $user->hasRole(Role::STUDENT_COUNCIL_SECRETARY) || $user->hasRole(Role::SECRETARY) || $user->hasRole(Role::STUDENT_COUNCIL, Role::SCIENCE_VICE_PRESIDENT);
         }
 
-        if($role->name == Role::STUDENT_COUNCIL_SECRETARY){
+        if ($role->name == Role::STUDENT_COUNCIL_SECRETARY) {
             return $user->isStudentsCouncilSecretary();
         }
 
-        if($role->name == Role::BOARD_OF_TRUSTEES_MEMBER){
+        if ($role->name == Role::BOARD_OF_TRUSTEES_MEMBER) {
             return $user->isStudentsCouncilSecretary();
         }
 
         if ($role->name == Role::STUDENT_COUNCIL) {
-            if($user->isStudentsCouncilSecretary()){
+            if ($user->isStudentsCouncilSecretary()) {
                 return true;
             }
             if ($object->name == Role::PRESIDENT) {
