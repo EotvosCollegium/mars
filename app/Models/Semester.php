@@ -201,10 +201,10 @@ class Semester extends Model
         if (! Cache::get('semester.current.'.$today)) {
             $now = Carbon::now();
             if ($now->month >= self::START_OF_SPRING_SEMESTER && $now->month <= self::END_OF_SPRING_SEMESTER) {
-                $part = "2"; // Because of some strange reaseon, the part is stored as a string.
+                $part = 2;
                 $year = $now->year - 1;
             } else {
-                $part = "1";
+                $part = 1;
                 // This assumes that the semester ends in the new year.
                 $year = $now->month <= self::END_OF_AUTUMN_SEMESTER ? $now->year - 1 : $now->year;
             }
@@ -286,7 +286,7 @@ class Semester extends Model
         }
         $semester = Semester::firstOrCreate([
             'year' => $year,
-            'part' => (string) $part,
+            'part' => $part,
         ]);
 
         return $semester;
