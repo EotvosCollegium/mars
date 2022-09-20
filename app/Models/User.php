@@ -456,6 +456,10 @@ class User extends Authenticatable implements HasLocalePreference
         return $this->hasRole(Role::StudentsCouncil(), Role::PRESIDENT);
     }
 
+
+    /**
+     * Checks if the user is the Students Council's Secretary.
+     */
     public function isStudentsCouncilSecretary(): bool
     {
         return $this->hasRole(Role::STUDENT_COUNCIL_SECRETARY);
