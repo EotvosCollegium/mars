@@ -20,7 +20,7 @@ class ChangeRolesToNewRegulations extends Migration
             ['has_workshops' => 0, 'has_objects' => 0]
         );
         DB::table('roles')->updateOrInsert(
-            ['name'=>'student-council-secretary'],
+            ['name'=>'board-of-trustees-member'],
             [ 'has_workshops' => 0, 'has_objects' => 0]
         );
         DB::table('role_objects')->where('name', 'vice-president')->delete();
