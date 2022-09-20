@@ -47,7 +47,7 @@ class UserPolicy
             if ($user->hasAnyRoleBase([Role::SECRETARY, Role::DIRECTOR])) {
                 return true;
             }
-            if ( $user->isStudentCouncilLeader()) {
+            if ($user->isStudentCouncilLeader()) {
                 return true;
             }
             if ($user->isStudentsCouncilSecretary()) {
