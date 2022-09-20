@@ -4,8 +4,10 @@ return [
     'date_of_acquisition' => 'Date of acquisition',
     'date_of_deployment' => 'Date of deployment',
     'down' => 'Down',
+    'edit' => 'Edit router',
     'failing_since' => 'Failing since',
     'ip' => 'IP address',
+    'new' => 'New router',
     'port' => 'Port',
     'room' => 'Room',
     'router' => 'Router',
@@ -15,6 +17,4 @@ return [
     'state' => 'State',
     'type' => 'Type',
     'up' => 'Up',
-    'new' => 'New router',
-    'edit' => 'Edit router',
 ];
