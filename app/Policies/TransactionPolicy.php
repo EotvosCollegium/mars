@@ -25,11 +25,7 @@ class TransactionPolicy
         }
 
         if ($transaction->checkout->name == Checkout::studentsCouncil()->name) {
-            return $user->hasRole(Role::STUDENT_COUNCIL, Role::ECONOMIC_LEADER)
-                || (
-                    $user->hasRole(Role::STUDENT_COUNCIL, Role::ECONOMIC_MEMBER)
-                    && $transaction->receiver_id == $user->id
-                );
+            return $user->hasRole(Role::STUDENT_COUNCIL, Role::ECONOMIC_VICE_PRESIDENT);
         }
 
         return false;

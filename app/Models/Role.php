@@ -32,41 +32,47 @@ class Role extends Model
     public const STAFF = 'staff';
     public const LOCALE_ADMIN = 'locale-admin';
     public const STUDENT_COUNCIL = 'student-council';
+    public const STUDENT_COUNCIL_SECRETARY = 'student-council-secretary';
+    public const BOARD_OF_TRUSTEES_MEMBER = 'board-of-trustees-member';
 
     //Students' Committe role's objects
     public const PRESIDENT = 'president';
-    public const VICE_PRESIDENT = 'vice-president';
-    public const ECONOMIC_LEADER = 'economic-leader';
-    public const ECONOMIC_MEMBER = 'economic-member';
+    public const ECONOMIC_VICE_PRESIDENT = 'economic-vice-president';
+    public const SCIENCE_VICE_PRESIDENT = 'science-vice-president';
     public const CULTURAL_LEADER = 'cultural-leader';
+    public const CULTURAL_REFERENT = 'cultural-referent';
     public const CULTURAL_MEMBER = 'cultural-member';
     public const COMMUNITY_LEADER = 'community-leader';
+    public const COMMUNITY_REFERENT = 'community-referent';
     public const COMMUNITY_MEMBER = 'community-member';
     public const COMMUNICATION_LEADER = 'communication-leader';
+    public const COMMUNICATION_REFERENT = 'communication-referent';
     public const COMMUNICATION_MEMBER = 'communication-member';
     public const SPORT_LEADER = 'sport-leader';
+    public const SPORT_REFERENT = 'sport-referent';
     public const SPORT_MEMBER = 'sport-member';
-    public const SCIENCE_LEADER = 'science-leader';
-    public const SCIENCE_MEMBER = 'science-member';
     public const STUDENT_COUNCIL_LEADERS = [
         self::PRESIDENT,
-        self::VICE_PRESIDENT
+        self::SCIENCE_VICE_PRESIDENT,
+        self::ECONOMIC_VICE_PRESIDENT
     ];
     public const COMMITTEE_LEADERS = [
-        self::ECONOMIC_LEADER,
         self::CULTURAL_LEADER,
         self::COMMUNITY_LEADER,
         self::COMMUNICATION_LEADER,
         self::SPORT_LEADER,
-        self::SCIENCE_LEADER
+    ];
+    public const COMMITTEE_REFERENTS = [
+        self::CULTURAL_REFERENT,
+        self::COMMUNITY_REFERENT,
+        self::COMMUNICATION_REFERENT,
+        self::SPORT_REFERENT,
     ];
     public const COMMITTEE_MEMBERS = [
-        self::ECONOMIC_MEMBER,
         self::CULTURAL_MEMBER,
         self::COMMUNITY_MEMBER,
         self::COMMUNICATION_MEMBER,
         self::SPORT_MEMBER,
-        self::SCIENCE_MEMBER
     ];
 
     // Module-related roles
@@ -93,6 +99,8 @@ class Role extends Model
         self::INTERNET_USER,
         self::LOCALE_ADMIN,
         self::STUDENT_COUNCIL,
+        self::STUDENT_COUNCIL_SECRETARY,
+        self::BOARD_OF_TRUSTEES_MEMBER
     ];
 
     protected $fillable = [
@@ -222,6 +230,9 @@ class Role extends Model
             self::LOCALE_ADMIN => 'amber',
             self::STUDENT_COUNCIL => 'green darken-4',
             self::APPLICATION_COMMITTEE_MEMBER => 'light-blue darken-4',
+            self::AGGREGATED_APPLICATION_COMMITTEE_MEMBER =>  'grey darken-2',
+            self::STUDENT_COUNCIL_SECRETARY => 'pink lighten-3',
+            self::BOARD_OF_TRUSTEES_MEMBER => 'black',
             default => 'grey',
         };
     }

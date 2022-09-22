@@ -4,8 +4,10 @@ return [
     'date_of_acquisition' => 'Beszerzés ideje',
     'date_of_deployment' => 'Kihelyezés ideje',
     'down' => 'Nem elérhető',
+    'edit' => 'Router szerkesztése',
     'failing_since' => 'Hiba kezdete',
     'ip' => 'IP-cím',
+    'new' => 'Új router',
     'port' => 'Port',
     'room' => 'Szoba',
     'router' => 'Router',
@@ -15,6 +17,4 @@ return [
     'state' => 'Állapot',
     'type' => 'Típus',
     'up' => 'Elérhető',
-    'new' => 'Új router',
-    'edit' => 'Router szerkesztése',
 ];

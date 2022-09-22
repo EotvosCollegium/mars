@@ -28,9 +28,9 @@ class UserPolicy
     {
         return
             $user->hasAnyRoleBase([
-                Role::STAFF, Role::SECRETARY, Role::DIRECTOR, Role::WORKSHOP_ADMINISTRATOR, Role::WORKSHOP_LEADER
+                Role::STAFF, Role::SECRETARY, Role::DIRECTOR, Role::WORKSHOP_ADMINISTRATOR, Role::WORKSHOP_LEADER, Role::STUDENT_COUNCIL_SECRETARY
             ])
-            || $user->isPresident();
+            || $user->isStudentCouncilLeader();
     }
 
     /**
@@ -47,7 +47,10 @@ class UserPolicy
             if ($user->hasAnyRoleBase([Role::SECRETARY, Role::DIRECTOR])) {
                 return true;
             }
-            if ($user->isPresident()) {
+            if ($user->isStudentCouncilLeader()) {
+                return true;
+            }
+            if ($user->isStudentsCouncilSecretary()) {
                 return true;
             }
             return $target->workshops
@@ -122,6 +125,7 @@ class UserPolicy
         if (!isset($role)) {
             return $user->hasRole(Role::SECRETARY)
             || $user->isInStudentsCouncil()
+            || $user->isStudentsCouncilSecretary()
             || $user->hasAnyRoleBase([Role::WORKSHOP_ADMINISTRATOR, Role::WORKSHOP_LEADER]);
         }
 
@@ -129,12 +133,28 @@ class UserPolicy
             return $user->hasRole(Role::SECRETARY);
         }
 
+        if ($role->name == Role::WORKSHOP_LEADER) {
+            return $user->hasRole(Role::SECRETARY) || $user->hasRole(Role::DIRECTOR);
+        }
+
+        if ($role->name == Role::WORKSHOP_ADMINISTRATOR) {
+            return $user->hasRoleBase(Role::WORKSHOP_LEADER) || $user->hasRole(Role::STUDENT_COUNCIL_SECRETARY) || $user->hasRole(Role::SECRETARY) || $user->hasRole(Role::STUDENT_COUNCIL, Role::SCIENCE_VICE_PRESIDENT);
+        }
+
+        if ($role->name == Role::STUDENT_COUNCIL_SECRETARY) {
+            return $user->isStudentsCouncilSecretary();
+        }
+
+        if ($role->name == Role::BOARD_OF_TRUSTEES_MEMBER) {
+            return $user->isStudentsCouncilSecretary();
+        }
+
         if ($role->name == Role::APPLICATION_COMMITTEE_MEMBER) {
             return $user->hasAnyRoleBase([Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR]);
         }
 
         if ($role->name == Role::STUDENT_COUNCIL) {
-            return $user->isInStudentsCouncil();
+            return $user->isInStudentsCouncil() || $user->isStudentsCouncilSecretary();
         }
         return false;
     }
@@ -156,14 +176,33 @@ class UserPolicy
             return $user->roleWorkshops()->contains($object->id);
         }
 
+        if ($role->name == Role::WORKSHOP_LEADER) {
+            return $user->hasRole(Role::SECRETARY) || $user->hasRole(Role::DIRECTOR);
+        }
+
+        if ($role->name == Role::WORKSHOP_ADMINISTRATOR) {
+            return ($user->hasRoleBase(Role::WORKSHOP_LEADER) && $user->roleWorkshops()->contains($object->id)) || $user->hasRole(Role::STUDENT_COUNCIL_SECRETARY) || $user->hasRole(Role::SECRETARY) || $user->hasRole(Role::STUDENT_COUNCIL, Role::SCIENCE_VICE_PRESIDENT);
+        }
+
+        if ($role->name == Role::STUDENT_COUNCIL_SECRETARY) {
+            return $user->isStudentsCouncilSecretary();
+        }
+
+        if ($role->name == Role::BOARD_OF_TRUSTEES_MEMBER) {
+            return $user->isStudentsCouncilSecretary();
+        }
+
         if ($role->name == Role::STUDENT_COUNCIL) {
+            if ($user->isStudentsCouncilSecretary()) {
+                return true;
+            }
             if ($object->name == Role::PRESIDENT) {
                 return false;
             }
             if ($user->hasRole(Role::STUDENT_COUNCIL, Role::PRESIDENT)) {
                 return true;
             }
-            if (in_array($object->name, Role::COMMITTEE_MEMBERS)) {
+            if (in_array($object->name, Role::COMMITTEE_MEMBERS) || in_array($object->name, Role::COMMITTEE_REFERENTS)) {
                 $committee = preg_split("~-~", $object->name)[0];
                 return $user->hasRole(Role::STUDENT_COUNCIL, $committee . "-leader");
             }

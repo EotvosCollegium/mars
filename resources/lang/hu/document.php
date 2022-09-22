@@ -18,6 +18,7 @@ return [
     'missing_items' => 'Még nem adtad meg a tárgyakat, amiket behoznál.',
     'missing_personal_info' => 'A személyes adataid hiányoznak a dokumentum kitöltéséhez. Kérj segítséget egy rendszergazdától.',
     'not_report' => 'Nem kell bejelenteni:',
+    'personal_computer' => 'Számítógépek, laptopok',
     'print' => 'Nyomtatás',
     'register-statement' => 'Beköltözési nyilatkozat',
     'report' => 'Be kell jelenteni:',
@@ -25,5 +26,4 @@ return [
     'serial_number' => 'Sorozatszám (számítógépeknél)',
     'status-cert' => 'Tagsági igazolás',
     'successful_request' => 'Sikeres igénylés. Az igazolást hamarosan megtalálhatod a titkárságon.',
-    'personal_computer' => 'Számítógépek, laptopok',
 ];

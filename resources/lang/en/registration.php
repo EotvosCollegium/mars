@@ -5,6 +5,7 @@ return [
     'confirmpwd' => 'Confirm password',
     'email' => 'Email',
     'forgotpwd' => 'Forgot your password?',
+    'information' => 'The application form can be submitted after the registration.',
     'invite' => 'Invite',
     'invite_button' => 'Create and send invitation',
     'invite_instructions' => 'Here you can invite someone with a given e-mail address to create an account.',
@@ -14,5 +15,4 @@ return [
     'password' => 'Password',
     'remember' => 'Remember Me',
     'set_permissions' => 'Sent an invitation letter to the given address. Please set permissions of the new user.',
-    'information' => 'The application form can be submitted after the registration.',
 ];
