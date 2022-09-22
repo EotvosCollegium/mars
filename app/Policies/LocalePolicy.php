@@ -13,11 +13,11 @@ class LocalePolicy
 
     public function viewAny(User $user): bool
     {
-        return $user->hasRoleBase(Role::LOCALE_ADMIN);
+        return $user->hasRole(Role::LOCALE_ADMIN);
     }
 
     public function approve(User $user, LocalizationContribution $contribution): bool
     {
-        return $user->hasRole(Role::LOCALE_ADMIN, $contribution->language);
+        return $user->hasRole([Role::LOCALE_ADMIN => $contribution->language]);
     }
 }

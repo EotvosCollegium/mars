@@ -120,6 +120,26 @@ class Role extends Model
     }
 
     /**
+     * Returns the role model for the given role name/id.
+     */
+    public static function getRole(Role|string|int $role) : Role
+    {
+        if ($role instanceof Role) {
+            return $role;
+        }
+
+        if (is_numeric($role)) {
+            $role = Role::find($role);
+        } else {
+            $role = Role::where('name', $role)->first();
+        }
+
+        if(!$role) throw new InvalidArgumentException('Role not found: ' . $role);
+        
+        return $role;
+    }
+
+    /**
      * Returns the role object belonging to the role while checking the validity of the role-object pair.
      * @param integer|string|null $object roleObject or workshop name/id
      * @return RoleObject|Workshop|null

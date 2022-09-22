@@ -19,7 +19,7 @@ class RoomPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->hasAnyRoleBase([
+        return $user->hasRole([
             Role::DIRECTOR,
             Role::SECRETARY,
             Role::STAFF,
@@ -37,10 +37,11 @@ class RoomPolicy
      */
     public function updateAny(User $user)
     {
-        return $user->hasAnyRoleBase([
+        return $user->hasRole([
             Role::SECRETARY,
             Role::STAFF,
-            Role::SYS_ADMIN
-        ]) || $user->isPresident();
+            Role::SYS_ADMIN,
+            Role::STUDENT_COUNCIL => Role::PRESIDENT
+        ]);
     }
 }

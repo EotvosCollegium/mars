@@ -27,7 +27,7 @@ class CheckoutPolicy
     public function addPayment(User $user, Checkout $checkout): bool
     {
         if ($checkout->name === Checkout::STUDENTS_COUNCIL) {
-            return $user->hasRole(Role::STUDENT_COUNCIL, Role::ECONOMIC_VICE_PRESIDENT);
+            return $user->hasRole([Role::STUDENT_COUNCIL => Role::ECONOMIC_VICE_PRESIDENT]);
         }
         if ($checkout->name === Checkout::ADMIN) {
             return $user->hasRole(Role::SYS_ADMIN);
@@ -38,13 +38,13 @@ class CheckoutPolicy
 
     public function addKKTNetreg(User $user): bool
     {
-        return $user->hasRole(Role::STUDENT_COUNCIL, Role::ECONOMIC_VICE_PRESIDENT);
+        return $user->hasRole([Role::STUDENT_COUNCIL => Role::ECONOMIC_VICE_PRESIDENT]);
     }
 
     public function administrate(User $user, Checkout $checkout): bool
     {
         if ($checkout->name === Checkout::STUDENTS_COUNCIL) {
-            return $user->hasRole(Role::STUDENT_COUNCIL, Role::ECONOMIC_VICE_PRESIDENT);
+            return $user->hasRole([Role::STUDENT_COUNCIL => Role::ECONOMIC_VICE_PRESIDENT]);
         }
         if ($checkout->name === Checkout::ADMIN) {
             return $user->hasRole(Role::SYS_ADMIN);
