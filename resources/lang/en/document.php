@@ -18,6 +18,7 @@ return [
     'missing_items' => 'You have not added any items.',
     'missing_personal_info' => 'Your personal information are missing. Please contact a system administrator.',
     'not_report' => 'You don\'t have to report:',
+    'personal_computer' => 'Personal computers, laptops',
     'print' => 'Print',
     'register-statement' => 'Register Statement',
     'report' => 'You have to report:',
@@ -25,5 +26,4 @@ return [
     'serial_number' => 'Serial number (for computers)',
     'status-cert' => 'Status certificate',
     'successful_request' => 'Your request was successful. You will find the signed certificate at the secretariat.',
-    'personal_computer' => 'Personal computers, laptops',
 ];

@@ -457,6 +457,25 @@ class User extends Authenticatable implements HasLocalePreference
     }
 
     /**
+     * Checks if user is one of the leaders of the Students Council
+     */
+    public function isStudentCouncilLeader()
+    {
+        $roleObjectIds = RoleObject::whereIn('name', Role::STUDENT_COUNCIL_LEADERS)->pluck('id');
+        return $this->roles()->where('role_id', Role::StudentsCouncil()->id)
+            ->whereIn('object_id', $roleObjectIds)
+            ->exists();
+    }
+
+    /**
+     * Checks if the user is the Students Council's Secretary.
+     */
+    public function isStudentsCouncilSecretary(): bool
+    {
+        return $this->hasRole(Role::STUDENT_COUNCIL_SECRETARY);
+    }
+
+    /**
      * @return User|null the director
      */
     public static function director(): ?User

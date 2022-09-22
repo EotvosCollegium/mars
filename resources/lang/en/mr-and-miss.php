@@ -4,7 +4,10 @@ return [
     'add-custom' => 'Add custom category',
     'custom' => 'Custom category',
     'custom-category' => 'Public vs Private description',
+    'deadline' => 'Deadline: :deadline',
     'mr-and-miss' => 'Mr & Miss',
+    'mr-and-miss-categories' => 'Categories',
+    'mr-and-miss-results' => 'Results',
     'private' => 'Private',
     'public' => 'Public',
     'title' => 'Category title',
@@ -12,7 +15,4 @@ return [
     'vote-explanation' => 'TODO: Dominik',
     'voted' => 'Previous custom votes',
     'votee' => 'Votee',
-    'deadline' => 'Deadline: :deadline',
-    'mr-and-miss-results' => 'Results',
-    'mr-and-miss-categories' => 'Categories',
 ];
