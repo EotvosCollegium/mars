@@ -21,7 +21,7 @@ class TransactionPolicy
         }
 
         if ($transaction->checkout->name == Checkout::admin()->name) {
-            return $user->is_admin();
+            return $user->isAdmin();
         }
 
         if ($transaction->checkout->name == Checkout::studentsCouncil()->name) {

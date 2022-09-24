@@ -19,7 +19,7 @@ class WifiConnectionPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->is_admin();
+        return $user->isAdmin();
     }
 
     /**
@@ -31,12 +31,12 @@ class WifiConnectionPolicy
      */
     public function view(User $user, WifiConnection $wifiConnection)
     {
-        return $user->is_admin()
+        return $user->isAdmin()
             || $user->wifiConnections->contains($wifiConnection);
     }
 
     public function approveAny(User $user): bool
     {
-        return $user->is_admin();
+        return $user->isAdmin();
     }
 }

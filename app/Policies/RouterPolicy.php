@@ -13,7 +13,7 @@ class RouterPolicy
 
     public function before(User $user, $ability)
     {
-        if ($user->is_admin()) {
+        if ($user->isAdmin()) {
             return true;
         }
     }
@@ -49,7 +49,7 @@ class RouterPolicy
      */
     public function create(User $user)
     {
-        return $user->is_admin();
+        return $user->isAdmin();
     }
 
     /**
@@ -61,7 +61,7 @@ class RouterPolicy
      */
     public function update(User $user, Router $router)
     {
-        return $user->is_admin();
+        return $user->isAdmin();
     }
 
     /**
@@ -73,6 +73,6 @@ class RouterPolicy
      */
     public function delete(User $user, Router $router)
     {
-        return $user->is_admin();
+        return $user->isAdmin();
     }
 }

@@ -313,7 +313,7 @@ class User extends Authenticatable implements HasLocalePreference
         });
     }
 
-    public function is_admin(): bool
+    public function isAdmin(): bool
     {
         return in_array(
             $this->id,

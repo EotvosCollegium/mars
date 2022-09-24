@@ -30,7 +30,7 @@ class CheckoutPolicy
             return $user->hasRole([Role::STUDENT_COUNCIL => Role::ECONOMIC_VICE_PRESIDENT]);
         }
         if ($checkout->name === Checkout::ADMIN) {
-            return $user->is_admin();
+            return $user->isAdmin();
         }
 
         return false;
@@ -47,7 +47,7 @@ class CheckoutPolicy
             return $user->hasRole([Role::STUDENT_COUNCIL => Role::ECONOMIC_VICE_PRESIDENT]);
         }
         if ($checkout->name === Checkout::ADMIN) {
-            return $user->is_admin();
+            return $user->isAdmin();
         }
 
         return false;

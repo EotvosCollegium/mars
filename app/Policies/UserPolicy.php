@@ -17,7 +17,7 @@ class UserPolicy
 
     public function before(User $user)
     {
-        if ($user->is_admin()) {
+        if ($user->isAdmin()) {
             return true;
         }
     }
