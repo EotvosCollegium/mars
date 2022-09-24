@@ -6,7 +6,6 @@ use App\Models\Role;
 use App\Models\RoleObject;
 use App\Models\User;
 use App\Models\Workshop;
-use http\Exception\InvalidArgumentException;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class UserPolicy
