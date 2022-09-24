@@ -15,7 +15,7 @@ class ListUsers extends Component
     public $roles = [];
     public $workshops = [];
     public $statuses = [SemesterStatus::ACTIVE];
-    
+
     public $year_of_acceptance = null;
     public $filter_name = '';
 
@@ -42,7 +42,7 @@ class ListUsers extends Component
             });
         }
 
-        if(isset($this->year_of_acceptance)) {
+        if (isset($this->year_of_acceptance)) {
             $query->whereHas('educationalInformation', function (Builder $query) {
                 $query->where('year_of_acceptance', $this->year_of_acceptance);
             });
