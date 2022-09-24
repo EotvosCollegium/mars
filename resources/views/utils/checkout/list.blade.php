@@ -3,11 +3,11 @@
 <tr>
     <td>{{ $transaction->comment }}</td>
     <td>{{ $transaction->created_at->format('Y. m. d.') }}</td>
-    <td class="right"><nobr>{{ number_format($transaction->amount, 0, '.', ' ') }} Ft</nobr></td>
-    <td class="right">
+    <td>
+            {{ number_format($transaction->amount, 0, '.', ' ') }} Ft
         <!-- delete transaction -->
         @can('delete', $transaction)
-            <x-input.button :href="route('admin.checkout.transaction.delete', ['transaction' => $transaction])" icon="delete" floating class="btn-small red" />
+            <x-input.button :href="route('admin.checkout.transaction.delete', ['transaction' => $transaction])" icon="delete" floating class="btn-small red right" />
         @endcan
     </td>
 </tr>

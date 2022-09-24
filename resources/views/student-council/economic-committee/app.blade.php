@@ -63,6 +63,7 @@
                                     <th>
                                         @lang('checkout.allocated_balance')
                                         @if($semester->isCurrent())
+                                        <br>
                                             <x-input.button :href="route('economic_committee.workshop_balance')" floating class="btn-small grey" icon="refresh" />
                                         @endif
                                     </th>
@@ -81,8 +82,8 @@
                                             <form action="{{ route('economic_committee.workshop_balance.update', ['workshop_balance' => $workshop_balance]) }}" method="POST">
                                                 @csrf
                                                 @method('PUT')
-                                                <x-input.text type="number" id="amount" only-input text="Kifizetés"/>
-                                                <x-input.button type="submit" floating class="btn-small" icon="add" />
+                                                <x-input.text type="number" id="amount" only-input withoutLabel/>
+                                                <x-input.button type="submit" class="btn waves-effect" text="Kifizetés" />
                                             </form>
                                         @endcan
                                     </td>
