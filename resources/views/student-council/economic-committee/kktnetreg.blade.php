@@ -2,7 +2,7 @@
 
 @section('title')
 <a href="#!" class="breadcrumb">@lang('role.student-council')</a>
-<a href="{{ route('economic_committee') }}" class="breadcrumb" style="cursor: pointer">@lang('role.economic-vice-president')</a>
+<a href="{{ route('economic_committee') }}" class="breadcrumb" style="cursor: pointer">@lang('checkout.student-council-checkout')</a>
 <a href="#!" class="breadcrumb">@lang('checkout.kktnetreg')</a>
 @endsection
 @section('student_council_module') active @endsection

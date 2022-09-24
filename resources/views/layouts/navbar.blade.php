@@ -77,7 +77,7 @@
                             <!-- economic committee -->
                             <li>
                                 <a class="waves-effect" href="{{ route('economic_committee') }}">
-                                    <i class="material-icons left">attach_money</i> @lang('role.economic-vice-president')
+                                    <i class="material-icons left">attach_money</i> @lang('checkout.student-council-checkout')
                                 </a>
                             </li>
                             <!-- communication committee -->
