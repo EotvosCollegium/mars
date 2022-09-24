@@ -32,7 +32,7 @@
                 </div>
                 <div class="card-action">
                     <span class="right">
-                    <x-input.checkbox only_input text="registration.remember" name="remember" :checked="old('remember')"/>
+                    <x-input.checkbox only_input text="registration.remember" name="remember" :checked="old('remember')??false"/>
                     </span>
                     <x-input.button only_input text="general.login"/>
                 </div>
