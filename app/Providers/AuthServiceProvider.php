@@ -87,7 +87,7 @@ class AuthServiceProvider extends ServiceProvider
     public function registerVerificationPolicies()
     {
         Gate::define('registration.handle', function ($user) {
-            return $user->hasAnyRoleBase([Role::SYS_ADMIN, Role::STAFF]);
+            return $user->hasRole([Role::SYS_ADMIN, Role::STAFF]);
         });
     }
 }

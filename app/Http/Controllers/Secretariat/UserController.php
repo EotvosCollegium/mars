@@ -154,14 +154,11 @@ class UserController extends Controller
             return redirect()->back()->with('error', __('role.unauthorized'));
         }
 
-        if (!$role->isValid($object)) {
-            $message = __('role.role_can_not_be_attached');
-        } elseif ($user->addRole($role, $object)) {
-            $message = __('general.successfully_added');
+        if ($user->addRole($role, $object)) {
+            return redirect()->back()->with('message', __('general.successfully_added'));
         } else {
-            $message = __('role.role_unavailable');
+            return redirect()->back()->with('error', __('role.role_can_not_be_attached'));
         }
-        return redirect()->back()->with('message', $message);
     }
 
     public function removeRole(Request $request, User $user, Role $role)

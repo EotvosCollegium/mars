@@ -21,11 +21,11 @@ class TransactionPolicy
         }
 
         if ($transaction->checkout->name == Checkout::admin()->name) {
-            return $user->hasRole(Role::SYS_ADMIN);
+            return $user->isAdmin();
         }
 
         if ($transaction->checkout->name == Checkout::studentsCouncil()->name) {
-            return $user->hasRole(Role::STUDENT_COUNCIL, Role::ECONOMIC_VICE_PRESIDENT);
+            return $user->hasRole([Role::STUDENT_COUNCIL => Role::ECONOMIC_VICE_PRESIDENT]);
         }
 
         return false;
