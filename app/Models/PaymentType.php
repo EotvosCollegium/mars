@@ -17,12 +17,14 @@ class PaymentType extends Model
     public const KKT = 'KKT';
     public const NETREG = 'NETREG';
     public const PRINT = 'PRINT';
+    public const WORKSHOP_EXPENSE = 'WORKSHOP_EXPENSE';
     public const TYPES = [
         self::INCOME,
         self::EXPENSE,
         self::KKT,
         self::NETREG,
         self::PRINT,
+        self::WORKSHOP_EXPENSE
     ];
 
     /**
@@ -31,7 +33,7 @@ class PaymentType extends Model
      *
      * Other, special types:
      * ADMIN: NETREG, PRINT;
-     * STUDENTS_COUNCIL: KKT
+     * STUDENTS_COUNCIL: KKT, WORKSHOP_EXPENSE
      *
      * Uses cache.
      *
@@ -47,6 +49,7 @@ class PaymentType extends Model
                 $payment_types[] = self::PRINT;
             } elseif ($checkout->name == Checkout::STUDENTS_COUNCIL) {
                 $payment_types[] = self::KKT;
+                $payment_types[] = self::WORKSHOP_EXPENSE;
             }
 
             return self::whereIn('name', $payment_types)->get();
@@ -76,6 +79,11 @@ class PaymentType extends Model
     public static function print(): PaymentType
     {
         return self::getFromCache(self::PRINT);
+    }
+
+    public static function workshopExpense(): PaymentType
+    {
+        return self::getFromCache(self::WORKSHOP_EXPENSE);
     }
 
     /**

@@ -6,6 +6,7 @@ return [
     'KKT' => 'KKT',
     'NETREG' => 'NetReg',
     'PRINT' => 'Print',
+    'WORKSHOP_EXPENSE' => 'Workshop expenses',
     'add_transaction_descr' => 'The transaction will be public and irrevocable. The amount will be added/subtracted to/from the checkout directly.',
     'all_gathered_transactions' => 'Gathered transactions',
     'all_gathered_transactions_descr' => 'Add the following amounts to the checkout once they have been paid to you.',

@@ -147,8 +147,28 @@ class EconomicController extends Controller
 
     public function calculateWorkshopBalance()
     {
-        $this->authorize('administrate', Checkout::studentsCouncil());
         WorkshopBalance::generateBalances(Semester::current()->id);
+
+        return redirect()->back()->with('message', __('general.successful_modification'));
+    }
+
+    public function modifyWorkshopBalance(WorkshopBalance $workshop_balance, Request $request)
+    {
+        $this->authorize('administrate', Checkout::studentsCouncil());
+
+        Validator::make($request->all(), [
+            'amount' => 'required|integer',
+        ])->validate();
+
+        $workshop_balance->increment('used_balance', $request->amount);
+        Transaction::create([
+            'checkout_id' => Checkout::studentsCouncil()->id,
+            'receiver_id' => Auth::user()->id,
+            'semester_id'=> $workshop_balance->semester->id,
+            'amount' => (-1)*$request->amount,
+            'payment_type_id' => PaymentType::workshopExpense()->id,
+            'moved_to_checkout' => now()
+        ]);
 
         return redirect()->back()->with('message', __('general.successful_modification'));
     }

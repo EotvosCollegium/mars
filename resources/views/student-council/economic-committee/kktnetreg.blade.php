@@ -20,8 +20,8 @@
                         <div class="col s12">
                             <blockquote>@lang('checkout.pay_kkt_descr')</blockquote>
                             <x-input.select l=4 :elements="$users_not_payed" id="user_id" text="general.user" :formatter="function($user) { return $user->uniqueName; }" />
-                            <x-input.text  m=6 l=4 id="kkt" type="number" required min="0" :value="config('custom.kkt')" />
-                            <x-input.text  m=6 l=4 id="netreg" type="number" required min="0" :value="config('custom.netreg')" />
+                            <x-input.text  m=6 l=4 id="kkt" text="KKT" type="number" required min="0" :value="config('custom.kkt')" />
+                            <x-input.text  m=6 l=4 id="netreg" text="NetReg" type="number" required min="0" :value="config('custom.netreg')" />
                         </div>
                     </div>
                     <x-input.button floating class="btn-large right" icon="send" />
@@ -35,8 +35,7 @@
     <div class="col s12 xl6 push-xl6">
         @include('utils.checkout.gathered-transactions')
     </div>
-{{-- TODO
-<div class="col s12 xl6 pull-xl6">
+    <div class="col s12 xl6 pull-xl6">
         <div class="card">
             <div class="card-content">
                 <span class="card-title">@lang('checkout.users_have_to_pay') ({{ \App\Models\Semester::current()->tag }}) </span>
@@ -48,7 +47,6 @@
             </div>
         </div>
     </div>
---}}
     <div class="col s12">
         <div class="card">
             <div class="card-content">
