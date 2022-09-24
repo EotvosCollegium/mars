@@ -123,21 +123,22 @@ class Role extends Model
     /**
      * Returns the role model for the given role name/id.
      */
-    public static function getRole(Role|string|int $role) : Role
+    public static function getRole(Role|string|int $role): Role
     {
         if ($role instanceof Role) {
             return $role;
         }
         return Cache::remember('role_'.$role, 86400, function () use ($role) {
-
             if (is_numeric($role)) {
                 $role = Role::find((int)$role);
             } else {
                 $role = Role::where('name', $role)->first();
             }
 
-            if(!$role) throw new InvalidArgumentException('Role not found: ' . $role);
-            
+            if (!$role) {
+                throw new InvalidArgumentException('Role not found: ' . $role);
+            }
+
             return $role;
         });
     }
@@ -150,10 +151,10 @@ class Role extends Model
      */
     public function getObject(int|string|Workshop|RoleObject $object = null): Workshop|RoleObject|null
     {
-        if($object instanceof Workshop) {
+        if ($object instanceof Workshop) {
             return $object;
         }
-        if($object instanceof RoleObject) {
+        if ($object instanceof RoleObject) {
             return $object;
         }
 

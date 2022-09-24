@@ -293,7 +293,7 @@ class User extends Authenticatable implements HasLocalePreference
     public function scopeRole(Builder $query, Role|string $role, Workshop|RoleObject|string $object = null): Builder
     {
         $role = Role::getRole($role);
-        if($object){
+        if ($object) {
             $object = $role->getObject($object);
         }
         if ($object instanceof RoleObject) {
@@ -315,7 +315,8 @@ class User extends Authenticatable implements HasLocalePreference
 
     public function is_admin(): bool
     {
-        return in_array($this->id, 
+        return in_array(
+            $this->id,
             Cache::remember('sys-admins', 60, function () {
                 return Role::getRole(Role::SYS_ADMIN)->users()->pluck('id')->toArray();
             })
@@ -326,14 +327,14 @@ class User extends Authenticatable implements HasLocalePreference
      * Decides if the user has any of the given roles.
      * If a role which has objects is given, only the base role will be checked.
      * Names can also be used instead of the models.
-     * 
+     *
      * Example usage:
      * hasRole(1)
      * hasRole(Role::COLLEGIST)
      * hasRole([Role::COLLEGIST])
-     * hasRole([Role::COLLEGIST => Role::extern]) 
+     * hasRole([Role::COLLEGIST => Role::extern])
      * hasRole([Role::COLLEGIST => 4, Role::firstWhere('name', Role::WORKSHOP_LEADER)])
-     * 
+     *
      * @param $roles Role|name|id|[Role|name|id|[Role|name => RoleObject|Workshop|name|id]]
      * @return bool
      */
@@ -344,18 +345,18 @@ class User extends Authenticatable implements HasLocalePreference
         }
 
         $query = $this->roles();
-        $query->where(function ($query) use($roles) {
-            foreach($roles as $key => $value){
-                $query->orWhere(function($query) use($key, $value) {
-                    if(is_integer($key)) {
+        $query->where(function ($query) use ($roles) {
+            foreach ($roles as $key => $value) {
+                $query->orWhere(function ($query) use ($key, $value) {
+                    if (is_integer($key)) {
                         $role = Role::getRole($value);
                         $query->where('role_id', $role->id);
                     } else {
                         $role = Role::getRole($key);
                         $query->where('role_id', $role->id);
-                        if(is_array($value)) {
-                            $query->where(function($query) use($role, $value) {
-                                foreach($value as $object){
+                        if (is_array($value)) {
+                            $query->where(function ($query) use ($role, $value) {
+                                foreach ($value as $object) {
                                     $object = $role->getObject($object);
                                     $query->orWhere('object_id', $object->id);
                                 }
@@ -372,7 +373,7 @@ class User extends Authenticatable implements HasLocalePreference
                 });
             }
         });
-        
+
         return $query->exists();
     }
 
@@ -442,7 +443,8 @@ class User extends Authenticatable implements HasLocalePreference
 
     public function isCollegist(): bool
     {
-        return in_array($this->id, 
+        return in_array(
+            $this->id,
             Cache::remember('collegists', 60, function () {
                 return Role::collegist()->getUsers()->pluck('id')->toArray();
             })

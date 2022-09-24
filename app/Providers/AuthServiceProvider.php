@@ -89,6 +89,5 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('registration.handle', function ($user) {
             return $user->hasRole([Role::SYS_ADMIN, Role::STAFF]);
         });
-        
     }
 }

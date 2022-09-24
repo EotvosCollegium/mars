@@ -30,7 +30,7 @@ class UserPolicy
     {
         return
             $user->hasRole([
-                Role::STAFF, 
+                Role::STAFF,
                 Role::SECRETARY,
                 Role::DIRECTOR,
                 Role::WORKSHOP_ADMINISTRATOR,
@@ -51,7 +51,7 @@ class UserPolicy
             return true;
         }
         if ($target->isCollegist()) {
-            return (Cache::remember($user->id.'_is_secretary/director/s_council', 60, function() use ($user) {
+            return (Cache::remember($user->id.'_is_secretary/director/s_council', 60, function () use ($user) {
                 return $user->hasRole([
                     Role::SECRETARY,
                     Role::DIRECTOR,
@@ -200,7 +200,7 @@ class UserPolicy
         }
 
         if ($role->name == Role::WORKSHOP_ADMINISTRATOR) {
-            return ($user->hasRole(Role::WORKSHOP_LEADER) 
+            return ($user->hasRole(Role::WORKSHOP_LEADER)
                     && $user->roleWorkshops()->contains($object->id)
                 ) || $user->hasRole([
                     Role::STUDENT_COUNCIL_SECRETARY,

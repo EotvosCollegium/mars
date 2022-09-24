@@ -155,9 +155,9 @@ class UserController extends Controller
         }
 
         if ($user->addRole($role, $object)) {
-            return redirect()->back()->with('message',  __('general.successfully_added'));
+            return redirect()->back()->with('message', __('general.successfully_added'));
         } else {
-            return redirect()->back()->with('error',  __('role.role_can_not_be_attached'));
+            return redirect()->back()->with('error', __('role.role_can_not_be_attached'));
         }
     }
 
