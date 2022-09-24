@@ -16,8 +16,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
-use InvalidArgumentException;
 
 /**
  * @property int $id
@@ -293,7 +293,7 @@ class User extends Authenticatable implements HasLocalePreference
     public function scopeRole(Builder $query, Role|string $role, Workshop|RoleObject|string $object = null): Builder
     {
         $role = Role::getRole($role);
-        if(isset($object)){
+        if($object){
             $object = $role->getObject($object);
         }
         if ($object instanceof RoleObject) {
@@ -311,6 +311,15 @@ class User extends Authenticatable implements HasLocalePreference
         return $query->whereHas('roles', function ($q) use ($role) {
             $q->where('role_users.role_id', $role->id);
         });
+    }
+
+    public function is_admin(): bool
+    {
+        return in_array($this->id, 
+            Cache::remember('sys-admins', 60, function () {
+                return Role::getRole(Role::SYS_ADMIN)->users()->pluck('id')->toArray();
+            })
+        );
     }
 
     /**
@@ -335,32 +344,35 @@ class User extends Authenticatable implements HasLocalePreference
         }
 
         $query = $this->roles();
-        foreach($roles as $key => $value){
-            $query->orWhere(function($query) use($key, $value) {
-                if(is_integer($key)) {
-                    $role = Role::getRole($value);
-                    $query->where('role_id', $role->id);
-                } else {
-                    $role = Role::getRole($key);
-                    $query->where('role_id', $role->id);
-                    if(is_array($value)) {
-                        $query->where(function($query) use($role, $value) {
-                            foreach($value as $object){
-                                $object = $role->getObject($object);
-                                $query->orWhere('object_id', $object->id);
-                            }
-                        });
+        $query->where(function ($query) use($roles) {
+            foreach($roles as $key => $value){
+                $query->orWhere(function($query) use($key, $value) {
+                    if(is_integer($key)) {
+                        $role = Role::getRole($value);
+                        $query->where('role_id', $role->id);
                     } else {
-                        $object = $role->getObject($value);
-                        if ($object instanceof Workshop) {
-                            $query->where('workshop_id', $object->id);
-                        } elseif ($object instanceof RoleObject) {
-                            $query->where('object_id', $object->id);
+                        $role = Role::getRole($key);
+                        $query->where('role_id', $role->id);
+                        if(is_array($value)) {
+                            $query->where(function($query) use($role, $value) {
+                                foreach($value as $object){
+                                    $object = $role->getObject($object);
+                                    $query->orWhere('object_id', $object->id);
+                                }
+                            });
+                        } else {
+                            $object = $role->getObject($value);
+                            if ($object instanceof Workshop) {
+                                $query->where('workshop_id', $object->id);
+                            } elseif ($object instanceof RoleObject) {
+                                $query->where('object_id', $object->id);
+                            }
                         }
                     }
-                }
-            });
-        }
+                });
+            }
+        });
+        
         return $query->exists();
     }
 
@@ -430,7 +442,11 @@ class User extends Authenticatable implements HasLocalePreference
 
     public function isCollegist(): bool
     {
-        return $this->hasRole(Role::COLLEGIST);
+        return in_array($this->id, 
+            Cache::remember('collegists', 60, function () {
+                return Role::collegist()->getUsers()->pluck('id')->toArray();
+            })
+        );
     }
 
     /**
@@ -619,7 +635,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function scopeResident(Builder $query): Builder
     {
-        return $query->role(Role::COLLEGIST, RoleObject::firstWhere('name', Role::RESIDENT));
+        return $query->role(Role::COLLEGIST, Role::RESIDENT);
     }
 
     /**

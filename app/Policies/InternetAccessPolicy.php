@@ -13,7 +13,7 @@ class InternetAccessPolicy
 
     public function before(User $user, $ability)
     {
-        if ($user->hasRole(Role::SYS_ADMIN)) {
+        if ($user->is_admin()) {
             return true;
         }
         if (! $user->hasRole(Role::INTERNET_USER)) {

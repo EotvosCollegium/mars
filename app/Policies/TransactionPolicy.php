@@ -21,7 +21,7 @@ class TransactionPolicy
         }
 
         if ($transaction->checkout->name == Checkout::admin()->name) {
-            return $user->hasRole(Role::SYS_ADMIN);
+            return $user->is_admin();
         }
 
         if ($transaction->checkout->name == Checkout::studentsCouncil()->name) {

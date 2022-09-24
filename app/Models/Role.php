@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 
@@ -127,16 +128,18 @@ class Role extends Model
         if ($role instanceof Role) {
             return $role;
         }
+        return Cache::remember('role_'.$role, 86400, function () use ($role) {
 
-        if (is_numeric($role)) {
-            $role = Role::find($role);
-        } else {
-            $role = Role::where('name', $role)->first();
-        }
+            if (is_numeric($role)) {
+                $role = Role::find((int)$role);
+            } else {
+                $role = Role::where('name', $role)->first();
+            }
 
-        if(!$role) throw new InvalidArgumentException('Role not found: ' . $role);
-        
-        return $role;
+            if(!$role) throw new InvalidArgumentException('Role not found: ' . $role);
+            
+            return $role;
+        });
     }
 
     /**
@@ -145,26 +148,34 @@ class Role extends Model
      * @return RoleObject|Workshop|null
      * @throws InvalidArgumentException
      */
-    public function getObject(int|string $object = null): Workshop|RoleObject|null
+    public function getObject(int|string|Workshop|RoleObject $object = null): Workshop|RoleObject|null
     {
-        /* @var RoleObject|Workshop|null $object */
-        if ($this->has_objects && is_numeric($object)) {
-            $object = $this->objects()->find($object);
-        } elseif ($this->has_objects) {
-            $object = $this->objects()->firstWhere('name', $object);
-        } elseif ($this->has_workshops && is_numeric($object)) {
-            $object = Workshop::find($object);
-        } elseif ($this->has_workshops) {
-            $object = Workshop::firstWhere('name', $object);
-        } elseif (!isset($object)) {
-            $object = null;
+        if($object instanceof Workshop) {
+            return $object;
+        }
+        if($object instanceof RoleObject) {
+            return $object;
         }
 
-        if (!$this->isValid($object)) {
-            throw new InvalidArgumentException("Role object/workshop '".$object."' does not exist for the " . $this->name . " role.");
-        }
+        return Cache::remember('role_'.$this->id.'_object_'.$object, 86400, function () use ($object) {
+            /* @var RoleObject|Workshop|null $object */
+            if ($this->has_objects && is_numeric($object)) {
+                $object = $this->objects()->find((int)$object);
+            } elseif ($this->has_objects) {
+                $object = $this->objects()->firstWhere('name', $object);
+            } elseif ($this->has_workshops && is_numeric($object)) {
+                $object = Workshop::find((int)$object);
+            } elseif ($this->has_workshops) {
+                $object = Workshop::firstWhere('name', $object);
+            } elseif (!isset($object)) {
+                $object = null;
+            }
 
-        return $object;
+            if (!$this->isValid($object)) {
+                throw new InvalidArgumentException("Role object/workshop '".$object."' does not exist for the " . $this->name . " role.");
+            }
+            return $object;
+        });
     }
     /**
      * Checks if a role-object pair is valid.

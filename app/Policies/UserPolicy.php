@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Workshop;
 use http\Exception\InvalidArgumentException;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Support\Facades\Cache;
 use Maatwebsite\Excel\Row;
 
 class UserPolicy
@@ -16,7 +17,7 @@ class UserPolicy
 
     public function before(User $user)
     {
-        if ($user->hasRole(Role::SYS_ADMIN)) {
+        if ($user->is_admin()) {
             return true;
         }
     }
@@ -50,12 +51,14 @@ class UserPolicy
             return true;
         }
         if ($target->isCollegist()) {
-            return ($user->hasRole([
-                Role::SECRETARY,
-                Role::DIRECTOR,
-                Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS,
-                Role::STUDENT_COUNCIL_SECRETARY,
-            ])) || $target->workshops
+            return (Cache::remember($user->id.'_is_secretary/director/s_council', 60, function() use ($user) {
+                return $user->hasRole([
+                    Role::SECRETARY,
+                    Role::DIRECTOR,
+                    Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS,
+                    Role::STUDENT_COUNCIL_SECRETARY,
+                ]);
+            })) || $target->workshops
                     ->intersect($user->roleWorkshops())
                     ->count()>0;
         } elseif ($target->hasRole(Role::TENANT)) {

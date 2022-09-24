@@ -46,7 +46,7 @@ class AuthServiceProvider extends ServiceProvider
             return $user->isCollegist();
         });
         Gate::define('is-admin', function ($user) {
-            return $user->hasRole(Role::SYS_ADMIN);
+            return $user->is_admin();
         });
     }
 
