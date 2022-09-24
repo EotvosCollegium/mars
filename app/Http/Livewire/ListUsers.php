@@ -4,6 +4,7 @@ namespace App\Http\Livewire;
 
 use App\Exports\UsersExport;
 use App\Models\Semester;
+use App\Models\SemesterStatus;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
@@ -13,8 +14,9 @@ class ListUsers extends Component
 {
     public $roles = [];
     public $workshops = [];
-    public $statuses = [];
+    public $statuses = [SemesterStatus::ACTIVE];
 
+    public $year_of_acceptance = null;
     public $filter_name = '';
 
     public function getUsersProperty()
@@ -39,6 +41,13 @@ class ListUsers extends Component
                 $query->where('id', Semester::current()->id);
             });
         }
+
+        if (isset($this->year_of_acceptance)) {
+            $query->whereHas('educationalInformation', function (Builder $query) {
+                $query->where('year_of_acceptance', $this->year_of_acceptance);
+            });
+        }
+
         if (isset($this->filter_name)) {
             $query->where('name', 'like', '%'.$this->filter_name.'%');
         }
