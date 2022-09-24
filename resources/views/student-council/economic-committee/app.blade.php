@@ -2,7 +2,7 @@
 
 @section('title')
 <a href="#!" class="breadcrumb">@lang('role.student-council')</a>
-<a href="#!" class="breadcrumb">@lang('role.economic-committee')</a>
+<a href="#!" class="breadcrumb">@lang('checkout.student-council-checkout')</a>
 @endsection
 @section('student_council_module') active @endsection
 

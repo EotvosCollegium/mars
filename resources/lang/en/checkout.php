@@ -37,6 +37,7 @@ return [
     'print' => 'Printing',
     'receipts' => 'Receipts',
     'remaining_balance' => 'Remaining balance',
+    'student-council-checkout' => 'Students Council checkout',
     'sum' => 'Sum',
     'to_checkout' => 'Add to checkout',
     'transaction_for_workshop' => 'Pay to workshops',
