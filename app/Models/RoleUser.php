@@ -29,14 +29,16 @@ class RoleUser extends Pivot
 
     public function getTranslatedNameAttribute(): string
     {
-        return Cache::remember('role_user_'.$this->id.'_translated_name', 86400, function () {
-            if ($this->object_id) {
+        if ($this->object_id) {
+            return Cache::remember($this->object_id.'_object_translated_name', 86400, function () {
                 return $this->object->translatedName;
-            }
-            if ($this->workshop_id) {
+            });
+        }
+        if ($this->workshop_id) {
+            return Cache::remember($this->workshop_id.'_workshop_name', 86400, function () {
                 return $this->workshop->name;
-            }
-            return '';
-        });
+            });
+        }
+        return '';
     }
 }
