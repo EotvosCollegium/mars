@@ -318,7 +318,7 @@ class User extends Authenticatable implements HasLocalePreference
         return in_array(
             $this->id,
             Cache::remember('sys-admins', 60, function () {
-                return Role::getRole(Role::SYS_ADMIN)->users()->pluck('users.id')->toArray();
+                return Role::getRole(Role::SYS_ADMIN)->users()->pluck('id')->toArray();
             })
         );
     }
@@ -446,7 +446,7 @@ class User extends Authenticatable implements HasLocalePreference
         return in_array(
             $this->id,
             Cache::remember('collegists', 60, function () {
-                return Role::collegist()->getUsers()->pluck('users.id')->toArray();
+                return Role::collegist()->getUsers()->pluck('id')->toArray();
             })
         );
     }
