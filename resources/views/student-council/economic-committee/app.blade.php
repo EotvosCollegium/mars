@@ -45,6 +45,7 @@
 
                             <tr><th colspan="3">@lang('checkout.expenses')</th></tr>
                             @include('utils.checkout.list', ['paymentType' => \App\Models\PaymentType::expense()])
+                            @include('utils.checkout.sum',  ['paymentType' => \App\Models\PaymentType::workshopExpense()])
                             <tr>
                                 <th colspan="2">@lang('checkout.sum')</th>
                                 <th class="right"><nobr>{{ number_format($semester->transactions->sum('amount'), 0, '.', ' ') }} Ft</nobr></th>
@@ -52,7 +53,6 @@
                         </tbody></table>
                     </div>
                 </div>
-                {{--
                 <div class="row">
                     <div class="col s12">
                         <table class="highlight responsive-table centered" style="display: block;overflow-x:auto;">
@@ -63,9 +63,8 @@
                                     <th>
                                         @lang('checkout.allocated_balance')
                                         @if($semester->isCurrent())
-                                            @can('administrate', \App\Models\Checkout::studentsCouncil())
+                                        <br>
                                             <x-input.button :href="route('economic_committee.workshop_balance')" floating class="btn-small grey" icon="refresh" />
-                                            @endcan
                                         @endif
                                     </th>
                                     <th>@lang('checkout.used_balance')</th>
@@ -75,10 +74,19 @@
                             <tbody>
                                 @foreach($semester->workshopBalances as $workshop_balance)
                                 <tr>
-                                    <td class="valign-wrapper">{{ $workshop_balance->workshop->name }} </td>
+                                    <td>{{ $workshop_balance->workshop->name }} </td>
                                     <td>{{ $workshop_balance->resident . ' - ' . $workshop_balance->extern . ' (+' . $workshop_balance->not_yet_paid . ')' }}</td>
                                     <td>{{ $workshop_balance->allocated_balance }}</td>
-                                    <td>{{ $workshop_balance->used_balance }}</td>
+                                    <td>{{ $workshop_balance->used_balance }}
+                                        @can('administrate', \App\Models\Checkout::studentsCouncil())
+                                            <form action="{{ route('economic_committee.workshop_balance.update', ['workshop_balance' => $workshop_balance]) }}" method="POST">
+                                                @csrf
+                                                @method('PUT')
+                                                <x-input.text type="number" id="amount" only-input withoutLabel/>
+                                                <x-input.button type="submit" class="btn waves-effect" text="Kifizetés" />
+                                            </form>
+                                        @endcan
+                                    </td>
                                     <td>{{ $workshop_balance->allocated_balance - $workshop_balance->used_balance }}</td>
                                 </tr>
                                 @endforeach
@@ -93,7 +101,6 @@
                         @endif
                     </div>
                 </div>
-                --}}
             </div>
         </div>
     </div>

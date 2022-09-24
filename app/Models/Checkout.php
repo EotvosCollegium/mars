@@ -10,8 +10,7 @@ use Illuminate\Support\Facades\Cache;
  */
 class Checkout extends Model
 {
-    protected $fillable = ['name', 'password'];
-    protected $hidden = ['password'];
+    protected $fillable = ['name'];
 
     public const STUDENTS_COUNCIL = 'VALASZTMANY';
     public const ADMIN = 'ADMIN';
