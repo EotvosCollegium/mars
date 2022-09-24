@@ -14,13 +14,11 @@ class AddWorkshopExpensePaymentType extends Migration
      */
     public function up()
     {
-        if(DB::table('payment_types')->where('name', 'WORKSHOP_EXPENSE')->doesntExist())
-        {
+        if (DB::table('payment_types')->where('name', 'WORKSHOP_EXPENSE')->doesntExist()) {
             DB::table('payment_types')->insert([
                 'name' => 'WORKSHOP_EXPENSE',
             ]);
         }
-       
     }
 
     /**
