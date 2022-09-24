@@ -6,7 +6,7 @@ return [
     'KKT' => 'KKT',
     'NETREG' => 'NetReg',
     'PRINT' => 'Nyomtatás',
-    'WORKSHOP_EXPENSE' => 'Muhelykiadások',
+    'WORKSHOP_EXPENSE' => 'Műhelykiadások',
     'add_transaction_descr' => 'Az összeg közvetlenül a kasszába kerül / a kasszából kerül levonásra.',
     'all_gathered_transactions' => 'Begyűjtött tranzakciók',
     'all_gathered_transactions_descr' => 'Add a kasszához az alábbi összegeket, ha kifizették neked.',
