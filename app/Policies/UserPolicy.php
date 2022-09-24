@@ -131,8 +131,7 @@ class UserPolicy
         if (!isset($role)) {
             return $user->hasRole([
                 Role::SECRETARY,
-                Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS,
-                Role::STUDENT_COUNCIL => Role::COMMITTEE_LEADERS,
+                Role::STUDENT_COUNCIL => array_merge(Role::STUDENT_COUNCIL_LEADERS, Role::COMMITTEE_LEADERS),
                 Role::STUDENT_COUNCIL_SECRETARY,
                 Role::WORKSHOP_ADMINISTRATOR,
                 Role::WORKSHOP_LEADER
@@ -170,8 +169,7 @@ class UserPolicy
 
         if ($role->name == Role::STUDENT_COUNCIL) {
             return $user->hasRole([
-                Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS,
-                Role::STUDENT_COUNCIL => Role::COMMITTEE_LEADERS,
+                Role::STUDENT_COUNCIL => array_merge(Role::STUDENT_COUNCIL_LEADERS, Role::COMMITTEE_LEADERS),
                 Role::STUDENT_COUNCIL_SECRETARY
             ]);
         }
