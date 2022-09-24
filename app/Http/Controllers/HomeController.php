@@ -48,8 +48,9 @@ class HomeController extends Controller
 
     public function editNews(Request $request)
     {
+        /*@var User $user*/
         $user = Auth::user();
-        if ($user->hasRoleBase(Role::STUDENT_COUNCIL)) {
+        if ($user->hasRole(Role::STUDENT_COUNCIL)) {
             DB::table('home_page_news')->update([
                 'text' => $request->text ?? "",
                 'user_id' => $user->id

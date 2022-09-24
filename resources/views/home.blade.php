@@ -19,7 +19,7 @@
     </div>
 </div>
 
-@if($information != '' || Auth::user()->hasRoleBase(\App\Models\Role::STUDENT_COUNCIL))
+@if($information != '' || Auth::user()->hasRole(\App\Models\Role::STUDENT_COUNCIL))
 <div class="row">
     <div class="col s12">
         <div class="card">
@@ -35,7 +35,7 @@
     </div>
 </div>
 @endif
-@if(Auth::user()->hasRoleBase(\App\Models\Role::STUDENT_COUNCIL))
+@if(Auth::user()->hasRole(\App\Models\Role::STUDENT_COUNCIL))
 <div class="fixed-action-btn">
     <a class="btn-floating btn-large">
         <i id="edit_btn" class="large material-icons">mode_edit</i>

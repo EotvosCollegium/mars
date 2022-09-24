@@ -16,8 +16,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
-use InvalidArgumentException;
 
 /**
  * @property int $id
@@ -283,27 +283,6 @@ class User extends Authenticatable implements HasLocalePreference
     }
 
     /**
-     * Decides if the user has any base role of the given roles.
-     *
-     * @param  array  $roleNames  the roles' name
-     * @return bool
-     */
-    public function hasAnyRoleBase(array $roleNames): bool
-    {
-        $roles = Role::whereIn('name', $roleNames)->pluck('id');
-        return $this->roles()->whereIn('id', $roles)->count() > 0;
-    }
-
-    /**
-     * Decides if the user has a base role.
-     */
-    public function hasRoleBase(string $roleName): bool
-    {
-        return $this->hasAnyRoleBase([$roleName]);
-    }
-
-
-    /**
      * Scope a query to only include users with the given role.
      *
      * @param Builder $query
@@ -311,13 +290,11 @@ class User extends Authenticatable implements HasLocalePreference
      * @param RoleObject|Workshop|null $object
      * @return Builder
      */
-    public function scopeRole(Builder $query, Role|string $role, Workshop|RoleObject $object = null): Builder
+    public function scopeRole(Builder $query, Role|string $role, Workshop|RoleObject|string $object = null): Builder
     {
-        if (!$role instanceof Role) {
-            $role = Role::firstWhere('name', $role);
-            if (!$role) {
-                throw new InvalidArgumentException("Role '".$role ?? 'null'."' does not exist.");
-            }
+        $role = Role::getRole($role);
+        if ($object) {
+            $object = $role->getObject($object);
         }
         if ($object instanceof RoleObject) {
             return $query->whereHas('roles', function ($q) use ($role, $object) {
@@ -336,24 +313,67 @@ class User extends Authenticatable implements HasLocalePreference
         });
     }
 
+    public function isAdmin(): bool
+    {
+        return in_array(
+            $this->id,
+            Cache::remember('sys-admins', 60, function () {
+                return Role::getRole(Role::SYS_ADMIN)->users()->pluck('id')->toArray();
+            })
+        );
+    }
+
     /**
-     * Decides if the user has a role.
-     * @param Role|string $role
-     * @param integer|string|RoleObject|Workshop|null $object
+     * Decides if the user has any of the given roles.
+     * If a role which has objects is given, only the base role will be checked.
+     * Names can also be used instead of the models.
+     *
+     * Example usage:
+     * hasRole(1)
+     * hasRole(Role::COLLEGIST)
+     * hasRole([Role::COLLEGIST])
+     * hasRole([Role::COLLEGIST => Role::extern])
+     * hasRole([Role::COLLEGIST => 4, Role::firstWhere('name', Role::WORKSHOP_LEADER)])
+     *
+     * @param $roles Role|name|id|[Role|name|id|[Role|name => RoleObject|Workshop|name|id]]
      * @return bool
      */
-    public function hasRole(Role|string $role, int|string|Workshop|RoleObject $object = null): bool
+    public function hasRole($roles): bool
     {
-        if (!($role instanceof Role)) {
-            $role = Role::firstWhere('name', $role);
+        if (!is_array($roles)) {
+            $roles = [$roles];
         }
-        $object = $role->getObject($object);
-        $query = $this->roles()->where('role_id', $role->id);
-        if ($object instanceof Workshop) {
-            $query->where('workshop_id', $object->id);
-        } elseif ($object instanceof RoleObject) {
-            $query->where('object_id', $object->id);
-        }
+
+        $query = $this->roles();
+        $query->where(function ($query) use ($roles) {
+            foreach ($roles as $key => $value) {
+                $query->orWhere(function ($query) use ($key, $value) {
+                    if (is_integer($key)) {
+                        $role = Role::getRole($value);
+                        $query->where('role_id', $role->id);
+                    } else {
+                        $role = Role::getRole($key);
+                        $query->where('role_id', $role->id);
+                        if (is_array($value)) {
+                            $query->where(function ($query) use ($role, $value) {
+                                foreach ($value as $object) {
+                                    $object = $role->getObject($object);
+                                    $query->orWhere('object_id', $object->id);
+                                }
+                            });
+                        } else {
+                            $object = $role->getObject($value);
+                            if ($object instanceof Workshop) {
+                                $query->where('workshop_id', $object->id);
+                            } elseif ($object instanceof RoleObject) {
+                                $query->where('object_id', $object->id);
+                            }
+                        }
+                    }
+                });
+            }
+        });
+
         return $query->exists();
     }
 
@@ -423,24 +443,12 @@ class User extends Authenticatable implements HasLocalePreference
 
     public function isCollegist(): bool
     {
-        return $this->hasRoleBase(Role::COLLEGIST);
-    }
-
-    public function isAdmin(): bool
-    {
-        return $this->hasRoleBase(Role::SYS_ADMIN);
-    }
-
-    /**
-     * Checks if the user is a (vice-) president or committee leader.
-     * Committee members are not part of the council here.
-     */
-    public function isInStudentsCouncil(): bool
-    {
-        $roleObjectIds = RoleObject::whereIn('name', array_merge(Role::STUDENT_COUNCIL_LEADERS, Role::COMMITTEE_LEADERS))->pluck('id');
-        return $this->roles()->where('role_id', Role::StudentsCouncil()->id)
-            ->whereIn('object_id', $roleObjectIds)
-            ->exists();
+        return in_array(
+            $this->id,
+            Cache::remember('collegists', 60, function () {
+                return Role::collegist()->getUsers()->pluck('id')->toArray();
+            })
+        );
     }
 
     /**
@@ -448,32 +456,9 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public static function president(): ?User
     {
-        return self::role(Role::StudentsCouncil(), RoleObject::president())->first();
+        return self::role(Role::STUDENT_COUNCIL, Role::PRESIDENT)->first();
     }
 
-    public function isPresident(): bool
-    {
-        return $this->hasRole(Role::StudentsCouncil(), Role::PRESIDENT);
-    }
-
-    /**
-     * Checks if user is one of the leaders of the Students Council
-     */
-    public function isStudentCouncilLeader()
-    {
-        $roleObjectIds = RoleObject::whereIn('name', Role::STUDENT_COUNCIL_LEADERS)->pluck('id');
-        return $this->roles()->where('role_id', Role::StudentsCouncil()->id)
-            ->whereIn('object_id', $roleObjectIds)
-            ->exists();
-    }
-
-    /**
-     * Checks if the user is the Students Council's Secretary.
-     */
-    public function isStudentsCouncilSecretary(): bool
-    {
-        return $this->hasRole(Role::STUDENT_COUNCIL_SECRETARY);
-    }
 
     /**
      * @return User|null the director
@@ -582,7 +567,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function isResident(): bool
     {
-        return $this->hasRole(Role::COLLEGIST, Role::RESIDENT);
+        return $this->hasRole([Role::COLLEGIST => Role::RESIDENT]);
     }
 
     /**
@@ -592,7 +577,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function isExtern(): bool
     {
-        return $this->hasRole(Role::COLLEGIST, Role::EXTERN);
+        return $this->hasRole([Role::COLLEGIST => Role::EXTERN]);
     }
 
     /**
@@ -652,7 +637,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function scopeResident(Builder $query): Builder
     {
-        return $query->role(Role::COLLEGIST, RoleObject::firstWhere('name', Role::RESIDENT));
+        return $query->role(Role::COLLEGIST, Role::RESIDENT);
     }
 
     /**

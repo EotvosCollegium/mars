@@ -4,6 +4,8 @@
             <span class="card-title">@lang('general.filter')</span>
             <input type="text" class="input-field" id="filter_name" placeholder="@lang('user.name')"
                    wire:model="filter_name"/>
+            <input type="number" class="input-field" id="year_of_acceptance" placeholder="@lang('user.year_of_acceptance')"
+                   wire:model="year_of_acceptance"/>
             <h6>@lang('role.roles')</h6>
             @foreach (\App\Models\Role::all() as $r)
                 @if(in_array($r->id, $this->roles))
@@ -38,7 +40,7 @@
                 @endif
             @endforeach
             <hr>
-            <h6>@lang('admin.statuses')</h6>
+            <h6>@lang('admin.statuses') ({{\App\Models\Semester::current()->tag}})</h6>
             @foreach (\App\Models\SemesterStatus::STATUSES as $s)
                 @if(in_array($s, $this->statuses))
                     <span class="new badge {{ \App\Models\SemesterStatus::color($s) }}" data-badge-caption=""
@@ -74,7 +76,7 @@
                 </div>
             </div>
 
-            @foreach ($this->users as $user)
+            @forelse($this->users as $user)
                 @can('view', $user)
                     <div class="row">
                         <div class="col s12 xl3">
@@ -111,7 +113,15 @@
                         </div>
                     </div>
                 @endcan
-            @endforeach
+            @empty
+            Nincs a megadott feltételeknek megfelelő felhasználó, vagy nincs jogosultsága megtekinteni.
+            @endforelse
+            <div class="row">
+                <div class="col s12">
+                    <div class="divider"></div>
+                    <div class="right"><i><b>{{$this->users->count()}} felhasználó</i></b></div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

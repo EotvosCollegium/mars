@@ -59,9 +59,9 @@ class RegistrationTest extends TestCase
             'balance' => 0
         ]);
 
-        $this->assertTrue($user->hasRoleBase(Role::PRINTER));
-        $this->assertTrue($user->hasRoleBase(Role::INTERNET_USER));
-        $this->assertTrue($user->hasRoleBase(Role::COLLEGIST));
+        $this->assertTrue($user->hasRole(Role::PRINTER));
+        $this->assertTrue($user->hasRole(Role::INTERNET_USER));
+        $this->assertTrue($user->hasRole(Role::COLLEGIST));
 
         $this->assertNotNull($user->application);
     }
@@ -106,8 +106,8 @@ class RegistrationTest extends TestCase
             'balance' => 0
         ]);
 
-        $this->assertTrue($user->hasRoleBase(Role::PRINTER));
-        $this->assertTrue($user->hasRoleBase(Role::INTERNET_USER));
-        $this->assertTrue($user->hasRoleBase(Role::TENANT));
+        $this->assertTrue($user->hasRole(Role::PRINTER));
+        $this->assertTrue($user->hasRole(Role::INTERNET_USER));
+        $this->assertTrue($user->hasRole(Role::TENANT));
     }
 }

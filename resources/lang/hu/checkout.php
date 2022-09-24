@@ -38,6 +38,7 @@ return [
     'print' => 'Nyomtatás',
     'receipts' => 'Átvételi elismervények',
     'remaining_balance' => 'Felhasználható egyenleg',
+    'student-council-checkout' => 'Választmányi kassza',
     'sum' => 'Összesen',
     'to_checkout' => 'Kasszába',
     'transaction_for_workshop' => 'Fizetés műhelynek',
