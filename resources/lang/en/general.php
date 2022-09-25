@@ -43,5 +43,4 @@ return [
     'user' => 'User',
     'users' => 'Users',
     'view_issue' => 'You can view and track your issue here.',
-    'you_are_logged_in' => 'You are logged in.',
 ];

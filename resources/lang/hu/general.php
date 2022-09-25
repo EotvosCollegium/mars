@@ -43,5 +43,4 @@ return [
     'user' => 'Felhasználó',
     'users' => 'Felhasználók',
     'view_issue' => 'Itt nézheted meg és követheted nyomon a bejelentett hibád állapotát.',
-    'you_are_logged_in' => 'Sikeresen bejelentkeztél!',
 ];
