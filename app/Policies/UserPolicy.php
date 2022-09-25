@@ -161,7 +161,7 @@ class UserPolicy
         if ($role->name == Role::BOARD_OF_TRUSTEES_MEMBER) {
             return $user->hasRole(Role::STUDENT_COUNCIL_SECRETARY);
         }
-    
+
         if ($role->name == Role::ETHICS_COMMISSIONER) {
             return $user->hasRole(Role::STUDENT_COUNCIL_SECRETARY);
         }

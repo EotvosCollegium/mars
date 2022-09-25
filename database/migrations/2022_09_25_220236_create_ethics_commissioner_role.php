@@ -26,6 +26,5 @@ class CreateEthicsCommissionerRole extends Migration
      */
     public function down()
     {
-
     }
 }
