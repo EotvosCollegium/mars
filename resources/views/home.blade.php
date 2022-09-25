@@ -96,6 +96,7 @@
                 <h5>@lang('role.sys-admins')</h5>
                 <i><a href="mailto:{{ env('DEVELOPER_EMAIL') }}">{{env('DEVELOPER_EMAIL')}}</a></i><br>
                 @foreach($contacts['admins'] as $admin)
+                    @if(!$loop->first)|@endif
                     <i>{{$admin->name}}</i>
                     @if($admin->room)
                         ({{$roleuser->user->room}}. szoba)
