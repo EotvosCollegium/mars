@@ -23,6 +23,7 @@ return [
     'director' => 'Director',
     'economic-vice-president' => 'Economic vice president',
     'en' => 'English',
+    'ethics-commissioner' => 'Ethics commissioner',
     'extern' => 'Extern',
     'fr' => 'French',
     'gr' => 'Ancient greek',
