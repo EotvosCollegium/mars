@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\StudentsCouncil\EpistolaController;
 use App\Models\EpistolaNews;
 use App\Models\Role;
+use App\Models\RoleObject;
+use App\Models\RoleUser;
 use App\Models\User;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
@@ -26,9 +28,57 @@ class HomeController extends Controller
         if (Auth::user()->can('view', EpistolaNews::class)) {
             $epistola = EpistolaController::getActiveNews();
         }
+
+        $news = DB::table('custom')->where('key', 'HOME_PAGE_NEWS')->first()->text;
+        
+
+        $contacts = ['admins' => User::admins()];
+        $director = User::director();
+        $secretary = User::secretary();
+        $staff = User::staff();
+
+        $contacts['other'] = [
+            Role::DIRECTOR => [
+                'name' => $director->name, 
+                'email' => $director->email, 
+                'phone_number' => $director->personalInformation->phone_number
+            ],
+            Role::SECRETARY => [
+                'name' => $secretary->name, 
+                'email' => $secretary->email, 
+                'phone_number' => $secretary->personalInformation->phone_number
+            ],
+            Role::STAFF => [
+                'name' => $staff->name, 
+                'email' => $staff->email, 
+                'phone_number' => $staff->personalInformation->phone_number
+            ],
+            'reception' => [
+                'phone_number' => env('PORTA_PHONE')
+            ]
+        ];
+
+        if(Auth::user()->hasRole(Role::COLLEGIST)) {
+            $news .= DB::table('custom')->where('key', 'HOME_PAGE_NEWS_COLLEGISTS')->first()->text;
+
+            $student_council_objects = RoleObject::whereIn('name', Role::STUDENT_COUNCIL_LEADERS)
+                ->orWhereIn('name', Role::COMMITTEE_LEADERS)
+                ->get()->pluck('id')->toArray();
+            $student_council = RoleUser::where('role_id', Role::StudentsCouncil()->id)
+                        ->whereIn('object_id', $student_council_objects)
+                        ->with('user')
+                        ->orderBy('object_id')
+                        ->get();
+            $contacts = array_merge([
+                'student_council' => $student_council
+            ], $contacts);
+        }
+
+    
         return view('home', [
-            'information' => DB::table('home_page_news')->first()->text,
-            'epistola' => $epistola ?? null
+            'information' => $news,
+            'epistola' => $epistola ?? null,
+            'contacts' => $contacts
         ]);
     }
 
@@ -51,7 +101,7 @@ class HomeController extends Controller
         /*@var User $user*/
         $user = Auth::user();
         if ($user->hasRole(Role::STUDENT_COUNCIL)) {
-            DB::table('home_page_news')->update([
+            DB::table('custom')->where('key', 'HOME_PAGE_NEWS_COLLEGISTS')->update([
                 'text' => $request->text ?? "",
                 'user_id' => $user->id
             ]);

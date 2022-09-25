@@ -208,22 +208,7 @@ class Role extends Model
      */
     public function getUsers(Workshop|RoleObject $object = null): Collection|array
     {
-        if (isset($object) && $this->has_objects) {
-            return User::whereHas('roles', function ($q) use ($object) {
-                $q->where('role_id', $this->id)
-                    ->where('object_id', $object->id);
-            })->get();
-        } elseif (isset($object) && $this->has_workshops) {
-            $object = $this->getObject($object);
-            return User::whereHas('roles', function ($q) use ($object) {
-                $q->where('role_id', $this->id)
-                    ->where('workshop_id', $object->id);
-            })->get();
-        }
-
-        return User::whereHas('roles', function ($q) use ($object) {
-            $q->where('role_id', $this->id);
-        })->get();
+       return User::role($this, $object)->get();
     }
 
 
@@ -240,6 +225,11 @@ class Role extends Model
     public static function Director(): Role|null
     {
         return self::where('name', self::DIRECTOR)->first();
+    }
+
+    public static function SysAdmin(): Role|null
+    {
+        return self::where('name', self::SYS_ADMIN)->first();
     }
 
     public function getTranslatedNameAttribute()

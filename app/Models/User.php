@@ -452,6 +452,23 @@ class User extends Authenticatable implements HasLocalePreference
     }
 
     /**
+     * @return array|User[]|Collection the student council leaders (including committee leaders)
+     */
+    public static function studentCouncilLeaders(): array|Collection
+    {
+        return User::whereHas('role', function ($q) {
+            return $q->where('role.id', Role::StudentsCouncil()->id)
+                     ->whereIn('role.object_id', array_merge(Role::STUDENT_COUNCIL_LEADERS, Role::COMMITTEE_LEADERS));
+        });
+    }
+
+    public static function admins(): Collection|array
+    {
+        return self::role(Role::SYS_ADMIN)->get();
+    }
+
+    
+    /**
      * @return User|null the president
      */
     public static function president(): ?User
@@ -459,6 +476,13 @@ class User extends Authenticatable implements HasLocalePreference
         return self::role(Role::STUDENT_COUNCIL, Role::PRESIDENT)->first();
     }
 
+    /**
+     * @return User|null the president
+     */
+    public static function studentCouncilSecretary(): ?User
+    {
+        return self::role(Role::STUDENT_COUNCIL_SECRETARY)->first();
+    }
 
     /**
      * @return User|null the director
@@ -466,6 +490,22 @@ class User extends Authenticatable implements HasLocalePreference
     public static function director(): ?User
     {
         return self::role(Role::Director())->first();
+    }
+
+    /**
+     * @return User|null the president
+     */
+    public static function secretary(): ?User
+    {
+        return self::role(Role::SECRETARY)->first();
+    }
+
+    /**
+     * @return User|null the head of the staff
+     */
+    public static function staff(): ?User
+    {
+        return self::role(Role::STAFF)->first();
     }
 
 
