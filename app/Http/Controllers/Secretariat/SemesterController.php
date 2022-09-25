@@ -59,7 +59,7 @@ class SemesterController extends Controller
     {
         $users = User::collegists();
         foreach ($users as $user) {
-            if ($user->getStatus() != SemesterStatus::INACTIVE /* default */) {
+            if ($user->getStatus() != SemesterStatus::PENDING) {
                 continue;
             }
             if ($user->getStatus() != SemesterStatus::DEACTIVATED) {
@@ -72,7 +72,7 @@ class SemesterController extends Controller
                 continue;
             }
             SemesterStatus::withoutEvents(function () use ($user) {
-                $user->setStatus(SemesterStatus::INACTIVE, 'Default status');
+                $user->setStatus(SemesterStatus::PENDING, 'Default status');
             });
         }
 
@@ -88,7 +88,7 @@ class SemesterController extends Controller
         $users = User::collegists();
         $current_semester = Semester::current();
         foreach ($users as $user) {
-            if (! $user->isInSemester($current_semester->id) || $user->getStatus() == SemesterStatus::INACTIVE) {
+            if (! $user->isInSemester($current_semester->id) || $user->getStatus() == SemesterStatus::PENDING) {
                 $user->setStatus(SemesterStatus::DEACTIVATED, 'Failed to make a statement.');
             }
         }
