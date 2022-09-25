@@ -10,7 +10,7 @@ class Faculty extends Model
     public const BGGYK = 'Bárczi Gusztáv Gyógypedagógiai Kar';
     public const BTK = 'Bölcsészettudományi Kar';
     public const IK = 'Informatikai Kar';
-    public const GTI = 'Gazdálkodástudományi Intézet';
+    public const GTI = 'Gazdaságtudományi Kar';
     public const PPK = 'Pedagógiai és Pszichológiai Kar';
     public const TOK = 'Tanító- és Óvóképző Kar';
     public const TATK = 'Társadalomtudományi Kar';
