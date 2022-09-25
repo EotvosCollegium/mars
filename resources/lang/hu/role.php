@@ -23,6 +23,7 @@ return [
     'director' => 'Igazgató',
     'economic-vice-president' => 'Gazdasági alelnök',
     'en' => 'Angol',
+    'ethics-commissioner' => 'Etikai biztos',
     'extern' => 'Bejáró',
     'fr' => 'Francia',
     'gr' => 'Ógörög',

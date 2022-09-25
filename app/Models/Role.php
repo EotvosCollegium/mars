@@ -35,6 +35,7 @@ class Role extends Model
     public const STUDENT_COUNCIL = 'student-council';
     public const STUDENT_COUNCIL_SECRETARY = 'student-council-secretary';
     public const BOARD_OF_TRUSTEES_MEMBER = 'board-of-trustees-member';
+    public const ETHICS_COMMISSIONER = 'ethics-commissioner';
 
     //Students' Committe role's objects
     public const PRESIDENT = 'president';
@@ -101,7 +102,8 @@ class Role extends Model
         self::LOCALE_ADMIN,
         self::STUDENT_COUNCIL,
         self::STUDENT_COUNCIL_SECRETARY,
-        self::BOARD_OF_TRUSTEES_MEMBER
+        self::BOARD_OF_TRUSTEES_MEMBER,
+        self::ETHICS_COMMISSIONER
     ];
 
     protected $fillable = [
@@ -265,6 +267,7 @@ class Role extends Model
             self::AGGREGATED_APPLICATION_COMMITTEE_MEMBER =>  'grey darken-2',
             self::STUDENT_COUNCIL_SECRETARY => 'pink lighten-3',
             self::BOARD_OF_TRUSTEES_MEMBER => 'black',
+            self::ETHICS_COMMISSIONER => 'green lighten-2',
             default => 'grey',
         };
     }
