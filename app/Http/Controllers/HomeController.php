@@ -55,6 +55,10 @@ class HomeController extends Controller
             ],
             'reception' => [
                 'phone_number' => env('PORTA_PHONE')
+            ],
+            'doctor' => [
+                'name' => env('DOCTOR_NAME'),
+                'link' => env('DOCTOR_LINK')
             ]
         ];
 
@@ -69,9 +73,12 @@ class HomeController extends Controller
                         ->with('user')
                         ->orderBy('object_id')
                         ->get();
-            $contacts = array_merge([
-                'student_council' => $student_council
-            ], $contacts);
+            $contacts = array_merge($contacts, [
+                Role::STUDENT_COUNCIL => $student_council,
+                Role::STUDENT_COUNCIL_SECRETARY => User::studentCouncilSecretary(),
+                Role::BOARD_OF_TRUSTEES_MEMBER => User::boardOfTrusteesMembers(),
+                Role::ETHICS_COMMISSIONER => User::ethicsCommissioners(),
+            ]);
         }
 
     

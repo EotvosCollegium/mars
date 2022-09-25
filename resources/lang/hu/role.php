@@ -21,6 +21,7 @@ return [
     'cultural-referent' => 'Kulturális bizottsági referens',
     'de' => 'Német',
     'director' => 'Igazgató',
+    'doctor' => 'Orvos',
     'economic-vice-president' => 'Gazdasági alelnök',
     'en' => 'Angol',
     'ethics-commissioner' => 'Etikai biztos',

@@ -462,6 +462,9 @@ class User extends Authenticatable implements HasLocalePreference
         });
     }
 
+    /**
+     * @return array|User[]|Collection the system admins
+     */
     public static function admins(): Collection|array
     {
         return self::role(Role::SYS_ADMIN)->get();
@@ -483,6 +486,23 @@ class User extends Authenticatable implements HasLocalePreference
     {
         return self::role(Role::STUDENT_COUNCIL_SECRETARY)->first();
     }
+
+    /**
+     * @return array|User[]|Collection board of trustees members
+     */
+    public static function boardOfTrusteesMembers(): Collection|array
+    {
+        return self::role(Role::BOARD_OF_TRUSTEES_MEMBER)->get();
+    }
+
+    /**
+     * @return array|User[]|Collection ethics commitioners
+     */
+    public static function ethicsCommissioners(): Collection|array
+    {
+        return self::role(Role::ETHICS_COMMISSIONER)->get();
+    }
+
 
     /**
      * @return User|null the director

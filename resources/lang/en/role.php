@@ -21,6 +21,7 @@ return [
     'cultural-referent' => 'Cultural committee referent',
     'de' => 'German',
     'director' => 'Director',
+    'doctor' => 'Doctor',
     'economic-vice-president' => 'Economic vice president',
     'en' => 'English',
     'ethics-commissioner' => 'Ethics commissioner',

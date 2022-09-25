@@ -42,10 +42,10 @@
             <div class="card-content">
                 <span class="card-title">@lang('general.contacts')</span>
                 <!-- Student Council -->
-                @if(isset($contacts['student_council']))
+                @if(isset($contacts[\App\Models\Role::STUDENT_COUNCIL]))
                 <h5>@lang('role.student-council')</h5>
                 <i><a href="mailto:{{ env('MAIL_VALASZTMANY') }}">{{env('MAIL_VALASZTMANY')}}</a></i><br>
-                @foreach($contacts['student_council'] as $roleuser)
+                @foreach($contacts[\App\Models\Role::STUDENT_COUNCIL] as $roleuser)
                 <b>@lang('role.'.$roleuser->object->name)</b>: 
                     <i>{{$roleuser->user->name}}</i>
                     @if($roleuser->object->name == \App\Models\Role::PRESIDENT)
@@ -58,6 +58,38 @@
                     @endif
                 <br>
                 @endforeach
+                <br>
+                <!-- Student Council Secretary -->
+                <b>@lang('role.'.\App\Models\Role::STUDENT_COUNCIL_SECRETARY)</b>:
+                <i>{{$contacts[\App\Models\Role::STUDENT_COUNCIL_SECRETARY]->name}}</i>
+                @if($contacts[\App\Models\Role::STUDENT_COUNCIL_SECRETARY]->room)
+                ({{$contacts[\App\Models\Role::STUDENT_COUNCIL_SECRETARY]->room}}. szoba)
+                @endif
+                <br>
+                <!-- Board of trustees members -->
+                <b>@lang('role.'.\App\Models\Role::BOARD_OF_TRUSTEES_MEMBER)</b>:
+                @foreach($contacts[\App\Models\Role::BOARD_OF_TRUSTEES_MEMBER] as $user)
+                    @if(!$loop->first)|@endif
+                    <i>{{$user->name}}</i>
+                    @if($user->room)
+                    ({{$user->room}}. szoba)
+                    @endif
+                @endforeach
+                <br>
+                <!-- Ethics commissioners -->
+                <b>@lang('role.'.\App\Models\Role::ETHICS_COMMISSIONER)</b>:
+                @foreach($contacts[\App\Models\Role::ETHICS_COMMISSIONER] as $user)
+                    @if(!$loop->first)|@endif
+                    <i>{{$user->name}}</i>
+                    @if($user->hasEducationalInformation())
+                    <a href="mailto:{{$user->educationalInformation->email}}"> {{$user->educationalInformation->email}}</a>
+                    @endif
+                    @if($user->room)
+                    ({{$user->room}}. szoba)
+                    @endif
+                @endforeach
+
+
                 @endif
                 <!-- Admins -->
                 @if(isset($contacts['admins']))
@@ -77,6 +109,9 @@
                     <i>{{$other['name'] ?? ''}}</i>
                     @if($other['email'] ?? null)
                     <a href="mailto:{{ $other['email'] }}">{{$other['email']}}</a>
+                    @endif
+                    @if($other['link'] ?? null)
+                    <a href="{{ $other['link'] }}">{{$other['link']}}</a>
                     @endif
                     {{ $other['phone_number'] ?? ''}}
                     <br>
