@@ -12,6 +12,11 @@
                 <form action="{{ route('secretariat.status-update.update') }}" method="post">
                     @csrf
                     <div class="row">
+                        @if ($user->getStatusIn(\App\Models\Semester::current())!=\App\Models\SemesterStatus::INACTIVE)
+                            <blockquote>
+                                @lang('secretariat.status_set') @lang('user.' . $user->getStatusIn(\App\Models\Semester::current())).
+                            </blockquote>
+                        @endif
                         <blockquote>
                             @lang('secretariat.collegist_role_info')
                         </blockquote>

@@ -14,13 +14,13 @@ use Illuminate\Support\Facades\Validator;
 
 class SemesterController extends Controller
 {
-    public static function isStatementAvailable()
+    public static function isStatementAvailable($user)
     {
-        $statement_event = EventTrigger::find(EventTrigger::INTERNET_ACTIVATION_SIGNAL)->date;
+        $statement_event = EventTrigger::find(EventTrigger::SEND_STATUS_STATEMENT_REQUEST)->date;
         $deadline_event = EventTrigger::find(EventTrigger::DEACTIVATE_STATUS_SIGNAL)->date;
         // If the deadline is closer than sending out the request, that means
         // the request has been already sent out.
-        return $deadline_event < $statement_event;
+        return $deadline_event < $statement_event || $user->getStatusIn(Semester::current())==SemesterStatus::INACTIVE;
     }
 
     public function showStatusUpdate()
@@ -32,10 +32,10 @@ class SemesterController extends Controller
         if ($user->getStatusIn(Semester::previous()->id) == SemesterStatus::DEACTIVATED) {
             abort(403);
         }
-        if (!self::isStatementAvailable()) {
+        if (!self::isStatementAvailable($user)) {
             abort(403);
         }
-        return view('secretariat.statuses.status_update_form');
+        return view('secretariat.statuses.status_update_form', ['user' => Auth::user()]);
     }
 
     public function updateStatus(Request $request)
@@ -78,15 +78,12 @@ class SemesterController extends Controller
             $notifiable->push($user);
         }
 
-        foreach ($notifiable->chunk(80) as $users2) {
-            //gmail can only send max 100 bcc recipients
-            Mail::bcc($users2)->queue(new \App\Mail\StatusStatementRequest());
-        }
+        Mail::send(env('MAIL_MEMBRA'))->queue(new \App\Mail\StatusStatementRequest());
         return $notifiable;
     }
 
     /**
-     * Those who did not make their statements by now will be inactive
+     * Those who did not make their statements by now will be deactivated
      * next semester.
      */
     public static function finalizeStatements()
