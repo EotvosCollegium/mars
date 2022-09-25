@@ -27,6 +27,7 @@ class AuthServiceProvider extends ServiceProvider
         \App\Models\EpistolaNews::class => \App\Policies\EpistolaPolicy::class,
         \App\Models\Router::class => \App\Policies\RouterPolicy::class,
         \App\Models\MrAndMissVote::class => \App\Policies\MrAndMissPolicy::class,
+        \App\Models\CommunityService::class => \App\Policies\CommunityServicePolicy::class,
     ];
 
     /**

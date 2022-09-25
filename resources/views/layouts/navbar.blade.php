@@ -92,6 +92,12 @@
                                     <i class="material-icons left">how_to_vote</i> @lang('mr-and-miss.mr-and-miss')
                                 </a>
                             </li>
+                            <!-- community service-->
+                            <li>
+                                <a class="waves-effect" href="{{ route('community_service') }}">
+                                    <i class="material-icons left">business_center</i> @lang('community-service.community-service')
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </li>

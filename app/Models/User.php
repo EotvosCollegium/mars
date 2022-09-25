@@ -451,6 +451,7 @@ class User extends Authenticatable implements HasLocalePreference
         );
     }
 
+
     /**
      * @return array|User[]|Collection the student council leaders (including committee leaders)
      */
@@ -852,10 +853,26 @@ class User extends Authenticatable implements HasLocalePreference
         return ['voted' => false];
     }
     /**
-     * Returns the user's assigned room
+     * @return Room the user's assigned room
      */
-    public function room()
+    public function room() : Room
     {
         return $this->belongsTo(\App\Models\Room::class, 'room', 'name');
+    }
+
+    /**
+     * @return HasMany the CommunityServices the user has requested
+     */
+    public function communityServiceRequests() : HasMany
+    {
+        return $this->hasMany(\App\Models\CommunityService::class);
+    }
+
+    /**
+     * @return HasMany the CommunityServices the user has approved/yet to approve
+     */
+    public function communityServiceApprovals() : HasMany
+    {
+        return $this->hasMany(\App\Models\CommunityService::class);
     }
 }
