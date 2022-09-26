@@ -5,7 +5,7 @@
 @if($attributes->get('href'))
 <a href="{{$attributes->get('href')}}"
 @else
-<button
+<button @if(isset($id)) id="{{$id}}" @endif
 @endif
     {{$attributes->whereDoesntStartWith('href')->merge([
         'type' => 'submit',

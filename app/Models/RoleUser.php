@@ -14,7 +14,9 @@ use Illuminate\Support\Facades\Cache;
  */
 class RoleUser extends Pivot
 {
-    protected $fillable = ['workshop_id', 'object_id'];
+    protected $table = 'role_users';
+
+    protected $fillable = ['workshop_id', 'object_id', 'user_id', 'role_id'];
 
     protected $with = ['workshop', 'object'];
 
@@ -25,6 +27,11 @@ class RoleUser extends Pivot
     public function object(): BelongsTo
     {
         return $this->belongsTo(RoleObject::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function getTranslatedNameAttribute(): string

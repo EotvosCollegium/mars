@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\StudentsCouncil\EpistolaController;
 use App\Models\EpistolaNews;
 use App\Models\Role;
+use App\Models\RoleObject;
+use App\Models\RoleUser;
 use App\Models\User;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
@@ -26,9 +28,64 @@ class HomeController extends Controller
         if (Auth::user()->can('view', EpistolaNews::class)) {
             $epistola = EpistolaController::getActiveNews();
         }
+
+        $information_general = DB::table('custom')->where('key', 'HOME_PAGE_NEWS')->first()->text;
+
+
+        $contacts = ['admins' => User::admins()];
+        $director = User::director();
+        $secretary = User::secretary();
+        $staff = User::staff();
+
+        $contacts['other'] = [
+            Role::DIRECTOR => [
+                'name' => $director->name,
+                'email' => $director->email,
+                'phone_number' => $director->personalInformation->phone_number
+            ],
+            Role::SECRETARY => [
+                'name' => $secretary->name,
+                'email' => $secretary->email,
+                'phone_number' => $secretary->personalInformation->phone_number
+            ],
+            Role::STAFF => [
+                'name' => $staff->name,
+                'email' => $staff->email,
+                'phone_number' => $staff->personalInformation->phone_number
+            ],
+            'reception' => [
+                'phone_number' => env('PORTA_PHONE')
+            ],
+            'doctor' => [
+                'name' => env('DOCTOR_NAME'),
+                'link' => env('DOCTOR_LINK')
+            ]
+        ];
+
+        if (Auth::user()->hasRole(Role::COLLEGIST)) {
+            $student_council_objects = RoleObject::whereIn('name', Role::STUDENT_COUNCIL_LEADERS)
+                ->orWhereIn('name', Role::COMMITTEE_LEADERS)
+                ->get()->pluck('id')->toArray();
+            $student_council = RoleUser::where('role_id', Role::StudentsCouncil()->id)
+                        ->whereIn('object_id', $student_council_objects)
+                        ->with('user')
+                        ->orderBy('object_id')
+                        ->get();
+            $contacts = array_merge($contacts, [
+                Role::STUDENT_COUNCIL => $student_council,
+                Role::STUDENT_COUNCIL_SECRETARY => User::studentCouncilSecretary(),
+                Role::BOARD_OF_TRUSTEES_MEMBER => User::boardOfTrusteesMembers(),
+                Role::ETHICS_COMMISSIONER => User::ethicsCommissioners(),
+            ]);
+            $information_collegist = DB::table('custom')->where('key', 'HOME_PAGE_NEWS_COLLEGISTS')->first()->text;
+        }
+
+
         return view('home', [
-            'information' => DB::table('home_page_news')->first()->text,
-            'epistola' => $epistola ?? null
+            'information_general' => $information_general,
+            'information_collegist' => $information_collegist ?? null,
+            'epistola' => $epistola ?? null,
+            'contacts' => $contacts
         ]);
     }
 
@@ -50,14 +107,23 @@ class HomeController extends Controller
     {
         /*@var User $user*/
         $user = Auth::user();
-        if ($user->hasRole(Role::STUDENT_COUNCIL)) {
-            DB::table('home_page_news')->update([
-                'text' => $request->text ?? "",
-                'user_id' => $user->id
-            ]);
-            return redirect()->back()->with('message', __('general.successful_modification'));
+        if (!$user->hasRole([
+            Role::STUDENT_COUNCIL => Role::PRESIDENT,
+            Role::SYS_ADMIN,
+            Role::STUDENT_COUNCIL_SECRETARY])) {
+            abort(403);
         }
-        abort(403);
+
+        DB::table('custom')->where('key', 'HOME_PAGE_NEWS')->update([
+            'text' => $request->info_general ?? "",
+            'user_id' => $user->id
+        ]);
+        DB::table('custom')->where('key', 'HOME_PAGE_NEWS_COLLEGISTS')->update([
+            'text' => $request->info_collegist ?? "",
+            'user_id' => $user->id
+        ]);
+
+        return redirect()->back()->with('message', __('general.successful_modification'));
     }
 
     public function verification(Request $request)
