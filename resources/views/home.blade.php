@@ -159,14 +159,9 @@
 @push('scripts')
 <script>
 $("#edit_btn").click(function() {
-    console.log("ok");
-    // if($("#edit_btn").text() == "mode_edit"){
-        $("#info_text").toggleClass('hidden');
-        $("#info_input").toggleClass('hidden');
-    // }
-    // else{
-    //     $("#info_form").submit();
-    // }
+    $("#info_text").toggleClass('hidden');
+    $("#info_input").toggleClass('hidden');
+    $('.materialboxed').materialbox();
 });
 function standby(id) {
     document.getElementById(id).src = "{{ url('/img/committee-logos/kommbiz.jpg') }}"
