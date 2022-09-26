@@ -470,7 +470,7 @@ class User extends Authenticatable implements HasLocalePreference
         return self::role(Role::SYS_ADMIN)->get();
     }
 
-    
+
     /**
      * @return User|null the president
      */
