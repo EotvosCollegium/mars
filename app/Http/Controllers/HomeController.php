@@ -29,7 +29,7 @@ class HomeController extends Controller
             $epistola = EpistolaController::getActiveNews();
         }
 
-        $news = DB::table('custom')->where('key', 'HOME_PAGE_NEWS')->first()->text;
+        $information_general = DB::table('custom')->where('key', 'HOME_PAGE_NEWS')->first()->text;
         
 
         $contacts = ['admins' => User::admins()];
@@ -63,8 +63,6 @@ class HomeController extends Controller
         ];
 
         if(Auth::user()->hasRole(Role::COLLEGIST)) {
-            $news .= DB::table('custom')->where('key', 'HOME_PAGE_NEWS_COLLEGISTS')->first()->text;
-
             $student_council_objects = RoleObject::whereIn('name', Role::STUDENT_COUNCIL_LEADERS)
                 ->orWhereIn('name', Role::COMMITTEE_LEADERS)
                 ->get()->pluck('id')->toArray();
@@ -79,11 +77,14 @@ class HomeController extends Controller
                 Role::BOARD_OF_TRUSTEES_MEMBER => User::boardOfTrusteesMembers(),
                 Role::ETHICS_COMMISSIONER => User::ethicsCommissioners(),
             ]);
+            $information_collegist = DB::table('custom')->where('key', 'HOME_PAGE_NEWS_COLLEGISTS')->first()->text;
+
         }
 
     
         return view('home', [
-            'information' => $news,
+            'information_general' => $information_general,
+            'information_collegist' => $information_collegist ?? null,
             'epistola' => $epistola ?? null,
             'contacts' => $contacts
         ]);
@@ -107,14 +108,25 @@ class HomeController extends Controller
     {
         /*@var User $user*/
         $user = Auth::user();
-        if ($user->hasRole(Role::STUDENT_COUNCIL)) {
-            DB::table('custom')->where('key', 'HOME_PAGE_NEWS_COLLEGISTS')->update([
-                'text' => $request->text ?? "",
-                'user_id' => $user->id
-            ]);
-            return redirect()->back()->with('message', __('general.successful_modification'));
-        }
-        abort(403);
+        if (!$user->hasRole([
+            Role::STUDENT_COUNCIL => Role::PRESIDENT, 
+            Role::SYS_ADMIN, 
+            Role::STUDENT_COUNCIL_SECRETARY]))
+        {
+            abort(403);
+        } 
+        
+        DB::table('custom')->where('key', 'HOME_PAGE_NEWS')->update([
+            'text' => $request->info_general ?? "",
+            'user_id' => $user->id
+        ]);
+        DB::table('custom')->where('key', 'HOME_PAGE_NEWS_COLLEGISTS')->update([
+            'text' => $request->info_collegist ?? "",
+            'user_id' => $user->id
+        ]);
+
+        return redirect()->back()->with('message', __('general.successful_modification'));
+
     }
 
     public function verification(Request $request)

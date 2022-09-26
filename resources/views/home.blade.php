@@ -18,17 +18,41 @@
 @endif
 
 <!-- Information -->
-@if($information != '' || Auth::user()->hasRole(\App\Models\Role::STUDENT_COUNCIL))
+@if($information_general.$information_collegist != '' || 
+    Auth::user()->hasRole([
+        \App\Models\Role::STUDENT_COUNCIL => \App\Models\Role::PRESIDENT, 
+        \App\Models\Role::SYS_ADMIN, 
+        \App\Models\Role::STUDENT_COUNCIL_SECRETARY]))
 <div class="row">
     <div class="col s12">
         <div class="card">
             <div class="card-content">
                 <span class="card-title">@lang('general.information')</span>
-                <form id="info_form" method="POST" action="{{ route('home.edit') }}">
-                    @csrf
-                    <p id="info_text">@markdown($information == "" ? "Adj hozzá valamit lenn." : $information)</p>
-                    <div id="info_input"></div>
-                </form>
+                <div id="info_text">
+                    @markdown($information_general)
+                    @markdown($information_collegist)
+                    @if(Auth::user()->hasRole([
+                        \App\Models\Role::STUDENT_COUNCIL => \App\Models\Role::PRESIDENT, 
+                        \App\Models\Role::SYS_ADMIN, 
+                        \App\Models\Role::STUDENT_COUNCIL_SECRETARY]))
+                        <x-input.button floating class="right" id="edit_btn" icon="mode_edit"/>
+                    @endif
+                </div>
+                <div id="info_input" class="hidden">
+                    <form id="info_form" method="POST" action="{{ route('home.edit') }}">
+                        @csrf
+                        Általános:
+                        <textarea class="materialize-textarea" name="info_general">{{ $information_general }}</textarea>
+                        Csak Collegistáknak:
+                        <textarea class="materialize-textarea" name="info_collegist">{{ $information_collegist }}</textarea>
+                        <small>
+                            Formázásra a
+                            <a href='https://www.markdownguide.org/cheat-sheet/' target='__blank'>Markdown jelölései</a>
+                            használhatóak.
+                        </small>
+                        <x-input.button floating class="right" icon="save"/>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -98,7 +122,7 @@
                     @if(!$loop->first)|@endif
                     <i>{{$admin->name}}</i>
                     @if($admin->room)
-                        ({{$roleuser->user->room}}. szoba)
+                        ({{$admin->room}}. szoba)
                     @endif
                 @endforeach
                 @endif
@@ -121,14 +145,6 @@
     </div>
 </div>
 
-@if(Auth::user()->hasRole(\App\Models\Role::STUDENT_COUNCIL))
-<div class="fixed-action-btn">
-    <a class="btn-floating btn-large">
-        <i id="edit_btn" class="large material-icons">mode_edit</i>
-    </a>
-</div>
-@endif
-
 @if($epistola)
 <div class="cards-container">
     @foreach ($epistola as $article)
@@ -143,14 +159,14 @@
 @push('scripts')
 <script>
 $("#edit_btn").click(function() {
-    if($("#edit_btn").text() == "mode_edit"){
-        $("#edit_btn").text("send")
-        $("#info_text").text("");
-        $("#info_input").html(`<textarea name="text" class="materialize-textarea">{{ $information ?? ""}}</textarea>`);
-    }
-    else{
-        $("#info_form").submit();
-    }
+    console.log("ok");
+    // if($("#edit_btn").text() == "mode_edit"){
+        $("#info_text").toggleClass('hidden');
+        $("#info_input").toggleClass('hidden');
+    // }
+    // else{
+    //     $("#info_form").submit();
+    // }
 });
 function standby(id) {
     document.getElementById(id).src = "{{ url('/img/committee-logos/kommbiz.jpg') }}"
