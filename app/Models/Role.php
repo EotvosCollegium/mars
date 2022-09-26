@@ -208,7 +208,7 @@ class Role extends Model
      */
     public function getUsers(Workshop|RoleObject $object = null): Collection|array
     {
-       return User::role($this, $object)->get();
+        return User::role($this, $object)->get();
     }
 
 

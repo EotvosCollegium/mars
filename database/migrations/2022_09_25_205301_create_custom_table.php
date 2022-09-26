@@ -14,7 +14,6 @@ class CreateCustomTable extends Migration
      */
     public function up()
     {
-
         Schema::rename('home_page_news', 'custom');
 
         Schema::table('custom', function (Blueprint $table) {

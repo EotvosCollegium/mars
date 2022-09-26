@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Cache;
  */
 class RoleUser extends Pivot
 {
-
     protected $table = 'role_users';
 
     protected $fillable = ['workshop_id', 'object_id', 'user_id', 'role_id'];

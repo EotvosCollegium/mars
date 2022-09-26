@@ -30,7 +30,7 @@ class HomeController extends Controller
         }
 
         $information_general = DB::table('custom')->where('key', 'HOME_PAGE_NEWS')->first()->text;
-        
+
 
         $contacts = ['admins' => User::admins()];
         $director = User::director();
@@ -39,18 +39,18 @@ class HomeController extends Controller
 
         $contacts['other'] = [
             Role::DIRECTOR => [
-                'name' => $director->name, 
-                'email' => $director->email, 
+                'name' => $director->name,
+                'email' => $director->email,
                 'phone_number' => $director->personalInformation->phone_number
             ],
             Role::SECRETARY => [
-                'name' => $secretary->name, 
-                'email' => $secretary->email, 
+                'name' => $secretary->name,
+                'email' => $secretary->email,
                 'phone_number' => $secretary->personalInformation->phone_number
             ],
             Role::STAFF => [
-                'name' => $staff->name, 
-                'email' => $staff->email, 
+                'name' => $staff->name,
+                'email' => $staff->email,
                 'phone_number' => $staff->personalInformation->phone_number
             ],
             'reception' => [
@@ -62,7 +62,7 @@ class HomeController extends Controller
             ]
         ];
 
-        if(Auth::user()->hasRole(Role::COLLEGIST)) {
+        if (Auth::user()->hasRole(Role::COLLEGIST)) {
             $student_council_objects = RoleObject::whereIn('name', Role::STUDENT_COUNCIL_LEADERS)
                 ->orWhereIn('name', Role::COMMITTEE_LEADERS)
                 ->get()->pluck('id')->toArray();
@@ -78,10 +78,9 @@ class HomeController extends Controller
                 Role::ETHICS_COMMISSIONER => User::ethicsCommissioners(),
             ]);
             $information_collegist = DB::table('custom')->where('key', 'HOME_PAGE_NEWS_COLLEGISTS')->first()->text;
-
         }
 
-    
+
         return view('home', [
             'information_general' => $information_general,
             'information_collegist' => $information_collegist ?? null,
@@ -109,13 +108,12 @@ class HomeController extends Controller
         /*@var User $user*/
         $user = Auth::user();
         if (!$user->hasRole([
-            Role::STUDENT_COUNCIL => Role::PRESIDENT, 
-            Role::SYS_ADMIN, 
-            Role::STUDENT_COUNCIL_SECRETARY]))
-        {
+            Role::STUDENT_COUNCIL => Role::PRESIDENT,
+            Role::SYS_ADMIN,
+            Role::STUDENT_COUNCIL_SECRETARY])) {
             abort(403);
-        } 
-        
+        }
+
         DB::table('custom')->where('key', 'HOME_PAGE_NEWS')->update([
             'text' => $request->info_general ?? "",
             'user_id' => $user->id
@@ -126,7 +124,6 @@ class HomeController extends Controller
         ]);
 
         return redirect()->back()->with('message', __('general.successful_modification'));
-
     }
 
     public function verification(Request $request)
