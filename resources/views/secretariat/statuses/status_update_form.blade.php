@@ -4,6 +4,9 @@
 @endsection
 
 @section('content')
+@php
+    $user = \Illuminate\Support\Facades\Auth::user();
+@endphp
 <div class="row">
     <div class="col s12">
         <div class="card">
@@ -12,7 +15,7 @@
                 <form action="{{ route('secretariat.status-update.update') }}" method="post">
                     @csrf
                     <div class="row">
-                        @if ($user->getStatusIn(\App\Models\Semester::current())!=\App\Models\SemesterStatus::INACTIVE)
+                        @if ($user->hasActivated())
                             <blockquote>
                                 @lang('secretariat.status_set') @lang('user.' . $user->getStatusIn(\App\Models\Semester::current())).
                             </blockquote>

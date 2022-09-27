@@ -20,7 +20,7 @@ class SemesterController extends Controller
         $deadline_event = EventTrigger::find(EventTrigger::DEACTIVATE_STATUS_SIGNAL)->date;
         // If the deadline is closer than sending out the request, that means
         // the request has been already sent out.
-        return $deadline_event < $statement_event || $user->getStatusIn(Semester::current())==SemesterStatus::INACTIVE;
+        return $deadline_event < $statement_event || !$user->hasActivated();
     }
 
     public function showStatusUpdate()
@@ -35,7 +35,7 @@ class SemesterController extends Controller
         if (!self::isStatementAvailable($user)) {
             abort(403);
         }
-        return view('secretariat.statuses.status_update_form', ['user' => Auth::user()]);
+        return view('secretariat.statuses.status_update_form');
     }
 
     public function updateStatus(Request $request)

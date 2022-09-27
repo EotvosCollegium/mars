@@ -8,7 +8,7 @@ use App\Models\SemesterStatus;
 use Closure;
 use Illuminate\Http\Request;
 
-class EnsureStatus
+class PossibleRedirects
 {
     /**
      * Handle an incoming request.
@@ -19,7 +19,11 @@ class EnsureStatus
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!$request->is('logout') && !$request->routeIs('secretariat.status-update.*') && $request->user() && $request->user()->getStatusIn(Semester::current())==SemesterStatus::INACTIVE) {
+        if (!$request->is('logout') 
+            && !$request->routeIs('secretariat.status-update.*') 
+            && $request->user() 
+            && $request->user()->isCollegist() 
+            && !$request->user()->hasActivated()) {
             return redirect(route('secretariat.status-update.show'));
         }
         return $next($request);

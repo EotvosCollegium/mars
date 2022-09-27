@@ -152,8 +152,7 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::put('/rooms/update', [RoomController::class, 'updateResidents'])->name('rooms.update');
 
     /** Status update form */
-    Route::get('/secretariat/status-update', [SemesterController::class, 'showStatusUpdate'])->name('secretariat.status-update.show')->withoutMiddleware([EnsureStatus::class]);
-    ;
+    Route::get('/secretariat/status-update', [SemesterController::class, 'showStatusUpdate'])->name('secretariat.status-update.show');
     Route::post('/secretariat/status-update', [SemesterController::class, 'updateStatus'])->name('secretariat.status-update.update');
 
     /** Documents */
