@@ -33,7 +33,7 @@ class SemesterController extends Controller
             abort(403);
         }
         if (!self::isStatementAvailable($user)) {
-            abort(403);
+            return redirect('home')->with('message', __('secretariat.status_statement_not_available'));
         }
         return view('secretariat.statuses.status_update_form');
     }
