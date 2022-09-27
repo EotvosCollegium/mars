@@ -19,10 +19,10 @@ class PossibleRedirects
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!$request->is('logout') 
-            && !$request->routeIs('secretariat.status-update.*') 
-            && $request->user() 
-            && $request->user()->isCollegist() 
+        if (!$request->is('logout')
+            && !$request->routeIs('secretariat.status-update.*')
+            && $request->user()
+            && $request->user()->isCollegist()
             && !$request->user()->hasActivated()) {
             return redirect(route('secretariat.status-update.show'));
         }

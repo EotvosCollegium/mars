@@ -527,7 +527,7 @@ class User extends Authenticatable implements HasLocalePreference
 
     /**
      * Decides if the user activated the semester. Activated means that their status is not SemesterStatus::INACTIVE
-     * 
+     *
      * @param Semester $semester
      * @return bool
      */
