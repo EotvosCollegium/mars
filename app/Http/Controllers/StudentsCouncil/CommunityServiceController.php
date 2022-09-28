@@ -7,7 +7,7 @@ use App\Models\Semester;
 use App\Models\CommunityService;
 
 use App\Http\Controllers\Controller;
-use App\Mail\CommunityServiceApproved;
+use App\Mail\CommunityServiceStatusChanged;
 use App\Mail\CommunityServiceRequested;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -41,7 +41,8 @@ class CommunityServiceController extends Controller
         return view('student-council.community-service.search', [
             'semesters' => Semester::whereRelation('communityServices', 'requester_id', $request->requester)
                             ->with('communityServices')
-                            ->get()
+                            ->get(),
+            'selectedUser' => User::find($request->requester),
         ]);
     }
 
@@ -75,8 +76,19 @@ class CommunityServiceController extends Controller
 
         $communityService->update(['approved' => 1]);
 
-        Mail::to($communityService->requester)->queue(new CommunityServiceApproved($communityService));
+        Mail::to($communityService->requester)->queue(new CommunityServiceStatusChanged($communityService));
 
         return back()->with('message', __('community-service.approve_scf'));
+    }
+
+    public function reject(CommunityService $communityService)
+    {
+        $this->authorize('approve', $communityService);
+
+        $communityService->update(['approved' => 0]);
+
+        Mail::to($communityService->requester)->queue(new CommunityServiceStatusChanged($communityService));
+
+        return back()->with('message', __('community-service.reject_scf'));
     }
 }

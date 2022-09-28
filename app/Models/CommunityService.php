@@ -44,10 +44,25 @@ class CommunityService extends Model
     {
         if ($this->approved === null) {
             return __('community-service.pending');
-        } elseif ($this->approved) {
+        } elseif ($this->approved==1) {
             return __('community-service.approved');
         } else {
             return __('community-service.rejected');
+        }
+    }
+
+    /**
+     * @return string the badge color based on the approved attribute
+     */
+
+    public function getStatusColor(): string
+    {
+        if ($this->approved === null) {
+            return 'orange';
+        } elseif ($this->approved==1) {
+            return 'green';
+        } else {
+            return 'red';
         }
     }
 }

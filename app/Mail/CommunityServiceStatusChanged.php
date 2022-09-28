@@ -10,7 +10,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class CommunityServiceApproved extends Mailable
+class CommunityServiceStatusChanged extends Mailable
 {
     use Queueable;
     use SerializesModels;
@@ -18,6 +18,7 @@ class CommunityServiceApproved extends Mailable
     public User $recipient;
     public User $approver;
     public string $description;
+    public bool $approved;
 
     /**
      * Create a new message instance.
@@ -29,6 +30,7 @@ class CommunityServiceApproved extends Mailable
         $this->recipient = $communityService->requester;
         $this->approver = $communityService->approver;
         $this->description = $communityService->description;
+        $this->approved = $communityService->approved;
     }
 
     /**
@@ -38,7 +40,7 @@ class CommunityServiceApproved extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.community_service_approved')
-                    ->subject(__('mail.community_service_approved'));
+        return $this->markdown('emails.community_service_status_changed')
+                    ->subject(__('mail.community_service_status_changed'));
     }
 }
