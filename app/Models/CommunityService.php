@@ -12,7 +12,7 @@ class CommunityService extends Model
     /**
      * @return User the requester of the CommunityService 
      */
-    public function requester(): User
+    public function requester()
     {
         return $this->belongsTo(\App\Models\User::class);
     }
@@ -20,7 +20,7 @@ class CommunityService extends Model
     /**
      * @return User the approver of the CommunityService 
      */
-    public function approver(): User
+    public function approver()
     {
         return $this->belongsTo(\App\Models\User::class);
     }
