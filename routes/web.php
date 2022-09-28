@@ -150,6 +150,7 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::get('/rooms', [RoomController::class, 'index'])->name('rooms');
     Route::put('/rooms/{room}/capacity', [RoomController::class, 'updateRoomCapacity'])->name('rooms.update-capacity');
     Route::put('/rooms/update', [RoomController::class, 'updateResidents'])->name('rooms.update');
+    Route::get('/rooms/modify', [RoomController::class, 'modify'])->name('rooms.modify');
 
     /** Status update form */
     Route::get('/secretariat/status-update', [SemesterController::class, 'showStatusUpdate'])->name('secretariat.status-update.show');

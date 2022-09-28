@@ -16,10 +16,6 @@ class Room extends Model
 
     protected $fillable = ['name', 'capacity'];
 
-    protected $with = ['users'];
-
-    protected $withCount = ['users'];
-
     /**
      * Returns the users assigned to this room
      */

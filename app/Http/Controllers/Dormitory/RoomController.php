@@ -5,9 +5,12 @@ namespace App\Http\Controllers\Dormitory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 use App\Models\Room;
 use App\Models\User;
+use App\Models\Role;
 
 class RoomController extends Controller
 {
@@ -18,10 +21,26 @@ class RoomController extends Controller
     {
         $this->authorize('viewAny', Room::class);
         $users=User::active()->resident()->get();
-
+        $tenants=User::role(Role::getRole(Role::TENANT), null)->whereHas('personalInformation', function($q) {
+             $q->where('tenant_until', '>', now());
+            })->get();
+        $users=$users->concat($tenants);
         $rooms = Room::with('users')->get();
         return view('dormitory.rooms.app', ['users' => $users, 'rooms' => $rooms]);
     }
+
+    public function modify()
+    {
+        $this->authorize('updateAny', Room::class);
+        $users=User::active()->resident()->get();
+        $tenants=User::role(Role::getRole(Role::TENANT), null)->whereHas('personalInformation', function($q) {
+             $q->where('tenant_until', '>', now());
+            })->get();
+        $users=$users->concat($tenants);
+        $rooms = Room::with('users')->get();
+        return view('dormitory.rooms.modify', ['users' => $users, 'rooms' => $rooms]);
+    }
+
     /**
      * Updates the capacity of the room.
      * Returns an error if the new capacity is out of bounds.
