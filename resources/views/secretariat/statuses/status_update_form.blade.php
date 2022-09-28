@@ -12,6 +12,11 @@
                 <form action="{{ route('secretariat.status-update.update') }}" method="post">
                     @csrf
                     <div class="row">
+                        @if (\Illuminate\Support\Facades\Auth::user()->hasActivated())
+                            <blockquote>
+                                @lang('secretariat.status_set') @lang('user.' . \Illuminate\Support\Facades\Auth::user()->getStatusIn(\App\Models\Semester::current())).
+                            </blockquote>
+                        @endif
                         <blockquote>
                             @lang('secretariat.collegist_role_info')
                         </blockquote>

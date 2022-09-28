@@ -590,6 +590,27 @@ class User extends Authenticatable implements HasLocalePreference
     }
 
     /**
+     * Decides if the user activated the semester. Activated means that their status is not SemesterStatus::INACTIVE
+     *
+     * @param Semester $semester
+     * @return bool
+     */
+    public function hasActivatedIn(Semester $semester): bool
+    {
+        return $this->getStatusIn($semester)!=SemesterStatus::INACTIVE;
+    }
+
+    /**
+     * Decides if the user has activated the current semester.
+     *
+     * @return bool
+     */
+    public function hasActivated(): bool
+    {
+        return $this->hasActivatedIn(Semester::current());
+    }
+
+    /**
      * Scope a query to only include active users in the given semester.
      *
      * @param Builder $query
