@@ -12,7 +12,8 @@ use Illuminate\Queue\SerializesModels;
 
 class CommunityServiceApproved extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     public User $recipient;
     public User $approver;

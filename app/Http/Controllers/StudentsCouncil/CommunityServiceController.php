@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Mail;
 
-
 class CommunityServiceController extends Controller
 {
     public function index()
@@ -39,7 +38,7 @@ class CommunityServiceController extends Controller
     // Create a new community service
     public function create(Request $request)
     {
-        if($request->user()->cannot('create', \App\Models\CommunityService::class)){
+        if ($request->user()->cannot('create', \App\Models\CommunityService::class)) {
             return back()->with('message', __('community-service.created-not-allowed'));
         }
         $request->validate([
@@ -65,7 +64,7 @@ class CommunityServiceController extends Controller
     public function approve(CommunityService $communityService)
     {
         $this->authorize('approve', $communityService);
-        
+
         $communityService->update(['approved' => 1]);
 
         Mail::to($communityService->requester)->queue(new \App\Mail\CommunityServiceApproved($communityService));
@@ -78,13 +77,13 @@ class CommunityServiceController extends Controller
     {
         $this->authorize('view', \App\Models\CommunityService::class);
 
-        return $showWhereApprover?
+        return $showWhereApprover ?
             $user->activeSemesters()->orderBy('year', 'desc')
                 ->orderBy('part', 'desc')
                 ->get()
                 ->where('tag', '<=', Semester::current()->tag)
                 ->load([
-                    'communityServices' => function ($query) use ($user){
+                    'communityServices' => function ($query) use ($user) {
                         $query->where('requester_id', $user->id)->orWhere('approver_id', $user->id);
                     },
                 ])
@@ -94,7 +93,7 @@ class CommunityServiceController extends Controller
             ->get()
             ->where('tag', '<=', Semester::current()->tag)
             ->load([
-                'communityServices' => function ($query) use ($user){
+                'communityServices' => function ($query) use ($user) {
                     $query->where('requester_id', $user->id);
                 },
             ]);

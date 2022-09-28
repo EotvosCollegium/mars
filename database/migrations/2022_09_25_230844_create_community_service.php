@@ -15,7 +15,7 @@ class CreateCommunityService extends Migration
     {
         Schema::create('community_services', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('requester_id');            
+            $table->unsignedBigInteger('requester_id');
             $table->unsignedBigInteger('approver_id');
             $table->text('description');
             $table->boolean('approved');

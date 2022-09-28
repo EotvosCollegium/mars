@@ -12,11 +12,12 @@ use Illuminate\Queue\SerializesModels;
 
 class CommunityServiceRequested extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     public User $recipient;
     public string $description;
-    public User $requester; 
+    public User $requester;
 
     /**
      * Create a new message instance.
@@ -33,7 +34,7 @@ class CommunityServiceRequested extends Mailable
     /**
      * Build the message.
      *
-     * @return $this    
+     * @return $this
      */
     public function build()
     {

@@ -855,7 +855,7 @@ class User extends Authenticatable implements HasLocalePreference
     /**
      * @return Room the user's assigned room
      */
-    public function room() : Room
+    public function room(): Room
     {
         return $this->belongsTo(\App\Models\Room::class, 'room', 'name');
     }
@@ -863,7 +863,7 @@ class User extends Authenticatable implements HasLocalePreference
     /**
      * @return HasMany the CommunityServices the user has requested
      */
-    public function communityServiceRequests() : HasMany
+    public function communityServiceRequests(): HasMany
     {
         return $this->hasMany(\App\Models\CommunityService::class);
     }
@@ -871,7 +871,7 @@ class User extends Authenticatable implements HasLocalePreference
     /**
      * @return HasMany the CommunityServices the user has approved/yet to approve
      */
-    public function communityServiceApprovals() : HasMany
+    public function communityServiceApprovals(): HasMany
     {
         return $this->hasMany(\App\Models\CommunityService::class);
     }

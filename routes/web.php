@@ -201,6 +201,4 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::post('/community_service/approve/{community_service}', [CommunityServiceController::class, 'approve'])->name('community_service.approve');
     Route::post('/community_service/create', [CommunityServiceController::class, 'create'])->name('community_service.create');
     Route::get('/community_service/search', [CommunityServiceController::class, 'search'])->name('community_service.search');//TODO
-
-
 });
