@@ -7,38 +7,48 @@ use App\Models\Semester;
 use App\Models\CommunityService;
 
 use App\Http\Controllers\Controller;
+use App\Mail\CommunityServiceApproved;
+use App\Mail\CommunityServiceRequested;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Mail;
 
 class CommunityServiceController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $this->authorize('view', \App\Models\CommunityService::class);
-        return view('student-council.community-service.app', ['semesters' => $this->getCommunityServicesGroupedBySemesters(Auth::user())]);
+        $this->authorize('view', CommunityService::class);
+
+        return view('student-council.community-service.app', [
+            'semesters' => Semester::whereHas('communityServices', function ($query) use ($request) {
+                                $query->where('approver_id', $request->user()->id)
+                                    ->orWhere('requester_id', $request->user()->id);
+                            })
+                            ->with('communityServices')
+                            ->get(),
+            'possible_approvers' => User::studentCouncilLeaders()
+        ]);
     }
 
     public function search(Request $request)
     {
-        $this->authorize('approveAny', \App\Models\CommunityService::class);
-        if ($request->requester == null) {
-            return view('student-council.community-service.search');
-        }
+        $this->authorize('approveAny', CommunityService::class);
+        
         $request->validate([
-            'requester' => 'required|exists:users,id',
+            'requester' => 'nullable|exists:users,id',
         ]);
 
-        $requester=User::find($request->requester);
-        return view('student-council.community-service.search', ['semesters' => $this->getCommunityServicesGroupedBySemesters($requester, false)]);
+        return view('student-council.community-service.search', [
+            'semesters' => Semester::whereRelation('communityServices', 'requester_id', $request->requester)
+                            ->with('communityServices')
+                            ->get()
+        ]);
     }
 
     // Create a new community service
     public function create(Request $request)
     {
-        if ($request->user()->cannot('create', \App\Models\CommunityService::class)) {
+        if ($request->user()->cannot('create', CommunityService::class)) {
             return back()->with('message', __('community-service.created-not-allowed'));
         }
         $request->validate([
@@ -46,17 +56,15 @@ class CommunityServiceController extends Controller
             'description' => 'required|string',
         ]);
 
-        $approver=User::find($request->approver);
-
         $communityService=CommunityService::create([
             'requester_id' => Auth::user()->id,
-            'approver_id' => $approver->id,
+            'approver_id' => $request->approver,
             'semester_id' => Semester::current()->id,
-            'approved' => 0,
+            'approved' => null,
             'description' => $request->description,
         ]);
 
-        Mail::to($communityService->approver)->queue(new \App\Mail\CommunityServiceRequested($communityService));
+        Mail::to($communityService->approver)->queue(new CommunityServiceRequested($communityService));
 
         return back()->with('message', __('community-service.created-scf'));
     }
@@ -67,35 +75,9 @@ class CommunityServiceController extends Controller
 
         $communityService->update(['approved' => 1]);
 
-        Mail::to($communityService->requester)->queue(new \App\Mail\CommunityServiceApproved($communityService));
+        Mail::to($communityService->requester)->queue(new CommunityServiceApproved($communityService));
 
         return back()->with('message', __('community-service.approve_scf'));
     }
 
-
-    private function getCommunityServicesGroupedBySemesters(User $user, bool $showWhereApprover = true)
-    {
-        $this->authorize('view', \App\Models\CommunityService::class);
-
-        return $showWhereApprover ?
-            $user->activeSemesters()->orderBy('year', 'desc')
-                ->orderBy('part', 'desc')
-                ->get()
-                ->where('tag', '<=', Semester::current()->tag)
-                ->load([
-                    'communityServices' => function ($query) use ($user) {
-                        $query->where('requester_id', $user->id)->orWhere('approver_id', $user->id);
-                    },
-                ])
-            :
-            $user->activeSemesters()->orderBy('year', 'desc')
-            ->orderBy('part', 'desc')
-            ->get()
-            ->where('tag', '<=', Semester::current()->tag)
-            ->load([
-                'communityServices' => function ($query) use ($user) {
-                    $query->where('requester_id', $user->id);
-                },
-            ]);
-    }
 }

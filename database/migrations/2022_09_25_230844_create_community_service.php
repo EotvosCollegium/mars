@@ -15,15 +15,14 @@ class CreateCommunityService extends Migration
     {
         Schema::create('community_services', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('requester_id');
-            $table->unsignedBigInteger('approver_id');
+            $table->foreignId('requester_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreignId('approver_id')->references('id')->on('users')->onDelete('cascade');
             $table->text('description');
-            $table->boolean('approved');
+            $table->boolean('approved')->nullable();
             $table->unsignedSmallInteger('semester_id');
-
-            $table->foreign('requester_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('approver_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
+
+            $table->foreign('semester_id')->references('id')->on('semesters');
         });
     }
 

@@ -9,6 +9,7 @@ use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
@@ -457,10 +458,12 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public static function studentCouncilLeaders(): array|Collection
     {
-        return User::whereHas('role', function ($q) {
-            return $q->where('role.id', Role::StudentsCouncil()->id)
-                     ->whereIn('role.object_id', array_merge(Role::STUDENT_COUNCIL_LEADERS, Role::COMMITTEE_LEADERS));
-        });
+        $objects = RoleObject::whereIn('name', array_merge(Role::STUDENT_COUNCIL_LEADERS, Role::COMMITTEE_LEADERS))->pluck('id')->toArray();
+
+        return User::whereHas('roles', function ($q) use($objects) {
+            return $q->where('role_users.role_id', Role::StudentsCouncil()->id)
+                     ->whereIn('role_users.object_id', $objects);
+        })->get();
     }
 
     /**
@@ -853,11 +856,11 @@ class User extends Authenticatable implements HasLocalePreference
         return ['voted' => false];
     }
     /**
-     * @return Room the user's assigned room
+     * @return BelongsTo the user's assigned room
      */
-    public function room(): Room
+    public function room() : BelongsTo
     {
-        return $this->belongsTo(\App\Models\Room::class, 'room', 'name');
+        return $this->belongsTo(Room::class, 'room', 'name');
     }
 
     /**
@@ -865,7 +868,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function communityServiceRequests(): HasMany
     {
-        return $this->hasMany(\App\Models\CommunityService::class);
+        return $this->hasMany(CommunityService::class, 'requester_id');
     }
 
     /**
@@ -873,6 +876,6 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function communityServiceApprovals(): HasMany
     {
-        return $this->hasMany(\App\Models\CommunityService::class);
+        return $this->hasMany(CommunityService::class, 'approver_id');
     }
 }

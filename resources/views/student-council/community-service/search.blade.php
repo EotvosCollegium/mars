@@ -21,12 +21,7 @@
         </form>
     </div>
 </div>
-@if (($semesters??null)!=null)
 @foreach($semesters as $semester)
-@if($semester->communityServices->count() != 0 && $semester->communityServices->where('approved',1)->count() != 0)
-@php
-    $communityServices=$semester->communityServices;
-@endphp
 <div class="col s12">
     <div class="card">
         <div class="card-content">
@@ -40,18 +35,17 @@
                                 <th>@lang('checkout.date')</th>
                                 <th>@lang('community-service.requester')</th>
                                 <th>@lang('community-service.approver')</th>
+                                <th>@lang('community-service.approved')</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($communityServices as $communityService)
-                            @if ($communityService->approved==0)
-                                @continue
-                            @endif
+                            @foreach ($semester->communityServices as $communityService)
                                 <tr>
                                     <td style="word-break: break-all">{{ $communityService->description }}</td>
                                     <td>{{ $communityService->created_at->format('Y. m. d.') }}</td>
                                     <td>{{ $communityService->requester->name }}</td>
                                     <td>{{ $communityService->approver->name }}</td>
+                                    <td>{{ $communityService->status }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -61,8 +55,6 @@
         </div>
     </div>
 </div>
-@endif
 @endforeach
-@endif
 
 @endsection

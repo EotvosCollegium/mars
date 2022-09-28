@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CommunityService extends Model
 {
@@ -27,10 +28,26 @@ class CommunityService extends Model
 
 
     /**
-     * @return Semester the semester the CommunityService was made in
+     * @return BelongsTo the semester the CommunityService was made in
      */
-    public function semester(): Semester
+    public function semester(): BelongsTo
     {
         return $this->belongsTo(\App\Models\Semester::class);
+    }
+
+
+    /**
+     * @return string the status based on the approved attribute
+     */
+
+    public function getStatusAttribute() : string
+    {
+        if($this->approved === null) {
+            return __('community-service.pending');
+        } else if($this->approved) {
+            return __('community-service.approved');
+        } else {
+            return __('community-service.rejected');
+        }
     }
 }
