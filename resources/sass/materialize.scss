@@ -35,6 +35,11 @@ blockquote {
         color: $secondary-color;
     }
 }
+
+h5 {
+    font-size: 1.3em;
+}
+
 .breadcrumb {
     cursor: default;
 }
@@ -189,6 +194,10 @@ body.dark a.btn {
     -ms-user-select: none; /* Internet Explorer/Edge */
     user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome, Opera and Firefox */
+}
+
+.hidden {
+    display: none;
 }
 
 @mixin column-count($ct) {

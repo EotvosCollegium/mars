@@ -8,6 +8,7 @@ return [
     'choose_from_menu' => 'Select one of the menu options!',
     'choose_option' => 'Choose an option...',
     'comment' => 'Comment',
+    'contacts' => 'Contacts',
     'description' => 'Description',
     'failed' => 'An error occurred. Please contact system administrators!',
     'filter' => 'Filter',
@@ -21,6 +22,7 @@ return [
     'members' => 'Members',
     'note' => 'Note',
     'other' => 'Other',
+    'others' => 'Others',
     'register' => 'Register',
     'register_collegist' => 'Application for college students',
     'register_guest' => 'Register for tenants',
@@ -41,5 +43,4 @@ return [
     'user' => 'User',
     'users' => 'Users',
     'view_issue' => 'You can view and track your issue here.',
-    'you_are_logged_in' => 'You are logged in.',
 ];

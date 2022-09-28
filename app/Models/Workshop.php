@@ -15,7 +15,7 @@ class Workshop extends Model
     public const BOLLOK = 'Bollók János Klasszika-filológia műhely';
     public const FILOZOFIA = 'Filozófia műhely';
     public const AURELION = 'Aurélien Sauvageot Francia műhely';
-    public const GAZDALKODASTUDOMANYI = 'Gazdálkodástudományi műhely';
+    public const GAZDALKODASTUDOMANYI = 'Gazdaságtudományi műhely';
     public const GERMANISZTIKA = 'Germanisztika műhely';
     public const INFORMATIKA = 'Informatika műhely';
     public const MAGYAR = 'Magyar műhely';

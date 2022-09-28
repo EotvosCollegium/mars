@@ -17,7 +17,7 @@ class UsersExport implements FromCollection, WithTitle, WithMapping, WithHeading
 
     public function __construct($users)
     {
-        $this->users = $users->sortBy('name');
+        $this->users = $users;
     }
 
     public function collection()
