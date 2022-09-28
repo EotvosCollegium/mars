@@ -7,6 +7,7 @@ return [
     'approved' => 'Státusz',
     'approver' => 'Jóváhagyó',
     'community-service' => 'Közösségi tevékenység',
+    'created-not-allowed' => 'Nem adhatsz hozzá közösségi tevékenységet! Próbáld meg aktiválni a félévedet.',
     'created-scf' => 'A közösségi tevékenység létrehozása sikeres',
     'description' => 'Leírás',
     'requester' => 'Kérelmező',

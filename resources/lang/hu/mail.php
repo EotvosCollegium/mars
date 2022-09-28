@@ -3,6 +3,8 @@
 return [
     'administrators' => 'A rendszergazdák',
     'approved_registration' => 'A regisztrációdat jóváhagyták.',
+    'community_service_approved' => 'Közösségi tevékenység jóváhagyva',
+    'community_service_requested' => 'Közösségi tevékenység kérelem',
     'dear' => 'Kedves',
     'email_sent' => 'Rendszergazdák értesítve',
     'invitation' => 'Meghívó az Eötvös Collegium tanulmányi rendszerébe',

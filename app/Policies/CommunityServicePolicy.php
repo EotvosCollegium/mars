@@ -19,7 +19,7 @@ class CommunityServicePolicy
 
     public function create(User $user)
     {
-        return $user->isCollegist();
+        return $user->isCollegist() && $user->isActive();
     }
 
     public function approveAny(User $user)

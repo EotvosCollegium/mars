@@ -9,6 +9,7 @@
 
 @section('content')
 
+@can('create', \App\Models\CommunityService::class)
 <div class="card">
     <div class="card-content">
         <span class="card-title">@lang('community-service.add-new-service')</span>
@@ -34,6 +35,7 @@
         </form>
     </div>
 </div>
+@endcan
 
 
 @can('approveAny', \App\Models\CommunityService::class)
@@ -42,7 +44,7 @@
         <span class="card-title">@lang('community-service.search-user')</span>
         <blockquote>@lang('community-service.search-user-descr')</blockquote>
         <div class="row center">
-        <x-input.button text="general.search" />
+        <x-input.button text="general.search" :href="route('community_service.search')"></x-input.button>
         </div>
     </div>
 </div>
@@ -57,7 +59,6 @@
     @php
         $communityServices=$semester->communityServices;
     @endphp
-    <div class="col s12">
         <div class="card">
             <div class="card-content">
                 <span class="card-title">{{ $semester->tag }}</span>
@@ -105,7 +106,6 @@
                 </div>
             </div>
         </div>
-    </div>
     @endif
 @endforeach
 

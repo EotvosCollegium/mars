@@ -7,6 +7,7 @@ return [
     'approved' => 'Status',
     'approver' => 'Approver',
     'community-service' => 'Community service',
+    'created-not-allowed' => 'You cannot create community-services. Try to activate your semester',
     'created-scf' => 'Community Service created successfully',
     'description' => 'Description',
     'requester' => 'Requester',

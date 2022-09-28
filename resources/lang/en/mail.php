@@ -3,6 +3,8 @@
 return [
     'administrators' => 'The administrators',
     'approved_registration' => 'Your registration have been approved.',
+    'community_service_approved' => 'Community service approved',
+    'community_service_requested' => 'Community service request',
     'dear' => 'Dear',
     'email_sent' => 'System administrators notified.',
     'invitation' => 'Invitation to Urán',
