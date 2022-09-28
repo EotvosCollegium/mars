@@ -40,11 +40,11 @@ class CommunityService extends Model
      * @return string the status based on the approved attribute
      */
 
-    public function getStatusAttribute() : string
+    public function getStatusAttribute(): string
     {
-        if($this->approved === null) {
+        if ($this->approved === null) {
             return __('community-service.pending');
-        } else if($this->approved) {
+        } elseif ($this->approved) {
             return __('community-service.approved');
         } else {
             return __('community-service.rejected');

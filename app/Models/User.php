@@ -460,7 +460,7 @@ class User extends Authenticatable implements HasLocalePreference
     {
         $objects = RoleObject::whereIn('name', array_merge(Role::STUDENT_COUNCIL_LEADERS, Role::COMMITTEE_LEADERS))->pluck('id')->toArray();
 
-        return User::whereHas('roles', function ($q) use($objects) {
+        return User::whereHas('roles', function ($q) use ($objects) {
             return $q->where('role_users.role_id', Role::StudentsCouncil()->id)
                      ->whereIn('role_users.object_id', $objects);
         })->get();
@@ -858,7 +858,7 @@ class User extends Authenticatable implements HasLocalePreference
     /**
      * @return BelongsTo the user's assigned room
      */
-    public function room() : BelongsTo
+    public function room(): BelongsTo
     {
         return $this->belongsTo(Room::class, 'room', 'name');
     }

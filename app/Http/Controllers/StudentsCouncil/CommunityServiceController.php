@@ -21,9 +21,9 @@ class CommunityServiceController extends Controller
 
         return view('student-council.community-service.app', [
             'semesters' => Semester::whereHas('communityServices', function ($query) use ($request) {
-                                $query->where('approver_id', $request->user()->id)
+                $query->where('approver_id', $request->user()->id)
                                     ->orWhere('requester_id', $request->user()->id);
-                            })
+            })
                             ->with('communityServices')
                             ->get(),
             'possible_approvers' => User::studentCouncilLeaders()
@@ -33,7 +33,7 @@ class CommunityServiceController extends Controller
     public function search(Request $request)
     {
         $this->authorize('approveAny', CommunityService::class);
-        
+
         $request->validate([
             'requester' => 'nullable|exists:users,id',
         ]);
@@ -79,5 +79,4 @@ class CommunityServiceController extends Controller
 
         return back()->with('message', __('community-service.approve_scf'));
     }
-
 }

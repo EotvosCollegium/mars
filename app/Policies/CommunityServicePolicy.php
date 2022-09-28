@@ -51,9 +51,10 @@ class CommunityServicePolicy
      */
     public function approve(User $user, CommunityService $communityService)
     {
-        if($communityService->approved || !$communityService->semester->isCurrent())
+        if ($communityService->approved || !$communityService->semester->isCurrent()) {
             return false;
-        
+        }
+
         return $communityService->approver->id === $user->id;
     }
 }
