@@ -137,7 +137,7 @@ class UserPolicy
             ]);
         }
 
-        if($role->name == Role::TENANT){
+        if ($role->name == Role::TENANT) {
             return $user->hasRole([Role::STAFF, Role::STUDENT_COUNCIL => Role::PRESIDENT]);
         }
 
@@ -192,7 +192,7 @@ class UserPolicy
      */
     public function updatePermission(User $user, User $target, Role $role, Workshop|RoleObject $object = null): bool
     {
-        if($role->name == Role::TENANT){
+        if ($role->name == Role::TENANT) {
             return $user->hasRole([Role::STAFF, Role::STUDENT_COUNCIL => Role::PRESIDENT]);
         }
 

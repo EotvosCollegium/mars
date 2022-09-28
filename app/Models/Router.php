@@ -54,13 +54,12 @@ class Router extends Model
                 Mail::to($admin)->queue(new \App\Mail\RouterWarning($admin, $this));
             }
             $room=Room::firstWhere('name', $this->room);
-            if($room!=null){
+            if ($room!=null) {
                 $residents=$room->users()->get();
                 foreach ($residents as $resident) {
                     Mail::to($resident)->queue(new \App\Mail\RouterWarningResident($resident, $this));
                 }
             }
-            
         }
     }
 

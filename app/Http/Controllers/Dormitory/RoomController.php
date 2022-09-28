@@ -21,9 +21,9 @@ class RoomController extends Controller
     {
         $this->authorize('viewAny', Room::class);
         $users=User::active()->resident()->get();
-        $tenants=User::role(Role::getRole(Role::TENANT), null)->whereHas('personalInformation', function($q) {
-             $q->where('tenant_until', '>', now());
-            })->get();
+        $tenants=User::role(Role::getRole(Role::TENANT), null)->whereHas('personalInformation', function ($q) {
+            $q->where('tenant_until', '>', now());
+        })->get();
         $users=$users->concat($tenants);
         $rooms = Room::with('users')->get();
         return view('dormitory.rooms.app', ['users' => $users, 'rooms' => $rooms]);
@@ -33,9 +33,9 @@ class RoomController extends Controller
     {
         $this->authorize('updateAny', Room::class);
         $users=User::active()->resident()->get();
-        $tenants=User::role(Role::getRole(Role::TENANT), null)->whereHas('personalInformation', function($q) {
-             $q->where('tenant_until', '>', now());
-            })->get();
+        $tenants=User::role(Role::getRole(Role::TENANT), null)->whereHas('personalInformation', function ($q) {
+            $q->where('tenant_until', '>', now());
+        })->get();
         $users=$users->concat($tenants);
         $rooms = Room::with('users')->get();
         return view('dormitory.rooms.modify', ['users' => $users, 'rooms' => $rooms]);
