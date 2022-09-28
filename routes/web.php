@@ -29,6 +29,7 @@ use App\Http\Controllers\Secretariat\UserController;
 use App\Http\Controllers\StudentsCouncil\EconomicController;
 use App\Http\Controllers\StudentsCouncil\EpistolaController;
 use App\Http\Controllers\StudentsCouncil\MrAndMissController;
+use App\Http\Controllers\StudentsCouncil\CommunityServiceController;
 use App\Http\Controllers\Dormitory\RoomController;
 use App\Models\Room;
 use Illuminate\Support\Facades\Auth;
@@ -195,4 +196,10 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::post('/community_committee/mr_and_miss/categories', [MrAndMissController::class, 'createCategory'])->name('mr_and_miss.categories.create');
     Route::post('/community_committee/mr_and_miss/categories/create', [MrAndMissController::class, 'editCategories'])->name('mr_and_miss.categories.edit');
     Route::get('/community_committee/mr_and_miss/results', [MrAndMissController::class, 'indexResults'])->name('mr_and_miss.results');
+
+    Route::get('/community_service', [CommunityServiceController::class, 'index'])->name('community_service');
+    Route::post('/community_service/approve/{community_service}', [CommunityServiceController::class, 'approve'])->name('community_service.approve');
+    Route::post('/community_service/reject/{community_service}', [CommunityServiceController::class, 'reject'])->name('community_service.reject');
+    Route::post('/community_service/create', [CommunityServiceController::class, 'create'])->name('community_service.create');
+    Route::get('/community_service/search', [CommunityServiceController::class, 'search'])->name('community_service.search');
 });

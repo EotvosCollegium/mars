@@ -173,6 +173,11 @@ class Semester extends Model
         return $this->hasMany('App\Models\Transaction', 'semester_id');
     }
 
+    public function communityServices()
+    {
+        return $this->hasMany(\App\Models\CommunityService::class, 'semester_id');
+    }
+
     /**
      * Returns the transactions belonging to the checkout in the semester.
      *
