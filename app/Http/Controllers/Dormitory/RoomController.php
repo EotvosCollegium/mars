@@ -23,10 +23,10 @@ class RoomController extends Controller
         $users=User::where('room', '!=', 'null');
         $rooms = Room::with('users')->get();
 
-        $roomNumbersSecondFloor=$rooms->filter(function ($value, $key){
+        $roomNumbersSecondFloor=$rooms->filter(function ($value, $key) {
             return $value->name[0]=='2' && $value->name!='219';
         })->pluck('name');
-        $roomNumbersThirdFloor=$rooms->filter(function ($value, $key){
+        $roomNumbersThirdFloor=$rooms->filter(function ($value, $key) {
             return $value->name[0]=='3';
         })->pluck('name');
         $specialRoomsSecondFloor=['tarsalgo', 'fiukonyha', 'lanykonyha', 'em2fiufurdo', 'em2lanyfurdo', 'em2fiuwc', 'em2lanywc', 'em2fiulepcso', 'em2lanylepcso'];
@@ -34,16 +34,18 @@ class RoomController extends Controller
 
         $roomCoords=require base_path('room_coords.php');
 
-        return view('dormitory.rooms.app', 
+        return view(
+            'dormitory.rooms.app',
             [
                 'users' => $users,
-                'rooms' => $rooms, 
-                'roomNumbersSecondFloor' => $roomNumbersSecondFloor, 
+                'rooms' => $rooms,
+                'roomNumbersSecondFloor' => $roomNumbersSecondFloor,
                 'roomNumbersThirdFloor' => $roomNumbersThirdFloor,
                 'specialRoomsSecondFloor' => $specialRoomsSecondFloor,
                 'specialRoomsThirdFloor' => $specialRoomsThirdFloor,
                 'roomCoords' => $roomCoords
-            ]);
+            ]
+        );
     }
 
     public function modify()
