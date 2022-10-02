@@ -20,23 +20,44 @@ class RoomController extends Controller
     public function index()
     {
         $this->authorize('viewAny', Room::class);
-        $users=User::active()->resident()->get();
-        $tenants=User::role(Role::getRole(Role::TENANT), null)->whereHas('personalInformation', function ($q) {
-            $q->where('tenant_until', '>', now());
-        })->get();
-        $users=$users->concat($tenants);
+        $users=User::where('room', '!=', 'null');
         $rooms = Room::with('users')->get();
-        return view('dormitory.rooms.app', ['users' => $users, 'rooms' => $rooms]);
+
+        $roomNumbersSecondFloor=$rooms->filter(function ($value, $key){
+            return $value->name[0]=='2' && $value->name!='219';
+        })->pluck('name');
+        $roomNumbersThirdFloor=$rooms->filter(function ($value, $key){
+            return $value->name[0]=='3';
+        })->pluck('name');
+        $specialRoomsSecondFloor=['tarsalgo', 'fiukonyha', 'lanykonyha', 'em2fiufurdo', 'em2lanyfurdo', 'em2fiuwc', 'em2lanywc', 'em2fiulepcso', 'em2lanylepcso'];
+        $specialRoomsThirdFloor=['em3fiufurdo', 'em3lanyfurdo', 'em3fiuwc', 'em3lanywc', 'em3fiulepcso', 'em3lanylepcso'];
+
+        $roomCoords=require base_path('room_coords.php');
+
+        return view('dormitory.rooms.app', 
+            [
+                'users' => $users,
+                'rooms' => $rooms, 
+                'roomNumbersSecondFloor' => $roomNumbersSecondFloor, 
+                'roomNumbersThirdFloor' => $roomNumbersThirdFloor,
+                'specialRoomsSecondFloor' => $specialRoomsSecondFloor,
+                'specialRoomsThirdFloor' => $specialRoomsThirdFloor,
+                'roomCoords' => $roomCoords
+            ]);
     }
 
     public function modify()
     {
         $this->authorize('updateAny', Room::class);
         $users=User::active()->resident()->get();
-        $tenants=User::role(Role::getRole(Role::TENANT), null)->whereHas('personalInformation', function ($q) {
-            $q->where('tenant_until', '>', now());
-        })->get();
-        $users=$users->concat($tenants);
+        // Is an active tenant
+        $tenants=User::currentTenant()
+        // Or is a collegist (for externs living in the Collegium)
+        ->orWhereHas('roles', function ($q) {
+            $q->where('name', Role::COLLEGIST);
+        })
+        ->get();
+        $users=$users->concat($tenants)->unique();
         $rooms = Room::with('users')->get();
         return view('dormitory.rooms.modify', ['users' => $users, 'rooms' => $rooms]);
     }

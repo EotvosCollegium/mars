@@ -711,6 +711,22 @@ class User extends Authenticatable implements HasLocalePreference
         return $query->role(Role::COLLEGIST, RoleObject::firstWhere('name', Role::EXTERN));
     }
 
+
+    /**
+     * Scope a query to only include current tenant users.
+     * A tenant is currently active if his tenantUntil date is in the future.
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeCurrentTenant(Builder $query): Builder
+    {
+        return $query->role(Role::TENANT)
+        ->whereHas('personalInformation', function ($q) {
+            $q->where('tenant_until', '>', now());
+        });
+    }
+
     /**
      * Returns the collegist's status in the current semester.
      *

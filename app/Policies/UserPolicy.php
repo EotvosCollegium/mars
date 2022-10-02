@@ -61,7 +61,7 @@ class UserPolicy
                     ->intersect($user->roleWorkshops())
                     ->count()>0;
         } elseif ($target->hasRole(Role::TENANT)) {
-            return $user->hasRole(Role::STAFF);
+            return $user->hasRole([Role::STAFF, Role::STUDENT_COUNCIL => Role::PRESIDENT]);
         }
         return false;
     }
