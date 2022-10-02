@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'specialRoomsSecondFloor' => ['tarsalgo', 'fiukonyha', 'lanykonyha', 'em2fiufurdo', 'em2lanyfurdo', 'em2fiuwc', 'em2lanywc', 'em2fiulepcso', 'em2lanylepcso'],
+    'specialRoomsThirdFloor' => ['em3fiufurdo', 'em3lanyfurdo', 'em3fiuwc', 'em3lanywc', 'em3fiulepcso', 'em3lanylepcso'],
     'room231' => "M29.6,229.7l0.7,50.1H119v-50.1H29.6z",
     'room232' => 'M28.6,173.8l0.7,53.3l89.6-0.6l-0.1-53.1L28.6,173.8z',
     'room233' => 'M28.8,107.4l89.6-0.2l0.7,63.6L29,171L28.8,107.4z',

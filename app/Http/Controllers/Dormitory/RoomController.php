@@ -29,10 +29,12 @@ class RoomController extends Controller
         $roomNumbersThirdFloor=$rooms->filter(function ($value, $key) {
             return $value->name[0]=='3';
         })->pluck('name');
-        $specialRoomsSecondFloor=['tarsalgo', 'fiukonyha', 'lanykonyha', 'em2fiufurdo', 'em2lanyfurdo', 'em2fiuwc', 'em2lanywc', 'em2fiulepcso', 'em2lanylepcso'];
-        $specialRoomsThirdFloor=['em3fiufurdo', 'em3lanyfurdo', 'em3fiuwc', 'em3lanywc', 'em3fiulepcso', 'em3lanylepcso'];
-
+        
         $roomCoords=require base_path('room_coords.php');
+
+        $specialRoomsSecondFloor=$roomCoords['specialRoomsSecondFloor'];
+        $specialRoomsThirdFloor=$roomCoords['specialRoomsThirdFloor'];
+
 
         return view(
             'dormitory.rooms.app',
