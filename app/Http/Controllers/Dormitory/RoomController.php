@@ -29,7 +29,7 @@ class RoomController extends Controller
         $roomNumbersThirdFloor=$rooms->filter(function ($value, $key) {
             return $value->name[0]=='3';
         })->pluck('name');
-        
+
         $roomCoords=require base_path('room_coords.php');
 
         $specialRoomsSecondFloor=$roomCoords['specialRoomsSecondFloor'];
