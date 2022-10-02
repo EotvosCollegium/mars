@@ -10,6 +10,8 @@ return [
     'created-not-allowed' => 'Nem adhatsz hozzá közösségi tevékenységet! Próbáld meg aktiválni a félévedet.',
     'created-scf' => 'A közösségi tevékenység létrehozása sikeres',
     'description' => 'Leírás',
+    'no-services' => 'Nem találhatók közösségi tevékenységek',
+    'no-services-descr' => 'Hogyha lenne olyan közösségi tevékenység, amit te kérvényeztél vagy hagytál jóvá, akkor az itt jelenne meg',
     'pending' => 'Függőben',
     'reject_scf' => 'Sikeresen elutasítva',
     'rejected' => 'Visszautasítva',
