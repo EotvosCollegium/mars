@@ -6,6 +6,7 @@ return [
     'email' => 'E-mail cím',
     'forgotpwd' => 'Elfelejtetted a jelszót?',
     'information' => 'A jelentkezéshez szükséges további információkat a regisztráció után lehet feltölteni.',
+    'information_tenant' => 'Ez az oldal a leendő collegistáknak szól. Ha vendégként szeretnél regisztrálni, kattints ide.',
     'invite' => 'Meghívás',
     'invite_button' => 'Létrehozás és meghívó küldése',
     'invite_instructions' => 'Itt lehet adott e-mail-címmel egy felhasználót készíteni, és meghívót küldeni a címre.',
