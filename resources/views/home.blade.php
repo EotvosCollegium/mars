@@ -16,7 +16,6 @@
     </div>
 </div>
 @endif
-
 <!-- Information -->
 @if($information_general.$information_collegist != '' || 
     Auth::user()->hasRole([
