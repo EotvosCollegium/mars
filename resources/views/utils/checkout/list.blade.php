@@ -5,7 +5,9 @@
     @can('administrate', $checkout)
     <td>{{ $transaction->payer?->name }}</td>
     <td>{{ $transaction->receiver?->name }}</td>
-    @endcan
+    @else
+    <td></td><td></td>
+    @endif
     <td>{{ $transaction->created_at->format('Y. m. d.') }}</td>
     <td class="right">
         {{ number_format($transaction->amount, 0, '.', ' ') }} Ft

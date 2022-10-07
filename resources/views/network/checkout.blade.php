@@ -54,7 +54,7 @@
                                 <tr><th colspan="3">@lang('checkout.expenses')</th></tr>
                                 @include('utils.checkout.list', ['paymentType' => \App\Models\PaymentType::expense()])
                                 <tr>
-                                    <th colspan="2">@lang('checkout.sum')</th>
+                                    <th colspan="4">@lang('checkout.sum')</th>
                                     <th class="right"><nobr>{{ number_format($semester->transactions->sum('amount'), 0, '.', ' ') }} Ft</nobr></th>
                                 </tr>
                             </tbody></table>
