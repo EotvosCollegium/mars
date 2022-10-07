@@ -34,6 +34,8 @@ class EconomicController extends Controller
             'semesters' => $this->getTransactionsGroupedBySemesters($checkout, $payment_types),
             'checkout' => $checkout,
             'route_base' => $this->routeBase(),
+            'user_transactions_not_in_checkout' => $this->userTransactionsNotInCheckout([PaymentType::EXPENSE, PaymentType::INCOME]),
+            'collected_transactions' => $this->getCollectedTransactions([PaymentType::EXPENSE, PaymentType::INCOME]),
         ]);
 
         if ($redirected) {

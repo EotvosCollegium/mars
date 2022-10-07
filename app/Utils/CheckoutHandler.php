@@ -10,6 +10,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 trait CheckoutHandler
@@ -117,21 +118,28 @@ trait CheckoutHandler
         $validator = Validator::make($request->all(), [
             'comment' => 'required|string',
             'amount' => 'required|integer',
+            'receiver' => 'required|exists:users,id',
+            'payer' => 'required|exists:users,id',
         ]);
         $validator->validate();
 
         $type = $request->amount > 0 ? PaymentType::income()->id : PaymentType::expense()->id;
 
-        Transaction::create([
+        $payer = User::findOrFail($request->payer);
+        $receiver = User::findOrFail($request->receiver);
+
+        $transaction = Transaction::create([
             'checkout_id' => $checkout->id,
-            'receiver_id' => null,
-            'payer_id' => Auth::user()->id,
+            'receiver_id' => $receiver->id,
+            'payer_id' => $payer->id,
             'semester_id' => Semester::current()->id,
             'amount' => $request->amount,
             'payment_type_id' => $type,
             'comment' => $request->comment,
-            'moved_to_checkout' => Carbon::now(),
+            'moved_to_checkout' => ($request->in_checkout ? Carbon::now() : null),
         ]);
+
+        Mail::to($payer)->queue(new \App\Mail\PayedTransaction($payer->name, [$transaction]));
     }
 
     public function deleteTransaction(Transaction $transaction)

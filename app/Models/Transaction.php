@@ -52,4 +52,12 @@ class Transaction extends Model
     {
         return $this->belongsTo('App\Models\PaymentType', 'payment_type_id');
     }
+
+    public function getCommentAttribute($value)
+    {
+        if(in_array($this->type->name, [PaymentType::INCOME, PaymentType::EXPENSE])) {
+            return $value;
+        }
+        return __('checkout.'.$this->type->name);
+    }
 }

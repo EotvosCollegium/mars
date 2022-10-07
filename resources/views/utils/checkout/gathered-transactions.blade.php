@@ -1,3 +1,4 @@
+@if(count($user_transactions_not_in_checkout))
 <div class="card">
     <div class="card-content">
         <span class="card-title">@lang('checkout.my_gathered_transactions')</span>
@@ -12,7 +13,7 @@
                         @endif
                     </td>
                     <td>
-                        {{ $transaction->type->name }}
+                        {{ $transaction->comment }}
                     </td>
                     <td>{{ $transaction->amount }} Ft</td>
                     <td>
@@ -41,3 +42,4 @@
         </div>
     </div>
 </div>
+@endif

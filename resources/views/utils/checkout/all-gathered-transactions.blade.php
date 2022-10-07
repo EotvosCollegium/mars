@@ -1,8 +1,8 @@
 @can('administrate', $checkout)
 <div class="card">
     <div class="card-content">
-        <span class="card-title">@lang('checkout.all_gathered_transactions') </span>
-        <blockquote>@lang('checkout.all_gathered_transactions_descr')</blockquote>
+        <span class="card-title">@lang('checkout.depts') </span>
+        <blockquote>@lang('checkout.depts_descr')</blockquote>
         <table><tbody>
             @foreach($collected_transactions as $collegist)
               <tr>

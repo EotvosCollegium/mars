@@ -21,19 +21,17 @@
                 </blockquote>
             </div>
         </div>
-        @can('administrate', $checkout)
-            <div class="row">
-                <div class="col s12">
-                    @include('utils.checkout.all-gathered-transactions')
-                </div>
-                <div class="col s12 xl6">
-                    @include('utils.checkout.add-transaction')
-                </div>
-                <div class="col s12 xl6">
-                    @include('utils.checkout.gathered-transactions')
-                </div>
+        <div class="row">
+            <div class="col s12">
+                @include('utils.checkout.add-transaction')
             </div>
-        @endcan
+            <div class="col s12">
+                @include('utils.checkout.all-gathered-transactions')
+            </div>
+            <div class="col s12">
+                @include('utils.checkout.gathered-transactions')
+            </div>
+        </div>
     </div>
 </div>
 

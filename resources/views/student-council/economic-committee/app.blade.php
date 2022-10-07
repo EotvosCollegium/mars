@@ -28,6 +28,12 @@
     <div class="col s12">
         @include('utils.checkout.add-transaction')
     </div>
+    <div class="col s12">
+        @include('utils.checkout.all-gathered-transactions')
+    </div>
+    <div class="col s12">
+        @include('utils.checkout.gathered-transactions')
+    </div>
     @foreach($semesters as $semester)
     @php
         $transactions = $semester->transactions;
