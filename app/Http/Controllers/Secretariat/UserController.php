@@ -13,6 +13,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
+
 
 class UserController extends Controller
 {
@@ -174,4 +176,41 @@ class UserController extends Controller
 
         return redirect()->back()->with('message', __('general.successful_modification'));
     }
+
+    public function showTenantUpdate(Request $request)
+    {
+        if(Auth::user()->isCurrentTenant()){
+            return abort(403);
+        }
+        return view('user.update_tenant_status', [
+            'user' => Auth::user(),
+        ]);
+    }
+
+    public function updateTenantUntil(Request $request)
+    {
+        if(Auth::user()->isCurrentTenant()){
+            return abort(403);
+        }
+        $validator = Validator::make($request->all(), [
+            'tenant_until' => 'required|date|after:today',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $user = Auth::user();
+        $date=Carbon::now()->addMonths(6);
+        if(Carbon::now()->addMonths(6)->gt($request->tenant_until.' 00:00:00')){
+            $date = $request->tenant_until.' 00:00:00';
+        }
+        $user->internetAccess()->update(['has_internet_until' => $date]);
+        $user->personalInformation->update(['tenant_until' => $date]);
+
+        return redirect('home')->with('message', __('general.successful_modification'));
+    }
+
 }

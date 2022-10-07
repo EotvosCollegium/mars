@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 
+use Illuminate\Support\Facades\Log;
 /**
  * @property int $id
  * @property string $name
@@ -386,6 +387,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function addRole(Role $role, Workshop|RoleObject $object = null): bool
     {
+        Log::info('Adding role ' . $role->name . ' to user ' . $this->id);
         if (!$role->isValid($object)) {
             return false;
         }
@@ -411,6 +413,9 @@ class User extends Authenticatable implements HasLocalePreference
             if ($this->roles()->where('id', $role->id)->doesntExist()) {
                 $this->roles()->attach($role->id);
             }
+            if($role->name == Role::TENANT && $this->isActive()){
+                $this->setTenantUntilForActive();
+            }
         }
         return true;
     }
@@ -432,6 +437,33 @@ class User extends Authenticatable implements HasLocalePreference
         }
     }
 
+    /**
+     * @return array|User[]|Collection the tenants
+     */
+    public static function tenants(): Collection|array
+    {
+        return self::role(Role::TENANT)->get();
+    }
+
+    /**
+     * @return bool if the user is a tenant
+     */
+    public function isTenant(): bool
+    {
+        return $this->hasRole(Role::TENANT);
+    }
+
+    /**
+     * @return bool if the user is currently a tenant
+     */
+    public function isCurrentTenant(): bool
+    {
+        return $this->isTenant() && $this->personalInformation->tenant_until && ($this->personalInformation->tenant_until.' 00:00:00') > Carbon::now();
+    }
+
+    /**
+     * @return array|User[]|Collection the collegists
+     */
     public static function collegists(): Collection|array
     {
         return Role::collegist()->getUsers();
@@ -756,6 +788,9 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function setStatusFor(Semester $semester, $status, $comment = null): User
     {
+        if($semester==Semester::current() && $this->isTenant() && $status == SemesterStatus::ACTIVE) {
+            $this->setTenantUntilForActive();
+        }
         $this->allSemesters()->syncWithoutDetaching([
             $semester->id => [
                 'status' => $status,
@@ -793,6 +828,13 @@ class User extends Authenticatable implements HasLocalePreference
         ]);
 
         return $this;
+    }
+
+    public function setTenantUntilForActive(): bool
+    {
+        Log::info('setTenantUntilForActive');
+        Log::info(Semester::current()->getEndDate()->addMonths(3));
+        return $this->personalInformation->update(['tenant_until'=>Semester::current()->getEndDate()->addMonths(3)]);
     }
 
     public function sendPasswordSetNotification($token)

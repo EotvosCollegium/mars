@@ -47,9 +47,9 @@ class RegistrationsController extends Controller
             $date=Carbon::now()->addMonths(6);
             if(Carbon::now()->addMonths(6)->gt($user->personalInformation->tenant_until.' 00:00:00')){
                 $date = $user->personalInformation->tenant_until.' 00:00:00';
-            }            
+            }
             $user->internetAccess()->update(['has_internet_until' => $date]);
-            $user->tenant_until = $date;
+            $user->tenant_until->update(['tenant_until' => $date]);
         }
 
         Cache::decrement('user');
