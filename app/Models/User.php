@@ -412,7 +412,7 @@ class User extends Authenticatable implements HasLocalePreference
                 $this->roles()->attach($role->id);
             }
             if ($role->name == Role::TENANT && $this->isActive()) {
-                $this->setTenantUntilForActive();
+                $this->setTenantUntilToSemesterEnd();
             }
         }
         return true;
@@ -792,7 +792,7 @@ class User extends Authenticatable implements HasLocalePreference
     public function setStatusFor(Semester $semester, $status, $comment = null): User
     {
         if ($semester==Semester::current() && $this->isTenant() && $status == SemesterStatus::ACTIVE) {
-            $this->setTenantUntilForActive();
+            $this->setTenantUntilToSemesterEnd();
         }
         $this->allSemesters()->syncWithoutDetaching([
             $semester->id => [
@@ -833,9 +833,13 @@ class User extends Authenticatable implements HasLocalePreference
         return $this;
     }
 
-    public function setTenantUntilForActive(): bool
+    /**
+     * Sets the tenant_until date to the end of the current semester.
+     * Added three months and two weeks to the end of the semester to allow the activation to happen.
+     */
+    public function setTenantUntilToSemesterEnd(): bool
     {
-        return $this->personalInformation->update(['tenant_until'=>Semester::current()->getEndDate()->addMonths(3)]);
+        return $this->personalInformation->update(['tenant_until'=>Semester::current()->getEndDate()->addMonths(3)->addWeeks(2)]);
     }
 
     public function sendPasswordSetNotification($token)
