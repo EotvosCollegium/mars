@@ -153,6 +153,7 @@ class RegisterController extends Controller
         } else {
             $user->application()->create();
         }
+        Cache::forget('collegists');
 
         return $user;
     }

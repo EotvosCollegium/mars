@@ -456,7 +456,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function isCurrentTenant(): bool
     {
-        return $this->isTenant() && $this->personalInformation->tenant_until && ($this->personalInformation->tenant_until.' 00:00:00') > Carbon::now();
+        return $this->isTenant() && $this->personalInformation->tenant_until && Carbon::parse($this->personalInformation->tenant_until)->gt(Carbon::now());
     }
 
     public function needsUpdateTenantUntil(): bool

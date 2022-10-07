@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 
 class UserController extends Controller
 {
@@ -210,11 +211,12 @@ class UserController extends Controller
 
         $user = Auth::user();
         $date=Carbon::now()->addMonths(6);
-        if (Carbon::now()->addMonths(6)->gt($request->tenant_until.' 00:00:00')) {
-            $date = $request->tenant_until.' 00:00:00';
+        $tenantUntilDate=Carbon::parse($request->tenant_until);
+        if (Carbon::now()->addMonths(6)->gt($tenantUntilDate)) {
+            $date = $tenantUntilDate;
         }
         $user->internetAccess()->update(['has_internet_until' => $date]);
-        $user->personalInformation->update(['tenant_until' => $date]);
+        $user->personalInformation()->update(['tenant_until' => $date]);
 
         return redirect('home')->with('message', __('general.successful_modification'));
     }
@@ -228,22 +230,13 @@ class UserController extends Controller
             return abort(403);
         }
         $user = Auth::user();
-        $user->internetAccess()->update(['has_internet_until' => null]);
-        $user->personalInformation->update(['tenant_until' => null]);
+        $user->personalInformation()->update(['tenant_until' => null]);
         $user->removeRole(Role::firstWhere('name', Role::TENANT));
-        $user->removeRole(Role::firstWhere('name', Role::PRINTER));
-        $user->removeRole(Role::firstWhere('name', Role::INTERNET_USER));
+        $collegist = Role::firstWhere('name', Role::COLLEGIST);
+        $user->addRole($collegist, $collegist->getObject(Role::EXTERN));
+        $user->update(['verified' => false]);
         $user->application()->create();
-
-        //TODO: this works the first time but how does the program know to redirect the user to the application form after login?
-        $data = [
-            'workshops' => Workshop::all(),
-            'faculties' => Faculty::all(),
-            'deadline' => \App\Http\Controllers\Auth\ApplicationController::getApplicationDeadline(),
-            'deadline_extended' => \App\Http\Controllers\Auth\ApplicationController::isDeadlineExtended(),
-            'countries' => require base_path('countries.php'),
-            'user' => $user
-        ];
-        return view('auth.application.educational', $data);
+        Cache::forget('collegists');
+        return back();
     }
 }

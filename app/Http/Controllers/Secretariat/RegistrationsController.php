@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
+
 class RegistrationsController extends Controller
 {
     public function __construct()
@@ -45,11 +46,12 @@ class RegistrationsController extends Controller
         $user->update(['verified' => true]);
         if ($user->hasRole(Role::TENANT)) {
             $date=Carbon::now()->addMonths(6);
-            if (Carbon::now()->addMonths(6)->gt($user->personalInformation->tenant_until.' 00:00:00')) {
-                $date = $user->personalInformation->tenant_until.' 00:00:00';
+            $tenantUntilDate=Carbon::parse($user->personalInformation->tenant_until);
+            if (Carbon::now()->addMonths(6)->gt($tenantUntilDate)) {
+                $date = $tenantUntilDate;
             }
             $user->internetAccess()->update(['has_internet_until' => $date]);
-            $user->tenant_until->update(['tenant_until' => $date]);
+            $user->personalInformation()->update(['tenant_until' => $date]);
         }
 
         Cache::decrement('user');
