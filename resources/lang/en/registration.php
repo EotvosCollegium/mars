@@ -6,6 +6,7 @@ return [
     'email' => 'Email',
     'forgotpwd' => 'Forgot your password?',
     'information' => 'The application form can be submitted after the registration.',
+    'information_tenant' => 'This form is for the prospective collegists. Click here to register as a guest resident.',
     'invite' => 'Invite',
     'invite_button' => 'Create and send invitation',
     'invite_instructions' => 'Here you can invite someone with a given e-mail address to create an account.',
