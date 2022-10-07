@@ -233,7 +233,7 @@ class UserController extends Controller
         $user->personalInformation()->update(['tenant_until' => null]);
         $user->removeRole(Role::firstWhere('name', Role::TENANT));
         $collegist = Role::firstWhere('name', Role::COLLEGIST);
-        $user->addRole($collegist, $collegist->getObject(Role::EXTERN));
+        $user->setExtern();
         $user->update(['verified' => false]);
         $user->application()->create();
         Cache::forget('collegists');
