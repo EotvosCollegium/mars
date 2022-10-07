@@ -55,7 +55,7 @@ class Transaction extends Model
 
     public function getCommentAttribute($value)
     {
-        if(in_array($this->type->name, [PaymentType::INCOME, PaymentType::EXPENSE])) {
+        if (in_array($this->type->name, [PaymentType::INCOME, PaymentType::EXPENSE])) {
             return $value;
         }
         return __('checkout.'.$this->type->name);
