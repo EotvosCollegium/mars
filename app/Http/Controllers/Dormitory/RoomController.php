@@ -102,10 +102,7 @@ class RoomController extends Controller
         $this->authorize('updateAny', Room::class);
 
         $rooms=Room::all();
-        $users=User::all();
-        foreach ($users as $user) {
-            $user->update(['room' => null]);
-        }
+        DB::table('users')->update(['room' => null]);
         foreach ($rooms as $room) {
             $userIds=isset($request->rooms[$room->name]) ? $request->rooms[$room->name] : null;
             if ($userIds!==null) {
