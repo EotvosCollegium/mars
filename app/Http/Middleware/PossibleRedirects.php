@@ -23,7 +23,7 @@ class PossibleRedirects
         if (!($request->is('logout') || $request->routeIs('setlocale')) && $user && $user->verified) {
             if (!$request->routeIs('secretariat.status-update.*')
             && $request->user()->isCollegist()
-            && !$request->user()->hasActivated()){
+            && !$request->user()->hasActivated()) {
                 return redirect(route('secretariat.status-update.show'));
             }
             /** Active collegists living in
