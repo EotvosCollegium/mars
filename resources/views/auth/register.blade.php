@@ -15,7 +15,9 @@
                         <blockquote class="error">{{ $error }}</blockquote>
                     @endforeach
                     @if($application_open)
-
+                        @if($user_type == \App\Models\Role::COLLEGIST)
+                        <blockquote><a href="{{route('register.guest')}}">@lang('registration.information_tenant')</a></blockquote>
+                        @endif
                         {{--basic information--}}
                         <div class="section">
                             <div class="row">
