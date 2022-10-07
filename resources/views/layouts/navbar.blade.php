@@ -3,17 +3,29 @@
     <nav class="top-nav">
         <div class="nav-wrapper">
             <div class="row">
-                <!--sidenav trigger for mobile-->
-                <a href="#" data-target="sidenav" class="sidenav-trigger hide-on-large-only"><i
-                        class="material-icons">menu</i></a>
+                <!--sidenav trigger-->
+                <a href="#" data-target="sidenav" class="sidenav-trigger" style="display:block">
+                    <i class="material-icons">menu</i></a>
+                
+                <div class="col hide-on-med-and-down" style="padding:0">
+                    <a href="{{ url('/') }}">
+                        <img style="margin-top:15px;height:35px" src="{{ config('app.logo_white_path') }}"/>
+                    </a>
+                </div>
+                <div class="col hide-on-med-and-down" >
+                    <a href="{{ url('/') }}" style="font-weight:300;letter-spacing:3px;font-size:1.5em">
+                        {{ config('app.name', 'Urán') }}
+                    </a>
+                </div>
                 <!--logo for mobile-->
                 <a class="brand-logo center hide-on-large-only"
                     style="text-transform: uppercase;font-weight:300;letter-spacing:3px;" href="{{ url('/') }}">
                     {{ config('app.name', 'Urán') }} </a>
                 <!--title-->
-
-                <div class="col hide-on-med-and-down noselect" style="margin-left:310px">
-                    @yield('title')
+                <div class="container">
+                    <div class="col hide-on-med-and-down noselect">
+                        @yield('title')
+                    </div>
                 </div>
 
                 <!-- Right Side Of Navbar -->
@@ -26,15 +38,15 @@
 </div>
 
 <!--sidebar-->
-<ul class="sidenav sidenav-fixed" id="sidenav">
-    <!-- logo -->
-    @include('layouts.logo')
+<ul class="sidenav" id="sidenav" style="padding-top: 10px">
+
+    {{-- @include('layouts.logo') --}}
 
     <!-- main options -->
     @if(Auth::user() && Auth::user()->verified)
         <!-- print page -->
         @can('use', \App\Models\PrintAccount::class)
-        <li><a class="waves-effect" href="{{ route('print') }}"><i class="material-icons left">local_printshop</i>@lang('print.print')</a></li>
+        <li><a class="waves-effect" href="{{ route('print') }}"><i class="material-icons left">local_printshop</i><span>@lang('print.print')</span></a></li>
         @endif
         <!-- internet page -->
         @can('possess', \App\Models\InternetAccess::class)
