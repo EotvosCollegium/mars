@@ -411,7 +411,7 @@ class User extends Authenticatable implements HasLocalePreference
             if ($this->roles()->where('id', $role->id)->doesntExist()) {
                 $this->roles()->attach($role->id);
             }
-            if($role->name == Role::TENANT && $this->isActive()){
+            if ($role->name == Role::TENANT && $this->isActive()) {
                 $this->setTenantUntilForActive();
             }
         }
@@ -791,7 +791,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function setStatusFor(Semester $semester, $status, $comment = null): User
     {
-        if($semester==Semester::current() && $this->isTenant() && $status == SemesterStatus::ACTIVE) {
+        if ($semester==Semester::current() && $this->isTenant() && $status == SemesterStatus::ACTIVE) {
             $this->setTenantUntilForActive();
         }
         $this->allSemesters()->syncWithoutDetaching([

@@ -15,7 +15,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 
-
 class UserController extends Controller
 {
     public function profile()
@@ -182,7 +181,7 @@ class UserController extends Controller
      */
     public function showTenantUpdate()
     {
-        if(!Auth::user()->needsUpdateTenantUntil()){
+        if (!Auth::user()->needsUpdateTenantUntil()) {
             return abort(403);
         }
         return view('user.update_tenant_status', [
@@ -190,13 +189,13 @@ class UserController extends Controller
         ]);
     }
 
-    
+
     /**
      * Updates the planned departure date of a tenant.
      */
     public function updateTenantUntil(Request $request)
     {
-        if(!Auth::user()->needsUpdateTenantUntil()){
+        if (!Auth::user()->needsUpdateTenantUntil()) {
             return abort(403);
         }
         $validator = Validator::make($request->all(), [
@@ -211,7 +210,7 @@ class UserController extends Controller
 
         $user = Auth::user();
         $date=Carbon::now()->addMonths(6);
-        if(Carbon::now()->addMonths(6)->gt($request->tenant_until.' 00:00:00')){
+        if (Carbon::now()->addMonths(6)->gt($request->tenant_until.' 00:00:00')) {
             $date = $request->tenant_until.' 00:00:00';
         }
         $user->internetAccess()->update(['has_internet_until' => $date]);
@@ -225,7 +224,7 @@ class UserController extends Controller
      */
     public function tenantToApplicant()
     {
-        if(!Auth::user()->isTenant() || Auth::user()->isCollegist()){
+        if (!Auth::user()->isTenant() || Auth::user()->isCollegist()) {
             return abort(403);
         }
         $user = Auth::user();
@@ -245,6 +244,6 @@ class UserController extends Controller
             'countries' => require base_path('countries.php'),
             'user' => $user
         ];
-        return view('auth.application.educational', $data);   
+        return view('auth.application.educational', $data);
     }
 }
