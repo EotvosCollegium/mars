@@ -53,6 +53,9 @@ class Transaction extends Model
         return $this->belongsTo('App\Models\PaymentType', 'payment_type_id');
     }
 
+    /**
+     * @return string the comment for income/expenses, or the transaction type for other transactions
+     */
     public function getCommentAttribute($value)
     {
         if (in_array($this->type->name, [PaymentType::INCOME, PaymentType::EXPENSE])) {
