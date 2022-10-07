@@ -75,6 +75,7 @@ return [
     'termeszettudomanyi_kar' => 'Természettudományi Kar',
     'törtenesz_muhely' => 'Történész műhely',
     'update_tenant_status' => 'Vendég státusz frissítése',
+    'update_tenant_until' => 'Tervezett kiköltözés frissítése',
     'user_data' => 'Felhasználói adatok',
     'wifi_connections_color_tooltip' => 'Zöld: > 10 nap, Sárga: 5 és 10 nap között, Piros: < 5 nap',
     'workshop' => 'Műhely',

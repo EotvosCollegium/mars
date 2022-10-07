@@ -73,6 +73,7 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::delete('/users/{user}/roles/{role}', [UserController::class, 'removeRole'])->name('users.roles.delete');
     Route::get('/users/tenant_update/show', [UserController::class, 'showTenantUpdate'])->name('users.tenant-update.show');
     Route::post('/users/tenant_update/update', [UserController::class, 'updateTenantUntil'])->name('users.tenant-update.update');
+    Route::get('/users/tenant_update/applicant', [UserController::class, 'tenantToApplicant'])->name('users.tenant-update.to-applicant');
 
 
     /** Localization */

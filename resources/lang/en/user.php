@@ -75,6 +75,7 @@ return [
     'termeszettudomanyi_kar' => 'Természettudományi Kar',
     'törtenesz_muhely' => 'Történész műhely',
     'update_tenant_status' => 'Update tenant status',
+    'update_tenant_until' => 'Update planned departure',
     'user_data' => 'User data',
     'wifi_connections_color_tooltip' => 'Green: > 10 days, Orange: between 5 and 10 days, Red: < 5 days',
     'workshop' => 'Workshop',

@@ -20,7 +20,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 
-use Illuminate\Support\Facades\Log;
 /**
  * @property int $id
  * @property string $name
@@ -387,7 +386,6 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function addRole(Role $role, Workshop|RoleObject $object = null): bool
     {
-        Log::info('Adding role ' . $role->name . ' to user ' . $this->id);
         if (!$role->isValid($object)) {
             return false;
         }
@@ -459,6 +457,11 @@ class User extends Authenticatable implements HasLocalePreference
     public function isCurrentTenant(): bool
     {
         return $this->isTenant() && $this->personalInformation->tenant_until && ($this->personalInformation->tenant_until.' 00:00:00') > Carbon::now();
+    }
+
+    public function needsUpdateTenantUntil(): bool
+    {
+        return $this->isTenant() && !$this->isCurrentTenant();
     }
 
     /**
@@ -832,8 +835,6 @@ class User extends Authenticatable implements HasLocalePreference
 
     public function setTenantUntilForActive(): bool
     {
-        Log::info('setTenantUntilForActive');
-        Log::info(Semester::current()->getEndDate()->addMonths(3));
         return $this->personalInformation->update(['tenant_until'=>Semester::current()->getEndDate()->addMonths(3)]);
     }
 

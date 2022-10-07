@@ -177,9 +177,12 @@ class UserController extends Controller
         return redirect()->back()->with('message', __('general.successful_modification'));
     }
 
-    public function showTenantUpdate(Request $request)
+    /**
+     * Shows the page where a tenant can update their planned departure date.
+     */
+    public function showTenantUpdate()
     {
-        if(Auth::user()->isCurrentTenant()){
+        if(!Auth::user()->needsUpdateTenantUntil()){
             return abort(403);
         }
         return view('user.update_tenant_status', [
@@ -187,9 +190,13 @@ class UserController extends Controller
         ]);
     }
 
+    
+    /**
+     * Updates the planned departure date of a tenant.
+     */
     public function updateTenantUntil(Request $request)
     {
-        if(Auth::user()->isCurrentTenant()){
+        if(!Auth::user()->needsUpdateTenantUntil()){
             return abort(403);
         }
         $validator = Validator::make($request->all(), [
@@ -213,4 +220,31 @@ class UserController extends Controller
         return redirect('home')->with('message', __('general.successful_modification'));
     }
 
+    /**
+     * Updates a tenant to an applicant
+     */
+    public function tenantToApplicant()
+    {
+        if(!Auth::user()->isTenant() || Auth::user()->isCollegist()){
+            return abort(403);
+        }
+        $user = Auth::user();
+        $user->internetAccess()->update(['has_internet_until' => null]);
+        $user->personalInformation->update(['tenant_until' => null]);
+        $user->removeRole(Role::firstWhere('name', Role::TENANT));
+        $user->removeRole(Role::firstWhere('name', Role::PRINTER));
+        $user->removeRole(Role::firstWhere('name', Role::INTERNET_USER));
+        $user->application()->create();
+
+        //TODO: this works the first time but how does the program know to redirect the user to the application form after login?
+        $data = [
+            'workshops' => Workshop::all(),
+            'faculties' => Faculty::all(),
+            'deadline' => \App\Http\Controllers\Auth\ApplicationController::getApplicationDeadline(),
+            'deadline_extended' => \App\Http\Controllers\Auth\ApplicationController::isDeadlineExtended(),
+            'countries' => require base_path('countries.php'),
+            'user' => $user
+        ];
+        return view('auth.application.educational', $data);   
+    }
 }

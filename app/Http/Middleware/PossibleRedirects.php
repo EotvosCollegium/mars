@@ -20,6 +20,9 @@ class PossibleRedirects
      */
     public function handle(Request $request, Closure $next)
     {
+        Log::info('PossibleRedirects middleware');
+        Log::info($request->route()->uri);
+        Log::info($request->is('users/*'));
         if (!($request->is('logout') || $request->routeIs('setlocale')) ) {
             if(!$request->routeIs('secretariat.status-update.*')
             && $request->user()
@@ -30,10 +33,10 @@ class PossibleRedirects
             /** Active collegists living in 
             *   the dormitory as tenants are not affected as their tenant_until is set automatically until the end of the semester
             */
-            if(!$request->routeIs('users.tenant-update.*')
+            if(!$request->is('users/tenant_update/*')
             && $request->user()
             && $request->user()->verified
-            && !$request->user()->isCurrentTenant()
+            && $request->user()->needsUpdateTenantUntil()
             ){
                 return redirect(route('users.tenant-update.show'));
             }
