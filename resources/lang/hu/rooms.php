@@ -2,6 +2,7 @@
 
 return [
     'capacity_bounds_error' => 'A lakószámnak 1 és 4 között kell lennie',
+    'edit' => 'Szobabeosztás szerkesztése',
     'no_capacity_error' => 'Nincs elég hely a szobában',
     'resident1' => '1. lakó',
     'resident2' => '2. lakó',

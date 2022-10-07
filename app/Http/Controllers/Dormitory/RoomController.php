@@ -5,9 +5,12 @@ namespace App\Http\Controllers\Dormitory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 use App\Models\Room;
 use App\Models\User;
+use App\Models\Role;
 
 class RoomController extends Controller
 {
@@ -17,11 +20,52 @@ class RoomController extends Controller
     public function index()
     {
         $this->authorize('viewAny', Room::class);
-        $users=User::active()->resident()->get();
-
+        $users=User::where('room', '!=', 'null');
         $rooms = Room::with('users')->get();
-        return view('dormitory.rooms.app', ['users' => $users, 'rooms' => $rooms]);
+
+        $roomNumbersSecondFloor=$rooms->filter(function ($value, $key) {
+            return $value->name[0]=='2' && $value->name!='219';
+        })->pluck('name');
+        $roomNumbersThirdFloor=$rooms->filter(function ($value, $key) {
+            return $value->name[0]=='3';
+        })->pluck('name');
+
+        $roomCoords=require base_path('room_coords.php');
+
+        $specialRoomsSecondFloor=$roomCoords['specialRoomsSecondFloor'];
+        $specialRoomsThirdFloor=$roomCoords['specialRoomsThirdFloor'];
+
+
+        return view(
+            'dormitory.rooms.app',
+            [
+                'users' => $users,
+                'rooms' => $rooms,
+                'roomNumbersSecondFloor' => $roomNumbersSecondFloor,
+                'roomNumbersThirdFloor' => $roomNumbersThirdFloor,
+                'specialRoomsSecondFloor' => $specialRoomsSecondFloor,
+                'specialRoomsThirdFloor' => $specialRoomsThirdFloor,
+                'roomCoords' => $roomCoords
+            ]
+        );
     }
+
+    public function modify()
+    {
+        $this->authorize('updateAny', Room::class);
+        $users=User::active()->resident()->get();
+        // Is an active tenant
+        $tenants=User::currentTenant()
+        // Or is a collegist (for externs living in the Collegium)
+        ->orWhereHas('roles', function ($q) {
+            $q->where('name', Role::COLLEGIST);
+        })
+        ->get();
+        $users=$users->concat($tenants)->unique();
+        $rooms = Room::with('users')->get();
+        return view('dormitory.rooms.modify', ['users' => $users, 'rooms' => $rooms]);
+    }
+
     /**
      * Updates the capacity of the room.
      * Returns an error if the new capacity is out of bounds.
@@ -58,10 +102,7 @@ class RoomController extends Controller
         $this->authorize('updateAny', Room::class);
 
         $rooms=Room::all();
-        $users=User::all();
-        foreach ($users as $user) {
-            $user->update(['room' => null]);
-        }
+        User::query()->update(['room' => null]);
         foreach ($rooms as $room) {
             $userIds=isset($request->rooms[$room->name]) ? $request->rooms[$room->name] : null;
             if ($userIds!==null) {

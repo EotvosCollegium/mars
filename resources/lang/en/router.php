@@ -12,6 +12,7 @@ return [
     'room' => 'Room',
     'router' => 'Router',
     'router_is_down_warning' => 'The router with IP :ip is down in room :room.',
+    'router_is_down_warning_resident' => 'The router in your room (:room) is not available. Try to turn it off and on again. If this doesn\'t help, contact the system administrators: ',
     'router_monitor' => 'Router monitor',
     'serial_number' => 'Serial number',
     'state' => 'State',
