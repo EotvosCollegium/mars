@@ -834,12 +834,15 @@ class User extends Authenticatable implements HasLocalePreference
     }
 
     /**
-     * Sets the tenant_until date to the end of the current semester.
+     * Sets the tenant_until date to the end of the current semester if the user is an active collegist with the tenant role.
      * Added three months and two weeks to the end of the semester to allow the activation to happen.
      */
-    public function setTenantUntilToSemesterEnd(): bool
+    public function setTenantDateForTenantCollegists(): bool
     {
-        return $this->personalInformation->update(['tenant_until'=>Semester::current()->getEndDate()->addMonths(3)->addWeeks(2)]);
+        if($this->isTenant() && $this->isActive()){
+            return $this->personalInformation()->update(['tenant_until'=>Semester::current()->getEndDate()->addMonths(3)->addWeeks(2)]);
+        }
+        return false;
     }
 
     public function sendPasswordSetNotification($token)
