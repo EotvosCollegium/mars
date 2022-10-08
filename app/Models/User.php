@@ -839,7 +839,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function setTenantDateForTenantCollegists(): bool
     {
-        if($this->isTenant() && $this->isActive()){
+        if ($this->isTenant() && $this->isActive()) {
             return $this->personalInformation()->update(['tenant_until'=>Semester::current()->getEndDate()->addMonths(3)->addWeeks(2)]);
         }
         return false;

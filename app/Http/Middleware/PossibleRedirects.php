@@ -33,7 +33,7 @@ class PossibleRedirects
             }
             /**
              * Redirects teants to update their tenant_until property if it is in the past.
-             * This way we can distinguish between the active and inactive tenants. 
+             * This way we can distinguish between the active and inactive tenants.
              * Active collegists living in the dormitory as tenants are not affected
              *    as their tenant_until is set automatically until the end of the semester
              * The user is not redirected if they are already on the page to update the tenant_until.
