@@ -164,7 +164,7 @@ class ApplicationController extends Controller
             $application->update(['note' => $request->input('note')]);
         } elseif ($newStatus) {
             $application->update(['status' => $newStatus]);
-            if($newStatus==ApplicationForm::STATUS_CALLED_IN || $newStatus==ApplicationForm::STATUS_ACCEPTED){
+            if ($newStatus==ApplicationForm::STATUS_CALLED_IN || $newStatus==ApplicationForm::STATUS_ACCEPTED) {
                 $application->user->internetAccess->setWifiUsername($application->user->educationalInformation->neptun??'wifiuser_'.$application->user->id);
                 $application->user->internetAccess()->update(['has_internet_until' => $this::getApplicationDeadline()->addMonths(1)]);
             }
@@ -174,14 +174,14 @@ class ApplicationController extends Controller
 
     public function finalizeApplicationProcess()
     {
-        if(!Auth::user()->hasRole(Role::SYS_ADMIN)){
+        if (!Auth::user()->hasRole(Role::SYS_ADMIN)) {
             abort(403);
         }
-        
+
         User::query()->withoutGlobalScope('verified')
             ->where('verified', 0)
             ->whereHas('application', function ($query) {
-                $query->where('status', ApplicationForm::STATUS_ACCEPTED); 
+                $query->where('status', ApplicationForm::STATUS_ACCEPTED);
             })
             ->update(['verified' => true]);
         RoleUser::where('role_id', Role::getRole(Role::APPLICATION_COMMITTEE_MEMBER)->id)->delete();
