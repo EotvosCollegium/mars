@@ -67,7 +67,7 @@ class UserController extends Controller
         } else {
             $user->personalInformation->update($request->all());
         }
-        if($request->has('tenant_until')){
+        if ($request->has('tenant_until')) {
             $date=min(Carbon::parse($request->tenant_until), Carbon::now()->addMonths(6));
             $user->personalInformation->update(['tenant_until'=>$date]);
             $user->internetAccess()->updaate(['has_internet_until'=>$date]);
