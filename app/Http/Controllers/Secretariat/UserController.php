@@ -67,6 +67,11 @@ class UserController extends Controller
         } else {
             $user->personalInformation->update($request->all());
         }
+        if($request->has('tenant_until')){
+            $date=min(Carbon::parse($request->tenant_until), Carbon::now()->addMonths(6));
+            $user->personalInformation->update(['tenant_until'=>$date]);
+            $user->internetAccess()->updaate(['has_internet_until'=>$date]);
+        }
 
         return redirect()->back()->with('message', __('general.successful_modification'));
     }
@@ -210,11 +215,7 @@ class UserController extends Controller
         }
 
         $user = Auth::user();
-        $date=Carbon::now()->addMonths(6);
-        $tenantUntilDate=Carbon::parse($request->tenant_until);
-        if (Carbon::now()->addMonths(6)->gt($tenantUntilDate)) {
-            $date = $tenantUntilDate;
-        }
+        $date=min(Carbon::now()->addMonths(6), Carbon::parse($request->tenant_until));
         $user->internetAccess()->update(['has_internet_until' => $date]);
         $user->personalInformation()->update(['tenant_until' => $date]);
 
