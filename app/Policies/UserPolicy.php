@@ -91,7 +91,8 @@ class UserPolicy
             Role::DIRECTOR,
             Role::WORKSHOP_ADMINISTRATOR,
             Role::WORKSHOP_LEADER,
-            Role::APPLICATION_COMMITTEE_MEMBER
+            Role::APPLICATION_COMMITTEE_MEMBER,
+            Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER
         ]);
     }
 
@@ -102,9 +103,10 @@ class UserPolicy
     public function viewAllApplications(User $user): bool
     {
         return $user->hasRole([
-                Role::SECRETARY,
-                Role::DIRECTOR,
-                Role::STUDENT_COUNCIL => Role::PRESIDENT
+            Role::SECRETARY,
+            Role::DIRECTOR,
+            Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS,
+            Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER
         ]);
     }
 
@@ -114,7 +116,11 @@ class UserPolicy
      */
     public function viewUnfinishedApplications(User $user): bool
     {
-        return $this->viewAllApplications($user);
+        return $user->hasRole([
+            Role::SECRETARY,
+            Role::DIRECTOR,
+            Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS,
+        ]);
     }
 
     /** Permission related policies */

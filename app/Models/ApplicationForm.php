@@ -37,11 +37,15 @@ class ApplicationForm extends Model
 
     public const STATUS_IN_PROGRESS = 'in_progress';
     public const STATUS_SUBMITTED = 'submitted';
+    public const STATUS_CALLED_IN = 'called_in';
+    public const STATUS_ACCEPTED = 'accepted';
     public const STATUS_BANISHED = 'banished';
 
     public const STATUSES = [
-        self::STATUS_SUBMITTED,
         self::STATUS_IN_PROGRESS,
+        self::STATUS_SUBMITTED,
+        self::STATUS_CALLED_IN,
+        self::STATUS_ACCEPTED,
         self::STATUS_BANISHED,
     ];
 

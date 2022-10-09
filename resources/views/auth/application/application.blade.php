@@ -12,19 +12,43 @@
                 </div>
                 <div class="col s12 xl8">
                     @can('viewAnyApplication', \App\Models\User::class)
-                        <span class="right">
-                            @include('auth.application.status', ['status' => $user->application->status])
-                            @if(auth()->user()->hasRole(\App\Models\Role::SYS_ADMIN))
-                                @if($user->application->status == \App\Models\ApplicationForm::STATUS_SUBMITTED)
-                                    <form method="POST" style="display: inline" action="{{route('applications.edit')}}">
-                                        @csrf
-                                        <input type="hidden" name="application" value="{{$user->application->id}}"/>
-                                        <input type="hidden" name="banish" value="true"/>
-                                        <x-input.button class="red tooltipped btn-small" data-tooltip="Elutasít" floating icon="close"/>
-                                    </form>
-                                @endif
+                        @if(!auth()->user()->hasRole(\App\Models\Role::SYS_ADMIN) || $user->application->status == \App\Models\ApplicationForm::STATUS_IN_PROGRESS)
+                            <span class="right">
+                                @include('auth.application.status', ['status' => $user->application->status])
+                            </span>
+                        @else
+                            @if($user->application->status != \App\Models\ApplicationForm::STATUS_IN_PROGRESS)
+                            
+                            <form id="status-form-{{$user->id}}" method="POST" style="display: inline" action="{{route('applications.edit')}}">
+                                @csrf
+                                <input type="hidden" name="application" value="{{$user->application->id}}"/>
+                                <div class="right">
+                                    @foreach (\App\Models\ApplicationForm::STATUSES as $st)
+                                    <p>
+                                        <label>
+                                            <input wire:click="" type="radio" name="status_{{$user->id}}" value="{{$st}}" @if($user->application->status == $st) checked @endif>
+                                            <span style="padding-left: 25px; margin: 5px">@include('auth.application.status', ['status' => $st])</span>
+                                        </label>
+                                    </p>
+                                    @endforeach
+                                </div>
+                                @push('scripts')
+                                    {{--Submit form on change --}}
+                                    <script>
+                                        $(document).ready(function () {
+                                            var name = "status_"+{{$user->id}};
+                                            console.log(name);
+                                            $("input[name='"+name+"']").change(function () {
+                                                $('#status-form-'+{{$user->id}}).submit();
+                                            });
+                                        });
+                                    </script>
+                                @endpush
+                                    {{-- <input type="hidden" name="banish" value="true"/> --}}
+                                    {{-- <x-input.button class="red tooltipped btn-small" data-tooltip="Elutasít" floating icon="close"/> --}}
+                            </form>
                             @endif
-                        </span>
+                        @endif
                     @endcan
                     <div class="card-title">{{ $user->name }}</div>
                     <p style="margin-bottom: 5px"><a href="mailto:{{ $user->email }}">{{ $user->email }}</a></p>

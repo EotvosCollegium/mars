@@ -30,7 +30,8 @@ class SemesterController extends Controller
         /* @var User $user */
         $user = Auth::user();
         if ($user->getStatusIn(Semester::previous()->id) == SemesterStatus::DEACTIVATED) {
-            abort(403);
+            $user->setStatus(SemesterStatus::DEACTIVATED);
+            return redirect('home');
         }
         if (!self::isStatementAvailable($user)) {
             return redirect('home')->with('message', __('secretariat.status_statement_not_available'));

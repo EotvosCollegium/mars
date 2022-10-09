@@ -1,16 +1,18 @@
 @switch($status)
     @case(App\Models\ApplicationForm::STATUS_IN_PROGRESS)
-        <i class="coli-text text-orange">Folyamatban</i>
+        Folyamatban
         @break
     @case(App\Models\ApplicationForm::STATUS_SUBMITTED)
-        <i class="green-text">Véglegesítve</i>
+        Véglegesítve
         @break
     @case(App\Models\ApplicationForm::STATUS_BANISHED)
-        @can('viewAnyApplication', \App\Models\User::class)
-            <i class="red-text">Elutasítva</i>
-        @else
-            <i class="green-text">Véglegesítve</i>
-        @endif
+        Elutasítva
+        @break
+    @case(App\Models\ApplicationForm::STATUS_CALLED_IN)
+        Behívva
+        @break
+    @case(App\Models\ApplicationForm::STATUS_ACCEPTED)
+        Felvéve
         @break
     @default
         <i>Ismeretlen</i>
