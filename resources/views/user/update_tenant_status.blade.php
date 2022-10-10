@@ -8,9 +8,9 @@
     <div class="col s12">
         <div class="card">
             <div class="card-content">
-                <span class="card-title">@lang('user.update_personal_data')</span>
-                <blockquote>@lang('user.update_personal_data_descr')</blockquote>
-                @include('user.personal-information', ['user' => $user])
+                <span class="card-title">@lang('user.update_tenant_status')</span>
+                <blockquote>@lang('user.set_tenant_until')</blockquote>
+                @include('user.personal-information', ['user' => $user, 'only_tenant_until' => true])
             </div>
         </div>
     </div>

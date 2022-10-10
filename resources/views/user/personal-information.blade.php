@@ -5,6 +5,9 @@
 <form method="POST" action="{{ route('users.update.personal', ['user' => $user]) }}">
     @csrf
     <div class="row">
+        @if($only_tenant_until ?? false)
+        <div style="display:none">
+        @endif
         <x-input.text
             id="name"
             locale="user"
@@ -74,6 +77,9 @@
             locale='user'
             required
             :value="$user->personalInformation?->street_and_number" />
+        @endif
+        @if($only_tenant_until ?? false)
+        </div>
         @endif
         @if ($user->isTenant())
             <x-input.datepicker
