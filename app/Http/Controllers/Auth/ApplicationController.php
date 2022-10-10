@@ -43,7 +43,6 @@ class ApplicationController extends Controller
             'faculties' => Faculty::all(),
             'deadline' => self::getApplicationDeadline(),
             'deadline_extended' => self::isDeadlineExtended(),
-            'countries' => require base_path('countries.php'),
             'user' => $request->user()
         ];
         switch ($request->input('page')) {

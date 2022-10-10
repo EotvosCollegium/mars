@@ -4,6 +4,18 @@
 @endsection
 
 @section('content')
+<div class="row">
+    <div class="col s12">
+        <div class="card">
+            <div class="card-content">
+                <span class="card-title">@lang('user.update_personal_data')</span>
+                <blockquote>@lang('user.update_personal_data_descr')</blockquote>
+                @include('user.personal-information', ['user' => $user])
+            </div>
+        </div>
+    </div>
+</div>
+
 @if (env('APPLICATION_DEADLINE')>\Carbon\Carbon::now() && Auth::user()->isTenant() && !Auth::user()->isCollegist())
 <div class="row">
     <div class="col s12">
@@ -23,29 +35,4 @@
 </div>
 @endif
 
-<div class="row">
-    <div class="col s12">
-        <div class="card">
-            <div class="card-content">
-                <span class="card-title">@lang('user.update_tenant_until')</span>
-                <form action="{{ route('users.tenant-update.update') }}" method="post">
-                    @csrf
-                    <div class="row">
-                        <blockquote>
-                            @lang('user.set_tenant_until')
-                        </blockquote>
-                        <x-input.datepicker
-                            id='tenant_until'
-                            required
-                            locale='user'
-                            :value="$user->personalInformation?->tenant_until" />
-                    </div>
-                    <div class="row">
-                        <x-input.button class="right red" text="general.save" />
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 @endsection

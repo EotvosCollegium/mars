@@ -1,3 +1,7 @@
+@php
+    $countries = require base_path('countries.php');
+@endphp
+
 <form method="POST" action="{{ route('users.update.personal', ['user' => $user]) }}">
     @csrf
     <div class="row">
@@ -12,6 +16,7 @@
             locale="user"
             :value="$user->email"
             required />
+        @if ($user->isCollegist())
         <x-input.text
             l=6
             id='place_of_birth'
@@ -29,6 +34,7 @@
             required
             locale='user'
             :value="$user->personalInformation?->mothers_name" />
+        @endif
         <x-input.text
             id='phone_number'
             type='tel'
@@ -39,6 +45,7 @@
             locale='user'
             helper='+36 (20) 123-4567'
             :value="$user->personalInformation?->phone_number" />
+        @if ($user->isCollegist())
         <x-input.select
             id="country"
             :elements="$countries"
@@ -67,7 +74,8 @@
             locale='user'
             required
             :value="$user->personalInformation?->street_and_number" />
-        @if ($user->hasRole(\App\Models\Role::TENANT))
+        @endif
+        @if ($user->isTenant())
             <x-input.datepicker
                 id='tenant_until'
                 required

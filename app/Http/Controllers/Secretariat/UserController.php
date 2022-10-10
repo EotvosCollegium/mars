@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -25,7 +26,6 @@ class UserController extends Controller
         return view('auth.user', [
             'user' => $user,
             'semesters' => $user->allSemesters,
-            'countries' => require base_path('countries.php'),
             'faculties' => Faculty::all(),
             'workshops' => Workshop::all()
         ]);
@@ -33,19 +33,21 @@ class UserController extends Controller
 
     public function updatePersonalInformation(Request $request, User $user): \Illuminate\Http\RedirectResponse
     {
+        $isCollegist = $user->isCollegist();
+
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|max:225',
             'name' => 'required|string|max:255',
             'phone_number' => 'required|string|min:8|max:18',
-            'mothers_name' => 'required|string|max:225',
-            'place_of_birth' => 'required|string|max:225',
-            'date_of_birth' => 'required|string|max:225',
-            'country' => 'required|string|max:255',
-            'county' => 'required|string|max:255',
-            'zip_code' => 'required|string|max:31',
-            'city' => 'required|string|max:255',
-            'street_and_number' => 'required|string|max:255',
-            'tenant_until'=>'nullable|string|max:225',
+            'mothers_name' => [Rule::requiredIf($isCollegist), 'max:225'],
+            'place_of_birth' => [Rule::requiredIf($isCollegist), 'string', 'max:225'],
+            'date_of_birth' => [Rule::requiredIf($isCollegist), 'string', 'max:225'],
+            'country' => [Rule::requiredIf($isCollegist), 'string', 'max:255'],
+            'county' => [Rule::requiredIf($isCollegist), 'string', 'max:255'],
+            'zip_code' => [Rule::requiredIf($isCollegist), 'string', 'max:31'],
+            'city' => [Rule::requiredIf($isCollegist), 'string', 'max:255'],
+            'street_and_number' => [Rule::requiredIf($isCollegist), 'string', 'max:255'],
+            'tenant_until'=> [Rule::requiredIf($user->isTenant()), 'date', 'after:today'],
         ]);
         if ($user->email != $request->email) {
             if (User::where('email', $request->email)->exists()) {
@@ -70,7 +72,7 @@ class UserController extends Controller
         if ($request->has('tenant_until')) {
             $date=min(Carbon::parse($request->tenant_until), Carbon::now()->addMonths(6));
             $user->personalInformation->update(['tenant_until'=>$date]);
-            $user->internetAccess()->updaate(['has_internet_until'=>$date]);
+            $user->internetAccess()->update(['has_internet_until'=>$date]);
         }
 
         return redirect()->back()->with('message', __('general.successful_modification'));
@@ -147,7 +149,6 @@ class UserController extends Controller
         return view('secretariat.user.show', [
             'user' => $user,
             'semesters' => $user->allSemesters,
-            'countries' => require base_path('countries.php'),
             'faculties' => Faculty::all(),
             'workshops' => Workshop::all()
         ]);
@@ -188,38 +189,11 @@ class UserController extends Controller
     public function showTenantUpdate()
     {
         if (!Auth::user()->needsUpdateTenantUntil()) {
-            return abort(403);
+            return redirect('/');
         }
         return view('user.update_tenant_status', [
             'user' => Auth::user(),
         ]);
-    }
-
-
-    /**
-     * Updates the planned departure date of a tenant.
-     */
-    public function updateTenantUntil(Request $request)
-    {
-        if (!Auth::user()->needsUpdateTenantUntil()) {
-            return abort(403);
-        }
-        $validator = Validator::make($request->all(), [
-            'tenant_until' => 'required|date|after:today',
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
-
-        $user = Auth::user();
-        $date=min(Carbon::now()->addMonths(6), Carbon::parse($request->tenant_until));
-        $user->internetAccess()->update(['has_internet_until' => $date]);
-        $user->personalInformation()->update(['tenant_until' => $date]);
-
-        return redirect('home')->with('message', __('general.successful_modification'));
     }
 
     /**
