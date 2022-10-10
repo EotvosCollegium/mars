@@ -37,7 +37,7 @@ return [
     'pay_kkt_descr' => 'Ha valaki fizetni szeretne neked, azt írd fel itt. Csak aktív státuszú collegisták választhatóak ki, akik még nem fizettek KKT-t/Netreget. <br>A tranzakcióról emailben értesítést kapnak, és az internet-elérésük automatikusan meghosszabbításra kerül.',
     'pay_kktnetreg' => 'KKT és Netreg fizetése',
     'payed_by' => 'Fizette',
-    'payed_kkt' => 'KKT-t fizettek',
+    'payed_kktnetreg' => 'KKT-t / Netreget fizettek',
     'payer' => 'Fizető',
     'print' => 'Nyomtatás',
     'receipts' => 'Átvételi elismervények',

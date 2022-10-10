@@ -21,7 +21,6 @@ class AdminCheckoutController extends Controller
             return $view->with('message', __('general.successfully_added'));
         }
 
-        //return response()->json($this->getData($checkout));
         return $view;
     }
 

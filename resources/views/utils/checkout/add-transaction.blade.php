@@ -5,7 +5,7 @@
         <blockquote>
             @can('administrate', $checkout)
             Ha költöttél valamire / kifizetsz valamit valakinek, itt rögzítsd. 
-            @elsecan
+            @else
             Ha fizettél valamit, itt rögzítsd. A kasszafelelős majd megtéríti az összeget.
             @endcan
         </blockquote>
@@ -15,11 +15,11 @@
                 <x-input.text m=6 l=6 id="comment" required text="checkout.description" />
                 <x-input.text type="number" m=6 l=6 id="amount" min="0" required locale="checkout" />
                 @can('administrate', $checkout)
-                <x-input.select m=6 l=6 id="payer" locale="checkout" :elements="\App\Models\User::collegists()" default="{{Auth::user()->id}}" />
+                <x-input.select m=6 l=6 id="payer" locale="checkout" :elements="\App\Models\User::collegists()" default="{{Auth::user()->id}}" :formatter="function($user) { return $user->uniqueName; }" />
                 <x-input.checkbox m=6 l=6 id="in_checkout" checked text="checkout.in_checkout_descr"/>
                 @endcan
             </div>
-            <x-input.button floating class="btn=large right" icon="payments" />
+            <x-input.button floating class="btn-large right" icon="payments" />
         </form>
     </div>
 </div>

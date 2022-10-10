@@ -37,7 +37,7 @@ return [
     'pay_kkt_descr' => 'If someone pays you the KKT/Netreg, you should add it here. Only collegists with active status can be selected who did not payed. <br>The collegists will be notified by email and their internet access will be extended automatically.',
     'pay_kktnetreg' => 'Pay KKT and Netreg',
     'payed_by' => 'Payed by',
-    'payed_kkt' => 'Payed KKT',
+    'payed_kktnetreg' => 'Payed KKT / Netreg',
     'payer' => 'Payer',
     'print' => 'Printing',
     'receipts' => 'Receipts',

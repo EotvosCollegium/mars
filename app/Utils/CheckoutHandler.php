@@ -26,6 +26,11 @@ trait CheckoutHandler
      */
     abstract public static function checkout() : Checkout;
 
+    /**
+     * Returns the data for the checkout view.
+     * @param Checkout $checkout
+     * @return array
+     */
     private function getData($checkout)
     {
         /*@var User $user*/
@@ -35,8 +40,7 @@ trait CheckoutHandler
             $depts = User::withWhereHas('transactions_received', function($query) use ($checkout) {
                 $query
                     ->where('checkout_id', $checkout->id)
-                    ->whereNull('moved_to_checkout')
-                    ->whereIn('payment_type_id', [PaymentType::income()->id, PaymentType::expense()->id]);
+                    ->whereNull('moved_to_checkout');
             })->get();
             $current_balance_in_checkout = $checkout->balanceInCheckout();
         }
@@ -44,13 +48,12 @@ trait CheckoutHandler
         $my_received_transactions = $user->transactions_received()
             ->where('checkout_id', $checkout->id)
             ->whereNull('moved_to_checkout')
-            ->whereIn('payment_type_id', [PaymentType::income()->id, PaymentType::expense()->id])
             ->get();
 
         return [
             'current_balance' => $checkout->balance(),
             'current_balance_in_checkout' => $current_balance_in_checkout ?? null,
-            'depts' => $depts ?? null,
+            'depts' => $depts ?? [],
             'my_received_transactions' => $my_received_transactions,
             'semesters' => $checkout->transactionsBySemesters(),
             'checkout' => $checkout,
@@ -127,7 +130,7 @@ trait CheckoutHandler
     /**
      * Create a basic expense transaction in the checkout.
      * Income can only be added as KKT/Netreg currently.
-     * The receiver and the payer also will be the authenticated user 
+     * The receiver and the payer also will be the authenticated user
      * (since this does not mean a payment between users, just a transaction from the checkout).
      * The only exception for the payer is when the checkout handler administrates a transaction payed by someone else.
      *

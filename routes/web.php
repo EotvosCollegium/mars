@@ -176,11 +176,12 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::get('/economic_committee', [EconomicController::class, 'index'])->name('economic_committee');
     Route::post('/economic_committee/transaction/add', [EconomicController::class, 'addExpense'])->name('economic_committee.transaction.add');
     Route::get('/economic_committee/transaction/delete/{transaction}', [EconomicController::class, 'deleteTransaction'])->name('economic_committee.transaction.delete');
+    Route::post('/economic_committee/to_checkout/{user}', [EconomicController::class, 'toCheckout'])->name('economic_committee.to_checkout');
     Route::get('/economic_committee/kktnetreg', [EconomicController::class, 'indexKKTNetreg'])->name('kktnetreg');
     Route::post('/economic_committee/kktnetreg/pay', [EconomicController::class, 'payKKTNetreg'])->name('kktnetreg.pay');
     Route::get('/economic_committee/calculate_workshop_balance', [EconomicController::class, 'calculateWorkshopBalance'])->name('economic_committee.workshop_balance');
     Route::put('/economic_committee/workshop_balance/{workshop_balance}', [EconomicController::class, 'modifyWorkshopBalance'])->name('economic_committee.workshop_balance.update');
-    Route::post('/economic_committee/kktnetreg/to_checkout', [EconomicController::class, 'KKTNetregToCheckout'])->name('economic_committee.to_checkout');
+
 
     Route::get('/communication_committee/epistola', [EpistolaController::class, 'index'])->name('epistola');
     Route::get('/communication_committee/epistola/new', [EpistolaController::class, 'new'])->name('epistola.new');

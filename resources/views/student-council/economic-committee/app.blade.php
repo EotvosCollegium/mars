@@ -7,6 +7,7 @@
 @section('student_council_module') active @endsection
 
 @section('content')
+
 <div class="row">
     <div class="col s12">
         <div class="card">
@@ -15,25 +16,52 @@
                 <blockquote>
                     @lang('checkout.current_balance'):
                     <b class="coli-text text-orange"> {{ number_format($current_balance, 0, '.', ' ') }} Ft</b>.<br>
+                    @can('administrate', $checkout)
                     @lang('checkout.current_balance_in_checkout'):
                     <b class="coli-text text-orange"> {{ number_format($current_balance_in_checkout, 0, '.', ' ') }} Ft</b>.<br>
+                    @endcan
                 </blockquote>
-                @can('addKKTNetreg', \App\Models\Checkout::class)
-                    <a href="{{ route('kktnetreg') }}" class="btn waves-effect">
-                        @lang('checkout.kktnetreg')</a>
-                @endcan
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s12">
+                <div class="card">
+                    <div class="card-content">
+                        @can('addKKTNetreg', \App\Models\Checkout::class)
+                            <a href="{{ route('kktnetreg') }}" class="btn waves-effect right">
+                                @lang('checkout.payed_kktnetreg')</a>
+                        @endcan
+                        <span class="card-title">@lang('checkout.pay_kktnetreg')</span>
+
+                        <form method="POST" action="{{ route('kktnetreg.pay') }}">
+                            @csrf
+                            <div class="row">
+                                <div class="col s12">
+                                    <blockquote>@lang('checkout.pay_kkt_descr')</blockquote>
+                                    <x-input.select l=4 :elements="$users_not_payed" id="user_id" text="general.user" :formatter="function($user) { return $user->uniqueName; }" />
+                                    <x-input.text  m=6 l=4 id="kkt" text="KKT" type="number" required min="0" :value="config('custom.kkt')" />
+                                    <x-input.text  m=6 l=4 id="netreg" text="NetReg" type="number" required min="0" :value="config('custom.netreg')" />
+                                </div>
+                            </div>
+                            <x-input.button floating class="btn-large right" icon="send" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col s12">
+                @include('utils.checkout.add-transaction')
+            </div>
+            <div class="col s12">
+                @include('utils.checkout.depts')
+            </div>
+            <div class="col s12">
+                @include('utils.checkout.my_transactions')
             </div>
         </div>
     </div>
-    <div class="col s12">
-        @include('utils.checkout.add-transaction')
-    </div>
-    <div class="col s12">
-        @include('utils.checkout.all-gathered-transactions')
-    </div>
-    <div class="col s12">
-        @include('utils.checkout.gathered-transactions')
-    </div>
+    @php
+        $semesters = $semesters->load('workshopBalances.workshop');
+    @endphp
     @foreach($semesters as $semester)
     @php
         $transactions = $semester->transactions;
