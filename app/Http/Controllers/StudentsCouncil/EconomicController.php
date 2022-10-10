@@ -32,7 +32,7 @@ class EconomicController extends Controller
     /**
      * Return the checkout of the students council.
      */
-    public static function checkout() : Checkout
+    public static function checkout(): Checkout
     {
         return Checkout::studentsCouncil();
     }
@@ -44,10 +44,12 @@ class EconomicController extends Controller
     {
         $this->authorize('view', $this->checkout());
 
-        return view('student-council.economic-committee.app', 
+        return view(
+            'student-council.economic-committee.app',
             array_merge($this->getData($this->checkout()), [
                 'users_not_payed' => User::hasToPayKKTNetreg()->get()
-            ]));
+            ])
+        );
     }
 
     /**

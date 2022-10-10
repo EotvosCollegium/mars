@@ -45,7 +45,7 @@ class CheckoutPolicy
         return $user->hasRole([Role::STUDENT_COUNCIL => Role::ECONOMIC_VICE_PRESIDENT]);
     }
 
-    
+
     /**
      * Determine whether the user can administrate the given checkout.
      */

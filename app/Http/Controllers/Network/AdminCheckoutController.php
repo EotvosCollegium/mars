@@ -21,7 +21,7 @@ class AdminCheckoutController extends Controller
     /**
      * Return the admin checkout.
      */
-    public static function checkout() : Checkout
+    public static function checkout(): Checkout
     {
         return Checkout::admin();
     }

@@ -24,7 +24,7 @@ trait CheckoutHandler
     /**
      * Returns the Checkout model.
      */
-    abstract public static function checkout() : Checkout;
+    abstract public static function checkout(): Checkout;
 
     /**
      * Returns the data for the checkout view.
@@ -36,8 +36,8 @@ trait CheckoutHandler
         /*@var User $user*/
         $user = Auth::user();
 
-        if($user->can('administrate', $checkout)){
-            $depts = User::withWhereHas('transactions_received', function($query) use ($checkout) {
+        if ($user->can('administrate', $checkout)) {
+            $depts = User::withWhereHas('transactions_received', function ($query) use ($checkout) {
                 $query
                     ->where('checkout_id', $checkout->id)
                     ->whereNull('moved_to_checkout');
@@ -186,5 +186,4 @@ trait CheckoutHandler
 
         return redirect()->back()->with('message', __('general.successfully_deleted'));
     }
-
 }

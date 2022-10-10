@@ -22,18 +22,18 @@ class Checkout extends Model
     ];
 
     /**
-     * @return HasMany the transactions attached to the checkout  
+     * @return HasMany the transactions attached to the checkout
      */
-    public function transactions() : HasMany
+    public function transactions(): HasMany
     {
         return $this->hasMany(Transaction::class);
     }
 
     /**
      * @return Semester[]|Collection the transaction in the checkout grouped by the semesters and payment types.
-     * The workshopbalances are loaded and attached also.  
+     * The workshopbalances are loaded and attached also.
      */
-    public function transactionsBySemesters() : Collection
+    public function transactionsBySemesters(): Collection
     {
         return Semester::orderBy('year', 'desc')
             ->orderBy('part', 'desc')
