@@ -8,12 +8,12 @@
                 @foreach($my_received_transactions as $transaction)
                 <tr>
                     <td>
-                        @if($transaction->payer)
-                            {{ $transaction->payer->name }}
-                        @endif
+                        {{ $transaction->comment }}
                     </td>
                     <td>
-                        {{ $transaction->comment }}
+                        @if($transaction->payer_id != Auth::user()->id)
+                            {{ $transaction->payer->name }}
+                        @endif
                     </td>
                     <td>{{ $transaction->amount }} Ft</td>
                     <td>

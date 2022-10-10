@@ -136,7 +136,7 @@ class EconomicController extends Controller
         return redirect()->back()->with('message', __('general.successful_modification'));
     }
 
-    public function addTransaction(Request $request)
+    public function addExpense(Request $request)
     {
         $checkout = Checkout::studentsCouncil();
         $this->createTransaction($request, $checkout);
@@ -178,5 +178,10 @@ class EconomicController extends Controller
     public static function routeBase()
     {
         return 'economic_committee';
+    }
+
+    public static function checkout() : Checkout
+    {
+        return Checkout::studentsCouncil();
     }
 }

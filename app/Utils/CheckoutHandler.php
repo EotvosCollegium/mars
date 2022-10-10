@@ -119,45 +119,51 @@ trait CheckoutHandler
             ->where('moved_to_checkout', null)
             ->update(['moved_to_checkout' => Carbon::now()]);
 
+        // TODO send a receipt email to the receiver
+
         return redirect()->back()->with('message', __('general.successfully_added'));
     }
 
     /**
-     * Create a basic (income/expense) transaction in the checkout.
+     * Create a basic expense transaction in the checkout.
+     * Income can only be added as KKT/Netreg currently.
+     * The receiver and the payer also will be the authenticated user 
+     * (since this does not mean a payment between users, just a transaction from the checkout).
+     * The only exception for the payer is when the checkout handler administrates a transaction payed by someone else.
      *
      * @param Request
      * @param Checkout
      * @return void
      */
-    public function addTransaction(Request $request)
+    public function addExpense(Request $request)
     {
-        $this->authorize('administrate', $this->checkout());
+        $this->authorize('createTransaction', $this->checkout());
 
         $validator = Validator::make($request->all(), [
             'comment' => 'required|string',
             'amount' => 'required|integer|min:0',
-            'receiver' => 'required|exists:users,id',
-            'payer' => 'required|exists:users,id',
-            'type' => 'required|in:EXPENSE,INCOME',
+            'payer' => 'exists:users,id'
         ]);
         $validator->validate();
 
-        $type = PaymentType::getFromCache($request->type)->id;
-        $payer = User::findOrFail($request->payer);
-        $receiver = User::findOrFail($request->receiver);
+        $user = $request->user();
+        $isCheckoutHandler = $user->can('administrate', $this->checkout());
 
-        $transaction = Transaction::create([
-            'checkout_id' => $this->checkout()->id,
-            'receiver_id' => $receiver->id,
-            'payer_id' => $payer->id,
-            'semester_id' => Semester::current()->id,
-            'amount' => $request->amount * ($request->type == 'EXPENSE' ? -1 : 1),
-            'payment_type_id' => $type,
-            'comment' => $request->comment,
-            'moved_to_checkout' => ($request->in_checkout ? Carbon::now() : null),
+        $payer = $request->has('payer') && $isCheckoutHandler ? User::find($request->input('payer')) : $user;
+        $moved_to_checkout = $request->has('in_checkout') && $isCheckoutHandler;
+
+        Transaction::create([
+            'checkout_id'       => $this->checkout()->id,
+            'receiver_id'       => Auth::user()->id,
+            'payer_id'          => $payer->id,
+            'semester_id'       => Semester::current()->id,
+            'amount'            => (-1) * $request->amount,
+            'payment_type_id'   => PaymentType::expense()->id,
+            'comment'           => $request->comment,
+            'moved_to_checkout' => $moved_to_checkout ? Carbon::now() : null,
         ]);
 
-        Mail::to($payer)->queue(new \App\Mail\PayedTransaction($payer->name, [$transaction]));
+        // TODO send an email to the checkout handler and the payer
 
         return back()->with('message', __('general.successfully_added'));
     }

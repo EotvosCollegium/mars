@@ -1,3 +1,4 @@
+@if(count($depts))
 @can('administrate', $checkout)
 <div class="card">
     <div class="card-content">
@@ -20,3 +21,4 @@
     </div>
 </div>
 @endcan
+@endif
