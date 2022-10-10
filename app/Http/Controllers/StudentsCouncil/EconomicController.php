@@ -21,16 +21,25 @@ class EconomicController extends Controller
 {
     use CheckoutHandler;
 
+    /**
+     * Return the route base for the checkout of the students council.
+     */
     public static function routeBase()
     {
         return 'economic_committee';
     }
 
+    /**
+     * Return the checkout of the students council.
+     */
     public static function checkout() : Checkout
     {
         return Checkout::studentsCouncil();
     }
 
+    /**
+     * Show the checkout page.
+     */
     public function index()
     {
         $this->authorize('view', $this->checkout());
@@ -41,6 +50,9 @@ class EconomicController extends Controller
             ]));
     }
 
+    /**
+     * Show the kkt / netreg page.
+     */
     public function indexKKTNetreg()
     {
         $this->authorize('addKKTNetreg', Checkout::class);
@@ -53,6 +65,9 @@ class EconomicController extends Controller
         ]);
     }
 
+    /**
+     * Pay kkt / netreg.
+     */
     public function payKKTNetreg(Request $request)
     {
         $this->authorize('addKKTNetreg', Checkout::class);
@@ -104,7 +119,9 @@ class EconomicController extends Controller
         return redirect()->back()->with('message', __('general.successfully_added'));
     }
 
-
+    /**
+     * Recalculate the workshop balances in the current semester.
+     */
     public function calculateWorkshopBalance()
     {
         WorkshopBalance::generateBalances(Semester::current()->id);
@@ -112,6 +129,9 @@ class EconomicController extends Controller
         return redirect()->back()->with('message', __('general.successful_modification'));
     }
 
+    /**
+     * Modify a workshop balance.
+     */
     public function modifyWorkshopBalance(WorkshopBalance $workshop_balance, Request $request)
     {
         $this->authorize('administrate', Checkout::studentsCouncil());

@@ -10,6 +10,22 @@ class AdminCheckoutController extends Controller
 {
     use CheckoutHandler;
 
+    /**
+     * Return the route base for the admin checkout.
+     */
+    public static function routeBase()
+    {
+        return 'admin.checkout';
+    }
+
+    /**
+     * Return the admin checkout.
+     */
+    public static function checkout() : Checkout
+    {
+        return Checkout::admin();
+    }
+
     public function showCheckout($redirected = false)
     {
         $checkout = Checkout::admin();
@@ -22,15 +38,5 @@ class AdminCheckoutController extends Controller
         }
 
         return $view;
-    }
-
-    public static function routeBase()
-    {
-        return 'admin.checkout';
-    }
-
-    public static function checkout() : Checkout
-    {
-        return Checkout::admin();
     }
 }

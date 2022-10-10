@@ -27,11 +27,6 @@ class PaymentType extends Model
         self::WORKSHOP_EXPENSE
     ];
 
-    public function isAggregated() : bool
-    {
-        return in_array($this->name, [self::NETREG, self::PRINT, self::KKT]);
-    }
-
     /**
      * Get the payment types (collection) belonging to a checkout.
      * INCOME and EXPENSE belong to all checkout.
