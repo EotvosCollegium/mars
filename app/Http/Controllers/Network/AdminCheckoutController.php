@@ -26,17 +26,11 @@ class AdminCheckoutController extends Controller
         return Checkout::admin();
     }
 
-    public function showCheckout($redirected = false)
+    public function showCheckout()
     {
         $checkout = Checkout::admin();
         $this->authorize('view', $checkout);
 
-        $view = view('network.checkout', $this->getData($checkout));
-
-        if ($redirected) {
-            return $view->with('message', __('general.successfully_added'));
-        }
-
-        return $view;
+        return view('network.checkout', $this->getData($checkout));
     }
 }

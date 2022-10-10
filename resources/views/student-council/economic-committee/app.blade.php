@@ -24,15 +24,13 @@
             </div>
         </div>
         <div class="row">
+            @can('addKKTNetreg', \App\Models\Checkout::class)
             <div class="col s12">
                 <div class="card">
                     <div class="card-content">
-                        @can('addKKTNetreg', \App\Models\Checkout::class)
-                            <a href="{{ route('kktnetreg') }}" class="btn waves-effect right">
-                                @lang('checkout.payed_kktnetreg')</a>
-                        @endcan
+                        <a href="{{ route('kktnetreg') }}" class="btn waves-effect right">
+                            @lang('checkout.payed_kktnetreg')</a>
                         <span class="card-title">@lang('checkout.pay_kktnetreg')</span>
-
                         <form method="POST" action="{{ route('kktnetreg.pay') }}">
                             @csrf
                             <div class="row">
@@ -48,6 +46,7 @@
                     </div>
                 </div>
             </div>
+            @endcan
             <div class="col s12">
                 @include('utils.checkout.add-transaction')
             </div>
