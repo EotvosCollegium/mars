@@ -122,8 +122,6 @@ trait CheckoutHandler
             ->where('moved_to_checkout', null)
             ->update(['moved_to_checkout' => Carbon::now()]);
 
-        // TODO send a receipt email to the receiver
-
         return redirect()->back()->with('message', __('general.successfully_added'));
     }
 
@@ -155,7 +153,7 @@ trait CheckoutHandler
         $payer = $request->has('payer') && $isCheckoutHandler ? User::find($request->input('payer')) : $user;
         $moved_to_checkout = $request->has('in_checkout') && $isCheckoutHandler;
 
-        Transaction::create([
+        $transaction = Transaction::create([
             'checkout_id'       => $this->checkout()->id,
             'receiver_id'       => Auth::user()->id,
             'payer_id'          => $payer->id,
@@ -165,8 +163,7 @@ trait CheckoutHandler
             'comment'           => $request->comment,
             'moved_to_checkout' => $moved_to_checkout ? Carbon::now() : null,
         ]);
-
-        // TODO send an email to the checkout handler and the payer
+        Mail::to($payer)->queue(new \App\Mail\PayedTransaction($payer->name, [$transaction], $moved_to_checkout ? "" : "A tranzakció még nincs kifizetve."));
 
         return back()->with('message', __('general.successfully_added'));
     }
@@ -181,8 +178,6 @@ trait CheckoutHandler
     {
         $this->authorize('delete', $transaction);
         $transaction->delete();
-
-        //TODO send email to receiver and payer
 
         return redirect()->back()->with('message', __('general.successfully_deleted'));
     }
