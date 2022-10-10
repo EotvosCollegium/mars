@@ -29,7 +29,6 @@ class AppServiceProvider extends ServiceProvider
             return Blade::compileString("@include('layouts.notification', ['model' => ".$model.'])');
         });
 
-
         /**
          * Creates a macro that can be used with any query to filter and load a relation.
          * The relation is loaded only if the given condition is true.

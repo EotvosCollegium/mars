@@ -119,7 +119,7 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
 
     /** Admin Checkout **/
     Route::get('/network/admin/checkout', [AdminCheckoutController::class, 'showCheckout'])->name('admin.checkout');
-    Route::post('network/admin/checkout/print_to_checkout', [AdminCheckoutController::class, 'printToCheckout'])->name('admin.checkout.to_checkout');
+    Route::post('network/admin/checkout/to_checkout/{user}', [AdminCheckoutController::class, 'toCheckout'])->name('admin.checkout.to_checkout');
     Route::post('/network/admin/checkout/transaction/add', [AdminCheckoutController::class, 'addTransaction'])->name('admin.checkout.transaction.add');
     Route::get('/network/admin/checkout/transaction/delete/{transaction}', [EconomicController::class, 'deleteTransaction'])->name('admin.checkout.transaction.delete');
 

@@ -24,10 +24,12 @@ class CheckoutPolicy
         return $user->isCollegist();
     }
 
-    public function addPayment(User $user, Checkout $checkout): bool
+    public function createTransaction(User $user, Checkout $checkout): bool
     {
         if ($checkout->name === Checkout::STUDENTS_COUNCIL) {
-            return $user->hasRole([Role::STUDENT_COUNCIL => Role::ECONOMIC_VICE_PRESIDENT]);
+            //everyone can create transactions that is not in checkout
+            //the checkout administrator can handle these later
+            return $user->hasRole(Role::STUDENT_COUNCIL);
         }
         if ($checkout->name === Checkout::ADMIN) {
             return $user->isAdmin();

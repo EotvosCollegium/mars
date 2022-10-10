@@ -16,8 +16,10 @@
                 <blockquote>
                     @lang('checkout.current_balance'):
                     <b class="coli-text text-orange"> {{ number_format($current_balance, 0, '.', ' ') }} Ft</b>.<br>
+                    @can('administrate', $checkout)
                     @lang('checkout.current_balance_in_checkout'):
                     <b class="coli-text text-orange"> {{ number_format($current_balance_in_checkout, 0, '.', ' ') }} Ft</b>.<br>
+                    @endcan
                 </blockquote>
             </div>
         </div>
@@ -26,10 +28,10 @@
                 @include('utils.checkout.add-transaction')
             </div>
             <div class="col s12">
-                @include('utils.checkout.all-gathered-transactions')
+                @include('utils.checkout.depts')
             </div>
             <div class="col s12">
-                @include('utils.checkout.gathered-transactions')
+                @include('utils.checkout.my_transactions')
             </div>
         </div>
     </div>

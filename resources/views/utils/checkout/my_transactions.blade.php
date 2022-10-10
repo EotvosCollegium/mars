@@ -1,11 +1,11 @@
-@if(count($user_transactions_not_in_checkout))
+@if(count($my_received_transactions))
 <div class="card">
     <div class="card-content">
-        <span class="card-title">@lang('checkout.my_gathered_transactions')</span>
+        <span class="card-title">@lang('checkout.my_received_transactions')</span>
         <div class="row">
             <div class="col s12">
             <table><tbody>
-                @foreach($user_transactions_not_in_checkout as $transaction)
+                @foreach($my_received_transactions as $transaction)
                 <tr>
                     <td>
                         @if($transaction->payer)
@@ -34,10 +34,10 @@
                 <b>@lang('checkout.sum')</b>
             </div>
             <div class="col s4">
-                <b>{{ $user_transactions_not_in_checkout->sum('amount') }} Ft</b>
+                <b>{{ $my_received_transactions->sum('amount') }} Ft</b>
             </div>
             <div class="col s12">
-                <blockquote>@lang('checkout.collecting_kktnetreg_description')</blockquote>
+                <blockquote>@lang('checkout.depts_descr')</blockquote>
             </div>
         </div>
     </div>
