@@ -26,6 +26,9 @@ class AdminCheckoutController extends Controller
         return Checkout::admin();
     }
 
+    /**
+     * Show the admin checkout page.
+     */
     public function showCheckout()
     {
         $checkout = Checkout::admin();
