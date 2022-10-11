@@ -61,17 +61,17 @@ trait CheckoutHandler
      * Gets the users with the transactions received which are not added to checkout yet.
      *
      * @param  array  $payment_typed  payment type names
-     * @param collection of the users with transactions_received attribute
+     * @param collection of the users with transactionsReceived attribute
      */
     public function getCollectedTransactions(array $payment_types)
     {
         $payment_type_ids = $this->paymentTypeIDs($payment_types);
 
-        return User::collegists()->load(['transactions_received' => function ($query) use ($payment_type_ids) {
+        return User::collegists()->load(['transactionsReceived' => function ($query) use ($payment_type_ids) {
             $query->whereIn('payment_type_id', $payment_type_ids);
             $query->where('moved_to_checkout', null);
         }])->filter(function ($user, $key) {
-            return $user->transactions_received->count();
+            return $user->transactionsReceived->count();
         })->unique();
     }
 

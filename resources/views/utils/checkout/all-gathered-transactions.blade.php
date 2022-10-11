@@ -7,7 +7,7 @@
             @foreach($collected_transactions as $collegist)
               <tr>
                     <td>{{ $collegist->name }}</td>
-                    <td>{{ $collegist->transactions_received->sum('amount') }} Ft</td>
+                    <td>{{ $collegist->transactionsReceived->sum('amount') }} Ft</td>
                     <td>
                         <form method="POST" action="{{ route($route_base . '.to_checkout') }}">
                             @csrf

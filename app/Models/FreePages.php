@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -43,5 +44,10 @@ class FreePages extends Model
     public function lastModifiedBy()
     {
         return User::findOrFail($this->last_modified_by);
+    }
+
+    public function sumOfActiveFreePages(): int
+    {
+        return $this->where('deadline', '>', Carbon::now())->sum('amount');
     }
 }
