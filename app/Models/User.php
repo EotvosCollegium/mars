@@ -908,7 +908,7 @@ class User extends Authenticatable implements HasLocalePreference
                         Role::WORKSHOP_ADMINISTRATOR
                     ])
                     ->pluck('role_users.workshop_id')
-                )->get();
+            )->get();
         }
     }
 
@@ -965,8 +965,10 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public static function studentCouncilLeaders(): array|Collection
     {
-        $objects = RoleObject::whereIn('name',
-            array_merge(Role::STUDENT_COUNCIL_LEADERS, Role::COMMITTEE_LEADERS))
+        $objects = RoleObject::whereIn(
+            'name',
+            array_merge(Role::STUDENT_COUNCIL_LEADERS, Role::COMMITTEE_LEADERS)
+        )
             ->pluck('id')->toArray();
 
         return User::whereHas('roles', function ($q) use ($objects) {
@@ -1042,7 +1044,7 @@ class User extends Authenticatable implements HasLocalePreference
     /**
      * Returns how many not verified users there are currently.
      * Used by the NotificationCounter trait.
-     * @return int 
+     * @return int
      */
     public static function notifications(): int
     {
@@ -1069,12 +1071,12 @@ class User extends Authenticatable implements HasLocalePreference
     }
 
 
-//_____________________________________________________________________________________________
+    //_____________________________________________________________________________________________
 
 
     /* Printing related getters */
 
-    
+
 
     public function numberOfPrintedDocuments(): int
     {
@@ -1097,5 +1099,4 @@ class User extends Authenticatable implements HasLocalePreference
             ->where('free_page_change', '<', 0)
             ->sum('free_page_change'));
     }
-
 }
