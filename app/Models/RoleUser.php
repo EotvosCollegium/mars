@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Support\Facades\Cache;
@@ -34,18 +35,28 @@ class RoleUser extends Pivot
         return $this->belongsTo(User::class);
     }
 
-    public function getTranslatedNameAttribute(): string
+    /**
+     * Get the role object's translated_name attribute.
+     * Uses Cache.
+     *
+     * @return Attribute
+     */
+    public function translatedName(): Attribute
     {
-        if ($this->object_id) {
-            return Cache::remember($this->object_id.'_object_translated_name', 86400, function () {
-                return $this->object->translatedName;
-            });
-        }
-        if ($this->workshop_id) {
-            return Cache::remember($this->workshop_id.'_workshop_name', 86400, function () {
-                return $this->workshop->name;
-            });
-        }
-        return '';
+        return Attribute::make(
+            get: function () : string {
+                if ($this->object_id) {
+                    return Cache::remember($this->object_id.'_object_translated_name', 86400, function () {
+                        return $this->object->translatedName;
+                    });
+                }
+                if ($this->workshop_id) {
+                    return Cache::remember($this->workshop_id.'_workshop_name', 86400, function () {
+                        return $this->workshop->name;
+                    });
+                }
+                return '';
+            }
+        );
     }
 }

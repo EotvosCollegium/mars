@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -34,48 +35,65 @@ class EpistolaNews extends Model
     ];
     protected $dates = ['date', 'time', 'end_date', 'date_for_sorting', 'valid_until', 'deadline_date'];
 
-    //notifications should be sent before this date
-    public function getValidUntilAttribute()
+    /**
+     * Get the valid_until attribute. Notifications should be sent before this date
+     *
+     * @return Attribute
+     */
+    public function validUntil(): Attribute
     {
-        $date = ($this->deadline_date ?? $this->date);
-        if ($date) {
-            return $date->format('Y.m.d');
-        }
-
-        return null;
+        return Attribute::make(
+            get: function () : string|null {
+                $date = ($this->deadline_date ?? $this->date);
+                return $date?->format('Y.m.d');
+            });
     }
 
-    public function getDateTimeAttribute()
+    /**
+     * Get the date_time attribute (start date - end date).
+     *
+     * @return Attribute
+     */
+    public function date_time(): Attribute
     {
-        if ($this->date == null) {
-            return null;
-        }
-
-        $datetime = $this->date->format('Y.m.d.');
-        if ($this->time) {
-            $datetime .= $this->time->format(' G:i');
-        } elseif ($this->end_date) {
-            $datetime .= $this->end_date->format(' - Y.m.d.');
-        }
-
-        return $datetime;
+        return Attribute::make(
+            get: function () : string|null {
+                $datetime = $this->date?->format('Y.m.d.') ?? '';
+                $datetime .= $this->time?->format(' G:i') ?? '';
+                $datetime .= $this->end_date?->format(' - Y.m.d.') ?? '';
+                return $datetime;
+            });
     }
 
-    public function getColorAttribute()
+    /**
+     * Get the color attribute (black/white calculated by the bg_color).
+     * Uses the yiq algorithm.
+     *
+     * @return Attribute
+     */
+    public function color(): Attribute
     {
-        //yiq algorithm
-        $r = hexdec(substr($this->bg_color, 1, 2));
-        $g = hexdec(substr($this->bg_color, 3, 2));
-        $b = hexdec(substr($this->bg_color, 5, 2));
-        $yiq = (($r * 299) + ($g * 587) + ($b * 114)) / 1000;
+        return Attribute::make(
+            get: function () : string {
+                $r = hexdec(substr($this->bg_color, 1, 2));
+                $g = hexdec(substr($this->bg_color, 3, 2));
+                $b = hexdec(substr($this->bg_color, 5, 2));
+                $yiq = (($r * 299) + ($g * 587) + ($b * 114)) / 1000;
 
-        return ($yiq >= 128) ? 'black' : 'white';
+                return ($yiq >= 128) ? 'black' : 'white';
+            });
     }
 
-    public function getBgColorAttribute()
+    /**
+     * Get the bg_color attribute (generated from the category name).
+     *
+     * @return Attribute
+     */
+    public function bgColor(): Attribute
     {
-        //generate color from category string
-        return substr(dechex(crc32($this->category)), 0, 6);
+        return Attribute::make(
+            get: fn () : string => substr(dechex(crc32($this->category)), 0, 6)
+        );
     }
 
     public function shouldBeSent()

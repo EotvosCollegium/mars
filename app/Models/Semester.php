@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
@@ -52,12 +53,16 @@ class Semester extends Model
     }
 
     /**
-     * For displaying semesters.
+     * Get the tag attribute. This should be displayed on the UI.
      * Format: YYYY-YYYY-{part} separated by the SEPARATOR constant.
+     *
+     * @return Attribute
      */
-    public function getTagAttribute(): string
+    public function tag(): Attribute
     {
-        return $this->year.self::SEPARATOR.($this->year + 1).self::SEPARATOR.$this->part;
+        return Attribute::make(
+            get: fn () : string => $this->year.self::SEPARATOR.($this->year + 1).self::SEPARATOR.$this->part
+        );
     }
 
     /**

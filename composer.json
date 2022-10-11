@@ -9,7 +9,6 @@
     "license": "MIT",
     "require": {
         "php": "^8.0",
-        "fideloper/proxy": "^4.0",
         "glaivepro/invytr": "^1.0",
         "graham-campbell/markdown": "^14.0",
         "intervention/image": "^2.5",
