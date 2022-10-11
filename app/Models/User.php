@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Mail\Invitation;
 use App\Utils\NotificationCounter;
+use Carbon\Carbon;
 use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -949,6 +950,15 @@ class User extends Authenticatable implements HasLocalePreference
         return abs($this->printHistory()
             ->where('free_page_change', '<', 0)
             ->sum('free_page_change'));
+    }
+
+    /**
+     * Returns how many free pages are left that can still be used
+     * @return int
+     */
+    public function sumOfActiveFreePages(): int
+    {
+        return $this->freePages()->where('deadline', '>', Carbon::now())->sum('amount');
     }
 
     /* Transaction related */
