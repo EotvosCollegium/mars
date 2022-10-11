@@ -54,7 +54,7 @@ class EpistolaNews extends Model
      *
      * @return Attribute
      */
-    public function date_time(): Attribute
+    public function dateTime(): Attribute
     {
         return Attribute::make(
             get: function () : string|null {
