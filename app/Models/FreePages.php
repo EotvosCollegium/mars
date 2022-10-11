@@ -46,6 +46,10 @@ class FreePages extends Model
         return User::findOrFail($this->last_modified_by);
     }
 
+    /**
+     * Return how many free pages are left that can still be used
+     * @return int
+     */
     public function sumOfActiveFreePages(): int
     {
         return $this->where('deadline', '>', Carbon::now())->sum('amount');
