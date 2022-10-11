@@ -38,7 +38,7 @@ class PrintController extends Controller
     {
         return view('dormitory.print.app', [
                 "users" => User::printers(),
-                "free_pages" => Auth::user()->freePages->sumOfActiveFreePages()
+                "free_pages" => Auth::user()->sumOfActiveFreePages()
             ]);
     }
 
