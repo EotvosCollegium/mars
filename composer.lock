@@ -485,6 +485,7 @@
             "time": "2021-12-25T01:21:49+00:00"
         },
         {
+<<<<<<< HEAD
             "name": "fruitcake/php-cors",
             "version": "v1.2.0",
             "source": {
@@ -556,6 +557,8 @@
             "time": "2022-02-20T15:07:15+00:00"
         },
         {
+=======
+>>>>>>> 340173c (update to laravel 9)
             "name": "fruitcake/php-cors",
             "version": "v1.2.0",
             "source": {
@@ -1041,6 +1044,7 @@
         },
         {
             "name": "laravel/framework",
+<<<<<<< HEAD
             "version": "v8.83.23",
             "source": {
                 "type": "git",
@@ -1051,6 +1055,18 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/laravel/framework/zipball/bdc707f8b9bcad289b24cd182d98ec7480ac4491",
                 "reference": "bdc707f8b9bcad289b24cd182d98ec7480ac4491",
+=======
+            "version": "v9.35.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/framework.git",
+                "reference": "85a465097e4f528520b2fc5924f54609bd6e2e9c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/85a465097e4f528520b2fc5924f54609bd6e2e9c",
+                "reference": "85a465097e4f528520b2fc5924f54609bd6e2e9c",
+>>>>>>> 340173c (update to laravel 9)
                 "shasum": ""
             },
             "require": {
@@ -1210,7 +1226,11 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
+<<<<<<< HEAD
             "time": "2022-07-26T13:30:00+00:00"
+=======
+            "time": "2022-10-11T13:56:50+00:00"
+>>>>>>> 340173c (update to laravel 9)
         },
         {
             "name": "laravel/serializable-closure",

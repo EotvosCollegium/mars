@@ -74,6 +74,15 @@ class ApplicationForm extends Model
         "az ELTE honlapján olvastam róla"
     ];
 
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'status' => Status::class,
+    ];
+
     /*
     |--------------------------------------------------------------------------
     | Relations
