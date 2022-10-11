@@ -912,6 +912,45 @@ class User extends Authenticatable implements HasLocalePreference
         }
     }
 
+    /* Printing related */
+
+    /**
+     * Returns how many documents the user printed overall.
+     *
+     * @return int
+     */    
+    public function numberOfPrintedDocuments(): int
+    {
+        return $this->printHistory()
+            ->where('balance_change', '<', 0)
+            ->orWhere('free_page_change', '<', 0)
+            ->count();
+    }
+
+    /**
+     * Returns how much the user spent for their printings.
+     *
+     * @return int
+     */    
+    public function spentBalance(): int
+    {
+        return abs($this->printHistory()
+            ->where('balance_change', '<', 0)
+            ->sum('balance_change'));
+    }
+
+     /**
+     * Returns how many free pages the user used.
+     *
+     * @return int
+     */    
+    public function spentFreePages(): int
+    {
+        return abs($this->printHistory()
+            ->where('free_page_change', '<', 0)
+            ->sum('free_page_change'));
+    }
+
     /* Transaction related */
 
     /**
@@ -1068,35 +1107,5 @@ class User extends Authenticatable implements HasLocalePreference
                 $builder->where('verified', true);
             }
         });
-    }
-
-
-    //_____________________________________________________________________________________________
-
-
-    /* Printing related getters */
-
-
-
-    public function numberOfPrintedDocuments(): int
-    {
-        return $this->printHistory()
-            ->where('balance_change', '<', 0)
-            ->orWhere('free_page_change', '<', 0)
-            ->count();
-    }
-
-    public function spentBalance(): int
-    {
-        return abs($this->printHistory()
-            ->where('balance_change', '<', 0)
-            ->sum('balance_change'));
-    }
-
-    public function spentFreePages(): int
-    {
-        return abs($this->printHistory()
-            ->where('free_page_change', '<', 0)
-            ->sum('free_page_change'));
     }
 }
