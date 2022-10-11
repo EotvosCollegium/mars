@@ -918,7 +918,7 @@ class User extends Authenticatable implements HasLocalePreference
      * Returns how many documents the user printed overall.
      *
      * @return int
-     */    
+     */
     public function numberOfPrintedDocuments(): int
     {
         return $this->printHistory()
@@ -931,7 +931,7 @@ class User extends Authenticatable implements HasLocalePreference
      * Returns how much the user spent for their printings.
      *
      * @return int
-     */    
+     */
     public function spentBalance(): int
     {
         return abs($this->printHistory()
@@ -939,11 +939,11 @@ class User extends Authenticatable implements HasLocalePreference
             ->sum('balance_change'));
     }
 
-     /**
-     * Returns how many free pages the user used.
-     *
-     * @return int
-     */    
+    /**
+    * Returns how many free pages the user used.
+    *
+    * @return int
+    */
     public function spentFreePages(): int
     {
         return abs($this->printHistory()
