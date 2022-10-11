@@ -8,9 +8,7 @@ class DataCompresser
 
     /**
      * Compress an array to a delimeter separated string.
-     *
      * @author @hamaren2517
-     *
      * @param  array  $array
      * @return string|null $string
      */
@@ -37,14 +35,14 @@ class DataCompresser
      * Decompress a delimeter separated string into an array.
      *
      * @param $string
-     * @return string[]|null $string
+     * @return array|string[]
      * @author @hamaren2517
      *
      */
-    public static function decompressData($string): ?array
+    public static function decompressData($string): array
     {
-        if ($string === null) {
-            return null;
+        if ($string == "" || !isset($string)) {
+            return [];
         }
 
         return explode(self::DELIMETER, $string);

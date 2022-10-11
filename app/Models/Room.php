@@ -20,7 +20,7 @@ class Room extends Model
 
     protected $withCount = ['users'];
 
-    public static $roomColors = [
+    public static array $roomColors = [
         3 => '#76ff03', //light-green accent-3
         2 => '#ffee58', //yellow lighten-2
         1 => '#ff9100', //orange accent-2
@@ -47,26 +47,13 @@ class Room extends Model
     /**
      * Assigns colors depending on the empty spaces left in the room
      */
-    public function color()
+    public function color(): string
     {
-        $color="#ffffff";
-        switch ($this->capacity - $this->residentNumber()) {
-            case 3:
-                $color=Room::$roomColors[3];
-                break;
-            case 2:
-                $color=Room::$roomColors[2];
-                break;
-            case 1:
-                $color=Room::$roomColors[1];
-                break;
-            case 0:
-                $color=Room::$roomColors[0];
-                break;
-            default:
-                $color=Room::$roomColors[3];
-                break;
-        }
-        return $color;
+        return match ($this->capacity - $this->residentNumber()) {
+            2 => Room::$roomColors[2],
+            1 => Room::$roomColors[1],
+            0 => Room::$roomColors[0],
+            default => Room::$roomColors[3],
+        };
     }
 }
