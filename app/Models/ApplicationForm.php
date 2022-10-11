@@ -191,7 +191,7 @@ class ApplicationForm extends Model
     public function question1Custom(): Attribute
     {
         return Attribute::make(
-            get: fn () : string => $this->getCustomValue($this->question_1, self::QUESTION_1)
+            get: fn (): string => $this->getCustomValue($this->question_1, self::QUESTION_1)
         );
     }
 
@@ -263,7 +263,7 @@ class ApplicationForm extends Model
         if (! isset($educationalInformation->email)) {
             return false;
         }
-        if (! isset($educationalInformation->program) || $educationalInformation->program == [] ) {
+        if (! isset($educationalInformation->program) || $educationalInformation->program == []) {
             return false;
         }
         if (! isset($this->graduation_average)) {

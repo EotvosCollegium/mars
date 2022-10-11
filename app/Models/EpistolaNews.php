@@ -43,10 +43,11 @@ class EpistolaNews extends Model
     public function validUntil(): Attribute
     {
         return Attribute::make(
-            get: function () : string|null {
+            get: function (): string|null {
                 $date = ($this->deadline_date ?? $this->date);
                 return $date?->format('Y.m.d');
-            });
+            }
+        );
     }
 
     /**
@@ -57,12 +58,13 @@ class EpistolaNews extends Model
     public function dateTime(): Attribute
     {
         return Attribute::make(
-            get: function () : string|null {
+            get: function (): string|null {
                 $datetime = $this->date?->format('Y.m.d.') ?? '';
                 $datetime .= $this->time?->format(' G:i') ?? '';
                 $datetime .= $this->end_date?->format(' - Y.m.d.') ?? '';
                 return $datetime;
-            });
+            }
+        );
     }
 
     /**
@@ -74,14 +76,15 @@ class EpistolaNews extends Model
     public function color(): Attribute
     {
         return Attribute::make(
-            get: function () : string {
+            get: function (): string {
                 $r = hexdec(substr($this->bg_color, 1, 2));
                 $g = hexdec(substr($this->bg_color, 3, 2));
                 $b = hexdec(substr($this->bg_color, 5, 2));
                 $yiq = (($r * 299) + ($g * 587) + ($b * 114)) / 1000;
 
                 return ($yiq >= 128) ? 'black' : 'white';
-            });
+            }
+        );
     }
 
     /**
@@ -92,7 +95,7 @@ class EpistolaNews extends Model
     public function bgColor(): Attribute
     {
         return Attribute::make(
-            get: fn () : string => substr(dechex(crc32($this->category)), 0, 6)
+            get: fn (): string => substr(dechex(crc32($this->category)), 0, 6)
         );
     }
 

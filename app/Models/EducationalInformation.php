@@ -55,7 +55,7 @@ class EducationalInformation extends Model
     protected function programs(): Attribute
     {
         return Attribute::make(
-            get: fn () : string => join(', ', $this->program ?? []),
+            get: fn (): string => join(', ', $this->program ?? []),
         );
     }
 }

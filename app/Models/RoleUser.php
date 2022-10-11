@@ -44,7 +44,7 @@ class RoleUser extends Pivot
     public function translatedName(): Attribute
     {
         return Attribute::make(
-            get: function () : string {
+            get: function (): string {
                 if ($this->object_id) {
                     return Cache::remember($this->object_id.'_object_translated_name', 86400, function () {
                         return $this->object->translatedName;

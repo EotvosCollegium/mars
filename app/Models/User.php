@@ -92,12 +92,13 @@ class User extends Authenticatable implements HasLocalePreference
     public function uniqueName(): Attribute
     {
         return Attribute::make(
-            get: function () : string {
+            get: function (): string {
                 if ($this->hasEducationalInformation() && auth()->user()->can('view', $this)) {
                     return $this->name.' ('.$this->educationalInformation->neptun.')';
                 } else {
                     return $this->name;
-                }}
+                }
+            }
         );
     }
     /**
@@ -198,7 +199,7 @@ class User extends Authenticatable implements HasLocalePreference
     public function reachedWifiConnectionLimit(): Attribute
     {
         return Attribute::make(
-            get: fn () : bool => $this->internetAccess->reachedWifiConnectionLimit()
+            get: fn (): bool => $this->internetAccess->reachedWifiConnectionLimit()
         );
     }
 
