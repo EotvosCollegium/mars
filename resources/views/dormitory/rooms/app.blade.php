@@ -45,8 +45,9 @@
   left: 0px;
   z-index: 1;
   background-color: #ffffff;
+  color: #000000;
   border: 2px solid grey;
-  border-radius: 5px;
+  border-radius: 2px;
   padding: 5px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
@@ -117,7 +118,7 @@
                 @can('updateAny', \App\Models\Room::class)
                 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                     viewBox="0 0 300 15" style="enable-background:new 0 0 1047.8 750;" xml:space="preserve">
-                    <text x="0" y="12" style="font-size: 12px; fill: #000000;">Szabad helyek száma:</text>
+                    <text x="0" y="12" class="on-background" style="font-size: 12px;">Szabad helyek száma:</text>
                     @php
                         $padding=120;
                     @endphp
@@ -156,7 +157,7 @@
                         @foreach ($specialRoomsSecondFloor as $roomNumber)
                         <path id="{{$roomNumber}}" class="st2" d="{{$roomCoords[$roomNumber]}}"/>
                         @endforeach
-                        <text transform="matrix(1 0 0 1 450.7761 670)" class="st11">2. emelet</text>
+                        <text transform="matrix(1 0 0 1 450.7761 670)" class="st11 on-background">2. emelet</text>
                         <text transform="matrix(1 0 0 1 498.2905 578.1061)" class="st8">Társalgó</text>
                         <text transform="matrix(1 0 0 1 804.2112 326.2228)" class="st8">Fürdő</text>
                         <text transform="matrix(1 0 0 1 209.2284 320.0796)" class="st8">Fürdő</text>
