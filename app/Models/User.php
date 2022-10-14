@@ -464,12 +464,17 @@ class User extends Authenticatable implements HasLocalePreference
 
     /**
      * @return bool if the user is currently a tenant
+     * A tenant is currently a tenant if they are a tenant and their tenant_until date is in the future.
      */
     public function isCurrentTenant(): bool
     {
         return $this->isTenant() && $this->personalInformation->tenant_until && Carbon::parse($this->personalInformation->tenant_until)->gt(Carbon::now());
     }
 
+    /**
+     * @return bool if the user needs to update their tenant status
+     * A user needs to update their tenant status if they are a tenant and their tenant_until date is in the past.
+     */
     public function needsUpdateTenantUntil(): bool
     {
         return $this->isTenant() && !$this->isCurrentTenant();
