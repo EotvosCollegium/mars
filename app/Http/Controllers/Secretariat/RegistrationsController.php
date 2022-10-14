@@ -44,8 +44,9 @@ class RegistrationsController extends Controller
 
         $user->update(['verified' => true]);
         if ($user->hasRole(Role::TENANT)) {
-            $date = (Carbon::now()->addMonths(6)->gt($user->personalInformation->tenant_until.' 00:00:00')) ? ($user->personalInformation->tenant_until.' 00:00:00') : Carbon::now()->addMonths(6);
+            $date=min(Carbon::now()->addMonths(6), Carbon::parse($user->personalInformation->tenant_until));
             $user->internetAccess()->update(['has_internet_until' => $date]);
+            $user->personalInformation()->update(['tenant_until' => $date]);
         }
 
         Cache::decrement('user');

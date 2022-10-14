@@ -47,7 +47,6 @@ class ApplicationController extends Controller
             'faculties' => Faculty::all(),
             'deadline' => self::getApplicationDeadline(),
             'deadline_extended' => self::isDeadlineExtended(),
-            'countries' => require base_path('countries.php'),
             'user' => $request->user()
         ];
         switch ($request->input('page')) {
@@ -252,7 +251,7 @@ class ApplicationController extends Controller
             'name' => 'required|string|max:255',
         ]);
         $path = $request->file('file')->store('uploads');
-        $user->application()->firstOrCreate()->files()->create(['path' => $path, 'name' => $request->input('name')]);
+        $user->application->files()->create(['path' => $path, 'name' => $request->input('name')]);
     }
 
     /**

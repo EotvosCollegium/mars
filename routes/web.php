@@ -71,6 +71,8 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::post('/users/{user}/educational_information', [UserController::class, 'updateEducationalInformation'])->name('users.update.educational');
     Route::post('/users/{user}/roles/{role}', [UserController::class, 'addRole'])->name('users.roles.add');
     Route::delete('/users/{user}/roles/{role}', [UserController::class, 'removeRole'])->name('users.roles.delete');
+    Route::get('/users/tenant_update/show', [UserController::class, 'showTenantUpdate'])->name('users.tenant-update.show');
+    Route::get('/users/tenant_update/applicant', [UserController::class, 'tenantToApplicant'])->name('users.tenant-update.to-applicant');
 
 
     /** Localization */

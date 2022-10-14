@@ -7,6 +7,7 @@ use App\Utils\NotificationCounter;
 use Carbon\Carbon;
 use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -23,6 +24,7 @@ use Illuminate\Support\Facades\Mail;
 /**
  * @property int $id
  * @property string $name
+ * @property string $unique_name
  * @property string $password
  * @property string $remember_token
  * @property bool $verified
@@ -35,6 +37,7 @@ use Illuminate\Support\Facades\Mail;
  * @property Collection|Semester[] $activeSemesters
  * @property Collection|Workshop[] $workshops
  * @property Collection|WifiConnection[] $wifiConnections
+ * @property Collection|Faculty[] $faculties
  * @method role(Role $role, Workshop|RoleObject|null $object)
  */
 class User extends Authenticatable implements HasLocalePreference
@@ -81,20 +84,23 @@ class User extends Authenticatable implements HasLocalePreference
             }
         });
     }
-
     /**
-     * Getter for a unique identifier (name + neptun code, if applicable and if the user has the right to view it).
-     * @return string
+     * Getter for a unique_name attribute (name + neptun code, if applicable and if the user has the right to view it).
+     *
+     * @return Attribute
      */
-    public function getUniqueNameAttribute(): string
+    public function uniqueName(): Attribute
     {
-        if ($this->hasEducationalInformation() && auth()->user()->can('view', $this)) {
-            return $this->name.' ('.$this->educationalInformation->neptun.')';
-        } else {
-            return $this->name;
-        }
+        return Attribute::make(
+            get: function (): string {
+                if ($this->hasEducationalInformation() && auth()->user()->can('view', $this)) {
+                    return $this->name.' ('.$this->educationalInformation->neptun.')';
+                } else {
+                    return $this->name;
+                }
+            }
+        );
     }
-
     /**
      * Get the user's preferred locale.
      *
@@ -185,9 +191,16 @@ class User extends Authenticatable implements HasLocalePreference
         );
     }
 
-    public function getReachedWifiConnectionLimitAttribute(): bool
+    /**
+     * Get the reached_wifi_connection_limit attribute.
+     *
+     * @return Attribute
+     */
+    public function reachedWifiConnectionLimit(): Attribute
     {
-        return $this->internetAccess->reachedWifiConnectionLimit();
+        return Attribute::make(
+            get: fn (): bool => $this->internetAccess->reachedWifiConnectionLimit()
+        );
     }
 
     /* Basic information of the user */
@@ -411,6 +424,7 @@ class User extends Authenticatable implements HasLocalePreference
             if ($this->roles()->where('id', $role->id)->doesntExist()) {
                 $this->roles()->attach($role->id);
             }
+            $this->setTenantDateForTenantCollegists();
         }
         return true;
     }
@@ -432,6 +446,43 @@ class User extends Authenticatable implements HasLocalePreference
         }
     }
 
+    /**
+     * @return array|User[]|Collection the tenants
+     */
+    public static function tenants(): Collection|array
+    {
+        return self::role(Role::TENANT)->get();
+    }
+
+    /**
+     * @return bool if the user is a tenant
+     */
+    public function isTenant(): bool
+    {
+        return $this->hasRole(Role::TENANT);
+    }
+
+    /**
+     * @return bool if the user is currently a tenant
+     * A tenant is currently a tenant if they are a tenant and their tenant_until date is in the future.
+     */
+    public function isCurrentTenant(): bool
+    {
+        return $this->isTenant() && $this->personalInformation->tenant_until && Carbon::parse($this->personalInformation->tenant_until)->gt(Carbon::now());
+    }
+
+    /**
+     * @return bool if the user needs to update their tenant status
+     * A user needs to update their tenant status if they are a tenant and their tenant_until date is in the past.
+     */
+    public function needsUpdateTenantUntil(): bool
+    {
+        return $this->isTenant() && !$this->isCurrentTenant();
+    }
+
+    /**
+     * @return array|User[]|Collection the collegists
+     */
     public static function collegists(): Collection|array
     {
         return Role::collegist()->getUsers();
@@ -778,6 +829,7 @@ class User extends Authenticatable implements HasLocalePreference
                 'comment' => $comment,
             ],
         ]);
+        $this->setTenantDateForTenantCollegists();
 
         return $this;
     }
@@ -809,6 +861,18 @@ class User extends Authenticatable implements HasLocalePreference
         ]);
 
         return $this;
+    }
+
+    /**
+     * Sets the tenant_until date to the end of the current semester if the user is an active collegist with the tenant role.
+     * Added three months and two weeks to the end of the semester to allow the activation to happen.
+     */
+    public function setTenantDateForTenantCollegists(): bool
+    {
+        if ($this->isTenant() && $this->isActive()) {
+            return $this->personalInformation()->update(['tenant_until'=>Semester::current()->getEndDate()->addMonths(3)->addWeeks(2)]);
+        }
+        return false;
     }
 
     public function sendPasswordSetNotification($token)

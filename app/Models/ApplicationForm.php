@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Utils\DataCompresser;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
@@ -10,6 +11,21 @@ use Illuminate\Support\Collection;
 /**
  * @property User $user
  * @property Collection $files
+ * @property string $status
+ * @property string $graduation_average
+ * @property array $semester_average
+ * @property array $language_exam
+ * @property array $competition
+ * @property array $publication
+ * @property array $foreign_studies
+ * @property array $question_1
+ * @property string $question_1_custom
+ * @property string $question_2
+ * @property string $question_3
+ * @property string $question_4
+ * @property boolean $accommodation
+ * @property string $present
+ * @property string $note
  */
 class ApplicationForm extends Model
 {
@@ -84,70 +100,106 @@ class ApplicationForm extends Model
     |--------------------------------------------------------------------------
     */
 
-    public function getSemesterAverageAttribute($value)
+    /**
+     * Get/set the application's semester_average attribute.
+     *
+     * @return Attribute
+     */
+    protected function semesterAverage(): Attribute
     {
-        return DataCompresser::decompressData($value);
+        return Attribute::make(
+            get: fn ($value) => DataCompresser::decompressData($value),
+            set: fn ($value) => DataCompresser::compressData($value),
+        );
     }
 
-    public function setSemesterAverageAttribute($value)
+    /**
+     * Get/set the application's language_exam attribute.
+     *
+     * @return Attribute
+     */
+    protected function languageExam(): Attribute
     {
-        $this->attributes['semester_average'] = DataCompresser::compressData($value);
+        return Attribute::make(
+            get: fn ($value) => DataCompresser::decompressData($value),
+            set: fn ($value) => DataCompresser::compressData($value),
+        );
     }
 
-    public function getLanguageExamAttribute($value)
+    /**
+     * Get/set the application's competition attribute.
+     *
+     * @return Attribute
+     */
+    public function competition(): Attribute
     {
-        return DataCompresser::decompressData($value);
+        return Attribute::make(
+            get: fn ($value) => DataCompresser::decompressData($value),
+            set: fn ($value) => DataCompresser::compressData($value),
+        );
     }
 
-    public function setLanguageExamAttribute($value)
+    /**
+     * Get/set the application's publication attribute.
+     *
+     * @return Attribute
+     */
+    public function publication(): Attribute
     {
-        $this->attributes['language_exam'] = DataCompresser::compressData($value);
+        return Attribute::make(
+            get: fn ($value) => DataCompresser::decompressData($value),
+            set: fn ($value) => DataCompresser::compressData($value),
+        );
     }
 
-    public function getCompetitionAttribute($value)
+    /**
+     * Get/set the application's foreign_studies attribute.
+     *
+     * @return Attribute
+     */
+    public function foreignStudies(): Attribute
     {
-        return DataCompresser::decompressData($value);
+        return Attribute::make(
+            get: fn ($value) => DataCompresser::decompressData($value),
+            set: fn ($value) => DataCompresser::compressData($value),
+        );
     }
 
-    public function setCompetitionAttribute($value)
+    /**
+     * Get/set the application's question_1 attribute.
+     *
+     * @return Attribute
+     */
+    public function question1(): Attribute
     {
-        $this->attributes['competition'] = DataCompresser::compressData($value);
+        return Attribute::make(
+            get: fn ($value) => DataCompresser::decompressData($value),
+            set: fn ($value) => DataCompresser::compressData($value),
+        );
     }
 
-    public function getPublicationAttribute($value)
+    /**
+     * Get the application's question_1_custom attribute.
+     *
+     * @return Attribute
+     */
+    public function question1Custom(): Attribute
     {
-        return DataCompresser::decompressData($value);
+        return Attribute::make(
+            get: fn (): string => $this->getCustomValue($this->question_1, self::QUESTION_1)
+        );
     }
 
-    public function setPublicationAttribute($value)
+    /**
+     * Get a custom answer that is not listed in the possible answers.
+     * @param array $answers
+     * @param array $possible_answers
+     * @return string
+     */
+    private function getCustomValue(array $answers = [], array $possible_answers = []): string
     {
-        $this->attributes['publication'] = DataCompresser::compressData($value);
-    }
-
-    public function getForeignStudiesAttribute($value)
-    {
-        return DataCompresser::decompressData($value);
-    }
-
-    public function setForeignStudiesAttribute($value)
-    {
-        $this->attributes['foreign_studies'] = DataCompresser::compressData($value);
-    }
-
-    public function getQuestion1Attribute($value)
-    {
-        return DataCompresser::decompressData($value);
-    }
-
-    public function setQuestion1Attribute($value)
-    {
-        $this->attributes['question_1'] = DataCompresser::compressData($value);
-    }
-
-    public function getQuestion1CustomAttribute()
-    {
-        foreach ($this->question_1 ?? [] as $answer) {
-            if (!in_array($answer, self::QUESTION_1)) {
+        foreach ($answers as $answer) {
+            if (!in_array($answer, $possible_answers)) {
                 return $answer;
             }
         }
@@ -160,6 +212,10 @@ class ApplicationForm extends Model
     |--------------------------------------------------------------------------
     */
 
+    /**
+     * Determine whether the application is ready to submit.
+     * @return boolean
+     */
     public function isReadyToSubmit(): bool
     {
         $user = $this->user;
@@ -202,13 +258,13 @@ class ApplicationForm extends Model
         if (! isset($educationalInformation->email)) {
             return false;
         }
-        if (! isset($educationalInformation->program)) {
+        if (! isset($educationalInformation->program) || $educationalInformation->program == []) {
             return false;
         }
         if (! isset($this->graduation_average)) {
             return false;
         }
-        if (! isset($this->question_1)) {
+        if (! isset($this->question_1) || $this->question_1 == []) {
             return false;
         }
         if (! isset($this->question_2)) {
