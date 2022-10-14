@@ -61,7 +61,7 @@ class UserPolicy
                     ->intersect($user->roleWorkshops())
                     ->count()>0;
         } elseif ($target->hasRole(Role::TENANT)) {
-            return $user->hasRole(Role::STAFF);
+            return $user->hasRole([Role::STAFF, Role::STUDENT_COUNCIL => Role::PRESIDENT]);
         }
         return false;
     }
@@ -137,6 +137,10 @@ class UserPolicy
             ]);
         }
 
+        if ($role->name == Role::TENANT) {
+            return $user->hasRole([Role::STAFF, Role::STUDENT_COUNCIL => Role::PRESIDENT]);
+        }
+
         if ($role->name == Role::COLLEGIST) {
             return $user->hasRole(Role::SECRETARY);
         }
@@ -188,6 +192,10 @@ class UserPolicy
      */
     public function updatePermission(User $user, User $target, Role $role, Workshop|RoleObject $object = null): bool
     {
+        if ($role->name == Role::TENANT) {
+            return $user->hasRole([Role::STAFF, Role::STUDENT_COUNCIL => Role::PRESIDENT]);
+        }
+
         if ($role->name == Role::COLLEGIST) {
             return $user->hasRole(Role::SECRETARY);
         }

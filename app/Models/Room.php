@@ -20,12 +20,19 @@ class Room extends Model
 
     protected $withCount = ['users'];
 
+    public static array $roomColors = [
+        3 => '#76ff03', //light-green accent-3
+        2 => '#ffee58', //yellow lighten-2
+        1 => '#ff9100', //orange accent-2
+        0 => '#e0e0e0', //grey lighten-2
+    ];
+
     /**
      * Returns the users assigned to this room
      */
     public function users()
     {
-        return $this->belongsTo(User::class, 'name', 'room');
+        return $this->hasMany(User::class, 'room', 'name');
     }
 
     /**
@@ -40,26 +47,13 @@ class Room extends Model
     /**
      * Assigns colors depending on the empty spaces left in the room
      */
-    public function color()
+    public function color(): string
     {
-        $color="#ffffff";
-        switch ($this->capacity - $this->residentNumber()) {
-            case 3:
-                $color="#11f709";
-                break;
-            case 2:
-                $color="#2bb505";
-                break;
-            case 1:
-                $color="#f0fc0a";
-                break;
-            case 0:
-                $color="#fc4f05";
-                break;
-            default:
-                $color="#11f709";
-                break;
-        }
-        return $color;
+        return match ($this->capacity - $this->residentNumber()) {
+            2 => Room::$roomColors[2],
+            1 => Room::$roomColors[1],
+            0 => Room::$roomColors[0],
+            default => Room::$roomColors[3],
+        };
     }
 }

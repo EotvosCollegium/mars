@@ -20,12 +20,10 @@ class CommunityServiceController extends Controller
         $this->authorize('view', CommunityService::class);
 
         return view('student-council.community-service.app', [
-            'semesters' => Semester::whereHas('communityServices', function ($query) use ($request) {
+            'semesters' => Semester::withWhereHas('communityServices', function ($query) use ($request) {
                 $query->where('approver_id', $request->user()->id)
-                                    ->orWhere('requester_id', $request->user()->id);
-            })
-                            ->with('communityServices')
-                            ->get(),
+                    ->orWhere('requester_id', $request->user()->id);
+            })->get(),
             'possible_approvers' => User::studentCouncilLeaders()
         ]);
     }

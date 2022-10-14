@@ -16,11 +16,10 @@
     </div>
 </div>
 @endif
-
 <!-- Information -->
 @if($information_general.$information_collegist != '' || 
     Auth::user()->hasRole([
-        \App\Models\Role::STUDENT_COUNCIL => \App\Models\Role::PRESIDENT, 
+        \App\Models\Role::STUDENT_COUNCIL => \App\Models\Role::STUDENT_COUNCIL_LEADERS, 
         \App\Models\Role::SYS_ADMIN, 
         \App\Models\Role::STUDENT_COUNCIL_SECRETARY]))
 <div class="row">
@@ -32,7 +31,7 @@
                     @markdown($information_general)
                     @markdown($information_collegist)
                     @if(Auth::user()->hasRole([
-                        \App\Models\Role::STUDENT_COUNCIL => \App\Models\Role::PRESIDENT, 
+                        \App\Models\Role::STUDENT_COUNCIL => \App\Models\Role::STUDENT_COUNCIL_LEADERS, 
                         \App\Models\Role::SYS_ADMIN, 
                         \App\Models\Role::STUDENT_COUNCIL_SECRETARY]))
                         <x-input.button floating class="right" id="edit_btn" icon="mode_edit"/>

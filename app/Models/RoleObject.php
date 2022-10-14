@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -24,9 +25,16 @@ class RoleObject extends Model
         return $this->belongsTo(Role::class);
     }
 
-    public function getTranslatedNameAttribute(): string
+    /**
+     * Get the translated_name attribute.
+     *
+     * @return Attribute
+     */
+    public function translatedName(): Attribute
     {
-        return __('role.'.$this->name);
+        return Attribute::make(
+            get: fn () => __('role.'.$this->name)
+        );
     }
 
     public static function president(): RoleObject|null

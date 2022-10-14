@@ -2,9 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property boolean|null $approved
+ * @property string $status
+ */
 class CommunityService extends Model
 {
     protected $fillable = ['requester_id', 'approver_id', 'description', 'approved', 'semester_id'];
@@ -37,24 +42,25 @@ class CommunityService extends Model
 
 
     /**
-     * @return string the status based on the approved attribute
+     * Get the status attribute based on the approved attribute.
+     *
+     * @return Attribute
      */
-
-    public function getStatusAttribute(): string
+    protected function status(): Attribute
     {
-        if ($this->approved === null) {
-            return __('community-service.pending');
-        } elseif ($this->approved==1) {
-            return __('community-service.approved');
-        } else {
-            return __('community-service.rejected');
-        }
+        return Attribute::make(
+            get: fn () => match ($this->approved) {
+                null =>  __('community-service.pending'),
+                true => __('community-service.approved'),
+                false => __('community-service.rejected'),
+                default => throw new \Exception('Unexpected match value')
+            },
+        );
     }
 
     /**
      * @return string the badge color based on the approved attribute
      */
-
     public function getStatusColor(): string
     {
         if ($this->approved === null) {

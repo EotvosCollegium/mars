@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -232,9 +233,16 @@ class Role extends Model
         return self::where('name', self::SYS_ADMIN)->first();
     }
 
-    public function getTranslatedNameAttribute()
+    /**
+     * Get the translated_name attribute.
+     *
+     * @return Attribute
+     */
+    public function translatedName(): Attribute
     {
-        return __('role.'.$this->name);
+        return Attribute::make(
+            get: fn () => __('role.'.$this->name)
+        );
     }
 
 
