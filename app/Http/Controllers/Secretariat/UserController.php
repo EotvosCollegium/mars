@@ -13,6 +13,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -23,7 +26,6 @@ class UserController extends Controller
         return view('auth.user', [
             'user' => $user,
             'semesters' => $user->allSemesters,
-            'countries' => require base_path('countries.php'),
             'faculties' => Faculty::all(),
             'workshops' => Workshop::all()
         ]);
@@ -31,19 +33,21 @@ class UserController extends Controller
 
     public function updatePersonalInformation(Request $request, User $user): \Illuminate\Http\RedirectResponse
     {
+        $isCollegist = $user->isCollegist();
+
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|max:225',
             'name' => 'required|string|max:255',
             'phone_number' => 'required|string|min:8|max:18',
-            'mothers_name' => 'required|string|max:225',
-            'place_of_birth' => 'required|string|max:225',
-            'date_of_birth' => 'required|string|max:225',
-            'country' => 'required|string|max:255',
-            'county' => 'required|string|max:255',
-            'zip_code' => 'required|string|max:31',
-            'city' => 'required|string|max:255',
-            'street_and_number' => 'required|string|max:255',
-            'tenant_until'=>'nullable|string|max:225',
+            'mothers_name' => [Rule::requiredIf($isCollegist), 'max:225'],
+            'place_of_birth' => [Rule::requiredIf($isCollegist), 'string', 'max:225'],
+            'date_of_birth' => [Rule::requiredIf($isCollegist), 'string', 'max:225'],
+            'country' => [Rule::requiredIf($isCollegist), 'string', 'max:255'],
+            'county' => [Rule::requiredIf($isCollegist), 'string', 'max:255'],
+            'zip_code' => [Rule::requiredIf($isCollegist), 'string', 'max:31'],
+            'city' => [Rule::requiredIf($isCollegist), 'string', 'max:255'],
+            'street_and_number' => [Rule::requiredIf($isCollegist), 'string', 'max:255'],
+            'tenant_until'=> [Rule::requiredIf($user->isTenant()), 'date', 'after:today'],
         ]);
         if ($user->email != $request->email) {
             if (User::where('email', $request->email)->exists()) {
@@ -64,6 +68,11 @@ class UserController extends Controller
             $user->personalInformation()->create($request->all());
         } else {
             $user->personalInformation->update($request->all());
+        }
+        if ($request->has('tenant_until')) {
+            $date=min(Carbon::parse($request->tenant_until), Carbon::now()->addMonths(6));
+            $user->personalInformation->update(['tenant_until'=>$date]);
+            $user->internetAccess()->update(['has_internet_until'=>$date]);
         }
 
         return redirect()->back()->with('message', __('general.successful_modification'));
@@ -140,7 +149,6 @@ class UserController extends Controller
         return view('secretariat.user.show', [
             'user' => $user,
             'semesters' => $user->allSemesters,
-            'countries' => require base_path('countries.php'),
             'faculties' => Faculty::all(),
             'workshops' => Workshop::all()
         ]);
@@ -173,5 +181,36 @@ class UserController extends Controller
         $user->removeRole($role, $object ?? null);
 
         return redirect()->back()->with('message', __('general.successful_modification'));
+    }
+
+    /**
+     * Shows the page where a tenant can update their planned departure date.
+     */
+    public function showTenantUpdate()
+    {
+        if (!Auth::user()->needsUpdateTenantUntil()) {
+            return redirect('/');
+        }
+        return view('user.update_tenant_status', [
+            'user' => Auth::user(),
+        ]);
+    }
+
+    /**
+     * Updates a tenant to an applicant
+     */
+    public function tenantToApplicant()
+    {
+        if (!Auth::user()->isTenant() || Auth::user()->isCollegist()) {
+            return abort(403);
+        }
+        $user = Auth::user();
+        $user->personalInformation()->update(['tenant_until' => null]);
+        $user->removeRole(Role::firstWhere('name', Role::TENANT));
+        $user->setExtern();
+        $user->update(['verified' => false]);
+        $user->application()->create();
+        Cache::forget('collegists');
+        return back();
     }
 }
