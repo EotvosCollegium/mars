@@ -59,7 +59,7 @@ return [
     'reject' => 'Elutasít',
     'save' => 'Mentés',
     'semesters' => 'Szemeszterek',
-    'set_tenant_until' => 'Ellenőrizd és frissítsd az adataid, hogy visszakapd a hozzáférésed az Uránhoz és az internethez. Ezt fél évente meg kell újítanod.',
+    'set_tenant_until' => 'Ellenőrizd és frissítsd a tervezett kiköltözésed időpontját, hogy visszakapd a hozzáférésed az Uránhoz és az internethez. Ezt fél évente meg kell újítanod.',
     'show' => 'Mutat',
     'skandinavisztika_muhely' => 'Skandinavisztika műhely',
     'spanyol_muhely' => 'Spanyol műhely',

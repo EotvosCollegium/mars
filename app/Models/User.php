@@ -411,9 +411,7 @@ class User extends Authenticatable implements HasLocalePreference
             if ($this->roles()->where('id', $role->id)->doesntExist()) {
                 $this->roles()->attach($role->id);
             }
-            if ($role->name == Role::TENANT && $this->isActive()) {
-                $this->setTenantUntilToSemesterEnd();
-            }
+            $this->setTenantDateForTenantCollegists();
         }
         return true;
     }
@@ -791,15 +789,13 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function setStatusFor(Semester $semester, $status, $comment = null): User
     {
-        if ($semester==Semester::current() && $this->isTenant() && $status == SemesterStatus::ACTIVE) {
-            $this->setTenantUntilToSemesterEnd();
-        }
         $this->allSemesters()->syncWithoutDetaching([
             $semester->id => [
                 'status' => $status,
                 'comment' => $comment,
             ],
         ]);
+        $this->setTenantDateForTenantCollegists();
 
         return $this;
     }
