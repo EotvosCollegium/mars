@@ -99,8 +99,19 @@ body {
         .tabulator-page {
             color: #fff;
         }
+        .collapsible {
+            border-top: solid 2px rgba(255, 255, 255, 0.2);
+            border-bottom:solid 2px rgba(255, 255, 255, 0.2);
+            border-left: solid 2px rgba(255, 255, 255, 0.2);
+            border-right: solid 2px rgba(255, 255, 255, 0.2);
+        }
+        .collapsible-header {
+            background-color: rgba(25, 25, 25, 255);
+            border-bottom: rgba(255, 255, 255, 0.2);
+        }
         .collapsible-body {
             background-color: rgba(25, 25, 25, 255);
+            border-bottom: rgba(255, 255, 255, 0.2);
         }
         .dropdown-trigger {
             color: #fff;
@@ -133,6 +144,7 @@ body {
         .sidenav {
             background-color: rgba(25, 25, 25, 255);
             li {
+                background-color: rgba(25, 25, 25, 255);
                 a {
                     &:not(.subheader) {
                         color: #fff;
@@ -168,6 +180,21 @@ body {
             color: $primary-color;
         }
         .black-text {
+            color: #fff !important;
+        }
+        .select-dropdown span {
+            color: #fff !important;
+        }
+        .tabulator-header-filter input{
+            color: #fff;
+        }
+        svg .on-background {
+            fill: #fff;
+        }
+        table tr {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .card-content input {
             color: #fff !important;
         }
     }
