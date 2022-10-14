@@ -108,7 +108,7 @@ class UserController extends Controller
         $user = Auth::user();
 
         $validator = Validator::make($request->except('_token'), [
-            'old_password' => 'required|string|password',
+            'old_password' => 'required|string|current_password',
             'new_password' => 'required|string|min:8|confirmed|different:old_password',
         ]);
 

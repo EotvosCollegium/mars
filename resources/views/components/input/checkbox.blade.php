@@ -8,9 +8,7 @@
             'class' => "filled-in checkbox-color",
             'name' => $id
         ])}}
-        @if($checked)
-            checked
-        @endif
+        @checked($checked)
     >
     <span>{{$label}}</span>
 </label>

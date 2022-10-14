@@ -23,7 +23,7 @@
                                     <td>{{ $communityService->approver->name }}</td>
                                     <td>
                                         <span class="new badge {{ $communityService->getStatusColor() }}" data-badge-caption="">
-                                            {{ $communityService->getStatusAttribute() }}
+                                            {{ $communityService->status }}
                                         </span>
                                     </td>
                                     @if($showApprove)

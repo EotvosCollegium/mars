@@ -3,11 +3,12 @@
 namespace App\Models;
 
 use App\Utils\DataCompresser;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * @property string|null $program
+ * @property array $program
  * @property string $programs
  * @property string $neptun
  *
@@ -33,22 +34,28 @@ class EducationalInformation extends Model
         return $this->belongsTo('App\Models\User');
     }
 
-    public function getProgramAttribute($value): ?array
+    /**
+     * Get the program attribute.
+     *
+     * @return Attribute
+     */
+    protected function program(): Attribute
     {
-        return DataCompresser::decompressData($value);
+        return Attribute::make(
+            get: fn ($value): array => DataCompresser::decompressData($value),
+            set: fn ($value): string => DataCompresser::compressData($value),
+        );
     }
 
-    public function getProgramsAttribute(): string
+    /**
+     * Get the programs attribute.
+     *
+     * @return Attribute
+     */
+    protected function programs(): Attribute
     {
-        if ($this->program === null) {
-            return '';
-        }
-
-        return join(', ', $this->program);
-    }
-
-    public function setProgramAttribute($value)
-    {
-        $this->attributes['program'] = DataCompresser::compressData($value);
+        return Attribute::make(
+            get: fn (): string => join(', ', $this->program ?? []),
+        );
     }
 }
