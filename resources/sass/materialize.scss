@@ -197,6 +197,15 @@ body {
         .card-content input {
             color: #fff !important;
         }
+        .tab {
+            background-color: rgba(25, 25, 25, 255);
+        }
+        .tab a {
+            color: $secondary-color !important;
+        }
+        .lever {
+            background-color: #fff !important;
+        }
     }
 }
 
