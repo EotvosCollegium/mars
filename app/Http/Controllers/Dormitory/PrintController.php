@@ -313,6 +313,7 @@ class PrintController extends Controller
             'printing'
         );
         $path=Storage::disk('printing')->path($path);
+
         return $path;
     }
 
