@@ -307,8 +307,8 @@ class PrintController extends Controller
 
     private function storeFile($file)
     {
-        $path = $file->storeAs('', md5(rand(0, 100000) . date('c')) . '.pdf', 'printing');
-        $path = Storage::disk('printing')->getDriver()->getAdapter()->applyPathPrefix($path);
+        $fileName= md5(rand(0, 100000) . date('c')) . '.pdf';
+        $path = Storage::disk('printing')->putFile($fileName, $file);
         return $path;
     }
 
