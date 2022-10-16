@@ -10,11 +10,14 @@ thanks to Laravel.
 
 ### Universal (using VS Code dev containers  - recommended)
 
- 1. You need to install Docker (and WSL2 on Windows). See [requirements here](https://code.visualstudio.com/docs/remote/containers#_system-requirements).
- 2. You need to install VS code
- 3. You need to install the Remote Development extension pack in VS code.
- 4. Clone Mars and open the project.
- 6. VS code will notice that the project is configured to use dev containers and will promt you if you want to use it. Click yes, and you're all done!
+ 1. Clone Mars: `git clone git@github.com:EotvosCollegium/mars.git`.
+ 2. Install [Composer](https://getcomposer.org/) and run `composer install` in the project directory.
+ 3. You need to install Docker (and WSL2 on Windows). See [requirements here](https://code.visualstudio.com/docs/remote/containers#_system-requirements).
+ 4. You need to install VS code
+ 5. You need to install the Remote Development extension pack in VS code.
+ 6. Open the project in VS code. Copy the `.env.example` file to `.env` and run `php artisan key:generate`. Set `DB_HOST` to `mysql` in `.env` file.
+ 8. VS code should notice that the project is configured to use dev containers and will promt you if you want to use it. Click yes, and you're all done!
+
 
 ### OS X
 For OS X, [Valet](https://laravel.com/docs/6.x/valet) gives a pretty smooth experience. Easy to download, easy to configure.
@@ -25,7 +28,7 @@ For Windows and Linux the project has an example [Laravel Homestead](https://lar
 
 With these steps you should be able to run Mars on your machine:
 
-1. Clone Mars: `git clone git@github.com:luksan47/mars.git`.
+1. Clone Mars: `git clone git@github.com:EotvosCollegium/mars.git`.
 2. Install [Vagrant](https://www.vagrantup.com/) and [VirtualBox](https://www.virtualbox.org/). (Or other virtualization platforms supported by Vagrant. Don't forget to reconfigure the `provider` in the steps below if you do so.)
 3. Follow the instructions in the [First steps](https://laravel.com/docs/8.x/homestead#first-steps) section:
     - `vagrant box add laravel/homestead`
