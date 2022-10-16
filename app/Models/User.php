@@ -1130,6 +1130,14 @@ class User extends Authenticatable implements HasLocalePreference
     }
 
     /**
+     * @return array|Collection|User[] the users with printer role
+     */
+    public static function tenants(): Collection|array
+    {
+        return self::role(Role::TENANT)->get();
+    }
+
+    /**
      * Returns how many not verified users there are currently.
      * Used by the NotificationCounter trait.
      * @return int
