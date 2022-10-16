@@ -7,8 +7,8 @@
         <table><tbody>
             @foreach($depts as $user)
               <tr>
-                    <td>{{ $collegist->name }}</td>
-                    <td>{{ $collegist->transactionsReceived->sum('amount') }} Ft</td>
+                    <td>{{ $user->name }}</td>
+                    <td>{{ $user->transactionsReceived->sum('amount') }} Ft</td>
                     <td>
                         <form method="POST" action="{{ route($route_base . '.to_checkout', ['user' => $user]) }}">
                             @csrf
