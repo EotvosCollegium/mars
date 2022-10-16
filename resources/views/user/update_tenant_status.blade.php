@@ -10,7 +10,18 @@
             <div class="card-content">
                 <span class="card-title">@lang('user.update_tenant_status')</span>
                 <blockquote>@lang('user.set_tenant_until')</blockquote>
-                @include('user.personal-information', ['user' => $user, 'only_tenant_until' => true])
+                <form method="POST" action="{{ route('users.update.tenant_until', ['user' => $user]) }}">
+                    @csrf
+                    <div class="row">
+                        <input type="hidden" name="only_tenant_until" value="true"/>
+                        <x-input.datepicker
+                                id='tenant_until'
+                                required
+                                locale='user'
+                                :value="$user->personalInformation?->tenant_until" />
+                        <x-input.button class="right" text="general.save" />
+                    </div>
+                </form>
             </div>
         </div>
     </div>
