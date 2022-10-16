@@ -35,8 +35,8 @@
                         <x-input.text type="text" id="comment" text="internet.comment" value="{{ $router->comment }}" maxlength="255"/>
                     </div>
                     <div class="row">
-                        <x-input.text s="6" type="date" id="date_of_acquisition" text="router.date_of_acquisition" value="{{ $router->date_of_acquisition }}"/>
-                        <x-input.text s="6" type="date" id="date_of_deployment" text="router.date_of_deployment" value="{{ $router->date_of_deployment }}"/>
+                        <x-input.datepicker s="6" id="date_of_acquisition" text="router.date_of_acquisition" value="{{ $router->date_of_acquisition }}"/>
+                        <x-input.datepicker s="6" id="date_of_deployment" text="router.date_of_deployment" value="{{ $router->date_of_deployment }}"/>
                     </div>
                 </div>
                 <div class="card-action">

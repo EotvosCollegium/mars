@@ -18,7 +18,7 @@ class Datepicker extends Input
     {
         parent::__construct($id, $locale, $text, $s, $m, $l, $xl, $onlyInput);
         $this->format = $format ?? 'yyyy-mm-dd';
-        $this->yearRange = $yearRange ?? 50;
+        $this->yearRange = $yearRange ?? 100;
     }
 
     /**
