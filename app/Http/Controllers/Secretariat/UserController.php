@@ -117,7 +117,7 @@ class UserController extends Controller
             'tenant_until'=> 'required|date|after:today',
         ]);
         $validator->validate();
-        
+
         $date = min(Carbon::parse($request->tenant_until), Carbon::now()->addMonths(6));
         $user->personalInformation->update(['tenant_until'=>$date]);
         $user->internetAccess()->update(['has_internet_until'=>$date]);
