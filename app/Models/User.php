@@ -27,24 +27,53 @@ use Illuminate\Support\Facades\Mail;
  * @property string $unique_name
  * @property string $password
  * @property string $remember_token
+ * @property bool $reached_wifi_connection_limit
  * @property bool $verified
- * @property PersonalInformation $personalInformation
- * @property EducationalInformation $educationalInformation
- * @property FreePages $freePages
- * @property InternetAccess $internetAccess
- * @property Collection|Role[] $roles
- * @property Collection|Semester[] $allSemesters
- * @property Collection|Semester[] $activeSemesters
- * @property Collection|Workshop[] $workshops
- * @property Collection|WifiConnection[] $wifiConnections
- * @property Collection|Faculty[] $faculties
- * @method role(Role $role, Workshop|RoleObject|null $object)
+ * @property Role[]|Collection $roles
+ * @property PersonalInformation|null $personalInformation
+ * @property EducationalInformation|null $educationalInformation
+ * @property File|null $profilePicture
+ * @property ApplicationForm|null $application
+ * @property Workshops[]|Collection $workshops
+ * @property Faculty[]|Collection $faculties
+ * @property ImportItem[]|Collection $importItems
+ * @property Room|null $room
+ * @property PrintAccount|null $printAccount
+ * @property FreePages[]|Collection $freePages
+ * @property PrintAccountHistory[]|Collection $printHistory
+ * @property PrintJob[]|Collection $printJobs
+ * @property InternetAccess|null $internetAccess
+ * @property MacAddresses[]|Collection $macAddresses
+ * @property WifiConnection[]|Collection $wifiConnections
+ * @property Semester[]|Collection $allSemesters
+ * @property Semester[]|Collection $activeSemesters
+ * @property Transaction[]|Collection $transactionsPaid
+ * @property Transaction[]|Collection $transactionsReceived
+ * @property MrAndMissVote[]|Collection $mrAndMissVotesGiven
+ * @property MrAndMissVote[]|Collection $mrAndMissVotesGot
+ * @property CommunityService[]|Collection $communityServiceRequests
+ * @property CommunityService[]|Collection $communityServiceApprovals
+ * @method role(Role $role, Workshop|RoleObject|string|null $object)
+ * @method collegist()
+ * @method active()
+ * @method activeIn(int $semester_id)
+ * @method resident()
+ * @method extern()
+ * @method currentTenant()
+ * @method hasToPayKKTNetregInSemester(int $semester_id)
+ * @method semestersWhere(string $status)
  */
 class User extends Authenticatable implements HasLocalePreference
 {
     use NotificationCounter;
     use Notifiable;
     use HasFactory;
+
+    /*
+    |--------------------------------------------------------------------------
+    | Attributes
+    |--------------------------------------------------------------------------
+    */
 
     /**
      * The attributes that are mass assignable.
@@ -73,17 +102,12 @@ class User extends Authenticatable implements HasLocalePreference
         'email_verified_at' => 'datetime',
     ];
 
-    protected static function booted()
-    {
-        // By default, unverified users will be excluded.
-        // You can use `withoutGlobalScope('verified')` to include them.
-        static::addGlobalScope('verified', function (Builder $builder) {
-            // This condition prevents side-effects for unverified users.
-            if (Auth::hasUser() && Auth::user()->verified) {
-                $builder->where('verified', true);
-            }
-        });
-    }
+    /*
+    |--------------------------------------------------------------------------
+    | Accessors & Mutators
+    |--------------------------------------------------------------------------
+    */
+
     /**
      * Getter for a unique_name attribute (name + neptun code, if applicable and if the user has the right to view it).
      *
@@ -94,100 +118,10 @@ class User extends Authenticatable implements HasLocalePreference
         return Attribute::make(
             get: function (): string {
                 if ($this->hasEducationalInformation() && auth()->user()->can('view', $this)) {
-                    return $this->name.' ('.$this->educationalInformation->neptun.')';
-                } else {
-                    return $this->name;
+                    return $this->name . ' (' . $this->educationalInformation->neptun . ')';
                 }
+                return $this->name;
             }
-        );
-    }
-    /**
-     * Get the user's preferred locale.
-     *
-     * @return string
-     */
-    public function preferredLocale(): string
-    {
-        //TODO store preferred locale for each user
-        if ($this->isCollegist()) {
-            return 'hu';
-        } else {
-            return 'en';
-        }
-    }
-
-    /* Printing related getters */
-
-    public function printAccount(): HasOne
-    {
-        return $this->hasOne('App\Models\PrintAccount');
-    }
-
-    public function freePages(): HasMany
-    {
-        return $this->hasMany('App\Models\FreePages');
-    }
-
-    public function sumOfActiveFreePages(): int
-    {
-        return $this->freePages
-            ->where('deadline', '>', Carbon::now())
-            ->sum('amount');
-    }
-
-    public function printHistory(): HasMany
-    {
-        return $this->hasMany('App\Models\PrintAccountHistory');
-    }
-
-    public function printJobs(): HasMany
-    {
-        return $this->hasMany('App\Models\PrintJob');
-    }
-
-    public function numberOfPrintedDocuments(): int
-    {
-        return $this->hasMany('App\Models\PrintAccountHistory')
-            ->where('balance_change', '<', 0)
-            ->orWhere('free_page_change', '<', 0)
-            ->count();
-    }
-
-    public function spentBalance(): int
-    {
-        return abs($this->hasMany('App\Models\PrintAccountHistory')
-            ->where('balance_change', '<', 0)
-            ->sum('balance_change'));
-    }
-
-    public function spentFreePages(): int
-    {
-        return abs($this->hasMany('App\Models\PrintAccountHistory')
-            ->where('free_page_change', '<', 0)
-            ->sum('free_page_change'));
-    }
-
-    /* Internet module related getters */
-
-    public function internetAccess(): HasOne
-    {
-        return $this->hasOne('App\Models\InternetAccess');
-    }
-
-    public function macAddresses(): HasMany
-    {
-        return $this->hasMany('App\Models\MacAddress');
-    }
-
-    public function wifiConnections(): HasManyThrough
-    {
-        return $this->hasManyThrough(
-            'App\Models\WifiConnection',
-            'App\Models\InternetAccess',
-            'user_id', // Foreign key on InternetAccess table...
-            'wifi_username', // Foreign key on WifiConnection table...
-            'id', // Local key on Users table...
-            'wifi_username' // Local key on InternetAccess table...
         );
     }
 
@@ -203,93 +137,17 @@ class User extends Authenticatable implements HasLocalePreference
         );
     }
 
-    /* Basic information of the user */
 
-    public function setVerified(): void
-    {
-        $this->update([
-            'verified' => true,
-        ]);
-    }
-
-    public function personalInformation(): HasOne
-    {
-        return $this->hasOne(PersonalInformation::class);
-    }
-
-    public function hasPersonalInformation(): bool
-    {
-        return isset($this->personalInformation);
-    }
-
-    public function educationalInformation(): HasOne
-    {
-        return $this->hasOne(EducationalInformation::class);
-    }
-
-    public function hasEducationalInformation(): bool
-    {
-        return isset($this->educationalInformation);
-    }
-
-    public function application(): HasOne
-    {
-        return $this->hasOne(ApplicationForm::class);
-    }
-
-    public function workshops(): BelongsToMany
-    {
-        return $this->belongsToMany(Workshop::class, 'workshop_users');
-    }
+    /*
+    |--------------------------------------------------------------------------
+    | Relations
+    |--------------------------------------------------------------------------
+    */
 
     /**
-     * Return workshop administrators/leaders' workshops.
-     * @return Workshop[]|Collection
+     * The user's roles. The relation uses a RoleUser pivot class which includes role objects and workshops.
+     * @return BelongsToMany
      */
-    public function roleWorkshops(): array|Collection
-    {
-        return Workshop::whereIn(
-            'id',
-            $this->roles()->whereIn('name', [Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR])
-            ->pluck('role_users.workshop_id')
-        )->get();
-    }
-
-    /**
-     * Return application committee workshops.
-     * @return \Illuminate\Support\Collection
-     */
-    public function applicationWorkshops(): \Illuminate\Support\Collection
-    {
-        if ($this->can('viewAllApplications', User::class)) {
-            return Workshop::all();
-        } else {
-            return Workshop::whereIn(
-                'id',
-                $this->roles()->whereIn('name', [Role::APPLICATION_COMMITTEE_MEMBER, Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR])
-                    ->pluck('role_users.workshop_id')
-            )
-                ->get();
-        }
-    }
-
-    public function faculties(): BelongsToMany
-    {
-        return $this->belongsToMany(Faculty::class, 'faculty_users');
-    }
-
-    public function importItems(): HasMany
-    {
-        return $this->hasMany(ImportItem::class);
-    }
-
-    public function profilePicture(): HasOne
-    {
-        return $this->hasOne(File::class);
-    }
-
-    /* Role related getters */
-
     public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Role::class, 'role_users')
@@ -297,11 +155,255 @@ class User extends Authenticatable implements HasLocalePreference
     }
 
     /**
+     * The user's personal information. Every registered user should have one.
+     * @return HasOne
+     */
+    public function personalInformation(): HasOne
+    {
+        return $this->hasOne(PersonalInformation::class);
+    }
+
+    /**
+     * The user's educational information. Only collegists should have one.
+     * @return HasOne
+     */
+    public function educationalInformation(): HasOne
+    {
+        return $this->hasOne(EducationalInformation::class);
+    }
+
+    /**
+     * The user's profile picture.
+     * @return HasOne
+     */
+    public function profilePicture(): HasOne
+    {
+        return $this->hasOne(File::class);
+    }
+
+    /**
+     * Former collegist's application form.
+     * @return HasOne
+     */
+    public function application(): HasOne
+    {
+        return $this->hasOne(ApplicationForm::class);
+    }
+
+    /**
+     * The workshops where the user is a member.
+     * @return BelongsToMany
+     */
+    public function workshops(): BelongsToMany
+    {
+        return $this->belongsToMany(Workshop::class, 'workshop_users');
+    }
+
+    /**
+     * The faculties where the user is a member.
+     * @return BelongsToMany
+     */
+    public function faculties(): BelongsToMany
+    {
+        return $this->belongsToMany(Faculty::class, 'faculty_users');
+    }
+
+    /**
+     * The items the user marked for importing into the Collegium.
+     * @return HasMany
+     */
+    public function importItems(): HasMany
+    {
+        return $this->hasMany(ImportItem::class);
+    }
+
+    /**
+     * @return BelongsTo the user's assigned room
+     */
+    public function room(): BelongsTo
+    {
+        return $this->belongsTo(Room::class, 'room', 'name');
+    }
+
+
+    /* Print account related */
+
+    /**
+     * The user's print account.
+     * @return HasOne
+     */
+    public function printAccount(): HasOne
+    {
+        return $this->hasOne(PrintAccount::class);
+    }
+
+    /**
+     * The user's free pages.
+     * @return HasMany
+     */
+    public function freePages(): HasMany
+    {
+        return $this->hasMany(FreePages::class);
+    }
+
+    /**
+     * The user's print account history.
+     * @return HasMany
+     */
+    public function printHistory(): HasMany
+    {
+        return $this->hasMany(PrintAccountHistory::class);
+    }
+
+    /**
+     * The user's print jobs.
+     * @return HasMany
+     */
+    public function printJobs(): HasMany
+    {
+        return $this->hasMany(PrintJob::class);
+    }
+
+    /* Internet module related */
+
+    /**
+     * The user's internet access.
+     * @return hasOne
+     */
+    public function internetAccess(): HasOne
+    {
+        return $this->hasOne(InternetAccess::class);
+    }
+
+    /**
+     * The user's mac addresses.
+     * @return hasMany
+     */
+    public function macAddresses(): HasMany
+    {
+        return $this->hasMany(MacAddress::class);
+    }
+
+    /**
+     * The user's wifi connections.
+     * @return hasManyThrough
+     */
+    public function wifiConnections(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            WifiConnection::class,
+            InternetAccess::class,
+            'user_id', // Foreign key on InternetAccess table...
+            'wifi_username', // Foreign key on WifiConnection table...
+            'id', // Local key on Users table...
+            'wifi_username' // Local key on InternetAccess table...
+        );
+    }
+
+    /* Semester related */
+
+    /**
+     * Returns the semesters where the user has any status. The relation uses a SemesterStatus pivot class.
+     * @return BelongsToMany
+     */
+    public function allSemesters(): BelongsToMany
+    {
+        return $this->belongsToMany(Semester::class, 'semester_status')
+            ->withPivot(['status', 'verified', 'comment'])->using(SemesterStatus::class);
+    }
+
+    /**
+     * Returns the semesters where the user has the given status.
+     * @param string $status
+     * @return BelongsToMany
+     */
+    public function semestersWhere(string $status): BelongsToMany
+    {
+        return $this->allSemesters()->wherePivot('status', '=', $status);
+    }
+
+    /**
+     * Returns the semesters where the user has an active status.
+     * @return BelongsToMany
+     */
+    public function activeSemesters(): BelongsToMany
+    {
+        return $this->semestersWhere(SemesterStatus::ACTIVE);
+    }
+
+    /* Transaction related */
+
+    /**
+     * Returns the transactions paid by the user.
+     * @return HasMany
+     */
+    public function transactionsPaid(): HasMany
+    {
+        return $this->hasMany(Transaction::class, 'payer_id');
+    }
+
+    /**
+     * Returns the transactions received by the user.
+     * @return HasMany
+     */
+    public function transactionsReceived(): HasMany
+    {
+        return $this->hasMany(Transaction::class, 'receiver_id');
+    }
+
+    /* Mr and Miss related */
+
+    /**
+     * Returns the user's mr and miss votes.
+     * @return HasMany
+     */
+    public function mrAndMissVotesGiven(): HasMany
+    {
+        return $this->hasMany(MrAndMissVote::class, 'voter');
+    }
+
+    /**
+     * Returns the user's mr and miss votes.
+     * @return HasMany
+     */
+    public function mrAndMissVotesGot(): HasMany
+    {
+        return $this->hasMany(MrAndMissVote::class, 'votee');
+    }
+
+    /* Community Service related */
+
+    /**
+     * Returns the community services the user has requested
+     * @return HasMany
+     */
+    public function communityServiceRequests(): HasMany
+    {
+        return $this->hasMany(CommunityService::class, 'requester_id');
+    }
+
+    /**
+     * Returns the community services the user has approved/yet to approve
+     * @return HasMany
+     */
+    public function communityServiceApprovals(): HasMany
+    {
+        return $this->hasMany(CommunityService::class, 'approver_id');
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Local scopes
+    |--------------------------------------------------------------------------
+    */
+
+    /**
      * Scope a query to only include users with the given role.
      *
      * @param Builder $query
      * @param Role|string $role
-     * @param RoleObject|Workshop|null $object
+     * @param Workshop|RoleObject|string|null $object
      * @return Builder
      */
     public function scopeRole(Builder $query, Role|string $role, Workshop|RoleObject|string $object = null): Builder
@@ -327,6 +429,154 @@ class User extends Authenticatable implements HasLocalePreference
         });
     }
 
+    /**
+     * Scope a query to only include collegist users.
+     * @return Builder
+     */
+    public function scopeCollegist(): Builder
+    {
+        return $this->role(Role::COLLEGIST);
+    }
+
+    /**
+     * Scope a query to only include active users in the given semester.
+     *
+     * @param Builder $query
+     * @param int $semester_id
+     * @return Builder
+     */
+    public function scopeActiveIn(Builder $query, int $semester_id): Builder
+    {
+        return $query->whereHas('activeSemesters', function ($q) use ($semester_id) {
+            $q->where('id', $semester_id);
+        });
+    }
+
+    /**
+     * Scope a query to only include active users in the current semester.
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->activeIn(Semester::current()->id);
+    }
+
+    /**
+     * Scope a query to only include resident users.
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeResident(Builder $query): Builder
+    {
+        return $query->role(Role::COLLEGIST, Role::RESIDENT);
+    }
+
+    /**
+     * Scope a query to only include extern users.
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeExtern(Builder $query): Builder
+    {
+        return $query->role(Role::COLLEGIST, RoleObject::firstWhere('name', Role::EXTERN));
+    }
+
+    /**
+     * Scope a query to only include current tenant users.
+     * A tenant is currently active if his tenant until date is in the future.
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeCurrentTenant(Builder $query): Builder
+    {
+        return $query->role(Role::TENANT)
+            ->whereHas('personalInformation', function ($q) {
+                $q->where('tenant_until', '>', now());
+            });
+    }
+
+    /**
+     * Scope a query to only include users who have to pay kkt or netreg in the given semester.
+     *
+     * @param Builder $query
+     * @param int $semester_id
+     * @return Builder
+     */
+    public function scopeHasToPayKKTNetregInSemester(Builder $query, int $semester_id): Builder
+    {
+        return $query->role(Role::Collegist())->activeIn($semester_id)
+            ->whereDoesntHave('transactionsPaid', function ($query) use ($semester_id) {
+                $query->where('semester_id', $semester_id);
+                $query->whereIn('payment_type_id', [PaymentType::kkt()->id, PaymentType::netreg()->id]);
+            });
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Public functions
+    |--------------------------------------------------------------------------
+    */
+
+    /**
+     * Verifies a user.
+     */
+    public function setVerified(): void
+    {
+        $this->update(['verified' => true]);
+    }
+
+    /**
+     * Get the user's preferred locale.
+     *
+     * @return string
+     */
+    public function preferredLocale(): string
+    {
+        // default english, see issue #11
+        return $this->isCollegist() ? 'hu' : 'en';
+    }
+
+    /**
+     * Sends an invitation email for new users to set a password.
+     * Used by `glaivepro/invytr` package.
+     */
+    public function sendPasswordSetNotification($token)
+    {
+        Mail::to($this)->queue(new Invitation($this, $token));
+    }
+
+    /**
+     * Determine if the user has personal information set
+     *
+     * @return boolean
+     */
+    public function hasPersonalInformation(): bool
+    {
+        return isset($this->personalInformation);
+    }
+
+    /**
+     * Determine if the user has educational information set
+     *
+     * @return boolean
+     */
+    public function hasEducationalInformation(): bool
+    {
+        return isset($this->educationalInformation);
+    }
+
+
+    /* Role related */
+
+    /**
+     * Determine if the user is a sys admin. Uses cache.
+     * @return boolean
+     */
     public function isAdmin(): bool
     {
         return in_array(
@@ -335,6 +585,112 @@ class User extends Authenticatable implements HasLocalePreference
                 return Role::getRole(Role::SYS_ADMIN)->users()->pluck('id')->toArray();
             })
         );
+    }
+
+    /**
+     * Determine if the user is a collegist. Uses cache.
+     * @return boolean
+     */
+    public function isCollegist(): bool
+    {
+        return in_array(
+            $this->id,
+            Cache::remember('collegists', 60, function () {
+                return Role::collegist()->getUsers()->pluck('id')->toArray();
+            })
+        );
+    }
+
+    /**
+     * Set the collegist to be extern or resident.
+     * Only applies for collegists.
+     */
+    public function setCollegist($objectName): void
+    {
+        $role = Role::collegist();
+        $object = $role->getObject($objectName);
+        $this->roles()->detach($role->id);
+        $this->roles()->attach($role->id, ['object_id' => $object->id]);
+
+        WorkshopBalance::generateBalances(Semester::current()->id);
+    }
+
+    /**
+     * Decides if the user is a resident collegist currently.
+     *
+     * @return bool
+     */
+    public function isResident(): bool
+    {
+        return $this->hasRole([Role::COLLEGIST => Role::RESIDENT]);
+    }
+
+    /**
+     * Set the collegist to be resident.
+     * Only applies for collegists.
+     */
+    public function setResident(): void
+    {
+        $this->setCollegist(Role::RESIDENT);
+    }
+
+    /**
+     * Decides if the user is an extern collegist currently.
+     *
+     * @return bool
+     */
+    public function isExtern(): bool
+    {
+        return $this->hasRole([Role::COLLEGIST => Role::EXTERN]);
+    }
+
+
+    /**
+     * Set the collegist to be extern.
+     * Only applies for collegists.
+     */
+    public function setExtern(): void
+    {
+        $this->setCollegist(Role::EXTERN);
+    }
+
+    /**
+     * Determine if the user has a tenant role.
+     * @return boolean
+     */
+    public function isTenant(): bool
+    {
+        return $this->hasRole(Role::TENANT);
+    }
+
+    /**
+     * @return bool if the user is currently a tenant
+     * A tenant is currently a tenant if they are a tenant and their tenant_until date is in the future.
+     */
+    public function isCurrentTenant(): bool
+    {
+        return $this->isTenant() && $this->personalInformation->tenant_until && Carbon::parse($this->personalInformation->tenant_until)->gt(Carbon::now());
+    }
+
+    /**
+     * @return bool if the user needs to update their tenant status
+     * A user needs to update their tenant status if they are a tenant and their tenant_until date is in the past.
+     */
+    public function needsUpdateTenantUntil(): bool
+    {
+        return $this->isTenant() && !$this->isCurrentTenant();
+    }
+
+    /**
+     * Sets the tenant_until date to the end of the current semester if the user is an active collegist with the tenant role.
+     * Added three months and two weeks to the end of the semester to allow the activation to happen.
+     */
+    public function setTenantDateForTenantCollegists(): bool
+    {
+        if ($this->isTenant() && $this->isActive()) {
+            return $this->personalInformation()->update(['tenant_until'=>Semester::current()->getEndDate()->addMonths(3)->addWeeks(2)]);
+        }
+        return false;
     }
 
     /**
@@ -446,176 +802,64 @@ class User extends Authenticatable implements HasLocalePreference
         }
     }
 
-    /**
-     * @return array|User[]|Collection the tenants
-     */
-    public static function tenants(): Collection|array
-    {
-        return self::role(Role::TENANT)->get();
-    }
+    /* Status related */
 
     /**
-     * @return bool if the user is a tenant
+     * Returns the collegist's status in the semester.
+     *
+     * @param int|Semester $semester
+     * @return string the status. Returns INACTIVE if the user does not have any status in the given semester.
      */
-    public function isTenant(): bool
+    public function getStatusIn(int|Semester $semester): string
     {
-        return $this->hasRole(Role::TENANT);
-    }
+        $semesters = $this->allSemesters;
+        if (! $semesters->contains($semester)) {
+            return SemesterStatus::INACTIVE;
+        }
 
-    /**
-     * @return bool if the user is currently a tenant
-     * A tenant is currently a tenant if they are a tenant and their tenant_until date is in the future.
-     */
-    public function isCurrentTenant(): bool
-    {
-        return $this->isTenant() && $this->personalInformation->tenant_until && Carbon::parse($this->personalInformation->tenant_until)->gt(Carbon::now());
+        return $semesters->find($semester)->pivot->status;
     }
 
     /**
-     * @return bool if the user needs to update their tenant status
-     * A user needs to update their tenant status if they are a tenant and their tenant_until date is in the past.
+     * Sets the collegist's status for a semester.
+     *
+     * @param Semester the semester.
+     * @param string the status
+     * @param string optional comment
+     * @return User the modified user
      */
-    public function needsUpdateTenantUntil(): bool
+    public function setStatusFor(Semester $semester, $status, $comment = null): User
     {
-        return $this->isTenant() && !$this->isCurrentTenant();
+        $this->allSemesters()->syncWithoutDetaching([
+            $semester->id => [
+                'status' => $status,
+                'comment' => $comment,
+            ],
+        ]);
+
+        return $this;
     }
 
     /**
-     * @return array|User[]|Collection the collegists
+     * Returns the collegist's status in the current semester.
+     *
+     * @return string the status. Returns INACTIVE if the user does not have any status.
      */
-    public static function collegists(): Collection|array
+    public function getStatus(): string
     {
-        return Role::collegist()->getUsers();
-    }
-
-    public function scopeCollegist(): Builder
-    {
-        return $this->role(Role::COLLEGIST);
-    }
-
-    public function isCollegist(): bool
-    {
-        return in_array(
-            $this->id,
-            Cache::remember('collegists', 60, function () {
-                return Role::collegist()->getUsers()->pluck('id')->toArray();
-            })
-        );
-    }
-
-
-    /**
-     * @return array|User[]|Collection the student council leaders (including committee leaders)
-     */
-    public static function studentCouncilLeaders(): array|Collection
-    {
-        $objects = RoleObject::whereIn('name', array_merge(Role::STUDENT_COUNCIL_LEADERS, Role::COMMITTEE_LEADERS))->pluck('id')->toArray();
-
-        return User::whereHas('roles', function ($q) use ($objects) {
-            return $q->where('role_users.role_id', Role::StudentsCouncil()->id)
-                     ->whereIn('role_users.object_id', $objects);
-        })->get();
+        return $this->getStatusIn(Semester::current()->id);
     }
 
     /**
-     * @return array|User[]|Collection the system admins
+     * Sets the collegist's status for the current semester.
+     *
+     * @param string the status
+     * @param string optional comment
+     * @return User the modified user
      */
-    public static function admins(): Collection|array
+    public function setStatus($status, $comment = null): User
     {
-        return self::role(Role::SYS_ADMIN)->get();
-    }
-
-
-    /**
-     * @return User|null the president
-     */
-    public static function president(): ?User
-    {
-        return self::role(Role::STUDENT_COUNCIL, Role::PRESIDENT)->first();
-    }
-
-    /**
-     * @return User|null the president
-     */
-    public static function studentCouncilSecretary(): ?User
-    {
-        return self::role(Role::STUDENT_COUNCIL_SECRETARY)->first();
-    }
-
-    /**
-     * @return array|User[]|Collection board of trustees members
-     */
-    public static function boardOfTrusteesMembers(): Collection|array
-    {
-        return self::role(Role::BOARD_OF_TRUSTEES_MEMBER)->get();
-    }
-
-    /**
-     * @return array|User[]|Collection ethics commitioners
-     */
-    public static function ethicsCommissioners(): Collection|array
-    {
-        return self::role(Role::ETHICS_COMMISSIONER)->get();
-    }
-
-
-    /**
-     * @return User|null the director
-     */
-    public static function director(): ?User
-    {
-        return self::role(Role::Director())->first();
-    }
-
-    /**
-     * @return User|null the president
-     */
-    public static function secretary(): ?User
-    {
-        return self::role(Role::SECRETARY)->first();
-    }
-
-    /**
-     * @return User|null the head of the staff
-     */
-    public static function staff(): ?User
-    {
-        return self::role(Role::STAFF)->first();
-    }
-
-
-    public static function printers(): Collection|array
-    {
-        return Role::firstWhere('name', Role::PRINTER)->getUsers();
-    }
-
-    /* Semester related getters */
-
-    /**
-     * Returns the semesters where the user has any status.
-     */
-    public function allSemesters(): BelongsToMany
-    {
-        return $this->belongsToMany(Semester::class, 'semester_status')->withPivot(['status', 'verified', 'comment'])->using(SemesterStatus::class);
-    }
-
-    /**
-     * Returns the semesters where the user has the given status.
-     */
-    public function semestersWhere($status): BelongsToMany
-    {
-        return $this->belongsToMany(Semester::class, 'semester_status')
-            ->wherePivot('status', '=', $status)
-            ->withPivot('verified', 'comment', 'status')
-            ->using(SemesterStatus::class);
-    }
-
-    /**
-     * Returns the semesters where the user has the given status.
-     */
-    public function activeSemesters(): BelongsToMany
-    {
-        return $this->semestersWhere(SemesterStatus::ACTIVE);
+        return $this->setStatusFor(Semester::current(), $status, $comment);
     }
 
     /**
@@ -662,31 +906,6 @@ class User extends Authenticatable implements HasLocalePreference
     }
 
     /**
-     * Scope a query to only include active users in the given semester.
-     *
-     * @param Builder $query
-     * @param int $semester_id
-     * @return Builder
-     */
-    public function scopeActiveIn(Builder $query, int $semester_id): Builder
-    {
-        return $query->whereHas('activeSemesters', function ($q) use ($semester_id) {
-            $q->where('id', $semester_id);
-        });
-    }
-
-    /**
-     * Scope a query to only include active users in the current semester.
-     *
-     * @param Builder $query
-     * @return Builder
-     */
-    public function scopeActive(Builder $query): Builder
-    {
-        return $query->activeIn(Semester::current()->id);
-    }
-
-    /**
      * Decides if the user is active in the current semester.
      *
      * @return bool
@@ -696,222 +915,101 @@ class User extends Authenticatable implements HasLocalePreference
         return $this->isActiveIn(Semester::current());
     }
 
+    /* Workshop related */
+
     /**
-     * Decides if the user is a resident collegist currently.
-     *
-     * @return bool
+     * Return workshop administrators/leaders' workshops.
+     * @return Workshop[]|Collection
      */
-    public function isResident(): bool
+    public function roleWorkshops(): array|Collection
     {
-        return $this->hasRole([Role::COLLEGIST => Role::RESIDENT]);
+        return Workshop::whereIn(
+            'id',
+            $this->roles()->whereIn('name', [Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR])
+                ->pluck('role_users.workshop_id')
+        )->get();
     }
 
     /**
-     * Decides if the user is an extern collegist currently.
-     *
-     * @return bool
+     * Return the workshops connected to the application committees.
+     * @return Workshop[]|Collection
      */
-    public function isExtern(): bool
+    public function applicationWorkshops(): array|Collection
     {
-        return $this->hasRole([Role::COLLEGIST => Role::EXTERN]);
-    }
-
-    /**
-     * Set the collegist to be resident.
-     * Only applies for collegists.
-     */
-    public function setResident(): void
-    {
-        $this->setCollegist(Role::RESIDENT);
-    }
-
-    /**
-     * Set the collegist to be extern.
-     * Only applies for collegists.
-     */
-    public function setExtern(): void
-    {
-        $this->setCollegist(Role::EXTERN);
-    }
-
-    /**
-     * Set the collegist to be extern or resident.
-     * Only applies for collegists.
-     */
-
-    public function setCollegist($objectName): void
-    {
-        $role = Role::collegist();
-        $object = $role->getObject($objectName);
-        $this->roles()->detach($role->id);
-        $this->roles()->attach($role->id, ['object_id' => $object->id]);
-
-        WorkshopBalance::generateBalances(Semester::current()->id);
-    }
-
-    /**
-     * Returns the collegist's status in the semester.
-     *
-     * @param $semester id
-     * @return string the status. Returns INACTIVE if the user does not have any status in the given semester.
-     */
-    public function getStatusIn($semester): string
-    {
-        $semesters = $this->allSemesters;
-        if (! $semesters->contains($semester)) {
-            return SemesterStatus::INACTIVE;
+        if ($this->can('viewAllApplications', User::class)) {
+            return Workshop::all();
+        } else {
+            return Workshop::whereIn(
+                'id',
+                $this->roles()
+                    ->whereIn('name', [
+                        Role::APPLICATION_COMMITTEE_MEMBER,
+                        Role::WORKSHOP_LEADER,
+                        Role::WORKSHOP_ADMINISTRATOR
+                    ])
+                    ->pluck('role_users.workshop_id')
+            )->get();
         }
-
-        return $semesters->find($semester)->pivot->status;
     }
 
+    /* Printing related */
+
     /**
-     * Scope a query to only include resident users.
+     * Returns how many documents the user printed overall.
      *
-     * @param Builder $query
-     * @return Builder
+     * @return int
      */
-    public function scopeResident(Builder $query): Builder
+    public function numberOfPrintedDocuments(): int
     {
-        return $query->role(Role::COLLEGIST, Role::RESIDENT);
+        return $this->printHistory()
+            ->where('balance_change', '<', 0)
+            ->orWhere('free_page_change', '<', 0)
+            ->count();
     }
 
     /**
-     * Scope a query to only include extern users.
+     * Returns how much the user spent for their printings.
      *
-     * @param Builder $query
-     * @return Builder
+     * @return int
      */
-    public function scopeExtern(Builder $query): Builder
+    public function spentBalance(): int
     {
-        return $query->role(Role::COLLEGIST, RoleObject::firstWhere('name', Role::EXTERN));
-    }
-
-
-    /**
-     * Scope a query to only include current tenant users.
-     * A tenant is currently active if his tenantUntil date is in the future.
-     *
-     * @param Builder $query
-     * @return Builder
-     */
-    public function scopeCurrentTenant(Builder $query): Builder
-    {
-        return $query->role(Role::TENANT)
-        ->whereHas('personalInformation', function ($q) {
-            $q->where('tenant_until', '>', now());
-        });
+        return abs($this->printHistory()
+            ->where('balance_change', '<', 0)
+            ->sum('balance_change'));
     }
 
     /**
-     * Returns the collegist's status in the current semester.
-     *
-     * @return string the status. Returns INACTIVE if the user does not have any status.
-     */
-    public function getStatus(): string
+    * Returns how many free pages the user used.
+    *
+    * @return int
+    */
+    public function spentFreePages(): int
     {
-        return $this->getStatusIn(Semester::current()->id);
+        return abs($this->printHistory()
+            ->where('free_page_change', '<', 0)
+            ->sum('free_page_change'));
     }
 
     /**
-     * Sets the collegist's status for a semester.
-     *
-     * @param Semester the semester.
-     * @param string the status
-     * @param string optional comment
-     * @return User the modified user
+     * Returns how many free pages are left that can still be used
+     * @return int
      */
-    public function setStatusFor(Semester $semester, $status, $comment = null): User
+    public function sumOfActiveFreePages(): int
     {
-        $this->allSemesters()->syncWithoutDetaching([
-            $semester->id => [
-                'status' => $status,
-                'comment' => $comment,
-            ],
-        ]);
-        $this->setTenantDateForTenantCollegists();
-
-        return $this;
+        return $this->freePages()->where('deadline', '>', Carbon::now())->sum('amount');
     }
 
-    /**
-     * Sets the collegist's status for the current semester.
-     *
-     * @param string the status
-     * @param string optional comment
-     * @return User the modified user
-     */
-    public function setStatus($status, $comment = null): User
-    {
-        return $this->setStatusFor(Semester::current(), $status, $comment);
-    }
-
-    /**
-     * Verify the collegist's status for the semester.
-     *
-     * @param Semester the semester
-     * @return User the modified user
-     */
-    public function verify($semester): User
-    {
-        $this->allSemesters()->syncWithoutDetaching([
-            $semester->id => [
-                'verify' => true,
-            ],
-        ]);
-
-        return $this;
-    }
-
-    /**
-     * Sets the tenant_until date to the end of the current semester if the user is an active collegist with the tenant role.
-     * Added three months and two weeks to the end of the semester to allow the activation to happen.
-     */
-    public function setTenantDateForTenantCollegists(): bool
-    {
-        if ($this->isTenant() && $this->isActive()) {
-            return $this->personalInformation()->update(['tenant_until'=>Semester::current()->getEndDate()->addMonths(3)->addWeeks(2)]);
-        }
-        return false;
-    }
-
-    public function sendPasswordSetNotification($token)
-    {
-        Mail::to($this)->queue(new Invitation($this, $token));
-    }
-
-    public function transactions_payed(): HasMany
-    {
-        return $this->hasMany(Transaction::class, 'payer_id');
-    }
-
-    public function transactions_received(): HasMany
-    {
-        return $this->hasMany(Transaction::class, 'receiver_id');
-    }
-
-    /**
-     * Scope a query to only include users who has to pay kkt or netreg in the given semester.
-     *
-     * @param Builder $query
-     * @param int $semester_id
-     * @return Builder
-     */
-    public function scopeHasToPayKKTNetregInSemester(Builder $query, int $semester_id): Builder
-    {
-        return $query->role(Role::Collegist())->activeIn($semester_id)
-            ->whereDoesntHave('transactions_payed', function ($query) use ($semester_id) {
-                $query->where('semester_id', $semester_id);
-                $query->whereIn('payment_type_id', [PaymentType::kkt()->id, PaymentType::netreg()->id]);
-            });
-    }
+    /* Transaction related */
 
     /**
      * Returns the payed kkt amount in the semester. 0 if has not payed kkt.
+     * @param Semester $semester
+     * @return int
      */
     public function payedKKTInSemester(Semester $semester): int
     {
-        $transaction = $this->transactions_payed()
+        $transaction = $this->transactionsPaid()
             ->where('payment_type_id', PaymentType::kkt()->id)
             ->where('semester_id', $semester->id)
             ->get();
@@ -921,62 +1019,150 @@ class User extends Authenticatable implements HasLocalePreference
 
     /**
      * Returns the payed kkt amount in the current semester. 0 if has not payed kkt.
+     * @return int
      */
     public function payedKKT(): int
     {
         return $this->payedKKTInSemester(Semester::current());
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Static functions
+    |--------------------------------------------------------------------------
+    */
+
+    /**
+     * @return array|User[]|Collection the system admins
+     */
+    public static function admins(): Collection|array
+    {
+        return self::role(Role::SYS_ADMIN)->get();
+    }
+
+    /**
+     * @return array|User[]|Collection the collegists
+     */
+    public static function collegists(): Collection|array
+    {
+        return self::role(Role::COLLEGIST)->get();
+    }
+
+    /**
+     * @return array|User[]|Collection the student council leaders (including committee leaders)
+     */
+    public static function studentCouncilLeaders(): array|Collection
+    {
+        $objects = RoleObject::whereIn(
+            'name',
+            array_merge(Role::STUDENT_COUNCIL_LEADERS, Role::COMMITTEE_LEADERS)
+        )
+            ->pluck('id')->toArray();
+
+        return User::whereHas('roles', function ($q) use ($objects) {
+            return $q->where('role_users.role_id', Role::StudentsCouncil()->id)
+                ->whereIn('role_users.object_id', $objects);
+        })->get();
+    }
+
+    /**
+     * @return User|null the president
+     */
+    public static function president(): ?User
+    {
+        return self::role(Role::STUDENT_COUNCIL, Role::PRESIDENT)->first();
+    }
+
+    /**
+     * @return User|null the president
+     */
+    public static function studentCouncilSecretary(): ?User
+    {
+        return self::role(Role::STUDENT_COUNCIL_SECRETARY)->first();
+    }
+
+    /**
+     * @return array|User[]|Collection board of trustees members
+     */
+    public static function boardOfTrusteesMembers(): Collection|array
+    {
+        return self::role(Role::BOARD_OF_TRUSTEES_MEMBER)->get();
+    }
+
+    /**
+     * @return array|User[]|Collection ethics commitioners
+     */
+    public static function ethicsCommissioners(): Collection|array
+    {
+        return self::role(Role::ETHICS_COMMISSIONER)->get();
+    }
+
+    /**
+     * @return User|null the director
+     */
+    public static function director(): ?User
+    {
+        return self::role(Role::Director())->first();
+    }
+
+    /**
+     * @return User|null the president
+     */
+    public static function secretary(): ?User
+    {
+        return self::role(Role::SECRETARY)->first();
+    }
+
+    /**
+     * @return User|null the head of the staff
+     */
+    public static function staff(): ?User
+    {
+        return self::role(Role::STAFF)->first();
+    }
+
+    /**
+     * @return array|Collection|User[] the users with printer role
+     */
+    public static function printers(): Collection|array
+    {
+        return self::role(Role::PRINTER)->get();
+    }
+
+    /**
+     * @return array|Collection|User[] the users with printer role
+     */
+    public static function tenants(): Collection|array
+    {
+        return self::role(Role::TENANT)->get();
+    }
+
+    /**
+     * Returns how many not verified users there are currently.
+     * Used by the NotificationCounter trait.
+     * @return int
+     */
     public static function notifications(): int
     {
         return self::withoutGlobalScope('verified')->where('verified', false)->count();
     }
 
-    /**
-     * Mr and Miss functions.
-     */
-    public function mrAndMissVotesGiven(): HasMany
-    {
-        return $this->hasMany('App\Models\MrAndMissVote', 'voter');
-    }
-
-    public function mrAndMissVotesGot(): HasMany
-    {
-        return $this->hasMany('App\Models\MrAndMissVote', 'votee');
-    }
-
-    public function votedFor($category): array
-    {
-        $votes = $this->mrAndMissVotesGiven()
-        ->where('category', $category->id)
-        ->where('semester', Semester::current()->id);
-        if ($votes->count() > 0) {
-            return ['voted' => true, 'vote' => $votes->first()];
-        }
-
-        return ['voted' => false];
-    }
-    /**
-     * @return BelongsTo the user's assigned room
-     */
-    public function room(): BelongsTo
-    {
-        return $this->belongsTo(Room::class, 'room', 'name');
-    }
+    /*
+    |--------------------------------------------------------------------------
+    | Global scopes
+    |--------------------------------------------------------------------------
+    */
 
     /**
-     * @return HasMany the CommunityServices the user has requested
+     * Overwrite the model's booted function to exclude not verified users from queries.
      */
-    public function communityServiceRequests(): HasMany
+    protected static function booted()
     {
-        return $this->hasMany(CommunityService::class, 'requester_id');
-    }
-
-    /**
-     * @return HasMany the CommunityServices the user has approved/yet to approve
-     */
-    public function communityServiceApprovals(): HasMany
-    {
-        return $this->hasMany(CommunityService::class, 'approver_id');
+        // You can use `withoutGlobalScope('verified')` to include the unverified users in queries.
+        static::addGlobalScope('verified', function (Builder $builder) {
+            if (Auth::hasUser() && Auth::user()->verified) {
+                $builder->where('verified', true);
+            }
+        });
     }
 }
