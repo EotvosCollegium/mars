@@ -37,7 +37,7 @@ trait CheckoutHandler
         $user = Auth::user();
 
         if ($user->can('administrate', $checkout)) {
-            $depts = User::withWhereHas('transactions_received', function ($query) use ($checkout) {
+            $depts = User::withWhereHas('transactionsReceived', function ($query) use ($checkout) {
                 $query
                     ->where('checkout_id', $checkout->id)
                     ->whereNull('moved_to_checkout');
@@ -45,7 +45,7 @@ trait CheckoutHandler
             $current_balance_in_checkout = $checkout->balanceInCheckout();
         }
 
-        $my_received_transactions = $user->transactions_received()
+        $my_received_transactions = $user->transactionsReceived()
             ->where('checkout_id', $checkout->id)
             ->whereNull('moved_to_checkout')
             ->get();
