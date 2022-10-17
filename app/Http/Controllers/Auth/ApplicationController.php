@@ -10,6 +10,7 @@ use App\Models\Role;
 use App\Models\User;
 use App\Models\Workshop;
 use App\Models\RoleUser;
+use App\Models\File;
 
 use Carbon\Carbon;
 use http\Env\Response;
@@ -20,6 +21,7 @@ use Illuminate\View\View;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+
 
 class ApplicationController extends Controller
 {
@@ -173,7 +175,7 @@ class ApplicationController extends Controller
 
     public function finalizeApplicationProcess()
     {
-        if (!Auth::user()->hasRole(Role::SYS_ADMIN)) {
+        if (!Auth::user()->can('finalizeApplicationProcess', User::class)) {
             abort(403);
         }
 
@@ -183,9 +185,25 @@ class ApplicationController extends Controller
                 $query->where('status', ApplicationForm::STATUS_ACCEPTED);
             })
             ->update(['verified' => true]);
+        $usersToDelete=User::query()->withoutGlobalScope('verified')
+            ->where('verified', 0)->whereHas('application');
+        foreach($usersToDelete->get() as $user) {
+            if($user->profilePicture!=null){
+                Storage::delete($user->profilePicture->path);
+                $user->profilePicture()->delete();
+            }
+        }
+        $files=File::where('application_form_id', '!=', null);
+        foreach($files->get() as $file) {
+            Storage::delete($file->path);
+        }
+        $files->delete();
+        ApplicationForm::query()->delete();
+        $usersToDelete->forceDelete();
         RoleUser::where('role_id', Role::getRole(Role::APPLICATION_COMMITTEE_MEMBER)->id)->delete();
         RoleUser::where('role_id', Role::getRole(Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER)->id)->delete();
-        ApplicationForm::query()->delete();
+        
+
         Cache::forget('collegists');
         return back()->with('message', 'Sikeresen jóváhagyta az elfogadott jelentkezőket');
     }

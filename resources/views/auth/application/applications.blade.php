@@ -25,17 +25,20 @@
                 <form id="empty-filter" method="GET" route="{{route('application')}}" style="{{($status=='' && $workshop=='')?'display: none':''}}">
                     <x-input.button id="delete-filter" text="Szűrő törlése"/>
                 </form>
-                @if(auth()->user()->hasRole(\App\Models\Role::SYS_ADMIN))
-                <form id="finalize-application-process" method="POST" action="{{route('applications.finalize')}}" style="{{$status!=\App\Models\ApplicationForm::STATUS_ACCEPTED?'display: none':''}}">
-                    @csrf
-                    <p>
-                        Hogyha a felvételi eljárás befejeződött, akkor a felvett jelentkezőket itt tudod jóváhagyni.
-                        Ezzel együtt minden más felvételiző elutasításra, anyagai törlésre, valamint az összes
-                        felvételihez kapcsolódó (felvételiztető) jog elvételre kerül.
-                    </p>
-                    <x-input.button id="finalize-button" text="Felvételi lezárása"/>
-                </form>
-                @endif
+                @can('finalizeApplicationProcess', \App\Models\User::class)
+                    @if($status==\App\Models\ApplicationForm::STATUS_ACCEPTED)
+                    <form id="finalize-application-process" method="POST" action="{{route('applications.finalize')}}">
+                        @csrf
+                        <p>
+                            Hogyha a felvételi eljárás befejeződött, akkor a felvett jelentkezőket itt tudod jóváhagyni.
+                            Ezzel együtt minden más felvételiző elutasításra, anyagai törlésre, valamint az összes
+                            felvételihez kapcsolódó (felvételiztető) jog elvételre kerül.
+                        </p>
+                        <x-input.button text="Felvételi lezárása"/>
+                    </form>
+                    @endif
+                @endcan
+                
             </div>
 
             @push('scripts')

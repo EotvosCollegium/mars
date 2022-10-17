@@ -26,7 +26,7 @@
                                     @foreach (\App\Models\ApplicationForm::STATUSES as $st)
                                     <p>
                                         <label>
-                                            <input wire:click="" type="radio" name="status_{{$user->id}}" value="{{$st}}" @if($user->application->status == $st) checked @endif>
+                                            <input type="radio" name="status_{{$user->id}}" value="{{$st}}" @if($user->application->status == $st) checked @endif/>
                                             <span style="padding-left: 25px; margin: 5px">@include('auth.application.status', ['status' => $st])</span>
                                         </label>
                                     </p>
@@ -44,8 +44,6 @@
                                         });
                                     </script>
                                 @endpush
-                                    {{-- <input type="hidden" name="banish" value="true"/> --}}
-                                    {{-- <x-input.button class="red tooltipped btn-small" data-tooltip="Elutasít" floating icon="close"/> --}}
                             </form>
                             @endif
                         @endif
@@ -61,14 +59,11 @@
                         @endif
                     </p>
                     <p style="margin-bottom: 5px">
-                        @forelse ($user->workshops as $workshop)
-                            <span class="new badge {{ $workshop->color() }} scale-transition tag"
-                                  style="float:none;padding:4px;margin:0 10px 0px 2px;" data-badge-caption="">
-                            <nobr>{{$workshop->name}} </nobr>
-                        </span>
-                        @empty
+                        @if ($user->workshops->count() > 0)
+                            @include('user.workshop_tags', ['user' => $user, 'newline' => true])
+                        @else
                             <span style="font-style:italic;color:red">hiányzó műhely</span>
-                        @endforelse
+                        @endif
                     </p>
                     <p>
                         @if ($user->isResident())

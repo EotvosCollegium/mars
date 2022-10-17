@@ -123,6 +123,19 @@ class UserPolicy
         ]);
     }
 
+    /**
+     * Returns true if the user can finalize the application process.
+     * @param User $user
+     * @return bool
+     */
+    public function finalizeApplicationProcess(User $user): bool
+    {
+        return $user->hasRole([[
+            Role::SYS_ADMIN,
+            Role::STUDENT_COUNCIL => Role::PRESIDENT,
+        ]]);
+    }
+
     /** Permission related policies */
 
     /**
