@@ -37,15 +37,15 @@ class Handler extends ExceptionHandler
      */
     public function report(Throwable $exception)
     {
-        try{
+        try {
             $internet_admins = Role::firstWhere('name', Role::SYS_ADMIN)->getUsers();
             foreach ($internet_admins as $admin) {
                 Mail::to($admin)->queue(new \App\Mail\ExceptionOccured($exception, $admin, request()->url()));
             }
-        }catch (Throwable $exception) {
+        } catch (Throwable $exception) {
             Log::error($exception);
         }
-        
+
         parent::report($exception);
     }
 

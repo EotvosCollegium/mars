@@ -77,7 +77,6 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
 
 
     Route::get('/mailable', function () {
-     
         return new App\Mail\ExceptionOccured(new Exception('ajjajaj'), User::find(1), '/mailable');
     });
 
