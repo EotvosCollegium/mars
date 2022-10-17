@@ -1,4 +1,4 @@
-@foreach ($user->roles->sortBy('name') as $role)
+@foreach ($user->roles->sortBy(function ($r, $key){return __('role.' . $r['name']);}) as $role)
     <div class="row">
         <div class="col s4">@lang('role.'.$role->name)</div>
         <div class="col s4">
@@ -18,7 +18,7 @@
 @endforeach
 @can('updateAnyPermission', $user)
     <div class="divider" style="margin-bottom: 15px"></div>
-    @foreach (App\Models\Role::all()->sortBy('name') as $role)
+    @foreach (App\Models\Role::all()->sortBy(function ($r, $key){return __('role.' . $r['name']);}) as $role)
         @can('updateAnyPermission', [$user, $role])
             @if(!$user->roles->contains($role) || $role->has_objects || $role->has_workshops)
                 <form action="{{ route('users.roles.add', ['user' => $user->id, 'role'=>$role->id]) }}" method="post">
