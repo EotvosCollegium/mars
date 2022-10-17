@@ -4,6 +4,9 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use Illuminate\Support\Facades\Log;
+use App\Models\Role;
+use Illuminate\Support\Facades\Mail;
 
 class Handler extends ExceptionHandler
 {
@@ -34,6 +37,15 @@ class Handler extends ExceptionHandler
      */
     public function report(Throwable $exception)
     {
+        try{
+            $internet_admins = Role::firstWhere('name', Role::SYS_ADMIN)->getUsers();
+            foreach ($internet_admins as $admin) {
+                Mail::to($admin)->queue(new \App\Mail\ExceptionOccured($exception, $admin, request()->url()));
+            }
+        }catch (Throwable $exception) {
+            Log::error($exception);
+        }
+        
         parent::report($exception);
     }
 

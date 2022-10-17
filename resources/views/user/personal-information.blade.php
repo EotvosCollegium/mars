@@ -19,7 +19,7 @@
             locale="user"
             :value="$user->email"
             required />
-        @if ($user->isCollegist())
+        @if ($user->isCollegist() && $asasasdasd)
         <x-input.text
             l=6
             id='place_of_birth'
