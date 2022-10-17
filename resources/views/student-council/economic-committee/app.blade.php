@@ -72,7 +72,13 @@
                 <div class="row">
                     <div class="col s12">
                         <table><tbody>
-                            <tr><th colspan="3">@lang('checkout.incomes')</th></tr>
+                            <tr>
+                                <th>@lang('checkout.incomes')</th>
+                                @can('administrate', $checkout)
+                                <th>@lang('checkout.payer')</th>
+                                <th>@lang('checkout.receiver')</th>
+                                @endcan
+                            </tr>
                             @include('utils.checkout.sum', ['paymentType' => \App\Models\PaymentType::kkt()])
                             @include('utils.checkout.list', ['paymentType' => \App\Models\PaymentType::income()])
 

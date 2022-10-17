@@ -4,7 +4,10 @@
         <span class="card-title">@lang('checkout.add_expense')</span>
         <blockquote>
             @can('administrate', $checkout)
-            Ha költöttél valamire / kifizetsz valamit valakinek, itt rögzítsd. 
+            Ha költöttél valamire / kifizetsz valamit valakinek, itt rögzítsd.
+            A lenti átvevő mezőnél válaszd ki azt a személyt, akinek odaadod a kasszából/zsebedből kivett pénzt.
+            Hogyha te intézted a vásárlást, akkor magadat válaszd ki.
+            A jobb oldali mezőt akkor pipáld ki, hogyha nem zsebből fizetted ki az összeget, hanem a kasszából kivetted a pénzt.
             @else
             Ha fizettél valamit, itt rögzítsd. A kasszafelelős majd megtéríti az összeget.
             @endcan
