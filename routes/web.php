@@ -75,7 +75,6 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::get('/users/tenant_update/show', [UserController::class, 'showTenantUpdate'])->name('users.tenant-update.show');
     Route::get('/users/tenant_update/applicant', [UserController::class, 'tenantToApplicant'])->name('users.tenant-update.to-applicant');
 
-
     /** Localization */
     Route::get('/localizations', [LocaleController::class, 'index'])->name('localizations');
     Route::post('/localizations/add', [LocaleController::class, 'add'])->name('localizations.add');
