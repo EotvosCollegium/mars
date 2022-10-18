@@ -5,6 +5,8 @@
     @can('administrate', $checkout)
     <td>{{ $transaction->payer?->name }}</td>
     <td>{{ $transaction->receiver?->name }}</td>
+    <td>{{ $transaction->paid_at ?? "-" }}</td>
+    <td>{{ $transaction->moved_to_checkout ?? "-" }}</td>
     @else
     <td></td><td></td>
     @endif

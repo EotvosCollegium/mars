@@ -119,7 +119,8 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
 
     /** Admin Checkout **/
     Route::get('/network/admin/checkout', [AdminCheckoutController::class, 'showCheckout'])->name('admin.checkout');
-    Route::post('network/admin/checkout/to_checkout/{user}', [AdminCheckoutController::class, 'toCheckout'])->name('admin.checkout.to_checkout');
+    Route::post('/network/admin/checkout/mark_as_paid/{user}', [AdminCheckoutController::class, 'markAsPaid'])->name('admin.checkout.pay');
+    Route::post('/network/admin/checkout/to_checkout', [AdminCheckoutController::class, 'toCheckout'])->name('admin.checkout.to_checkout');
     Route::post('/network/admin/checkout/transaction/add', [AdminCheckoutController::class, 'addExpense'])->name('admin.checkout.transaction.add');
     Route::get('/network/admin/checkout/transaction/delete/{transaction}', [EconomicController::class, 'deleteTransaction'])->name('admin.checkout.transaction.delete');
 
@@ -176,7 +177,9 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::get('/economic_committee', [EconomicController::class, 'index'])->name('economic_committee');
     Route::post('/economic_committee/transaction/add', [EconomicController::class, 'addExpense'])->name('economic_committee.transaction.add');
     Route::get('/economic_committee/transaction/delete/{transaction}', [EconomicController::class, 'deleteTransaction'])->name('economic_committee.transaction.delete');
-    Route::post('/economic_committee/to_checkout/{user}', [EconomicController::class, 'toCheckout'])->name('economic_committee.to_checkout');
+    Route::post('/economic_committee/mark_as_paid/{user}', [EconomicController::class, 'markAsPaid'])->name('economic_committee.pay');
+    Route::post('/economic_committee/to_checkout', [EconomicController::class, 'toCheckout'])->name('economic_committee.to_checkout');
+
     Route::get('/economic_committee/kktnetreg', [EconomicController::class, 'indexKKTNetreg'])->name('kktnetreg');
     Route::post('/economic_committee/kktnetreg/pay', [EconomicController::class, 'payKKTNetreg'])->name('kktnetreg.pay');
     Route::get('/economic_committee/calculate_workshop_balance', [EconomicController::class, 'calculateWorkshopBalance'])->name('economic_committee.workshop_balance');

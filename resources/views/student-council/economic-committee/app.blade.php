@@ -16,11 +16,22 @@
                 <blockquote>
                     @lang('checkout.current_balance'):
                     <b class="coli-text text-orange"> {{ number_format($current_balance, 0, '.', ' ') }} Ft</b>.<br>
-                    @can('administrate', $checkout)
+                </blockquote>
+                @can('administrate', $checkout)
+                <blockquote>    
                     @lang('checkout.current_balance_in_checkout'):
                     <b class="coli-text text-orange"> {{ number_format($current_balance_in_checkout, 0, '.', ' ') }} Ft</b>.<br>
-                    @endcan
+                    @if($transactions_not_in_checkout != 0)
+                    @lang('checkout.to_checkout'): <b class="coli-text text-orange">{{ number_format($transactions_not_in_checkout, 0, '.', ' ')}} Ft</b>
+                    @endif
                 </blockquote>
+                @if($transactions_not_in_checkout != 0)
+                    <form method="POST" action="{{ route($route_base . '.to_checkout') }}">
+                        @csrf
+                        <x-input.button floating class="right green" icon="payments"/>
+                    </form>
+                @endif
+                @endcan
             </div>
         </div>
         <div class="row">
@@ -35,7 +46,7 @@
                             @csrf
                             <div class="row">
                                 <div class="col s12">
-                                    <blockquote>@lang('checkout.pay_kkt_descr')</blockquote>
+                                    <blockquote>@lang('checkout.pay_kkt_descr')<br>A Netreg tranzakcióid a <a href="{{route('admin.checkout')}}"> rendszergazdai kasszában</a> láthatod.</blockquote>
                                     <x-input.select l=4 :elements="$users_not_payed" id="user_id" text="general.user" :formatter="function($user) { return $user->uniqueName; }" />
                                     <x-input.text  m=6 l=4 id="kkt" text="KKT" type="number" required min="0" :value="config('custom.kkt')" />
                                     <x-input.text  m=6 l=4 id="netreg" text="NetReg" type="number" required min="0" :value="config('custom.netreg')" />
@@ -77,7 +88,11 @@
                                 @can('administrate', $checkout)
                                 <th>@lang('checkout.payer')</th>
                                 <th>@lang('checkout.receiver')</th>
+                                <th>Fizetve</th>
+                                <th>Kasszába került</th>
                                 @endcan
+                                <th>Dátum</th>
+                                <th>Összeg</th>
                             </tr>
                             @include('utils.checkout.sum', ['paymentType' => \App\Models\PaymentType::kkt()])
                             @include('utils.checkout.list', ['paymentType' => \App\Models\PaymentType::income()])
@@ -86,7 +101,7 @@
                             @include('utils.checkout.list', ['paymentType' => \App\Models\PaymentType::expense()])
                             @include('utils.checkout.sum',  ['paymentType' => \App\Models\PaymentType::workshopExpense()])
                             <tr>
-                                <th colspan="4">@lang('checkout.sum')</th>
+                                <th colspan="6">@lang('checkout.sum')</th>
                                 <th class="right"><nobr>{{ number_format($semester->transactions->sum('amount'), 0, '.', ' ') }} Ft</nobr></th>
                             </tr>
                         </tbody></table>

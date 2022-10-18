@@ -7,6 +7,8 @@
     @can('administrate', $checkout)
     <td></td>
     <td></td>
+    <td></td>
+    <td></td>
     @endcan
     <td></td>
     <td class="right"><nobr>{{ number_format($sum, 0, '.', ' ') }} Ft</nobr></td>

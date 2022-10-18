@@ -6,6 +6,7 @@ use App\Models\Checkout;
 use App\Models\PaymentType;
 use App\Models\Semester;
 use App\Models\Transaction;
+use App\Mail\Transactions;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -40,14 +41,15 @@ trait CheckoutHandler
             $depts = User::withWhereHas('transactionsReceived', function ($query) use ($checkout) {
                 $query
                     ->where('checkout_id', $checkout->id)
-                    ->whereNull('moved_to_checkout');
+                    ->whereNull('paid_at');
             })->get();
+            $transactions_not_in_checkout = $checkout->transactions()->whereNull('moved_to_checkout')->sum('amount');
             $current_balance_in_checkout = $checkout->balanceInCheckout();
         }
 
         $my_received_transactions = $user->transactionsReceived()
             ->where('checkout_id', $checkout->id)
-            ->whereNull('moved_to_checkout')
+            ->whereNull('paid_at')
             ->get();
 
         return [
@@ -55,6 +57,7 @@ trait CheckoutHandler
             'current_balance_in_checkout' => $current_balance_in_checkout ?? null,
             'depts' => $depts ?? [],
             'my_received_transactions' => $my_received_transactions,
+            'transactions_not_in_checkout' => $transactions_not_in_checkout ?? 0,
             'semesters' => $checkout->transactionsBySemesters(),
             'checkout' => $checkout,
             'route_base' => $this->routeBase()
@@ -103,24 +106,46 @@ trait CheckoutHandler
         })->unique();
     }
 
+
     /**
-     * Move all the transactions received by the given user to the checkout.
-     * Moving the Netreg amount from the students council to the admins is not tracked.
-     *
-     * @param User
-     * @param Checkout
-     * @param User $user $transaction a transaction
-     * @param Checkout $checkout the checkout
-     * @return void
+     * Mark all the transactions received by the current user as paid.
      */
-    public function toCheckout(Request $request, User $user)
+    public function markAsPaid(Request $request, User $user)
     {
         $this->authorize('administrate', $this->checkout());
+        
+        $transactions = Transaction::where('receiver_id', $user->id)
+            ->where('checkout_id', $this->checkout()->id)
+            ->whereNull('paid_at')->get();
+        
+        Mail::to(Auth::user())->queue(new Transactions(Auth::user()->name, $transactions, __('checkout.transaction_updated'), "A fenti tranzakciókat kifizetted."));
+        Mail::to($user)->queue(new Transactions($user->name, $transactions, __('checkout.transaction_updated'), "A fenti tranzakciók ki lettek fizetve számodra."));
 
         Transaction::where('receiver_id', $user->id)
             ->where('checkout_id', $this->checkout()->id)
-            ->where('moved_to_checkout', null)
-            ->update(['moved_to_checkout' => Carbon::now()]);
+            ->whereNull('paid_at')
+            ->update(['paid_at' => Carbon::now()]);
+
+
+        return redirect()->back()->with('message', __('general.successfully_added'));
+    }
+
+    /**
+     * Move all the transactions to the checkout.
+     */
+    public function toCheckout(Request $request)
+    {
+        $this->authorize('administrate', $this->checkout());
+
+        $user = Auth::user();
+        
+        $transactions = Transaction::where('checkout_id', $this->checkout()->id)
+            ->where('moved_to_checkout', null)->get();
+        
+        Mail::to($user)->queue(new Transactions($user->name, $transactions, __('checkout.transaction_updated'), "A tranzakciók új státusza: szinkronizálva a kasszával. (Ettől függetlenül még tartozhatsz embereknek, nézd meg Uránban!)"));
+
+        Transaction::where('checkout_id', $this->checkout()->id)
+            ->where('moved_to_checkout', null)->update(['moved_to_checkout' => Carbon::now()]);
 
         return redirect()->back()->with('message', __('general.successfully_added'));
     }
@@ -150,20 +175,21 @@ trait CheckoutHandler
         $user = $request->user();
         $isCheckoutHandler = $user->can('administrate', $this->checkout());
 
-        $payer = $request->has('payer') && $isCheckoutHandler ? User::find($request->input('payer')) : $user;
-        $moved_to_checkout = $request->has('in_checkout') && $isCheckoutHandler;
+        $user = $request->has('payer') && $isCheckoutHandler ? User::find($request->input('payer')) : $request->user();
+        $paid = $request->has('paid') && $isCheckoutHandler;
 
         $transaction = Transaction::create([
             'checkout_id'       => $this->checkout()->id,
-            'receiver_id'       => Auth::user()->id,
-            'payer_id'          => $payer->id,
+            'receiver_id'       => $user->id,
+            'payer_id'          => $user->id,
             'semester_id'       => Semester::current()->id,
             'amount'            => (-1) * $request->amount,
             'payment_type_id'   => PaymentType::expense()->id,
             'comment'           => $request->comment,
-            'moved_to_checkout' => $moved_to_checkout ? Carbon::now() : null,
+            'paid_at'           => $paid ? Carbon::now() : null,
         ]);
-        Mail::to($payer)->queue(new \App\Mail\PayedTransaction($payer->name, [$transaction], $moved_to_checkout ? "" : "A tranzakció még nincs kifizetve."));
+        
+        Mail::to($user)->queue(new Transactions($user->name, [$transaction], __('checkout.transaction_created')));
 
         return back()->with('message', __('general.successfully_added'));
     }
@@ -177,6 +203,12 @@ trait CheckoutHandler
     public function deleteTransaction(Transaction $transaction)
     {
         $this->authorize('delete', $transaction);
+
+        if($transaction->payer)
+            Mail::to($transaction->payer)->queue(new Transactions($transaction->payer->name, [$transaction], __('checkout.transaction_deleted'), __('checkout.transactions_has_been_deleted')));
+        if($transaction->receiver)
+            Mail::to($transaction->receiver)->queue(new Transactions($transaction->receiver->name, [$transaction], __('checkout.transaction_deleted'), __('checkout.transactions_has_been_deleted')));
+
         $transaction->delete();
 
         return redirect()->back()->with('message', __('general.successfully_deleted'));

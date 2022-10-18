@@ -5,21 +5,21 @@
         <blockquote>
             @can('administrate', $checkout)
             Ha költöttél valamire / kifizetsz valamit valakinek, itt rögzítsd.
-            A lenti átvevő mezőnél válaszd ki azt a személyt, akinek odaadod a kasszából/zsebedből kivett pénzt.
+            A lenti átvevő mezőnél válaszd ki azt a személyt, akinek tartozik a kassza.
             Hogyha te intézted a vásárlást, akkor magadat válaszd ki.
-            A jobb oldali mezőt akkor pipáld ki, hogyha nem zsebből fizetted ki az összeget, hanem a kasszából kivetted a pénzt.
+            A jobb oldali mezőt akkor pipáld ki, ha ki lett fizetve a vásárlás általad.
             @else
-            Ha fizettél valamit, itt rögzítsd. A kasszafelelős majd megtéríti az összeget.
+            Ha vettél valamit, itt rögzítsd. A kasszafelelős majd megtéríti az összeget.
             @endcan
         </blockquote>
         <form method="POST" action="{{ route($route_base . '.transaction.add') }}">
             @csrf
             <div class="row">
                 <x-input.text m=6 l=6 id="comment" required text="checkout.description" />
-                <x-input.text type="number" m=6 l=6 id="amount" min="0" required locale="checkout" />
+                <x-input.text type="number" m=6 l=6 id="amount" min=0 required locale="checkout" />
                 @can('administrate', $checkout)
                 <x-input.select m=6 l=6 id="payer" locale="checkout" :elements="\App\Models\User::collegists()" default="{{Auth::user()->id}}" :formatter="function($user) { return $user->uniqueName; }" />
-                <x-input.checkbox m=6 l=6 id="in_checkout" checked text="checkout.in_checkout_descr"/>
+                <x-input.checkbox m=6 l=6 id="paid" checked text="checkout.paid"/>
                 @endcan
             </div>
             <x-input.button floating class="btn-large right" icon="payments" />
