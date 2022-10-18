@@ -113,11 +113,11 @@ trait CheckoutHandler
     public function markAsPaid(Request $request, User $user)
     {
         $this->authorize('administrate', $this->checkout());
-        
+
         $transactions = Transaction::where('receiver_id', $user->id)
             ->where('checkout_id', $this->checkout()->id)
             ->whereNull('paid_at')->get();
-        
+
         Mail::to(Auth::user())->queue(new Transactions(Auth::user()->name, $transactions, __('checkout.transaction_updated'), "A fenti tranzakciókat kifizetted."));
         Mail::to($user)->queue(new Transactions($user->name, $transactions, __('checkout.transaction_updated'), "A fenti tranzakciók ki lettek fizetve számodra."));
 
@@ -138,10 +138,10 @@ trait CheckoutHandler
         $this->authorize('administrate', $this->checkout());
 
         $user = Auth::user();
-        
+
         $transactions = Transaction::where('checkout_id', $this->checkout()->id)
             ->where('moved_to_checkout', null)->get();
-        
+
         Mail::to($user)->queue(new Transactions($user->name, $transactions, __('checkout.transaction_updated'), "A tranzakciók új státusza: szinkronizálva a kasszával. (Ettől függetlenül még tartozhatsz embereknek, nézd meg Uránban!)"));
 
         Transaction::where('checkout_id', $this->checkout()->id)
@@ -188,7 +188,7 @@ trait CheckoutHandler
             'comment'           => $request->comment,
             'paid_at'           => $paid ? Carbon::now() : null,
         ]);
-        
+
         Mail::to($user)->queue(new Transactions($user->name, [$transaction], __('checkout.transaction_created')));
 
         return back()->with('message', __('general.successfully_added'));
@@ -204,10 +204,12 @@ trait CheckoutHandler
     {
         $this->authorize('delete', $transaction);
 
-        if($transaction->payer)
+        if ($transaction->payer) {
             Mail::to($transaction->payer)->queue(new Transactions($transaction->payer->name, [$transaction], __('checkout.transaction_deleted'), __('checkout.transactions_has_been_deleted')));
-        if($transaction->receiver)
+        }
+        if ($transaction->receiver) {
             Mail::to($transaction->receiver)->queue(new Transactions($transaction->receiver->name, [$transaction], __('checkout.transaction_deleted'), __('checkout.transactions_has_been_deleted')));
+        }
 
         $transaction->delete();
 
