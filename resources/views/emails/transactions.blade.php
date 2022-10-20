@@ -6,9 +6,11 @@
 <ul>
 @foreach($transactions as $transaction)
 <li>
-{{ $transaction->comment }}: {{ $transaction->amount }} Ft. 
+{{ $transaction->comment }}: {{ abs($transaction->amount) }} Ft.
+@if($transaction->payer!=$transaction->receiver)
 (@lang('checkout.receiver'): {{ $transaction->receiver?->name ?? "N/A" }},
 @lang('checkout.payer'): {{ $transaction->payer?->name ?? "N/A" }})
+@endif
 </li>
 @endforeach
 </ul>

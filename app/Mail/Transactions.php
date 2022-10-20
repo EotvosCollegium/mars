@@ -23,7 +23,7 @@ class Transactions extends Mailable
      */
     public function __construct($recipent, $transactions, $title, $additional_message = null)
     {
-        $this->title;
+        $this->title= $title;
         $this->recipent = $recipent;
         $this->transactions = $transactions;
         $this->additional_message = $additional_message;

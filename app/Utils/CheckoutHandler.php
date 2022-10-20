@@ -119,7 +119,7 @@ trait CheckoutHandler
             ->whereNull('paid_at')->get();
 
         Mail::to(Auth::user())->queue(new Transactions(Auth::user()->name, $transactions, __('checkout.transaction_updated'), "A fenti tranzakciókat kifizetted."));
-        Mail::to($user)->queue(new Transactions($user->name, $transactions, __('checkout.transaction_updated'), "A fenti tranzakciók ki lettek fizetve számodra."));
+        Mail::to($user)->queue(new Transactions($user->name, $transactions, __('checkout.transaction_updated'), "A fenti tranzakciók kifiették neked."));
 
         Transaction::where('receiver_id', $user->id)
             ->where('checkout_id', $this->checkout()->id)
@@ -207,7 +207,7 @@ trait CheckoutHandler
         if ($transaction->payer) {
             Mail::to($transaction->payer)->queue(new Transactions($transaction->payer->name, [$transaction], __('checkout.transaction_deleted'), __('checkout.transactions_has_been_deleted')));
         }
-        if ($transaction->receiver) {
+        if ($transaction->receiver && $transaction->receiver!= $transaction->payer) {
             Mail::to($transaction->receiver)->queue(new Transactions($transaction->receiver->name, [$transaction], __('checkout.transaction_deleted'), __('checkout.transactions_has_been_deleted')));
         }
 

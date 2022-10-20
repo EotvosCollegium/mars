@@ -22,13 +22,18 @@
                     @lang('checkout.current_balance_in_checkout'):
                     <b class="coli-text text-orange"> {{ number_format($current_balance_in_checkout, 0, '.', ' ') }} Ft</b>.<br>
                     @if($transactions_not_in_checkout != 0)
-                    @lang('checkout.to_checkout'): <b class="coli-text text-orange">{{ number_format($transactions_not_in_checkout, 0, '.', ' ')}} Ft</b>
+                    Tedd be (ha pozitív) / vedd ki (ha negatív) ezt az összeget a kasszából: <b class="coli-text text-orange">{{ number_format($transactions_not_in_checkout, 0, '.', ' ')}} Ft</b>
+                    <br>
+                    Figyelem: ebben az összegben a még általad (zsebből) ki nem fizetett vásárlások is benne vannak,
+                    így ha kiveszed az összeget, attól a rendszerben lévő tartozásokat még ki kell elégítened!
+                    <br>
+                    Miután kezelted az összeget, kattints a lenti zöld gombra!
                     @endif
                 </blockquote>
                 @if($transactions_not_in_checkout != 0)
                     <form method="POST" action="{{ route($route_base . '.to_checkout') }}">
                         @csrf
-                        <x-input.button floating class="right green" icon="payments"/>
+                        <x-input.button floating class="btn-large right green" icon="payments"/>
                     </form>
                 @endif
                 @endcan
@@ -40,7 +45,7 @@
                 <div class="card">
                     <div class="card-content">
                         <a href="{{ route('kktnetreg') }}" class="btn waves-effect right">
-                            @lang('checkout.payed_kktnetreg')</a>
+                            KKT/NetReg fizetők listája</a>
                         <span class="card-title">@lang('checkout.pay_kktnetreg')</span>
                         <form method="POST" action="{{ route('kktnetreg.pay') }}">
                             @csrf

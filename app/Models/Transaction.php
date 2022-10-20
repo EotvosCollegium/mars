@@ -26,6 +26,7 @@ class Transaction extends Model
         'payment_type_id',
         'comment',
         'moved_to_checkout',
+        'paid_at',
     ];
 
     public function receiver()
