@@ -6,13 +6,14 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class PayedTransaction extends Mailable
+class Transactions extends Mailable
 {
     use Queueable;
     use SerializesModels;
 
     public $recipent;
-    public array $transactions;
+    public $title;
+    public $transactions;
     public $additional_message;
 
     /**
@@ -20,8 +21,9 @@ class PayedTransaction extends Mailable
      *
      * @return void
      */
-    public function __construct($recipent, array $transactions, $additional_message = null)
+    public function __construct($recipent, $transactions, $title, $additional_message = null)
     {
+        $this->title= $title;
         $this->recipent = $recipent;
         $this->transactions = $transactions;
         $this->additional_message = $additional_message;
@@ -34,7 +36,7 @@ class PayedTransaction extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.payed_transaction')
-                    ->subject(__('checkout.pay'));
+        return $this->markdown('emails.transactions')
+                    ->subject($this->title);
     }
 }

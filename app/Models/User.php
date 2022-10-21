@@ -501,6 +501,18 @@ class User extends Authenticatable implements HasLocalePreference
     }
 
     /**
+     * Scope a query to only include users who have to pay kkt or netreg in the current semester.
+     *
+     * @param Builder $query
+     * @param int $semester_id
+     * @return Builder
+     */
+    public function scopeHasToPayKKTNetreg(Builder $query): Builder
+    {
+        return $query->hasToPayKKTNetregInSemester(Semester::current()->id);
+    }
+
+    /**
      * Scope a query to only include users who have to pay kkt or netreg in the given semester.
      *
      * @param Builder $query

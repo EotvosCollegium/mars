@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Cache;
 
 /**
@@ -19,9 +21,31 @@ class Checkout extends Model
         self::ADMIN,
     ];
 
-    public function transactions()
+    /**
+     * @return HasMany the transactions attached to the checkout
+     */
+    public function transactions(): HasMany
     {
-        return $this->hasMany('App\Models\Transaction');
+        return $this->hasMany(Transaction::class);
+    }
+
+    /**
+     * @return Semester[]|Collection the transaction in the checkout grouped by the semesters and payment types.
+     * The workshopbalances are loaded and attached also.
+     */
+    public function transactionsBySemesters(): Collection
+    {
+        return Semester::orderBy('year', 'desc')
+            ->orderBy('part', 'desc')
+            ->get()
+            ->load([
+                'transactions' => function ($query) {
+                    $query->where('checkout_id', $this->id);
+
+                    $query->with('type');
+                },
+                'workshopBalances.workshop',
+            ]);
     }
 
     /**
