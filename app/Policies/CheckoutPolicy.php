@@ -19,15 +19,16 @@ class CheckoutPolicy
         return $user->isCollegist();
     }
 
-    public function viewAny(User $user): bool
-    {
-        return $user->isCollegist();
-    }
 
-    public function addPayment(User $user, Checkout $checkout): bool
+    /**
+     * Determine whether the user can create a transaction in the given checkout.
+     */
+    public function createTransaction(User $user, Checkout $checkout): bool
     {
         if ($checkout->name === Checkout::STUDENTS_COUNCIL) {
-            return $user->hasRole([Role::STUDENT_COUNCIL => Role::ECONOMIC_VICE_PRESIDENT]);
+            //everyone can create transactions that is not in checkout
+            //the checkout administrator can handle these later
+            return $user->hasRole(Role::STUDENT_COUNCIL);
         }
         if ($checkout->name === Checkout::ADMIN) {
             return $user->isAdmin();
@@ -36,11 +37,18 @@ class CheckoutPolicy
         return false;
     }
 
+    /**
+     * Determine whether the user can make kkt/netreg transactions.
+     */
     public function addKKTNetreg(User $user): bool
     {
-        return $user->hasRole([Role::STUDENT_COUNCIL => Role::ECONOMIC_VICE_PRESIDENT]);
+        return $user->hasRole(Role::STUDENT_COUNCIL);
     }
 
+
+    /**
+     * Determine whether the user can administrate the given checkout.
+     */
     public function administrate(User $user, Checkout $checkout): bool
     {
         if ($checkout->name === Checkout::STUDENTS_COUNCIL) {
@@ -48,18 +56,6 @@ class CheckoutPolicy
         }
         if ($checkout->name === Checkout::ADMIN) {
             return $user->isAdmin();
-        }
-
-        return false;
-    }
-
-    public function handleAny(User $user): bool
-    {
-        $checkouts = Checkout::all();
-        foreach ($checkouts as $checkout) {
-            if ($this->addPayment($user, $checkout)) {
-                return true;
-            }
         }
 
         return false;

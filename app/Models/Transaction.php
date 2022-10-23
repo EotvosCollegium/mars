@@ -26,6 +26,7 @@ class Transaction extends Model
         'payment_type_id',
         'comment',
         'moved_to_checkout',
+        'paid_at',
     ];
 
     public function receiver()
@@ -51,5 +52,16 @@ class Transaction extends Model
     public function type()
     {
         return $this->belongsTo('App\Models\PaymentType', 'payment_type_id');
+    }
+
+    /**
+     * @return string the comment for income/expenses, or the transaction type for other transactions
+     */
+    public function getCommentAttribute($value)
+    {
+        if (in_array($this->type->name, [PaymentType::INCOME, PaymentType::EXPENSE])) {
+            return $value;
+        }
+        return __('checkout.'.$this->type->name);
     }
 }

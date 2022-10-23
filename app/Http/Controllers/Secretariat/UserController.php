@@ -33,6 +33,8 @@ class UserController extends Controller
 
     public function updatePersonalInformation(Request $request, User $user): \Illuminate\Http\RedirectResponse
     {
+        $this->authorize('view', $user);
+
         $isCollegist = $user->isCollegist();
 
         $validator = Validator::make($request->all(), [
@@ -57,11 +59,8 @@ class UserController extends Controller
             }
         }
 
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
+        $validator->validate();
+
         $user->update(['email' => $request->email, 'name' => $request->name]);
 
         if (!$user->hasPersonalInformation()) {
@@ -80,6 +79,8 @@ class UserController extends Controller
 
     public function updateEducationalInformation(Request $request, User $user): \Illuminate\Http\RedirectResponse
     {
+        $this->authorize('view', $user);
+
         $validator = Validator::make($request->all(), [
             'year_of_graduation' => 'required|integer|between:1895,' . date('Y'),
             'high_school' => 'required|string|max:255',
@@ -93,11 +94,7 @@ class UserController extends Controller
             'program.*' => 'nullable|string'
         ]);
 
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
+        $validator->validate();
 
         if (!$user->hasEducationalInformation()) {
             $user->educationalInformation()->create($request->all());
@@ -112,6 +109,22 @@ class UserController extends Controller
         return redirect()->back()->with('message', __('general.successful_modification'));
     }
 
+    public function updateTenantUntil(Request $request, User $user)
+    {
+        $this->authorize('view', $user);
+
+        $validator = Validator::make($request->all(), [
+            'tenant_until'=> 'required|date|after:today',
+        ]);
+        $validator->validate();
+
+        $date = min(Carbon::parse($request->tenant_until), Carbon::now()->addMonths(6));
+        $user->personalInformation->update(['tenant_until'=>$date]);
+        $user->internetAccess()->update(['has_internet_until'=>$date]);
+
+        return redirect(route('home'))->with('message', __('general.successful_modification'));
+    }
+
     public function updatePassword(Request $request): \Illuminate\Http\RedirectResponse
     {
         $user = Auth::user();
@@ -121,11 +134,8 @@ class UserController extends Controller
             'new_password' => 'required|string|min:8|confirmed|different:old_password',
         ]);
 
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
+        $validator->validate();
+
         $user->update([
             'password' => Hash::make($request->new_password),
         ]);
