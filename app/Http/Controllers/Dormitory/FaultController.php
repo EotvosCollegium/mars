@@ -64,7 +64,7 @@ class FaultController extends Controller
     {
         $staffs = Role::firstWhere('name', Role::STAFF)->getUsers();
         foreach ($staffs as $staff) {
-            Mail::to($staff)->queue(new \App\Mail\NewFault($staff->name, $fault, $reopen));
+            Mail::to($staff)->send(new \App\Mail\NewFault($staff->name, $fault, $reopen));
         }
     }
 }
