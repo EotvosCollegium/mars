@@ -75,7 +75,6 @@ class RegistrationTest extends TestCase
      */
     public function test_tenant_collegist()
     {
-
         Mail::fake();
 
         $controller = new RegisterController();

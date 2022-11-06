@@ -132,7 +132,6 @@ class PrintControllerTest extends TestCase
 
     public function testBalanceTransfer()
     {
-
         Mail::fake();
 
         $sender = User::factory()->create();
@@ -179,7 +178,6 @@ class PrintControllerTest extends TestCase
 
     public function testModifyBalance()
     {
-
         Mail::fake();
 
         $sender = User::factory()->create();
