@@ -7,6 +7,7 @@ use App\Http\Controllers\Secretariat\RegistrationsController;
 use App\Models\PersonalInformation;
 use App\Models\Role;
 use App\Models\User;
+use Illuminate\Support\Facades\Mail;
 use Hash;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -74,6 +75,9 @@ class RegistrationTest extends TestCase
      */
     public function test_tenant_collegist()
     {
+
+        Mail::fake();
+
         $controller = new RegisterController();
 
         $user_data = User::factory()->make()->only(['name', 'email']);
