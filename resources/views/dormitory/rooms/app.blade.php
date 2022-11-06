@@ -64,7 +64,7 @@
                 $('#info-box').css('display','block');
                 people=$(this).data('info').split(';');
                 htmlString='';
-                
+
                 people.forEach(element => {
                     if(element!=''){
                         htmlString+='<li>'+element+'</li>';
@@ -106,7 +106,7 @@
 
         });
     });
-    
+
 </script>
 @section('content')
 <div class="row">
@@ -129,7 +129,7 @@
                 </svg>
                 @endcan
                 {{-- The goal was to make an interactive map of the Collegium and show the room occupation on it.
-                    This can be achieved by using an svg (vector graphic image) and modifying its style properties 
+                    This can be achieved by using an svg (vector graphic image) and modifying its style properties
                     using javascript. The problem with this is that the info shown by the javascript all has to be put inside
                     of the HTML when creating the file as javascript cannot access the database. This is the reason the data-info
                     tag is used. The dynamic styling is accomplished with JQuery.
@@ -147,7 +147,7 @@
                     </style>
                     <g id="em2" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" inkscape:version="1.1.2 (b8e25be833, 2022-02-05)" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" sodipodi:docname="drawing.svg">
                         @foreach ($roomNumbersSecondFloor as $roomNumber)
-                        <path id="{{'room'.$roomNumber}}" 
+                        <path id="{{'room'.$roomNumber}}"
                             class="st1"
                             data-info="{{ $rooms->firstWhere('name', $roomNumber)->users->pluck('name')->join(';') }}"
                             @can('updateAny', \App\Models\Room::class) style="fill: {{ $rooms->firstWhere('name', $roomNumber)->color() }}" @endcan
@@ -171,10 +171,10 @@
                     <g id="em3">
                         <rect x="272.2" y="15.4" class="st9" width="503" height="503"/>
                         @foreach ($roomNumbersThirdFloor as $roomNumber)
-                        <polygon id="{{'room'.$roomNumber}}" 
-                            @can('updateAny', \App\Models\Room::class) style="fill: {{ $rooms->firstWhere('name', $roomNumber)->color() }}" @endcan 
+                        <polygon id="{{'room'.$roomNumber}}"
+                            @can('updateAny', \App\Models\Room::class) style="fill: {{ $rooms->firstWhere('name', $roomNumber)->color() }}" @endcan
                             data-info="{{ $rooms->firstWhere('name', $roomNumber)->users->pluck('name')->join(';') }}"
-                            class="st1" 
+                            class="st1"
                             points="{{$roomCoords['room'.$roomNumber]}}"/>
                         <text transform="{{$roomCoords['text'.$roomNumber]}}" class="st4">{{$roomNumber}}</text>
                         @endforeach
@@ -196,10 +196,8 @@
                         <x-input.button s=3 class="right coli blue" text="rooms.search" />
                     </form>
                 </div>
-                @can('updateAny', \App\Models\Room::class) 
-                <div class="center row">
-                    <x-input.button class="coli blue" text="rooms.edit" :href="route('rooms.modify')"/>
-                </div>
+                @can('updateAny', \App\Models\Room::class)
+                    @livewire('room-assignment')
                 @endcan
             </div>
         </div>
