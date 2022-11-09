@@ -1,4 +1,4 @@
-[![Build Status](https://app.travis-ci.com/EotvosCollegium/mars.svg?branch=development)](https://app.travis-ci.com/EotvosCollegium/mars)
+[![Actions Status](https://github.com/EotvosCollegium/mars/workflows/CI/badge.svg)](https://github.com/EotvosCollegium/mars/actions)
 [![DeepSource](https://deepsource.io/gh/EotvosCollegium/mars.svg/?label=active+issues&show_trend=true&token=s1njz51FCL5qKVRJ9_xmr-7j)](https://deepsource.io/gh/EotvosCollegium/mars/?ref=repository-badge)
 [![DeepSource](https://deepsource.io/gh/EotvosCollegium/mars.svg/?label=resolved+issues&show_trend=true&token=s1njz51FCL5qKVRJ9_xmr-7j)](https://deepsource.io/gh/EotvosCollegium/mars/?ref=repository-badge)
 

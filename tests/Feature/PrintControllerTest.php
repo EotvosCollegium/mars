@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use App\Models\Role;
+use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 class PrintControllerTest extends TestCase
@@ -131,6 +132,8 @@ class PrintControllerTest extends TestCase
 
     public function testBalanceTransfer()
     {
+        Mail::fake();
+
         $sender = User::factory()->create();
         $sender->setVerified();
         $sender->roles()->attach(Role::firstWhere('name', Role::PRINTER)->id);
@@ -175,6 +178,8 @@ class PrintControllerTest extends TestCase
 
     public function testModifyBalance()
     {
+        Mail::fake();
+
         $sender = User::factory()->create();
         $sender->setVerified();
         $sender->roles()->attach(Role::firstWhere('name', Role::SYS_ADMIN)->id);
