@@ -187,7 +187,7 @@ trait CheckoutHandler
             )
         );
 
-        if ($this->checkout()->handler && $this->checkout()->handler->id != $request->user()->id) {
+        if ($this->checkout()->handler_id != $request->user()->id) {
             Mail::to($this->checkout()->handler)->queue(
                 new Transactions(
                     $this->checkout()->handler->name,

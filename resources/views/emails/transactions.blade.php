@@ -15,7 +15,7 @@
 @if($transaction->payer!=$transaction->receiver)
     (@lang('checkout.receiver'): {{ $transaction->receiver?->name ?? "N/A" }},
     @lang('checkout.payer'): {{ $transaction->payer?->name ?? "N/A" }})
-@elseif(auth()->user()->id!=$transaction->payer?->id)
+@elseif($recipent != $transaction->payer?->name)
     (@lang('checkout.payer'): {{ $transaction->payer?->name ?? "N/A" }})
 @endif
 </li>

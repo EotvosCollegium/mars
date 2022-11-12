@@ -28,7 +28,7 @@ class CheckoutPolicy
         if ($checkout->name === Checkout::STUDENTS_COUNCIL) {
             //everyone can create transactions that is not in checkout
             //the checkout administrator can handle these later
-            return $user->hasRole(Role::STUDENT_COUNCIL);
+            return $user->isCollegist();
         }
         if ($checkout->name === Checkout::ADMIN) {
             return $user->isAdmin();
