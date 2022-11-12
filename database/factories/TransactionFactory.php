@@ -50,18 +50,17 @@ class TransactionFactory extends Factory
                     return \App\Models\Semester::findOrFail($attributes['semester_id'])
                         ->getStartDate()->addDays($this->faker->numberBetween(1, 100));
                 }
-                : null, //not in checkout
+        : null, //not in checkout
             'paid_at' => ($this->faker->boolean)
                 ? function (array $attributes) {
                     return \App\Models\Semester::findOrFail($attributes['semester_id'])
                         ->getStartDate()->addDays($this->faker->numberBetween(1, 100));
                 }
-                : null, //not paid
+        : null, //not paid
             'created_at' => function (array $attributes) {
                 return \App\Models\Semester::findOrFail($attributes['semester_id'])
                     ->getStartDate()->addDays($this->faker->numberBetween(1, 100));
             }
         ];
-
     }
 }

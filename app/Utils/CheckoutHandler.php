@@ -76,7 +76,7 @@ trait CheckoutHandler
      * @return Collection
      * @throws AuthorizationException
      */
-    private function getTransactionsGroupedBySemesters(Checkout $checkout, array $payment_types) : Collection
+    private function getTransactionsGroupedBySemesters(Checkout $checkout, array $payment_types): Collection
     {
         $this->authorize('view', $checkout);
 
