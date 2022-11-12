@@ -41,7 +41,7 @@ class Handler extends ExceptionHandler
     {
         try {
             foreach (User::admins() as $admin) {
-               // Mail::to($admin)->queue(new \App\Mail\ExceptionOccured($exception, $admin, request()->url()));
+                // Mail::to($admin)->queue(new \App\Mail\ExceptionOccured($exception, $admin, request()->url()));
             }
         } catch (Throwable $exception) {
             Log::error($exception);
