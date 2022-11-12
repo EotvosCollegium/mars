@@ -51,13 +51,7 @@ class CheckoutPolicy
      */
     public function administrate(User $user, Checkout $checkout): bool
     {
-        if ($checkout->name === Checkout::STUDENTS_COUNCIL) {
-            return $user->hasRole([Role::STUDENT_COUNCIL => Role::ECONOMIC_VICE_PRESIDENT]);
-        }
-        if ($checkout->name === Checkout::ADMIN) {
-            return $user->isAdmin();
-        }
+        return $checkout->handler?->id == $user->id;
 
-        return false;
     }
 }

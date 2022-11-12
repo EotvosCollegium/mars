@@ -96,9 +96,11 @@ trait CheckoutHandler
 
     /**
      * Mark all the transactions received by the current user as paid.
+     * @param User $user
+     * @return RedirectResponse
      * @throws AuthorizationException
      */
-    public function markAsPaid(Request $request, User $user): \Illuminate\Http\RedirectResponse
+    public function markAsPaid(User $user): \Illuminate\Http\RedirectResponse
     {
         $this->authorize('administrate', $this->checkout());
 
@@ -162,12 +164,8 @@ trait CheckoutHandler
         ]);
         $validator->validate();
 
-        /** @var User $user */
-        $user = $request->user();
-        $isCheckoutHandler = $user->can('administrate', $this->checkout());
-
-        $user = $request->has('payer') && $isCheckoutHandler ? User::find($request->input('payer')) : $request->user();
-        $paid = $request->has('paid') && $isCheckoutHandler;
+        $user = $request->has('payer') ? User::find($request->input('payer')) : auth()->user();
+        $paid = $request->has('paid');
 
         $transaction = Transaction::create([
             'checkout_id'       => $this->checkout()->id,
@@ -180,7 +178,21 @@ trait CheckoutHandler
             'paid_at'           => $paid ? Carbon::now() : null,
         ]);
 
-        Mail::to($user)->queue(new Transactions($user->name, [$transaction], __('checkout.transaction_created'), "Az alábbi tranzakciók jöttek létre:"));
+        Mail::to($user)->queue(
+            new Transactions(
+                $user->name,
+                [$transaction],
+                __('checkout.transaction_created'),
+                "Az alábbi tranzakciók jöttek létre:"));
+
+        if($this->checkout()->handler && $this->checkout()->handler->id != $request->user()->id) {
+            Mail::to($this->checkout()->handler)->queue(
+                new Transactions(
+                    $this->checkout()->handler->name,
+                    [$transaction],
+                    __('checkout.transaction_created'),
+                    "Az alábbi tranzakciók jöttek létre:"));
+        }
 
         return back()->with('message', __('general.successfully_added'));
     }
@@ -191,14 +203,14 @@ trait CheckoutHandler
      * @param Transaction $transaction to be deleted
      * @throws AuthorizationException
      */
-    public function deleteTransaction(Transaction $transaction)
+    public function deleteTransaction(Transaction $transaction): RedirectResponse
     {
         $this->authorize('delete', $transaction);
 
         if ($transaction->payer) {
             Mail::to($transaction->payer)->queue(new Transactions($transaction->payer->name, [$transaction], __('checkout.transaction_deleted'), __('checkout.transactions_has_been_deleted')));
         }
-        if ($transaction->receiver && $transaction->receiver!= $transaction->payer) {
+        if ($transaction->receiver && $transaction->receiver->id != $transaction->payer?->id) {
             Mail::to($transaction->receiver)->queue(new Transactions($transaction->receiver->name, [$transaction], __('checkout.transaction_deleted'), __('checkout.transactions_has_been_deleted')));
         }
 

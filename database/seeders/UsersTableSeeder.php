@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Checkout;
 use App\Models\Faculty;
 use App\Models\FreePages;
 use App\Models\RoleObject;
@@ -96,6 +97,7 @@ class UsersTableSeeder extends Seeder
         }
         $wifi_username = $user->internetAccess->setWifiUsername();
         WifiConnection::factory($user->id % 5)->create(['wifi_username' => $wifi_username]);
+        Checkout::query()->update(['handler_id' => $user->id]);
     }
 
     private function createCollegist($user)
