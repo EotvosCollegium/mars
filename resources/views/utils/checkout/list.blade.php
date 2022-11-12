@@ -3,15 +3,14 @@
 <tr>
     <td>{{ $transaction->comment }}</td>
     @can('administrate', $checkout)
-    <td>{{ $transaction->payer?->name }}</td>
-    <td>{{ $transaction->receiver?->name }}</td>
-    <td>{{ $transaction->paid_at ?? "-" }}</td>
-    <td>{{ $transaction->moved_to_checkout ?? "-" }}</td>
+        <td class="center-align">{{ $transaction->payer?->name }}</td>
+        <td class="center-align"><nobr>{{ $transaction->paid_at?->format('Y. m. d.') ?? "-" }}</nobr></td>
+        <td class="center-align"><nobr>{{ $transaction->moved_to_checkout?->format('Y. m. d.') ?? "-" }}</nobr></td>
     @else
-    <td></td><td></td>
+    <td></td><td></td><td></td>
     @endif
-    <td>{{ $transaction->created_at->format('Y. m. d.') }}</td>
-    <td class="right">
+    <td class="center-align"><nobr>{{ $transaction->created_at->format('Y. m. d.') }}</nobr></td>
+    <td class="right-align">
         {{ number_format($transaction->amount, 0, '.', ' ') }} Ft
     </td>
     <!-- delete transaction -->
