@@ -26,6 +26,9 @@ class Checkout extends Model
         self::ADMIN,
     ];
 
+    /**
+     * @return BelongsTo the user who can handle the checkout
+     */
     public function handler(): BelongsTo
     {
         return $this->belongsTo(User::class, 'handler_id');
