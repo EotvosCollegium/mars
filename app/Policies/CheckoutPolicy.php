@@ -52,6 +52,5 @@ class CheckoutPolicy
     public function administrate(User $user, Checkout $checkout): bool
     {
         return $checkout->handler?->id == $user->id;
-
     }
 }

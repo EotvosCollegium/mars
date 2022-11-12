@@ -183,15 +183,19 @@ trait CheckoutHandler
                 $user->name,
                 [$transaction],
                 __('checkout.transaction_created'),
-                "Az alábbi tranzakciók jöttek létre:"));
+                "Az alábbi tranzakciók jöttek létre:"
+            )
+        );
 
-        if($this->checkout()->handler && $this->checkout()->handler->id != $request->user()->id) {
+        if ($this->checkout()->handler && $this->checkout()->handler->id != $request->user()->id) {
             Mail::to($this->checkout()->handler)->queue(
                 new Transactions(
                     $this->checkout()->handler->name,
                     [$transaction],
                     __('checkout.transaction_created'),
-                    "Az alábbi tranzakciók jöttek létre:"));
+                    "Az alábbi tranzakciók jöttek létre:"
+                )
+            );
         }
 
         return back()->with('message', __('general.successfully_added'));
