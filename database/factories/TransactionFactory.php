@@ -31,68 +31,32 @@ class TransactionFactory extends Factory
                 return PaymentType::forCheckout(Checkout::findOrFail($attributes['checkout_id']))
                     ->random();
             },
-            'receiver_id' => function (array $attributes) {
-                $payment_type = PaymentType::findOrFail($attributes['payment_type_id']);
-                switch ($payment_type->name) {
-                    case PaymentType::EXPENSE:
-                        return null;
-                    case PaymentType::INCOME:
-                        return null;
-                    case PaymentType::KKT:
-                        return User::where('verified', true)->get()->random()->id;
-                    case PaymentType::NETREG:
-                        return User::where('verified', true)->get()->random()->id;
-                    case PaymentType::PRINT:
-                        return User::where('verified', true)->get()->random()->id;
-                    default:
-                        return null;
-                }
-            },
-            'payer_id' => function (array $attributes) {
-                $payment_type = PaymentType::findOrFail($attributes['payment_type_id']);
-                switch ($payment_type->name) {
-                    case PaymentType::EXPENSE:
-                        return null;
-                    case PaymentType::INCOME:
-                        return null;
-                    case PaymentType::KKT:
-                        return User::where('verified', true)->get()->random()->id;
-                    case PaymentType::NETREG:
-                        return User::where('verified', true)->get()->random()->id;
-                    case PaymentType::PRINT:
-                        return User::where('verified', true)->get()->random()->id;
-                    default:
-                        return null;
-                }
-            },
+            'receiver_id' => User::where('verified', true)->get()->random()->id,
+            'payer_id' => User::where('verified', true)->get()->random()->id,
             'amount' => function (array $attributes) {
                 $payment_type = PaymentType::findOrFail($attributes['payment_type_id']);
-                switch ($payment_type->name) {
-                    case PaymentType::EXPENSE:
-                        return round($this->faker->numberBetween(-100000, -1000), -3);
-                    case PaymentType::INCOME:
-                        return round($this->faker->numberBetween(1000, 100000), -3);
-                    case PaymentType::KKT:
-                        return config('custom.kkt');
-                    case PaymentType::NETREG:
-                        return config('custom.netreg');
-                    case PaymentType::PRINT:
-                        return round($this->faker->numberBetween(50, 1000), -1);
-                    default:
-                        return round($this->faker->numberBetween(1000, 100000), -3);
-                }
+                return match ($payment_type->name) {
+                    PaymentType::EXPENSE => round($this->faker->numberBetween(-100000, -1000), -3),
+                    PaymentType::INCOME => round($this->faker->numberBetween(1000, 100000), -3),
+                    PaymentType::KKT => config('custom.kkt'),
+                    PaymentType::NETREG => config('custom.netreg'),
+                    PaymentType::PRINT => round($this->faker->numberBetween(50, 1000), -1),
+                    default => round($this->faker->numberBetween(1000, 100000), -3),
+                };
             },
             'comment' => $this->faker->sentence,
-            'moved_to_checkout' => ($this->faker->boolean
-                &&  function (array $attributes) {
-                    $payment_type_name = PaymentType::findOrFail($attributes['payment_type_id'])->name;
-                    return in_array($payment_type_name, [PaymentType::KKT, PaymentType::NETREG, PaymentType::PRINT]);
-                })
+            'moved_to_checkout' => ($this->faker->boolean)
                 ? function (array $attributes) {
                     return \App\Models\Semester::findOrFail($attributes['semester_id'])
                         ->getStartDate()->addDays($this->faker->numberBetween(1, 100));
                 }
         : null, //not in checkout
+            'paid_at' => ($this->faker->boolean)
+                ? function (array $attributes) {
+                    return \App\Models\Semester::findOrFail($attributes['semester_id'])
+                        ->getStartDate()->addDays($this->faker->numberBetween(1, 100));
+                }
+        : null, //not paid
             'created_at' => function (array $attributes) {
                 return \App\Models\Semester::findOrFail($attributes['semester_id'])
                     ->getStartDate()->addDays($this->faker->numberBetween(1, 100));

@@ -9,8 +9,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 /**
  * @property PaymentType $type
  * @property User $receiver
- * @property mixed $checkout
- * @property mixed $receiver_id
+ * @property Checkout $checkout
+ * @property User $payer
  */
 class Transaction extends Model
 {
@@ -28,6 +28,8 @@ class Transaction extends Model
         'moved_to_checkout',
         'paid_at',
     ];
+
+    protected $dates = ['moved_to_checkout', 'paid_at'];
 
     public function receiver()
     {

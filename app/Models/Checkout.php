@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Cache;
 
 /**
  * @property mixed $name
+ * @property mixed $id
  */
 class Checkout extends Model
 {
