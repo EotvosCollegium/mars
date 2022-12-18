@@ -5,7 +5,7 @@
         <blockquote>
             @can('administrate', $checkout)
             Ha költöttél valamire vagy kifizettél valamit valakinek, akkor azt itt rögzítsd.
-            A lenti átvevő mezőnél válaszd ki azt a személyt (adott esetben magadat), aki a vásárlást végezte.<br>
+            A lenti fizető mezőnél válaszd ki azt a személyt (adott esetben magadat), aki a vásárlást végezte.<br>
             A jobb oldali mezőt akkor pipáld ki, hogyha a vásárlást kifizetted a vásárló személynek.
             Fontos: a vásárlás NEM kerül a kasszába akkor sem, hogyha bepipálod a mezőt, a rendszer úgy veszi,
             hogy a kifizetés zsebből történt.<br>

@@ -104,7 +104,7 @@ width: 100% !important;
                         @foreach ($news as $article)
                             <h2>{{ $loop->iteration }}.<span>{{$article->title }}</span></h2>
                             <h3>{{$article->date_time}}</h3>
-                            <p class="description">@markdown($article->description)</p>
+                            <p class="description">{!! GrahamCampbell\Markdown\Facades\Markdown::convert($article->description)->getContent() !!}</p>
                             @if($article->picture_path)
                             <img src="{{ $article->picture_path }}">
                             @endif

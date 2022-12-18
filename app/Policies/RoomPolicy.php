@@ -41,7 +41,7 @@ class RoomPolicy
             Role::SECRETARY,
             Role::STAFF,
             Role::SYS_ADMIN,
-            Role::STUDENT_COUNCIL => Role::PRESIDENT
+            Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS
         ]);
     }
 }

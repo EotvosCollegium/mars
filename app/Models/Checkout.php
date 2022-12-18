@@ -4,15 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Cache;
 
 /**
  * @property mixed $name
+ * @property mixed $id
+ * @property User $handler
  */
 class Checkout extends Model
 {
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'handler_id'];
+
+    public $timestamps = false;
 
     public const STUDENTS_COUNCIL = 'VALASZTMANY';
     public const ADMIN = 'ADMIN';
@@ -20,6 +25,14 @@ class Checkout extends Model
         self::STUDENTS_COUNCIL,
         self::ADMIN,
     ];
+
+    /**
+     * @return BelongsTo the user who can handle the checkout
+     */
+    public function handler(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'handler_id');
+    }
 
     /**
      * @return HasMany the transactions attached to the checkout

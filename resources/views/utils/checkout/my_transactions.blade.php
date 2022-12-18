@@ -12,7 +12,7 @@
                     </td>
                     <td>
                         @if($transaction->payer_id != Auth::user()->id)
-                            {{ $transaction->payer->name }}
+                            {{ $transaction->payer?->name }}
                         @endif
                     </td>
                     <td>{{ $transaction->amount }} Ft</td>

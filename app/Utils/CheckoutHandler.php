@@ -9,10 +9,14 @@ use App\Models\Transaction;
 use App\Mail\Transactions;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 trait CheckoutHandler
 {
@@ -32,9 +36,9 @@ trait CheckoutHandler
      * @param Checkout $checkout
      * @return array
      */
-    private function getData($checkout)
+    private function getData(Checkout $checkout): array
     {
-        /*@var User $user*/
+        /** @var User $user */
         $user = Auth::user();
 
         if ($user->can('administrate', $checkout)) {
@@ -67,10 +71,12 @@ trait CheckoutHandler
     /**
      * Gets the transactions of the certain payment types in the checkout.
      *
-     * @param Checkout
-     * @param  array  $payment_types  payment type ids
+     * @param Checkout $checkout
+     * @param array $payment_types payment type ids
+     * @return Collection
+     * @throws AuthorizationException
      */
-    private function getTransactionsGroupedBySemesters(Checkout $checkout, array $payment_types)
+    private function getTransactionsGroupedBySemesters(Checkout $checkout, array $payment_types): Collection
     {
         $this->authorize('view', $checkout);
 
@@ -89,28 +95,12 @@ trait CheckoutHandler
     }
 
     /**
-     * Gets the users with the transactions received which are not added to checkout yet.
-     *
-     * @param  array  $payment_typed  payment type names
-     * @param collection of the users with transactionsReceived attribute
-     */
-    public function getCollectedTransactions(array $payment_types)
-    {
-        $payment_type_ids = $this->paymentTypeIDs($payment_types);
-
-        return User::collegists()->load(['transactionsReceived' => function ($query) use ($payment_type_ids) {
-            $query->whereIn('payment_type_id', $payment_type_ids);
-            $query->where('moved_to_checkout', null);
-        }])->filter(function ($user, $key) {
-            return $user->transactionsReceived->count();
-        })->unique();
-    }
-
-
-    /**
      * Mark all the transactions received by the current user as paid.
+     * @param User $user
+     * @return RedirectResponse
+     * @throws AuthorizationException
      */
-    public function markAsPaid(Request $request, User $user)
+    public function markAsPaid(User $user): \Illuminate\Http\RedirectResponse
     {
         $this->authorize('administrate', $this->checkout());
 
@@ -118,8 +108,8 @@ trait CheckoutHandler
             ->where('checkout_id', $this->checkout()->id)
             ->whereNull('paid_at')->get();
 
-        Mail::to(Auth::user())->queue(new Transactions(Auth::user()->name, $transactions, __('checkout.transaction_updated'), "A fenti tranzakciókat kifizetted."));
-        Mail::to($user)->queue(new Transactions($user->name, $transactions, __('checkout.transaction_updated'), "A fenti tranzakciók kifiették neked."));
+        Mail::to(Auth::user())->queue(new Transactions(Auth::user()->name, $transactions, __('checkout.transaction_updated'), "Az alábbi tranzakciókat kifizetted."));
+        Mail::to($user)->queue(new Transactions($user->name, $transactions, __('checkout.transaction_updated'), "Az alábbi tranzakciókat kifizették neked."));
 
         Transaction::where('receiver_id', $user->id)
             ->where('checkout_id', $this->checkout()->id)
@@ -132,8 +122,9 @@ trait CheckoutHandler
 
     /**
      * Move all the transactions to the checkout.
+     * @throws AuthorizationException
      */
-    public function toCheckout(Request $request)
+    public function toCheckout(Request $request): \Illuminate\Http\RedirectResponse
     {
         $this->authorize('administrate', $this->checkout());
 
@@ -157,11 +148,12 @@ trait CheckoutHandler
      * (since this does not mean a payment between users, just a transaction from the checkout).
      * The only exception for the payer is when the checkout handler administrates a transaction payed by someone else.
      *
-     * @param Request
-     * @param Checkout
-     * @return void
+     * @param Request $request
+     * @return RedirectResponse
+     * @throws AuthorizationException
+     * @throws ValidationException
      */
-    public function addExpense(Request $request)
+    public function addExpense(Request $request): RedirectResponse
     {
         $this->authorize('createTransaction', $this->checkout());
 
@@ -172,11 +164,8 @@ trait CheckoutHandler
         ]);
         $validator->validate();
 
-        $user = $request->user();
-        $isCheckoutHandler = $user->can('administrate', $this->checkout());
-
-        $user = $request->has('payer') && $isCheckoutHandler ? User::find($request->input('payer')) : $request->user();
-        $paid = $request->has('paid') && $isCheckoutHandler;
+        $user = $request->has('payer') ? User::find($request->input('payer')) : auth()->user();
+        $paid = $request->has('paid');
 
         $transaction = Transaction::create([
             'checkout_id'       => $this->checkout()->id,
@@ -189,7 +178,25 @@ trait CheckoutHandler
             'paid_at'           => $paid ? Carbon::now() : null,
         ]);
 
-        Mail::to($user)->queue(new Transactions($user->name, [$transaction], __('checkout.transaction_created')));
+        Mail::to($user)->queue(
+            new Transactions(
+                $user->name,
+                [$transaction],
+                __('checkout.transaction_created'),
+                "Az alábbi tranzakciók jöttek létre:"
+            )
+        );
+
+        if ($this->checkout()->handler_id != $request->user()->id) {
+            Mail::to($this->checkout()->handler)->queue(
+                new Transactions(
+                    $this->checkout()->handler->name,
+                    [$transaction],
+                    __('checkout.transaction_created'),
+                    "Az alábbi tranzakciók jöttek létre:"
+                )
+            );
+        }
 
         return back()->with('message', __('general.successfully_added'));
     }
@@ -198,16 +205,16 @@ trait CheckoutHandler
      * Delete a transaction.
      *
      * @param Transaction $transaction to be deleted
-     * @return void
+     * @throws AuthorizationException
      */
-    public function deleteTransaction(Transaction $transaction)
+    public function deleteTransaction(Transaction $transaction): RedirectResponse
     {
         $this->authorize('delete', $transaction);
 
         if ($transaction->payer) {
             Mail::to($transaction->payer)->queue(new Transactions($transaction->payer->name, [$transaction], __('checkout.transaction_deleted'), __('checkout.transactions_has_been_deleted')));
         }
-        if ($transaction->receiver && $transaction->receiver!= $transaction->payer) {
+        if ($transaction->receiver && $transaction->receiver->id != $transaction->payer?->id) {
             Mail::to($transaction->receiver)->queue(new Transactions($transaction->receiver->name, [$transaction], __('checkout.transaction_deleted'), __('checkout.transactions_has_been_deleted')));
         }
 

@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Network\InternetController;
 use App\Models\Checkout;
 use App\Models\PaymentType;
+use App\Models\Role;
+use App\Models\RoleObject;
 use App\Models\Semester;
 use App\Models\Transaction;
 use App\Models\User;
@@ -13,6 +15,7 @@ use App\Models\WorkshopBalance;
 use App\Utils\CheckoutHandler;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
@@ -24,7 +27,7 @@ class EconomicController extends Controller
     /**
      * Return the route base for the checkout of the students council.
      */
-    public static function routeBase()
+    public static function routeBase(): string
     {
         return 'economic_committee';
     }

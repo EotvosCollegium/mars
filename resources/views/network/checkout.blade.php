@@ -18,7 +18,7 @@
                     <b class="coli-text text-orange"> {{ number_format($current_balance, 0, '.', ' ') }} Ft</b>.<br>
                 </blockquote>
                 @can('administrate', $checkout)
-                <blockquote>    
+                <blockquote>
                     @lang('checkout.current_balance_in_checkout'):
                     <b class="coli-text text-orange"> {{ number_format($current_balance_in_checkout, 0, '.', ' ') }} Ft</b>.<br>
                     @if($transactions_not_in_checkout != 0)
@@ -60,26 +60,14 @@
                     <div class="row">
                         <div class="col s12">
                             <table><tbody>
-                                <tr>
-                                    <th>@lang('checkout.incomes')</th>
-                                    @can('administrate', $checkout)
-                                    <th>@lang('checkout.payer')</th>
-                                    <th>@lang('checkout.receiver')</th>
-                                    <th>Fizetve</th>
-                                    <th>Kasszába került</th>
-                                    @endcan
-                                    <th>Dátum</th>
-                                    <th>Összeg</th>
-                                </tr>
+                                @include('utils.checkout.header')
+                                <tr><th>@lang('checkout.incomes')</th></tr>
                                 @include('utils.checkout.sum', ['paymentType' => \App\Models\PaymentType::print()])
                                 @include('utils.checkout.sum', ['paymentType' => \App\Models\PaymentType::netreg()])
                                 @include('utils.checkout.list', ['paymentType' => \App\Models\PaymentType::income()])
-                                <tr><th colspan="3">@lang('checkout.expenses')</th></tr>
+                                <tr><th>@lang('checkout.expenses')</th></tr>
                                 @include('utils.checkout.list', ['paymentType' => \App\Models\PaymentType::expense()])
-                                <tr>
-                                    <th colspan="6">@lang('checkout.sum')</th>
-                                    <th class="right"><nobr>{{ number_format($semester->transactions->sum('amount'), 0, '.', ' ') }} Ft</nobr></th>
-                                </tr>
+                                @include('utils.checkout.footer')
                             </tbody></table>
                         </div>
                     </div>
