@@ -95,7 +95,7 @@ class UsersTableSeeder extends Seeder
                 $user->roles()->attach($role->id);
             }
         }
-        $wifi_username = $user->internetAccess->setWifiUsername();
+        $wifi_username = $user->internetAccess->setWifiCredentials();
         WifiConnection::factory($user->id % 5)->create(['wifi_username' => $wifi_username]);
         Checkout::query()->update(['handler_id' => $user->id]);
     }
@@ -116,7 +116,7 @@ class UsersTableSeeder extends Seeder
         $user->educationalInformation()->save(EducationalInformation::factory()->make(['user_id' => $user->id]));
         $user->roles()->attach(Role::firstWhere('name', Role::PRINTER)->id);
         $user->roles()->attach(Role::firstWhere('name', Role::INTERNET_USER)->id);
-        $wifi_username = $user->internetAccess->setWifiUsername();
+        $wifi_username = $user->internetAccess->setWifiCredentials();
         WifiConnection::factory($user->id % 5)->create(['wifi_username' => $wifi_username]);
         for ($x = 0; $x < rand(1, 3); $x++) {
             $faculty = rand(1, count(Faculty::ALL));
@@ -136,7 +136,7 @@ class UsersTableSeeder extends Seeder
     {
         $user->roles()->attach(Role::firstWhere('name', Role::TENANT)->id);
         $user->roles()->attach(Role::firstWhere('name', Role::INTERNET_USER)->id);
-        $wifi_username = $user->internetAccess->setWifiUsername();
+        $wifi_username = $user->internetAccess->setWifiCredentials();
         WifiConnection::factory($user->id % 5)->create(['wifi_username' => $wifi_username]);
         MacAddress::factory()->count($user->id % 5)->create(['user_id' => $user->id]);
     }
