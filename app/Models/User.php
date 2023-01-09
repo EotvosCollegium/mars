@@ -70,7 +70,7 @@ class User extends Authenticatable implements HasLocalePreference
     use HasFactory;
 
     /**
-     * The "booting" method of the model. 
+     * The "booting" method of the model.
      * Creates a print account and internet access for the user.
      *
      * @return void

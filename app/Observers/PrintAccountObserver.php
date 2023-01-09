@@ -15,7 +15,6 @@ class PrintAccountObserver
      */
     public function created(PrintAccount $printAccount)
     {
-
     }
 
     /**

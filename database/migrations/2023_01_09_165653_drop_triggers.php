@@ -5,8 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class () extends Migration {
     /**
      * Run the migrations.
      *
@@ -19,8 +18,6 @@ return new class extends Migration
         DB::unprepared('DROP TRIGGER trigger_print_account_history_balance');
         DB::unprepared('DROP TRIGGER trigger_insert_print_account_history_free_pages');
         DB::unprepared('DROP TRIGGER trigger_update_print_account_history_free_pages');
-        
-
     }
 
     /**
@@ -58,6 +55,5 @@ return new class extends Migration
                     END IF;
                 END;
         ');
-
     }
 };

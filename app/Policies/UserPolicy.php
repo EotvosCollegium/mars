@@ -211,11 +211,11 @@ class UserPolicy
         if ($role->name == Role::WORKSHOP_ADMINISTRATOR) {
             return ($user->hasRole(Role::WORKSHOP_LEADER)
                     && $user->roleWorkshops()->contains($object->id)
-                ) || $user->hasRole([
-                    Role::STUDENT_COUNCIL_SECRETARY,
-                    Role::SECRETARY,
-                    Role::STUDENT_COUNCIL => Role::SCIENCE_VICE_PRESIDENT
-                ]);
+            ) || $user->hasRole([
+                Role::STUDENT_COUNCIL_SECRETARY,
+                Role::SECRETARY,
+                Role::STUDENT_COUNCIL => Role::SCIENCE_VICE_PRESIDENT
+            ]);
         }
 
         if ($role->name == Role::STUDENT_COUNCIL_SECRETARY) {
