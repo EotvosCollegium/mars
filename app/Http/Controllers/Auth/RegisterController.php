@@ -133,7 +133,6 @@ class RegisterController extends Controller
         $user->roles()->attach(Role::firstWhere('name', $data['user_type'])->id);
 
         if ($data['user_type'] == Role::TENANT) {
-            $user->internetAccess->setWifiUsername();
             // Send confirmation mail.
             Mail::to($user)->queue(new \App\Mail\Confirmation($user->name));
             // Send notification about new tenant to the staff and network admins.

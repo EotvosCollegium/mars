@@ -7,7 +7,11 @@ use App\Events\MacAddressSaved;
 use App\Listeners\AutoApproveMacAddresses;
 use App\Listeners\MailGate;
 use App\Listeners\UpdatePhysicalIP;
+use App\Models\FreePages;
+use App\Models\PrintAccount;
 use App\Models\SemesterStatus;
+use App\Observers\FreePagesObserver;
+use App\Observers\PrintAccountObserver;
 use App\Observers\StatusObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -47,5 +51,7 @@ class EventServiceProvider extends ServiceProvider
         parent::boot();
 
         SemesterStatus::observe(StatusObserver::class);
+        FreePages::observe(FreePagesObserver::class);
+        PrintAccount::observe(PrintAccountObserver::class);
     }
 }

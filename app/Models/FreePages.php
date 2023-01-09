@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
+ * Model to keep track of the users' free pages.
+ * Changes are logged in print_account_history table. See FreePagesObserver.
  * @property mixed $user_id
  */
 class FreePages extends Model

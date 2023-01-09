@@ -88,9 +88,7 @@ class InternetController extends Controller
 
     public function resetWifiPassword(Request $request)
     {
-        $internetAccess = Auth::user()->internetAccess;
-        $internetAccess->wifi_password = Str::random(8);
-        $internetAccess->save();
+        Auth::user()->internetAccess->resetPassword();
 
         return redirect()->back();
     }
@@ -139,8 +137,7 @@ class InternetController extends Controller
         $internetAccess = $user->internetAccess;
 
         if ($internetAccess != null) {
-            $internetAccess->has_internet_until = EventTrigger::internetActivationDeadline();
-            $internetAccess->save();
+            $internetAccess->update(['has_internet_until' => EventTrigger::internetActivationDeadline()]);
 
             return $internetAccess->has_internet_until;
         } else {
