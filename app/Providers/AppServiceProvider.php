@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 
@@ -42,5 +43,16 @@ class AppServiceProvider extends ServiceProvider
                     ->with($relation, $constraint);
             }
         );
+
+        // Prevent lazy loading of relations. See eager loading: https://laravel.com/docs/9.x/eloquent-relationships#eager-loading
+        Model::preventLazyLoading(config('app.preventLazyLoading'));
+
+        // Throw error when trying to set an attribute that does not set in fillable property of the model.
+        Model::preventSilentlyDiscardingAttributes(!$this->app->isProduction());
+
+        // Throw error when trying to access an attribute that does not exist. 
+        Model::preventAccessingMissingAttributes(!$this->app->isProduction());
+
+
     }
 }

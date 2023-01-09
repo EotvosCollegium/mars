@@ -2,15 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 
 /**
@@ -108,8 +105,10 @@ class Role extends Model
     ];
 
     protected $fillable = [
-        'name',
+        'name', 'has_objects', 'has_workshops'
     ];
+
+    public $timestamps = false;
 
 
     public function users(): BelongsToMany
@@ -160,7 +159,6 @@ class Role extends Model
         if ($object instanceof RoleObject) {
             return $object;
         }
-
         return Cache::remember('role_'.$this->id.'_object_'.$object, 86400, function () use ($object) {
             /* @var RoleObject|Workshop|null $object */
             if ($this->has_objects && is_numeric($object)) {
