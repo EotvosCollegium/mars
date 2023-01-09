@@ -39,7 +39,7 @@ class InternetAccess extends Model
             }
         }
         $this->update([
-            'wifi_username' => $username, 
+            'wifi_username' => $username,
             'wifi_password' => Str::random(8)
         ]);
 

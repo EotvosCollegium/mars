@@ -89,7 +89,7 @@ class InternetController extends Controller
     public function resetWifiPassword(Request $request)
     {
         Auth::user()->internetAccess->resetPassword();
-       
+
         return redirect()->back();
     }
 
