@@ -11,8 +11,10 @@ class AddWorkshop extends Migration
      */
     public function up()
     {
-        DB::table('workshops')->insertOrIgnore(['name' => \App\Models\Workshop::GAZDALKODASTUDOMANYI]);
-        DB::table('faculties')->insertOrIgnore(['name' => \App\Models\Faculty::GTI]);
+        if (DB::table('workshops')->where('name', \App\Models\Workshop::GAZDALKODASTUDOMANYI)->doesntExist())
+            DB::table('workshops')->insert(['name' => \App\Models\Workshop::GAZDALKODASTUDOMANYI]);
+        if (DB::table('faculties')->where('name', \App\Models\Faculty::GTI)->doesntExist())
+            DB::table('faculties')->insert(['name' => \App\Models\Faculty::GTI]);
     }
 
     /**
