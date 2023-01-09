@@ -50,9 +50,7 @@ class AppServiceProvider extends ServiceProvider
         // Throw error when trying to set an attribute that does not set in fillable property of the model.
         Model::preventSilentlyDiscardingAttributes(!$this->app->isProduction());
 
-        // Throw error when trying to access an attribute that does not exist. 
+        // Throw error when trying to access an attribute that does not exist.
         Model::preventAccessingMissingAttributes(!$this->app->isProduction());
-
-
     }
 }

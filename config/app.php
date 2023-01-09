@@ -57,8 +57,8 @@ return [
 
     /*
     |
-    | Prevent lazy loading for relations. 
-    | See eager loading: https://laravel.com/docs/9.x/eloquent-relationships#eager-loading 
+    | Prevent lazy loading for relations.
+    | See eager loading: https://laravel.com/docs/9.x/eloquent-relationships#eager-loading
     |
     */
     'preventLazyLoading' => env('PREVENT_LAZY_LOADING', false) && env('APP_DEBUG', false),
