@@ -29,6 +29,9 @@ class InternetAccess extends Model
         return $this->has_internet_until != null && $this->has_internet_until > date('Y-m-d');
     }
 
+    /**
+     * Set wifi username based on neptun code or user_id and set random wifi password.
+     */
     public function setWifiCredentials($username = null)
     {
         if ($username === null) {
@@ -46,6 +49,9 @@ class InternetAccess extends Model
         return $username;
     }
 
+    /**
+     * Set a random wifi password.
+     */
     public function resetPassword()
     {
         $this->update(['wifi_password' => Str::random(8)]);

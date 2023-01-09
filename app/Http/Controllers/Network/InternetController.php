@@ -137,8 +137,7 @@ class InternetController extends Controller
         $internetAccess = $user->internetAccess;
 
         if ($internetAccess != null) {
-            $internetAccess->has_internet_until = EventTrigger::internetActivationDeadline();
-            $internetAccess->save();
+            $internetAccess->update(['has_internet_until' => EventTrigger::internetActivationDeadline()]);
 
             return $internetAccess->has_internet_until;
         } else {
