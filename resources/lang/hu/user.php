@@ -85,4 +85,6 @@ return [
     'year_of_graduation' => 'Érettségi éve',
     'year_of_the_leaving_exam' => 'Érettségi éve',
     'zip_code' => 'Irányítószám',
+    'relatives_contact_data' => 'Hozzátartozók neve és elérhetőségei',
+    'relatives_contact_data_desc' => 'Baleset esetén értesítendő',
 ];
