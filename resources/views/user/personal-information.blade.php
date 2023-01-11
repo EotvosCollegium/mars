@@ -77,6 +77,11 @@
             locale='user'
             required
             :value="$user->personalInformation?->street_and_number" />
+        <x-input.text
+            id='relatives_contact_data'
+            text='Hozzátartozó elérhetősége'
+            required
+            :value="$user->personalInformation?->relatives_contact_data" />
         @endif
         @if($only_tenant_until ?? false)
         </div>
