@@ -18,5 +18,6 @@ class DatabaseSeeder extends Seeder
         $this->call(RouterSeeder::class);
         $this->call(TransactionSeeder::class);
         $this->call(EpistolaSeeder::class);
+        $this->call(VotingSeeder::class);
     }
 }
