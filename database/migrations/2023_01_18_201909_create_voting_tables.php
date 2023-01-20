@@ -27,7 +27,6 @@ return new class extends Migration
             $table->string('title');
             $table->datetime('opened_at')->nullable();
             $table->datetime('closed_at')->nullable();
-            $table->timestamps();
         });
         Schema::create('options', function (Blueprint $table) {
             $table->bigIncrements('id');
@@ -46,7 +45,6 @@ return new class extends Migration
                 ->references('id')->on('users')
                 ->onDelete('cascade');
             $table->datetime('voted_at');
-            $table->timestamps();
         });
     }
 
