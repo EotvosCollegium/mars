@@ -21,7 +21,7 @@ class InternetFault extends Mailable
      *
      * @param  string  $userName
      */
-    public function __construct(string $recipient, string $reporter , string $report , string $user_os)
+    public function __construct(string $recipient, string $reporter, string $report, string $user_os)
     {
         $this->recipient = $recipient;
         $this->reporter = $reporter;
