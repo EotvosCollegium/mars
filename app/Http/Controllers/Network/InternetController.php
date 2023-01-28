@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Network;
 
 use App\Http\Controllers\Controller;
+use App\Mail\InternetFault;
 use App\Models\EventTrigger;
 use App\Models\InternetAccess;
 use App\Models\MacAddress;
@@ -12,6 +13,7 @@ use App\Models\WifiConnection;
 use App\Utils\TabulatorPaginator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
@@ -220,5 +222,19 @@ class InternetController extends Controller
         $user->internetAccess->increment('wifi_connection_limit');
 
         return redirect()->back()->with('message', __('general.successful_modification'));
+    }
+
+    public function reportFault(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'report' => 'required|string',
+            'user_os' => 'required|string',
+        ]);
+        $validator->validate();
+
+        foreach (User::role(Role::SYS_ADMIN)->get() as $admin) {
+            Mail::to($admin)->queue(new InternetFault($admin->name, Auth::user()->name, $request->report, $request->user_os));
+        }
+        return redirect()->back()->with('message', __('mail.email_sent'));
     }
 }
