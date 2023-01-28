@@ -25,6 +25,7 @@ return new class extends Migration
                 ->references('id')->on('sittings')
                 ->onDelete('cascade');
             $table->string('title');
+            $table->integer('max_options')->default(1);
             $table->datetime('opened_at')->nullable();
             $table->datetime('closed_at')->nullable();
         });

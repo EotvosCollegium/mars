@@ -13,6 +13,8 @@ class Sitting extends Model
 
     public $timestamps = false;
 
+    protected $fillable = ['title', 'opened_at', 'closed_at'];
+
     /**
      * The attributes that should be cast to native types.
      *
@@ -34,12 +36,12 @@ class Sitting extends Model
         return $this->closed_at!=null && $this->closed_at<=now();
     }
     public function open(): void {
-        if (isOpen() || isClosed()) throw new Exception("tried to open sitting when it has already been opened");
+        if ($this->isOpen() || $this->isClosed()) throw new Exception("tried to open sitting when it has already been opened");
         $this->opened_at=now();
     }
-    public function closed(): void {
-        if (isClosed()) throw new Exception("tried to close sitting when it has already been closed");
-        if (!isOpen()) throw new Exception("tried to close sitting when it was not open");
+    public function close(): void {
+        if ($this->isClosed()) throw new Exception("tried to close sitting when it has already been closed");
+        if (!$this->isOpen()) throw new Exception("tried to close sitting when it was not open");
         $this->closed_at=now();
     }
     public function addQuestion(string $title): Question {
@@ -47,5 +49,8 @@ class Sitting extends Model
             'sitting_id' => $this->id,
             'title' => $title
         ]);
+    }
+    public function questions() {
+        return $this->hasMany(Question::class)->orderByDesc('opened_at')->get();
     }
 }

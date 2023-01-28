@@ -30,6 +30,7 @@ use App\Http\Controllers\StudentsCouncil\EconomicController;
 use App\Http\Controllers\StudentsCouncil\EpistolaController;
 use App\Http\Controllers\StudentsCouncil\MrAndMissController;
 use App\Http\Controllers\StudentsCouncil\CommunityServiceController;
+use App\Http\Controllers\StudentsCouncil\VotingController;
 use App\Http\Controllers\Dormitory\RoomController;
 use App\Models\Room;
 use Illuminate\Support\Facades\Auth;
@@ -209,4 +210,11 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::post('/community_service/reject/{community_service}', [CommunityServiceController::class, 'reject'])->name('community_service.reject');
     Route::post('/community_service/create', [CommunityServiceController::class, 'create'])->name('community_service.create');
     Route::get('/community_service/search', [CommunityServiceController::class, 'search'])->name('community_service.search');
+
+    Route::get('/voting', [VotingController::class, 'index'])->name('voting');
+    Route::get('/voting/new_sitting', [VotingController::class, 'newSitting'])->name('voting.new_sitting');
+    Route::post('/voting/add_sitting', [VotingController::class, 'addSitting'])->name('voting.add_sitting');
+    Route::get('/voting/{id}', [VotingController::class, 'viewSitting'])->name('voting.view_sitting');
+    Route::post('/voting/{id}/close', [VotingController::class, 'closeSitting'])->name('voting.close_sitting');
+    Route::get('/voting/{id}/new_question', [VotingController::class, 'newQuestion'])->name('voting.new_question');
 });

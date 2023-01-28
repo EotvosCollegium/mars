@@ -43,8 +43,14 @@ class Question extends Model
             'votes' => 0
         ]);
     }
+    public function isMultipleChoice(): bool {
+        return $this->max_options>1;
+    }
     public function hasVoted(User $user): bool {
         return DB::table('question_user')->where('question_id', $this->id)
                 ->where('user_id', $user->id)->exists();
+    }
+    public function canVote(User $user): bool {
+        return $this->isOpen() && $user->isCollegist() && $user->isActive() && !$this->hasVoted($user);
     }
 }
