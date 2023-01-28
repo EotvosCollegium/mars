@@ -91,7 +91,10 @@ class UserController extends Controller
             'workshop.*' => 'exists:workshops,id',
             'email' => 'required|string|email|max:255',
             'program' => 'required|array|min:1',
-            'program.*' => 'nullable|string'
+            'program.*' => 'nullable|string',
+            'alfonso_language' => ['nullable', Rule::in(array_keys(config('app.alfonso_languages')))],
+            'alfonso_desired_level' => 'nullable|in:B2,C2',
+            'alfonso_passed_by' => 'nullable|date|before:today'
         ]);
 
         $validator->validate();

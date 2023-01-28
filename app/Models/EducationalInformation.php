@@ -27,6 +27,9 @@ class EducationalInformation extends Model
         'year_of_acceptance',
         'email',
         'program',
+        'alfonso_language',
+        'alfonso_desired_level',
+        'alfonso_passed_by'
     ];
 
     public function user()

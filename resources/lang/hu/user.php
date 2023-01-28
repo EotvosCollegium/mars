@@ -85,4 +85,8 @@ return [
     'year_of_graduation' => 'Érettségi éve',
     'year_of_the_leaving_exam' => 'Érettségi éve',
     'zip_code' => 'Irányítószám',
+    'alfonso_language' => 'ALFONSÓ nyelv',
+    'alfonso_language_desc' => 'Az ALFONSÓ program keretében választott nyelv (később módosítható)',
+    'alfonso_desired_level' => 'Elérni kívánt szint',
+    'alfonso_passed_by' => 'ALFONSÓ kötelezettség teljesítve',
 ];
