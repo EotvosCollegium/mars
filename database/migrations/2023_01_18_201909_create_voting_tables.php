@@ -29,7 +29,7 @@ return new class extends Migration
             $table->datetime('opened_at')->nullable();
             $table->datetime('closed_at')->nullable();
         });
-        Schema::create('options', function (Blueprint $table) {
+        Schema::create('question_options', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->foreignId('question_id')
                 ->references('id')->on('questions')
@@ -45,7 +45,7 @@ return new class extends Migration
             $table->foreignId('user_id')
                 ->references('id')->on('users')
                 ->onDelete('cascade');
-            $table->datetime('voted_at');
+            $table->timestamps();
         });
     }
 

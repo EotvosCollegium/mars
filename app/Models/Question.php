@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Support\Facades\DB;
-use App\Models\Option;
+use App\Models\QuestionOption;
 use App\Models\User;
 
 
@@ -36,8 +36,8 @@ class Question extends Model
         if (!isOpen()) throw new Exception("tried to close sitting when it was not open");
         $this->closed_at=now();
     }
-    public function addOption(string $title): Option {
-        return Option::create([
+    public function addOption(string $title): QuestionOption {
+        return QuestionOption::create([
             'question_id' => $this->id,
             'title' => $title,
             'votes' => 0

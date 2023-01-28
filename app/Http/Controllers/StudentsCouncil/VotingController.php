@@ -9,10 +9,6 @@ use App\Models\Sitting;
 
 class VotingController extends Controller
 {
-    public const POSSIBLE_MAX_OPTIONS = [
-        "1", "3"
-    ];
-
     public function index()
     {
         $this->authorize('viewAny', Sitting::class);
@@ -77,8 +73,7 @@ class VotingController extends Controller
         $this->authorize('administer', Sitting::class);
         if (!$id->isOpen()) abort(401, "tried to modify a sitting which was not open");
         return view('student-council.voting.new_question', [
-            "sitting" => $id,
-            "possible_max_options" => VotingController::POSSIBLE_MAX_OPTIONS
+            "sitting" => $id
         ]);
     }
 

@@ -18,11 +18,12 @@
                 <div class="card-content">
                     <span class="card-title">@lang('voting.new_question')</span>
                     <div class="row">
-                        <x-input.text s="12" type="text" text="voting.question_title" id="title" maxlength="100" required/>
+                        <x-input.text s="12" type="text" text="{{ __('voting.question_title') }}" id="title" maxlength="100" required/>
                     </div>
                     <div class="row">
-                        <x-input.select s="12" id="approver" :elements="$possible_max_options" :text="__('voting.max_options')"/>
+                        <x-input.text type="number" min="1" max="3" value="1" s="12" id="max_options" text="{{ __('voting.max_options') }}" required/>
                     </div>
+                    <span class="card-title">@lang('voting.options')</span>
                 </div>
                 <div class="card-action right-align">
                     <a href="{{ route('voting.view_sitting', $sitting) }}" class="waves-effect btn">@lang('general.cancel')</a>

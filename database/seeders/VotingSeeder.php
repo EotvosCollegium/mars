@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Sitting;
 use App\Models\Question;
-use App\Models\Option;
+use App\Models\QuestionOption;
 use Illuminate\Database\Seeder;
 
 class VotingSeeder extends Seeder
@@ -29,15 +29,15 @@ class VotingSeeder extends Seeder
             'opened_at' => now(),
         ]);
 
-        $yesOption = Option::create([
+        $yesOption = QuestionOption::create([
             'question_id' => $openQuestion->id,
             'title' => "Yes"
         ]);
-        $noOption = Option::create([
+        $noOption = QuestionOption::create([
             'question_id' => $openQuestion->id,
             'title' => "No"
         ]);
-        $abstainOption = Option::create([
+        $abstainOption = QuestionOption::create([
             'question_id' => $openQuestion->id,
             'title' => "Abstain"
         ]);
