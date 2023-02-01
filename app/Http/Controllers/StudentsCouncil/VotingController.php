@@ -20,7 +20,7 @@ class VotingController extends Controller
             "sittings" => Sitting::orderByDesc('opened_at')->get()
         ]);
     }
-    
+
     public function newSitting()
     {
         $this->authorize('administer', Sitting::class);
@@ -67,15 +67,20 @@ class VotingController extends Controller
     public function closeSitting(Sitting $id)
     {
         $this->authorize('administer', Sitting::class);
-        if (!$id->isOpen()) abort(401, "tried to close a sitting which was not open");
-        $id->close(); $id->save();
+        if (!$id->isOpen()) {
+            abort(401, "tried to close a sitting which was not open");
+        }
+        $id->close();
+        $id->save();
         return back()->with('message', __('voting.sitting_closed'));
     }
 
     public function newQuestion(Sitting $id)
     {
         $this->authorize('administer', Sitting::class);
-        if (!$id->isOpen()) abort(401, "tried to modify a sitting which was not open");
+        if (!$id->isOpen()) {
+            abort(401, "tried to modify a sitting which was not open");
+        }
         return view('student-council.voting.new_question', [
             "sitting" => $id
         ]);
@@ -84,12 +89,22 @@ class VotingController extends Controller
     public function addQuestion(Sitting $id, Request $request)
     {
         $this->authorize('administer', Sitting::class);
-        if (!$id->isOpen()) abort(401, "tried to modify a sitting which was not open");
+        if (!$id->isOpen()) {
+            abort(401, "tried to modify a sitting which was not open");
+        }
 
         //splitting by newlines and removing options which only have whitespace
-        $options=array_map(function ($s) {return trim($s);},
-                           array_filter(explode("\n", $request->options), function ($s) {return !ctype_space($s);}));
-        if (count($options)==0) return back()->with('message', __('voting.at_least_one_option'));
+        $options=array_map(
+            function ($s) {
+            return trim($s);
+        },
+            array_filter(explode("\n", $request->options), function ($s) {
+                return !ctype_space($s);
+            })
+        );
+        if (count($options)==0) {
+            return back()->with('message', __('voting.at_least_one_option'));
+        }
 
         $validator = Validator::make($request->all(), [
             'title' => 'required|string',
@@ -98,8 +113,7 @@ class VotingController extends Controller
         $validator->validate();
 
         $question = $id->addQuestion($request->title, $request->max_options, now());
-        foreach($options as $option)
-        {
+        foreach ($options as $option) {
             $question->addOption($option);
         }
 
@@ -117,8 +131,11 @@ class VotingController extends Controller
     public function closeQuestion(Question $id)
     {
         $this->authorize('administer', Sitting::class);
-        if (!$id->isOpen()) abort(401, "tried to close a question which was not open");
-        $id->close(); $id->save();
+        if (!$id->isOpen()) {
+            abort(401, "tried to close a question which was not open");
+        }
+        $id->close();
+        $id->save();
         return back()->with('message', __('voting.question_closed'));
     }
 
@@ -150,7 +167,7 @@ class VotingController extends Controller
     public function saveVote(Question $id, Request $request)
     {
         $this->authorize('vote', $id); //this also checks whether the user has already voted
-        
+
         if ($id->max_options==1) {
             $option=QuestionOption::where('id', $request->option)->first();
             $option->vote(Auth::user()); //this also saves
@@ -159,7 +176,7 @@ class VotingController extends Controller
             if (count($request->option) > $id->max_options) {
                 return redirect()->back()->with('message', __('voting.too_many_options'));
             } else {
-                foreach($request->option as $oid) {
+                foreach ($request->option as $oid) {
                     $option=QuestionOption::where('id', $oid)->first();
                     $option->vote(Auth::user());
                 }

@@ -25,29 +25,44 @@ class Sitting extends Model
         'closed_at' => 'datetime',
     ];
 
-    public function hasBeenOpened(): bool {
+    public function hasBeenOpened(): bool
+    {
         return $this->opened_at!=null && $this->opened_at<=now();
     }
-    public function isOpen(): bool {
+    public function isOpen(): bool
+    {
         return $this->hasBeenOpened() &&
                 !$this->isClosed();
     }
-    public function isClosed(): bool {
+    public function isClosed(): bool
+    {
         return $this->closed_at!=null && $this->closed_at<=now();
     }
-    public function open(): void {
-        if ($this->isOpen() || $this->isClosed()) throw new Exception("tried to open sitting when it has already been opened");
+    public function open(): void
+    {
+        if ($this->isOpen() || $this->isClosed()) {
+            throw new Exception("tried to open sitting when it has already been opened");
+        }
         $this->opened_at=now();
     }
-    public function close(): void {
-        if ($this->isClosed()) throw new Exception("tried to close sitting when it has already been closed");
-        if (!$this->isOpen()) throw new Exception("tried to close sitting when it was not open");
-        foreach($this->questions() as $question) {
-            if ($question->isOpen()) {$question->close(); $question->save();}
+    public function close(): void
+    {
+        if ($this->isClosed()) {
+            throw new Exception("tried to close sitting when it has already been closed");
+        }
+        if (!$this->isOpen()) {
+            throw new Exception("tried to close sitting when it was not open");
+        }
+        foreach ($this->questions() as $question) {
+            if ($question->isOpen()) {
+                $question->close();
+                $question->save();
+            }
         }
         $this->closed_at=now();
     }
-    public function addQuestion(string $title, int $max_options=1, $opened_at=null, $closed_at=null): Question {
+    public function addQuestion(string $title, int $max_options=1, $opened_at=null, $closed_at=null): Question
+    {
         return Question::create([
             'sitting_id' => $this->id,
             'title' => $title,
@@ -56,7 +71,8 @@ class Sitting extends Model
             'closed_at' => $closed_at
         ]);
     }
-    public function questions() {
+    public function questions()
+    {
         return $this->hasMany(Question::class)->orderByDesc('opened_at')->get();
     }
 }

@@ -9,7 +9,6 @@ use Illuminate\Database\Seeder;
 
 class VotingSeeder extends Seeder
 {
-
     /**Generate a sitting with questions too. */
     /*
     public static function createFakeSitting()

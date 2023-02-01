@@ -17,7 +17,10 @@ class QuestionPolicy
 
     public function view_results(User $user, Question $question): bool
     {
-        if ($question->isClosed()) return $user->can('viewAny', Sitting::class);
-        else return $user->can('administer', Sitting::class);
+        if ($question->isClosed()) {
+            return $user->can('viewAny', Sitting::class);
+        } else {
+            return $user->can('administer', Sitting::class);
+        }
     }
 }
