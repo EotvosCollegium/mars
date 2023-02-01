@@ -24,7 +24,7 @@ class SittingPolicy
      */
     public function administer(User $user)
     {
-        return $user->hasRole(Role::SYS_ADMIN) || $user->hasRole(Role::PRESIDENT)
+        return $user->hasRole(Role::SYS_ADMIN) || $user->hasRole([Role::STUDENT_COUNCIL => Role::PRESIDENT])
             || $user->hasRole(Role::SECRETARY);
     }
 }

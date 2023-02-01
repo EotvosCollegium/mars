@@ -1,8 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-<a href="#!" class="breadcrumb">@lang('admin.admin')</a>
-<a href="#!" class="breadcrumb">@lang('router.router_monitor')</a>
+<a href="#!" class="breadcrumb">@lang('voting.assembly')</a>
 @endsection
 @section('admin_module') active @endsection
 
@@ -47,7 +46,7 @@
                                 @if($sitting->isOpen())
                                     <span class="new badge green" data-badge-caption="">@lang('voting.open')</span>
                                 @else
-                                    <span class="new badge red" data-badge-caption=""> @lang('voting.closed'): </span>
+                                    <span class="new badge red" data-badge-caption="">@lang('voting.closed')</span>
                                 @endif
                             </td>
                             <td>

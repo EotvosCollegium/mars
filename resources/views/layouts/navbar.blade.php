@@ -98,6 +98,12 @@
                                     <i class="material-icons left">business_center</i> @lang('community-service.community-service')
                                 </a>
                             </li>
+                            <!-- voting -->
+                            <li>
+                                <a class="waves-effect" href="{{ route('voting') }}">
+                                    <i class="material-icons left">thumbs_up_down</i> @lang('voting.assembly')
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </li>

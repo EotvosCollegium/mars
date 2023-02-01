@@ -1,9 +1,8 @@
 @extends('layouts.app')
 
 @section('title')
-<a href="#!" class="breadcrumb">@lang('admin.admin')</a>
-<a href="{{ route('routers') }}" class="breadcrumb" style="cursor: pointer">@lang('router.router_monitor')</a>
-<a href="#!" class="breadcrumb">@lang('general.add_new')</a>
+<a href="{{route('voting')}}" class="breadcrumb">@lang('voting.assembly')</a>
+<a href="#!" class="breadcrumb">@lang('voting.new_sitting')</a>
 @endsection
 @section('admin_module') active @endsection
 
@@ -21,8 +20,8 @@
                     </div>
                 </div>
                 <div class="card-action right-align">
-                    <a href="{{ route('voting') }}" class="waves-effect btn">@lang('voting.cancel')</a>
-                    <button type="submit" class="waves-effect btn">@lang('voting.save')</button>
+                    <a href="{{ route('voting') }}" class="waves-effect btn">@lang('general.cancel')</a>
+                    <button type="submit" class="waves-effect btn">@lang('general.save')</button>
                 </div>
             </form>
         </div>

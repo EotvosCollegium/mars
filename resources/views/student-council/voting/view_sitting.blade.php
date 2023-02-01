@@ -1,8 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-<a href="#!" class="breadcrumb">@lang('admin.admin')</a>
-<a href="{{ route('routers') }}" class="breadcrumb" style="cursor: pointer">@lang('router.router_monitor')</a>
+<a href="{{ route('voting') }}" class="breadcrumb">@lang('voting.assembly')</a>
 <a href="#!" class="breadcrumb">{{ $sitting->title }}</a>
 @endsection
 @section('admin_module') active @endsection
@@ -95,16 +94,28 @@
                         <td>{{$question->opened_at}}</td>
                         <td>{{$question->closed_at}}</td>
                         <td>
+                            @if($question->isOpen())
+                            @can('administer', $sitting)
+                            <form action="{{ route('voting.close_question', $question->id) }}" method="POST" class="right" style="margin-right:10px">
+                                @csrf
+                                <x-input.button text="voting.close_question" class="red" />
+                            </form>
+                            @endcan
+                            @endif
+                        </td>
+                        <td>
                             @can('vote', $question)
-                            <a href="{{ route('voting.view_sitting', $sitting->id) }}" class="btn-floating waves-effect waves-light right">
+                            <a href="{{ route('voting.vote', $question->id) }}" class="btn-floating waves-effect waves-light right">
                                 <i class="material-icons">thumbs_up_down</i>
                             </a>
                             @endcan
                         </td>
                         <td>
-                            <a href="{{ route('voting.view_sitting', $sitting->id) }}" class="btn-floating waves-effect waves-light right">
+                            @can('view_results', $question)
+                            <a href="{{ route('voting.view_question', $question->id) }}" class="btn-floating waves-effect waves-light right">
                                 <i class="material-icons">remove_red_eye</i>
                             </a>
+                            @endcan
                         </td>
                     </tr>
                     @endforeach

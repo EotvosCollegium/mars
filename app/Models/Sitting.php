@@ -42,12 +42,18 @@ class Sitting extends Model
     public function close(): void {
         if ($this->isClosed()) throw new Exception("tried to close sitting when it has already been closed");
         if (!$this->isOpen()) throw new Exception("tried to close sitting when it was not open");
+        foreach($this->questions() as $question) {
+            if ($question->isOpen()) {$question->close(); $question->save();}
+        }
         $this->closed_at=now();
     }
-    public function addQuestion(string $title): Question {
+    public function addQuestion(string $title, int $max_options=1, $opened_at=null, $closed_at=null): Question {
         return Question::create([
             'sitting_id' => $this->id,
-            'title' => $title
+            'title' => $title,
+            'max_options' => $max_options,
+            'opened_at' => $opened_at,
+            'closed_at' => $closed_at
         ]);
     }
     public function questions() {

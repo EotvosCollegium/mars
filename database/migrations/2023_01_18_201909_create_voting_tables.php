@@ -36,7 +36,6 @@ return new class extends Migration
                 ->onDelete('cascade');
             $table->string('title');
             $table->integer('votes')->default(0);
-            $table->timestamps();
         });
         Schema::create('question_user', function (Blueprint $table) {
             $table->foreignId('question_id')
