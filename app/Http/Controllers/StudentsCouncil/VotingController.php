@@ -96,8 +96,8 @@ class VotingController extends Controller
         //splitting by newlines and removing options which only have whitespace
         $options=array_map(
             function ($s) {
-            return trim($s);
-        },
+                return trim($s);
+            },
             array_filter(explode("\n", $request->options), function ($s) {
                 return !ctype_space($s);
             })
