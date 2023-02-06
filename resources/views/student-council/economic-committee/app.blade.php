@@ -7,6 +7,7 @@
 @section('student_council_module') active @endsection
 
 @section('content')
+
 <div class="row">
     <div class="col s12">
         <div class="card">
@@ -15,19 +16,67 @@
                 <blockquote>
                     @lang('checkout.current_balance'):
                     <b class="coli-text text-orange"> {{ number_format($current_balance, 0, '.', ' ') }} Ft</b>.<br>
+                </blockquote>
+                @can('administrate', $checkout)
+                <blockquote>
                     @lang('checkout.current_balance_in_checkout'):
                     <b class="coli-text text-orange"> {{ number_format($current_balance_in_checkout, 0, '.', ' ') }} Ft</b>.<br>
+                    @if($transactions_not_in_checkout != 0)
+                    Tedd be (ha pozitív) / vedd ki (ha negatív) ezt az összeget a kasszából: <b class="coli-text text-orange">{{ number_format($transactions_not_in_checkout, 0, '.', ' ')}} Ft</b>
+                    <br>
+                    Figyelem: ebben az összegben a még általad (zsebből) ki nem fizetett vásárlások is benne vannak,
+                    így ha kiveszed az összeget, attól a rendszerben lévő tartozásokat még ki kell elégítened!
+                    <br>
+                    Miután kezelted az összeget, kattints a lenti zöld gombra!
+                    @endif
                 </blockquote>
-                @can('addKKTNetreg', \App\Models\Checkout::class)
-                    <a href="{{ route('kktnetreg') }}" class="btn waves-effect">
-                        @lang('checkout.kktnetreg')</a>
+                @if($transactions_not_in_checkout != 0)
+                    <form method="POST" action="{{ route($route_base . '.to_checkout') }}">
+                        @csrf
+                        <x-input.button floating class="btn-large right green" icon="payments"/>
+                    </form>
+                @endif
                 @endcan
             </div>
         </div>
+        <div class="row">
+            @can('addKKTNetreg', \App\Models\Checkout::class)
+            <div class="col s12">
+                <div class="card">
+                    <div class="card-content">
+                        <a href="{{ route('kktnetreg') }}" class="btn waves-effect right">
+                            KKT/NetReg fizetők listája</a>
+                        <span class="card-title">@lang('checkout.pay_kktnetreg')</span>
+                        <form method="POST" action="{{ route('kktnetreg.pay') }}">
+                            @csrf
+                            <div class="row">
+                                <div class="col s12">
+                                    <blockquote>@lang('checkout.pay_kkt_descr')<br>A Netreg tranzakcióid a <a href="{{route('admin.checkout')}}"> rendszergazdai kasszában</a> láthatod.</blockquote>
+                                    <x-input.select l=4 :elements="$users_not_payed" id="user_id" text="general.user" :formatter="function($user) { return $user->uniqueName; }" />
+                                    <x-input.text  m=6 l=4 id="kkt" text="KKT" type="number" required min="0" :value="config('custom.kkt')" />
+                                    <x-input.text  m=6 l=4 id="netreg" text="NetReg" type="number" required min="0" :value="config('custom.netreg')" />
+                                </div>
+                            </div>
+                            <x-input.button floating class="btn-large right" icon="send" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+            @endcan
+            <div class="col s12">
+                @include('utils.checkout.add-transaction')
+            </div>
+            <div class="col s12">
+                @include('utils.checkout.depts')
+            </div>
+            <div class="col s12">
+                @include('utils.checkout.my_transactions')
+            </div>
+        </div>
     </div>
-    <div class="col s12">
-        @include('utils.checkout.add-transaction')
-    </div>
+    @php
+        $semesters = $semesters->load('workshopBalances.workshop');
+    @endphp
     @foreach($semesters as $semester)
     @php
         $transactions = $semester->transactions;
@@ -39,17 +88,14 @@
                 <div class="row">
                     <div class="col s12">
                         <table><tbody>
-                            <tr><th colspan="3">@lang('checkout.incomes')</th></tr>
+                            @include('utils.checkout.header')
+                            <tr><th>@lang('checkout.incomes')</th></tr>
                             @include('utils.checkout.sum', ['paymentType' => \App\Models\PaymentType::kkt()])
                             @include('utils.checkout.list', ['paymentType' => \App\Models\PaymentType::income()])
-
-                            <tr><th colspan="3">@lang('checkout.expenses')</th></tr>
+                            <tr><th>@lang('checkout.expenses')</th></tr>
                             @include('utils.checkout.list', ['paymentType' => \App\Models\PaymentType::expense()])
                             @include('utils.checkout.sum',  ['paymentType' => \App\Models\PaymentType::workshopExpense()])
-                            <tr>
-                                <th colspan="2">@lang('checkout.sum')</th>
-                                <th class="right"><nobr>{{ number_format($semester->transactions->sum('amount'), 0, '.', ' ') }} Ft</nobr></th>
-                            </tr>
+                            @include('utils.checkout.footer')
                         </tbody></table>
                     </div>
                 </div>

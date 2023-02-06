@@ -14,7 +14,7 @@ class ListUsers extends Component
 {
     public $roles = [];
     public $workshops = [];
-    public $statuses = [SemesterStatus::ACTIVE];
+    public $statuses = SemesterStatus::STATUSES;
 
     public $year_of_acceptance = null;
     public $filter_name = '';
@@ -23,34 +23,39 @@ class ListUsers extends Component
     {
         $query = User::with(['roles', 'workshops', 'educationalInformation', 'allSemesters']);
 
-        foreach ($this->roles as $role) {
-            $query->whereHas('roles', function (Builder $query) use ($role) {
-                $query->where('id', $role);
-            });
-        }
+        $query->where(function (Builder $query) {
+            foreach ($this->roles as $role) {
+                $query->whereHas('roles', function (Builder $query) use ($role) {
+                    $query->where('id', $role);
+                });
+            }
 
-        foreach ($this->workshops as $workshop) {
-            $query->whereHas('workshops', function (Builder $query) use ($workshop) {
-                $query->where('id', $workshop);
-            });
-        }
+            foreach ($this->workshops as $workshop) {
+                $query->whereHas('workshops', function (Builder $query) use ($workshop) {
+                    $query->where('id', $workshop);
+                });
+            }
 
-        foreach ($this->statuses as $status) {
-            $query->whereHas('allSemesters', function (Builder $query) use ($status) {
-                $query->where('status', $status);
-                $query->where('id', Semester::current()->id);
-            });
-        }
+            if (isset($this->year_of_acceptance)) {
+                $query->whereHas('educationalInformation', function (Builder $query) {
+                    $query->where('year_of_acceptance', $this->year_of_acceptance);
+                });
+            }
 
-        if (isset($this->year_of_acceptance)) {
-            $query->whereHas('educationalInformation', function (Builder $query) {
-                $query->where('year_of_acceptance', $this->year_of_acceptance);
-            });
-        }
+            if (isset($this->filter_name)) {
+                $query->where('name', 'like', '%'.$this->filter_name.'%');
+            }
+        });
 
-        if (isset($this->filter_name)) {
-            $query->where('name', 'like', '%'.$this->filter_name.'%');
-        }
+        //'or' between statuses
+        $query->where(function ($query) {
+            foreach ($this->statuses as $status) {
+                $query->orWhereHas('allSemesters', function (Builder $query) use ($status) {
+                    $query->where('status', $status);
+                    $query->where('id', Semester::current()->id);
+                });
+            }
+        });
 
         return $query->orderBy('name')->get();
     }

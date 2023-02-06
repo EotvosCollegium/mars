@@ -56,6 +56,14 @@ return [
     'debug' => env('APP_DEBUG', false),
 
     /*
+    |
+    | Prevent lazy loading for relations.
+    | See eager loading: https://laravel.com/docs/9.x/eloquent-relationships#eager-loading
+    |
+    */
+    'preventLazyLoading' => env('PREVENT_LAZY_LOADING', false) && env('APP_DEBUG', false),
+
+    /*
     |--------------------------------------------------------------------------
     | Application URL
     |--------------------------------------------------------------------------

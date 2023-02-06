@@ -6,40 +6,77 @@ use App\Models\Checkout;
 use App\Models\PaymentType;
 use App\Models\Semester;
 use App\Models\Transaction;
+use App\Mail\Transactions;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 trait CheckoutHandler
 {
     /**
-     * Gets the transactions (collection) of the certain payment types in the checkout.
-     *
-     * @param Checkout
-     * @param  array  $payment_types  payment type names
+     * Returns the route name base, so some routes could be generated automatically.
+     * For example the route base of economic_committee.transaction.delete is economic_committee.
      */
-    private function getTransactionsByPaymentTypes(Checkout $checkout, array $payment_types)
+    abstract public static function routeBase();
+
+    /**
+     * Returns the Checkout model.
+     */
+    abstract public static function checkout(): Checkout;
+
+    /**
+     * Returns the data for the checkout view.
+     * @param Checkout $checkout
+     * @return array
+     */
+    private function getData(Checkout $checkout): array
     {
-        $this->authorize('view', $checkout);
+        /** @var User $user */
+        $user = Auth::user();
 
-        $payment_type_ids = $this->paymentTypeIDs($payment_types);
+        if ($user->can('administrate', $checkout)) {
+            $depts = User::withWhereHas('transactionsReceived', function ($query) use ($checkout) {
+                $query
+                    ->where('checkout_id', $checkout->id)
+                    ->whereNull('paid_at');
+            })->get();
+            $transactions_not_in_checkout = $checkout->transactions()->whereNull('moved_to_checkout')->sum('amount');
+            $current_balance_in_checkout = $checkout->balanceInCheckout();
+        }
 
-        return Transaction::where('checkout_id', $checkout->id)
-            ->whereIn('payment_type_id', $payment_type_ids)
-            ->with(['semester', 'type'])
-            ->orderBy('semester_id', 'desc')
+        $my_received_transactions = $user->transactionsReceived()
+            ->where('checkout_id', $checkout->id)
+            ->whereNull('paid_at')
             ->get();
+
+        return [
+            'current_balance' => $checkout->balance(),
+            'current_balance_in_checkout' => $current_balance_in_checkout ?? null,
+            'depts' => $depts ?? [],
+            'my_received_transactions' => $my_received_transactions,
+            'transactions_not_in_checkout' => $transactions_not_in_checkout ?? 0,
+            'semesters' => $checkout->transactionsBySemesters(),
+            'checkout' => $checkout,
+            'route_base' => $this->routeBase()
+        ];
     }
 
     /**
      * Gets the transactions of the certain payment types in the checkout.
      *
-     * @param Checkout
-     * @param  array  $payment_types  payment type ids
+     * @param Checkout $checkout
+     * @param array $payment_types payment type ids
+     * @return Collection
+     * @throws AuthorizationException
      */
-    private function getTransactionsGroupedBySemesters(Checkout $checkout, array $payment_types)
+    private function getTransactionsGroupedBySemesters(Checkout $checkout, array $payment_types): Collection
     {
         $this->authorize('view', $checkout);
 
@@ -58,123 +95,131 @@ trait CheckoutHandler
     }
 
     /**
-     * Gets the users with the transactions received which are not added to checkout yet.
-     *
-     * @param  array  $payment_typed  payment type names
-     * @param collection of the users with transactionsReceived attribute
+     * Mark all the transactions received by the current user as paid.
+     * @param User $user
+     * @return RedirectResponse
+     * @throws AuthorizationException
      */
-    public function getCollectedTransactions(array $payment_types)
+    public function markAsPaid(User $user): \Illuminate\Http\RedirectResponse
     {
-        $payment_type_ids = $this->paymentTypeIDs($payment_types);
+        $this->authorize('administrate', $this->checkout());
 
-        return User::collegists()->load(['transactionsReceived' => function ($query) use ($payment_type_ids) {
-            $query->whereIn('payment_type_id', $payment_type_ids);
-            $query->where('moved_to_checkout', null);
-        }])->filter(function ($user, $key) {
-            return $user->transactionsReceived->count();
-        })->unique();
-    }
+        $transactions = Transaction::where('receiver_id', $user->id)
+            ->where('checkout_id', $this->checkout()->id)
+            ->whereNull('paid_at')->get();
 
-    /**
-     * Move all the transactions received by the given user to the checkout.
-     * Moving the Netreg amount from the students council to the admins is not tracked.
-     * Note that the function do not filter with checkouts, only payment types.
-     *
-     * @param User
-     * @param Checkout
-     * @param  array  $payment_types  payment type names
-     * @return void
-     */
-    public function toCheckout(Request $request, array $payment_types)
-    {
-        $validator = Validator::make($request->all(), [
-            'user_id' => 'required|exists:users,id',
-        ]);
-        $validator->validate();
-        $user = User::findOrFail($request->user_id);
-
-        $payment_type_ids = $this->paymentTypeIDs($payment_types);
+        Mail::to(Auth::user())->queue(new Transactions(Auth::user()->name, $transactions, __('checkout.transaction_updated'), "Az alábbi tranzakciókat kifizetted."));
+        Mail::to($user)->queue(new Transactions($user->name, $transactions, __('checkout.transaction_updated'), "Az alábbi tranzakciókat kifizették neked."));
 
         Transaction::where('receiver_id', $user->id)
-            ->whereIn('payment_type_id', $payment_type_ids)
-            ->where('moved_to_checkout', null)
-            ->update(['moved_to_checkout' => Carbon::now()]);
+            ->where('checkout_id', $this->checkout()->id)
+            ->whereNull('paid_at')
+            ->update(['paid_at' => Carbon::now()]);
+
+
+        return redirect()->back()->with('message', __('general.successfully_added'));
     }
 
     /**
-     * Validates the request and creates a basic (income/expense) transaction in the checkout.
-     * The receiver will be null.
-     * The transaction will be moved to the checkout instantly.
-     *
-     * @param Request
-     * @param Checkout
-     * @return void
+     * Move all the transactions to the checkout.
+     * @throws AuthorizationException
      */
-    public function createTransaction(Request $request, Checkout $checkout): void
+    public function toCheckout(Request $request): \Illuminate\Http\RedirectResponse
     {
-        $this->authorize('administrate', $checkout);
+        $this->authorize('administrate', $this->checkout());
+
+        $user = Auth::user();
+
+        $transactions = Transaction::where('checkout_id', $this->checkout()->id)
+            ->where('moved_to_checkout', null)->get();
+
+        Mail::to($user)->queue(new Transactions($user->name, $transactions, __('checkout.transaction_updated'), "A tranzakciók új státusza: szinkronizálva a kasszával. (Ettől függetlenül még tartozhatsz embereknek, nézd meg Uránban!)"));
+
+        Transaction::where('checkout_id', $this->checkout()->id)
+            ->where('moved_to_checkout', null)->update(['moved_to_checkout' => Carbon::now()]);
+
+        return redirect()->back()->with('message', __('general.successfully_added'));
+    }
+
+    /**
+     * Create a basic expense transaction in the checkout.
+     * Income can only be added as KKT/Netreg currently.
+     * The receiver and the payer also will be the authenticated user
+     * (since this does not mean a payment between users, just a transaction from the checkout).
+     * The only exception for the payer is when the checkout handler administrates a transaction payed by someone else.
+     *
+     * @param Request $request
+     * @return RedirectResponse
+     * @throws AuthorizationException
+     * @throws ValidationException
+     */
+    public function addExpense(Request $request): RedirectResponse
+    {
+        $this->authorize('createTransaction', $this->checkout());
 
         $validator = Validator::make($request->all(), [
             'comment' => 'required|string',
-            'amount' => 'required|integer',
+            'amount' => 'required|integer|min:0',
+            'payer' => 'exists:users,id'
         ]);
         $validator->validate();
 
-        $type = $request->amount > 0 ? PaymentType::income()->id : PaymentType::expense()->id;
+        $user = $request->has('payer') ? User::find($request->input('payer')) : auth()->user();
+        $paid = $request->has('paid');
 
-        Transaction::create([
-            'checkout_id' => $checkout->id,
-            'receiver_id' => null,
-            'payer_id' => Auth::user()->id,
-            'semester_id' => Semester::current()->id,
-            'amount' => $request->amount,
-            'payment_type_id' => $type,
-            'comment' => $request->comment,
-            'moved_to_checkout' => Carbon::now(),
+        $transaction = Transaction::create([
+            'checkout_id'       => $this->checkout()->id,
+            'receiver_id'       => $user->id,
+            'payer_id'          => $user->id,
+            'semester_id'       => Semester::current()->id,
+            'amount'            => (-1) * $request->amount,
+            'payment_type_id'   => PaymentType::expense()->id,
+            'comment'           => $request->comment,
+            'paid_at'           => $paid ? Carbon::now() : null,
         ]);
+
+        Mail::to($user)->queue(
+            new Transactions(
+                $user->name,
+                [$transaction],
+                __('checkout.transaction_created'),
+                "Az alábbi tranzakciók jöttek létre:"
+            )
+        );
+
+        if ($this->checkout()->handler_id != $request->user()->id) {
+            Mail::to($this->checkout()->handler)->queue(
+                new Transactions(
+                    $this->checkout()->handler->name,
+                    [$transaction],
+                    __('checkout.transaction_created'),
+                    "Az alábbi tranzakciók jöttek létre:"
+                )
+            );
+        }
+
+        return back()->with('message', __('general.successfully_added'));
     }
 
-    public function deleteTransaction(Transaction $transaction)
+    /**
+     * Delete a transaction.
+     *
+     * @param Transaction $transaction to be deleted
+     * @throws AuthorizationException
+     */
+    public function deleteTransaction(Transaction $transaction): RedirectResponse
     {
         $this->authorize('delete', $transaction);
+
+        if ($transaction->payer) {
+            Mail::to($transaction->payer)->queue(new Transactions($transaction->payer->name, [$transaction], __('checkout.transaction_deleted'), __('checkout.transactions_has_been_deleted')));
+        }
+        if ($transaction->receiver && $transaction->receiver->id != $transaction->payer?->id) {
+            Mail::to($transaction->receiver)->queue(new Transactions($transaction->receiver->name, [$transaction], __('checkout.transaction_deleted'), __('checkout.transactions_has_been_deleted')));
+        }
+
         $transaction->delete();
 
         return redirect()->back()->with('message', __('general.successfully_deleted'));
     }
-
-    /**
-     * Return the transactions received by the authenticated user,
-     * which has not been moved to checkout,
-     * filtered by the payment types attribute.
-     * Note that the checkout is not filtered (because KKT and NETREG are in diff. checkouts).
-     *
-     * @param  array  $payment_types  payment type names
-     */
-    public function userTransactionsNotInCheckout(array $payment_types): iterable
-    {
-        $payment_type_ids = $this->paymentTypeIDs($payment_types);
-
-        return Transaction::where('receiver_id', Auth::user()->id)
-            ->with(['type', 'payer'])
-            ->where('moved_to_checkout', null)
-            ->whereIn('payment_type_id', $payment_type_ids)
-            ->get();
-    }
-
-    /**
-     * Converts the paymentType names to the paymentType ids in an array.
-     *
-     * @param  array  $payment_types  array of the names
-     * @return array of ints
-     */
-    private function paymentTypeIDs(array $payment_types): array
-    {
-        return array_map(fn ($name) => PaymentType::getByName($name)->id, $payment_types);
-    }
-
-    /**
-     * Returns the route name base, so some routes could be generated automatically.
-     * For example the route base of economic_committee.transaction.delete is economic_committee.
-     */
-    abstract public static function routeBase();
 }

@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Network\InternetController;
 use App\Models\Checkout;
 use App\Models\PaymentType;
+use App\Models\Role;
+use App\Models\RoleObject;
 use App\Models\Semester;
 use App\Models\Transaction;
 use App\Models\User;
@@ -13,6 +15,7 @@ use App\Models\WorkshopBalance;
 use App\Utils\CheckoutHandler;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
@@ -21,54 +24,57 @@ class EconomicController extends Controller
 {
     use CheckoutHandler;
 
-    public function index($redirected = false)
+    /**
+     * Return the route base for the checkout of the students council.
+     */
+    public static function routeBase(): string
     {
-        $checkout = Checkout::studentsCouncil();
-        $payment_types = PaymentType::forCheckout($checkout)->pluck('id')->toArray();
-
-        $this->authorize('view', $checkout);
-
-        $view = view('student-council.economic-committee.app', [
-            'current_balance' => $checkout->balance(),
-            'current_balance_in_checkout' => $checkout->balanceInCheckout(),
-            'semesters' => $this->getTransactionsGroupedBySemesters($checkout, $payment_types),
-            'checkout' => $checkout,
-            'route_base' => $this->routeBase(),
-        ]);
-
-        if ($redirected) {
-            return $view->with('message', __('general.successfully_added'));
-        }
-
-        return $view;
+        return 'economic_committee';
     }
 
+    /**
+     * Return the checkout of the students council.
+     */
+    public static function checkout(): Checkout
+    {
+        return Checkout::studentsCouncil();
+    }
+
+    /**
+     * Show the checkout page.
+     */
+    public function index()
+    {
+        $this->authorize('view', $this->checkout());
+
+        return view(
+            'student-council.economic-committee.app',
+            array_merge($this->getData($this->checkout()), [
+                'users_not_payed' => User::hasToPayKKTNetreg()->get()
+            ])
+        );
+    }
+
+    /**
+     * Show the kkt / netreg page.
+     */
     public function indexKKTNetreg()
     {
-        $checkout = Checkout::studentsCouncil();
-
         $this->authorize('addKKTNetreg', Checkout::class);
 
-        $payment_types = [
-            PaymentType::NETREG,
-            PaymentType::KKT,
-        ];
-
         return view('student-council.economic-committee.kktnetreg', [
-            'users_not_payed' => User::hasToPayKKTNetregInSemester(Semester::current()->id)->get(),
-            'transactions' => $this->getTransactionsByPaymentTypes($checkout, $payment_types),
-            'user_transactions_not_in_checkout' => $this->userTransactionsNotInCheckout($payment_types),
-            'collected_transactions' => $this->getCollectedTransactions($payment_types),
-            'checkout' => $checkout,
-            'route_base' => $this->routeBase(),
+            'users_not_payed' => User::hasToPayKKTNetreg()->get(),
+            'transactions' => Transaction::whereIn('payment_type_id', [PaymentType::kkt()->id, PaymentType::netreg()->id])
+                    ->where('semester_id', Semester::current()->id)
+                    ->get()
         ]);
     }
 
+    /**
+     * Pay kkt / netreg.
+     */
     public function payKKTNetreg(Request $request)
     {
-        $valasztmany_checkout = Checkout::studentsCouncil();
-        $admin_checkout = Checkout::admin();
-
         $this->authorize('addKKTNetreg', Checkout::class);
 
         $validator = Validator::make($request->all(), [
@@ -82,7 +88,7 @@ class EconomicController extends Controller
 
         // Creating transactions
         $kkt = Transaction::create([
-            'checkout_id' => $valasztmany_checkout->id,
+            'checkout_id' => Checkout::studentsCouncil()->id,
             'receiver_id' => Auth::user()->id,
             'payer_id' => $payer->id,
             'semester_id' => Semester::current()->id,
@@ -93,7 +99,7 @@ class EconomicController extends Controller
         ]);
 
         $netreg = Transaction::create([
-            'checkout_id' => $admin_checkout->id,
+            'checkout_id' => Checkout::admin()->id,
             'receiver_id' => Auth::user()->id,
             'payer_id' => $payer->id,
             'semester_id' => Semester::current()->id,
@@ -113,38 +119,14 @@ class EconomicController extends Controller
             ]);
         }
 
-        Mail::to($payer)->queue(new \App\Mail\PayedTransaction($payer->name, [$kkt, $netreg], $internet_expiration_message));
+        Mail::to($payer)->queue(new \App\Mail\Transactions($payer->name, [$kkt, $netreg], __('checkout.transaction_created'), $internet_expiration_message));
 
         return redirect()->back()->with('message', __('general.successfully_added'));
     }
 
-    public function KKTNetregToCheckout(Request $request)
-    {
-        $checkout = Checkout::studentsCouncil();
-        $this->authorize('administrate', $checkout);
-        //will change the admin checkout's netregs too!
-
-        $payment_types = [
-            PaymentType::KKT,
-            PaymentType::NETREG,
-        ];
-
-        $this->toCheckout($request, $payment_types);
-
-        return redirect()->back()->with('message', __('general.successful_modification'));
-    }
-
-    public function addTransaction(Request $request)
-    {
-        $checkout = Checkout::studentsCouncil();
-        $this->createTransaction($request, $checkout);
-
-        return redirect()->action(
-            [EconomicController::class, 'index'],
-            ['redirected' => true]
-        );
-    }
-
+    /**
+     * Recalculate the workshop balances in the current semester.
+     */
     public function calculateWorkshopBalance()
     {
         WorkshopBalance::generateBalances(Semester::current()->id);
@@ -152,6 +134,9 @@ class EconomicController extends Controller
         return redirect()->back()->with('message', __('general.successful_modification'));
     }
 
+    /**
+     * Modify a workshop balance.
+     */
     public function modifyWorkshopBalance(WorkshopBalance $workshop_balance, Request $request)
     {
         $this->authorize('administrate', Checkout::studentsCouncil());
@@ -171,10 +156,5 @@ class EconomicController extends Controller
         ]);
 
         return redirect()->back()->with('message', __('general.successful_modification'));
-    }
-
-    public static function routeBase()
-    {
-        return 'economic_committee';
     }
 }

@@ -28,6 +28,7 @@ class PossibleRedirects
             // The user is not redirected if they are already on the page to change their semester.
             if (!$request->routeIs('secretariat.status-update.*')
             && $user->isCollegist()
+            && $user->getStatusIn(Semester::previous()->id) != SemesterStatus::DEACTIVATED
             && !$user->hasActivated()) {
                 return redirect(route('secretariat.status-update.show'));
             }
@@ -38,7 +39,9 @@ class PossibleRedirects
              *    as their tenant_until is set automatically until the end of the semester
              * The user is not redirected if they are already on the page to update the tenant_until.
             */
-            if (!$request->routeIs('secretariat.status-update.*') && !$request->is('users/tenant_update/*') && $user->needsUpdateTenantUntil()) {
+            if (!$request->routeIs('secretariat.status-update.*')
+            && !$request->is('users/tenant_update/*')
+            && $user->needsUpdateTenantUntil()) {
                 return redirect(route('users.tenant-update.show'));
             }
         }

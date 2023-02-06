@@ -69,6 +69,24 @@ class User extends Authenticatable implements HasLocalePreference
     use Notifiable;
     use HasFactory;
 
+    /**
+     * The "booting" method of the model.
+     * Creates a print account and internet access for the user.
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($user) {
+            $user->printAccount()->create([]);
+            $user->internetAccess()->create([]);
+            $user->internetAccess->setWifiCredentials();
+        });
+    }
+
+
     /*
     |--------------------------------------------------------------------------
     | Attributes
@@ -498,6 +516,18 @@ class User extends Authenticatable implements HasLocalePreference
             ->whereHas('personalInformation', function ($q) {
                 $q->where('tenant_until', '>', now());
             });
+    }
+
+    /**
+     * Scope a query to only include users who have to pay kkt or netreg in the current semester.
+     *
+     * @param Builder $query
+     * @param int $semester_id
+     * @return Builder
+     */
+    public function scopeHasToPayKKTNetreg(Builder $query): Builder
+    {
+        return $query->hasToPayKKTNetregInSemester(Semester::current()->id);
     }
 
     /**
