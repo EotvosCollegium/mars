@@ -2,10 +2,12 @@
 
 namespace App\Policies;
 
+use App\Http\Controllers\Auth\ApplicationController;
 use App\Models\Role;
 use App\Models\RoleObject;
 use App\Models\User;
 use App\Models\Workshop;
+use Carbon\Carbon;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Support\Facades\Cache;
 use Maatwebsite\Excel\Row;
@@ -130,10 +132,7 @@ class UserPolicy
      */
     public function finalizeApplicationProcess(User $user): bool
     {
-        return $user->hasRole([[
-            Role::SYS_ADMIN,
-            Role::STUDENT_COUNCIL => Role::PRESIDENT,
-        ]]);
+        return $user->hasRole([Role::SYS_ADMIN]) && ApplicationController::getApplicationDeadline()->addWeeks(3) < now();
     }
 
     /** Permission related policies */

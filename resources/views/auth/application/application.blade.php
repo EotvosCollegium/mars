@@ -26,7 +26,7 @@
                                     @foreach (\App\Models\ApplicationForm::STATUSES as $st)
                                     <p>
                                         <label>
-                                            <input type="radio" name="status_{{$user->id}}" value="{{$st}}" @if($user->application->status == $st) checked @endif/>
+                                            <input type="radio" name="status_{{$user->id}}" value="{{$st}}" @checked($user->application->status == $st) />
                                             <span style="padding-left: 25px; margin: 5px">@include('auth.application.status', ['status' => $st])</span>
                                         </label>
                                     </p>

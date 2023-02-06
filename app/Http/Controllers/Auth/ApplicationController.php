@@ -132,9 +132,11 @@ class ApplicationController extends Controller
             }
             //hide unfinished
             if ($authUser->cannot('viewUnfinishedApplications', [User::class])) {
-                $applications->where('status', ApplicationForm::STATUS_SUBMITTED)
-                    ->orWhere('status', ApplicationForm::STATUS_CALLED_IN)
-                    ->orWhere('status', ApplicationForm::STATUS_ACCEPTED);
+                $applications->where(function($query) {
+                    $query->where('status', ApplicationForm::STATUS_SUBMITTED)
+                        ->orWhere('status', ApplicationForm::STATUS_CALLED_IN)
+                        ->orWhere('status', ApplicationForm::STATUS_ACCEPTED);
+                });
             }
             //filter by status
             if ($request->has('status')) {
@@ -174,9 +176,7 @@ class ApplicationController extends Controller
 
     public function finalizeApplicationProcess()
     {
-        if (!Auth::user()->can('finalizeApplicationProcess', User::class)) {
-            abort(403);
-        }
+        $this->authorize('finalizeApplicationProcess', User::class);
 
         User::query()->withoutGlobalScope('verified')
             ->where('verified', 0)
