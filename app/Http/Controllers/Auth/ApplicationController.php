@@ -132,7 +132,7 @@ class ApplicationController extends Controller
             }
             //hide unfinished
             if ($authUser->cannot('viewUnfinishedApplications', [User::class])) {
-                $applications->where(function($query) {
+                $applications->where(function ($query) {
                     $query->where('status', ApplicationForm::STATUS_SUBMITTED)
                         ->orWhere('status', ApplicationForm::STATUS_CALLED_IN)
                         ->orWhere('status', ApplicationForm::STATUS_ACCEPTED);
