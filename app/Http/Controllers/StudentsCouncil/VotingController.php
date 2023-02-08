@@ -54,7 +54,7 @@ class VotingController extends Controller
             "sitting" => $sitting
         ]);
     }
-    
+
     /**
      * Returns a page with the details and questions of a sitting.
      */
@@ -209,7 +209,6 @@ class VotingController extends Controller
                 return response()->json(['message' => 'Option not belonging to question'], 403);
             }
             $option->vote(Auth::user());
-
         }
 
         return redirect()->route('voting.view_sitting', $question->sitting)->with('message', __('voting.successful_voting'));
