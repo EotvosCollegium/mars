@@ -21,27 +21,33 @@ class Question extends Model
 
     public $timestamps = false;
 
+    /**Query for the parent sitting.*/
     public function sitting(): BelongsTo
     {
         return $this->belongsTo(Sitting::class);
     }
+    /**Query for the options belonging to the question.*/
     public function options(): HasMany
     {
         return $this->hasMany(QuestionOption::class);
     }
+    /**Whether the question has already been opened once (regardless of whether it has been closed since then).*/
     public function hasBeenOpened(): bool
     {
         return $this->opened_at!=null && $this->opened_at<=now();
     }
+    /**Whether the question is currently open.*/
     public function isOpen(): bool
     {
         return $this->hasBeenOpened() &&
                 !$this->isClosed();
     }
+    /**Whether the question has been closed.*/
     public function isClosed(): bool
     {
         return $this->closed_at!=null && $this->closed_at<=now();
     }
+    /**Opens the question. Throws if it has already been opened.*/
     public function open(): void
     {
         if (!$this->sitting->isOpen()) {
@@ -52,6 +58,7 @@ class Question extends Model
         }
         $this->update(['opened_at'=>now()]);
     }
+    /**Closes the question. Throws if it has already been closed or if it is not even open.*/
     public function close(): void
     {
         if ($this->isClosed()) {
@@ -62,10 +69,12 @@ class Question extends Model
         }
         $this->update(['closed_at'=>now()]);
     }
+    /**Whether the question is a multiple-choice question (with checkboxes).*/
     public function isMultipleChoice(): bool
     {
         return $this->max_options>1;
     }
+    /**Whether a certain user has already voted in the question.*/
     public function hasVoted(User $user): bool
     {
         return QuestionUser::where('question_id', $this->id)->where('user_id', $user->id)->exists();

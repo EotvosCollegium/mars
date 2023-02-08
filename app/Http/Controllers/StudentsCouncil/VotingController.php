@@ -13,6 +13,9 @@ use App\Models\Voting\QuestionOption;
 
 class VotingController extends Controller
 {
+    /**
+     * Lists sittings.
+     */
     public function index()
     {
         $this->authorize('viewAny', Sitting::class);
@@ -21,12 +24,18 @@ class VotingController extends Controller
         ]);
     }
 
+    /**
+     * Returns the 'new sitting' page.
+     */
     public function newSitting()
     {
         $this->authorize('administer', Sitting::class);
         return view('student-council.voting.new_sitting');
     }
 
+    /**
+     * Saves a new sitting.
+     */
     public function addSitting(Request $request)
     {
         $this->authorize('administer', Sitting::class);
@@ -45,7 +54,10 @@ class VotingController extends Controller
             "sitting" => $sitting
         ]);
     }
-
+    
+    /**
+     * Returns a page with the details and questions of a sitting.
+     */
     public function viewSitting(Sitting $sitting)
     {
         $this->authorize('viewAny', Sitting::class);
@@ -55,6 +67,9 @@ class VotingController extends Controller
         ]);
     }
 
+    /**
+     * Closes a sitting.
+     */
     public function closeSitting(Sitting $sitting)
     {
         $this->authorize('administer', Sitting::class);
@@ -66,6 +81,9 @@ class VotingController extends Controller
         return back()->with('message', __('voting.sitting_closed'));
     }
 
+    /**
+     * Returns the 'new question' page.
+     */
     public function newQuestion(Sitting $sitting)
     {
         $this->authorize('administer', Sitting::class);
@@ -77,6 +95,9 @@ class VotingController extends Controller
         ]);
     }
 
+    /**
+     * Saves a new question.
+     */
     public function addQuestion(Sitting $sitting, Request $request)
     {
         $this->authorize('administer', Sitting::class);
@@ -120,6 +141,9 @@ class VotingController extends Controller
         return redirect()->route('voting.view_question', $question)->with('message', __('general.successful_modification'));
     }
 
+    /**
+     * Closes a question.
+     */
     public function closeQuestion(Question $question)
     {
         $this->authorize('administer', Sitting::class);
@@ -131,6 +155,9 @@ class VotingController extends Controller
         return back()->with('message', __('voting.question_closed'));
     }
 
+    /**
+     * Returns a page with the options (and results, if authorized) of a question.
+     */
     public function viewQuestion(Question $question)
     {
         $this->authorize('viewResults', $question);
@@ -139,6 +166,9 @@ class VotingController extends Controller
         ]);
     }
 
+    /**
+     * Returns the voting page.
+     */
     public function vote(Question $question)
     {
         $this->authorize('vote', $question);
@@ -147,22 +177,14 @@ class VotingController extends Controller
         ]);
     }
 
+    /**
+     * Saves a vote.
+     */
     public function saveVote(Question $question, Request $request)
     {
         $this->authorize('vote', $question); //this also checks whether the user has already voted
 
-        if ($question->max_options==1) {
-            $validator = Validator::make($request->all(), [
-                'option' => 'exists:question_options,id'
-            ]);
-            $validator->validate();
-
-            $option=QuestionOption::findOrFail($request->option);
-            if ($option->question->id!=$question->id) {
-                return response()->json(['message' => 'Option not belonging to question'], 403);
-            }
-            $option->vote(Auth::user());
-        } else {
+        if ($question->isMultipleChoice()) {
             $validator = Validator::make($request->all(), [
                 'option' => 'array|max:'.$question->max_options,
                 'option.*' => 'exists:question_options,id'
@@ -176,6 +198,18 @@ class VotingController extends Controller
                 }
                 $option->vote(Auth::user());
             }
+        } else {
+            $validator = Validator::make($request->all(), [
+                'option' => 'exists:question_options,id'
+            ]);
+            $validator->validate();
+
+            $option=QuestionOption::findOrFail($request->option);
+            if ($option->question->id!=$question->id) {
+                return response()->json(['message' => 'Option not belonging to question'], 403);
+            }
+            $option->vote(Auth::user());
+
         }
 
         return redirect()->route('voting.view_sitting', $question->sitting)->with('message', __('voting.successful_voting'));

@@ -19,11 +19,13 @@ class QuestionOption extends Model
 
     protected $fillable = ['question_id', 'title', 'votes'];
 
+    /**A query for the question the option belongs to.*/
     public function question(): BelongsTo
     {
         return $this->belongsTo(Question::class);
     }
 
+    /**Casts a vote for the option in the name of the user given.*/
     public function vote(User $user): void
     {
         $question=$this->question;
