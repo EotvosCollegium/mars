@@ -14,7 +14,7 @@
         <div class="card">
             <div class="card-content">
                 <span class="card-title">{{ $question->title }}</span>
-                @cannot('view_results', $question)
+                @cannot('viewResults', $question)
                 <p>@lang('voting.only_after_closure')</p>
                 @endcan
                 <table>
@@ -27,7 +27,7 @@
                         @foreach($question->options()->get() as $option)
                         <tr>
                             <td>{{$option->title}}</td>
-                            @can('view_results', $question)
+                            @can('viewResults', $question)
                             <td>{{$option->votes}}</td>
                             @endcan
                         </tr>

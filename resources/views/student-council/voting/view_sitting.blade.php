@@ -99,7 +99,7 @@
                             @endcan
                         </td>
                         <td>
-                            @can('view_results', $question)
+                            @can('viewResults', $question)
                             <a href="{{ route('voting.view_question', $question->id) }}" class="btn-floating waves-effect waves-light right">
                                 <i class="material-icons">remove_red_eye</i>
                             </a>

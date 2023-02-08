@@ -46,17 +46,17 @@ class Sitting extends Model
     public function open(): void
     {
         if ($this->isOpen() || $this->isClosed()) {
-            throw new Exception("tried to open sitting when it has already been opened");
+            throw new \Exception("tried to open sitting when it has already been opened");
         }
         $this->update(['opened_at'=>now()]);
     }
     public function close(): void
     {
         if ($this->isClosed()) {
-            throw new Exception("tried to close sitting when it has already been closed");
+            throw new \Exception("tried to close sitting when it has already been closed");
         }
         if (!$this->isOpen()) {
-            throw new Exception("tried to close sitting when it was not open");
+            throw new \Exception("tried to close sitting when it was not open");
         }
         foreach ($this->questions()->get() as $question) {
             if ($question->isOpen()) {

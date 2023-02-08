@@ -45,20 +45,20 @@ class Question extends Model
     public function open(): void
     {
         if (!$this->sitting->isOpen()) {
-            throw new Exception("tried to open question when sitting was not open");
+            throw new \Exception("tried to open question when sitting was not open");
         }
         if ($this->isOpen() || $this->isClosed()) {
-            throw new Exception("tried to open question when it has already been opened");
+            throw new \Exception("tried to open question when it has already been opened");
         }
         $this->update(['opened_at'=>now()]);
     }
     public function close(): void
     {
         if ($this->isClosed()) {
-            throw new Exception("tried to close sitting when it has already been closed");
+            throw new \Exception("tried to close sitting when it has already been closed");
         }
         if (!$this->isOpen()) {
-            throw new Exception("tried to close sitting when it was not open");
+            throw new \Exception("tried to close sitting when it was not open");
         }
         $this->update(['closed_at'=>now()]);
     }

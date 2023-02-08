@@ -133,7 +133,7 @@ class VotingController extends Controller
 
     public function viewQuestion(Question $question)
     {
-        $this->authorize('view_results', $question);
+        $this->authorize('viewResults', $question);
         return view('student-council.voting.view_question', [
             "question" => $question
         ]);
