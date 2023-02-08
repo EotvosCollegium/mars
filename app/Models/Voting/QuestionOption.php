@@ -1,12 +1,14 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Voting;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-use App\Models\Question;
+use App\Models\Voting\Question;
+use App\Models\Voting\QuestionUser;
 use App\Models\User;
 
 class QuestionOption extends Model
@@ -17,24 +19,22 @@ class QuestionOption extends Model
 
     protected $fillable = ['question_id', 'title', 'votes'];
 
-    public function question(): Question
+    public function question(): BelongsTo
     {
-        return $this->belongsTo(Question::class)->first();
+        return $this->belongsTo(Question::class);
     }
 
     public function vote(User $user): void
     {
-        $question=$this->question();
+        $question=$this->question;
         //if ($question->hasVoted($user)) throw new \Exception("user has already voted"); //had to take this out because of multi-option questions
         if (!$question->isOpen()) {
             throw new \Exception("question not open");
         }
-        DB::table('question_user')->insert([
+        QuestionUser::create([
             'question_id' => $question->id,
             'user_id' => $user->id,
-            //'voted_at' => now() //now this is done by the automatic timestamps
         ]);
-        $this->votes++;
-        $this->save();
+        $this->increment('votes');
     }
 }

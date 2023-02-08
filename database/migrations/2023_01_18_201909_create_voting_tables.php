@@ -13,13 +13,13 @@ return new class () extends Migration {
     public function up()
     {
         Schema::create('sittings', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->id();
             $table->string('title');
             $table->datetime('opened_at');
             $table->datetime('closed_at')->nullable();
         });
         Schema::create('questions', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->id();
             $table->foreignId('sitting_id')
                 ->references('id')->on('sittings')
                 ->onDelete('cascade');
@@ -29,7 +29,7 @@ return new class () extends Migration {
             $table->datetime('closed_at')->nullable();
         });
         Schema::create('question_options', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->id();
             $table->foreignId('question_id')
                 ->references('id')->on('questions')
                 ->onDelete('cascade');

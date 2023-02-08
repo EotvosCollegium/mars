@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Voting;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-use App\Models\Question;
+use App\Models\Voting\Question;
 
 class Sitting extends Model
 {
@@ -25,6 +26,10 @@ class Sitting extends Model
         'closed_at' => 'datetime',
     ];
 
+    public function questions(): HasMany
+    {
+        return $this->hasMany(Question::class);
+    }
     public function hasBeenOpened(): bool
     {
         return $this->opened_at!=null && $this->opened_at<=now();
@@ -43,7 +48,7 @@ class Sitting extends Model
         if ($this->isOpen() || $this->isClosed()) {
             throw new Exception("tried to open sitting when it has already been opened");
         }
-        $this->opened_at=now();
+        $this->update(['opened_at'=>now()]);
     }
     public function close(): void
     {
@@ -53,26 +58,11 @@ class Sitting extends Model
         if (!$this->isOpen()) {
             throw new Exception("tried to close sitting when it was not open");
         }
-        foreach ($this->questions() as $question) {
+        foreach ($this->questions()->get() as $question) {
             if ($question->isOpen()) {
                 $question->close();
-                $question->save();
             }
         }
-        $this->closed_at=now();
-    }
-    public function addQuestion(string $title, int $max_options=1, $opened_at=null, $closed_at=null): Question
-    {
-        return Question::create([
-            'sitting_id' => $this->id,
-            'title' => $title,
-            'max_options' => $max_options,
-            'opened_at' => $opened_at,
-            'closed_at' => $closed_at
-        ]);
-    }
-    public function questions()
-    {
-        return $this->hasMany(Question::class)->orderByDesc('opened_at')->get();
+        $this->update(['closed_at'=>now()]);
     }
 }

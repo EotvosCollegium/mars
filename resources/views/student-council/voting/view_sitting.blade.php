@@ -4,7 +4,7 @@
 <a href="{{ route('voting') }}" class="breadcrumb">@lang('voting.assembly')</a>
 <a href="#!" class="breadcrumb">{{ $sitting->title }}</a>
 @endsection
-@section('admin_module') active @endsection
+@section('student_council_module') active @endsection
 
 @section('content')
 
@@ -12,19 +12,7 @@
     <div class="col s12">
         <div class="card">
             <div class="card-content">
-                <span class="card-title">{{ $sitting->title }}
-                    <!--
-                    @can('update', $sitting)
-                        <x-input.button :href="route('routers.edit', $router->ip)" floating class="right" icon="edit" />
-                    @endcan
-                    @can('delete', $sitting)
-                        <form action="{{ route('routers.delete', $router->ip) }}" method="POST" class="right" style="margin-right:10px">
-                            @csrf
-                            <x-input.button floating icon="delete" class="red" />
-                        </form>
-                    @endcan
-                    -->
-                </span>
+                <span class="card-title">{{ $sitting->title }}</span>
                 <table>
                     <tbody>
                         <tr>
@@ -88,7 +76,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach ($sitting->questions() as $question)
+                    @foreach ($sitting->questions()->orderByDesc('opened_at')->get() as $question)
                     <tr>
                         <td>{{$question->title}}</td>
                         <td>{{$question->opened_at}}</td>

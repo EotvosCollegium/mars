@@ -2,11 +2,11 @@
 
 @section('title')
 <a href="{{route('voting')}}" class="breadcrumb">@lang('voting.assembly')</a>
-<a href="{{route('voting.view_sitting', $question->sitting()->id)}}" class="breadcrumb">{{ $question->sitting()->title }}</a>
+<a href="{{route('voting.view_sitting', $question->sitting->id)}}" class="breadcrumb">{{ $question->sitting->title }}</a>
 <a href="{{route('voting.view_question', $question->id)}}" class="breadcrumb">{{ $question->title }}</a>
 <a href="#!" class="breadcrumb">@lang('voting.voting')</a>
 @endsection
-@section('admin_module') active @endsection
+@section('student_council_module') active @endsection
 
 @section('content')
 
@@ -25,7 +25,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($question->getOptions() as $option)
+                            @foreach($question->options()->get() as $option)
                             <tr>
                                 <td>{{$option->title}}</td>
                                 <td>

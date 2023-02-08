@@ -3,7 +3,7 @@
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\Question;
+use App\Models\Voting\Question;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class QuestionPolicy
@@ -12,7 +12,7 @@ class QuestionPolicy
 
     public function vote(User $user, Question $question): bool
     {
-        return $question->canVote($user);
+        return $question->isOpen() && $user->isCollegist() && $user->isActive() && !$question->hasVoted($user);
     }
 
     public function view_results(User $user, Question $question): bool

@@ -2,37 +2,13 @@
 
 namespace Database\Seeders;
 
-use App\Models\Sitting;
-use App\Models\Question;
-use App\Models\QuestionOption;
+use App\Models\Voting\Sitting;
+use App\Models\Voting\Question;
+use App\Models\Voting\QuestionOption;
 use Illuminate\Database\Seeder;
 
 class VotingSeeder extends Seeder
 {
-    /**Generate a sitting with questions too. */
-    /*
-    public static function createFakeSitting()
-    {
-        $faker = Faker\Factory::create('en_UK');
-        $sitting = Sitting::create([
-            'title' => $faker->realText($maxNbChars = 20),
-            'opened_at' => now()->addHours($faker->numberBetween(-3, -2)),
-            'closed_at' => now()->addHours($faker->numberBetween(-1, 0)),
-        ]);
-        for ($i=0; $i<3; $i++) {
-            $opened_at = $sitting->closed_at->addMinutes($faker->numberBetween(-50, -30));//$this->faker->dateTime($min = $sitting->opened_at, $max=$sitting->closed_at);
-            $question = $sitting->addQuestion(
-                $faker->realText($maxNbChars = 20),
-                $faker->numberBetween(1, 3),
-                $opened_at,
-                $opened_at->addMinutes($faker->numberBetween(5, 10))
-            );
-            //$question->votes=numberBetween(0, 100); $question->save();
-            //TODO: faking of question_user table
-        }
-    }
-    */
-
     /**
      * Run the database seeds.
      *
@@ -40,32 +16,57 @@ class VotingSeeder extends Seeder
      */
     public function run()
     {
-        //for ($i=0; $i<5; $i++) VotingSeeder::createFakeSitting();
-
         $openSitting = Sitting::create([
             'title' => "Today's sitting",
             'opened_at' => now(),
         ]);
 
-        $openQuestion = $openSitting->addQuestion(
-            "I support the election of the new Students' Council.",
-            1,
-            now()
-        );
-        $openQuestion->addOption("Yes");
-        $openQuestion->addOption("No");
-        $openQuestion->addOption("I abstain");
+        $openQuestion = $openSitting->questions()->create([
+            'title' => "I support the election of the new Students' Council.",
+            'max_options' => 1,
+            'opened_at' => now()
+        ]);
+        $openQuestion->options()->create([
+            'title' => "Yes",
+            'votes' => 100
+        ]);
+        $openQuestion->options()->create([
+            'title' => "No",
+            'votes' => 12
+        ]);
+        $openQuestion->options()->create([
+            'title' => "I abstain",
+            'votes' => 9
+        ]);
 
-        $openCheckboxQuestion = $openSitting->addQuestion(
-            "Curatorium members",
-            3,
-            now()
-        );
-        $openQuestion->addOption("A");
-        $openQuestion->addOption("B");
-        $openQuestion->addOption("C");
-        $openQuestion->addOption("D");
-        $openQuestion->addOption("E");
-        $openQuestion->addOption("I abstain");
+        $openCheckboxQuestion = $openSitting->questions()->create([
+            'title' => "Curatorium members",
+            'max_options' => 3,
+            'opened_at' => now()
+        ]);
+        $openCheckboxQuestion->options()->create([
+            'title' => "A",
+            'votes' => 60
+        ]);
+        $openCheckboxQuestion->options()->create([
+            'title' => "B",
+            'votes' => 70
+        ]);
+        $openCheckboxQuestion->options()->create([
+            'title' => "C",
+            'votes' => 50
+        ]);
+        $openCheckboxQuestion->options()->create([
+            'title' => "D",
+            'votes' => 10
+        ]);
+        $openCheckboxQuestion->options()->create([
+            'title' => "E",
+            'votes' => 65
+        ]);
+        $openCheckboxQuestion->options()->create([
+            'title' => "I abstain",
+            'votes' => 5
+        ]);
     }
 }

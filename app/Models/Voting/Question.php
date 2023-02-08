@@ -1,13 +1,16 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Voting;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\DB;
-use App\Models\Sitting;
-use App\Models\QuestionOption;
+use App\Models\Voting\Sitting;
+use App\Models\Voting\QuestionOption;
+use App\Models\Voting\QuestionUser;
 use App\Models\User;
 
 class Question extends Model
@@ -18,9 +21,13 @@ class Question extends Model
 
     public $timestamps = false;
 
-    public function sitting(): Sitting
+    public function sitting(): BelongsTo
     {
-        return $this->belongsTo(Sitting::class)->first();
+        return $this->belongsTo(Sitting::class);
+    }
+    public function options(): HasMany
+    {
+        return $this->hasMany(QuestionOption::class);
     }
     public function hasBeenOpened(): bool
     {
@@ -37,13 +44,13 @@ class Question extends Model
     }
     public function open(): void
     {
-        if (!$this->sitting()->isOpen()) {
+        if (!$this->sitting->isOpen()) {
             throw new Exception("tried to open question when sitting was not open");
         }
         if ($this->isOpen() || $this->isClosed()) {
             throw new Exception("tried to open question when it has already been opened");
         }
-        $this->opened_at=now();
+        $this->update(['opened_at'=>now()]);
     }
     public function close(): void
     {
@@ -53,15 +60,7 @@ class Question extends Model
         if (!$this->isOpen()) {
             throw new Exception("tried to close sitting when it was not open");
         }
-        $this->closed_at=now();
-    }
-    public function addOption(string $title): QuestionOption
-    {
-        return QuestionOption::create([
-            'question_id' => $this->id,
-            'title' => $title,
-            'votes' => 0
-        ]);
+        $this->update(['closed_at'=>now()]);
     }
     public function isMultipleChoice(): bool
     {
@@ -69,15 +68,6 @@ class Question extends Model
     }
     public function hasVoted(User $user): bool
     {
-        return DB::table('question_user')->where('question_id', $this->id)
-                ->where('user_id', $user->id)->exists();
-    }
-    public function canVote(User $user): bool
-    {
-        return $this->isOpen() && $user->isCollegist() && $user->isActive() && !$this->hasVoted($user);
-    }
-    public function getOptions()
-    {
-        return $this->hasMany(QuestionOption::class)->get();
+        return QuestionUser::where('question_id', $this->id)->where('user_id', $user->id)->exists();
     }
 }

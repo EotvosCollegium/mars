@@ -4,7 +4,7 @@
 <a href="{{route('voting')}}" class="breadcrumb">@lang('voting.assembly')</a>
 <a href="#!" class="breadcrumb">@lang('voting.new_sitting')</a>
 @endsection
-@section('admin_module') active @endsection
+@section('student_council_module') active @endsection
 
 @section('content')
 

@@ -12,9 +12,9 @@ class SittingPolicy
      * Determine whether the user can view any sittings.
      *
      * @param User $user
-     * @return mixed
+     * @return bool
      */
-    public function viewAny(User $user)
+    public function viewAny(User $user): bool
     {
         return $user->isCollegist();
     }
@@ -24,7 +24,6 @@ class SittingPolicy
      */
     public function administer(User $user)
     {
-        return $user->hasRole(Role::SYS_ADMIN) || $user->hasRole([Role::STUDENT_COUNCIL => Role::PRESIDENT])
-            || $user->hasRole(Role::SECRETARY);
+        return $user->hasRole([Role::SYS_ADMIN, Role::STUDENT_COUNCIL => Role::PRESIDENT, Role::STUDENT_COUNCIL_SECRETARY]);
     }
 }

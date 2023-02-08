@@ -2,10 +2,10 @@
 
 @section('title')
 <a href="{{route('voting')}}" class="breadcrumb">@lang('voting.assembly')</a>
-<a href="{{route('voting.view_sitting', $question->sitting()->id)}}" class="breadcrumb">{{ $question->sitting()->title }}</a>
+<a href="{{route('voting.view_sitting', $question->sitting->id)}}" class="breadcrumb">{{ $question->sitting->title }}</a>
 <a href="#!" class="breadcrumb">{{ $question->title }}</a>
 @endsection
-@section('admin_module') active @endsection
+@section('student_council_module') active @endsection
 
 @section('content')
 
@@ -24,7 +24,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($question->getOptions() as $option)
+                        @foreach($question->options()->get() as $option)
                         <tr>
                             <td>{{$option->title}}</td>
                             @can('view_results', $question)
@@ -45,6 +45,12 @@
                     </form>
                     @endcan
                     @endif
+
+                    @can('vote', $question)
+                    <a href="{{ route('voting.vote', $question->id) }}" class="right">
+                        <x-input.button text="voting.voting" class="red" />
+                    </a>
+                    @endcan
                 </div>
             </div>
         </div>
