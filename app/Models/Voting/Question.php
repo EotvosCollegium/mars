@@ -96,8 +96,7 @@ class Question extends Model
             'question_id' => $this->id,
             'user_id' => $user->id,
         ]);
-        foreach ($options as $option)
-        {
+        foreach ($options as $option) {
             if ($option->question->id!=$this->id) {
                 throw new \Exception("received an option which does not belong to the question -- the table may now be inconsistent");
             }

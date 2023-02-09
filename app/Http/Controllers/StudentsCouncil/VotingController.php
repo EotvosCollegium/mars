@@ -129,7 +129,7 @@ class VotingController extends Controller
             });
         }
         $validator->validate();
-        
+
         $sitting=Sitting::findOrFail($request->sitting);
 
         if (!$sitting->isOpen()) {
