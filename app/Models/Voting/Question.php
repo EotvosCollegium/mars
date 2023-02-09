@@ -79,4 +79,29 @@ class Question extends Model
     {
         return QuestionUser::where('question_id', $this->id)->where('user_id', $user->id)->exists();
     }
+    /**
+     * Votes for a list of given options in the name of the user.
+     * Note: the options should be given as QuestionOption objects.
+     * Throws if an option does not belong to the question or if too many options are selected.
+     */
+    public function vote(User $user, array $options): void
+    {
+        if (!$this->isOpen()) {
+            throw new \Exception("question not open");
+        }
+        if ($this->max_options < count($options)) {
+            throw new \Exception("too many options given");
+        }
+        QuestionUser::create([
+            'question_id' => $this->id,
+            'user_id' => $user->id,
+        ]);
+        foreach ($options as $option)
+        {
+            if ($option->question->id!=$this->id) {
+                throw new \Exception("received an option which does not belong to the question -- the table may now be inconsistent");
+            }
+            $option->increment('votes');
+        }
+    }
 }

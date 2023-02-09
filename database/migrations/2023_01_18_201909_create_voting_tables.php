@@ -4,6 +4,9 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+use App\Models\User;
+use App\Models\Voting\Question;
+
 return new class () extends Migration {
     /**
      * Run the migrations.
@@ -37,13 +40,14 @@ return new class () extends Migration {
             $table->integer('votes')->default(0);
         });
         Schema::create('question_user', function (Blueprint $table) {
-            $table->foreignId('question_id')
+            $table->foreignIdFor(Question::class)
                 ->references('id')->on('questions')
                 ->onDelete('cascade');
-            $table->foreignId('user_id')
+            $table->foreignIdFor(User::class)
                 ->references('id')->on('users')
                 ->onDelete('cascade');
             $table->timestamps();
+            $table->unique(['question_id', 'user_id']);
         });
     }
 

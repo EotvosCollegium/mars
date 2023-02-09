@@ -24,19 +24,4 @@ class QuestionOption extends Model
     {
         return $this->belongsTo(Question::class);
     }
-
-    /**Casts a vote for the option in the name of the user given.*/
-    public function vote(User $user): void
-    {
-        $question=$this->question;
-        //if ($question->hasVoted($user)) throw new \Exception("user has already voted"); //had to take this out because of multi-option questions
-        if (!$question->isOpen()) {
-            throw new \Exception("question not open");
-        }
-        QuestionUser::create([
-            'question_id' => $question->id,
-            'user_id' => $user->id,
-        ]);
-        $this->increment('votes');
-    }
 }

@@ -201,13 +201,15 @@ class VotingController extends Controller
             ]);
             $validator->validate();
 
+            $options=array();
             foreach ($request->option as $oid) {
                 $option=QuestionOption::findOrFail($oid);
                 if ($option->question->id!=$question->id) {
                     return response()->json(['message' => 'Option not belonging to question'], 403);
                 }
-                $option->vote(Auth::user());
+                array_push($options, $option);
             }
+            $question->vote(Auth::user(), $options);
         } else {
             $validator = Validator::make($request->all(), [
                 'option' => 'exists:question_options,id'
@@ -218,7 +220,7 @@ class VotingController extends Controller
             if ($option->question->id!=$question->id) {
                 return response()->json(['message' => 'Option not belonging to question'], 403);
             }
-            $option->vote(Auth::user());
+            $question->vote(Auth::user(), array($option));
         }
 
         return redirect()->route('sittings.show', $question->sitting)->with('message', __('voting.successful_voting'));
