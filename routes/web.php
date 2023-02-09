@@ -211,15 +211,16 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::post('/community_service/create', [CommunityServiceController::class, 'create'])->name('community_service.create');
     Route::get('/community_service/search', [CommunityServiceController::class, 'search'])->name('community_service.search');
 
-    Route::get('/voting', [VotingController::class, 'index'])->name('voting');
-    Route::get('/voting/new_sitting', [VotingController::class, 'newSitting'])->name('voting.new_sitting');
-    Route::post('/voting/add_sitting', [VotingController::class, 'addSitting'])->name('voting.add_sitting');
-    Route::get('/voting/{sitting}', [VotingController::class, 'viewSitting'])->name('voting.view_sitting');
-    Route::post('/voting/{sitting}/close', [VotingController::class, 'closeSitting'])->name('voting.close_sitting');
-    Route::get('/voting/{sitting}/new_question', [VotingController::class, 'newQuestion'])->name('voting.new_question');
-    Route::post('/voting/{sitting}/add_question', [VotingController::class, 'addQuestion'])->name('voting.add_question');
-    Route::post('/voting/questions/{question}/close', [VotingController::class, 'closeQuestion'])->name('voting.close_question');
-    Route::get('/voting/questions/{question}/vote', [VotingController::class, 'vote'])->name('voting.vote');
-    Route::post('/voting/questions/{question}/vote', [VotingController::class, 'saveVote'])->name('voting.vote.save');
-    Route::get('/voting/questions/{question}', [VotingController::class, 'viewQuestion'])->name('voting.view_question');
+    /** voting */
+    Route::get('/sittings', [VotingController::class, 'index'])->name('sittings.index');
+    Route::get('/sittings/create', [VotingController::class, 'newSitting'])->name('sittings.create');
+    Route::post('/sittings', [VotingController::class, 'addSitting'])->name('sittings.store');
+    Route::get('/sittings/{sitting}', [VotingController::class, 'viewSitting'])->name('sittings.show');
+    Route::post('/sittings/{sitting}/close', [VotingController::class, 'closeSitting'])->name('sittings.close');
+    Route::get('questions/create', [VotingController::class, 'newQuestion'])->name('questions.create');
+    Route::post('/questions', [VotingController::class, 'addQuestion'])->name('questions.store');
+    Route::post('/questions/{question}/close', [VotingController::class, 'closeQuestion'])->name('questions.close');
+    Route::get('/questions/{question}/votes/create', [VotingController::class, 'vote'])->name('questions.votes.create');
+    Route::post('/questions/{question}/votes', [VotingController::class, 'saveVote'])->name('questions.votes.store');
+    Route::get('/questions/{question}', [VotingController::class, 'viewQuestion'])->name('questions.show');
 });

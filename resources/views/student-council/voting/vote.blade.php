@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
 @section('title')
-<a href="{{route('voting')}}" class="breadcrumb">@lang('voting.assembly')</a>
-<a href="{{route('voting.view_sitting', $question->sitting->id)}}" class="breadcrumb">{{ $question->sitting->title }}</a>
-<a href="{{route('voting.view_question', $question->id)}}" class="breadcrumb">{{ $question->title }}</a>
+<a href="{{route('sittings.index')}}" class="breadcrumb">@lang('voting.assembly')</a>
+<a href="{{route('sittings.show', $question->sitting->id)}}" class="breadcrumb">{{ $question->sitting->title }}</a>
+<a href="{{route('questions.show', $question->id)}}" class="breadcrumb">{{ $question->title }}</a>
 <a href="#!" class="breadcrumb">@lang('voting.voting')</a>
 @endsection
 @section('student_council_module') active @endsection
@@ -13,7 +13,7 @@
 <div class="row">
     <div class="col s12">
         <div class="card">
-            <form method="POST" action="{{ route('voting.vote', $question->id)}}">
+            <form method="POST" action="{{ route('questions.votes.store', $question->id)}}">
                 @csrf
                 <div class="card-content">
                     <span class="card-title">{{ $question->title }}</span>

@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('title')
-<a href="{{route('voting')}}" class="breadcrumb">@lang('voting.assembly')</a>
-<a href="{{ route('voting.view_sitting', $sitting)}}" class=breadcrumb>{{ $sitting->title }}</a>
+<a href="{{route('sittings.index')}}" class="breadcrumb">@lang('voting.assembly')</a>
+<a href="{{ route('sittings.show', $sitting)}}" class=breadcrumb>{{ $sitting->title }}</a>
 <a href="#!" class="breadcrumb">@lang('voting.new_question')</a>
 @endsection
 @section('student_council_module') active @endsection
@@ -12,8 +12,9 @@
 <div class="row">
     <div class="col s12">
         <div class="card">
-            <form action="{{ route('voting.add_question', $sitting) }}" method="POST">
+            <form action="{{ route('questions.store', $sitting) }}" method="POST">
                 @csrf
+                <input type="hidden" name="sitting" value="{{$sitting->id}}"/>
                 <div class="card-content">
                     <span class="card-title">@lang('voting.new_question')</span>
                     <div class="row">
@@ -25,7 +26,7 @@
                     </div>
                 </div>
                 <div class="card-action right-align">
-                    <a href="{{ route('voting.view_sitting', $sitting) }}" class="waves-effect btn">@lang('general.cancel')</a>
+                    <a href="{{ route('sittings.show', $sitting) }}" class="waves-effect btn">@lang('general.cancel')</a>
                     <button type="submit" class="waves-effect btn">@lang('general.save')</button>
                 </div>
             </form>

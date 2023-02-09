@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-<a href="{{route('voting')}}" class="breadcrumb">@lang('voting.assembly')</a>
+<a href="{{route('sittings.index')}}" class="breadcrumb">@lang('voting.assembly')</a>
 <a href="#!" class="breadcrumb">@lang('voting.new_sitting')</a>
 @endsection
 @section('student_council_module') active @endsection
@@ -11,7 +11,7 @@
 <div class="row">
     <div class="col s12">
         <div class="card">
-            <form action="{{ route('voting.add_sitting') }}" method="POST">
+            <form action="{{ route('sittings.store') }}" method="POST">
                 @csrf
                 <div class="card-content">
                     <span class="card-title">@lang('voting.new_sitting')</span>
@@ -20,7 +20,7 @@
                     </div>
                 </div>
                 <div class="card-action right-align">
-                    <a href="{{ route('voting') }}" class="waves-effect btn">@lang('general.cancel')</a>
+                    <a href="{{ route('sittings.index') }}" class="waves-effect btn">@lang('general.cancel')</a>
                     <button type="submit" class="waves-effect btn">@lang('general.save')</button>
                 </div>
             </form>

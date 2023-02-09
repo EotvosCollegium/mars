@@ -84,9 +84,16 @@ class VotingController extends Controller
     /**
      * Returns the 'new question' page.
      */
-    public function newQuestion(Sitting $sitting)
+    public function newQuestion(Request $request)
     {
         $this->authorize('administer', Sitting::class);
+
+        $validator = Validator::make($request->all(), [
+            'sitting' => 'exists:sittings,id',
+        ]);
+        $validator->validate();
+        $sitting=Sitting::findOrFail($request->sitting);
+
         if (!$sitting->isOpen()) {
             abort(401, "tried to modify a sitting which was not open");
         }
@@ -98,13 +105,15 @@ class VotingController extends Controller
     /**
      * Saves a new question.
      */
-    public function addQuestion(Sitting $sitting, Request $request)
+    public function addQuestion(Request $request)
     {
         $this->authorize('administer', Sitting::class);
-        if (!$sitting->isOpen()) {
-            abort(401, "tried to modify a sitting which was not open");
-        }
 
+        $validator = Validator::make($request->all(), [
+            'sitting' => 'exists:sittings,id',
+            'title' => 'required|string',
+            'max_options' => 'required|min:1'
+        ]);
         //splitting by newlines and removing options which only have whitespace
         $options=array_map(
             function ($s) {
@@ -114,17 +123,18 @@ class VotingController extends Controller
                 return $s!="" && !ctype_space($s); //ctype_space would give false for ""
             })
         );
-
-        $validator = Validator::make($request->all(), [
-            'title' => 'required|string',
-            'max_options' => 'required|min:1'
-        ]);
         if (count($options)==0) {
             $validator->after(function ($validator) {
                 $validator->errors()->add('options', __('voting.at_least_one_option', ['attribute' => 'options']));
             });
         }
         $validator->validate();
+        
+        $sitting=Sitting::findOrFail($request->sitting);
+
+        if (!$sitting->isOpen()) {
+            abort(401, "tried to modify a sitting which was not open");
+        }
 
         $question = $sitting->questions()->create([
             'title' => $request->title,
@@ -138,7 +148,7 @@ class VotingController extends Controller
             ]);
         }
 
-        return redirect()->route('voting.view_question', $question)->with('message', __('general.successful_modification'));
+        return redirect()->route('questions.show', $question)->with('message', __('general.successful_modification'));
     }
 
     /**
@@ -211,6 +221,6 @@ class VotingController extends Controller
             $option->vote(Auth::user());
         }
 
-        return redirect()->route('voting.view_sitting', $question->sitting)->with('message', __('voting.successful_voting'));
+        return redirect()->route('sittings.show', $question->sitting)->with('message', __('voting.successful_voting'));
     }
 }

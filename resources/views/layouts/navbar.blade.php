@@ -100,7 +100,7 @@
                             </li>
                             <!-- voting -->
                             <li>
-                                <a class="waves-effect" href="{{ route('voting') }}">
+                                <a class="waves-effect" href="{{ route('sittings.index') }}">
                                     <i class="material-icons left">thumbs_up_down</i> @lang('voting.assembly')
                                 </a>
                             </li>

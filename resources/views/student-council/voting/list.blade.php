@@ -22,7 +22,7 @@
                             
                             @can('administer', \App\Models\Sitting::class)
                                 <th>
-                                    <a href="{{ route('voting.new_sitting') }}" class="btn-floating waves-effect waves-light right">
+                                    <a href="{{ route('sittings.create') }}" class="btn-floating waves-effect waves-light right">
                                         <i class="material-icons">add</i>
                                     </a>
                                 </th>
@@ -50,7 +50,7 @@
                                 @endif
                             </td>
                             <td>
-                                <a href="{{ route('voting.view_sitting', $sitting->id) }}" class="btn-floating waves-effect waves-light right">
+                                <a href="{{ route('sittings.show', $sitting->id) }}" class="btn-floating waves-effect waves-light right">
                                     <i class="material-icons">remove_red_eye</i>
                                 </a>
                             </td>

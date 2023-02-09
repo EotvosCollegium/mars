@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('title')
-<a href="{{route('voting')}}" class="breadcrumb">@lang('voting.assembly')</a>
-<a href="{{route('voting.view_sitting', $question->sitting->id)}}" class="breadcrumb">{{ $question->sitting->title }}</a>
+<a href="{{route('sittings.index')}}" class="breadcrumb">@lang('voting.assembly')</a>
+<a href="{{route('sittings.show', $question->sitting->id)}}" class="breadcrumb">{{ $question->sitting->title }}</a>
 <a href="#!" class="breadcrumb">{{ $question->title }}</a>
 @endsection
 @section('student_council_module') active @endsection
@@ -39,7 +39,7 @@
                 <div class="row" style="margin-bottom: 0">
                     @if($question->isOpen())
                     @can('administer', \App\Models\Sitting::class)
-                    <form action="{{ route('voting.close_question', $question->id) }}" method="POST" class="right" style="margin-right:10px">
+                    <form action="{{ route('questions.close', $question->id) }}" method="POST" class="right" style="margin-right:10px">
                         @csrf
                         <x-input.button text="voting.close_question" class="red" />
                     </form>
@@ -47,7 +47,7 @@
                     @endif
 
                     @can('vote', $question)
-                    <a href="{{ route('voting.vote', $question->id) }}" class="right">
+                    <a href="{{ route('questions.votes.create', $question->id) }}" class="right">
                         <x-input.button text="voting.voting" class="red" />
                     </a>
                     @endcan
