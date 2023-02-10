@@ -20,4 +20,6 @@ return [
     'status_updated' => 'Új státusz a :semester félévre: :status',
     'thank_you_registering' => 'Köszönjük, hogy regisztráltál az :app rendszerbe.',
     'wait_for_approving_registration' => 'Regisztrációdat egy rendszergazda hamarosan kezelni fogja, addig is kérjük türelmed.',
+    'report_internet_fault' => ' egy internetes hibáról értesített :os operációs rendszeren.',
+    'report_internet_fault_subject' => 'Internet hiba jelentés',
 ];

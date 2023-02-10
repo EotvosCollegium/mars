@@ -80,8 +80,8 @@ class User extends Authenticatable implements HasLocalePreference
         parent::boot();
 
         static::created(function ($user) {
-            $user->printAccount()->create([]);
-            $user->internetAccess()->create([]);
+            $user->printAccount()->create();
+            $user->internetAccess()->create();
             $user->internetAccess->setWifiCredentials();
         });
     }
