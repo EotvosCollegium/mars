@@ -57,6 +57,7 @@ return [
         'deadline_name' => 'határidő neve',
         'deadline_date' => 'határidő',
         'picture_path' => 'kép linkje',
+        'option' => 'szavazat'
     ],
     'before' => 'A(z) :attribute :date előtti dátum kell, hogy legyen!',
     'before_or_equal' => 'A(z) :attribute nem lehet későbbi dátum, mint :date!',

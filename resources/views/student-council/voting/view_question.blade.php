@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('title')
-<a href="{{route('sittings.index')}}" class="breadcrumb">@lang('voting.assembly')</a>
-<a href="{{route('sittings.show', $question->sitting->id)}}" class="breadcrumb">{{ $question->sitting->title }}</a>
+<a href="{{route('sittings.index')}}" class="breadcrumb" style="cursor: pointer">@lang('voting.assembly')</a>
+<a href="{{route('sittings.show', $question->sitting->id)}}" class="breadcrumb" style="cursor: pointer">{{ $question->sitting->title }}</a>
 <a href="#!" class="breadcrumb">{{ $question->title }}</a>
 @endsection
 @section('student_council_module') active @endsection
@@ -24,7 +24,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($question->options()->get() as $option)
+                        @foreach($question->options as $option)
                         <tr>
                             <td>{{$option->title}}</td>
                             @can('viewResults', $question)
@@ -36,21 +36,18 @@
                 </table>
             </div>
             <div class="card-action">
-                <div class="row" style="margin-bottom: 0">
+                <div class="row right-align">
                     @if($question->isOpen())
-                    @can('administer', \App\Models\Sitting::class)
-                    <form action="{{ route('questions.close', $question->id) }}" method="POST" class="right" style="margin-right:10px">
-                        @csrf
-                        <x-input.button text="voting.close_question" class="red" />
-                    </form>
-                    @endcan
+                        @can('vote', $question)
+                        <x-input.button href="{{ route('questions.votes.create', $question->id) }}" class="red" text="voting.voting" />
+                        @endcan
+                        @can('administer', \App\Models\Sitting::class)
+                        <form action="{{ route('questions.close', $question->id) }}" method="POST" style="display:inline;">
+                            @csrf
+                            <x-input.button only-input text="voting.close_question" class="red" />
+                        </form>
+                        @endcan
                     @endif
-
-                    @can('vote', $question)
-                    <a href="{{ route('questions.votes.create', $question->id) }}" class="right">
-                        <x-input.button text="voting.voting" class="red" />
-                    </a>
-                    @endcan
                 </div>
             </div>
         </div>

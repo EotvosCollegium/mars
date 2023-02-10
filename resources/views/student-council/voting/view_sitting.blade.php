@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('title')
-<a href="{{ route('sittings.index') }}" class="breadcrumb">@lang('voting.assembly')</a>
-<a href="#!" class="breadcrumb">{{ $sitting->title }}</a>
+<a href="{{ route('sittings.index') }}" class="breadcrumb" style="cursor: pointer">@lang('voting.assembly')</a>
+<a href="#!" class="breadcrumb" style="cursor: pointer">{{ $sitting->title }}</a>
 @endsection
 @section('student_council_module') active @endsection
 
@@ -56,13 +56,7 @@
                         <th>
                             @if($sitting->isOpen())
                             @can('administer', $sitting)
-                            <form action="{{ route('questions.create') }}" method="GET" class="right" style="margin-right:10px">
-                                @csrf
-                                <input type="hidden" name="sitting" value="{{$sitting->id}}"/>
-                                <button type="submit" class="btn-floating waves-effect waves-light right">
-                                    <i class="material-icons">add</i>
-                                </button>
-                            </form>
+                            <x-input.button href="{{ route('questions.create', ['sitting' => $sitting]) }}" floating class="right" icon="add" />
                             @endcan
                             @endif
                         </th>
@@ -77,7 +71,7 @@
                         <td>
                             @if($question->isOpen())
                             @can('administer', $sitting)
-                            <form action="{{ route('questions.close', $question->id) }}" method="POST" class="right" style="margin-right:10px">
+                            <form action="{{ route('questions.close', $question->id) }}" method="POST" class="right">
                                 @csrf
                                 <x-input.button text="voting.close_question" class="red" />
                             </form>
@@ -86,16 +80,12 @@
                         </td>
                         <td>
                             @can('vote', $question)
-                            <a href="{{ route('questions.votes.create', $question->id) }}" class="btn-floating waves-effect waves-light right">
-                                <i class="material-icons">thumbs_up_down</i>
-                            </a>
+                            <x-input.button href="{{ route('questions.votes.create', $question->id) }}" floating class="right" icon="thumbs_up_down" />
                             @endcan
                         </td>
                         <td>
                             @can('viewResults', $question)
-                            <a href="{{ route('questions.show', $question->id) }}" class="btn-floating waves-effect waves-light right">
-                                <i class="material-icons">remove_red_eye</i>
-                            </a>
+                            <x-input.button href="{{ route('questions.show', $question->id) }}" floating class="right" icon="remove_red_eye" />
                             @endcan
                         </td>
                     </tr>

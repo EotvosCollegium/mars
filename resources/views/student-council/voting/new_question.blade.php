@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('title')
-<a href="{{route('sittings.index')}}" class="breadcrumb">@lang('voting.assembly')</a>
-<a href="{{ route('sittings.show', $sitting)}}" class=breadcrumb>{{ $sitting->title }}</a>
+<a href="{{route('sittings.index')}}" class="breadcrumb" style="cursor: pointer">@lang('voting.assembly')</a>
+<a href="{{ route('sittings.show', $sitting)}}" class="breadcrumb" style="cursor: pointer">{{ $sitting->title }}</a>
 <a href="#!" class="breadcrumb">@lang('voting.new_question')</a>
 @endsection
 @section('student_council_module') active @endsection
@@ -12,9 +12,8 @@
 <div class="row">
     <div class="col s12">
         <div class="card">
-            <form action="{{ route('questions.store', $sitting) }}" method="POST">
+            <form action="{{ route('questions.store', ['sitting' => $sitting]) }}" method="POST">
                 @csrf
-                <input type="hidden" name="sitting" value="{{$sitting->id}}"/>
                 <div class="card-content">
                 @foreach ($errors->all() as $error)
                 <blockquote class="error">{{ $error }}</blockquote>

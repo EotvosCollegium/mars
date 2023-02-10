@@ -2,8 +2,8 @@
 
 @section('title')
 <a href="{{route('sittings.index')}}" class="breadcrumb">@lang('voting.assembly')</a>
-<a href="{{route('sittings.show', $question->sitting->id)}}" class="breadcrumb">{{ $question->sitting->title }}</a>
-<a href="{{route('questions.show', $question->id)}}" class="breadcrumb">{{ $question->title }}</a>
+<a href="{{route('sittings.show', $question->sitting->id)}}" class="breadcrumb" style="cursor: pointer">{{ $question->sitting->title }}</a>
+<a href="{{route('questions.show', $question->id)}}" class="breadcrumb" style="cursor: pointer">{{ $question->title }}</a>
 <a href="#!" class="breadcrumb">@lang('voting.voting')</a>
 @endsection
 @section('student_council_module') active @endsection
@@ -17,28 +17,20 @@
                 @csrf
                 <div class="card-content">
                     <span class="card-title">{{ $question->title }}</span>
-                    <p class="red-text">@lang('voting.warning')</p>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>@lang('voting.options')</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($question->options()->get() as $option)
-                            <tr>
-                                <td>{{$option->title}}</td>
-                                <td>
-                                    @if($question->max_options==1)
-                                    <input style="opacity: 1; pointer-events: auto;" type="radio" name="option" value="{{ $option->id }}" text="{{ $option->title }}">
-                                    @else
-                                    <input style="opacity: 1; pointer-events: auto;" type="checkbox" name="option[]" value="{{ $option->id }}" class="filled-in checkbox-color" text="{{$option->title}}" />
-                                    @endif
-                                </td>
-                            </tr>
-                            @endforeach   
-                        </tbody>
-                    </table>
+                    <blockquote class="error">@lang('voting.warning')</blockquote>
+                    <p style="margin-bottom:10px"><label style="font-size: 1em">@lang('voting.options')</label></p>
+                    <div class="row">
+                    @foreach($question->options()->get() as $option)
+                        @if($question->max_options==1)
+                        <x-input.radio name="option" value="{{$option->id}}" text="{{$option->title}}" />
+                        @else
+                        <x-input.checkbox name="option[]" value="{{$option->id}}" text="{{$option->title}}" />
+                        @endif
+                    @endforeach   
+                    @foreach ($errors->all() as $error)
+                        <blockquote class="error">{{ $error }}</blockquote>
+                    @endforeach
+                    </div>
                 </div>
                 <div class="card-action">
                     <div class="row" style="margin-bottom: 0">

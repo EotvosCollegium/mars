@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-<a href="{{route('sittings.index')}}" class="breadcrumb">@lang('voting.assembly')</a>
+<a href="{{route('sittings.index')}}" class="breadcrumb" style="cursor: pointer">@lang('voting.assembly')</a>
 <a href="#!" class="breadcrumb">@lang('voting.new_sitting')</a>
 @endsection
 @section('student_council_module') active @endsection
