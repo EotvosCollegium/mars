@@ -89,4 +89,6 @@ return [
     'alfonso_language_desc' => 'Az ALFONSÓ program keretében választott nyelv (később módosítható)',
     'alfonso_desired_level' => 'Elérni kívánt szint',
     'alfonso_passed_by' => 'ALFONSÓ kötelezettség teljesítve',
+    'relatives_contact_data' => 'Hozzátartozók neve és elérhetőségei',
+    'relatives_contact_data_desc' => 'Baleset esetén értesítendő',
 ];
