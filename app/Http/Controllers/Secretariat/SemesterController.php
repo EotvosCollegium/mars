@@ -50,7 +50,7 @@ class SemesterController extends Controller
 
         /* @var User $user */
         $user = Auth::user();
-        $user->setStatus($request->semester_status, __("secretariat.status_statement"));
+        $user->setStatus($request->semester_status, "Status statement");
         $user->setCollegist($request->collegist_role);
         return redirect('home')->with('message', __('general.successful_modification'));
     }
@@ -58,6 +58,7 @@ class SemesterController extends Controller
     public static function sendStatementMail()
     {
         $users = User::collegists();
+        $notifiable = collect([]);
         foreach ($users as $user) {
             if ($user->getStatus() != SemesterStatus::INACTIVE /* default */) {
                 continue;
@@ -74,9 +75,11 @@ class SemesterController extends Controller
             SemesterStatus::withoutEvents(function () use ($user) {
                 $user->setStatus(SemesterStatus::INACTIVE, 'Default status');
             });
+            $notifiable->push($user);
         }
 
-        Mail::to(env('MAIL_MEMBRA'))->queue(new \App\Mail\StatusStatementRequest());
+        Mail::send(env('MAIL_MEMBRA'))->queue(new \App\Mail\StatusStatementRequest());
+        return $notifiable;
     }
 
     /**

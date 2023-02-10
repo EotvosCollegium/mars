@@ -31,6 +31,7 @@
                     <div class="row">
                         <x-input.button class="right red" text="general.save" />
                     </div>
+                    
                 </form>
             </div>
         </div>
