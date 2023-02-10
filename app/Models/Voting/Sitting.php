@@ -60,7 +60,7 @@ class Sitting extends Model
     }
 
     /**
-     * Opens the question. 
+     * Opens the question.
      * @throws Exception if it has already been opened.
      */
     public function open(): void
@@ -72,7 +72,7 @@ class Sitting extends Model
     }
 
     /**
-     * Closes the question. 
+     * Closes the question.
      * @throws Exception if it has already been closed or if it is not even open.
      */
     public function close(): void

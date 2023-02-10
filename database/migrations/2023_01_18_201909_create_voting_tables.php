@@ -9,7 +9,6 @@ use App\Models\Voting\Question;
 use App\Models\Voting\Sitting;
 
 return new class () extends Migration {
-    
     /**
      * Run the migrations.
      *

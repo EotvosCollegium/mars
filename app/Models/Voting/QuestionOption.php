@@ -16,7 +16,7 @@ class QuestionOption extends Model
 
     protected $fillable = ['question_id', 'title', 'votes'];
 
-    /** 
+    /**
      * @return BelongsTo The question the option belongs to.
     */
     public function question(): BelongsTo
