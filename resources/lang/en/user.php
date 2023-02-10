@@ -85,4 +85,6 @@ return [
     'year_of_graduation' => 'Year of graduation',
     'year_of_the_leaving_exam' => 'Year of the leaving exam',
     'zip_code' => 'Zip code',
+    'relatives_contact_data' => 'Relative\'s contact information',
+    'relatives_contact_data_desc' => 'In case of emergency'
 ];
