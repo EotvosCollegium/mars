@@ -77,6 +77,11 @@
             locale='user'
             required
             :value="$user->personalInformation?->street_and_number" />
+        <x-input.text
+            id='relatives_contact_data'
+            text='user.relatives_contact_data'
+            :helper="__('user.relatives_contact_data_desc')"
+            :value="$user->personalInformation?->relatives_contact_data" />
         @endif
         @if($only_tenant_until ?? false)
         </div>

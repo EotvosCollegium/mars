@@ -36,11 +36,7 @@ class InternetAccess extends Model
     public function setWifiCredentials($username = null)
     {
         if ($username === null) {
-            if ($this->user->isCollegist() && isset($this->user->educationalInformation)) {
-                $username = $this->user->educationalInformation->neptun;
-            } else {
-                $username = 'wifiuser'.$this->user_id;
-            }
+            $username = $this->user?->educationalInformation?->neptun ?? 'wifiuser'.$this->user_id;
         }
         $this->update([
             'wifi_username' => $username,

@@ -32,6 +32,7 @@ class PersonalInformation extends Model
         'street_and_number',
         'tenant_until',
         'profile_picture_id',
+        'relatives_contact_data',
     ];
 
     public function user()

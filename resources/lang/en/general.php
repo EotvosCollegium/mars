@@ -31,6 +31,7 @@ return [
     'search' => 'Search...',
     'secretariat' => 'Secretariat',
     'semester' => 'Semester',
+    'send' => 'Send',
     'settings' => 'Settings',
     'show' => 'Show',
     'success' => 'Success!',

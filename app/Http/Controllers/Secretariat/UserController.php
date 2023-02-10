@@ -50,6 +50,7 @@ class UserController extends Controller
             'city' => [Rule::requiredIf($isCollegist), 'string', 'max:255'],
             'street_and_number' => [Rule::requiredIf($isCollegist), 'string', 'max:255'],
             'tenant_until'=> [Rule::requiredIf($user->isTenant()), 'date', 'after:today'],
+            'relatives_contact_data' => ['nullable', 'string', 'max:255'],
         ]);
         if ($user->email != $request->email) {
             if (User::where('email', $request->email)->exists()) {
