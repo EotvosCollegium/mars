@@ -18,7 +18,7 @@ class QuestionFactory extends Factory
     public function definition()
     {
         return [
-            'title' => $this->faker->realText($maxNbChars = 50), 
+            'title' => $this->faker->realText($maxNbChars = 50),
             'max_options' => $this->faker->numberBetween(1, 3),
             'opened_at' => now()->addHours($this->faker->numberBetween(-3, -2)),
             'closed_at' => now()->addHours($this->faker->numberBetween(-1, 1)),

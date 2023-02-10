@@ -32,7 +32,7 @@ class VotingTest extends TestCase
             ->for($sitting)
             ->hasOptions(3)
             ->create(['opened_at' => now()->subDay(), 'closed_at' => now()->subDay()]);
-        
+
         $this->expectException(\Exception::class);
         $question->vote($user, [$question->options->first()]);
     }
@@ -51,7 +51,7 @@ class VotingTest extends TestCase
             ->for($sitting)
             ->hasOptions(3)
             ->create(['opened_at' => null, 'closed_at' => null]);
-        
+
         $this->expectException(\Exception::class);
         $question->vote($user, [$question->options->first()]);
     }
@@ -70,7 +70,7 @@ class VotingTest extends TestCase
             ->for($sitting)
             ->hasOptions(3)
             ->create(['opened_at' => now()->subDay(), 'closed_at' => now()->addDay()]);
-        
+
         $this->expectException(\Exception::class);
         $question->vote($user, [$question->options->first()]);
         $question->vote($user, [$question->options->first()]);
@@ -90,7 +90,7 @@ class VotingTest extends TestCase
             ->for($sitting)
             ->hasOptions(3)
             ->create(['opened_at' => now()->subDay(), 'closed_at' => now()->addDay(), 'max_options' => 1]);
-        
+
         $question->vote($user, [$question->options->first()]);
 
         $this->assertEquals(1, $question->options->first()->votes);
@@ -112,7 +112,7 @@ class VotingTest extends TestCase
             ->for($sitting)
             ->hasOptions(3)
             ->create(['opened_at' => now()->subDay(), 'closed_at' => now()->addDay(), 'max_options' => 1]);
-        
+
         $this->expectException(\Exception::class);
         $question->vote($user, [$question->options->first(), $question->options->get(1)]);
     }
@@ -131,7 +131,7 @@ class VotingTest extends TestCase
             ->for($sitting)
             ->hasOptions(3)
             ->create(['opened_at' => now()->subDay(), 'closed_at' => now()->addDay(), 'max_options' => 3]);
-        
+
         $question->vote($user, [$question->options->first(), $question->options->get(1)]);
 
         $this->assertEquals(1, $question->options->first()->votes);
@@ -153,7 +153,7 @@ class VotingTest extends TestCase
             ->for($sitting)
             ->hasOptions(3)
             ->create(['opened_at' => now()->subDay(), 'closed_at' => now()->addDay(), 'max_options' => 2]);
-        
+
         $this->expectException(\Exception::class);
         $question->vote($user, [$question->options->first(), $question->options->get(1), $question->options->get(2)]);
     }

@@ -18,7 +18,7 @@ class QuestionOptionFactory extends Factory
     public function definition()
     {
         return [
-            'title' => $this->faker->realText($maxNbChars = 50), 
+            'title' => $this->faker->realText($maxNbChars = 50),
             'votes' => 0
         ];
     }
