@@ -6,8 +6,10 @@ use Illuminate\Support\Facades\Schema;
 
 use App\Models\User;
 use App\Models\Voting\Question;
+use App\Models\Voting\Sitting;
 
 return new class () extends Migration {
+    
     /**
      * Run the migrations.
      *
@@ -23,9 +25,7 @@ return new class () extends Migration {
         });
         Schema::create('questions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('sitting_id')
-                ->references('id')->on('sittings')
-                ->onDelete('cascade');
+            $table->foreignIdFor(Sitting::class)->onDelete('cascade');
             $table->string('title');
             $table->integer('max_options')->default(1);
             $table->datetime('opened_at')->nullable();
@@ -33,19 +33,13 @@ return new class () extends Migration {
         });
         Schema::create('question_options', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('question_id')
-                ->references('id')->on('questions')
-                ->onDelete('cascade');
+            $table->foreignIdFor(Question::class)->onDelete('cascade');
             $table->string('title');
             $table->integer('votes')->default(0);
         });
         Schema::create('question_user', function (Blueprint $table) {
-            $table->foreignIdFor(Question::class)
-                ->references('id')->on('questions')
-                ->onDelete('cascade');
-            $table->foreignIdFor(User::class)
-                ->references('id')->on('users')
-                ->onDelete('cascade');
+            $table->foreignIdFor(Question::class)->onDelete('cascade');
+            $table->foreignIdFor(User::class)->onDelete('cascade');
             $table->timestamps();
             $table->unique(['question_id', 'user_id']);
         });
@@ -60,7 +54,7 @@ return new class () extends Migration {
     {
         Schema::dropIfExists('sittings');
         Schema::dropIfExists('questions');
-        Schema::dropIfExists('options');
+        Schema::dropIfExists('question_options');
         Schema::dropIfExists('question_user');
     }
 };
