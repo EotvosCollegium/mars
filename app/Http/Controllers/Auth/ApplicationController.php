@@ -173,7 +173,7 @@ class ApplicationController extends Controller
     }
 
     /**
-     * Accept and delete applciations. 
+     * Accept and delete applciations.
      * @return RedirectResponse
      * @throws AuthorizationException
      */
