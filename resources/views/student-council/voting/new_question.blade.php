@@ -16,13 +16,18 @@
                 @csrf
                 <input type="hidden" name="sitting" value="{{$sitting->id}}"/>
                 <div class="card-content">
+                @foreach ($errors->all() as $error)
+                <blockquote class="error">{{ $error }}</blockquote>
+            @endforeach
                     <span class="card-title">@lang('voting.new_question')</span>
                     <div class="row">
                         <x-input.text s="12" type="text" text="voting.question_title" id="title" maxlength="100" required/>
                     </div>
                     <div class="row">
-                        <x-input.textarea id="options" s="12" l="10" text="voting.options_instructions" required/>
-                        <x-input.text type="number" min="1" max="3" value="1" s="12" l="2" id="max_options" text="voting.max_options" required/>
+                        @livewire('parent-child-form', ['title' => __('voting.options'), 'name' => 'options', 'items' => old('options')])
+                    </div>
+                    <div class="row">
+                        <x-input.text type="number" value="1" id="max_options" text="voting.max_options" required/>
                     </div>
                 </div>
                 <div class="card-action right-align">

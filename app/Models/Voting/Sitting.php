@@ -26,28 +26,43 @@ class Sitting extends Model
         'closed_at' => 'datetime',
     ];
 
-    /**A query for the questions that belong to the sitting.*/
+    /**
+     * @return HasMany The questions that belong to the sitting.
+     */
     public function questions(): HasMany
     {
         return $this->hasMany(Question::class);
     }
-    /**Whether the sitting has been opened (regardless of whether it has been closed since then).*/
+
+    /**
+     * @return bool Whether the sitting has been opened (regardless of whether it has been closed since then).
+     */
     public function hasBeenOpened(): bool
     {
         return $this->opened_at!=null && $this->opened_at<=now();
     }
-    /**Whether the question is currently open.*/
+
+    /**
+     * @return bool Whether the question is currently open.
+     */
     public function isOpen(): bool
     {
         return $this->hasBeenOpened() &&
                 !$this->isClosed();
     }
-    /**Whether the question has been closed.*/
+
+    /**
+     * @return bool Whether the question has been closed.
+     */
     public function isClosed(): bool
     {
         return $this->closed_at!=null && $this->closed_at<=now();
     }
-    /**Opens the question. Throws if it has already been opened.*/
+
+    /**
+     * Opens the question. 
+     * @throws Exception if it has already been opened.
+     */
     public function open(): void
     {
         if ($this->isOpen() || $this->isClosed()) {
@@ -55,7 +70,11 @@ class Sitting extends Model
         }
         $this->update(['opened_at'=>now()]);
     }
-    /**Closes the question. Throws if it has already been closed or if it is not even open.*/
+
+    /**
+     * Closes the question. 
+     * @throws Exception if it has already been closed or if it is not even open.
+     */
     public function close(): void
     {
         if ($this->isClosed()) {

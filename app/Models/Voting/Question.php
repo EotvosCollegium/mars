@@ -21,33 +21,50 @@ class Question extends Model
 
     public $timestamps = false;
 
-    /**Query for the parent sitting.*/
+    /**
+     * @return BelongsTo The parent sitting.
+     */
     public function sitting(): BelongsTo
     {
         return $this->belongsTo(Sitting::class);
     }
-    /**Query for the options belonging to the question.*/
+
+    /**
+     * @return HasMany the options belonging to the question
+     */
     public function options(): HasMany
     {
         return $this->hasMany(QuestionOption::class);
     }
-    /**Whether the question has already been opened once (regardless of whether it has been closed since then).*/
+
+    /**
+     * @return bool Whether the question has already been opened once (regardless of whether it has been closed since then).
+     */
     public function hasBeenOpened(): bool
     {
         return $this->opened_at!=null && $this->opened_at<=now();
     }
-    /**Whether the question is currently open.*/
+
+    /**
+     * @return bool Whether the question is currently open.*
+     */
     public function isOpen(): bool
     {
         return $this->hasBeenOpened() &&
                 !$this->isClosed();
     }
-    /**Whether the question has been closed.*/
+    /**
+     * @return bool Whether the question has been closed.
+     */
     public function isClosed(): bool
     {
         return $this->closed_at!=null && $this->closed_at<=now();
     }
-    /**Opens the question. Throws if it has already been opened.*/
+
+    /**
+     * Opens the question. 
+     * @throws Exception if it has already been opened.
+     */
     public function open(): void
     {
         if (!$this->sitting->isOpen()) {
@@ -58,7 +75,11 @@ class Question extends Model
         }
         $this->update(['opened_at'=>now()]);
     }
-    /**Closes the question. Throws if it has already been closed or if it is not even open.*/
+
+    /**
+     * Closes the question. 
+     * @throws Exception if it has already been closed or if it is not even open.
+     */
     public function close(): void
     {
         if ($this->isClosed()) {
@@ -69,20 +90,29 @@ class Question extends Model
         }
         $this->update(['closed_at'=>now()]);
     }
-    /**Whether the question is a multiple-choice question (with checkboxes).*/
+
+    /**
+     * @return book Whether the question is a multiple-choice question (with checkboxes).
+     */
     public function isMultipleChoice(): bool
     {
         return $this->max_options>1;
     }
-    /**Whether a certain user has already voted in the question.*/
+
+    /**
+     * @param User $user
+     * @return bool Whether a certain user has already voted in the question.
+     */
     public function hasVoted(User $user): bool
     {
         return QuestionUser::where('question_id', $this->id)->where('user_id', $user->id)->exists();
     }
+
     /**
      * Votes for a list of given options in the name of the user.
-     * Note: the options should be given as QuestionOption objects.
-     * Throws if an option does not belong to the question or if too many options are selected.
+     * @param User $user
+     * @param array $options QuestionOption array
+     * @throws Exception if an option does not belong to the question or if too many options are selected.
      */
     public function vote(User $user, array $options): void
     {
@@ -92,15 +122,18 @@ class Question extends Model
         if ($this->max_options < count($options)) {
             throw new \Exception("too many options given");
         }
-        QuestionUser::create([
-            'question_id' => $this->id,
-            'user_id' => $user->id,
-        ]);
-        foreach ($options as $option) {
-            if ($option->question->id!=$this->id) {
-                throw new \Exception("received an option which does not belong to the question -- the table may now be inconsistent");
+        DB::transaction(function () use ($user, $options) {
+            QuestionUser::create([
+                'question_id' => $this->id,
+                'user_id' => $user->id,
+            ]);
+            foreach ($options as $option) {
+                if ($option->question_id != $this->id) {
+                    throw new \Exception("Received an option which does not belong to the question");
+                }
+                $option->increment('votes');
             }
-            $option->increment('votes');
-        }
+        });
+        
     }
 }

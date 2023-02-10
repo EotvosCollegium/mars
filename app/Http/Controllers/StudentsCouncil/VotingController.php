@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\StudentsCouncil;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
@@ -77,7 +76,6 @@ class VotingController extends Controller
             abort(401, "tried to close a sitting which was not open");
         }
         $sitting->close();
-        $sitting->save();
         return back()->with('message', __('voting.sitting_closed'));
     }
 
@@ -92,7 +90,7 @@ class VotingController extends Controller
             'sitting' => 'exists:sittings,id',
         ]);
         $validator->validate();
-        $sitting=Sitting::findOrFail($request->sitting);
+        $sitting = Sitting::findOrFail($request->sitting);
 
         if (!$sitting->isOpen()) {
             abort(401, "tried to modify a sitting which was not open");
@@ -112,25 +110,20 @@ class VotingController extends Controller
         $validator = Validator::make($request->all(), [
             'sitting' => 'exists:sittings,id',
             'title' => 'required|string',
-            'max_options' => 'required|min:1'
+            'max_options' => 'required|min:1',
+            'options' => 'required|array|min:1',
+            'options.*' => 'nullable|string|max:255',
         ]);
-        //splitting by newlines and removing options which only have whitespace
-        $options=array_map(
-            function ($s) {
-                return trim($s);
-            },
-            array_filter(explode("\n", $request->options), function ($s) {
-                return $s!="" && !ctype_space($s); //ctype_space would give false for ""
-            })
-        );
+        $options = array_filter($request->options, function ($s) {
+            return $s != null;
+        });
         if (count($options)==0) {
             $validator->after(function ($validator) {
-                $validator->errors()->add('options', __('voting.at_least_one_option', ['attribute' => 'options']));
+                $validator->errors()->add('options', __('voting.at_least_one_option'));
             });
         }
         $validator->validate();
-
-        $sitting=Sitting::findOrFail($request->sitting);
+        $sitting = Sitting::findOrFail($request->sitting);
 
         if (!$sitting->isOpen()) {
             abort(401, "tried to modify a sitting which was not open");
@@ -161,7 +154,6 @@ class VotingController extends Controller
             abort(401, "tried to close a question which was not open");
         }
         $question->close();
-        $question->save();
         return back()->with('message', __('voting.question_closed'));
     }
 
@@ -201,11 +193,11 @@ class VotingController extends Controller
             ]);
             $validator->validate();
 
-            $options=array();
+            $options = array();
             foreach ($request->option as $oid) {
-                $option=QuestionOption::findOrFail($oid);
-                if ($option->question->id!=$question->id) {
-                    return response()->json(['message' => 'Option not belonging to question'], 403);
+                $option = QuestionOption::findOrFail($oid);
+                if ($option->question_id != $question->id) {
+                    abort(401, "Tried to vote for an option which does not belong to the question");
                 }
                 array_push($options, $option);
             }
@@ -216,9 +208,9 @@ class VotingController extends Controller
             ]);
             $validator->validate();
 
-            $option=QuestionOption::findOrFail($request->option);
+            $option = QuestionOption::findOrFail($request->option);
             if ($option->question->id!=$question->id) {
-                return response()->json(['message' => 'Option not belonging to question'], 403);
+                abort(401, "Tried to vote for an option which does not belong to the question");
             }
             $question->vote(Auth::user(), array($option));
         }
