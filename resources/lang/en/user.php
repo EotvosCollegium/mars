@@ -86,6 +86,7 @@ return [
     'year_of_the_leaving_exam' => 'Year of the leaving exam',
     'zip_code' => 'Zip code',
     'alfonso_language' => 'Alfonso language',
+    'alfonso_language_desc' => 'The language chosen in the ALFONSÓ program (can be changed later)',
     'alfonso_desired_level' => 'Desired Alfonso level',
     'alfonso_passed_by' => 'Passed Alfonso at'
 ];
