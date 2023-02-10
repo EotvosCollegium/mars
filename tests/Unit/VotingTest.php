@@ -24,8 +24,6 @@ class VotingTest extends TestCase
     public function test_voting_on_closed_question()
     {
         $user = User::factory()->create();
-        $user->setExtern();
-        $user->setStatus(SemesterStatus::ACTIVE);
 
         $sitting = Sitting::factory()->create();
         $question = Question::factory()
@@ -43,8 +41,6 @@ class VotingTest extends TestCase
     public function test_voting_on_not_opened_question()
     {
         $user = User::factory()->create();
-        $user->setExtern();
-        $user->setStatus(SemesterStatus::ACTIVE);
 
         $sitting = Sitting::factory()->create();
         $question = Question::factory()
@@ -62,8 +58,6 @@ class VotingTest extends TestCase
     public function test_voting_twice()
     {
         $user = User::factory()->create();
-        $user->setExtern();
-        $user->setStatus(SemesterStatus::ACTIVE);
 
         $sitting = Sitting::factory()->create();
         $question = Question::factory()
@@ -82,8 +76,6 @@ class VotingTest extends TestCase
     public function test_voting_radio()
     {
         $user = User::factory()->create();
-        $user->setExtern();
-        $user->setStatus(SemesterStatus::ACTIVE);
 
         $sitting = Sitting::factory()->create();
         $question = Question::factory()
@@ -104,8 +96,6 @@ class VotingTest extends TestCase
     public function test_voting_radio_with_more_options()
     {
         $user = User::factory()->create();
-        $user->setExtern();
-        $user->setStatus(SemesterStatus::ACTIVE);
 
         $sitting = Sitting::factory()->create();
         $question = Question::factory()
@@ -123,8 +113,6 @@ class VotingTest extends TestCase
     public function test_voting_checkbox()
     {
         $user = User::factory()->create();
-        $user->setExtern();
-        $user->setStatus(SemesterStatus::ACTIVE);
 
         $sitting = Sitting::factory()->create();
         $question = Question::factory()
@@ -145,8 +133,6 @@ class VotingTest extends TestCase
     public function test_voting_checkbox_with_more_options()
     {
         $user = User::factory()->create();
-        $user->setExtern();
-        $user->setStatus(SemesterStatus::ACTIVE);
 
         $sitting = Sitting::factory()->create();
         $question = Question::factory()
