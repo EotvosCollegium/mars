@@ -19,7 +19,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 
 class ApplicationController extends Controller
@@ -30,7 +29,6 @@ class ApplicationController extends Controller
     private const DELETE_FILE_ROUTE = 'files.delete';
     private const ADD_PROFILE_PIC_ROUTE = 'files.profile';
     private const SUBMIT_ROUTE = 'submit';
-    private const PERSONAL_ROUTE = 'personal';
 
     /**
      * Return the view based on the request's page parameter.
@@ -174,6 +172,11 @@ class ApplicationController extends Controller
         return redirect()->back();
     }
 
+    /**
+     * Accept and delete applciations. 
+     * @return RedirectResponse
+     * @throws AuthorizationException
+     */
     public function finalizeApplicationProcess()
     {
         $this->authorize('finalizeApplicationProcess', User::class);
