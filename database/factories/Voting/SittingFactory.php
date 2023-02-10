@@ -1,11 +1,11 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\Voting;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Sitting>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Voting\Sitting>
  */
 class SittingFactory extends Factory
 {
@@ -19,7 +19,7 @@ class SittingFactory extends Factory
         return [
             'title' => $this->faker->realText($maxNbChars = 50),
             'opened_at' => now()->addHours($this->faker->numberBetween(-3, -2)),
-            'closed_at' => now()->addHours($this->faker->numberBetween(-1, 0)),
+            'closed_at' => now()->addHours($this->faker->numberBetween(-1, 1)),
         ];
     }
 }
