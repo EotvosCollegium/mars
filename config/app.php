@@ -113,6 +113,15 @@ return [
         'gr' => 'Ó - Ελληνικά',
         'hu' => 'M - Magyar',
     ],
+    'alfonso_languages' => [
+        'en' => 'A - English',
+        'la' => 'L - Latina',
+        'fr' => 'F - Français',
+        'it' => 'O - Italiano',
+        'de' => 'N - Deutsch',
+        'sp' => 'S - Español',
+        'gr' => 'Ó - Ελληνικά'
+    ],
 
     'locale_cookie_lifespan' => 9600,
 

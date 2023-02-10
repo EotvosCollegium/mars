@@ -66,6 +66,19 @@
             $user->educationalInformation ? $user->educationalInformation->program : null])
         </div>
 
+        <x-input.select l=4 id='alfonso_language' locale='user'
+                    value='{{ $user->educationalInformation?->alfonso_language }}'
+                    :elements="config('app.alfonso_languages')"
+                    helper="user.alfonso_language_desc"
+                    />
+        <x-input.select l=4 id='alfonso_desired_level' locale='user'
+            :value='$user->educationalInformation?->alfonso_desired_level'
+            :elements="['B2','C1']"
+        />
+        <x-input.datepicker l=4 id='alfonso_passed_by' locale='user'
+            :value='$user->educationalInformation?->alfonso_passed_by'
+        />
+
         <x-input.button class="right" text="general.save" />
     </div>
 </form>
