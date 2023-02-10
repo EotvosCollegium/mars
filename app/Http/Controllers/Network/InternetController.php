@@ -15,7 +15,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
 
 class InternetController extends Controller
 {
@@ -223,7 +222,13 @@ class InternetController extends Controller
 
         return redirect()->back()->with('message', __('general.successful_modification'));
     }
-
+    
+    /**
+     * Sends an email to all admins with the report of a fault.
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function reportFault(Request $request)
     {
         $validator = Validator::make($request->all(), [
