@@ -222,10 +222,10 @@ class InternetController extends Controller
 
         return redirect()->back()->with('message', __('general.successful_modification'));
     }
-    
+
     /**
      * Sends an email to all admins with the report of a fault.
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
