@@ -26,7 +26,6 @@
                     <x-input.button id="delete-filter" text="Szűrő törlése"/>
                 </form>
                 @can('finalizeApplicationProcess', \App\Models\User::class)
-                    @if($status==\App\Models\ApplicationForm::STATUS_ACCEPTED)
                     <form id="finalize-application-process" method="POST" action="{{route('applications.finalize')}}">
                         @csrf
                         <p>
@@ -36,7 +35,6 @@
                         </p>
                         <x-input.button text="Felvételi lezárása"/>
                     </form>
-                    @endif
                 @endcan
                 
             </div>

@@ -165,7 +165,7 @@ class ApplicationController extends Controller
         } elseif ($newStatus) {
             $application->update(['status' => $newStatus]);
             if ($newStatus==ApplicationForm::STATUS_CALLED_IN || $newStatus==ApplicationForm::STATUS_ACCEPTED) {
-                $application->user->internetAccess->setWifiUsername($application->user->educationalInformation->neptun??'wifiuser_'.$application->user->id);
+                $application->user->internetAccess->setWifiCredentials($application->user->educationalInformation->neptun??'wifiuser_'.$application->user->id);
                 $application->user->internetAccess()->update(['has_internet_until' => $this::getApplicationDeadline()->addMonths(1)]);
             }
         }
