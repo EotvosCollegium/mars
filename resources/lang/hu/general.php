@@ -31,6 +31,7 @@ return [
     'search' => 'Keresés...',
     'secretariat' => 'Titkárság',
     'semester' => 'Szemeszter',
+    'send' => 'Küldés',
     'settings' => 'Beállítások',
     'show' => 'Mutasd',
     'success' => 'Siker!',
