@@ -103,11 +103,11 @@ class RegisterController extends Controller
                 'email' => $data['email'],
                 'password' => Hash::make($data['password']),
             ]);
-            
+
             $user->roles()->attach(Role::firstWhere('name', Role::PRINTER)->id);
             $user->roles()->attach(Role::firstWhere('name', Role::INTERNET_USER)->id);
             $user->roles()->attach(Role::firstWhere('name', $data['user_type'])->id);
-    
+
             if ($data['user_type'] == Role::TENANT) {
                 $user->personalInformation()->create([
                     'tenant_until' => $data['tenant_until'],
@@ -133,7 +133,7 @@ class RegisterController extends Controller
 
             return $user;
         });
-        
+
         Cache::forget('collegists');
 
         return $user;
