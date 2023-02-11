@@ -17,7 +17,6 @@ class ApplicationStatusUpdate extends Component
     {
         $this->application->update(['status' => $status]);
         session()->flash('message', 'Státusz frissítve!');
-
     }
 
     /**
