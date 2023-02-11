@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-<a href="#!" class="breadcrumb">@lang('admin.admin')</a>
+<a href="#!" class="breadcrumb">Admin</a>
 <a href="#!" class="breadcrumb">@lang('print.print')</a>
 @endsection
 @section('admin_module') active @endsection

@@ -1,7 +1,7 @@
 @component('mail::message')
 <h1>@lang('mail.dear') {{ $recipient }}!</h1>
 <p>
-    @lang('mail.new_registration', ['registered_user' => $user->name])
+    {{$user->name}} vendégként regisztrált az Urán rendszerébe. Fogadd el vagy utasítsd vissza a kérelmét.
 </p>
 @php
     $personal=$user->personalInformation
@@ -14,8 +14,8 @@
 @lang('user.tenant_until'): {{$personal->tenant_until}}
 @endcomponent
 <div class="row">
-@component('mail::button', ['url'=> route('secretariat.registrations.accept', ['id' => $user->id])])
-@lang('user.accept')    
+@component('mail::button', ['url'=> route('secretariat.registrations', ['id' => $user->id])])
+Részletek
 @endcomponent
 </div>
 <p>@lang('mail.administrators')</p>

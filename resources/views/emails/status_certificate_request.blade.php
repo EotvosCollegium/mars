@@ -1,7 +1,7 @@
 @component('mail::message')
 <h1>@lang('mail.dear') {{ $recipient }}!</h1>
 <p>
-@lang('mail.status_cert_request', ['user' => $user])<br>
+{{ $user }} új tagsági igazolást igényelt.
 </p>
 @component('mail::button', ['url' => $url])
 @lang('mail.show')

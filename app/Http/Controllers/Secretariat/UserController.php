@@ -173,13 +173,13 @@ class UserController extends Controller
         $object_id = $request->get('object_id') ?? $request->get('workshop_id');
         $object = $object_id ? $role->getObject($object_id) : null;
         if ($request->user()->cannot('updatePermission', [$user, $role, $object])) {
-            return redirect()->back()->with('error', __('role.unauthorized'));
+            return redirect()->back()->with('error', 'Ezt a jogosultságot nem tudja kezelni!');
         }
 
         if ($user->addRole($role, $object)) {
             return redirect()->back()->with('message', __('general.successfully_added'));
         } else {
-            return redirect()->back()->with('error', __('role.role_can_not_be_attached'));
+            return redirect()->back()->with('error', 'Ezt a jogosultságot nem lehet hozzárendelni senkihez.');
         }
     }
 
@@ -189,7 +189,7 @@ class UserController extends Controller
         $object = $object_id ? $role->getObject($object_id) : null;
 
         if ($request->user()->cannot('updatePermission', [$user, $role, $object])) {
-            return redirect()->back()->with('error', __('role.unauthorized'));
+            return redirect()->back()->with('error', 'Ezt a jogosultságot nem tudja kezelni!');
         }
 
         $user->removeRole($role, $object ?? null);

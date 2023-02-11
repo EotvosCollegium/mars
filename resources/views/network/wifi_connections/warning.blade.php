@@ -1,16 +1,16 @@
 @can('viewAny', \App\Models\WifiConnection::class)
-<span class="card-title">@lang('internet.users_over_threshold')</span>
+<span class="card-title">Wifi csatlakozások: felhasználók a limit felett</span>
 <table>
     <thead>
         <tr>
             <th>
-                @lang('internet.username')
+                Felhasználó
             </th>
             <th>
-                @lang('internet.approved_wifi_slots')
+                Engedélyezett limit
             </th>
             <th>
-                @lang('internet.wifi_connections')
+                Csatlakozások száma
             </th>
         </tr>
     </thead>
@@ -36,11 +36,11 @@
         @empty
         <tr>
             <td>
-                @lang('internet.nothing_to_show')
+                @lang('general.nothing_to_show')
             </td>
         </tr>
         @endforelse
     </tbody>
 </table>
-<small>*@lang('user.wifi_connections_color_tooltip')</small>
+<small>*Zöld: > 10 nap, Sárga: 5 és 10 nap között, Piros: < 5 nap</small>
 @endcan

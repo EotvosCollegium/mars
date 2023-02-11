@@ -33,6 +33,6 @@ class Invitation extends Mailable
     public function build()
     {
         return $this->markdown('emails.invite')
-                    ->subject(__('mail.invitation'));
+                    ->subject('Meghívó az Eötvös Collegium tanulmányi rendszerébe');
     }
 }

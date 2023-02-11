@@ -3,6 +3,7 @@
 return [
     'active_members' => 'Aktív tagok',
     'add_new' => 'Új hozzáadása',
+    'admin' => 'Rendszergazda',
     'change_email' => 'Email megváltoztatása',
     'change_password' => 'Jelszó megváltoztatása',
     'choose_from_menu' => 'Válassz egy menüpontot!',
@@ -21,6 +22,7 @@ return [
     'mars_descr' => 'Az Eötvös József Collegium informatikai rendszere',
     'members' => 'Tagok',
     'note' => 'Megjegyzés',
+    'nothing_to_show' => 'Nincs adat',
     'other' => 'Egyebek',
     'others' => 'Egyéb',
     'register' => 'Regisztráció',

@@ -12,7 +12,6 @@ return [
     'new-registration-subject' => 'New registration',
     'new_registration' => 'A new tenant, :registered_user just registered to Urán. Approve or deny their request.',
     'no-paper-subject' => 'Printer ran out of paper',
-    'no_paper' => ':reporter just reported that there is no paper in the printer.',
     'router_status_warning' => 'Router down!',
     'show' => 'Show',
     'status_cert_request' => ':user requested a certificate to be signed:',

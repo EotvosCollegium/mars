@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-<a href="#!" class="breadcrumb">@lang('admin.admin')</a>
+<a href="#!" class="breadcrumb">@lang('general.admin')</a>
 <a href="{{ route('routers') }}" class="breadcrumb" style="cursor: pointer">@lang('router.router_monitor')</a>
 <a href="#!" class="breadcrumb">{{ $router->ip }}</a>
 @endsection
@@ -68,7 +68,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <th scope="row">@lang('internet.comment')</th>
+                            <th scope="row">@lang('general.comment')</th>
                             <td>{{ $router->comment }}</td>
                         </tr>
                         <tr>

@@ -1,7 +1,6 @@
 <?php
 
 return [
-    'accept' => 'Accept',
     'admin' => 'Admin',
     'checkout' => 'Administrators\'s checkout',
     'handle_registrations' => 'Handle registrations',

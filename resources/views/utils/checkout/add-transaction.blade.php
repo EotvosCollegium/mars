@@ -1,7 +1,7 @@
 @can('createTransaction', $checkout)
 <div class="card">
     <div class="card-content">
-        <span class="card-title">@lang('checkout.add_expense')</span>
+        <span class="card-title">Kiadás hozzáadása</span>
         <blockquote>
             @can('administrate', $checkout)
             Ha költöttél valamire vagy kifizettél valamit valakinek, akkor azt itt rögzítsd.

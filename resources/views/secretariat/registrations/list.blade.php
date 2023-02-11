@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('title')
-<a href="#!" class="breadcrumb">@lang('admin.admin')</a>
-<a href="#!" class="breadcrumb">@lang('admin.registrations')</a>
+<a href="#!" class="breadcrumb">@lang('general.admin')</a>
+<a href="#!" class="breadcrumb">Regisztrációk</a>
 @endsection
 @section('secretariat_module') active @endsection
 
@@ -12,7 +12,7 @@
     <div class="col s12">
         <div class="card">
             <div class="card-content">
-                <span class="card-title">@lang('admin.handle_registrations')</span>
+                <span class="card-title">Regisztrációk kezelése</span>
                 <table>
                     <tbody>
                         @foreach ($users as $user)
@@ -51,12 +51,12 @@
         <div class="card-content">
             <div class="row">
                 <div class="col s12 xl7">
-                    <span class="card-title">@lang('registration.invite')</span>
+                    <span class="card-title">Meghívó küldése</span>
                 </div>
                 <form method="POST" action="{{ route('secretariat.registrations.invite') }}">
                     @csrf
                     <div class="col s12">
-                        <blockquote>@lang('registration.invite_instructions')</blockquote>
+                        <blockquote>Itt lehet adott e-mail-címmel egy felhasználót készíteni, és meghívót küldeni a címre.</blockquote>
                     </div>
                     <div class="col s12 m12 l4">
                         <x-input.text  id="name" locale="user" required />
@@ -65,7 +65,7 @@
                         <x-input.text  id="email" type="email" locale="user" required />
                     </div>
                     <div class="col s12 m12 l4">
-                        <x-input.button class="right" text="registration.invite_button" />
+                        <x-input.button class="right" text="Létrehozás és meghívó küldése" />
                     </div>
                 </form>
             </div>

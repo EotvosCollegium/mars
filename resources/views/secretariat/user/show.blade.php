@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('title')
-<a href="#!" class="breadcrumb">@lang('admin.admin')</a>
-<a href="{{ route('users.index') }}" class="breadcrumb" style="cursor: pointer">@lang('admin.user_management')</a>
+<a href="#!" class="breadcrumb">@lang('general.admin')</a>
+<a href="{{ route('users.index') }}" class="breadcrumb" style="cursor: pointer">Felhasználók</a>
 <a href="#!" class="breadcrumb">{{ $user->name }}</a>
 @endsection
 @section('secretariat_module') active @endsection

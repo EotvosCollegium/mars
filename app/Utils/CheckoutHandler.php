@@ -108,8 +108,8 @@ trait CheckoutHandler
             ->where('checkout_id', $this->checkout()->id)
             ->whereNull('paid_at')->get();
 
-        Mail::to(Auth::user())->queue(new Transactions(Auth::user()->name, $transactions, __('checkout.transaction_updated'), "Az alábbi tranzakciókat kifizetted."));
-        Mail::to($user)->queue(new Transactions($user->name, $transactions, __('checkout.transaction_updated'), "Az alábbi tranzakciókat kifizették neked."));
+        Mail::to(Auth::user())->queue(new Transactions(Auth::user()->name, $transactions, "Tranzakció módosítva", "Az alábbi tranzakciókat kifizetted."));
+        Mail::to($user)->queue(new Transactions($user->name, $transactions, "Tranzakció módosítva", "Az alábbi tranzakciókat kifizették neked."));
 
         Transaction::where('receiver_id', $user->id)
             ->where('checkout_id', $this->checkout()->id)
@@ -133,7 +133,7 @@ trait CheckoutHandler
         $transactions = Transaction::where('checkout_id', $this->checkout()->id)
             ->where('moved_to_checkout', null)->get();
 
-        Mail::to($user)->queue(new Transactions($user->name, $transactions, __('checkout.transaction_updated'), "A tranzakciók új státusza: szinkronizálva a kasszával. (Ettől függetlenül még tartozhatsz embereknek, nézd meg Uránban!)"));
+        Mail::to($user)->queue(new Transactions($user->name, $transactions, "Tranzakció módosítva", "A tranzakciók új státusza: szinkronizálva a kasszával. (Ettől függetlenül még tartozhatsz embereknek, nézd meg Uránban!)"));
 
         Transaction::where('checkout_id', $this->checkout()->id)
             ->where('moved_to_checkout', null)->update(['moved_to_checkout' => Carbon::now()]);
@@ -182,7 +182,7 @@ trait CheckoutHandler
             new Transactions(
                 $user->name,
                 [$transaction],
-                __('checkout.transaction_created'),
+                "Tranzakció létrehozva",
                 "Az alábbi tranzakciók jöttek létre:"
             )
         );
@@ -192,7 +192,7 @@ trait CheckoutHandler
                 new Transactions(
                     $this->checkout()->handler->name,
                     [$transaction],
-                    __('checkout.transaction_created'),
+                    "Tranzakció létrehozva",
                     "Az alábbi tranzakciók jöttek létre:"
                 )
             );
@@ -212,10 +212,10 @@ trait CheckoutHandler
         $this->authorize('delete', $transaction);
 
         if ($transaction->payer) {
-            Mail::to($transaction->payer)->queue(new Transactions($transaction->payer->name, [$transaction], __('checkout.transaction_deleted'), __('checkout.transactions_has_been_deleted')));
+            Mail::to($transaction->payer)->queue(new Transactions($transaction->payer->name, [$transaction], "Tranzakció törölve", "A tranzakciók törlésre kerültek."));
         }
         if ($transaction->receiver && $transaction->receiver->id != $transaction->payer?->id) {
-            Mail::to($transaction->receiver)->queue(new Transactions($transaction->receiver->name, [$transaction], __('checkout.transaction_deleted'), __('checkout.transactions_has_been_deleted')));
+            Mail::to($transaction->receiver)->queue(new Transactions($transaction->receiver->name, [$transaction], "Tranzakció törölve", "A tranzakciók törlésre kerültek."));
         }
 
         $transaction->delete();

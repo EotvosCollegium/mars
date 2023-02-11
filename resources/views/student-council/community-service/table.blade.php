@@ -7,11 +7,11 @@
                     <table style="width:100%">
                         <thead>
                             <tr>
-                                <th>@lang('community-service.description')</th>
-                                <th>@lang('checkout.date')</th>
-                                <th>@lang('community-service.requester')</th>
-                                <th>@lang('community-service.approver')</th>
-                                <th>@lang('community-service.status')</th>
+                                <th>Leírés</th>
+                                <th>Dátum</th>
+                                <th>Kérvényező</th>
+                                <th>Jóváhagyó</th>
+                                <th>Státusz</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -56,8 +56,7 @@
 @empty
     <div class="card">
         <div class="card-content">
-            <span class="card-title">@lang('community-service.no-services')</span>
-            <blockquote>@lang('community-service.no-services-descr')</blockquote>
+            Nem találhatók közösségi tevékenységek
         </div>
     </div>
 @endforelse

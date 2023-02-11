@@ -40,7 +40,7 @@
             @if(Cache::has('print.no-paper') && Auth::user()->can('handleAny', \App\Models\PrintAccount::class))
                 <form method="POST" action="{{ route('print.added_paper') }}">
                     @csrf
-                    <x-input.button l=3 class="right coli blue" text="print.added_paper"/>
+                    <x-input.button l=3 class="right coli blue" text="Papír újratöltve"/>
                 </form>
             @else
                 <form method="POST" action="{{ route('print.no_paper') }}">

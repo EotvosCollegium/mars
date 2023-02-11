@@ -1,4 +1,4 @@
-<span class="card-title">@lang('print.history')</span>
+<span class="card-title">Előzmények</span>
 <div id="account-history-table"></div>
 <script type="application/javascript">
 $(document).ready(function() {
@@ -9,43 +9,43 @@ $(document).ready(function() {
         ajaxURL: "{{ route('print.account_history') }}", //set url for ajax request
         ajaxSorting: true,
         ajaxFiltering: true,
-        placeholder: "@lang('internet.nothing_to_show')",
+        placeholder: "@lang('general.nothing_to_show')",
         headerSort: false,
         columns: [
             {
-                title: "@lang('print.user')",
+                title: "Felhasználó",
                 field: "user.name",
                 sorter: "string",
                 headerFilter: 'input',
                 minWidth:200
             },
             {
-                title: "@lang('print.balance_change')",
+                title: "Egyenleg változás",
                 field: "balance_change",
                 sorter: "number",
                 minWidth:100
             },
             {
-                title: "@lang('print.free_page_change')",
+                title: "Ingyenes oldal változás",
                 field: "free_page_change",
                 sorter: "number",
                 minWidth:100
             },
             {
-                title: "@lang('print.deadline_change')",
+                title: "Határidő változás",
                 field: "deadline_change",
                 sorter: "date",
                 minWidth:180
             },
             {
-                title: "@lang('print.modified_by')",
+                title: "Módosító",
                 field: "modifier.name",
                 sorter: "string",
                 headerFilter: 'input',
                 minWidth:180
             },
             {
-                title: "@lang('print.modified_at')",
+                title: "Módosítás ideje",
                 field: "modified_at",
                 sorter: "date",
                 minWidth:180

@@ -117,7 +117,7 @@ class DocumentController extends Controller
             Mail::to($recipient)->queue(new \App\Mail\StateCertificateRequest($recipient->name, Auth::user()->name, $url));
         }
 
-        return redirect()->back()->with('message', __('document.successful_request'));
+        return redirect()->back()->with('message', "Sikeres igénylés. Az igazolást hamarosan megtalálhatod a titkárságon.");
     }
 
     /** Private helper functions */
@@ -199,7 +199,7 @@ class DocumentController extends Controller
         if ($items->isEmpty()) {
             return [
                 'success' => false,
-                'redirect' => back()->withInput()->with('error', __('document.missing_items'))
+                'redirect' => back()->withInput()->with('error', "Még nem adtad meg a tárgyakat, amiket behoznál.")
             ];
         }
 
@@ -218,14 +218,14 @@ class DocumentController extends Controller
         if (!$user->hasPersonalInformation()) {
             return [
                 'success' => false,
-                'redirect' => back()->withInput()->with('error', __('document.missing_personal_info'))
+                'redirect' => back()->withInput()->with('error', "A személyes adataid hiányoznak a dokumentum kitöltéséhez. Kérj segítséget egy rendszergazdától.")
             ];
         }
 
         if (!$user->hasEducationalInformation()) {
             return [
                 'success' => false,
-                'redirect' => back()->withInput()->with('error', __('document.missing_educational_info'))
+                'redirect' => back()->withInput()->with('error', "A tanulmányi adataid hiányoznak a dokumentum kitöltéséhez. Kérj segítséget egy rendszergazdától")
             ];
         }
         $personalInfo = $user->personalInformation;

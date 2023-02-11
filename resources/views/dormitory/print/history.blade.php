@@ -21,7 +21,7 @@
                                     ajaxError(
                                         '@lang('internet.error')',
                                         '@lang('internet.ajax_error')',
-                                        '@lang('internet.ok')',
+                                        'ok',
                                         error
                                     );
                                 }

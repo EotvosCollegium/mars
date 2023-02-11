@@ -1,7 +1,6 @@
 <?php
 
 return [
-    'failed' => 'Nem megfelelő adat(ok).',
     'i_agree_to' => 'Kijelentem, hogy elolvastam és elfogadom az',
     'privacy_policy' => 'adatkezelési irányelveket',
     'successful_registration' => 'Sikeres regisztráció',

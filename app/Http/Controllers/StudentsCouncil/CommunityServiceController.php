@@ -48,7 +48,7 @@ class CommunityServiceController extends Controller
     public function create(Request $request)
     {
         if ($request->user()->cannot('create', CommunityService::class)) {
-            return back()->with('message', __('community-service.created-not-allowed'));
+            return back()->with('message', "Nem adhatsz hozzá közösségi tevékenységet! Próbáld meg aktiválni a félévedet.");
         }
         $request->validate([
             'approver' => 'required|exists:users,id',

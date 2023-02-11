@@ -80,10 +80,10 @@ class RoomController extends Controller
         $validator->validate();
         $new_capacity=$room->capacity+($request->type=='add' ? 1 : -1);
         if ($new_capacity<$room->residentNumber()) {
-            return back()->with('error', __('rooms.no_capacity_error'));
+            return back()->with('error', 'Nincs elég hely a szobában');
         }
         if ($new_capacity>4 || $new_capacity<1) {
-            return back()->with('error', __('rooms.capacity_bounds_error'));
+            return back()->with('error', 'A lakószámnak 1 és 4 között kell lennie');
         }
         if ($request->type=='add') {
             $room->increment('capacity');
