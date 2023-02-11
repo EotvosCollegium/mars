@@ -18,33 +18,7 @@
                             </span>
                         @else
                             @if($user->application->status != \App\Models\ApplicationForm::STATUS_IN_PROGRESS)
-                            
-                            <form id="status-form-{{$user->id}}" method="POST" style="display: inline" action="{{route('applications.edit')}}">
-                                @csrf
-                                <input type="hidden" name="application" value="{{$user->application->id}}"/>
-                                <div class="right">
-                                    @foreach (\App\Models\ApplicationForm::STATUSES as $st)
-                                    <p>
-                                        <label>
-                                            <input type="radio" name="status_{{$user->id}}" value="{{$st}}" @checked($user->application->status == $st) />
-                                            <span style="padding-left: 25px; margin: 5px">@include('auth.application.status', ['status' => $st])</span>
-                                        </label>
-                                    </p>
-                                    @endforeach
-                                </div>
-                                @push('scripts')
-                                    {{--Submit form on change --}}
-                                    <script>
-                                        $(document).ready(function () {
-                                            var name = "status_"+{{$user->id}};
-                                            console.log(name);
-                                            $("input[name='"+name+"']").change(function () {
-                                                $('#status-form-'+{{$user->id}}).submit();
-                                            });
-                                        });
-                                    </script>
-                                @endpush
-                            </form>
+                                @livewire('application-status-update', ['application' => $user->application])
                             @endif
                         @endif
                     @endcan
