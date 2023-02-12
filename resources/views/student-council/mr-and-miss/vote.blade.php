@@ -89,7 +89,7 @@
                                         <option value="Miss">Miss</option>
                                     </select>
                                 </div>
-                                <x-input.text s=12 xl=8 id="title" locale="mr-and-miss" />
+                                <x-input.text s=12 xl=8 id="title" text="kategória neve" />
                             </div>
                             <blockquote>
                                 A publikus egyéni kategóriákra mások is szavazhatnak, ezek másoknál is megjelennek. Az új kategóriára szavazni majd a kategória létrehozása után tudsz.

@@ -21,9 +21,9 @@
                         {{--basic information--}}
                         <div class="section">
                             <div class="row">
-                                <x-input.text id="email"      type="email"    locale="registration" required autocomplete="email" autofocus/>
-                                <x-input.text id="password"   locale="registration" type="password" required autocomplete="new-password"/>
-                                <x-input.text id="confirmpwd" locale="registration" name="password_confirmation" type="password" required autocomplete="new-password"/>
+                                <x-input.text id="email"      type="email"    text="registration.email" required autocomplete="email" autofocus/>
+                                <x-input.text id="password"   text="registration.password" type="password" required autocomplete="new-password"/>
+                                <x-input.text id="confirmpwd" text="registration.confirmpwd" name="password_confirmation" type="password" required autocomplete="new-password"/>
                             </div>
                             <input type="text" name="user_type" id="user_type" value="{{ $user_type }}" readonly hidden>
                         </div>
@@ -32,17 +32,17 @@
                         <div class="section">
                             <div class="card-title">@lang('user.user_data')</div>
                             <div class="row">
-                                <x-input.text id='name' required autocomplete='name' locale='user'/>
+                                <x-input.text id="name" required autocomplete='name' txt="user.name"/>
                                 @if ($user_type != \App\Models\Role::TENANT)
-                                    <x-input.text l=6 id='place_of_birth' required locale='user'/>
-                                    <x-input.datepicker l=6 id='date_of_birth' required locale='user'/>
-                                    <x-input.text id='mothers_name' required locale='user'/>
+                                    <x-input.text l=6 id="place_of_birth" required txt="user.place_of_birth"/>
+                                    <x-input.datepicker l=6 id="date_of_birth" required txt="user.date_of_birth"/>
+                                    <x-input.text id="mothers_name" required txt="user.mothers_name"/>
                                 @endif
                                 <x-input.text id='phone_number' type='tel' required
                                     pattern="[+][0-9]{1,4}[-\s()0-9]*" minlength="8" maxlength="18"
-                                    locale='user' helper='+36 (20) 123-4567'/>
+                                    text='user.phone_number' helper='+36 (20) 123-4567'/>
                                 @if ($user_type == \App\Models\Role::TENANT)
-                                <x-input.datepicker id='tenant_until' required locale='user'/>
+                                <x-input.datepicker id="tenant_until" required txt="user.tenant_until"/>
                                 @endif
                             </div>
                         </div>
@@ -52,11 +52,11 @@
                             <div class="section">
                             <div class="card-title">@lang('user.contact')</div>
                             <div class="row">
-                                <x-input.select id="country" :elements="$countries" default="Hungary" locale="user"/>
-                                <x-input.text l=6 id='county'        locale='user' required/>
-                                <x-input.text l=6 id='zip_code'      locale='user' type='number' required/>
-                                <x-input.text id='city'              locale='user' required/>
-                                <x-input.text id='street_and_number' locale='user' required/>
+                                <x-input.select id="country" :elements="$countries" default="Hungary" text="user.country"/>
+                                <x-input.text l=6 id="county"        txt="user.county" required/>
+                                <x-input.text l=6 id="zip_code"      txt="user.zip_code" type='number' required/>
+                                <x-input.text id="city"              txt="user.city" required/>
+                                <x-input.text id="street_and_number" text="user.street_and_number" required/>
                             </div>
                         @endif
                         

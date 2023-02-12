@@ -15,9 +15,9 @@ class Text extends Input
      * @param  string  $helper  helper message
      * @return void
      */
-    public function __construct($id, $withoutLabel = false, $locale = null, $text = null, $s = 12, $m = null, $l = null, $xl = null, $onlyInput = false, $helper = null)
+    public function __construct($id, $withoutLabel = false, $text = null, $s = 12, $m = null, $l = null, $xl = null, $onlyInput = false, $helper = null)
     {
-        parent::__construct($id, $locale, $text, $s, $m, $l, $xl, $onlyInput);
+        parent::__construct($id, $text, $s, $m, $l, $xl, $onlyInput);
         $this->helper = $helper;
         $this->withoutLabel = $withoutLabel;
     }

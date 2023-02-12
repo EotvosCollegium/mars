@@ -59,10 +59,10 @@
                         <blockquote>Itt lehet adott e-mail-címmel egy felhasználót készíteni, és meghívót küldeni a címre.</blockquote>
                     </div>
                     <div class="col s12 m12 l4">
-                        <x-input.text  id="name" locale="user" required />
+                        <x-input.text  id="name" text="user.name" required />
                     </div>
                     <div class="col s12 m12 l4">
-                        <x-input.text  id="email" type="email" locale="user" required />
+                        <x-input.text  id="email" type="email" text="user.email" required />
                     </div>
                     <div class="col s12 m12 l4">
                         <x-input.button class="right" text="Létrehozás és meghívó küldése" />
