@@ -12,7 +12,7 @@
     <div class="col s12">
         <div class="card">
             <div class="card-content">
-                <span class="card-title">kassza</span>
+                <span class="card-title">Kassza</span>
                 <blockquote>
                     Jelenlegi összeg:
                     <b class="coli-text text-orange"> {{ number_format($current_balance, 0, '.', ' ') }} Ft</b>.<br>
@@ -107,7 +107,7 @@
                             <thead>
                                 <tr>
                                     <th class="valign-wrapper">Műhelyek egyenlegei</th>
-                                    <th>Tagok@if($semester->isCurrent())*@endif</th>
+                                    <th>Tagok @if($semester->isCurrent())*@endif </th>
                                     <th>
                                         Kiosztott egyenleg
                                         @if($semester->isCurrent())

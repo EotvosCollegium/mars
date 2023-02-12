@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'failed' => 'These credentials do not match our records.',
     'i_agree_to' => 'I agree to the',
     'privacy_policy' => 'privacy policy',
     'successful_registration' => 'Registration successful!',

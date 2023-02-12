@@ -20,7 +20,7 @@
                         <blockquote>
                             Hogyha vendégként vagy bentlakó-bejáróként laksz a kollégiumban, akkor a státuszod bejáró.
                         </blockquote>
-                        <x-input.select s=12 :elements="['resident', 'extern']" required id="collegist_role" :formatter="function($o) { return __('role.'.$o); }" without-label :placeholder="Bentlakási státusz"/>
+                        <x-input.select s=12 :elements="['resident', 'extern']" required id="collegist_role" :formatter="function($o) { return __('role.'.$o); }" without-label placeholder="Bentlakási státusz"/>
                     </div>
                     <div class="row">
                         <blockquote>
@@ -28,7 +28,7 @@
                         Passzív - Külföldi féléven leszel vagy passzív vagy az egyetemen<br>
                         Deaktivált - Nem leszel aktív tagja a Collégiumnak
                         </blockquote>
-                        <x-input.select s=12 without_label :elements="[\App\Models\SemesterStatus::ACTIVE,\App\Models\SemesterStatus::PASSIVE, \App\Models\SemesterStatus::DEACTIVATED]" id="semester_status" required :formatter="function($o) { return __('user.'.$o); }" :placeholder="Tagsági státusz"/>
+                        <x-input.select s=12 without_label :elements="[\App\Models\SemesterStatus::ACTIVE,\App\Models\SemesterStatus::PASSIVE, \App\Models\SemesterStatus::DEACTIVATED]" id="semester_status" required :formatter="function($o) { return __('user.'.$o); }" placeholder="Tagsági státusz"/>
                     </div>
                     <div class="row">
                         <x-input.button class="right red" text="general.save" />

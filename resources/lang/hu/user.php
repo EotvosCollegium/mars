@@ -49,6 +49,7 @@ return [
     'neptun_identifier' => 'Neptun kód',
     'olasz_muhely' => 'Olasz műhely',
     'orientalisztika_muhely' => 'Orientalisztika műhely',
+    'password' => 'jelszó',
     'pedagogiai_es_pszichologiai_kar' => 'Pedagógiai és Pszichológiai Kar',
     'personal_information' => 'Személyes adatok',
     'phone_number' => 'Telefonszám',

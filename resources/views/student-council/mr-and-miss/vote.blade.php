@@ -17,8 +17,8 @@
                     <span class="card-title">Szavazás</span>
                     @can('manage', \App\Models\MrAndMiss::class)
                     <p>
-                        <x-input.button :href="route('mr_and_miss.categories')" :text="__('mr-and-miss.mr-and-miss-categories')" />
-                        <x-input.button :href="route('mr_and_miss.results')" :text="__('mr-and-miss.mr-and-miss-results')" />
+                        <x-input.button :href="route('mr_and_miss.categories')" text="Kategóriák" />
+                        <x-input.button :href="route('mr_and_miss.results')" text="Eredmények" />
                     </p>
                     @endcan
                     <p>

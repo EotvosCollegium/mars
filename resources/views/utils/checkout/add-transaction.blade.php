@@ -18,8 +18,8 @@
         <form method="POST" action="{{ route($route_base . '.transaction.add') }}">
             @csrf
             <div class="row">
-                <x-input.text m=6 l=6 id="comment" required text="checkout.description" />
-                <x-input.text type="number" m=6 l=6 id="amount" min=0 required text="checkout.amount" />
+                <x-input.text m=6 l=6 id="comment" required text="Megjegyzés" />
+                <x-input.text type="number" m=6 l=6 id="amount" min=0 required text="Összeg" />
                 @can('administrate', $checkout)
                 <x-input.select m=6 l=6 id="payer" text="checkout.payer" :elements="\App\Models\User::collegists()" default="{{Auth::user()->id}}" :formatter="function($user) { return $user->uniqueName; }" />
                 <x-input.checkbox m=6 l=6 id="paid" checked text="A tartozás kifizetésre került"/>

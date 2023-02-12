@@ -30,7 +30,7 @@
     @if($user->isCollegist())
         <ul class="collapsible">
             <li>
-                <div class="collapsible-header"><b>@lang('admin.statuses')</b></div>
+                <div class="collapsible-header"><b>Státuszok</b></div>
                 <div class="collapsible-body">
                     @include('user.statuses', ['user' => $user])
                 </div>
