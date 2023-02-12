@@ -17,29 +17,28 @@
                         cell.getRow().reformat();
                     },
                     error: function (error) {
-                        ajaxError('@lang('internet.error')', '@lang('internet.ajax_error')', '@lang('internet.ok')', error);
+                        ajaxError('Hiba', 'Ajax hiba', 'ok', error);
                     }
                 });
             };
 
-            return $("<button type=\"button\" style=\"margin: 2px;\" class=\"btn waves-effect red\">@lang('internet.reject')</button></br>")
+            return $("<button type=\"button\" style=\"margin: 2px;\" class=\"btn waves-effect red\">Elutasít</button></br>")
                 .click(function () {
                 changeState('rejected');
             }).toggle(data._state === '{{ \App\Models\MacAddress::REQUESTED }}')
-                .add($("<button type=\"button\" style=\"margin: 2px;\" class=\"btn waves-effect green\">@lang('internet.approve')</button></br>")
+                .add($("<button type=\"button\" style=\"margin: 2px;\" class=\"btn waves-effect green\">Elfogad</button></br>")
                     .click(function () {
                 changeState('approved');
             }).toggle(data._state === '{{ \App\Models\MacAddress::REQUESTED }}'))
-                .add($("<button type=\"button\" style=\"margin: 2px;\" class=\"btn waves-effect\">@lang('internet.request')</button></br>")
+                .add($("<button type=\"button\" style=\"margin: 2px;\" class=\"btn waves-effect\">Visszavon</button></br>")
                     .click(function () {
                 changeState('requested');
             }).toggle(data._state !== '{{ \App\Models\MacAddress::REQUESTED }}')).wrapAll('<div></div>').parent()[0];
         };
 
         var deleteButton = function (cell, formatterParams, onRendered) {
-            return $("<button type=\"button\" class=\"btn waves-effect btn-fixed-height coli blue\">@lang('internet.delete')</button>").click(function () {
+            return $("<button type=\"button\" class=\"btn waves-effect btn-fixed-height coli blue\">Törlés</button>").click(function () {
                 var data = cell.getRow().getData();
-                //confirm('@lang('internet.delete')', '@lang('internet.confirm_delete')', '@lang('internet.cancel')', '@lang('internet.delete')', function () {
                     $.ajax({
                         type: "POST",
                         url: "{{ route('internet.mac_addresses.delete', [':id']) }}".replace(':id', data.id),
@@ -47,10 +46,9 @@
                             cell.getTable().setPage(cell.getTable().getPage());
                         },
                         error: function (error) {
-                            ajaxError('@lang('internet.error')', '@lang('internet.ajax_error')', '@lang('internet.ok')', error);
+                            ajaxError('Hiba', 'Ajax hiba', 'ok', error);
                         }
                     });
-                //});
             })[0];
         };
         var dateFormatter = function(cell, formatterParams){
@@ -71,22 +69,22 @@
             placeholder: "No Data Set",
             columns: [
                 {
-                    title: "@lang('internet.username')",
+                    title: "Felhasználó",
                     field: "user.name",
                     sorter: "string",
                     headerFilter: 'input',
                     minWidth:200,
                 },
                 {
-                    title: "@lang('internet.mac_address')",
+                    title: "MAC cím",
                     field: "mac_address",
                     sorter: "string",
                     headerFilter: 'input',
                     minWidth:180,
                 },
-                {title: "@lang('internet.comment')", field: "comment", sorter: "string", headerFilter: 'input', minWidth:150},
+                {title: "Megjegyzés", field: "comment", sorter: "string", headerFilter: 'input', minWidth:150},
                 {
-                    title: "@lang('internet.created_at')",
+                    title: "Létrehozva",
                     field: "created_at",
                     sorter: "datetime",
                     formatter: dateFormatter,
@@ -94,11 +92,11 @@
                     minWidth:170,
                 },
                 {
-                    title: "@lang('internet.state')", field: "state", sorter: "string", headerFilter: 'select',
+                    title: "Státusz", field: "state", sorter: "string", headerFilter: 'select',
                     headerFilterParams: {
-                        "rejected": "@lang('internet.rejected')",
-                        "approved": "@lang('internet.approved')",
-                        "requested": "@lang('internet.requested')"
+                        "rejected": "Elutasított",
+                        "approved": "Jóváhagyott",
+                        "requested": "Elbírálásra vár"
                     },
                     minWidth:140,
                 },

@@ -4,7 +4,7 @@
 @if($additional_message)
     {{ $additional_message }}
 @else
-    @lang('checkout.transactions')
+    Tranzakciók:
 @endif
 
 </p>
@@ -13,10 +13,10 @@
 <li>
 {{ $transaction->comment }}: {{ abs($transaction->amount) }} Ft.
 @if($transaction->payer!=$transaction->receiver)
-    (@lang('checkout.receiver'): {{ $transaction->receiver?->name ?? "N/A" }},
-    @lang('checkout.payer'): {{ $transaction->payer?->name ?? "N/A" }})
+    Átvevő: {{ $transaction->receiver?->name ?? "N/A" }},
+    Fizető: {{ $transaction->payer?->name ?? "N/A" }})
 @elseif($recipent != $transaction->payer?->name)
-    (@lang('checkout.payer'): {{ $transaction->payer?->name ?? "N/A" }})
+    Fizető: {{ $transaction->payer?->name ?? "N/A" }})
 @endif
 </li>
 @endforeach

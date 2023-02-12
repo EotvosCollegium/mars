@@ -42,7 +42,6 @@
 
             return $("<button type=\"button\" class=\"btn " + style + "\">" + text + "</button>").click(function () {
                 var data = cell.getRow().getData();
-                //confirm('@lang('internet.delete')', '@lang('internet.confirm_delete')', '@lang('internet.cancel')', '@lang('internet.delete')', function () {
                     $.post("{{ route('faults.update') }}", {id: data.id, status: formatterParams['status']}, function(data){
                         if (data !== "true"){
                             alert('@lang('faults.autherror')');
@@ -50,7 +49,6 @@
                             window.location.reload(true);
                         }
                     });
-                //});
             })[0];
         };
 

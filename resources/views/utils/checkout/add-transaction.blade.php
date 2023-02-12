@@ -1,7 +1,7 @@
 @can('createTransaction', $checkout)
 <div class="card">
     <div class="card-content">
-        <span class="card-title">@lang('checkout.add_expense')</span>
+        <span class="card-title">Kiadás hozzáadása</span>
         <blockquote>
             @can('administrate', $checkout)
             Ha költöttél valamire vagy kifizettél valamit valakinek, akkor azt itt rögzítsd.
@@ -18,10 +18,10 @@
         <form method="POST" action="{{ route($route_base . '.transaction.add') }}">
             @csrf
             <div class="row">
-                <x-input.text m=6 l=6 id="comment" required text="checkout.description" />
-                <x-input.text type="number" m=6 l=6 id="amount" min=0 required locale="checkout" />
+                <x-input.text m=6 l=6 id="comment" required text="Megjegyzés" />
+                <x-input.text type="number" m=6 l=6 id="amount" min=0 required text="Összeg" />
                 @can('administrate', $checkout)
-                <x-input.select m=6 l=6 id="payer" locale="checkout" :elements="\App\Models\User::collegists()" default="{{Auth::user()->id}}" :formatter="function($user) { return $user->uniqueName; }" />
+                <x-input.select m=6 l=6 id="payer" text="checkout.payer" :elements="\App\Models\User::collegists()" default="{{Auth::user()->id}}" :formatter="function($user) { return $user->uniqueName; }" />
                 <x-input.checkbox m=6 l=6 id="paid" checked text="A tartozás kifizetésre került"/>
                 @endcan
             </div>

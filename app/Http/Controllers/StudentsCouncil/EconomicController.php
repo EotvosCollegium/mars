@@ -119,7 +119,7 @@ class EconomicController extends Controller
             ]);
         }
 
-        Mail::to($payer)->queue(new \App\Mail\Transactions($payer->name, [$kkt, $netreg], __('checkout.transaction_created'), $internet_expiration_message));
+        Mail::to($payer)->queue(new \App\Mail\Transactions($payer->name, [$kkt, $netreg], "Tranzakció létrehozva", $internet_expiration_message));
 
         return redirect()->back()->with('message', __('general.successfully_added'));
     }

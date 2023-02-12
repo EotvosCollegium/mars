@@ -12,6 +12,7 @@ class Select extends Input
     public $default;
     public $allowEmpty;
     public $formatter;
+    public $helper;
 
     /**
      * Create a new select component instance with a search field.
@@ -21,11 +22,12 @@ class Select extends Input
      * @param $withoutPlaceholder (the default placeholder is general.choose, that can be overwritten with a placeholder attribute)
      * @param $withoutLabel
      * @param $default the default value (the id will be matched)
+     * @param $helper helper message
      * @return void
      */
-    public function __construct($id, $elements, $formatter = null, $withoutPlaceholder = false, $withoutLabel = false, $default = null, $locale = null, $text = null, $s = 12, $m = null, $l = null, $xl = null, $onlyInput = false, $allowEmpty = false)
+    public function __construct($id, $elements, $formatter = null, $withoutPlaceholder = false, $withoutLabel = false, $default = null, $text = null, $s = 12, $m = null, $l = null, $xl = null, $onlyInput = false, $allowEmpty = false, $helper = null)
     {
-        parent::__construct($id, $locale, $text, $s, $m, $l, $xl, $onlyInput);
+        parent::__construct($id, $text, $s, $m, $l, $xl, $onlyInput);
         $this->elements = (isset($elements[0]->name) ? $elements->sortBy('name') : $elements);
         $this->withoutPlaceholder = $withoutPlaceholder;
         $this->withoutLabel = $withoutLabel;
@@ -34,6 +36,7 @@ class Select extends Input
         $this->formatter = isset($formatter) ? $formatter : function ($i) {
             return isset($i->name) ? $i->name : $i;
         };
+        $this->helper = $helper;
     }
 
     /**

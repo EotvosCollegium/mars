@@ -26,7 +26,7 @@
     <div class="col s12">
         <div class="card">
             <div class="card-content">
-                <span class="card-title">@lang('general.information')</span>
+                <span class="card-title">Információk</span>
                 <div id="info_text">
                     @markdown($information_general)
                     @markdown($information_collegist)
@@ -65,7 +65,7 @@
                 <span class="card-title">@lang('general.contacts')</span>
                 <!-- Student Council -->
                 @if(isset($contacts[\App\Models\Role::STUDENT_COUNCIL]))
-                <h5>@lang('role.student-council')</h5>
+                <h5>Választmány</h5>
                 <i><a href="mailto:{{ env('MAIL_VALASZTMANY') }}">{{env('MAIL_VALASZTMANY')}}</a></i><br>
                 @foreach($contacts[\App\Models\Role::STUDENT_COUNCIL] as $roleuser)
                 <b>@lang('role.'.$roleuser->object->name)</b>: 

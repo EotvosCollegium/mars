@@ -20,13 +20,13 @@
                     @endforeach
                     <div class="row">
                         <input type="text" name="user_type" id="user_type" value="{{ $user_type }}" readonly hidden>
-                        <x-input.text id='name' autofocus required autocomplete='name' locale='user' />
-                        <x-input.text id="email" type="email" locale="registration" required autocomplete="email" />
-                        <x-input.text id="password" locale="registration" type="password" required autocomplete="new-password" />
-                        <x-input.text id="confirmpwd" locale="registration" name="password_confirmation" type="password" required autocomplete="new-password" />
+                        <x-input.text id='name' autofocus required autocomplete='name' text='user.name' />
+                        <x-input.text id="email" type="email" text="user.email" required autocomplete="email" />
+                        <x-input.text id="password" text="registration.password" type="password" required autocomplete="new-password" />
+                        <x-input.text id="confirmpwd" text="registration.confirmpwd" name="password_confirmation" type="password" required autocomplete="new-password" />
                         @if ($user_type == \App\Models\Role::TENANT)
-                        <x-input.text id='phone_number' type='tel' required pattern="[+][0-9]{1,4}[-\s()0-9]*" minlength="8" maxlength="18" locale='user' helper='+36 (20) 123-4567' />
-                        <x-input.datepicker id='tenant_until' required locale='user' />
+                        <x-input.text id='phone_number' type='tel' required pattern="[+][0-9]{1,4}[-\s()0-9]*" minlength="8" maxlength="18" text='user.phone_number' helper='+36 (20) 123-4567' />
+                        <x-input.datepicker id='tenant_until' required text='user.tenant_until' />
                         @else
                         <div class="col">
                             <blockquote class="col">@lang('registration.information')</blockquote>

@@ -33,7 +33,7 @@ class SemesterController extends Controller
             abort(403);
         }
         if (!self::isStatementAvailable($user)) {
-            return redirect('home')->with('message', __('secretariat.status_statement_not_available'));
+            return redirect('home')->with('message', 'A státuszodat már nem tudod frissíteni a félévben. Már megadtad a státuszodat és lejárt a határidő is.');
         }
         return view('secretariat.statuses.status_update_form');
     }
@@ -50,7 +50,7 @@ class SemesterController extends Controller
 
         /* @var User $user */
         $user = Auth::user();
-        $user->setStatus($request->semester_status, __("secretariat.status_statement"));
+        $user->setStatus($request->semester_status, "Státusz bejelentés");
         $user->setCollegist($request->collegist_role);
         return redirect('home')->with('message', __('general.successful_modification'));
     }

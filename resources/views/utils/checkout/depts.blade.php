@@ -1,8 +1,11 @@
 @can('administrate', $checkout)
 <div class="card">
     <div class="card-content">
-        <span class="card-title">@lang('checkout.depts') </span>
-        <blockquote>@lang('checkout.pay_depts_descr')</blockquote>
+        <span class="card-title">Tartozások</span>
+        <blockquote>
+            zedd be / fizesd ki az alábbi összegeket. Ezzel a tranzakciók még nem kerülnek a kasszába, de törleszted a tartozásokat.<br>
+            Pozitív összeg esetén a személy tartozik, negatív esetén a kassza.
+        </blockquote>
         <table><tbody>
             @forelse($depts as $user)
               <tr>

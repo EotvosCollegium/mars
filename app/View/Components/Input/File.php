@@ -6,9 +6,9 @@ use App\View\Components\Input;
 
 class File extends Input
 {
-    public function __construct($id, $locale = null, $text = null, $s = 12, $m = null, $l = null, $xl = null, $onlyInput = false)
+    public function __construct($id, $text = null, $s = 12, $m = null, $l = null, $xl = null, $onlyInput = false)
     {
-        parent::__construct($id, $locale, $text, $s, $m, $l, $xl, $onlyInput);
+        parent::__construct($id, $text, $s, $m, $l, $xl, $onlyInput);
     }
 
     /**

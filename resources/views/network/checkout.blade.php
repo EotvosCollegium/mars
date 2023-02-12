@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('title')
-<a href="#!" class="breadcrumb">@lang('admin.admin')</a>
-<a href="#!" class="breadcrumb">@lang('admin.checkout')</a>
+<a href="#!" class="breadcrumb">@lang('general.admin')</a>
+<a href="#!" class="breadcrumb">Rendszergazdai kassza</a>
 @endsection
 @section('admin_module') active @endsection
 
@@ -12,17 +12,20 @@
     <div class="col s12">
         <div class="card">
             <div class="card-content">
-                <span class="card-title">@lang('checkout.checkout')</span>
+                <span class="card-title">Kassza</span>
                 <blockquote>
-                    @lang('checkout.current_balance'):
+                    Jelenlegi összeg:
                     <b class="coli-text text-orange"> {{ number_format($current_balance, 0, '.', ' ') }} Ft</b>.<br>
                 </blockquote>
                 @can('administrate', $checkout)
                 <blockquote>
-                    @lang('checkout.current_balance_in_checkout'):
+                    Jelenlegi összeg a kasszában:
                     <b class="coli-text text-orange"> {{ number_format($current_balance_in_checkout, 0, '.', ' ') }} Ft</b>.<br>
                     @if($transactions_not_in_checkout != 0)
-                    @lang('checkout.to_checkout'): <b>{{$transactions_not_in_checkout}} Ft</b>
+                    Tedd be (ha pozitív) / vedd ki (ha negatív) ezt az összeget a kasszából: <b>{{$transactions_not_in_checkout}} Ft</b>, majd kattints a zöld gombra!
+                    <br>
+                    Figyelem: ebben az összegben a még általad (zsebből) ki nem fizetett vásárlások is benne vannak,
+                    így ha kiveszed az összeget, attól a rendszerben lévő tartozásokat még ki kell elégítened!
                     @endif
                 </blockquote>
                 @if($transactions_not_in_checkout != 0)
@@ -61,11 +64,11 @@
                         <div class="col s12">
                             <table><tbody>
                                 @include('utils.checkout.header')
-                                <tr><th>@lang('checkout.incomes')</th></tr>
+                                <tr><th>Bevétel</th></tr>
                                 @include('utils.checkout.sum', ['paymentType' => \App\Models\PaymentType::print()])
                                 @include('utils.checkout.sum', ['paymentType' => \App\Models\PaymentType::netreg()])
                                 @include('utils.checkout.list', ['paymentType' => \App\Models\PaymentType::income()])
-                                <tr><th>@lang('checkout.expenses')</th></tr>
+                                <tr><th>Kiadás</th></tr>
                                 @include('utils.checkout.list', ['paymentType' => \App\Models\PaymentType::expense()])
                                 @include('utils.checkout.footer')
                             </tbody></table>

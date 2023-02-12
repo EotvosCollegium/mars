@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('title')
-<i class="material-icons left">bed</i>@lang('rooms.rooms')
+<i class="material-icons left">bed</i>Szobabeosztás
 @endsection
 
 <style>
@@ -192,13 +192,13 @@
                 </svg>
                 <div class="row">
                     <form id="name", onsubmit="return false;" style="vertical-align: top">
-                        <x-input.text s=9  id="nameInput" text="rooms.search_name" type="text" />
-                        <x-input.button s=3 class="right coli blue" text="rooms.search" />
+                        <x-input.text s=9  id="nameInput" text="Keress névre vagy szobaszámra" type="text" />
+                        <x-input.button s=3 class="right coli blue" text="Keresés" />
                     </form>
                 </div>
                 @can('updateAny', \App\Models\Room::class) 
                 <div class="center row">
-                    <x-input.button class="coli blue" text="rooms.edit" :href="route('rooms.modify')"/>
+                    <x-input.button class="coli blue" text="Szobabeosztás szerkesztése" :href="route('rooms.modify')"/>
                 </div>
                 @endcan
             </div>

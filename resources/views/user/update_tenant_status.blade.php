@@ -17,7 +17,7 @@
                         <x-input.datepicker
                                 id='tenant_until'
                                 required
-                                locale='user'
+                                text='user.tenant_until'
                                 :value="$user->personalInformation?->tenant_until" />
                         <x-input.button class="right" text="general.save" />
                     </div>

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-<i class="material-icons left">assignment</i>@lang('document.documents')
+<i class="material-icons left">assignment</i>Dokumentumok
 @endsection
 
 @section('content')
@@ -10,34 +10,34 @@
     <div class="col s12">
         <div class="card">
             <div class="card-content">
-                <span class="card-title">@lang('document.documents')</span>
-                <blockquote>@lang('document.clarify_print')</blockquote>
-                <blockquote>@lang('document.clarify_request')</blockquote>
+                <span class="card-title">Dokumentumok</span>
+                <blockquote>Nyomtasd ki a kívánt dokumentumot a Collegiumban kihelyezett nyomtatóval, és add le a titkárságon/portán. A költségek levonásra kerülnek.</blockquote>
+                <blockquote>Igazolásokat a titkárságtól tudsz igényelni az "Igénylés" gombra kattintva, erről a titkárság értesítést kap. Az igazolásokat a következő munkanapon veheted át. Csak az aláírt és lepecsételt igazolások érvényesek!</blockquote>
                 {{-- TODO: show printing errors --}}
                 <table>
                     <tbody>
                         @can('document.register-statement')
                         <tr>
-                            <td>@lang('document.register-statement')</td>
+                            <td>Beköltözési nyilatkozat</td>
                             <td></td>
                             <td>
-                                <x-input.button :href="route('documents.register-statement.download')" text="document.download" />
+                                <x-input.button :href="route('documents.register-statement.download')" text="letöltés" />
                             </td>
                             <td>
                                 @can('print.print')
-                                <x-input.button :href="route('documents.register-statement.print')" class="coli blue" text="document.print" />
+                                <x-input.button :href="route('documents.register-statement.print')" class="coli blue" text="nyomtatás" />
                                 @endcan
                             </td>
                         </tr>
                         @endcan
                         @can('document.import-license')
                         <tr>
-                            <td>@lang('document.import')</td>
+                            <td>Behozatali engedély</td>
                             <td>
-                                <x-input.button :href="route('documents.import.show')" text="document.fill_out" />
+                                <x-input.button :href="route('documents.import.show')" text="kitöltés" />
                             </td>
                             <td>
-                                <x-input.button :href="route('documents.import.download')" text="document.download" />
+                                <x-input.button :href="route('documents.import.download')" text="nyomtatás" />
                             </td>
                             <td>
                                 @can('print.print')
@@ -48,13 +48,13 @@
                         @endcan
                         @can('document.status-certificate')
                         <tr>
-                            <td>@lang('document.status-cert')</td>
+                            <td>Tagsági igazolás</td>
                             <td></td>
                             <td>
-                                <x-input.button :href="route('documents.status-cert.download')" text="document.download" />
+                                <x-input.button :href="route('documents.status-cert.download')" text="letöltés" />
                             </td>
                             <td>
-                                <x-input.button :href="route('documents.status-cert.request')" class="coli blue" text="document.request" />
+                                <x-input.button :href="route('documents.status-cert.request')" class="coli blue" text="igénylés" />
                             </td>
                         </tr>
                         @endcan

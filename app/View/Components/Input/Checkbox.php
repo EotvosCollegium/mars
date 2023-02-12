@@ -15,9 +15,9 @@ class Checkbox extends Input
      * @param $floating if provided, the button will be a floating action button. The icon attribute is recommended.
      * @param $icon if provided, an icon will be placed in the button instead of a text
      */
-    public function __construct($checked = false, $id = null, $locale = null, $text = null, $s = 12, $m = null, $l = null, $xl = null, $onlyInput = false)
+    public function __construct($checked = false, $id = null, $text = null, $s = 12, $m = null, $l = null, $xl = null, $onlyInput = false)
     {
-        parent::__construct($id, $locale, $text, $s, $m, $l, $xl, $onlyInput);
+        parent::__construct($id, $text, $s, $m, $l, $xl, $onlyInput);
         $this->checked = $checked;
     }
     /**

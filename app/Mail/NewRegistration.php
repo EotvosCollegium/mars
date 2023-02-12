@@ -33,6 +33,6 @@ class NewRegistration extends Mailable
     public function build()
     {
         return $this->markdown('emails.new_registration')
-            ->subject(__('mail.new-registration-subject'));
+            ->subject('Új regisztráció');
     }
 }

@@ -42,6 +42,6 @@ class StatusUpdated extends Mailable
     public function build()
     {
         return $this->markdown('emails.status_updated')
-                    ->subject(__('mail.status_updated', ['semester' => $this->semester, 'status' => $this->status]));
+                    ->subject("Új státusz a ".$this->semester." félévre: ".$this->status);
     }
 }

@@ -12,7 +12,7 @@
                     <blockquote class='error'>{{ session('status') }}</blockquote>
                     @endif
                     <div class="row">
-                        <x-input.text id="email" locale="registration" type="email" autofocus required autocomplete="email"/>
+                        <x-input.text id="email" text="registration.email" type="email" autofocus required autocomplete="email"/>
                     </div>
                 </div>
                 <div class="card-action">

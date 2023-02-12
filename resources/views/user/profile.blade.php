@@ -30,7 +30,7 @@
     @if($user->isCollegist())
         <ul class="collapsible">
             <li>
-                <div class="collapsible-header"><b>@lang('admin.statuses')</b></div>
+                <div class="collapsible-header"><b>Státuszok</b></div>
                 <div class="collapsible-body">
                     @include('user.statuses', ['user' => $user])
                 </div>
@@ -65,11 +65,11 @@
                 <form method="POST" action="{{ route('users.update.password', ['user' => $user]) }}">
                     @csrf
                     <div class="row">
-                        <x-input.text id='old_password' locale="registration" type='password' required
+                        <x-input.text id='old_password' text="registration.old_password" type='password' required
                                       autocomplete="password"/>
-                        <x-input.text s=6 id='new_password' locale="registration" type='password' required
+                        <x-input.text s=6 id='new_password' text="registration.new_password" type='password' required
                                       autocomplete="new-password"/>
-                        <x-input.text s=6 id='confirmpwd' locale="registration" name="new_password_confirmation"
+                        <x-input.text s=6 id='confirmpwd' text="registration.confirmpwd" name="new_password_confirmation"
                                       type='password' required autocomplete="new-password"/>
                         <x-input.button class="right" text="general.change_password"/>
                     </div>
