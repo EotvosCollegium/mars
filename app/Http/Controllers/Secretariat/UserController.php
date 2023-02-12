@@ -34,6 +34,7 @@ class UserController extends Controller
     public function updatePersonalInformation(Request $request, User $user): \Illuminate\Http\RedirectResponse
     {
         $this->authorize('view', $user);
+        session()->put('profile_current_page', 'personal_information');
 
         $isCollegist = $user->isCollegist();
 
@@ -63,11 +64,23 @@ class UserController extends Controller
         $validator->validate();
 
         $user->update(['email' => $request->email, 'name' => $request->name]);
-
+        $personal_data = $request->only([
+            'phone_number',
+            'mothers_name',
+            'place_of_birth',
+            'date_of_birth',
+            'country',
+            'county',
+            'zip_code',
+            'city',
+            'street_and_number',
+            'relatives_contact_data',
+            'tenant_until'
+        ]);
         if (!$user->hasPersonalInformation()) {
-            $user->personalInformation()->create($request->all());
+            $user->personalInformation()->create($personal_data);
         } else {
-            $user->personalInformation->update($request->all());
+            $user->personalInformation->update($personal_data);
         }
         if ($request->has('tenant_until')) {
             $date=min(Carbon::parse($request->tenant_until), Carbon::now()->addMonths(6));
@@ -81,6 +94,7 @@ class UserController extends Controller
     public function updateEducationalInformation(Request $request, User $user): \Illuminate\Http\RedirectResponse
     {
         $this->authorize('view', $user);
+        session()->put('profile_current_page', 'educational_information');
 
         $validator = Validator::make($request->all(), [
             'year_of_graduation' => 'required|integer|between:1895,' . date('Y'),
@@ -100,10 +114,20 @@ class UserController extends Controller
 
         $validator->validate();
 
+        $educational_data = $request->only([
+            'year_of_graduation',
+            'high_school',
+            'neptun',
+            'email',
+            'program',
+            'alfonso_language',
+            'alfonso_desired_level',
+            'alfonso_passed_by'
+        ]);
         if (!$user->hasEducationalInformation()) {
-            $user->educationalInformation()->create($request->all());
+            $user->educationalInformation()->create($educational_data);
         } else {
-            $user->educationalInformation->update($request->all());
+            $user->educationalInformation->update($educational_data);
         }
 
         $user->workshops()->sync($request->input('workshop'));
@@ -132,6 +156,7 @@ class UserController extends Controller
     public function updatePassword(Request $request): \Illuminate\Http\RedirectResponse
     {
         $user = Auth::user();
+        session()->put('profile_current_page', 'change_password');
 
         $validator = Validator::make($request->except('_token'), [
             'old_password' => 'required|string|current_password',

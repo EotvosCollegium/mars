@@ -73,6 +73,7 @@ return [
             'rule-name' => 'custom-message',
         ],
     ],
+    'current_password' => 'The current password is incorrect.',
     'date' => 'The :attribute is not a valid date.',
     'date_equals' => 'The :attribute must be a date equal to :date.',
     'date_format' => 'The :attribute does not match the format :format.',
