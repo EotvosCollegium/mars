@@ -66,17 +66,16 @@
             $user->educationalInformation ? $user->educationalInformation->program : null])
         </div>
 
-        <x-input.select l=4 id="alfonso_language" text="user.alfonso_language"
+        <div class="col">
+            <blockquote>Az <a href="https://eotvos.elte.hu/mukodes/szabalyzatok">ALFONSÓ program</a> keretében választott nyelv (később módosítható)</blockquote>
+        </div>
+        <x-input.select l=6 id="alfonso_language" text="Nyelv"
                     value='{{ $user->educationalInformation?->alfonso_language }}'
                     :elements="config('app.alfonso_languages')"
-                    helper="user.alfonso_language_desc"
                     />
-        <x-input.select l=4 id="alfonso_desired_level" text="user.alfonso_desired_level"
+        <x-input.select l=6 id="alfonso_desired_level" text="Elérni kívánt szint"
             :value='$user->educationalInformation?->alfonso_desired_level'
             :elements="['B2','C1']"
-        />
-        <x-input.datepicker l=4 id="alfonso_passed_by" text="user.alfonso_passed_by"
-            :value='$user->educationalInformation?->alfonso_passed_by'
         />
 
         <x-input.button class="right" text="general.save" />

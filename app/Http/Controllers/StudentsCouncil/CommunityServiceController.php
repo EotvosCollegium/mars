@@ -65,7 +65,7 @@ class CommunityServiceController extends Controller
 
         Mail::to($communityService->approver)->queue(new CommunityServiceRequested($communityService));
 
-        return back()->with('message', __('community-service.created-scf'));
+        return back()->with('message', __('general.successfully_added'));
     }
 
     public function approve(CommunityService $communityService)
@@ -76,7 +76,7 @@ class CommunityServiceController extends Controller
 
         Mail::to($communityService->requester)->queue(new CommunityServiceStatusChanged($communityService));
 
-        return back()->with('message', __('community-service.approve_scf'));
+        return back()->with('message', "Sikeresen jóváhagytad a közösségi tevékenységet!");
     }
 
     public function reject(CommunityService $communityService)
@@ -87,6 +87,6 @@ class CommunityServiceController extends Controller
 
         Mail::to($communityService->requester)->queue(new CommunityServiceStatusChanged($communityService));
 
-        return back()->with('message', __('community-service.reject_scf'));
+        return back()->with('message', "Sikeresen elutasítottad a közösségi tevékenységet!");
     }
 }
