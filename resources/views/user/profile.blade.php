@@ -1,7 +1,10 @@
+@foreach ($errors->all() as $error)
+    <blockquote class="error">{{ $error }}</blockquote>
+@endforeach
 @can('view', $user)
     {{-- Personal information --}}
     <ul class="collapsible">
-        <li>
+        <li @if(session()->get('profile_current_page') == "personal_information") class="active" @endif>
             <div class="collapsible-header"><b>@lang('user.personal_information')</b></div>
             <div class="collapsible-body">
                 @include('user.personal-information', ['user' => $user])
@@ -10,7 +13,7 @@
     </ul>
     {{-- Educational information --}}
     <ul class="collapsible">
-        <li>
+        <li @if(session()->get('profile_current_page') == "educational_information") class="active" @endif>
             <div class="collapsible-header"><b>@lang('user.educational_information')</b></div>
             <div class="collapsible-body">
                 @include('user.educational-information', ['user' => $user])
@@ -59,7 +62,7 @@
 @if(auth()->user()->id == $user->id)
     {{-- Change Password--}}
     <ul class="collapsible">
-        <li>
+        <li @if(session()->get('profile_current_page') == "change_password") class="active" @endif>
             <div class="collapsible-header"><b>@lang('general.change_password')</b></div>
             <div class="collapsible-body">
                 <form method="POST" action="{{ route('users.update.password', ['user' => $user]) }}">
