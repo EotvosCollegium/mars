@@ -37,18 +37,22 @@
                             <td>{{ $contribution->value }}</td>
                             <td>{{ ($contribution->contributor != null) ? $contribution->contributor->name : 'null' }}</td>
                             <td>
+                                @can('approve', $contribution);
                                 <form method="POST" action="{{ route('localizations.delete') }}">
                                     @csrf
                                     <x-input.text type="number" id="id" :value="$contribution->id" hidden/>
                                     <x-input.button floating class="red" icon="clear" />
                                 </form>
+                                @endcan
                             </td>
                             <td>
+                                @can('approve', $contribution);
                                 <form method="POST" action="{{ route('localizations.approve') }}">
                                     @csrf
                                     <x-input.text type="number" id="id" :value="$contribution->id" hidden/>
                                     <x-input.button floating class="green" icon="done" />
                                 </form>
+                                @endcan
                             </td>
                         </tr>
                         @endforeach
