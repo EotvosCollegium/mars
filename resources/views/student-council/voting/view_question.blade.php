@@ -17,6 +17,9 @@
                 @cannot('viewResults', $question)
                 <p>@lang('voting.only_after_closure')</p>
                 @endcan
+                @can('administer', \App\Models\Voting\Sitting::class)
+                    <p style="font-size: 110%;"><b>@lang('voting.passcode'):</b> <span style="font-family: Monospace; font-size:115%;">{{ $question->passcode }}</span></p>
+                @endcan
                 <table>
                     <thead>
                         <tr>
@@ -41,7 +44,7 @@
                         @can('vote', $question)
                         <x-input.button href="{{ route('questions.votes.create', $question->id) }}" class="red" text="voting.voting" />
                         @endcan
-                        @can('administer', \App\Models\Sitting::class)
+                        @can('administer', \App\Models\Voting\Sitting::class)
                         <form action="{{ route('questions.close', $question->id) }}" method="POST" style="display:inline;">
                             @csrf
                             <x-input.button only-input text="voting.close_question" class="red" />

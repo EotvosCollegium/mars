@@ -17,7 +17,7 @@ class Question extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'sitting_id', 'max_options', 'opened_at', 'closed_at'];
+    protected $fillable = ['title', 'sitting_id', 'max_options', 'opened_at', 'closed_at', 'passcode'];
 
     public $timestamps = false;
 

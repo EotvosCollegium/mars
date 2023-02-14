@@ -31,6 +31,9 @@
                         <blockquote class="error">{{ $error }}</blockquote>
                     @endforeach
                     </div>
+                    <div class="row">
+                        <x-input.text id="passcode" type="password" text="voting.passcode" required />
+                    </div>
                 </div>
                 <div class="card-action">
                     <div class="row" style="margin-bottom: 0">

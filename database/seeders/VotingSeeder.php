@@ -24,7 +24,8 @@ class VotingSeeder extends Seeder
         $openQuestion = $openSitting->questions()->create([
             'title' => "I support the election of the new Students' Council.",
             'max_options' => 1,
-            'opened_at' => now()
+            'opened_at' => now(),
+            'passcode' => \Str::random(8)
         ]);
         $openQuestion->options()->create([
             'title' => "Yes",
@@ -42,7 +43,8 @@ class VotingSeeder extends Seeder
         $openCheckboxQuestion = $openSitting->questions()->create([
             'title' => "Curatorium members",
             'max_options' => 3,
-            'opened_at' => now()
+            'opened_at' => now(),
+            'passcode' => \Str::random(8)
         ]);
         $openCheckboxQuestion->options()->create([
             'title' => "A",

@@ -132,7 +132,8 @@ class VotingController extends Controller
         $question = $sitting->questions()->create([
             'title' => $request->title,
             'max_options' => $request->max_options,
-            'opened_at' => now()
+            'opened_at' => now(),
+            'passcode' => \Str::random(8)
         ]);
         foreach ($options as $option) {
             $question->options()->create([
@@ -189,8 +190,14 @@ class VotingController extends Controller
         if ($question->isMultipleChoice()) {
             $validator = Validator::make($request->all(), [
                 'option' => 'array|max:'.$question->max_options,
-                'option.*' => 'exists:question_options,id'
+                'option.*' => 'exists:question_options,id',
+                'passcode' => 'string'
             ]);
+            if ($request->passcode!=$question->passcode) {
+                $validator->after(function ($validator) {
+                    $validator->errors()->add('passcode', __('voting.incorrect_passcode'));
+                });
+            }
             $validator->validate();
 
             $options = array();
@@ -204,8 +211,14 @@ class VotingController extends Controller
             $question->vote(Auth::user(), $options);
         } else {
             $validator = Validator::make($request->all(), [
-                'option' => 'exists:question_options,id'
+                'option' => 'exists:question_options,id',
+                'passcode' => 'string'
             ]);
+            if ($request->passcode!=$question->passcode) {
+                $validator->after(function ($validator) {
+                    $validator->errors()->add('passcode', __('voting.incorrect_passcode'));
+                });
+            }
             $validator->validate();
 
             $option = QuestionOption::findOrFail($request->option);

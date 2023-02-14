@@ -51,6 +51,9 @@
                         <th>@lang('voting.question_title')</th>
                         <th>@lang('voting.opened_at')</th>
                         <th>@lang('voting.closed_at')</th>
+                        @can('administer', \App\Models\Voting\Sitting::class)
+                        <th>@lang('voting.passcode')</th>
+                        @endcan
                         <th></th>
                         <th></th>
                         <th>
@@ -68,6 +71,9 @@
                         <td>{{$question->title}}</td>
                         <td>{{$question->opened_at}}</td>
                         <td>{{$question->closed_at}}</td>
+                        @can('administer', \App\Models\Voting\Sitting::class)
+                        <td style="font-family: Monospace; font-size: 130%;">{{$question->passcode}}</td>
+                        @endcan
                         <td>
                             @if($question->isOpen())
                             @can('administer', $sitting)

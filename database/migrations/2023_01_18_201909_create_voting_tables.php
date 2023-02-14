@@ -27,6 +27,7 @@ return new class () extends Migration {
             $table->foreignIdFor(Sitting::class)->onDelete('cascade');
             $table->string('title');
             $table->integer('max_options')->default(1);
+            $table->char('passcode', 8);
             $table->datetime('opened_at')->nullable();
             $table->datetime('closed_at')->nullable();
         });
