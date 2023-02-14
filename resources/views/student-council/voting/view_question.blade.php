@@ -15,7 +15,7 @@
             <div class="card-content">
                 <span class="card-title">{{ $question->title }}</span>
                 @cannot('viewResults', $question)
-                <p>@lang('voting.only_after_closure')</p>
+                <p class="red-text">@lang('voting.only_after_closure')</p>
                 @endcan
                 @can('administer', \App\Models\Voting\Sitting::class)
                     <p style="font-size: 110%;"><b>@lang('voting.passcode'):</b> <span style="font-family: Monospace; font-size:115%;">{{ $question->passcode }}</span></p>

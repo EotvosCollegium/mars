@@ -90,9 +90,7 @@
                             @endcan
                         </td>
                         <td>
-                            @can('viewResults', $question)
                             <x-input.button href="{{ route('questions.show', $question->id) }}" floating class="right" icon="remove_red_eye" />
-                            @endcan
                         </td>
                     </tr>
                     @endforeach
