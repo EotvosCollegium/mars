@@ -61,7 +61,7 @@
                     @can('viewAny', App\Models\FreePages::class) headerFilter: 'input' @endif
                 },
                 {
-                    title: "@lang('internet.comment')",
+                    title: "@lang('general.comment')",
                     field: "comment",
                     sorter: "string",
                     @can('viewAny', App\Models\FreePages::class) headerFilter: 'input' @endif

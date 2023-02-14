@@ -1,7 +1,7 @@
 @component('mail::message')
     <h1>@lang('mail.dear') {{ $recipient }}!</h1>
     <p>
-        @lang('mail.no_paper', ['reporter' => $reporter])
+        {{ $reporter }} az imént jelezte, hogy kifogyott a papír a nyomtatóból.
     </p>
     <p>@lang('mail.administrators')</p>
 @endcomponent

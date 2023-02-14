@@ -17,7 +17,7 @@
             @method('PUT')
             <div class="row">
                 <x-input.file l=8 xl=10 id="file_to_upload" accept=".pdf" required text="print.select_document"/>
-                <x-input.text l=4 xl=2  id="number_of_copies" type="number" min="1" value="1" required locale="print"/>
+                <x-input.text l=4 xl=2  id="number_of_copies" type="number" min="1" value="1" required text="print.number_of_copies"/>
                 <x-input.checkbox s=8 xl=4 name="two_sided" checked text="print.twosided"/>
                 @if($free_pages>0) {{-- only show when user have active free pages --}}
                     <x-input.checkbox s=8 xl=4 name="use_free_pages" text="print.use_free_pages"/>
@@ -40,7 +40,7 @@
             @if(Cache::has('print.no-paper') && Auth::user()->can('handleAny', \App\Models\PrintAccount::class))
                 <form method="POST" action="{{ route('print.added_paper') }}">
                     @csrf
-                    <x-input.button l=3 class="right coli blue" text="print.added_paper"/>
+                    <x-input.button l=3 class="right coli blue" text="Papír újratöltve"/>
                 </form>
             @else
                 <form method="POST" action="{{ route('print.no_paper') }}">

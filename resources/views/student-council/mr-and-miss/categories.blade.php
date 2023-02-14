@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
 @section('title')
-    <a href="#!" class="breadcrumb">@lang('role.student-council')</a>
+    <a href="#!" class="breadcrumb">Választmány</a>
     <a href="{{ route('mr_and_miss.vote') }}" class="breadcrumb"
-        style="cursor: pointer">@lang('mr-and-miss.mr-and-miss')</a>
-    <a href="#!" class="breadcrumb">@lang('mr-and-miss.mr-and-miss-categories')</a>
+        style="cursor: pointer">Mr. és Miss Eötvös</a>
+    <a href="#!" class="breadcrumb">Kategóriák</a>
 @endsection
 
 @section('student_council_module')

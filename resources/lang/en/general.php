@@ -3,6 +3,7 @@
 return [
     'active_members' => 'Active members',
     'add_new' => 'Add new',
+    'admin' => 'Admin',
     'cancel' => 'Cancel',
     'change_email' => 'Change email',
     'change_password' => 'Change password',
@@ -22,6 +23,7 @@ return [
     'mars_descr' => 'Eötvös József Collegium\'s unified IT system',
     'members' => 'Members',
     'note' => 'Note',
+    'nothing_to_show' => 'Nothing to show',
     'other' => 'Other',
     'others' => 'Others',
     'register' => 'Register',
@@ -32,6 +34,7 @@ return [
     'search' => 'Search...',
     'secretariat' => 'Secretariat',
     'semester' => 'Semester',
+    'send' => 'Send',
     'settings' => 'Settings',
     'show' => 'Show',
     'success' => 'Success!',

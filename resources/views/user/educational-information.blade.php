@@ -1,15 +1,15 @@
 <form method="POST" action="{{ route('users.update.educational', ['user' => $user]) }}">
     @csrf
     <div class="row">
-        <x-input.text id='high_school' locale='user'
+        <x-input.text id="high_school" text="user.high_school"
                       :value="$user->educationalInformation?->high_school"
                       required/>
-        <x-input.text s=12 m=6 id='year_of_graduation' locale='user' type='number' min="1895"
+        <x-input.text s=12 m=6 id="year_of_graduation" text="user.year_of_graduation" type='number' min="1895"
                       :max="date('Y')"
                       :value="$user->educationalInformation?->year_of_graduation"
                       required/>
         @if(!($application ?? false))
-            <x-input.text s=12 m=6 id='year_of_acceptance' locale='user' type='number' min="1895"
+            <x-input.text s=12 m=6 id="year_of_acceptance" text="user.year_of_acceptance" type='number' min="1895"
                           :max="date('Y')"
                           :value="$user->educationalInformation?->year_of_acceptance"
                           required/>
@@ -18,10 +18,10 @@
                           :value="date('Y')" disabled
                           required/>
         @endif
-        <x-input.text s=6 id='neptun' locale='user'
+        <x-input.text s=6 id="neptun" text="user.neptun"
                       :value="$user->educationalInformation?->neptun"
                       required/>
-        <x-input.text s=6 id='educational-email' locale='user' name="email"
+        <x-input.text s=6 id='educational-email' text='user.educational-email' name="email"
                       :value="$user->educationalInformation?->email"
                       required helper="lehetőleg @student.elte.hu-s"/>
 
@@ -65,6 +65,18 @@
             @livewire('parent-child-form', ['title' => "Szak(ok)", 'name' => 'program', 'items' =>
             $user->educationalInformation ? $user->educationalInformation->program : null])
         </div>
+
+        <div class="col">
+            <blockquote>Az <a href="https://eotvos.elte.hu/mukodes/szabalyzatok">ALFONSÓ program</a> keretében választott nyelv (később módosítható)</blockquote>
+        </div>
+        <x-input.select l=6 id="alfonso_language" text="Nyelv"
+                    value='{{ $user->educationalInformation?->alfonso_language }}'
+                    :elements="config('app.alfonso_languages')"
+                    />
+        <x-input.select l=6 id="alfonso_desired_level" text="Elérni kívánt szint"
+            :value='$user->educationalInformation?->alfonso_desired_level'
+            :elements="['B2','C1']"
+        />
 
         <x-input.button class="right" text="general.save" />
     </div>

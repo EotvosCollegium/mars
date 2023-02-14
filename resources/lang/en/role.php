@@ -1,7 +1,6 @@
 <?php
 
 return [
-    'add_roles' => 'Add roles',
     'admin' => 'Admin',
     'aggregated-application-committee' => 'Aggregated application committee member',
     'application-committee' => 'Application committee member',
@@ -37,8 +36,6 @@ return [
     'printer' => 'Printer',
     'reception' => 'Reception desk',
     'resident' => 'Resident',
-    'role_can_not_be_attached' => 'This role can not be attached.',
-    'role_unavailable' => 'This role is unique and currently it belongs to :name.',
     'roles' => 'Roles',
     'science-vice-president' => 'Scientific vice president',
     'secretary' => 'Secretary',
@@ -53,7 +50,6 @@ return [
     'sys-admin' => 'System admin',
     'sys-admins' => 'System administrators',
     'tenant' => 'Tenant',
-    'unauthorized' => 'You have no permission to attach/detach this role.',
     'workshop-administrator' => 'Workshop administrator',
     'workshop-leader' => 'Workshop leader',
 ];

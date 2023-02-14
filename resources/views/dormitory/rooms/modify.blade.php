@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title')
-<a href="{{ route('rooms') }}" class="breadcrumb" style="cursor: pointer">@lang('rooms.rooms')</a>
-<a href="#!" class="breadcrumb">@lang('rooms.edit')</a>
+<a href="{{ route('rooms') }}" class="breadcrumb" style="cursor: pointer">Szobabeosztás</a>
+<a href="#!" class="breadcrumb">Módosítás</a>
 @endsection
 
 @section('content')
@@ -46,9 +46,9 @@
             @endphp
             @for ($i = 1; $i <= $room->capacity; $i++)
                 @if ($users_in_room->count()>=$i)
-                    <x-input.select form="update-all" :s="$width" allowEmpty="true" name="rooms[{{$room->name}}][]" id="{{$room->name}}_person_{{$i}}" :elements="$users" :default="$users_in_room[$i-1]" text="rooms.resident{{$i}}"/>
+                    <x-input.select form="update-all" :s="$width" allowEmpty="true" name="rooms[{{$room->name}}][]" id="{{$room->name}}_person_{{$i}}" :elements="$users" :default="$users_in_room[$i-1]" text="{{$i}}. lakó"/>
                 @else
-                    <x-input.select form="update-all" :s="$width" allowEmpty="true" name="rooms[{{$room->name}}][]" id="{{$room->name}}_person_{{$i}}" :elements="$users" text="rooms.resident{{$i}}"/>
+                    <x-input.select form="update-all" :s="$width" allowEmpty="true" name="rooms[{{$room->name}}][]" id="{{$room->name}}_person_{{$i}}" :elements="$users" text="{{$i}}. lakó"/>
                 @endif
             @endfor
         </div>

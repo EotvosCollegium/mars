@@ -30,7 +30,13 @@
     @if(!$withoutLabel)
     <label for="{{$id}}">{{$label}}</label>
     @endif
-    @error($attributes->get('value') ?? $id)
+    @if($helper ?? null)
+    <span class="helper-text">{{ $helper }}</span>
+    @endif
+    @error($attributes->get('value'))
+        <span class="helper-text red-text">{{ $message }}</span>
+    @enderror
+    @error($id)
         <span class="helper-text red-text">{{ $message }}</span>
     @enderror
 @if(!$onlyInput)

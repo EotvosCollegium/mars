@@ -1,8 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-<a href="#!" class="breadcrumb">@lang('role.student-council')</a>
-<a href="#!" class="breadcrumb" >@lang('role.communication-committee')</a>
+<a href="#!" class="breadcrumb">Választmány</a>
 <a href="{{ route('epistola') }}" style="cursor: pointer" class="breadcrumb">Epistola Collegii</a>
 <a href="#!" class="breadcrumb">Szerkesztés</a>
 @endsection

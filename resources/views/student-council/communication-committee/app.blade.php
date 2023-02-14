@@ -1,8 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-<a href="#!" class="breadcrumb">@lang('role.student-council')</a>
-<a href="#!" class="breadcrumb">@lang('role.communication-committee')</a>
+<a href="#!" class="breadcrumb">Választmány</a>
 <a href="#!" class="breadcrumb">Epistola Collegii</a>
 @endsection
 @section('student_council_module') active @endsection

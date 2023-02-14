@@ -1,7 +1,6 @@
 <?php
 
 return [
-    'add_roles' => 'Jogosultságok hozzáadása',
     'admin' => 'Rendszergazda',
     'aggregated-application-committee' => 'Egységes diákbizottsági tag',
     'application-committee' => 'Felvételiztető',
@@ -37,8 +36,6 @@ return [
     'printer' => 'Nyomtató',
     'reception' => 'Porta',
     'resident' => 'Bentlakó',
-    'role_can_not_be_attached' => 'Ezt a jogosultságot nem lehet hozzárendelni senkihez.',
-    'role_unavailable' => 'Ez a jogosultság egyedi és most más felhasználóhoz van hozzárendelve.',
     'roles' => 'Jogosultságok',
     'science-vice-president' => 'Szakmai alelnök',
     'secretary' => 'Titkárság',
@@ -53,7 +50,6 @@ return [
     'sys-admin' => 'Rendszergazda',
     'sys-admins' => 'Rendszergazdák',
     'tenant' => 'Vendég',
-    'unauthorized' => 'Ezt a jogosultságot nem tudja kezelni!',
     'workshop-administrator' => 'Műhelytitkár',
     'workshop-leader' => 'Műhelyvezető',
 ];

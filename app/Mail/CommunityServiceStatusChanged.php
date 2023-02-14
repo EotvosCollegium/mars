@@ -41,6 +41,6 @@ class CommunityServiceStatusChanged extends Mailable
     public function build()
     {
         return $this->markdown('emails.community_service_status_changed')
-                    ->subject(__('mail.community_service_status_changed'));
+                    ->subject('Közösségi tevékenység státusza megváltozott');
     }
 }

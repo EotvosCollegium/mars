@@ -5,7 +5,7 @@
         "{{ $description }}"<br>
         Kérlek fogadd el vagy utasítsd el a tevékenységet a következő linken a táblázatban: <br>
         @component('mail::button', ['url'=> route('community_service')])
-            @lang('community-service.community-service')    
+            Közösségi tevékenység    
         @endcomponent
     </p>
     <p>

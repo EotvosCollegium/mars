@@ -1,7 +1,10 @@
+@foreach ($errors->all() as $error)
+    <blockquote class="error">{{ $error }}</blockquote>
+@endforeach
 @can('view', $user)
     {{-- Personal information --}}
     <ul class="collapsible">
-        <li>
+        <li @if(session()->get('profile_current_page') == "personal_information") class="active" @endif>
             <div class="collapsible-header"><b>@lang('user.personal_information')</b></div>
             <div class="collapsible-body">
                 @include('user.personal-information', ['user' => $user])
@@ -10,7 +13,7 @@
     </ul>
     {{-- Educational information --}}
     <ul class="collapsible">
-        <li>
+        <li @if(session()->get('profile_current_page') == "educational_information") class="active" @endif>
             <div class="collapsible-header"><b>@lang('user.educational_information')</b></div>
             <div class="collapsible-body">
                 @include('user.educational-information', ['user' => $user])
@@ -30,7 +33,7 @@
     @if($user->isCollegist())
         <ul class="collapsible">
             <li>
-                <div class="collapsible-header"><b>@lang('admin.statuses')</b></div>
+                <div class="collapsible-header"><b>Státuszok</b></div>
                 <div class="collapsible-body">
                     @include('user.statuses', ['user' => $user])
                 </div>
@@ -59,17 +62,17 @@
 @if(auth()->user()->id == $user->id)
     {{-- Change Password--}}
     <ul class="collapsible">
-        <li>
+        <li @if(session()->get('profile_current_page') == "change_password") class="active" @endif>
             <div class="collapsible-header"><b>@lang('general.change_password')</b></div>
             <div class="collapsible-body">
                 <form method="POST" action="{{ route('users.update.password', ['user' => $user]) }}">
                     @csrf
                     <div class="row">
-                        <x-input.text id='old_password' locale="registration" type='password' required
+                        <x-input.text id='old_password' text="registration.old_password" type='password' required
                                       autocomplete="password"/>
-                        <x-input.text s=6 id='new_password' locale="registration" type='password' required
+                        <x-input.text s=6 id='new_password' text="registration.new_password" type='password' required
                                       autocomplete="new-password"/>
-                        <x-input.text s=6 id='confirmpwd' locale="registration" name="new_password_confirmation"
+                        <x-input.text s=6 id='confirmpwd' text="registration.confirmpwd" name="new_password_confirmation"
                                       type='password' required autocomplete="new-password"/>
                         <x-input.button class="right" text="general.change_password"/>
                     </div>

@@ -51,11 +51,11 @@
         @endif
         <!-- documents page -->
         @can('document.any')
-        <li><a class="waves-effect" href="{{ route('documents') }}"><i class="material-icons left">assignment</i>@lang('document.documents')</a></li>
+        <li><a class="waves-effect" href="{{ route('documents') }}"><i class="material-icons left">assignment</i>Dokumentumok</a></li>
         @endcan
         <!-- rooms page -->
         @can('viewAny', \App\Models\Room::class)
-        <li><a class="waves-effect" href="{{ route('rooms') }}"><i class="material-icons left">bed</i>@lang('rooms.rooms')</a></li>
+        <li><a class="waves-effect" href="{{ route('rooms') }}"><i class="material-icons left">bed</i>Szobabeosztás</a></li>
         @endcan
         <!-- applications page -->
         @can('viewAnyApplication', \App\Models\User::class)
@@ -69,7 +69,7 @@
                 <li class="@yield('student_council_module')">
                     <a class="collapsible-header waves-effect" style="padding-left:32px">
                         <i class="material-icons left">groups</i> <!-- star icon? -->
-                        @lang('role.student-council')
+                        Választmány
                         <i class="material-icons right">arrow_drop_down</i>
                     </a>
                     <div class="collapsible-body">
@@ -77,25 +77,25 @@
                             <!-- economic committee -->
                             <li>
                                 <a class="waves-effect" href="{{ route('economic_committee') }}">
-                                    <i class="material-icons left">attach_money</i> @lang('checkout.student-council-checkout')
+                                    <i class="material-icons left">attach_money</i> Választmányi kassza
                                 </a>
                             </li>
                             <!-- communication committee -->
                             <li>
                                 <a class="waves-effect" href="{{ route('epistola') }}">
-                                    <i class="material-icons left">campaign</i> @lang('role.communication-committee')
+                                    <i class="material-icons left">campaign</i> Epistola Collegii
                                 </a>
                             </li>
                             <!-- community committee -->
                             <li>
                                 <a class="waves-effect" href="{{ route('mr_and_miss.vote') }}">
-                                    <i class="material-icons left">how_to_vote</i> @lang('mr-and-miss.mr-and-miss')
+                                    <i class="material-icons left">how_to_vote</i> Mr. és Miss Eötvös
                                 </a>
                             </li>
                             <!-- community service-->
                             <li>
                                 <a class="waves-effect" href="{{ route('community_service') }}">
-                                    <i class="material-icons left">business_center</i> @lang('community-service.community-service')
+                                    <i class="material-icons left">business_center</i> Közösségi tevékenység
                                 </a>
                             </li>
                             <!-- voting -->
@@ -113,7 +113,7 @@
                 <li class="@yield('admin_module')">
                     <a class="collapsible-header waves-effect" style="padding-left:32px">
                         <i class="material-icons left">admin_panel_settings</i>
-                        @lang('admin.admin')
+                        Rendszergazda
                         <i class="material-icons right">arrow_drop_down</i>
                     </a>
                     <div class="collapsible-body">
@@ -122,7 +122,7 @@
                             @can('handleAny', \App\Models\PrintAccount::class)
                             <li>
                                 <a class="waves-effect" href="{{ route('print.manage') }}">
-                                    <i class="material-icons left">local_printshop</i>@lang('print.print')
+                                    <i class="material-icons left">local_printshop</i>Nyomtatás
                                 </a>
                             </li>
                             @endcan
@@ -131,21 +131,21 @@
                             @can('handleAny', \App\Models\InternetAccess::class)
                             <li>
                                 <a class="waves-effect" href="{{ route('internet.admin') }}">
-                                    <i class="material-icons left">wifi</i>@lang('internet.internet')
+                                    <i class="material-icons left">wifi</i>Internet elérés
                                     @notification(\App\Models\WifiConnection::class)
                                 </a>
                             </li>
                             @endcan
                             <li>
                                 <a class="waves-effect" href="{{ route('routers') }}">
-                                    <i class="material-icons left">router</i>@lang('router.router_monitor')
+                                    <i class="material-icons left">router</i>Routerek
                                     @notification(\App\Models\Router::class)
                                 </a>
                             </li>
                             @can('view', \App\Models\Checkout::admin())
                             <li>
                                 <a class="waves-effect" href="{{ route('admin.checkout') }}">
-                                    <i class="material-icons left">credit_card</i> @lang('admin.checkout')
+                                    <i class="material-icons left">credit_card</i> Rendszergazdai kassza
                                 </a>
                             </li>
                             @endcan
@@ -157,14 +157,14 @@
                     <!-- user management -->
                     <li>
                         <a class="waves-effect" href="{{ route('users.index') }}">
-                            <i class="material-icons left">supervisor_account</i> @lang('admin.user_management')
+                            <i class="material-icons left">supervisor_account</i> Felhasználók
                         </a>
                     </li>
                 @endcan
                 @can('registration.handle')
                     <li>
                         <a class="waves-effect" href="{{ route('secretariat.registrations') }}">
-                            <i class="material-icons left">how_to_reg</i> @lang('admin.handle_registrations')
+                            <i class="material-icons left">how_to_reg</i> Regisztrációk
                             @notification(\App\Models\User::class)
                         </a>
                     </li>

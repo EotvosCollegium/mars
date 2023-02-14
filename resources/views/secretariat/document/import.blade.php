@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-<i class="material-icons left">assignment</i>@lang('document.documents')
+<i class="material-icons left">assignment</i>Dokumentumok
 @endsection
 
 @section('content')
@@ -10,18 +10,18 @@
     <div class="col s12">
         <div class="card">
             <div class="card-content">
-                <span class="card-title">@lang('document.import')</span>
+                <span class="card-title">Behozatali engedély</span>
                 <blockquote>
-                    @lang('document.report')
+                    Be kell jelenteni:
                     <ul class="browser-default">
-                        <li>@lang('document.personal_computer')</li>
-                        <li>@lang('document.electronic_devices')</li>
-                        <li>@lang('document.furnitures')</li>
+                        <li>Személyi számítógép</li>
+                        <li>Egyéb nem említett elektronikai eszközök (kenyérpirító, vízforraló)</li>
+                        <li>Egyéb bútorzat, irodai eszköz (szék, asztal, tábla stb.)</li>
                     </ul>
-                    @lang('document.not_report')
+                    Nem kell bejelenteni:
                     <ul class="browser-default">
-                        <li>@lang('document.kitchen')</li>
-                        <li>@lang('document.hair_dryer')</li>
+                        <li>Konyhai eszközök (pl. edények)</li>
+                        <li>Hajszárító, hajsütő</li>
                     </ul>
                 </blockquote>
                 <div class="row">
@@ -32,10 +32,10 @@
                                     <form method="POST" action="{{ route('documents.import.add') }}">
                                         @csrf
                                         <td>
-                                            <x-input.text id="item" locale="document" autofocus maxlength="100" required />
+                                            <x-input.text id="item" text="Eszköz" autofocus maxlength="100" required />
                                         </td>
                                         <td>
-                                            <x-input.text id="serial_number" locale="document" maxlength="30" />
+                                            <x-input.text id="serial_number" text="Sorozatszám (számítógépeknél)" maxlength="30" />
                                         <td>
                                             <x-input.button floating class="right" icon="add"/>
                                         </td>
@@ -61,10 +61,10 @@
             </div>
             <div class="card-action">
                 <a href="{{ route('documents.import.download') }}" type="submit"
-                    class="btn waves-effect coli">@lang('document.download')</a>
+                    class="btn waves-effect coli">letöltés</a>
                 @can('print.print')
                 <a href="{{ route('documents.import.print') }}" type="submit"
-                    class="btn waves-effect coli blue right">@lang('document.print')</a>
+                    class="btn waves-effect coli blue right">Nyomtatás</a>
                 @endcan
             </div>
         </div>

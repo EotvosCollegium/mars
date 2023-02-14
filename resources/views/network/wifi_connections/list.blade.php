@@ -12,7 +12,7 @@
             placeholder: "No Data Set",
             columns: [
                 {
-                    title: "@lang('internet.username')",
+                    title: "Felhasználó",
                     field: "user.name",
                     sorter: "string",
                     headerFilter: 'input'

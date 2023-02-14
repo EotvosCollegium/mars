@@ -74,6 +74,7 @@ return [
             'rule-name' => 'custom-message',
         ],
     ],
+    'current_password' => 'A jelenlegi jelszó nem megfelelő.',
     'date' => 'A(z) :attribute nem érvényes dátum.',
     'date_equals' => ':attribute meg kell egyezzen a következővel: :date.',
     'date_format' => 'A(z) :attribute nem egyezik az alábbi dátum formátummal :format!',
