@@ -30,6 +30,7 @@ use App\Http\Controllers\StudentsCouncil\EconomicController;
 use App\Http\Controllers\StudentsCouncil\EpistolaController;
 use App\Http\Controllers\StudentsCouncil\MrAndMissController;
 use App\Http\Controllers\StudentsCouncil\CommunityServiceController;
+use App\Http\Controllers\StudentsCouncil\VotingController;
 use App\Http\Controllers\Dormitory\RoomController;
 use App\Models\Room;
 use Illuminate\Support\Facades\Auth;
@@ -210,4 +211,17 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::post('/community_service/reject/{community_service}', [CommunityServiceController::class, 'reject'])->name('community_service.reject');
     Route::post('/community_service/create', [CommunityServiceController::class, 'create'])->name('community_service.create');
     Route::get('/community_service/search', [CommunityServiceController::class, 'search'])->name('community_service.search');
+
+    /** voting */
+    Route::get('/sittings', [VotingController::class, 'index'])->name('sittings.index');
+    Route::get('/sittings/create', [VotingController::class, 'newSitting'])->name('sittings.create');
+    Route::post('/sittings', [VotingController::class, 'addSitting'])->name('sittings.store');
+    Route::get('/sittings/{sitting}', [VotingController::class, 'viewSitting'])->name('sittings.show');
+    Route::post('/sittings/{sitting}/close', [VotingController::class, 'closeSitting'])->name('sittings.close');
+    Route::get('/questions/create', [VotingController::class, 'newQuestion'])->name('questions.create');
+    Route::post('/questions', [VotingController::class, 'addQuestion'])->name('questions.store');
+    Route::post('/questions/{question}/close', [VotingController::class, 'closeQuestion'])->name('questions.close');
+    Route::get('/questions/{question}/votes/create', [VotingController::class, 'vote'])->name('questions.votes.create');
+    Route::post('/questions/{question}/votes', [VotingController::class, 'saveVote'])->name('questions.votes.store');
+    Route::get('/questions/{question}', [VotingController::class, 'viewQuestion'])->name('questions.show');
 });

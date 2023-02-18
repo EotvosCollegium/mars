@@ -57,6 +57,7 @@ return [
         'deadline_name' => 'deadline name',
         'deadline_date' => 'deadline date',
         'picture_path' => 'picture path',
+        'option' => 'vote'
     ],
     'before' => 'The :attribute must be a date before :date.',
     'before_or_equal' => 'The :attribute must be a date before or equal to :date.',
