@@ -224,26 +224,22 @@ class VotingController extends Controller
     /**
      * Returns a random 6 char string, refreshed every minute.
      */
-    public static function getTemporaryPasscode($offset = "0 minute") : string
+    public static function getTemporaryPasscode($offset = "0 minute"): string
     {
         return substr(hash('sha256', date('Y-m-d H:i', strtotime($offset))), 0, 6);
     }
 
     /**
-     * Decides if a value matches the current temporary password. 
+     * Decides if a value matches the current temporary password.
      * The previous password is also accepted.
      */
-    public static function isTemporaryPasscode(string $value) : bool
+    public static function isTemporaryPasscode(string $value): bool
     {
-
         $date = date('Y-m-d H:i');
 
 
 
-        return $value == self::getTemporaryPasscode() 
+        return $value == self::getTemporaryPasscode()
             || $value == self::getTemporaryPasscode('-1 minute');
     }
-
-
-
 }

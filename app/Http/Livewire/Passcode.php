@@ -7,7 +7,6 @@ use App\Http\Controllers\StudentsCouncil\VotingController;
 
 class Passcode extends Component
 {
-
     public function getPasscodeProperty()
     {
         return app(VotingController::class)->getTemporaryPasscode();
