@@ -221,7 +221,6 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::get('/questions/create', [VotingController::class, 'newQuestion'])->name('questions.create');
     Route::post('/questions', [VotingController::class, 'addQuestion'])->name('questions.store');
     Route::post('/questions/{question}/close', [VotingController::class, 'closeQuestion'])->name('questions.close');
-    Route::get('/questions/{question}/votes/create', [VotingController::class, 'vote'])->name('questions.votes.create');
     Route::post('/questions/{question}/votes', [VotingController::class, 'saveVote'])->name('questions.votes.store');
     Route::get('/questions/{question}', [VotingController::class, 'viewQuestion'])->name('questions.show');
 });

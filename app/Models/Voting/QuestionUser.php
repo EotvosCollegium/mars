@@ -4,6 +4,7 @@ namespace App\Models\Voting;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class QuestionUser extends Model
 {
@@ -12,4 +13,9 @@ class QuestionUser extends Model
     protected $table = 'question_user';
 
     protected $fillable = ['question_id', 'user_id'];
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }
