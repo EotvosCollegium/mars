@@ -13,9 +13,4 @@ class QuestionUser extends Model
     protected $table = 'question_user';
 
     protected $fillable = ['question_id', 'user_id'];
-
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
 }
