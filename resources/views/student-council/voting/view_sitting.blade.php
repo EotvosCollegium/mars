@@ -12,7 +12,11 @@
     <div class="col s12">
         <div class="card">
             <div class="card-content">
-                <span class="card-title">{{ $sitting->title }}</span>
+                <span class="card-title">{{ $sitting->title }}
+                    <span class="right">
+                        @livewire('passcode')
+                    </span>
+                </span>
                 <table>
                     <tbody>
                         <tr>
