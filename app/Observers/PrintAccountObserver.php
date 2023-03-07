@@ -32,7 +32,7 @@ class PrintAccountObserver
                 'free_page_change' => 0,
                 'deadline_change' => null,
                 'modified_by' => $printAccount->last_modified_by,
-                'modified_at' => now()
+                'modified_at' => $printAccount->modified_at ?? now()
             ]);
         }
     }
