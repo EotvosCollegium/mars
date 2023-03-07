@@ -136,7 +136,7 @@ class HomeController extends Controller
 
     public function privacyPolicy()
     {
-        return Storage::response('public/adatvedelmi_tajekoztato.pdf');
+        return Storage::response(public_path('adatvedelmi_tajekoztato.pdf'));
     }
 
     public function setLocale($locale)
