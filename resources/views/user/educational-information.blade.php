@@ -71,7 +71,7 @@
         </div>
         <x-input.select l=6 id="alfonso_language" text="Nyelv"
                     value='{{ $user->educationalInformation?->alfonso_language }}'
-                    :elements="App\View\Components\Input\Select::convert_array(config('app.alfonso_languages'))"
+                    :elements="App\View\Components\Input\Select::convertArray(config('app.alfonso_languages'))"
                     />
         <x-input.select l=6 id="alfonso_desired_level" text="Elérni kívánt szint"
             :value='$user->educationalInformation?->alfonso_desired_level'
