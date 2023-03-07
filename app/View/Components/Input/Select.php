@@ -39,6 +39,15 @@ class Select extends Input
         $this->helper = $helper;
     }
 
+    public static function convert_array($array)
+    {
+        $objects = [];
+        foreach ($array as $key => $value) {
+            $objects[] = (object)["id" => $key, "name" => $value];
+        }
+        return collect($objects);
+    }
+
     /**
      * Get the view / contents that represent the component.
      *
