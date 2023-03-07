@@ -37,7 +37,7 @@
                         <div class="col s12 l8">
                             <p><label>
                                     <input type="checkbox" name="gdpr" id="qdpr" value="qdpr" required class="filled-in checkbox-color" />
-                                    <span>@lang('auth.i_agree_to') <a href="{{ route('privacy_policy') }}" target="_blank">@lang('auth.privacy_policy').</a></span>
+                                    <span>@lang('auth.i_agree_to') <a href="/adatvedelmi_tajekoztato.pdf" target="_blank">@lang('auth.privacy_policy').</a></span>
                                 </label></p>
                         </div>
                         <x-input.button l=4 class='right' text='general.register' />
