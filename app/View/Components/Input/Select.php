@@ -39,6 +39,12 @@ class Select extends Input
         $this->helper = $helper;
     }
 
+    /**
+     * Convert an array with keys to a collection of objects with id and name.
+     *
+     * @param $array
+     * @return \Illuminate\Support\Collection
+     */
     public static function convert_array($array)
     {
         $objects = [];
