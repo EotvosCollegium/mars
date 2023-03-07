@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\User;
 use App\Models\Role;
-use Illuminate\Auth\Access\HandlesAuthorization;
 
 class SittingPolicy
 {
@@ -16,7 +15,7 @@ class SittingPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->isCollegist();
+        return $user->isCollegist() && $user->isActive() || $user->isAdmin();
     }
 
     /**

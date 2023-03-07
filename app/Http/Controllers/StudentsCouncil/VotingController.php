@@ -50,7 +50,8 @@ class VotingController extends Controller
         ]);
 
         return view('student-council.voting.view_sitting', [
-            "sitting" => $sitting
+            "sitting" => $sitting,
+            "passcode" => self::getTemporaryPasscode()
         ]);
     }
 
@@ -62,7 +63,8 @@ class VotingController extends Controller
         $this->authorize('viewAny', Sitting::class);
 
         return view('student-council.voting.view_sitting', [
-            "sitting" => $sitting
+            "sitting" => $sitting,
+            "passcode" => self::getTemporaryPasscode()
         ]);
     }
 
@@ -132,8 +134,7 @@ class VotingController extends Controller
         $question = $sitting->questions()->create([
             'title' => $request->title,
             'max_options' => $request->max_options,
-            'opened_at' => now(),
-            'passcode' => \Str::random(8)
+            'opened_at' => now()
         ]);
         foreach ($options as $option) {
             $question->options()->create([
@@ -170,17 +171,6 @@ class VotingController extends Controller
     }
 
     /**
-     * Returns the voting page.
-     */
-    public function vote(Question $question)
-    {
-        $this->authorize('vote', $question);
-        return view('student-council.voting.vote', [
-            "question" => $question
-        ]);
-    }
-
-    /**
      * Saves a vote.
      */
     public function saveVote(Question $question, Request $request)
@@ -193,7 +183,7 @@ class VotingController extends Controller
                 'option.*' => 'exists:question_options,id',
                 'passcode' => 'string'
             ]);
-            if ($request->passcode!=$question->passcode) {
+            if (!self::isTemporaryPasscode($request->passcode)) {
                 $validator->after(function ($validator) {
                     $validator->errors()->add('passcode', __('voting.incorrect_passcode'));
                 });
@@ -214,7 +204,7 @@ class VotingController extends Controller
                 'option' => 'exists:question_options,id',
                 'passcode' => 'string'
             ]);
-            if ($request->passcode!=$question->passcode) {
+            if (!self::isTemporaryPasscode($request->passcode)) {
                 $validator->after(function ($validator) {
                     $validator->errors()->add('passcode', __('voting.incorrect_passcode'));
                 });
@@ -229,5 +219,23 @@ class VotingController extends Controller
         }
 
         return redirect()->route('sittings.show', $question->sitting)->with('message', __('voting.successful_voting'));
+    }
+
+    /**
+     * Returns a random 6 char string, refreshed every minute.
+     */
+    public static function getTemporaryPasscode($offset = "0 minute"): string
+    {
+        return substr(hash('sha256', date('Y-m-d H:i', strtotime($offset))), 0, 6);
+    }
+
+    /**
+     * Decides if a value matches the current temporary password.
+     * The previous password is also accepted.
+     */
+    public static function isTemporaryPasscode(string $value): bool
+    {
+        return $value == self::getTemporaryPasscode()
+            || $value == self::getTemporaryPasscode('-1 minute');
     }
 }

@@ -12,7 +12,11 @@
     <div class="col s12">
         <div class="card">
             <div class="card-content">
-                <span class="card-title">{{ $sitting->title }}</span>
+                <span class="card-title">{{ $sitting->title }}
+                    <span class="right">
+                        @livewire('passcode')
+                    </span>
+                </span>
                 <table>
                     <tbody>
                         <tr>
@@ -21,17 +25,16 @@
                         </tr>
                         <tr>
                             <th scope="row">@lang('voting.closed_at')</th>
-                            <td>{{ $sitting->closed_at }}</td>
+                            <td>{{ $sitting->closed_at }}
                             @if($sitting->isOpen())
                             @can('administer', $sitting)
-                            <td>
-                                <form action="{{ route('sittings.close', $sitting->id) }}" method="POST" class="right" style="margin-right:10px">
+                                <form action="{{ route('sittings.close', $sitting->id) }}" method="POST">
                                     @csrf
                                     <x-input.button text="voting.close_sitting" class="red" />
                                 </form>
-                            </td>
                             @endcan
                             @endif
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -51,11 +54,6 @@
                         <th>@lang('voting.question_title')</th>
                         <th>@lang('voting.opened_at')</th>
                         <th>@lang('voting.closed_at')</th>
-                        @can('administer', \App\Models\Voting\Sitting::class)
-                        <th>@lang('voting.passcode')</th>
-                        @endcan
-                        <th></th>
-                        <th></th>
                         <th>
                             @if($sitting->isOpen())
                             @can('administer', $sitting)
@@ -70,14 +68,11 @@
                     <tr>
                         <td>{{$question->title}}</td>
                         <td>{{$question->opened_at}}</td>
-                        <td>{{$question->closed_at}}</td>
-                        @can('administer', \App\Models\Voting\Sitting::class)
-                        <td style="font-family: Monospace; font-size: 130%;">{{$question->passcode}}</td>
-                        @endcan
                         <td>
+                            {{$question->closed_at}}
                             @if($question->isOpen())
                             @can('administer', $sitting)
-                            <form action="{{ route('questions.close', $question->id) }}" method="POST" class="right">
+                            <form action="{{ route('questions.close', $question->id) }}" method="POST">
                                 @csrf
                                 <x-input.button text="voting.close_question" class="red" />
                             </form>
@@ -86,11 +81,10 @@
                         </td>
                         <td>
                             @can('vote', $question)
-                            <x-input.button href="{{ route('questions.votes.create', $question->id) }}" floating class="right" icon="thumbs_up_down" />
-                            @endcan
-                        </td>
-                        <td>
+                            <x-input.button href="{{ route('questions.show', $question->id) }}" floating class="right" icon="thumbs_up_down" />
+                            @elsecan('viewResults', $question)
                             <x-input.button href="{{ route('questions.show', $question->id) }}" floating class="right" icon="remove_red_eye" />
+                            @endcan
                         </td>
                     </tr>
                     @endforeach

@@ -40,6 +40,21 @@ class Select extends Input
     }
 
     /**
+     * Convert an array with keys to a collection of objects with id and name.
+     *
+     * @param $array
+     * @return \Illuminate\Support\Collection
+     */
+    public static function convertArray($array)
+    {
+        $objects = [];
+        foreach ($array as $key => $value) {
+            $objects[] = (object)["id" => $key, "name" => $value];
+        }
+        return collect($objects);
+    }
+
+    /**
      * Get the view / contents that represent the component.
      *
      * @return \Illuminate\Contracts\View\View|string
