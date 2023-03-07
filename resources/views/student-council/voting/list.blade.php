@@ -18,16 +18,13 @@
                             <th>@lang('voting.name')</th>
                             <th>@lang('voting.opened_at')</th>
                             <th>@lang('voting.closed_at')</th>
-                            <th>@lang('voting.is_open')</th>
-                            
+                            <th>
                             @can('administer', \App\Models\Sitting::class)
-                                <th>
-                                    <a href="{{ route('sittings.create') }}" class="btn-floating waves-effect waves-light right">
-                                        <i class="material-icons">add</i>
-                                    </a>
-                                </th>
+                                <a href="{{ route('sittings.create') }}" class="btn-floating waves-effect waves-light right">
+                                    <i class="material-icons">add</i>
+                                </a>
                             @endcan
-                            
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -41,12 +38,8 @@
                             </td>
                             <td>
                                 {{ $sitting->closed_at }}
-                            </td>
-                            <td>
                                 @if($sitting->isOpen())
-                                    <span class="new badge green" data-badge-caption="">@lang('voting.open')</span>
-                                @else
-                                    <span class="new badge red" data-badge-caption="">@lang('voting.closed')</span>
+                                <span class="new badge green" data-badge-caption="">@lang('voting.open')</span>
                                 @endif
                             </td>
                             <td>

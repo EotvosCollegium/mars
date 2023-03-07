@@ -12,12 +12,13 @@ use App\Models\Voting\Sitting;
 use App\Models\Voting\QuestionOption;
 use App\Models\Voting\QuestionUser;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Question extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'sitting_id', 'max_options', 'opened_at', 'closed_at', 'passcode'];
+    protected $fillable = ['title', 'sitting_id', 'max_options', 'opened_at', 'closed_at'];
 
     public $timestamps = false;
 
@@ -35,6 +36,14 @@ class Question extends Model
     public function options(): HasMany
     {
         return $this->hasMany(QuestionOption::class);
+    }
+
+    /**
+     * @return HasMany the users who voted on this question
+     */
+    public function users(): HasManyThrough
+    {
+        return $this->hasManyThrough(User::class, QuestionUser::class, 'question_id', 'id', 'id', 'user_id');
     }
 
     /**
@@ -105,7 +114,7 @@ class Question extends Model
      */
     public function hasVoted(User $user): bool
     {
-        return QuestionUser::where('question_id', $this->id)->where('user_id', $user->id)->exists();
+        return $this->users()->where('users.id', $user->id)->exists();
     }
 
     /**
