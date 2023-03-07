@@ -235,10 +235,6 @@ class VotingController extends Controller
      */
     public static function isTemporaryPasscode(string $value): bool
     {
-        $date = date('Y-m-d H:i');
-
-
-
         return $value == self::getTemporaryPasscode()
             || $value == self::getTemporaryPasscode('-1 minute');
     }
