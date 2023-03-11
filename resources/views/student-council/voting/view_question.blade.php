@@ -76,7 +76,7 @@
                         <b>Szavaztak:</b>
                         <ul>
                         @foreach($question->users()->orderBy('name')->get() as $user)
-                            <li>{{$user->name}}</li>
+                            <li>{{$user->uniqueName}}</li>
                         @endforeach
                         </ul>
                     </blockquote>
