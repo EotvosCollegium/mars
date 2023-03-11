@@ -64,7 +64,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($question->options as $option)
+                            @foreach($question->options->sortByDesc('votes') as $option)
                             <tr>
                                 <td>{{$option->title}}</td>
                                 <td><b>{{$option->votes}}</b></td>
