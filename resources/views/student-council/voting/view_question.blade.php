@@ -37,7 +37,7 @@
                     @endforeach
                     </div>
                     <div class="row">
-                        <x-input.text id="passcode" type="password" text="voting.passcode" required />
+                        <x-input.text id="passcode" text="voting.passcode" required />
                     </div>
                 </div>
                 <div class="card-action row">
