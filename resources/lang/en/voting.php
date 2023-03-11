@@ -7,6 +7,7 @@ return [
     'close_sitting' => 'Close sitting',
     'closed' => 'Closed',
     'closed_at' => 'Closed at',
+    'description' => 'Your vote is anonymous and can not be connected to you. You can only vote with entering the code given by the organizers.',
     'incorrect_passcode' => 'Incorrect passcode',
     'is_open' => 'Is open?',
     'max_options' => 'At most how many options should be chosen?',

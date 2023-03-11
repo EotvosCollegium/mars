@@ -22,6 +22,7 @@
                             @livewire('passcode')
                         </span>
                     </span>
+                    <blockquote>@lang('voting.description')</blockquote>
                     <blockquote class="error">@lang('voting.warning')</blockquote>
                     <div class="row">
                     @foreach($question->options()->get() as $option)
