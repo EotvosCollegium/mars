@@ -11,6 +11,7 @@ return [
     'details' => 'Részletek',
     'done' => 'Kész',
     'fault_description' => 'Amennyiben valamilyen hibát találsz a Collegium épületében (pl. hiányzó villanykörte), itt be tudod jelenteni, hogy a karbantartó mihamarabb megjavítsa.',
+    'fault_internet_description' => 'Az interneteléréssel kapcsolatos problémákat az internet oldalon jelentsd!',
     'fault_subject' => 'Hiba bejelentés',
     'faults' => 'Hibafüzet',
     'location' => 'Helyszín',

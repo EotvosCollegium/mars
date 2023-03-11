@@ -22,6 +22,7 @@
                             @livewire('passcode')
                         </span>
                     </span>
+                    <blockquote>@lang('voting.description')</blockquote>
                     <blockquote class="error">@lang('voting.warning')</blockquote>
                     <div class="row">
                     @foreach($question->options()->get() as $option)
@@ -36,7 +37,7 @@
                     @endforeach
                     </div>
                     <div class="row">
-                        <x-input.text id="passcode" type="password" text="voting.passcode" required />
+                        <x-input.text id="passcode" text="voting.passcode" required />
                     </div>
                 </div>
                 <div class="card-action row">
@@ -63,7 +64,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($question->options as $option)
+                            @foreach($question->options->sortByDesc('votes') as $option)
                             <tr>
                                 <td>{{$option->title}}</td>
                                 <td><b>{{$option->votes}}</b></td>
@@ -75,7 +76,7 @@
                         <b>Szavaztak:</b>
                         <ul>
                         @foreach($question->users()->orderBy('name')->get() as $user)
-                            <li>{{$user->name}}</li>
+                            <li>{{$user->uniqueName}}</li>
                         @endforeach
                         </ul>
                     </blockquote>
