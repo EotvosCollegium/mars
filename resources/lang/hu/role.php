@@ -3,6 +3,7 @@
 return [
     'admin' => 'Rendszergazda',
     'aggregated-application-committee' => 'Egységes diákbizottsági tag',
+    'alumni' => 'Alumni',
     'application-committee' => 'Felvételiztető',
     'board-of-trustees-member' => 'Kuratóriumi diáktag',
     'collegist' => 'Collegista',

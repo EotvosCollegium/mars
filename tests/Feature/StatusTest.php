@@ -27,6 +27,7 @@ class StatusTest extends TestCase
         SemesterController::finalizeStatements();
 
         $this->assertFalse($user->isCollegist());
+        $this->assertTrue($user->hasRole(Role::ALUMNI));
     }
 
     /**
@@ -42,5 +43,6 @@ class StatusTest extends TestCase
         SemesterController::finalizeStatements();
 
         $this->assertTrue($user->isActive());
+        $this->assertFalse($user->hasRole(Role::ALUMNI));
     }
 }

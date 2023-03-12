@@ -66,6 +66,7 @@ class SemesterController extends Controller
         foreach (User::collegists() as $user) {
             if (! $user->getStatus()) {
                 $user->removeRole(Role::collegist());
+                $user->addRole(Role::Alumni());
             }
         }
     }
