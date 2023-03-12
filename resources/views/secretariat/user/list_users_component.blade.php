@@ -103,11 +103,20 @@
                         <div class="col s12 xl1">
                             @if($user->hasEducationalInformation())
                                 @can('view', $user)
-                                    <span
-                                        class="new badge tag {{ \App\Models\SemesterStatus::color($user->getStatus()) }}"
-                                        data-badge-caption="">
-                                            @lang("user." . $user->getStatus())
-                                    </span>
+                                @php
+                                    $status = $user->getStatus();
+                                @endphp
+                                <span class="new badge {{ \App\Models\SemesterStatus::color($status?->status) }} right" data-badge-caption="">
+                                    <b> @if($status?->status) 
+                                        @lang("user." . $status->status)
+                                        @else
+                                        @lang("user.no_status")
+                                        @endif
+                                        @if($status?->comment) 
+                                        ({{$status->comment}}) 
+                                        @endif
+                                    </b>
+                                </span>
                                 @endcan
                             @endif
                         </div>

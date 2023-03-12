@@ -1,24 +1,10 @@
 <table>
     <tbody>
         @if(!$semesters->contains(\App\Models\Semester::current()))
-            <tr>
-                <td>
-                    <b>{{ \App\Models\Semester::current()->tag }} (jelenlegi)</b>
-                </td>
-                <td class="right">
-                    @livewire('edit-status', ['user' => $user, 'semester' => \App\Models\Semester::current()])
-                </td>
-            </tr>
+            @livewire('edit-status', ['user' => $user, 'semester' => \App\Models\Semester::current()])
         @endif
-        @foreach ($semesters as $semester)
-            <tr>
-                <td>
-                    <b>{{ $semester->tag }}</b>
-                </td>
-                <td class="right">
-                    @livewire('edit-status', ['user' => $user, 'semester' => $semester])
-                </td>
-            </tr>
+        @foreach ($semesters->sortByDesc('tag') as $semester)
+            @livewire('edit-status', ['status' => $user->getStatus($semester)->status, 'comment' => $user->getStatus($semester)->comment, 'user' => $user, 'semester' => $semester])
         @endforeach
     </tbody>
 </table>

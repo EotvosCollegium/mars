@@ -8,19 +8,36 @@ use Livewire\Component;
 
 class EditStatus extends Component
 {
-    public User $user;
     public Semester $semester;
-    public string $status; //current status to display
+    public User $user;
+    public ?string $comment;
+    public string $status;
 
-    public function mount()
+    public function mount($user, $semester, $comment = '', $status = '')
     {
-        $this->status = $this->user->getStatusIn($this->semester);
+        $this->semester = $semester;
+        $this->status = $status ?? '';
+        $this->comment = $comment ?? '';
+        $this->user = $user;
     }
 
-    public function set($status)
+    public function setStatus($status)
     {
-        $this->user->setStatusFor($this->semester, $status);
         $this->status = $status;
+        $this->save();
+    }
+
+    public function save()
+    {
+        $this->user->setStatusFor($this->semester, $this->status, $this->comment);
+        $this->emit('$refresh');
+    }
+
+    public function removeStatus()
+    {
+        $this->user->semesterStatuses()->detach($this->semester->id);
+        $this->status = '';
+        $this->comment = '';
     }
 
     public function render()

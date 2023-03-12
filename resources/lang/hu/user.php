@@ -47,6 +47,7 @@ return [
     'name_of_secondary_school' => 'Középiskola',
     'neptun' => 'Neptun kód',
     'neptun_identifier' => 'Neptun kód',
+    'no_status' => 'Nincs státusz',
     'olasz_muhely' => 'Olasz műhely',
     'orientalisztika_muhely' => 'Orientalisztika műhely',
     'password' => 'jelszó',

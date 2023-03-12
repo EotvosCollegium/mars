@@ -47,6 +47,7 @@ return [
     'name_of_secondary_school' => 'Name of secondary school',
     'neptun' => 'Neptun code',
     'neptun_identifier' => 'Neptun identifier',
+    'no_status' => 'No status set',
     'olasz_muhely' => 'Olasz műhely',
     'orientalisztika_muhely' => 'Orientalisztika műhely',
     'password' => 'password',
