@@ -25,7 +25,7 @@ class UserController extends Controller
 
         return view('auth.user', [
             'user' => $user,
-            'semesters' => $user->allSemesters,
+            'semesters' => $user->semesterStatuses,
             'faculties' => Faculty::all(),
             'workshops' => Workshop::all()
         ]);
@@ -187,7 +187,7 @@ class UserController extends Controller
 
         return view('secretariat.user.show', [
             'user' => $user,
-            'semesters' => $user->allSemesters,
+            'semesters' => $user->semesterStatuses,
             'faculties' => Faculty::all(),
             'workshops' => Workshop::all()
         ]);
