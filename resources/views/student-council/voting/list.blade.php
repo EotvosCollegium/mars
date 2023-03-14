@@ -20,7 +20,7 @@
                             <th>@lang('voting.closed_at')</th>
                             <th>@lang('voting.is_open')</th>
                             
-                            @can('administer', \App\Models\Sitting::class)
+                            @can('administer', \App\Models\Voting\Sitting::class)
                                 <th>
                                     <a href="{{ route('sittings.create') }}" class="btn-floating waves-effect waves-light right">
                                         <i class="material-icons">add</i>
