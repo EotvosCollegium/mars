@@ -24,11 +24,13 @@
                     </div>
                     <div class="row">
                         <blockquote>
-                        Aktív - Aktív tagja leszel a Collegiumnak<br>
-                        Passzív - Külföldi féléven leszel vagy passzív vagy az egyetemen<br>
-                        Deaktivált - Nem leszel aktív tagja a Collégiumnak
+                        Aktív - Aktív tagja leszel a Collegiumnak.<br>
+                        Passzív - Külföldi féléven leszel vagy passzív vagy az egyetemen. A collegista státuszod megmarad, de ha bentlakó vagy, a helyed ideiglenesen megszűnik.<br>
+                        Alumni - Kilépsz a Collegiumból, vagy megszűnik a hallgatói jogviszonod.
+                        Egyéb esetben írj kérvényt az Igazgató Úrnak és jelezd az okot a megjegyzés mezőben (pl. "két képzés között").
                         </blockquote>
-                        <x-input.select s=12 without_label :elements="[\App\Models\SemesterStatus::ACTIVE,\App\Models\SemesterStatus::PASSIVE, \App\Models\SemesterStatus::DEACTIVATED]" id="semester_status" required :formatter="function($o) { return __('user.'.$o); }" placeholder="Tagsági státusz"/>
+                        <x-input.select xl=6 without_label :elements="[\App\Models\SemesterStatus::ACTIVE,\App\Models\SemesterStatus::PASSIVE, \App\Models\Role::ALUMNI]" id="semester_status" required :formatter="function($o) { return __('user.'.$o); }" placeholder="Tagsági státusz"/>
+                        <x-input.text xl=6 id="comment" placeholder="Megjegyzés, ha kérvényt írsz Igazgató Úrnak." maxlength="20"/>
                     </div>
                     <div class="row">
                         <x-input.button class="right red" text="general.save" />

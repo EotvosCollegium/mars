@@ -9,6 +9,7 @@ return [
     'accept' => 'Elfogad',
     'address' => 'Lakcím',
     'admin' => 'Adminisztrátor',
+    'alumni' => 'Alumni',
     'angol_amerikai_muhely' => 'Angol-amerikai műhely',
     'aurelien_sauvageot_francia_muhely' => 'Aurélien Sauvageot Francia műhely',
     'barczi_gusztav_gyogypedagogiai_kar' => 'Bárczi Gusztáv Gyógypedagógiai Kar',

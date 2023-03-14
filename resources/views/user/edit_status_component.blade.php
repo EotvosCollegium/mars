@@ -1,6 +1,6 @@
 <tr>
     <td>
-        <b>{{$semester->tag}}</b>
+        <b>{{$semester->tag}} @if($semester == \App\Models\Semester::current()) (jelenlegi) @endif</b>
     </td>
     @can('updateStatus', $user)
     <td>

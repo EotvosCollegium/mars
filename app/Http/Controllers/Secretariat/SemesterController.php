@@ -40,15 +40,20 @@ class SemesterController extends Controller
         $this->authorize('is-collegist');
 
         $validator = Validator::make($request->all(), [
-            'semester_status' => 'required|in:' . SemesterStatus::ACTIVE . ',' . SemesterStatus::PASSIVE,
+            'semester_status' => 'required|in:' . SemesterStatus::ACTIVE . ',' . SemesterStatus::PASSIVE . ',' . Role::ALUMNI,
+            'comment' => 'nullable|string',
             'collegist_role' => 'required|in:resident,extern'
         ]);
         $validator->validate();
 
         /* @var User $user */
         $user = Auth::user();
-        $user->setStatus($request->semester_status, "Státusz bejelentés");
-        $user->setCollegist($request->collegist_role);
+        if($request->semester_status == Role::ALUMNI) {
+            self::deactivateCollegist($user);
+        } else {
+            $user->setStatus($request->semester_status, $request->comment);
+            $user->setCollegist($request->collegist_role);
+        }
         return redirect('home')->with('message', __('general.successful_modification'));
     }
 
@@ -65,9 +70,14 @@ class SemesterController extends Controller
     {
         foreach (User::collegists() as $user) {
             if (! $user->getStatus()) {
-                $user->removeRole(Role::collegist());
-                $user->addRole(Role::Alumni());
+                self::deactivateCollegist($user);
             }
         }
+    }
+
+    public static function deactivateCollegist($user)
+    {
+        $user->removeRole(Role::collegist());
+        $user->addRole(Role::alumni());
     }
 }
