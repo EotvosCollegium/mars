@@ -8,6 +8,7 @@
 @can('updateAny', \App\Models\Room::class) 
 <div class="card">
     <div class="card-content">
+    <blockquote>Ha a módosításnak egyes szobákban nincs hatása, győződj meg róla hogy minden személy egyszerre legfeljebb egy szobába van beosztva!</blockquote>
     <form method="post" id="update-all" action="{{route('rooms.update')}}">
         @csrf
         @method('put')
