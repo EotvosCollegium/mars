@@ -48,7 +48,7 @@ class SemesterController extends Controller
 
         /* @var User $user */
         $user = Auth::user();
-        if($request->semester_status == Role::ALUMNI) {
+        if ($request->semester_status == Role::ALUMNI) {
             self::deactivateCollegist($user);
         } else {
             $user->setStatus($request->semester_status, $request->comment);
