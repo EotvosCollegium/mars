@@ -15,6 +15,15 @@
             Ha vettél valamit, itt rögzítsd. A kasszafelelős majd megtéríti az összeget.
             @endcan
         </blockquote>
+        @if($checkout->name == \App\Models\Checkout::STUDENTS_COUNCIL)
+        <blockquote>
+            @can('administrate', $checkout)
+            A műhelykiadásokat a műhelyek egyenlegeinél, a felhasznált egyenleg módosításánál rögzítsd.
+            @else
+            A műhelykiadásokat csak a kasszafelelős tudja közvetlenül kezelni, így azt ne itt rögzítsd.
+            @endcan
+        </blockquote>
+        @endif
         <form method="POST" action="{{ route($route_base . '.transaction.add') }}">
             @csrf
             <div class="row">

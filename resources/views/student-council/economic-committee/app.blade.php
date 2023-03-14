@@ -54,6 +54,9 @@
                                         A tranzakcióról emailben értesítést kapnak, és az internet-elérésük automatikusan meghosszabbításra kerül.<br>
                                         A Netreg tranzakcióid a <a href="{{route('admin.checkout')}}"> rendszergazdai kasszában</a> láthatod.
                                     </blockquote>
+                                    @can('administrate', $checkout)
+                                    <blockquote>A gazdasági alelnök, a kulturális bizottság tagjai és a rendszergazdák szedhetnek be KKT-t/Netreget. Ezeket a tranzakciókat a tartozások alatt találod.</blockquote>
+                                    @endcan
                                     <x-input.select l=4 :elements="$users_not_payed" id="user_id" text="general.user" :formatter="function($user) { return $user->uniqueName; }" />
                                     <x-input.text  m=6 l=4 id="kkt" text="KKT" type="number" required min="0" :value="config('custom.kkt')" />
                                     <x-input.text  m=6 l=4 id="netreg" text="NetReg" type="number" required min="0" :value="config('custom.netreg')" />
@@ -91,10 +94,10 @@
                     <div class="col s12">
                         <table><tbody>
                             @include('utils.checkout.header')
-                            <tr><th>Bevétel</th></tr>
+                            <tr><th colspan="7">Bevétel</th></tr>
                             @include('utils.checkout.sum', ['paymentType' => \App\Models\PaymentType::kkt()])
                             @include('utils.checkout.list', ['paymentType' => \App\Models\PaymentType::income()])
-                            <tr><th>Kiadás</th></tr>
+                            <tr><th colspan="7">Kiadás</th></tr>
                             @include('utils.checkout.list', ['paymentType' => \App\Models\PaymentType::expense()])
                             @include('utils.checkout.sum',  ['paymentType' => \App\Models\PaymentType::workshopExpense()])
                             @include('utils.checkout.footer')
@@ -115,7 +118,7 @@
                                             <x-input.button :href="route('economic_committee.workshop_balance')" floating class="btn-small grey" icon="refresh" />
                                         @endif
                                     </th>
-                                    <th>Felhasznált egyenleg</th>
+                                    <th>Felhasznált egyenleg @if($semester->isCurrent())@can('administrate', $checkout) ** @endcan @endif</th>
                                     <th>Fennmaradó összeg</th>
                                 </tr>
                             </thead>
@@ -146,7 +149,13 @@
                             Azok közül, akik fizettek, minden bentlakó után a műhely {{config('custom.kkt')}} * {{config('custom.workshop_balance_resident')}}, minden bejáró után {{config('custom.kkt')}} * {{config('custom.workshop_balance_extern')}} forintot kap. 
                             (Ha egy collegistának több műhelye is van, a műhelyei megosztoznak az összegen.)
                         </blockquote>
+                        @can('administrate', $checkout)
+                        <blockquote>
+                            **A beviteli mezőbe pozitív összeggel írd be a kiadást, negatívval az előző félévről megmaradt egyenleget.
+                        </blockquote>
+                        @endcan
                         @endif
+                        
                     </div>
                 </div>
             </div>
