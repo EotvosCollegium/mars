@@ -7,6 +7,7 @@ return [
     'close_sitting' => 'Ülés lezárása',
     'closed' => 'Lezárva',
     'closed_at' => 'Lezárva',
+    'description' => 'A szavazatod névtelen és nem köthető a felhasználódhoz, de a szavazatod ténye nyilvános. Szavazni a vetítőn látható kód beírásával lehet.',
     'incorrect_passcode' => 'Érvénytelen kód',
     'is_open' => 'Nyitva?',
     'max_options' => 'Legfeljebb hány opcióra lehessen szavazni?',
@@ -29,5 +30,5 @@ return [
     'too_many_options' => 'Túl sok opció lett megjelölve; próbáld újra.',
     'vote' => 'Szavazás',
     'voting' => 'Szavazás',
-    'warning' => 'Figyelem: a szavazatot utólag már nem lehet módosítani!',
+    'warning' => 'A szavazatot utólag már nem lehet módosítani!',
 ];

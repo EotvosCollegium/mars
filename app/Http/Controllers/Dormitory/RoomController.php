@@ -95,22 +95,11 @@ class RoomController extends Controller
     {
         $this->authorize('updateAny', Room::class);
 
-        $rooms=Room::all();
-        User::update(['room' => null]);
-        foreach ($rooms as $room) {
+        User::where('id', '>', 0)->update(['room' => null]);
+        foreach (Room::all() as $room) {
             $userIds=isset($request->rooms[$room->name]) ? $request->rooms[$room->name] : null;
-            if ($userIds!==null) {
-                foreach ($userIds as $userId) {
-                    // $userId can be 'null' if one of the users has been taken out of the assignment.
-                    if ($userId!='null') {
-                        $user=User::find($userId);
-                        if ($user!=null) {
-                            $user->update(['room' => $room->name]);
-                        }
-                    }
-                }
-            }
+            User::whereIn('id', $userIds ?? [])->update(['room' => $room->name]);
         }
-        return back();
+        return back()->with('message', __('general.successful_modification'));
     }
 }
