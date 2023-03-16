@@ -52,7 +52,7 @@ class SemesterController extends Controller
             self::deactivateCollegist($user);
         } else {
             $user->setStatus($request->semester_status, $request->comment);
-            if($request->has('resign_residency') && $user->isResident()) {
+            if ($request->has('resign_residency') && $user->isResident()) {
                 $user->setExtern();
             }
         }
