@@ -101,7 +101,7 @@
                         </div>
                         <!-- Status -->
                         <div class="col s12 xl1">
-                            @if($user->hasEducationalInformation())
+                            @if($user->isCollegist())
                                 @can('view', $user)
                                 @php
                                     $status = $user->getStatus();
