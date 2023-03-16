@@ -54,13 +54,7 @@ class RoomController extends Controller
     {
         $this->authorize('updateAny', Room::class);
         $users=User::active()->resident()->get();
-        // Is an active tenant
-        $tenants=User::currentTenant()
-        // Or is a collegist (for externs living in the Collegium)
-        ->orWhereHas('roles', function ($q) {
-            $q->where('name', Role::COLLEGIST);
-        })
-        ->get();
+        $tenants=User::currentTenant()->get();
         $users=$users->concat($tenants)->unique();
         $rooms = Room::with('users')->get();
         return view('dormitory.rooms.modify', ['users' => $users, 'rooms' => $rooms]);
