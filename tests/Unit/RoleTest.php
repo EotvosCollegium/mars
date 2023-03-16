@@ -11,7 +11,6 @@ use Tests\TestCase;
 
 class RoleTest extends TestCase
 {
-
     /**
      * Add collegist role.
      * @return void
@@ -31,7 +30,6 @@ class RoleTest extends TestCase
         $this->assertTrue($user->isResident());
         $this->assertTrue($user->hasRole(Role::get(Role::COLLEGIST)));
         $this->assertTrue($user->hasRole([Role::COLLEGIST => Role::RESIDENT]));
-        
     }
 
     /**
@@ -75,13 +73,13 @@ class RoleTest extends TestCase
         $user = User::factory()->create();
         $role1 = Role::get(Role::STUDENT_COUNCIL);
         $role2 = Role::get(Role::COLLEGIST);
-    
+
         $this->assertFalse($user->addRole($role1, $role2->getObject(Role::EXTERN)));
         $this->assertFalse($user->hasRole([Role::STUDENT_COUNCIL, Role::COLLEGIST]));
     }
 
     /**
-     * Adding a role base without an expected object. 
+     * Adding a role base without an expected object.
      * @return void
      */
     public function test_missing_object()

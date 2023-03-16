@@ -725,7 +725,7 @@ class User extends Authenticatable implements HasLocalePreference
 
     /**
      * Decides if the user has any of the given roles.
-     * If a base_role => [possible_objects] array is given, it will check if the user has the base_role with any of the possible_objects. 
+     * If a base_role => [possible_objects] array is given, it will check if the user has the base_role with any of the possible_objects.
      *
      * Example usage:
      * hasRole(Role::COLLEGIST)
