@@ -42,7 +42,7 @@ class SemesterController extends Controller
         $validator = Validator::make($request->all(), [
             'semester_status' => 'required|in:' . SemesterStatus::ACTIVE . ',' . SemesterStatus::PASSIVE . ',' . Role::ALUMNI,
             'comment' => 'nullable|string',
-            'collegist_role' => 'required|in:resident,extern'
+            'resign_residency' => 'nullable'
         ]);
         $validator->validate();
 
@@ -52,7 +52,9 @@ class SemesterController extends Controller
             self::deactivateCollegist($user);
         } else {
             $user->setStatus($request->semester_status, $request->comment);
-            $user->setCollegist($request->collegist_role);
+            if($request->has('resign_residency') && $user->isResident()) {
+                $user->setExtern();
+            }
         }
         return redirect('home')->with('message', __('general.successful_modification'));
     }
