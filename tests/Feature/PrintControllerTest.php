@@ -56,7 +56,7 @@ class PrintControllerTest extends TestCase
     {
         $user = User::factory()->create();
         $user->setVerified();
-        $user->roles()->attach(Role::firstWhere('name', Role::PRINTER)->id);
+        $user->roles()->attach(Role::get(Role::PRINTER)->id);
         $this->actingAs($user);
 
         $response = $this->get('/print');
@@ -96,8 +96,8 @@ class PrintControllerTest extends TestCase
     {
         $user = User::factory()->create();
         $user->setVerified();
-        $user->roles()->attach(Role::firstWhere('name', Role::PRINTER)->id);
-        $user->roles()->attach(Role::firstWhere('name', Role::SYS_ADMIN)->id);
+        $user->roles()->attach(Role::get(Role::PRINTER)->id);
+        $user->roles()->attach(Role::get(Role::SYS_ADMIN)->id);
         $this->actingAs($user);
 
         $response = $this->get('/print');
@@ -136,12 +136,12 @@ class PrintControllerTest extends TestCase
 
         $sender = User::factory()->create();
         $sender->setVerified();
-        $sender->roles()->attach(Role::firstWhere('name', Role::PRINTER)->id);
+        $sender->roles()->attach(Role::get(Role::PRINTER)->id);
         $this->actingAs($sender);
 
         $reciever = User::factory()->create();
         $reciever->setVerified();
-        $reciever->roles()->attach(Role::firstWhere('name', Role::PRINTER)->id);
+        $reciever->roles()->attach(Role::get(Role::PRINTER)->id);
 
         // Setting initial valeus
         $this->assertEquals($sender->printAccount->balance, 0);

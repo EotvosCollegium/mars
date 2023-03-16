@@ -245,7 +245,7 @@ class UserController extends Controller
         }
         $user = Auth::user();
         $user->personalInformation()->update(['tenant_until' => null]);
-        $user->removeRole(Role::firstWhere('name', Role::TENANT));
+        $user->removeRole(Role::get(Role::TENANT));
         $user->setExtern();
         $user->update(['verified' => false]);
         $user->application()->create();

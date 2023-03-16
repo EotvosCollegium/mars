@@ -426,7 +426,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function scopeRole(Builder $query, Role|string $role, Workshop|RoleObject|string $object = null): Builder
     {
-        $role = Role::getRole($role);
+        $role = Role::get($role);
         if ($object) {
             $object = $role->getObject($object);
         }
@@ -612,7 +612,7 @@ class User extends Authenticatable implements HasLocalePreference
         return in_array(
             $this->id,
             Cache::remember('sys-admins', 60, function () {
-                return Role::getRole(Role::SYS_ADMIN)->users()->pluck('id')->toArray();
+                return Role::get(Role::SYS_ADMIN)->users()->pluck('id')->toArray();
             })
         );
     }
