@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Secretariat\SemesterController;
+use App\Models\SemesterStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -20,7 +22,15 @@ return new class () extends Migration {
                 'has_objects' => false
             ]);
         }
-        DB::table('semester_status')->whereIn('status', ['DEACTIVATED', 'PENDING', 'INACTIVE'])->delete();
+
+        SemesterStatus::withoutEvents(function () {
+            foreach (SemesterStatus::where('status', 'DEACTIVATED')->get() as $semesterStatus) {
+                SemesterController::deactivateCollegist($semesterStatus->user);
+            }
+
+            SemesterStatus::whereIn('status', ['PENDING', 'INACTIVE'])->update(['status' => 'PASSIVE']);
+            SemesterStatus::where('status', 'DEACTIVATED')->delete();
+        });
     }
 
 
