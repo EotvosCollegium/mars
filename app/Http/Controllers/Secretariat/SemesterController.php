@@ -59,6 +59,9 @@ class SemesterController extends Controller
         return redirect('home')->with('message', __('general.successful_modification'));
     }
 
+    /**
+     * Send out the request to make the status statement.
+     */
     public static function sendStatementMail()
     {
         Mail::to(env('MAIL_MEMBRA'))->queue(new \App\Mail\StatusStatementRequest());
@@ -71,13 +74,17 @@ class SemesterController extends Controller
     public static function finalizeStatements()
     {
         foreach (User::collegists() as $user) {
-            if (! $user->getStatus()) {
+            if (! $user->getStatus()?->status) {
                 self::deactivateCollegist($user);
             }
         }
     }
 
-    public static function deactivateCollegist($user)
+    /**
+     * Deactivate a collegist and set alumni role.
+     * @param User $user
+     */
+    public static function deactivateCollegist(User $user)
     {
         $user->removeRole(Role::collegist());
         $user->addRole(Role::alumni());
