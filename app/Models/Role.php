@@ -215,7 +215,7 @@ class Role extends Model
     /**
      * Returns the role for the collegist.
      */
-    public static function Collegist(): Role|null
+    public static function collegist(): Role
     {
         return self::where('name', self::COLLEGIST)->first();
     }
@@ -223,7 +223,7 @@ class Role extends Model
      /**
      * Returns the role for the students council.
      */
-    public static function StudentsCouncil(): Role|null
+    public static function studentsCouncil(): Role
     {
         return self::where('name', self::STUDENT_COUNCIL)->first();
     }
@@ -231,7 +231,7 @@ class Role extends Model
     /**
      * Returns the role for the director.
      */
-    public static function Director(): Role|null
+    public static function director(): Role
     {
         return self::where('name', self::DIRECTOR)->first();
     }
@@ -239,7 +239,7 @@ class Role extends Model
     /**
      * Returns the role for the system administrators.
      */
-    public static function SysAdmin(): Role|null
+    public static function sysAdmin(): Role
     {
         return self::where('name', self::SYS_ADMIN)->first();
     }
@@ -247,7 +247,7 @@ class Role extends Model
     /**
      * Returns the role for the alumni.
      */
-    public static function Alumni(): Role|null
+    public static function alumni(): Role
     {
         return self::where('name', self::ALUMNI)->first();
     }
