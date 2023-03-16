@@ -11,6 +11,7 @@ return [
     'details' => 'Details',
     'done' => 'Done',
     'fault_description' => 'In case you find something amiss in the building (eg. missing light bulb), you can open a ticket and our staff will take care of it as soon as possible.',
+    'fault_internet_description' => 'Issues related to the internet access should be reported on the internet page!',
     'fault_subject' => 'Fault reported',
     'faults' => 'Faults',
     'location' => 'Location',
