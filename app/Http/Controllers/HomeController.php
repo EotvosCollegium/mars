@@ -108,7 +108,7 @@ class HomeController extends Controller
         /*@var User $user*/
         $user = Auth::user();
         if (!$user->hasRole([
-            Role::STUDENT_COUNCIL => Role::PRESIDENT,
+            Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS,
             Role::SYS_ADMIN,
             Role::STUDENT_COUNCIL_SECRETARY])) {
             abort(403);
