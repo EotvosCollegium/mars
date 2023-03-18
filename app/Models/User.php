@@ -426,7 +426,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function scopeRole(Builder $query, Role|string $role, Workshop|RoleObject|string $object = null): Builder
     {
-        $role = Role::getRole($role);
+        $role = Role::get($role);
         if ($object) {
             $object = $role->getObject($object);
         }
@@ -612,7 +612,7 @@ class User extends Authenticatable implements HasLocalePreference
         return in_array(
             $this->id,
             Cache::remember('sys-admins', 60, function () {
-                return Role::getRole(Role::SYS_ADMIN)->users()->pluck('id')->toArray();
+                return Role::get(Role::SYS_ADMIN)->users()->pluck('id')->toArray();
             })
         );
     }
@@ -632,8 +632,8 @@ class User extends Authenticatable implements HasLocalePreference
     }
 
     /**
-     * Set the collegist to be extern or resident.
-     * Only applies for collegists.
+     * Attach collegist role as extern or resident.
+     * If the user is already a collegist, the object is updated.
      */
     public function setCollegist($objectName): void
     {
@@ -725,15 +725,14 @@ class User extends Authenticatable implements HasLocalePreference
 
     /**
      * Decides if the user has any of the given roles.
-     * If a role which has objects is given, only the base role will be checked.
-     * Names can also be used instead of the models.
+     * If a base_role => [possible_objects] array is given, it will check if the user has the base_role with any of the possible_objects.
      *
      * Example usage:
-     * hasRole(1)
      * hasRole(Role::COLLEGIST)
-     * hasRole([Role::COLLEGIST])
-     * hasRole([Role::COLLEGIST => Role::extern])
-     * hasRole([Role::COLLEGIST => 4, Role::firstWhere('name', Role::WORKSHOP_LEADER)])
+     * hasRole(Role::collegist()))
+     * hasRole([Role::COLLEGIST => Role::EXTERN])
+     * hasRole([Role::COLLEGIST => 4, Role::get(Role::WORKSHOP_LEADER)])
+     * hasRole([Role::STUDENT_COUNCIL => [Role::PRESIDENT, Role::SCIENCE_VICE_PRESIDENT]]])
      *
      * @param $roles Role|name|id|[Role|name|id|[Role|name => RoleObject|Workshop|name|id]]
      * @return bool
@@ -749,26 +748,26 @@ class User extends Authenticatable implements HasLocalePreference
             foreach ($roles as $key => $value) {
                 $query->orWhere(function ($query) use ($key, $value) {
                     if (is_integer($key)) {
-                        $role = Role::getRole($value);
+                        //indexed with integers, object not passed
+                        $role = Role::get($value);
                         $query->where('role_id', $role->id);
                     } else {
-                        $role = Role::getRole($key);
+                        $role = Role::get($key);
                         $query->where('role_id', $role->id);
-                        if (is_array($value)) {
-                            $query->where(function ($query) use ($role, $value) {
-                                foreach ($value as $object) {
-                                    $object = $role->getObject($object);
+                        if (!is_array($value)) {
+                            $value = [$value];
+                        }
+                        //check if user has any of the objects
+                        $query->where(function ($query) use ($role, $value) {
+                            foreach ($value as $object) {
+                                $object = $role->getObject($object);
+                                if ($object instanceof Workshop) {
+                                    $query->orWhere('workshop_id', $object->id);
+                                } elseif ($object instanceof RoleObject) {
                                     $query->orWhere('object_id', $object->id);
                                 }
-                            });
-                        } else {
-                            $object = $role->getObject($value);
-                            if ($object instanceof Workshop) {
-                                $query->where('workshop_id', $object->id);
-                            } elseif ($object instanceof RoleObject) {
-                                $query->where('object_id', $object->id);
                             }
-                        }
+                        });
                     }
                 });
             }

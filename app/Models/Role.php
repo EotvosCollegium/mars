@@ -110,7 +110,6 @@ class Role extends Model
 
     public $timestamps = false;
 
-
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'role_users')
@@ -125,7 +124,7 @@ class Role extends Model
     /**
      * Returns the role model for the given role name/id.
      */
-    public static function getRole(Role|string|int $role): Role
+    public static function get(Role|string|int $role): Role
     {
         if ($role instanceof Role) {
             return $role;
@@ -172,7 +171,6 @@ class Role extends Model
             } elseif (!isset($object)) {
                 $object = null;
             }
-
             if (!$this->isValid($object)) {
                 throw new InvalidArgumentException("Role object/workshop '".$object."' does not exist for the " . $this->name . " role.");
             }
