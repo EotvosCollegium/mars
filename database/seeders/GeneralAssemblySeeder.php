@@ -2,12 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\Voting\Sitting;
-use App\Models\Voting\Question;
-use App\Models\Voting\QuestionOption;
+use App\Models\GeneralAssemblies\GeneralAssembly;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
-class VotingSeeder extends Seeder
+class GeneralAssemblySeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -16,8 +15,8 @@ class VotingSeeder extends Seeder
      */
     public function run()
     {
-        $openSitting = Sitting::create([
-            'title' => "Today's sitting",
+        $openSitting = GeneralAssembly::create([
+            'title' => "Today's general_assembly",
             'opened_at' => now(),
         ]);
 
@@ -28,15 +27,13 @@ class VotingSeeder extends Seeder
         ]);
         $openQuestion->options()->create([
             'title' => "Yes",
-            'votes' => 100
+            'votes' => 0
         ]);
         $openQuestion->options()->create([
             'title' => "No",
-            'votes' => 12
         ]);
         $openQuestion->options()->create([
             'title' => "I abstain",
-            'votes' => 9
         ]);
 
         $openCheckboxQuestion = $openSitting->questions()->create([
@@ -46,27 +43,26 @@ class VotingSeeder extends Seeder
         ]);
         $openCheckboxQuestion->options()->create([
             'title' => "A",
-            'votes' => 60
         ]);
         $openCheckboxQuestion->options()->create([
             'title' => "B",
-            'votes' => 70
         ]);
         $openCheckboxQuestion->options()->create([
             'title' => "C",
-            'votes' => 50
         ]);
         $openCheckboxQuestion->options()->create([
             'title' => "D",
-            'votes' => 10
         ]);
         $openCheckboxQuestion->options()->create([
             'title' => "E",
-            'votes' => 65
         ]);
         $openCheckboxQuestion->options()->create([
             'title' => "I abstain",
-            'votes' => 5
         ]);
+
+        foreach(User::collegists() as $collegist) {
+            $openQuestion->vote($collegist, [$openQuestion->options->random()]);
+            $openCheckboxQuestion->vote($collegist, [$openCheckboxQuestion->options->random()]);
+        }
     }
 }

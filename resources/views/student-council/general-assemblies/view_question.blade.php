@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('title')
-<a href="{{route('sittings.index')}}" class="breadcrumb" style="cursor: pointer">@lang('voting.assembly')</a>
-<a href="{{route('sittings.show', $question->sitting->id)}}" class="breadcrumb" style="cursor: pointer">{{ $question->sitting->title }}</a>
+<a href="{{route('general_assemblies.index')}}" class="breadcrumb" style="cursor: pointer">@lang('voting.assembly')</a>
+<a href="{{route('general_assemblies.show', $question->generalAssembly->id)}}" class="breadcrumb" style="cursor: pointer">{{ $question->generalAssembly->title }}</a>
 <a href="#!" class="breadcrumb">{{ $question->title }}</a>
 @endsection
 @section('student_council_module') active @endsection
@@ -31,7 +31,7 @@
                         @else
                         <x-input.checkbox name="option[]" value="{{$option->id}}" text="{{$option->title}}" />
                         @endif
-                    @endforeach   
+                    @endforeach
                     @foreach ($errors->all() as $error)
                         <blockquote class="error">{{ $error }}</blockquote>
                     @endforeach
@@ -69,7 +69,7 @@
                                 <td>{{$option->title}}</td>
                                 <td><b>{{$option->votes}}</b></td>
                             </tr>
-                            @endforeach   
+                            @endforeach
                         </tbody>
                     </table>
                     <blockquote>
@@ -81,7 +81,7 @@
                         </ul>
                     </blockquote>
                     @if($question->isOpen())
-                        @can('administer', \App\Models\Voting\Sitting::class)
+                        @can('administer', \App\Models\GeneralAssemblies\GeneralAssembly::class)
                         <form action="{{ route('questions.close', $question->id) }}" method="POST" style="display:inline;">
                             @csrf
                             <x-input.button only-input text="voting.close_question" class="red" />

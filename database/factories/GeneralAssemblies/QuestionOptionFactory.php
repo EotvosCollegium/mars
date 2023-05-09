@@ -1,12 +1,12 @@
 <?php
 
-namespace Database\Factories\Voting;
+namespace Database\Factories\GeneralAssemblies;
 
-use App\Models\Voting\Question;
+use App\Models\GeneralAssemblies\Question;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Voting\QuestionOption>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\GeneralAssemblies\QuestionOption>
  */
 class QuestionOptionFactory extends Factory
 {

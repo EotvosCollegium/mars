@@ -3,8 +3,8 @@
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\Voting\Question;
-use App\Models\Voting\Sitting;
+use App\Models\GeneralAssemblies\Question;
+use App\Models\GeneralAssemblies\GeneralAssembly;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class QuestionPolicy
@@ -23,14 +23,14 @@ class QuestionPolicy
 
     /**
      * Whether a user can view the results of a certain question.
-     * If it is still open, only people authorized to manage sittings can do so.
+     * If it is still open, only people authorized to manage general_assemblies can do so.
     */
     public function viewResults(User $user, Question $question): bool
     {
         if ($question->isClosed()) {
-            return $user->can('viewAny', Sitting::class);
+            return $user->can('viewAny', GeneralAssembly::class);
         } else {
-            return $user->can('administer', Sitting::class);
+            return $user->can('administer', GeneralAssembly::class);
         }
     }
 }

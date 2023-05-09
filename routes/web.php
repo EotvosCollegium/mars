@@ -30,7 +30,7 @@ use App\Http\Controllers\StudentsCouncil\EconomicController;
 use App\Http\Controllers\StudentsCouncil\EpistolaController;
 use App\Http\Controllers\StudentsCouncil\MrAndMissController;
 use App\Http\Controllers\StudentsCouncil\CommunityServiceController;
-use App\Http\Controllers\StudentsCouncil\VotingController;
+use App\Http\Controllers\StudentsCouncil\GeneralAssemblyController;
 use App\Http\Controllers\Dormitory\RoomController;
 use App\Models\Room;
 use Illuminate\Support\Facades\Auth;
@@ -213,14 +213,14 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::get('/community_service/search', [CommunityServiceController::class, 'search'])->name('community_service.search');
 
     /** voting */
-    Route::get('/sittings', [VotingController::class, 'index'])->name('sittings.index');
-    Route::get('/sittings/create', [VotingController::class, 'newSitting'])->name('sittings.create');
-    Route::post('/sittings', [VotingController::class, 'addSitting'])->name('sittings.store');
-    Route::get('/sittings/{sitting}', [VotingController::class, 'viewSitting'])->name('sittings.show');
-    Route::post('/sittings/{sitting}/close', [VotingController::class, 'closeSitting'])->name('sittings.close');
-    Route::get('/questions/create', [VotingController::class, 'newQuestion'])->name('questions.create');
-    Route::post('/questions', [VotingController::class, 'addQuestion'])->name('questions.store');
-    Route::post('/questions/{question}/close', [VotingController::class, 'closeQuestion'])->name('questions.close');
-    Route::post('/questions/{question}/votes', [VotingController::class, 'saveVote'])->name('questions.votes.store');
-    Route::get('/questions/{question}', [VotingController::class, 'viewQuestion'])->name('questions.show');
+    Route::get('/general_assemblies', [GeneralAssemblyController::class, 'index'])->name('general_assemblies.index');
+    Route::get('/general_assemblies/create', [GeneralAssemblyController::class, 'create'])->name('general_assemblies.create');
+    Route::post('/general_assemblies', [GeneralAssemblyController::class, 'store'])->name('general_assemblies.store');
+    Route::get('/general_assemblies/{general_assembly}', [GeneralAssemblyController::class, 'show'])->name('general_assemblies.show');
+    Route::post('/general_assemblies/{general_assembly}/close', [GeneralAssemblyController::class, 'closeAssembly'])->name('general_assemblies.close');
+    Route::get('/questions/create', [GeneralAssemblyController::class, 'newQuestion'])->name('questions.create');
+    Route::post('/questions', [GeneralAssemblyController::class, 'addQuestion'])->name('questions.store');
+    Route::post('/questions/{question}/close', [GeneralAssemblyController::class, 'closeQuestion'])->name('questions.close');
+    Route::post('/questions/{question}/votes', [GeneralAssemblyController::class, 'saveVote'])->name('questions.votes.store');
+    Route::get('/questions/{question}', [GeneralAssemblyController::class, 'viewQuestion'])->name('questions.show');
 });

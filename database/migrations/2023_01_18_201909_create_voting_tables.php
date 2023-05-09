@@ -5,8 +5,8 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 use App\Models\User;
-use App\Models\Voting\Question;
-use App\Models\Voting\Sitting;
+use App\Models\GeneralAssemblies\GeneralAssembly;
+use App\Models\GeneralAssemblies\Question;
 
 return new class () extends Migration {
     /**
@@ -24,7 +24,7 @@ return new class () extends Migration {
         });
         Schema::create('questions', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Sitting::class)->onDelete('cascade');
+            $table->foreignIdFor(GeneralAssembly::class)->onDelete('cascade');
             $table->string('title');
             $table->integer('max_options')->default(1);
             $table->char('passcode', 8);

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Voting;
+namespace App\Models\GeneralAssemblies;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -8,11 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\DB;
-use App\Models\Voting\Sitting;
-use App\Models\Voting\QuestionOption;
-use App\Models\Voting\QuestionUser;
+use App\Models\GeneralAssemblies\GeneralAssembly;
+use App\Models\GeneralAssemblies\QuestionOption;
+use App\Models\GeneralAssemblies\QuestionUser;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Question extends Model
 {
@@ -23,11 +23,11 @@ class Question extends Model
     public $timestamps = false;
 
     /**
-     * @return BelongsTo The parent sitting.
+     * @return BelongsTo The parent general_assembly.
      */
-    public function sitting(): BelongsTo
+    public function generalAssembly(): BelongsTo
     {
-        return $this->belongsTo(Sitting::class);
+        return $this->belongsTo(GeneralAssembly::class);
     }
 
     /**
@@ -41,9 +41,9 @@ class Question extends Model
     /**
      * @return HasMany the users who voted on this question
      */
-    public function users(): HasManyThrough
+    public function users(): BelongsToMany
     {
-        return $this->hasManyThrough(User::class, QuestionUser::class, 'question_id', 'id', 'id', 'user_id');
+        return $this->belongsToMany(User::class, QuestionUser::class, 'question_id', 'user_id');
     }
 
     /**
@@ -76,8 +76,8 @@ class Question extends Model
      */
     public function open(): void
     {
-        if (!$this->sitting->isOpen()) {
-            throw new \Exception("tried to open question when sitting was not open");
+        if (!$this->generalAssembly->isOpen()) {
+            throw new \Exception("tried to open question when general_assembly was not open");
         }
         if ($this->isOpen() || $this->isClosed()) {
             throw new \Exception("tried to open question when it has already been opened");
@@ -92,10 +92,10 @@ class Question extends Model
     public function close(): void
     {
         if ($this->isClosed()) {
-            throw new \Exception("tried to close sitting when it has already been closed");
+            throw new \Exception("tried to close general assembly when it has already been closed");
         }
         if (!$this->isOpen()) {
-            throw new \Exception("tried to close sitting when it was not open");
+            throw new \Exception("tried to close general assembly when it was not open");
         }
         $this->update(['closed_at'=>now()]);
     }
