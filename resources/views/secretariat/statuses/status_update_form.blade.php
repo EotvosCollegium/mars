@@ -8,27 +8,25 @@
     <div class="col s12">
         <div class="card">
             <div class="card-content">
-                <span class="card-title">Státusz frissítése</span>
+                <span class="card-title">Nyilatkozz a következő félévedről!</span>
                 <form action="{{ route('secretariat.status-update.update') }}" method="post">
                     @csrf
-                    <div class="row">
-                        @if (user()->hasActivated())
-                            <blockquote>
-                                A félévre a státuszod már be lett állítva: @lang('user.' . \Illuminate\Support\Facades\user()->getStatusIn(\App\Models\Semester::current())).
-                            </blockquote>
+                        @if(user()->isResident())
+                        <blockquote>A jelenlegi bentlakási státuszod: <span class="coli-text text-blue">bentlakó</span>.</blockquote>
+                        <div class="row">
+                            <x-input.checkbox s=12 id="resign_residency" text="A továbbiakban lemondok bentlakó helyemről, bejáró leszek." />
+                        </div>
+                        @else 
+                        <blockquote>A jelenlegi bentlakási státuszod: <span class="coli-text text-blue">bejáró</span>.</blockquote>
                         @endif
-                        <blockquote>
-                            Hogyha vendégként vagy bentlakó-bejáróként laksz a kollégiumban, akkor a státuszod bejáró.
-                        </blockquote>
-                        <x-input.select s=12 :elements="['resident', 'extern']" required id="collegist_role" :formatter="function($o) { return __('role.'.$o); }" without-label placeholder="Bentlakási státusz"/>
-                    </div>
+                    
+                        Aktív - Aktív tagja leszel a Collegiumnak.<br>
+                        Passzív - Külföldi féléven leszel vagy passzív vagy az egyetemen. A collegista státuszod megmarad, de ha bentlakó vagy, a helyed ideiglenesen megszűnik.<br>
+                        Alumni - Kilépsz a Collegiumból, vagy megszűnik a hallgatói jogviszonyod.<br>
+                        Egyéb esetben írj kérvényt az Igazgató Úrnak.
                     <div class="row">
-                        <blockquote>
-                        Aktív - Aktív tagja leszel a Collegiumnak<br>
-                        Passzív - Külföldi féléven leszel vagy passzív vagy az egyetemen<br>
-                        Deaktivált - Nem leszel aktív tagja a Collégiumnak
-                        </blockquote>
-                        <x-input.select s=12 without_label :elements="[\App\Models\SemesterStatus::ACTIVE,\App\Models\SemesterStatus::PASSIVE, \App\Models\SemesterStatus::DEACTIVATED]" id="semester_status" required :formatter="function($o) { return __('user.'.$o); }" placeholder="Tagsági státusz"/>
+                        <x-input.select xl=6 without_label :elements="[\App\Models\SemesterStatus::ACTIVE,\App\Models\SemesterStatus::PASSIVE, \App\Models\Role::ALUMNI]" id="semester_status" required :formatter="function($o) { return __('user.'.$o); }" placeholder="Tagsági státusz"/>
+                        <x-input.text xl=6 id="comment" placeholder="Megjegyzés: BB/Erasmus/két képzés között/stb." maxlength="20"/>
                     </div>
                     <div class="row">
                         <x-input.button class="right red" text="general.save" />

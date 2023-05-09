@@ -20,7 +20,7 @@ return new class () extends Migration {
         });
 
         Checkout::studentsCouncil()->update([
-            'handler_id' => User::role(Role::StudentsCouncil(), Role::ECONOMIC_VICE_PRESIDENT)->first()?->id
+            'handler_id' => User::role(Role::studentsCouncil(), Role::ECONOMIC_VICE_PRESIDENT)->first()?->id
         ]);
     }
 

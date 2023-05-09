@@ -5,7 +5,7 @@
         Módosító: {{$modifier?->name??'Automatikus'}}.
         @if($comment)
             <br>
-            Megjegyzés: {{$comment}}.
+            Megjegyzés: {{$comment}}
         @endif
     </p>
 

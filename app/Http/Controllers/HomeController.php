@@ -66,7 +66,7 @@ class HomeController extends Controller
             $student_council_objects = RoleObject::whereIn('name', Role::STUDENT_COUNCIL_LEADERS)
                 ->orWhereIn('name', Role::COMMITTEE_LEADERS)
                 ->get()->pluck('id')->toArray();
-            $student_council = RoleUser::where('role_id', Role::StudentsCouncil()->id)
+            $student_council = RoleUser::where('role_id', Role::studentsCouncil()->id)
                         ->whereIn('object_id', $student_council_objects)
                         ->with('user')
                         ->orderBy('object_id')

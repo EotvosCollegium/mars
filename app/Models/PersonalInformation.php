@@ -12,12 +12,9 @@ class PersonalInformation extends Model
     public $timestamps = false;
 
     /**
-     * The tenant_until attribute is only set for users with the tenant role
-     * For tenants it is the planned departure they set in the registration form
-     * For active collegists living in the dormitory (who also have the tenant role) it is set automatically to the end of the semester
-     * Former collegists are assigned the tenant role when they come back the dormitory for a few days/months
-     * If the tenant_until attribute is in the past (or not set) for a user with thetenant role,
-     *  the user will automatically be redirected to the tenant_update form
+     * The tenant_until attribute is only set for users with the tenant role. It is synced with the has_internet_until attribute.
+     * It is initially set in the registration form. If it is in the past (or not set) for a user with the tenant role,
+     *  the user will be automatically redirected to the tenant_update form.
      */
     protected $fillable = [
         'user_id',

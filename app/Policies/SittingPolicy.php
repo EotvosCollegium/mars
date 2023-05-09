@@ -15,7 +15,7 @@ class SittingPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->isCollegist() && $user->isActive() || $user->isAdmin();
+        return $user->isCollegist() || $user->isAdmin();
     }
 
     /**
