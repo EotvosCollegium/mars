@@ -142,8 +142,39 @@ trait CheckoutHandler
     }
 
     /**
+     * Create a basic income transaction in the checkout.
+     *
+     * @param Request $request
+     * @return RedirectResponse
+     * @throws AuthorizationException
+     * @throws ValidationException
+     */
+    public function addIncome(Request $request): RedirectResponse
+    {
+        $this->authorize('administrate', $this->checkout());
+        $validator = Validator::make($request->all(), [
+            'comment' => 'required|string',
+            'amount' => 'required|integer|min:0',
+        ]);
+        $validator->validate();
+
+        Transaction::create([
+            'checkout_id'       => $this->checkout()->id,
+            'receiver_id'       => user()->id,
+            'payer_id'          => null,
+            'semester_id'       => Semester::current()->id,
+            'amount'            => $request->amount,
+            'payment_type_id'   => PaymentType::income()->id,
+            'comment'           => $request->comment,
+            'paid_at'           => Carbon::now(),
+        ]);
+
+        return back()->with('message', __('general.successfully_added'));
+
+    }
+
+    /**
      * Create a basic expense transaction in the checkout.
-     * Income can only be added as KKT/Netreg currently.
      * The receiver and the payer also will be the authenticated user
      * (since this does not mean a payment between users, just a transaction from the checkout).
      * The only exception for the payer is when the checkout handler administrates a transaction payed by someone else.

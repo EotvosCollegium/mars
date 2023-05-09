@@ -13,7 +13,10 @@
         @include('utils.checkout.status')
         <div class="row">
             <div class="col s12">
-                @include('utils.checkout.add-transaction')
+                @include('utils.checkout.add-income')
+            </div>
+            <div class="col s12">
+                @include('utils.checkout.add-expense')
             </div>
             <div class="col s12">
                 @include('utils.checkout.depts')

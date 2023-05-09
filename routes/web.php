@@ -123,7 +123,8 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::get('/network/admin/checkout', [AdminCheckoutController::class, 'showCheckout'])->name('admin.checkout');
     Route::post('/network/admin/checkout/mark_as_paid/{user}', [AdminCheckoutController::class, 'markAsPaid'])->name('admin.checkout.pay');
     Route::post('/network/admin/checkout/to_checkout', [AdminCheckoutController::class, 'toCheckout'])->name('admin.checkout.to_checkout');
-    Route::post('/network/admin/checkout/transaction/add', [AdminCheckoutController::class, 'addExpense'])->name('admin.checkout.transaction.add');
+    Route::post('/network/admin/checkout/expense/add', [AdminCheckoutController::class, 'addExpense'])->name('admin.checkout.expense.add');
+    Route::post('/network/admin/checkout/income/add', [AdminCheckoutController::class, 'addIncome'])->name('admin.checkout.income.add');
     Route::get('/network/admin/checkout/transaction/delete/{transaction}', [EconomicController::class, 'deleteTransaction'])->name('admin.checkout.transaction.delete');
 
     /** Routers */
@@ -177,7 +178,8 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
 
     /** Students' Council */
     Route::get('/economic_committee', [EconomicController::class, 'index'])->name('economic_committee');
-    Route::post('/economic_committee/transaction/add', [EconomicController::class, 'addExpense'])->name('economic_committee.transaction.add');
+    Route::post('/economic_committee/expense/add', [EconomicController::class, 'addExpense'])->name('economic_committee.expense.add');
+    Route::post('/economic_committee/income/add', [EconomicController::class, 'addIncome'])->name('economic_committee.income.add');
     Route::get('/economic_committee/transaction/delete/{transaction}', [EconomicController::class, 'deleteTransaction'])->name('economic_committee.transaction.delete');
     Route::post('/economic_committee/mark_as_paid/{user}', [EconomicController::class, 'markAsPaid'])->name('economic_committee.pay');
     Route::post('/economic_committee/to_checkout', [EconomicController::class, 'toCheckout'])->name('economic_committee.to_checkout');
