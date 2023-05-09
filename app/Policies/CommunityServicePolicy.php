@@ -30,7 +30,7 @@ class CommunityServicePolicy
      */
     public function create(User $user)
     {
-        return $user->isCollegist() && $user->isActive();
+        return $user->isCollegist();
     }
 
     /**

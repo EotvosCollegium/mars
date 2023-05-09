@@ -23,7 +23,7 @@ class FaultController extends Controller
         $this->authorize('create', Fault::class);
 
         $fault = Fault::create([
-            'reporter_id' => Auth::User()->id,
+            'reporter_id' => user()->id,
             'location' => $new['location'],
             'description' => $new['description'],
             'status' => Fault::UNSEEN,
@@ -48,7 +48,7 @@ class FaultController extends Controller
         $this->authorize('update', Fault::class);
 
         $status = $request['status'];
-        $auth = Auth::user()->hasRole(Role::STAFF) || Fault::getState($status) === Fault::UNSEEN;
+        $auth = user()->hasRole(Role::STAFF) || Fault::getState($status) === Fault::UNSEEN;
         $fault = Fault::findOrFail($request['id']);
         $fault->update([
             'status' => Fault::getState($status),

@@ -1,14 +1,16 @@
 <?php
 
-namespace App\Models\Voting;
+namespace App\Models\GeneralAssemblies;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-use App\Models\Voting\Question;
+use App\Models\GeneralAssemblies\Question;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 
-class Sitting extends Model
+class GeneralAssembly extends Model
 {
     use HasFactory;
 
@@ -27,7 +29,7 @@ class Sitting extends Model
     ];
 
     /**
-     * @return HasMany The questions that belong to the sitting.
+     * @return HasMany The questions that belong to the general_assembly.
      */
     public function questions(): HasMany
     {
@@ -35,7 +37,7 @@ class Sitting extends Model
     }
 
     /**
-     * @return bool Whether the sitting has been opened (regardless of whether it has been closed since then).
+     * @return bool Whether the general_assembly has been opened (regardless of whether it has been closed since then).
      */
     public function hasBeenOpened(): bool
     {
@@ -60,13 +62,29 @@ class Sitting extends Model
     }
 
     /**
+     * @return Collection|User[]|array The users who have attended the general assembly.
+     */
+    public function attendees(): Collection|array
+    {
+        $question_number = $this->questions()->count();
+        return User::whereIn('id', function ($query) use ($question_number) {
+            $query->select('user_id')
+                    ->from('question_user')
+                    ->join('questions', 'questions.id', '=', 'question_user.question_id')
+                    ->where('questions.general_assembly_id', $this->id)
+                    ->groupBy('user_id')
+                    ->havingRaw('count(*) >= ?-2', [$question_number]);
+        })->get();
+    }
+
+    /**
      * Opens the question.
      * @throws Exception if it has already been opened.
      */
     public function open(): void
     {
         if ($this->isOpen() || $this->isClosed()) {
-            throw new \Exception("tried to open sitting when it has already been opened");
+            throw new \Exception("tried to open general assembly when it has already been opened");
         }
         $this->update(['opened_at'=>now()]);
     }
@@ -78,10 +96,10 @@ class Sitting extends Model
     public function close(): void
     {
         if ($this->isClosed()) {
-            throw new \Exception("tried to close sitting when it has already been closed");
+            throw new \Exception("tried to close general assembly when it has already been closed");
         }
         if (!$this->isOpen()) {
-            throw new \Exception("tried to close sitting when it was not open");
+            throw new \Exception("tried to close general assembly when it was not open");
         }
         foreach ($this->questions()->get() as $question) {
             if ($question->isOpen()) {

@@ -6,5 +6,4 @@
     <p>
         Leírás: {{ $report }}
     </p>
-    <p>System</p>
 @endcomponent

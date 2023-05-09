@@ -71,8 +71,8 @@ class UsersExport implements FromCollection, WithTitle, WithMapping, WithHeading
             $user->educationalInformation?->programs,
             implode(",", $user->faculties->pluck('name')->toArray()),
             implode(",", $user->workshops->pluck('name')->toArray()),
-            __('user.'.$user->getStatus()),
-            __('user.'.$user->getStatusIn(Semester::previous()->id))
+            __('user.'.$user->getStatus()?->status),
+            __('user.'.$user->getStatus(Semester::previous()))
         ];
     }
 }

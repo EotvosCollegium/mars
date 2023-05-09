@@ -47,7 +47,7 @@ class WorkshopBalance extends Model
         }
 
         $users_has_to_pay_kktnetreg = User::hasToPayKKTNetregInSemester($semester_id)->pluck('id', 'id')->toArray();
-        $active_users = User::activeIn($semester_id)->with(['roles' => function ($q) {
+        $active_users = User::active($semester_id)->with(['roles' => function ($q) {
             $q->where('name', Role::COLLEGIST);
         }, 'workshops:id'])->get()->keyBy('id')->all();
 

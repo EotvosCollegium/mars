@@ -17,10 +17,10 @@
 </div>
 @endif
 <!-- Information -->
-@if($information_general.$information_collegist != '' || 
-    Auth::user()->hasRole([
-        \App\Models\Role::STUDENT_COUNCIL => \App\Models\Role::STUDENT_COUNCIL_LEADERS, 
-        \App\Models\Role::SYS_ADMIN, 
+@if($information_general.$information_collegist != '' ||
+    user()->hasRole([
+        \App\Models\Role::STUDENT_COUNCIL => \App\Models\Role::STUDENT_COUNCIL_LEADERS,
+        \App\Models\Role::SYS_ADMIN,
         \App\Models\Role::STUDENT_COUNCIL_SECRETARY]))
 <div class="row">
     <div class="col s12">
@@ -30,9 +30,9 @@
                 <div id="info_text">
                     @markdown($information_general)
                     @markdown($information_collegist)
-                    @if(Auth::user()->hasRole([
-                        \App\Models\Role::STUDENT_COUNCIL => \App\Models\Role::STUDENT_COUNCIL_LEADERS, 
-                        \App\Models\Role::SYS_ADMIN, 
+                    @if(user()->hasRole([
+                        \App\Models\Role::STUDENT_COUNCIL => \App\Models\Role::STUDENT_COUNCIL_LEADERS,
+                        \App\Models\Role::SYS_ADMIN,
                         \App\Models\Role::STUDENT_COUNCIL_SECRETARY]))
                         <x-input.button floating class="right" id="edit_btn" icon="mode_edit"/>
                     @endif
@@ -68,7 +68,7 @@
                 <h5>Választmány</h5>
                 <i><a href="mailto:{{ env('MAIL_VALASZTMANY') }}">{{env('MAIL_VALASZTMANY')}}</a></i><br>
                 @foreach($contacts[\App\Models\Role::STUDENT_COUNCIL] as $roleuser)
-                <b>@lang('role.'.$roleuser->object->name)</b>: 
+                <b>@lang('role.'.$roleuser->object->name)</b>:
                     <i>{{$roleuser->user->name}}</i>
                     @if($roleuser->object->name == \App\Models\Role::PRESIDENT)
                     <a href="mailto:{{ env('MAIL_ELNOK') }}">{{env('MAIL_ELNOK')}}</a>
@@ -125,7 +125,7 @@
                     @endif
                 @endforeach
                 @endif
-                
+
                 <h5>@lang('general.others')</h5>
                 @foreach($contacts['other'] as $key => $other)
                     <b>@lang('role.'.$key)</b>:

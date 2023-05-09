@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('title')
-<a href="{{ route('sittings.index') }}" class="breadcrumb" style="cursor: pointer">@lang('voting.assembly')</a>
-<a href="#!" class="breadcrumb" style="cursor: pointer">{{ $sitting->title }}</a>
+<a href="{{ route('general_assemblies.index') }}" class="breadcrumb" style="cursor: pointer">@lang('voting.assembly')</a>
+<a href="#!" class="breadcrumb" style="cursor: pointer">{{ $general_assembly->title }}</a>
 @endsection
 @section('student_council_module') active @endsection
 
@@ -12,7 +12,7 @@
     <div class="col s12">
         <div class="card">
             <div class="card-content">
-                <span class="card-title">{{ $sitting->title }}
+                <span class="card-title">{{ $general_assembly->title }}
                     <span class="right">
                         @livewire('passcode')
                     </span>
@@ -21,14 +21,14 @@
                     <tbody>
                         <tr>
                             <th scope="row">@lang('voting.opened_at')</th>
-                            <td>{{ $sitting->opened_at }}</td>
+                            <td>{{ $general_assembly->opened_at }}</td>
                         </tr>
                         <tr>
                             <th scope="row">@lang('voting.closed_at')</th>
-                            <td>{{ $sitting->closed_at }}
-                            @if($sitting->isOpen())
-                            @can('administer', $sitting)
-                                <form action="{{ route('sittings.close', $sitting->id) }}" method="POST">
+                            <td>{{ $general_assembly->closed_at }}
+                            @if($general_assembly->isOpen())
+                            @can('administer', $general_assembly)
+                                <form action="{{ route('general_assemblies.close', $general_assembly->id) }}" method="POST">
                                     @csrf
                                     <x-input.button text="voting.close_sitting" class="red" />
                                 </form>
@@ -36,8 +36,24 @@
                             @endif
                             </td>
                         </tr>
+                        <tr>
+                            @php
+                                $attendees = $general_assembly->attendees();
+                            @endphp
+                            <th scope="row">@lang('voting.attendees') ({{$attendees->count()}} fő)*</th>
+                            <td>
+                                <ul>
+                                @foreach ($attendees->sortBy('name') as $attendee)
+                                    <li>{{ $attendee->uniqueName }}</li>
+                                @endforeach
+                                </ul>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
+                <blockquote>
+                    * Résztvevőnek számít az, aki legfeljebb 2 kivételével az összes kérdésre szavazatot adott le. Csak aktív státuszú collegisták szavazhatnak.
+                </blockquote>
             </div>
         </div>
     </div>
@@ -55,23 +71,23 @@
                         <th>@lang('voting.opened_at')</th>
                         <th>@lang('voting.closed_at')</th>
                         <th>
-                            @if($sitting->isOpen())
-                            @can('administer', $sitting)
-                            <x-input.button href="{{ route('questions.create', ['sitting' => $sitting]) }}" floating class="right" icon="add" />
+                            @if($general_assembly->isOpen())
+                            @can('administer', $general_assembly)
+                            <x-input.button href="{{ route('questions.create', ['general_assembly' => $general_assembly]) }}" floating class="right" icon="add" />
                             @endcan
                             @endif
                         </th>
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach ($sitting->questions()->orderByDesc('opened_at')->get() as $question)
+                    @foreach ($general_assembly->questions()->orderByDesc('opened_at')->get() as $question)
                     <tr>
                         <td>{{$question->title}}</td>
                         <td>{{$question->opened_at}}</td>
                         <td>
                             {{$question->closed_at}}
                             @if($question->isOpen())
-                            @can('administer', $sitting)
+                            @can('administer', $general_assembly)
                             <form action="{{ route('questions.close', $question->id) }}" method="POST">
                                 @csrf
                                 <x-input.button text="voting.close_question" class="red" />

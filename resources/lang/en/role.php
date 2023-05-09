@@ -3,6 +3,7 @@
 return [
     'admin' => 'Admin',
     'aggregated-application-committee' => 'Aggregated application committee member',
+    'alumni' => 'Alumni',
     'application-committee' => 'Application committee member',
     'board-of-trustees-member' => 'Board of trustees member',
     'collegist' => 'Collegist',

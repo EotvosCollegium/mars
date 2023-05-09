@@ -29,16 +29,10 @@ class SemesterStatus extends Pivot
     ];
 
     public const ACTIVE = 'ACTIVE';
-    public const INACTIVE = 'INACTIVE';
-    public const DEACTIVATED = 'DEACTIVATED';
     public const PASSIVE = 'PASSIVE';
-    public const PENDING = 'PENDING';
     public const STATUSES = [
         self::ACTIVE,
-        self::INACTIVE,
-        self::DEACTIVATED,
-        self::PASSIVE,
-        self::PENDING,
+        self::PASSIVE
     ];
 
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -60,14 +54,8 @@ class SemesterStatus extends Pivot
         switch ($status) {
             case self::ACTIVE:
                 return 'green';
-            case self::INACTIVE:
-                return 'grey';
-            case self::DEACTIVATED:
-                return 'brown';
             case self::PASSIVE:
-                return 'orange';
-            case self::PENDING:
-                return 'lime';
+                return 'grey';
             default:
                 return 'black';
         }

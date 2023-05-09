@@ -45,8 +45,7 @@ use Illuminate\Support\Facades\Mail;
  * @property InternetAccess|null $internetAccess
  * @property MacAddresses[]|Collection $macAddresses
  * @property WifiConnection[]|Collection $wifiConnections
- * @property Semester[]|Collection $allSemesters
- * @property Semester[]|Collection $activeSemesters
+ * @property Semester[]|Collection $semesterStatuses
  * @property Transaction[]|Collection $transactionsPaid
  * @property Transaction[]|Collection $transactionsReceived
  * @property MrAndMissVote[]|Collection $mrAndMissVotesGiven
@@ -56,7 +55,6 @@ use Illuminate\Support\Facades\Mail;
  * @method role(Role $role, Workshop|RoleObject|string|null $object)
  * @method collegist()
  * @method active()
- * @method activeIn(int $semester_id)
  * @method resident()
  * @method extern()
  * @method currentTenant()
@@ -135,7 +133,7 @@ class User extends Authenticatable implements HasLocalePreference
     {
         return Attribute::make(
             get: function (): string {
-                if ($this->hasEducationalInformation() && auth()->user()->can('view', $this)) {
+                if ($this->hasEducationalInformation() && user()->can('view', $this)) {
                     return $this->name . ' (' . $this->educationalInformation->neptun . ')';
                 }
                 return $this->name;
@@ -324,29 +322,10 @@ class User extends Authenticatable implements HasLocalePreference
      * Returns the semesters where the user has any status. The relation uses a SemesterStatus pivot class.
      * @return BelongsToMany
      */
-    public function allSemesters(): BelongsToMany
+    public function semesterStatuses(): BelongsToMany
     {
         return $this->belongsToMany(Semester::class, 'semester_status')
             ->withPivot(['status', 'verified', 'comment'])->using(SemesterStatus::class);
-    }
-
-    /**
-     * Returns the semesters where the user has the given status.
-     * @param string $status
-     * @return BelongsToMany
-     */
-    public function semestersWhere(string $status): BelongsToMany
-    {
-        return $this->allSemesters()->wherePivot('status', '=', $status);
-    }
-
-    /**
-     * Returns the semesters where the user has an active status.
-     * @return BelongsToMany
-     */
-    public function activeSemesters(): BelongsToMany
-    {
-        return $this->semestersWhere(SemesterStatus::ACTIVE);
     }
 
     /* Transaction related */
@@ -463,22 +442,12 @@ class User extends Authenticatable implements HasLocalePreference
      * @param int $semester_id
      * @return Builder
      */
-    public function scopeActiveIn(Builder $query, int $semester_id): Builder
+    public function scopeActive(Builder $query, ?int $semester_id = null): Builder
     {
-        return $query->whereHas('activeSemesters', function ($q) use ($semester_id) {
-            $q->where('id', $semester_id);
+        return $query->whereHas('semesterStatuses', function ($q) use ($semester_id) {
+            $q->where('status', SemesterStatus::ACTIVE)
+              ->where('id', $semester_id ?? Semester::current()->id);
         });
-    }
-
-    /**
-     * Scope a query to only include active users in the current semester.
-     *
-     * @param Builder $query
-     * @return Builder
-     */
-    public function scopeActive(Builder $query): Builder
-    {
-        return $query->activeIn(Semester::current()->id);
     }
 
     /**
@@ -539,7 +508,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function scopeHasToPayKKTNetregInSemester(Builder $query, int $semester_id): Builder
     {
-        return $query->role(Role::Collegist())->activeIn($semester_id)
+        return $query->role(Role::collegist())->active($semester_id)
             ->whereDoesntHave('transactionsPaid', function ($query) use ($semester_id) {
                 $query->where('semester_id', $semester_id);
                 $query->whereIn('payment_type_id', [PaymentType::kkt()->id, PaymentType::netreg()->id]);
@@ -642,6 +611,7 @@ class User extends Authenticatable implements HasLocalePreference
         $this->roles()->detach($role->id);
         $this->roles()->attach($role->id, ['object_id' => $object->id]);
 
+        Cache::forget('collegists');
         WorkshopBalance::generateBalances(Semester::current()->id);
     }
 
@@ -709,18 +679,6 @@ class User extends Authenticatable implements HasLocalePreference
     public function needsUpdateTenantUntil(): bool
     {
         return $this->isTenant() && !$this->isCurrentTenant();
-    }
-
-    /**
-     * Sets the tenant_until date to the end of the current semester if the user is an active collegist with the tenant role.
-     * Added three months and two weeks to the end of the semester to allow the activation to happen.
-     */
-    public function setTenantDateForTenantCollegists(): bool
-    {
-        if ($this->isTenant() && $this->isActive()) {
-            return $this->personalInformation()->update(['tenant_until'=>Semester::current()->getEndDate()->addMonths(3)->addWeeks(2)]);
-        }
-        return false;
     }
 
     /**
@@ -809,7 +767,6 @@ class User extends Authenticatable implements HasLocalePreference
             if ($this->roles()->where('id', $role->id)->doesntExist()) {
                 $this->roles()->attach($role->id);
             }
-            $this->setTenantDateForTenantCollegists();
         }
         return true;
     }
@@ -829,25 +786,10 @@ class User extends Authenticatable implements HasLocalePreference
         } else {
             $this->roles()->detach($role->id);
         }
+        Cache::forget('collegists');
     }
 
     /* Status related */
-
-    /**
-     * Returns the collegist's status in the semester.
-     *
-     * @param int|Semester $semester
-     * @return string the status. Returns INACTIVE if the user does not have any status in the given semester.
-     */
-    public function getStatusIn(int|Semester $semester): string
-    {
-        $semesters = $this->allSemesters;
-        if (! $semesters->contains($semester)) {
-            return SemesterStatus::INACTIVE;
-        }
-
-        return $semesters->find($semester)->pivot->status;
-    }
 
     /**
      * Sets the collegist's status for a semester.
@@ -859,7 +801,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function setStatusFor(Semester $semester, $status, $comment = null): User
     {
-        $this->allSemesters()->syncWithoutDetaching([
+        $this->semesterStatuses()->syncWithoutDetaching([
             $semester->id => [
                 'status' => $status,
                 'comment' => $comment,
@@ -867,16 +809,6 @@ class User extends Authenticatable implements HasLocalePreference
         ]);
 
         return $this;
-    }
-
-    /**
-     * Returns the collegist's status in the current semester.
-     *
-     * @return string the status. Returns INACTIVE if the user does not have any status.
-     */
-    public function getStatus(): string
-    {
-        return $this->getStatusIn(Semester::current()->id);
     }
 
     /**
@@ -892,57 +824,27 @@ class User extends Authenticatable implements HasLocalePreference
     }
 
     /**
-     * Decides if the user has any status in the semester.
+     * Returns the collegist's status in the semester.
      *
-     * @param int $semester  semester id
-     * @return bool
+     * @param int|Semester $semester
+     * @return SemesterStatus|null The user's status in the semester or null.
      */
-    public function isInSemester(int $semester): bool
+    public function getStatus(int|Semester $semester = null): SemesterStatus|null
     {
-        return $this->allSemesters->contains($semester);
+        return $this->semesterStatuses->find($semester ?? Semester::current())?->pivot;
     }
 
     /**
      * Decides if the user is active in the semester.
      *
-     * @param Semester $semester
+     * @param ?Semester $semester
      * @return bool
      */
-    public function isActiveIn(Semester $semester): bool
+    public function isActive(Semester $semester = null): bool
     {
-        return $this->activeSemesters->contains($semester->id);
+        return $this->getStatus($semester)?->status == SemesterStatus::ACTIVE;
     }
 
-    /**
-     * Decides if the user activated the semester. Activated means that their status is not SemesterStatus::INACTIVE
-     *
-     * @param Semester $semester
-     * @return bool
-     */
-    public function hasActivatedIn(Semester $semester): bool
-    {
-        return $this->getStatusIn($semester)!=SemesterStatus::INACTIVE;
-    }
-
-    /**
-     * Decides if the user has activated the current semester.
-     *
-     * @return bool
-     */
-    public function hasActivated(): bool
-    {
-        return $this->hasActivatedIn(Semester::current());
-    }
-
-    /**
-     * Decides if the user is active in the current semester.
-     *
-     * @return bool
-     */
-    public function isActive(): bool
-    {
-        return $this->isActiveIn(Semester::current());
-    }
 
     /* Workshop related */
 
@@ -1131,7 +1033,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public static function director(): ?User
     {
-        return self::role(Role::Director())->first();
+        return self::role(Role::director())->first();
     }
 
     /**
@@ -1189,7 +1091,7 @@ class User extends Authenticatable implements HasLocalePreference
     {
         // You can use `withoutGlobalScope('verified')` to include the unverified users in queries.
         static::addGlobalScope('verified', function (Builder $builder) {
-            if (Auth::hasUser() && Auth::user()->verified) {
+            if (Auth::hasUser() && user()->verified) {
                 $builder->where('verified', true);
             }
         });

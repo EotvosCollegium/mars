@@ -3,7 +3,7 @@
 namespace App\Http\Livewire;
 
 use Livewire\Component;
-use App\Http\Controllers\StudentsCouncil\VotingController;
+use App\Http\Controllers\StudentsCouncil\GeneralAssemblyController;
 
 class Passcode extends Component
 {
@@ -12,7 +12,7 @@ class Passcode extends Component
      */
     public function getPasscodeProperty()
     {
-        return app(VotingController::class)->getTemporaryPasscode();
+        return app(GeneralAssemblyController::class)->getTemporaryPasscode();
     }
 
     /**
@@ -22,6 +22,6 @@ class Passcode extends Component
      */
     public function render()
     {
-        return view('student-council.voting.passcode');
+        return view('student-council.general-assemblies.passcode');
     }
 }
