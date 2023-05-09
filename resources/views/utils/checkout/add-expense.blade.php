@@ -24,7 +24,7 @@
             @endcan
         </blockquote>
         @endif
-        <form method="POST" action="{{ route($route_base . '.transaction.add') }}">
+        <form method="POST" action="{{ route($route_base . '.expense.add') }}">
             @csrf
             <div class="row">
                 <x-input.text m=6 l=6 id="comment" required text="Megjegyzés" />

@@ -43,7 +43,10 @@
             </div>
             @endcan
             <div class="col s12">
-                @include('utils.checkout.add-transaction')
+                @include('utils.checkout.add-income')
+            </div>
+            <div class="col s12">
+                @include('utils.checkout.add-expense')
             </div>
             <div class="col s12">
                 @include('utils.checkout.depts')
@@ -120,7 +123,7 @@
                         @if($semester->isCurrent())
                         <blockquote>
                             *Bentlakók - bejárók (+ akik még nem fizettek, de aktív státuszú collegisták)<br>
-                            Azok közül, akik fizettek, minden bentlakó után a műhely {{config('custom.kkt')}} * {{config('custom.workshop_balance_resident')}}, minden bejáró után {{config('custom.kkt')}} * {{config('custom.workshop_balance_extern')}} forintot kap. 
+                            Azok közül, akik fizettek, minden bentlakó után a műhely {{config('custom.kkt')}} * {{config('custom.workshop_balance_resident')}}, minden bejáró után {{config('custom.kkt')}} * {{config('custom.workshop_balance_extern')}} forintot kap.
                             (Ha egy collegistának több műhelye is van, a műhelyei megosztoznak az összegen.)
                         </blockquote>
                         @can('administrate', $checkout)
@@ -129,7 +132,7 @@
                         </blockquote>
                         @endcan
                         @endif
-                        
+
                     </div>
                 </div>
             </div>
