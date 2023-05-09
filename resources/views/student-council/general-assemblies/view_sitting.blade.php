@@ -36,8 +36,24 @@
                             @endif
                             </td>
                         </tr>
+                        <tr>
+                            @php
+                                $attendees = $general_assembly->attendees();
+                            @endphp
+                            <th scope="row">@lang('voting.attendees') ({{$attendees->count()}} fő)*</th>
+                            <td>
+                                <ul>
+                                @foreach ($attendees->sortBy('name') as $attendee)
+                                    <li>{{ $attendee->uniqueName }}</li>
+                                @endforeach
+                                </ul>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
+                <blockquote>
+                    * Résztvevőnek számít az, aki legfeljebb 2 kivételével az összes kérdésre szavazatot adott le. Csak aktív státuszú collegisták szavazhatnak.
+                </blockquote>
             </div>
         </div>
     </div>

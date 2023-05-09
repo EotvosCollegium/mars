@@ -12,7 +12,7 @@ use App\Models\GeneralAssemblies\GeneralAssembly;
 use App\Models\GeneralAssemblies\QuestionOption;
 use App\Models\GeneralAssemblies\QuestionUser;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Question extends Model
 {
@@ -41,9 +41,9 @@ class Question extends Model
     /**
      * @return HasMany the users who voted on this question
      */
-    public function users(): HasManyThrough
+    public function users(): BelongsToMany
     {
-        return $this->hasManyThrough(User::class, QuestionUser::class, 'question_id', 'id', 'id', 'user_id');
+        return $this->belongsToMany(User::class, QuestionUser::class, 'question_id', 'user_id');
     }
 
     /**

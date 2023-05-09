@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\GeneralAssemblies\GeneralAssembly;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class GeneralAssemblySeeder extends Seeder
@@ -26,15 +27,13 @@ class GeneralAssemblySeeder extends Seeder
         ]);
         $openQuestion->options()->create([
             'title' => "Yes",
-            'votes' => 100
+            'votes' => 0
         ]);
         $openQuestion->options()->create([
             'title' => "No",
-            'votes' => 12
         ]);
         $openQuestion->options()->create([
             'title' => "I abstain",
-            'votes' => 9
         ]);
 
         $openCheckboxQuestion = $openSitting->questions()->create([
@@ -44,27 +43,27 @@ class GeneralAssemblySeeder extends Seeder
         ]);
         $openCheckboxQuestion->options()->create([
             'title' => "A",
-            'votes' => 60
         ]);
         $openCheckboxQuestion->options()->create([
             'title' => "B",
-            'votes' => 70
         ]);
         $openCheckboxQuestion->options()->create([
             'title' => "C",
-            'votes' => 50
         ]);
         $openCheckboxQuestion->options()->create([
             'title' => "D",
-            'votes' => 10
         ]);
         $openCheckboxQuestion->options()->create([
             'title' => "E",
-            'votes' => 65
         ]);
         $openCheckboxQuestion->options()->create([
             'title' => "I abstain",
-            'votes' => 5
         ]);
+
+        foreach(User::collegists() as $collegist)
+        {
+            $openQuestion->vote($collegist, [$openQuestion->options->random()]);
+            $openCheckboxQuestion->vote($collegist, [$openCheckboxQuestion->options->random()]);
+        }
     }
 }

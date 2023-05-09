@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 use App\Models\GeneralAssemblies\Question;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 
 class GeneralAssembly extends Model
 {
@@ -57,6 +59,22 @@ class GeneralAssembly extends Model
     public function isClosed(): bool
     {
         return $this->closed_at!=null && $this->closed_at<=now();
+    }
+
+    /**
+     * @return Collection|User[]|array The users who have attended the general assembly.
+     */
+    public function attendees() : Collection|array
+    {
+        $question_number = $this->questions()->count();
+        return User::whereIn('id', function ($query) use ($question_number) {
+            $query->select('user_id')
+                    ->from('question_user')
+                    ->join('questions', 'questions.id', '=', 'question_user.question_id')
+                    ->where('questions.general_assembly_id', $this->id)
+                    ->groupBy('user_id')
+                    ->havingRaw('count(*) >= ?-2', [$question_number]);
+        })->get();
     }
 
     /**
