@@ -11,9 +11,13 @@ if (! function_exists('user')) {
      * @return \App\Models\User
      * @throws \Illuminate\Auth\AuthenticationException
      */
-    function user() : User {
+    function user(): User
+    {
         $user = Auth::user();
-        if($user) return $user;
-        else throw new \Illuminate\Auth\AuthenticationException("The session does not have an authenticated user");
+        if($user) {
+            return $user;
+        } else {
+            throw new \Illuminate\Auth\AuthenticationException("The session does not have an authenticated user");
+        }
     }
 }
