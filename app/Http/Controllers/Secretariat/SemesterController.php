@@ -30,7 +30,7 @@ class SemesterController extends Controller
         $user = user();
         if (!self::isStatementAvailable()) {
             return redirect('home')->with('error', 'Lejárt a határidő a collegiumi státusz beállítására. Keresd fel a titkárságot vagy a rendszergazdákat.');
-        
+        }
         return view('secretariat.statuses.status_update_form');
     }
 
