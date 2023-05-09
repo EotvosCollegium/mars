@@ -64,7 +64,7 @@ class GeneralAssembly extends Model
     /**
      * @return Collection|User[]|array The users who have attended the general assembly.
      */
-    public function attendees() : Collection|array
+    public function attendees(): Collection|array
     {
         $question_number = $this->questions()->count();
         return User::whereIn('id', function ($query) use ($question_number) {
