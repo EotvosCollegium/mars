@@ -6,6 +6,7 @@ return [
     'QUEUED' => 'Sorban áll',
     'SUCCESS' => 'Kész',
     'add' => 'Hozzáadás',
+    'already_cancelled' => 'A nyomtatás már vissza lett vonva.',
     'amount' => 'Összeg',
     'available_free_pages' => 'Ezen felül ingyenesen nyomtatható :number_of_free_pages oldal',
     'available_money' => 'Rendelkezésre álló összeg',
