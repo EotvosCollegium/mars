@@ -6,6 +6,7 @@ return [
     'QUEUED' => 'Queued',
     'SUCCESS' => 'Completed',
     'add' => 'Add',
+    'already_cancelled' => 'The print job was already cancelled.',
     'amount' => 'Amount',
     'available_free_pages' => 'Free pages left :number_of_free_pages page',
     'available_money' => 'Available money',

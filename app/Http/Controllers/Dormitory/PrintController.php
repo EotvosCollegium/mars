@@ -259,14 +259,16 @@ class PrintController extends Controller
                 // TODO: test what happens when cancelled right before the end
                 $printAccount = $printJob->user->printAccount;
                 $printAccount->update(['last_modified_by' => user()->id]);
-                $printAccount->increment($printAccount->cost);
+                $printAccount->increment('balance', $printJob->cost);
             } else {
                 if (strpos($result['output'], "already canceled") !== false) {
-                    // TODO: return message and trigger modal?
+                    return redirect()->back()->with('error', __('print.already_cancelled'));
                 } elseif (strpos($result['output'], "already completed") !== false) {
                     $printJob->state = PrintJob::SUCCESS;
+                    return redirect()->back()->with('message', __('general.successful_modification'));
                 } else {
                     Log::warning("cannot cancel print job " . $printJob->job_id ." for unknown reasons: " . var_dump($result));
+                    return redirect()->back()->with('error', __('general.unknown_error'));
                 }
             }
             $printJob->save();
@@ -298,7 +300,7 @@ class PrintController extends Controller
     private function updateCompletedPrintingJobs()
     {
         try {
-            $result = Commands::updateCompletedPrintingJobs();
+            $result = Commands::getCompletedPrintingJobs();
             PrintJob::whereIn('job_id', $result)->update(['state' => PrintJob::SUCCESS]);
         } catch (\Exception $e) {
             Log::error("Printing error at line: " . __FILE__ . ":" . __LINE__ . " (in function " . __FUNCTION__ . "). " . $e->getMessage());
