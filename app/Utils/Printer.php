@@ -28,7 +28,7 @@ class Printer
         $this->is_two_sided = $is_two_sided;
         $this->number_of_copies = $number_of_copies;
         $this->use_free_pages = $use_free_pages;
-        $this->print_account = Auth::user()->printAccount;
+        $this->print_account = user()->printAccount;
     }
 
     public function print()
@@ -63,7 +63,7 @@ class Printer
     {
         $this->free_page_pool = [];
         $available_pages = 0;
-        $all_pages = Auth::user()->freePages
+        $all_pages = user()->freePages
             ->where('deadline', '>', Carbon::now())
             ->sortBy('deadline');
 
@@ -94,11 +94,11 @@ class Printer
         }
 
         // Update print account history
-        $this->print_account->update(['last_modified_by' => Auth::user()->id]);
+        $this->print_account->update(['last_modified_by' => user()->id]);
         foreach ($this->free_page_pool as $fp) {
             $fp['page']->update([
                 'amount' => $fp['new_amount'],
-                'last_modified_by' => Auth::user()->id
+                'last_modified_by' => user()->id
             ]);
         }
 
@@ -134,7 +134,7 @@ class Printer
         PrintJob::create([
             'filename' => $this->filename,
             'filepath' => $this->path,
-            'user_id' => Auth::user()->id,
+            'user_id' => user()->id,
             'state' => $state,
             'job_id' => $job_id,
             'cost' => $this->cost,

@@ -27,7 +27,7 @@
     </div>
 </div>
 
-@if (env('APPLICATION_DEADLINE')>\Carbon\Carbon::now() && Auth::user()->isTenant() && !Auth::user()->isCollegist())
+@if (env('APPLICATION_DEADLINE')>\Carbon\Carbon::now() && user()->isTenant() && !user()->isCollegist())
 <div class="row">
     <div class="col s12">
         <div class="card">

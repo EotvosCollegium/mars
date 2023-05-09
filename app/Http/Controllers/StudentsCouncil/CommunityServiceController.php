@@ -56,7 +56,7 @@ class CommunityServiceController extends Controller
         ]);
 
         $communityService=CommunityService::create([
-            'requester_id' => Auth::user()->id,
+            'requester_id' => user()->id,
             'approver_id' => $request->approver,
             'semester_id' => Semester::current()->id,
             'approved' => null,

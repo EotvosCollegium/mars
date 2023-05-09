@@ -12,9 +12,9 @@
                 <form action="{{ route('secretariat.status-update.update') }}" method="post">
                     @csrf
                     <div class="row">
-                        @if (\Illuminate\Support\Facades\Auth::user()->hasActivated())
+                        @if (user()->hasActivated())
                             <blockquote>
-                                A félévre a státuszod már be lett állítva: @lang('user.' . \Illuminate\Support\Facades\Auth::user()->getStatusIn(\App\Models\Semester::current())).
+                                A félévre a státuszod már be lett állítva: @lang('user.' . \Illuminate\Support\Facades\user()->getStatusIn(\App\Models\Semester::current())).
                             </blockquote>
                         @endif
                         <blockquote>
