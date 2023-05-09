@@ -6,6 +6,7 @@ return [
     'dear' => 'Kedves',
     'email_sent' => 'Rendszergazdák értesítve',
     'more_info' => 'Több információ',
+    'report-internet-fault-subject' => 'Internetelérési probléma',
     'router_status_warning' => 'Router nem elérhető!',
     'show' => 'Megtekint',
     'thank_you_registering' => 'Köszönjük, hogy regisztráltál az :app rendszerbe.',

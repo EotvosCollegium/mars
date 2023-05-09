@@ -22,12 +22,12 @@ class EpistolaController extends Controller
 
         //sort by valid_until property with null values at the end
         $unsent = EpistolaNews::where('sent', false)->get();//->sortBy(function ($result) {
-            //if ($result->valid_until == null)
-            //    if($result->date_for_sorting == null){
-            //        return PHP_INT_MAX;
-            //    }
-            //    return $result->date_for_sorting;
-            //return $result->valid_until;
+        //if ($result->valid_until == null)
+        //    if($result->date_for_sorting == null){
+        //        return PHP_INT_MAX;
+        //    }
+        //    return $result->date_for_sorting;
+        //return $result->valid_until;
         //});
 
         $sent = EpistolaNews::where('sent', true)->get();
@@ -118,7 +118,7 @@ class EpistolaController extends Controller
             $epistola->update($values);
         } else {
             $updated = false;
-            $values['uploader_id'] = Auth::user()->id;
+            $values['uploader_id'] = user()->id;
             $epistola = EpistolaNews::create($values);
         }
         return redirect(route('epistola'))->with('message', $updated ? __('general.successful_modification') : __('general.successfully_added'));

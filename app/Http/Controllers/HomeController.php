@@ -25,7 +25,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        if (Auth::user()->can('view', EpistolaNews::class)) {
+        if (user()->can('view', EpistolaNews::class)) {
             $epistola = EpistolaController::getActiveNews();
         }
 
@@ -62,7 +62,7 @@ class HomeController extends Controller
             ]
         ];
 
-        if (Auth::user()->hasRole(Role::COLLEGIST)) {
+        if (user()->hasRole(Role::COLLEGIST)) {
             $student_council_objects = RoleObject::whereIn('name', Role::STUDENT_COUNCIL_LEADERS)
                 ->orWhereIn('name', Role::COMMITTEE_LEADERS)
                 ->get()->pluck('id')->toArray();
@@ -106,9 +106,9 @@ class HomeController extends Controller
     public function editNews(Request $request)
     {
         /*@var User $user*/
-        $user = Auth::user();
+        $user = user();
         if (!$user->hasRole([
-            Role::STUDENT_COUNCIL => Role::PRESIDENT,
+            Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS,
             Role::SYS_ADMIN,
             Role::STUDENT_COUNCIL_SECRETARY])) {
             abort(403);
@@ -173,7 +173,7 @@ class HomeController extends Controller
 
     public function reportBug(Request $request)
     {
-        $username = Auth::user()->name;
+        $username = user()->name;
 
         //personal auth token from your github.com account - see CONTRIBUTING.md
         $token = env('GITHUB_AUTH_TOKEN');

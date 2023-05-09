@@ -7,7 +7,7 @@
             @lang("print.pdf_maxsize", ['maxsize' => config('print.pdf_size_limit')/1000/1000])
             @lang('print.costs',['one_sided'=>App\Models\PrintAccount::$COST['one_sided'], "two_sided" => env('PRINT_COST_TWOSIDED')])
             </p><p>
-            @lang('print.available_money'): <b class="coli-text text-orange"> {{ Auth::user()->printAccount->balance }}</b> HUF.
+            @lang('print.available_money'): <b class="coli-text text-orange"> {{ user()->printAccount->balance }}</b> HUF.
             @lang('print.upload_money')
             </p>
         </blockquote>
@@ -37,7 +37,7 @@
                     @endif
                 </blockquote>
             </div>
-            @if(Cache::has('print.no-paper') && Auth::user()->can('handleAny', \App\Models\PrintAccount::class))
+            @if(Cache::has('print.no-paper') && user()->can('handleAny', \App\Models\PrintAccount::class))
                 <form method="POST" action="{{ route('print.added_paper') }}">
                     @csrf
                     <x-input.button l=3 class="right coli blue" text="Papír újratöltve"/>

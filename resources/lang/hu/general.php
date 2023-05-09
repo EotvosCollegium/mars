@@ -43,6 +43,7 @@ return [
     'successfully_added' => 'Sikeres hozzáadás!',
     'successfully_deleted' => 'Sikeres törlés',
     'toggle-dark-mode' => 'Sötét/világos mód',
+    'unknown_error' => 'Ismeretlen szerverhiba',
     'upload' => 'Feltöltés',
     'user' => 'Felhasználó',
     'users' => 'Felhasználók',

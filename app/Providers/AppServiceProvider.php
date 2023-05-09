@@ -48,9 +48,9 @@ class AppServiceProvider extends ServiceProvider
         Model::preventLazyLoading(config('app.preventLazyLoading'));
 
         // Throw error when trying to set an attribute that does not set in fillable property of the model.
-        Model::preventSilentlyDiscardingAttributes(!$this->app->isProduction());
+        Model::preventSilentlyDiscardingAttributes(config('app.preventSilantlyDiscardingAttributes'));
 
         // Throw error when trying to access an attribute that does not exist.
-        Model::preventAccessingMissingAttributes(!$this->app->isProduction());
+        Model::preventAccessingMissingAttributes(config('app.preventAccessingMissingAttributes'));
     }
 }

@@ -11,7 +11,7 @@
                 <span class="card-title">Nyilatkozz a következő félévedről!</span>
                 <form action="{{ route('secretariat.status-update.update') }}" method="post">
                     @csrf
-                        @if(\Illuminate\Support\Facades\Auth::user()->isResident())
+                        @if(user()->isResident())
                         <blockquote>A jelenlegi bentlakási státuszod: <span class="coli-text text-blue">bentlakó</span>.</blockquote>
                         <div class="row">
                             <x-input.checkbox s=12 id="resign_residency" text="A továbbiakban lemondok bentlakó helyemről, bejáró leszek." />

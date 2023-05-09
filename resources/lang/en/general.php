@@ -43,6 +43,7 @@ return [
     'successfully_added' => 'Successfully added!',
     'successfully_deleted' => 'Successfully deleted',
     'toggle-dark-mode' => 'Toggle dark mode',
+    'unknown_error' => 'Unknown server error',
     'upload' => 'Upload',
     'user' => 'User',
     'users' => 'Users',

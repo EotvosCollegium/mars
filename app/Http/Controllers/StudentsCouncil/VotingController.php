@@ -198,7 +198,7 @@ class VotingController extends Controller
                 }
                 array_push($options, $option);
             }
-            $question->vote(Auth::user(), $options);
+            $question->vote(user(), $options);
         } else {
             $validator = Validator::make($request->all(), [
                 'option' => 'exists:question_options,id',
@@ -215,7 +215,7 @@ class VotingController extends Controller
             if ($option->question->id!=$question->id) {
                 abort(401, "Tried to vote for an option which does not belong to the question");
             }
-            $question->vote(Auth::user(), array($option));
+            $question->vote(user(), array($option));
         }
 
         return redirect()->route('sittings.show', $question->sitting)->with('message', __('voting.successful_voting'));

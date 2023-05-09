@@ -27,11 +27,10 @@ class SemesterController extends Controller
     {
         $this->authorize('is-collegist');
 
-        /* @var User $user */
-        $user = Auth::user();
+        $user = user();
         if (!self::isStatementAvailable()) {
             return redirect('home')->with('error', 'Lejárt a határidő a collegiumi státusz beállítására. Keresd fel a titkárságot vagy a rendszergazdákat.');
-        }
+        
         return view('secretariat.statuses.status_update_form');
     }
 
@@ -47,7 +46,7 @@ class SemesterController extends Controller
         $validator->validate();
 
         /* @var User $user */
-        $user = Auth::user();
+        $user = user();
         if ($request->semester_status == Role::ALUMNI) {
             self::deactivateCollegist($user);
         } else {
@@ -56,6 +55,7 @@ class SemesterController extends Controller
                 $user->setExtern();
             }
         }
+
         return redirect('home')->with('message', __('general.successful_modification'));
     }
 
