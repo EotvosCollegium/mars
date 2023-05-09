@@ -135,7 +135,7 @@ class User extends Authenticatable implements HasLocalePreference
     {
         return Attribute::make(
             get: function (): string {
-                if ($this->hasEducationalInformation() && auth()->user()->can('view', $this)) {
+                if ($this->hasEducationalInformation() && user()->can('view', $this)) {
                     return $this->name . ' (' . $this->educationalInformation->neptun . ')';
                 }
                 return $this->name;
@@ -1189,7 +1189,7 @@ class User extends Authenticatable implements HasLocalePreference
     {
         // You can use `withoutGlobalScope('verified')` to include the unverified users in queries.
         static::addGlobalScope('verified', function (Builder $builder) {
-            if (Auth::hasUser() && Auth::user()->verified) {
+            if (Auth::hasUser() && user()->verified) {
                 $builder->where('verified', true);
             }
         });

@@ -38,13 +38,13 @@ class PrintController extends Controller
     {
         return view('dormitory.print.app', [
                 "users" => User::printers(),
-                "free_pages" => Auth::user()->sumOfActiveFreePages()
+                "free_pages" => user()->sumOfActiveFreePages()
             ]);
     }
 
     public function noPaper()
     {
-        $reporterName = Auth::user()->name;
+        $reporterName = user()->name;
         $admins = User::role(Role::SYS_ADMIN)->get();
         foreach ($admins as $admin) {
             if (config('mail.active')) {
@@ -100,20 +100,20 @@ class PrintController extends Controller
 
         $balance = $request->balance;
         $user = User::find($request->user_to_send);
-        $from_account = Auth::user()->printAccount;
+        $from_account = user()->printAccount;
         $to_account = $user->printAccount;
 
         if (!$from_account->hasEnoughMoney($balance)) {
             return $this->handleNoBalance();
         }
-        $to_account->update(['last_modified_by' => Auth::user()->id]);
-        $from_account->update(['last_modified_by' => Auth::user()->id]);
+        $to_account->update(['last_modified_by' => user()->id]);
+        $from_account->update(['last_modified_by' => user()->id]);
 
         $from_account->decrement('balance', $balance);
         $to_account->increment('balance', $balance);
 
         // Send notification mail
-        Mail::to($user)->queue(new ChangedPrintBalance($user, $balance, Auth::user()->name));
+        Mail::to($user)->queue(new ChangedPrintBalance($user, $balance, user()->name));
 
         return redirect()->back()->with('message', __('general.successful_transaction'));
     }
@@ -135,13 +135,13 @@ class PrintController extends Controller
         if ($balance < 0 && !$print_account->hasEnoughMoney($balance)) {
             return $this->handleNoBalance();
         }
-        $print_account->update(['last_modified_by' => Auth::user()->id]);
+        $print_account->update(['last_modified_by' => user()->id]);
         $print_account->increment('balance', $balance);
 
         $admin_checkout = Checkout::admin();
         Transaction::create([
             'checkout_id' => $admin_checkout->id,
-            'receiver_id' => Auth::user()->id,
+            'receiver_id' => user()->id,
             'payer_id' => $user->id,
             'semester_id' => Semester::current()->id,
             'amount' => $request->balance,
@@ -151,7 +151,7 @@ class PrintController extends Controller
         ]);
 
         // Send notification mail
-        Mail::to($user)->queue(new ChangedPrintBalance($user, $balance, Auth::user()->name));
+        Mail::to($user)->queue(new ChangedPrintBalance($user, $balance, user()->name));
 
         return redirect()->back()->with('message', __('general.successful_modification'));
     }
@@ -171,7 +171,7 @@ class PrintController extends Controller
             'user_id' => $request->user_id_free,
             'amount' => $request->free_pages,
             'deadline' => $request->deadline,
-            'last_modified_by' => Auth::user()->id,
+            'last_modified_by' => user()->id,
             'comment' => $request->comment,
         ]);
 
@@ -200,7 +200,7 @@ class PrintController extends Controller
         $this->updateCompletedPrintingJobs();
 
         $columns = ['created_at', 'filename', 'cost', 'state'];
-        $printJobs = Auth::user()->printJobs()->orderby('created_at', 'desc');
+        $printJobs = user()->printJobs()->orderby('created_at', 'desc');
 
         return $this->printJobsPaginator($printJobs, $columns);
     }
@@ -221,7 +221,7 @@ class PrintController extends Controller
         $this->authorize('viewSelf', FreePages::class);
 
         $columns = ['amount', 'deadline', 'modifier', 'comment'];
-        $freePages = Auth::user()->freePages();
+        $freePages = user()->freePages();
 
         return $this->freePagesPaginator($freePages, $columns);
     }
@@ -258,7 +258,7 @@ class PrintController extends Controller
                 // Reverting balance change
                 // TODO: test what happens when cancelled right before the end
                 $printAccount = $printJob->user->printAccount;
-                $printAccount->update(['last_modified_by' => Auth::user()->id]);
+                $printAccount->update(['last_modified_by' => user()->id]);
                 $printAccount->increment('balance', $printJob->cost);
             } else {
                 if (strpos($result['output'], "already canceled") !== false) {

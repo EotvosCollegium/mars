@@ -27,8 +27,7 @@ class SemesterController extends Controller
     {
         $this->authorize('is-collegist');
 
-        /* @var User $user */
-        $user = Auth::user();
+        $user = user();
         if ($user->getStatusIn(Semester::previous()->id) == SemesterStatus::DEACTIVATED) {
             abort(403);
         }
@@ -48,8 +47,7 @@ class SemesterController extends Controller
         ]);
         $validator->validate();
 
-        /* @var User $user */
-        $user = Auth::user();
+        $user = user();
         $user->setStatus($request->semester_status, "Státusz bejelentés");
         $user->setCollegist($request->collegist_role);
         return redirect('home')->with('message', __('general.successful_modification'));

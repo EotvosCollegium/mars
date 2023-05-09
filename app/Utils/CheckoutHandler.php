@@ -39,7 +39,7 @@ trait CheckoutHandler
     private function getData(Checkout $checkout): array
     {
         /** @var User $user */
-        $user = Auth::user();
+        $user = user();
 
         if ($user->can('administrate', $checkout)) {
             $depts = User::withWhereHas('transactionsReceived', function ($query) use ($checkout) {
@@ -108,7 +108,7 @@ trait CheckoutHandler
             ->where('checkout_id', $this->checkout()->id)
             ->whereNull('paid_at')->get();
 
-        Mail::to(Auth::user())->queue(new Transactions(Auth::user()->name, $transactions, "Tranzakció módosítva", "Az alábbi tranzakciókat kifizetted."));
+        Mail::to(user())->queue(new Transactions(user()->name, $transactions, "Tranzakció módosítva", "Az alábbi tranzakciókat kifizetted."));
         Mail::to($user)->queue(new Transactions($user->name, $transactions, "Tranzakció módosítva", "Az alábbi tranzakciókat kifizették neked."));
 
         Transaction::where('receiver_id', $user->id)
@@ -128,7 +128,7 @@ trait CheckoutHandler
     {
         $this->authorize('administrate', $this->checkout());
 
-        $user = Auth::user();
+        $user = user();
 
         $transactions = Transaction::where('checkout_id', $this->checkout()->id)
             ->where('moved_to_checkout', null)->get();
@@ -164,7 +164,7 @@ trait CheckoutHandler
         ]);
         $validator->validate();
 
-        $user = $request->has('payer') ? User::find($request->input('payer')) : auth()->user();
+        $user = $request->has('payer') ? User::find($request->input('payer')) : user();
         $paid = $request->has('paid');
 
         $transaction = Transaction::create([

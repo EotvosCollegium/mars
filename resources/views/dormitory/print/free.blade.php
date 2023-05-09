@@ -1,4 +1,4 @@
-@if(!Auth::user()->freePages->isEmpty())
+@if(!user()->freePages->isEmpty())
 <div class="card">
     <div class="card-content">
         <div class="card-title">@lang('print.free')</div>

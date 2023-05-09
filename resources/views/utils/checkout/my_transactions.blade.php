@@ -11,7 +11,7 @@
                         {{ $transaction->comment }}
                     </td>
                     <td>
-                        @if($transaction->payer_id != Auth::user()->id)
+                        @if($transaction->payer_id != user()->id)
                             {{ $transaction->payer?->name }}
                         @endif
                     </td>

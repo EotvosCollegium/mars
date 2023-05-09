@@ -65,7 +65,7 @@ class DocumentController extends Controller
     {
         Gate::authorize('document.import-license');
 
-        return view('secretariat.document.import', ['items' => Auth::user()->importItems]);
+        return view('secretariat.document.import', ['items' => user()->importItems]);
     }
 
     public function addImport(Request $request)
@@ -73,7 +73,7 @@ class DocumentController extends Controller
         Gate::authorize('document.import-license');
 
         ImportItem::create([
-            'user_id' => Auth::user()->id,
+            'user_id' => user()->id,
             'name' => $request->item,
             'serial_number'=> $request->serial_number ?? null
         ]);
@@ -94,7 +94,7 @@ class DocumentController extends Controller
     {
         Gate::authorize('document.status-certificate');
 
-        $result = $this->generateStatusCertificate(Auth::user());
+        $result = $this->generateStatusCertificate(user());
         return $this->downloadDocument($result);
     }
 
@@ -111,10 +111,10 @@ class DocumentController extends Controller
     {
         Gate::authorize('document.status-certificate');
 
-        $url = route('documents.status-cert.show', ['id' => Auth::user()->id]);
+        $url = route('documents.status-cert.show', ['id' => user()->id]);
         $secretaries = User::role(Role::SECRETARY)->get();
         foreach ($secretaries as $recipient) {
-            Mail::to($recipient)->queue(new \App\Mail\StateCertificateRequest($recipient->name, Auth::user()->name, $url));
+            Mail::to($recipient)->queue(new \App\Mail\StateCertificateRequest($recipient->name, user()->name, $url));
         }
 
         return redirect()->back()->with('message', "Sikeres igénylés. Az igazolást hamarosan megtalálhatod a titkárságon.");
@@ -167,7 +167,7 @@ class DocumentController extends Controller
 
     private function generateRegisterStatement()
     {
-        $user = Auth::user();
+        $user = user();
 
         if (!$user->hasPersonalInformation()) {
             return [
@@ -193,7 +193,7 @@ class DocumentController extends Controller
 
     private function generateImport()
     {
-        $user = Auth::user();
+        $user = user();
         $items = $user->importItems;
 
         if ($items->isEmpty()) {

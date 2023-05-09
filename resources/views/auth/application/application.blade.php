@@ -14,7 +14,7 @@
                     @can('viewAnyApplication', \App\Models\User::class)
                         <span class="right">
                             @include('auth.application.status', ['status' => $user->application->status])
-                            @if(auth()->user()->hasRole(\App\Models\Role::SYS_ADMIN))
+                            @if(user()->hasRole(\App\Models\Role::SYS_ADMIN))
                                 @if($user->application->status == \App\Models\ApplicationForm::STATUS_SUBMITTED)
                                     <form method="POST" style="display: inline" action="{{route('applications.edit')}}">
                                         @csrf
