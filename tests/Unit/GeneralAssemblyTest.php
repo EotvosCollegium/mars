@@ -4,17 +4,17 @@ namespace Tests\Unit;
 
 use App\Models\SemesterStatus;
 use App\Models\User;
-use App\Models\Voting\Question;
-use App\Models\Voting\Sitting;
+use App\Models\GeneralAssemblies\Question;
+use App\Models\GeneralAssemblies\GeneralAssembly;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 /**
- * Test sitting votings
+ * Test general_assembly votings
  *
  * @return void
  */
-class VotingTest extends TestCase
+class GeneralAssemblyTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -25,9 +25,9 @@ class VotingTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $sitting = Sitting::factory()->create();
+        $general_assembly = GeneralAssembly::factory()->create();
         $question = Question::factory()
-            ->for($sitting)
+            ->for($general_assembly)
             ->hasOptions(3)
             ->create(['opened_at' => now()->subDay(), 'closed_at' => now()->subDay()]);
 
@@ -42,9 +42,9 @@ class VotingTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $sitting = Sitting::factory()->create();
+        $general_assembly = GeneralAssembly::factory()->create();
         $question = Question::factory()
-            ->for($sitting)
+            ->for($general_assembly)
             ->hasOptions(3)
             ->create(['opened_at' => null, 'closed_at' => null]);
 
@@ -59,9 +59,9 @@ class VotingTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $sitting = Sitting::factory()->create();
+        $general_assembly = GeneralAssembly::factory()->create();
         $question = Question::factory()
-            ->for($sitting)
+            ->for($general_assembly)
             ->hasOptions(3)
             ->create(['opened_at' => now()->subDay(), 'closed_at' => now()->addDay()]);
 
@@ -77,9 +77,9 @@ class VotingTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $sitting = Sitting::factory()->create();
+        $general_assembly = GeneralAssembly::factory()->create();
         $question = Question::factory()
-            ->for($sitting)
+            ->for($general_assembly)
             ->hasOptions(3)
             ->create(['opened_at' => now()->subDay(), 'closed_at' => now()->addDay(), 'max_options' => 1]);
 
@@ -97,9 +97,9 @@ class VotingTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $sitting = Sitting::factory()->create();
+        $general_assembly = GeneralAssembly::factory()->create();
         $question = Question::factory()
-            ->for($sitting)
+            ->for($general_assembly)
             ->hasOptions(3)
             ->create(['opened_at' => now()->subDay(), 'closed_at' => now()->addDay(), 'max_options' => 1]);
 
@@ -114,9 +114,9 @@ class VotingTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $sitting = Sitting::factory()->create();
+        $general_assembly = GeneralAssembly::factory()->create();
         $question = Question::factory()
-            ->for($sitting)
+            ->for($general_assembly)
             ->hasOptions(3)
             ->create(['opened_at' => now()->subDay(), 'closed_at' => now()->addDay(), 'max_options' => 3]);
 
@@ -134,9 +134,9 @@ class VotingTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $sitting = Sitting::factory()->create();
+        $general_assembly = GeneralAssembly::factory()->create();
         $question = Question::factory()
-            ->for($sitting)
+            ->for($general_assembly)
             ->hasOptions(3)
             ->create(['opened_at' => now()->subDay(), 'closed_at' => now()->addDay(), 'max_options' => 2]);
 

@@ -21,7 +21,7 @@ class ListUsers extends Component
 
     public function getUsersProperty()
     {
-        $query = User::with(['roles', 'workshops', 'educationalInformation', 'allSemesters']);
+        $query = User::with(['roles', 'workshops', 'educationalInformation', 'semesterStatuses']);
 
         $query->where(function (Builder $query) {
             foreach ($this->roles as $role) {
@@ -50,7 +50,7 @@ class ListUsers extends Component
         //'or' between statuses
         $query->where(function ($query) {
             foreach ($this->statuses as $status) {
-                $query->orWhereHas('allSemesters', function (Builder $query) use ($status) {
+                $query->orWhereHas('semesterStatuses', function (Builder $query) use ($status) {
                     $query->where('status', $status);
                     $query->where('id', Semester::current()->id);
                 });

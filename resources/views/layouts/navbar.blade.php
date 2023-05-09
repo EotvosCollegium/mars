@@ -31,7 +31,7 @@
     @include('layouts.logo')
 
     <!-- main options -->
-    @if(Auth::user() && Auth::user()->verified)
+    @if(Auth::user()?->verified)
         <!-- print page -->
         @can('use', \App\Models\PrintAccount::class)
         <li><a class="waves-effect" href="{{ route('print') }}"><i class="material-icons left">local_printshop</i>@lang('print.print')</a></li>
@@ -98,9 +98,9 @@
                                     <i class="material-icons left">business_center</i> Közösségi tevékenység
                                 </a>
                             </li>
-                            <!-- voting -->
+                            <!-- general assemblies -->
                             <li>
-                                <a class="waves-effect" href="{{ route('sittings.index') }}">
+                                <a class="waves-effect" href="{{ route('general_assemblies.index') }}">
                                     <i class="material-icons left">thumbs_up_down</i> @lang('voting.assembly')
                                 </a>
                             </li>
@@ -196,7 +196,7 @@
             </li>
 
             <!-- other -->
-            @if(Auth::user() && Auth::user()->verified)
+            @if(Auth::user()?->verified)
             <li>
                 <a class="collapsible-header waves-effect" style="padding-left:32px">
                     <i class="material-icons left">more_horiz</i>@lang('general.other')

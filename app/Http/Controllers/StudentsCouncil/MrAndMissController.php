@@ -25,11 +25,11 @@ class MrAndMissController extends Controller
             ->where('hidden', false)
             ->where(function ($query) {
                 $query->where('public', true)
-                      ->orWhere('created_by', Auth::user()->id);
+                      ->orWhere('created_by', user()->id);
             })
             ->leftJoin('mr_and_miss_votes', function ($join) {
                 $join->on('mr_and_miss_categories.id', '=', 'mr_and_miss_votes.category')
-                     ->where('mr_and_miss_votes.voter', Auth::user()->id)
+                     ->where('mr_and_miss_votes.voter', user()->id)
                      ->where('semester', Semester::current()->id);
             })
             ->orderBy('mr_and_miss_categories.id')
@@ -140,7 +140,7 @@ class MrAndMissController extends Controller
         foreach ($categories as $category) {
             if ($request['raw-'.$category->id] !== null) {
                 MrAndMissVote::updateOrCreate([
-                    'voter' => Auth::user()->id,
+                    'voter' => user()->id,
                     'category' => $category->id,
                     'semester' => Semester::current()->id,
                 ], [
@@ -149,7 +149,7 @@ class MrAndMissController extends Controller
                 ]);
             } elseif ($request['select-'.$category->id] !== null && $request['select-'.$category->id] !== 'null') {
                 MrAndMissVote::updateOrCreate([
-                    'voter' => Auth::user()->id,
+                    'voter' => user()->id,
                     'category' => $category->id,
                     'semester' => Semester::current()->id,
                 ], [
@@ -158,7 +158,7 @@ class MrAndMissController extends Controller
                 ]);
             } else {
                 MrAndMissVote::where([
-                    'voter' => Auth::user()->id,
+                    'voter' => user()->id,
                     'category' => $category->id,
                     'semester' => Semester::current()->id,
                 ])->delete();
@@ -189,7 +189,7 @@ class MrAndMissController extends Controller
         MrAndMissCategory::create([
             'title' => $request['mr-or-miss'].' '.$request->title,
             'mr' => $request['mr-or-miss'] == 'Mr.',
-            'created_by' => Auth::user()->id,
+            'created_by' => user()->id,
             'public' => $request['is-public'] == 'on',
             'custom' => true,
         ]);

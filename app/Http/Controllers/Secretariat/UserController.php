@@ -21,11 +21,11 @@ class UserController extends Controller
 {
     public function profile()
     {
-        $user = Auth::user();
+        $user = user();
 
         return view('auth.user', [
             'user' => $user,
-            'semesters' => $user->allSemesters,
+            'semesters' => $user->semesterStatuses,
             'faculties' => Faculty::all(),
             'workshops' => Workshop::all()
         ]);
@@ -155,7 +155,7 @@ class UserController extends Controller
 
     public function updatePassword(Request $request): \Illuminate\Http\RedirectResponse
     {
-        $user = Auth::user();
+        $user = user();
         session()->put('profile_current_page', 'change_password');
 
         $validator = Validator::make($request->except('_token'), [
@@ -187,7 +187,7 @@ class UserController extends Controller
 
         return view('secretariat.user.show', [
             'user' => $user,
-            'semesters' => $user->allSemesters,
+            'semesters' => $user->semesterStatuses,
             'faculties' => Faculty::all(),
             'workshops' => Workshop::all()
         ]);
@@ -227,11 +227,11 @@ class UserController extends Controller
      */
     public function showTenantUpdate()
     {
-        if (!Auth::user()->needsUpdateTenantUntil()) {
+        if (!user()->needsUpdateTenantUntil()) {
             return redirect('/');
         }
         return view('user.update_tenant_status', [
-            'user' => Auth::user(),
+            'user' => user(),
         ]);
     }
 
@@ -240,10 +240,10 @@ class UserController extends Controller
      */
     public function tenantToApplicant()
     {
-        if (!Auth::user()->isTenant() || Auth::user()->isCollegist()) {
+        if (!user()->isTenant() || user()->isCollegist()) {
             return abort(403);
         }
-        $user = Auth::user();
+        $user = user();
         $user->personalInformation()->update(['tenant_until' => null]);
         $user->removeRole(Role::get(Role::TENANT));
         $user->setExtern();

@@ -30,7 +30,7 @@
         </li>
     </ul>
     {{-- Statuses --}}
-    @if($user->isCollegist())
+    @if($user->isCollegist() || $user->hasRole(\App\Models\Role::alumni()))
         <ul class="collapsible">
             <li>
                 <div class="collapsible-header"><b>Státuszok</b></div>
@@ -59,7 +59,7 @@
         </div>
     </li>
 </ul>
-@if(auth()->user()->id == $user->id)
+@if(user()->id == $user->id)
     {{-- Change Password--}}
     <ul class="collapsible">
         <li @if(session()->get('profile_current_page') == "change_password") class="active" @endif>

@@ -64,6 +64,14 @@ return [
     'preventLazyLoading' => env('PREVENT_LAZY_LOADING', false) && env('APP_DEBUG', false),
 
     /*
+    |
+    | Other strictness settings
+    |
+    */
+    'preventSilantlyDiscardingAttributes' => env('PREVENT_SILANTLY_DISCARDING_ATTRIBUTES', false) && env('APP_DEBUG', false),
+    'preventAccessingMissingAttributes' => env('PREVENT_ACCESSING_MISSING_ATTRIBUTES', false) && env('APP_DEBUG', false),
+
+    /*
     |--------------------------------------------------------------------------
     | Application URL
     |--------------------------------------------------------------------------

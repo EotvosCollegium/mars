@@ -30,7 +30,7 @@ use App\Http\Controllers\StudentsCouncil\EconomicController;
 use App\Http\Controllers\StudentsCouncil\EpistolaController;
 use App\Http\Controllers\StudentsCouncil\MrAndMissController;
 use App\Http\Controllers\StudentsCouncil\CommunityServiceController;
-use App\Http\Controllers\StudentsCouncil\VotingController;
+use App\Http\Controllers\StudentsCouncil\GeneralAssemblyController;
 use App\Http\Controllers\Dormitory\RoomController;
 use App\Models\Room;
 use Illuminate\Support\Facades\Auth;
@@ -123,7 +123,8 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::get('/network/admin/checkout', [AdminCheckoutController::class, 'showCheckout'])->name('admin.checkout');
     Route::post('/network/admin/checkout/mark_as_paid/{user}', [AdminCheckoutController::class, 'markAsPaid'])->name('admin.checkout.pay');
     Route::post('/network/admin/checkout/to_checkout', [AdminCheckoutController::class, 'toCheckout'])->name('admin.checkout.to_checkout');
-    Route::post('/network/admin/checkout/transaction/add', [AdminCheckoutController::class, 'addExpense'])->name('admin.checkout.transaction.add');
+    Route::post('/network/admin/checkout/expense/add', [AdminCheckoutController::class, 'addExpense'])->name('admin.checkout.expense.add');
+    Route::post('/network/admin/checkout/income/add', [AdminCheckoutController::class, 'addIncome'])->name('admin.checkout.income.add');
     Route::get('/network/admin/checkout/transaction/delete/{transaction}', [EconomicController::class, 'deleteTransaction'])->name('admin.checkout.transaction.delete');
 
     /** Routers */
@@ -177,7 +178,8 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
 
     /** Students' Council */
     Route::get('/economic_committee', [EconomicController::class, 'index'])->name('economic_committee');
-    Route::post('/economic_committee/transaction/add', [EconomicController::class, 'addExpense'])->name('economic_committee.transaction.add');
+    Route::post('/economic_committee/expense/add', [EconomicController::class, 'addExpense'])->name('economic_committee.expense.add');
+    Route::post('/economic_committee/income/add', [EconomicController::class, 'addIncome'])->name('economic_committee.income.add');
     Route::get('/economic_committee/transaction/delete/{transaction}', [EconomicController::class, 'deleteTransaction'])->name('economic_committee.transaction.delete');
     Route::post('/economic_committee/mark_as_paid/{user}', [EconomicController::class, 'markAsPaid'])->name('economic_committee.pay');
     Route::post('/economic_committee/to_checkout', [EconomicController::class, 'toCheckout'])->name('economic_committee.to_checkout');
@@ -213,14 +215,14 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::get('/community_service/search', [CommunityServiceController::class, 'search'])->name('community_service.search');
 
     /** voting */
-    Route::get('/sittings', [VotingController::class, 'index'])->name('sittings.index');
-    Route::get('/sittings/create', [VotingController::class, 'newSitting'])->name('sittings.create');
-    Route::post('/sittings', [VotingController::class, 'addSitting'])->name('sittings.store');
-    Route::get('/sittings/{sitting}', [VotingController::class, 'viewSitting'])->name('sittings.show');
-    Route::post('/sittings/{sitting}/close', [VotingController::class, 'closeSitting'])->name('sittings.close');
-    Route::get('/questions/create', [VotingController::class, 'newQuestion'])->name('questions.create');
-    Route::post('/questions', [VotingController::class, 'addQuestion'])->name('questions.store');
-    Route::post('/questions/{question}/close', [VotingController::class, 'closeQuestion'])->name('questions.close');
-    Route::post('/questions/{question}/votes', [VotingController::class, 'saveVote'])->name('questions.votes.store');
-    Route::get('/questions/{question}', [VotingController::class, 'viewQuestion'])->name('questions.show');
+    Route::get('/general_assemblies', [GeneralAssemblyController::class, 'index'])->name('general_assemblies.index');
+    Route::get('/general_assemblies/create', [GeneralAssemblyController::class, 'create'])->name('general_assemblies.create');
+    Route::post('/general_assemblies', [GeneralAssemblyController::class, 'store'])->name('general_assemblies.store');
+    Route::get('/general_assemblies/{general_assembly}', [GeneralAssemblyController::class, 'show'])->name('general_assemblies.show');
+    Route::post('/general_assemblies/{general_assembly}/close', [GeneralAssemblyController::class, 'closeAssembly'])->name('general_assemblies.close');
+    Route::get('/questions/create', [GeneralAssemblyController::class, 'newQuestion'])->name('questions.create');
+    Route::post('/questions', [GeneralAssemblyController::class, 'addQuestion'])->name('questions.store');
+    Route::post('/questions/{question}/close', [GeneralAssemblyController::class, 'closeQuestion'])->name('questions.close');
+    Route::post('/questions/{question}/votes', [GeneralAssemblyController::class, 'saveVote'])->name('questions.votes.store');
+    Route::get('/questions/{question}', [GeneralAssemblyController::class, 'viewQuestion'])->name('questions.show');
 });

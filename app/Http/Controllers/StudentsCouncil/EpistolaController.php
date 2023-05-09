@@ -110,7 +110,7 @@ class EpistolaController extends Controller
             $epistola->update($values);
         } else {
             $updated = false;
-            $values['uploader_id'] = Auth::user()->id;
+            $values['uploader_id'] = user()->id;
             $epistola = EpistolaNews::create($values);
         }
         return redirect(route('epistola'))->with('message', $updated ? __('general.successful_modification') : __('general.successfully_added'));
