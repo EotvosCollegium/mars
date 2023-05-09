@@ -25,7 +25,7 @@ return [
     'results' => 'Eredmények',
     'sitting_closed' => 'Az ülés lezárva.',
     'sitting_title' => 'Ülés neve',
-    'sittings' => 'Közgyűlések',
+    'general_assemblies' => 'Közgyűlések',
     'successful_voting' => 'Sikeres szavazás!',
     'too_many_options' => 'Túl sok opció lett megjelölve; próbáld újra.',
     'vote' => 'Szavazás',

@@ -1,13 +1,13 @@
 <?php
 
-namespace Database\Factories\Voting;
+namespace Database\Factories\GeneralAssemblies;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Voting\Sitting>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\GeneralAssemblies\GeneralAssembly>
  */
-class SittingFactory extends Factory
+class GeneralAssemblyFactory extends Factory
 {
     /**
      * Define the model's default state.

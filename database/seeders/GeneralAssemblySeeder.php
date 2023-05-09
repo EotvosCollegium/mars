@@ -2,12 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Voting\Sitting;
-use App\Models\Voting\Question;
-use App\Models\Voting\QuestionOption;
+use App\Models\GeneralAssemblies\GeneralAssembly;
 use Illuminate\Database\Seeder;
 
-class VotingSeeder extends Seeder
+class GeneralAssemblySeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -16,8 +14,8 @@ class VotingSeeder extends Seeder
      */
     public function run()
     {
-        $openSitting = Sitting::create([
-            'title' => "Today's sitting",
+        $openSitting = GeneralAssembly::create([
+            'title' => "Today's general_assembly",
             'opened_at' => now(),
         ]);
 

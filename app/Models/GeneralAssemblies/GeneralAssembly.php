@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Models\Voting;
+namespace App\Models\GeneralAssemblies;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-use App\Models\Voting\Question;
+use App\Models\GeneralAssemblies\Question;
 
-class Sitting extends Model
+class GeneralAssembly extends Model
 {
     use HasFactory;
 
@@ -27,7 +27,7 @@ class Sitting extends Model
     ];
 
     /**
-     * @return HasMany The questions that belong to the sitting.
+     * @return HasMany The questions that belong to the general_assembly.
      */
     public function questions(): HasMany
     {
@@ -35,7 +35,7 @@ class Sitting extends Model
     }
 
     /**
-     * @return bool Whether the sitting has been opened (regardless of whether it has been closed since then).
+     * @return bool Whether the general_assembly has been opened (regardless of whether it has been closed since then).
      */
     public function hasBeenOpened(): bool
     {
@@ -66,7 +66,7 @@ class Sitting extends Model
     public function open(): void
     {
         if ($this->isOpen() || $this->isClosed()) {
-            throw new \Exception("tried to open sitting when it has already been opened");
+            throw new \Exception("tried to open general assembly when it has already been opened");
         }
         $this->update(['opened_at'=>now()]);
     }
@@ -78,10 +78,10 @@ class Sitting extends Model
     public function close(): void
     {
         if ($this->isClosed()) {
-            throw new \Exception("tried to close sitting when it has already been closed");
+            throw new \Exception("tried to close general assembly when it has already been closed");
         }
         if (!$this->isOpen()) {
-            throw new \Exception("tried to close sitting when it was not open");
+            throw new \Exception("tried to close general assembly when it was not open");
         }
         foreach ($this->questions()->get() as $question) {
             if ($question->isOpen()) {

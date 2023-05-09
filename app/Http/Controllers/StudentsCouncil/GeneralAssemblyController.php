@@ -3,81 +3,80 @@
 namespace App\Http\Controllers\StudentsCouncil;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
-use App\Models\Voting\Sitting;
-use App\Models\Voting\Question;
-use App\Models\Voting\QuestionOption;
+use App\Models\GeneralAssemblies\GeneralAssembly;
+use App\Models\GeneralAssemblies\Question;
+use App\Models\GeneralAssemblies\QuestionOption;
 
-class VotingController extends Controller
+class GeneralAssemblyController extends Controller
 {
     /**
-     * Lists sittings.
+     * Lists general_assemblies.
      */
     public function index()
     {
-        $this->authorize('viewAny', Sitting::class);
-        return view('student-council.voting.list', [
-            "sittings" => Sitting::orderByDesc('opened_at')->get()
+        $this->authorize('viewAny', GeneralAssembly::class);
+        return view('student-council.general-assemblies.list', [
+            "general_assemblies" => GeneralAssembly::orderByDesc('opened_at')->get()
         ]);
     }
 
     /**
-     * Returns the 'new sitting' page.
+     * Returns the 'new GeneralAssembly' page.
      */
-    public function newSitting()
+    public function create()
     {
-        $this->authorize('administer', Sitting::class);
-        return view('student-council.voting.new_sitting');
+        $this->authorize('administer', GeneralAssembly::class);
+        return view('student-council.general-assemblies.new_sitting');
     }
 
     /**
-     * Saves a new sitting.
+     * Saves a new GeneralAssembly.
      */
-    public function addSitting(Request $request)
+    public function store(Request $request)
     {
-        $this->authorize('administer', Sitting::class);
+        $this->authorize('administer', GeneralAssembly::class);
 
         $validator = Validator::make($request->all(), [
             'title' => 'required|string',
         ]);
         $validator->validate();
 
-        $sitting = Sitting::create([
+        $general_assembly = GeneralAssembly::create([
             'title' => $request->title,
             'opened_at' => now(),
         ]);
 
-        return view('student-council.voting.view_sitting', [
-            "sitting" => $sitting,
+        return view('student-council.general-assemblies.view_sitting', [
+            "general_assembly" => $general_assembly,
             "passcode" => self::getTemporaryPasscode()
         ]);
     }
 
     /**
-     * Returns a page with the details and questions of a sitting.
+     * Returns a page with the details and questions of a general_assembly.
      */
-    public function viewSitting(Sitting $sitting)
+    public function show(GeneralAssembly $general_assembly)
     {
-        $this->authorize('viewAny', Sitting::class);
+        $this->authorize('viewAny', GeneralAssembly::class);
 
-        return view('student-council.voting.view_sitting', [
-            "sitting" => $sitting,
+        return view('student-council.general-assemblies.view_sitting', [
+            "general_assembly" => $general_assembly,
             "passcode" => self::getTemporaryPasscode()
         ]);
     }
 
     /**
-     * Closes a sitting.
+     * Closes a general_assembly.
      */
-    public function closeSitting(Sitting $sitting)
+    public function closeAssembly(GeneralAssembly $general_assembly)
     {
-        $this->authorize('administer', Sitting::class);
-        if (!$sitting->isOpen()) {
-            abort(401, "tried to close a sitting which was not open");
+        $this->authorize('administer', GeneralAssembly::class);
+        if (!$general_assembly->isOpen()) {
+            abort(401, "tried to close a general_assembly which was not open");
         }
-        $sitting->close();
+        $general_assembly->close();
         return back()->with('message', __('voting.sitting_closed'));
     }
 
@@ -86,19 +85,19 @@ class VotingController extends Controller
      */
     public function newQuestion(Request $request)
     {
-        $this->authorize('administer', Sitting::class);
+        $this->authorize('administer', GeneralAssembly::class);
 
         $validator = Validator::make($request->all(), [
-            'sitting' => 'exists:sittings,id',
+            'general_assembly' => 'exists:general_assemblies,id',
         ]);
         $validator->validate();
-        $sitting = Sitting::findOrFail($request->sitting);
+        $general_assembly = GeneralAssembly::findOrFail($request->general_assembly);
 
-        if (!$sitting->isOpen()) {
-            abort(401, "tried to modify a sitting which was not open");
+        if (!$general_assembly->isOpen()) {
+            abort(401, "tried to modify a general_assembly which was not open");
         }
-        return view('student-council.voting.new_question', [
-            "sitting" => $sitting
+        return view('student-council.general-assemblies.new_question', [
+            "general_assembly" => $general_assembly
         ]);
     }
 
@@ -107,10 +106,10 @@ class VotingController extends Controller
      */
     public function addQuestion(Request $request)
     {
-        $this->authorize('administer', Sitting::class);
+        $this->authorize('administer', GeneralAssembly::class);
 
         $validator = Validator::make($request->all(), [
-            'sitting' => 'exists:sittings,id',
+            'general_assembly' => 'exists:general_assemblies,id',
             'title' => 'required|string',
             'max_options' => 'required|min:1',
             'options' => 'required|array|min:1',
@@ -125,13 +124,13 @@ class VotingController extends Controller
             });
         }
         $validator->validate();
-        $sitting = Sitting::findOrFail($request->sitting);
+        $general_assembly = GeneralAssembly::findOrFail($request->general_assembly);
 
-        if (!$sitting->isOpen()) {
-            abort(401, "tried to modify a sitting which was not open");
+        if (!$general_assembly->isOpen()) {
+            abort(401, "tried to modify a general assembly which was not open");
         }
 
-        $question = $sitting->questions()->create([
+        $question = $general_assembly->questions()->create([
             'title' => $request->title,
             'max_options' => $request->max_options,
             'opened_at' => now()
@@ -151,7 +150,7 @@ class VotingController extends Controller
      */
     public function closeQuestion(Question $question)
     {
-        $this->authorize('administer', Sitting::class);
+        $this->authorize('administer', GeneralAssembly::class);
         if (!$question->isOpen()) {
             abort(401, "tried to close a question which was not open");
         }
@@ -164,8 +163,8 @@ class VotingController extends Controller
      */
     public function viewQuestion(Question $question)
     {
-        $this->authorize('viewAny', Sitting::class);
-        return view('student-council.voting.view_question', [
+        $this->authorize('viewAny', GeneralAssembly::class);
+        return view('student-council.general-assemblies.view_question', [
             "question" => $question
         ]);
     }
@@ -218,7 +217,7 @@ class VotingController extends Controller
             $question->vote(user(), array($option));
         }
 
-        return redirect()->route('sittings.show', $question->sitting)->with('message', __('voting.successful_voting'));
+        return redirect()->route('general_assemblies.show', $question->generalAssembly)->with('message', __('voting.successful_voting'));
     }
 
     /**

@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Models\Voting;
+namespace App\Models\GeneralAssemblies;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-use App\Models\Voting\Question;
+use App\Models\GeneralAssemblies\Question;
 
 class QuestionOption extends Model
 {

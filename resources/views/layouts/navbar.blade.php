@@ -98,9 +98,9 @@
                                     <i class="material-icons left">business_center</i> Közösségi tevékenység
                                 </a>
                             </li>
-                            <!-- voting -->
+                            <!-- general assemblies -->
                             <li>
-                                <a class="waves-effect" href="{{ route('sittings.index') }}">
+                                <a class="waves-effect" href="{{ route('general_assemblies.index') }}">
                                     <i class="material-icons left">thumbs_up_down</i> @lang('voting.assembly')
                                 </a>
                             </li>

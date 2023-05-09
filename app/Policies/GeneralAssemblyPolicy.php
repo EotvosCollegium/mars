@@ -5,10 +5,10 @@ namespace App\Policies;
 use App\Models\User;
 use App\Models\Role;
 
-class SittingPolicy
+class GeneralAssemblyPolicy
 {
     /**
-     * Determine whether the user can view any sittings.
+     * Determine whether the user can view any general_assemblies.
      *
      * @param User $user
      * @return bool
@@ -19,7 +19,7 @@ class SittingPolicy
     }
 
     /**
-     * Determine whether the user can administer votings (add sitting, add or change question etc.).
+     * Determine whether the user can administer votings (add general_assembly, add or change question etc.).
      */
     public function administer(User $user)
     {
