@@ -1,12 +1,10 @@
 <?php
 
 use App\Models\EducationalInformation;
-use App\Models\EducationalProgram;
 use App\Models\Semester;
 use App\Utils\DataCompresser;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -31,7 +29,7 @@ return new class extends Migration
 
             foreach(EducationalInformation::all() as $data) {
                 foreach(DataCompresser::decompressData($data->program) as $program) {
-                    $data->programs()->create([
+                    $data->studyLines()->create([
                         'name' => $program
                     ]);
                 }
