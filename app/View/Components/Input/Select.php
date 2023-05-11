@@ -3,6 +3,7 @@
 namespace App\View\Components\Input;
 
 use App\View\Components\Input;
+use Illuminate\Support\Collection;
 
 class Select extends Input
 {
@@ -25,7 +26,7 @@ class Select extends Input
      * @param $helper helper message
      * @return void
      */
-    public function __construct($id, $elements, $formatter = null, $withoutPlaceholder = false, $withoutLabel = false, $default = null, $text = null, $s = 12, $m = null, $l = null, $xl = null, $onlyInput = false, $allowEmpty = false, $helper = null)
+    public function __construct($id, Collection|array $elements, $formatter = null, $withoutPlaceholder = false, $withoutLabel = false, $default = null, $text = null, $s = 12, $m = null, $l = null, $xl = null, $onlyInput = false, $allowEmpty = false, $helper = null)
     {
         parent::__construct($id, $text, $s, $m, $l, $xl, $onlyInput);
         $this->elements = (isset($elements[0]->name) ? $elements->sortBy('name') : $elements);

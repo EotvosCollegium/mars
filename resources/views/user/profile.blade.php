@@ -20,6 +20,17 @@
             </div>
         </li>
     </ul>
+    {{-- Alfonso --}}
+    <ul class="collapsible">
+        <li @if(session()->get('profile_current_page') == "alfonso") class="active" @endif>
+            <div class="collapsible-header"><b>ALFONSÓ</b></div>
+            <div class="collapsible-body">
+                @include('user.alfonso', ['user' => $user])
+                <div class="divider"></div>
+                @include('user.alfonso-language-exams', ['user' => $user])
+            </div>
+        </li>
+    </ul>
     {{-- Roles --}}
     <ul class="collapsible">
         <li>

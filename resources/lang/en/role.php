@@ -33,6 +33,7 @@ return [
     'it' => 'Italian',
     'la' => 'Latin',
     'locale-admin' => 'Locale admin',
+    'other' => 'Other',
     'president' => 'President',
     'printer' => 'Printer',
     'reception' => 'Reception desk',

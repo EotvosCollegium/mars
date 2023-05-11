@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use App\Utils\DataCompresser;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -43,5 +41,13 @@ class EducationalInformation extends Model
     public function studyLines()
     {
         return $this->hasMany(StudyLine::class);
+    }
+
+    /**
+     * The uploaded language exams that belong to the educational information.
+     */
+    public function languageExams()
+    {
+        return $this->hasMany(LanguageExam::class);
     }
 }

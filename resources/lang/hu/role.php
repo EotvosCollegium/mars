@@ -33,6 +33,7 @@ return [
     'it' => 'Olasz',
     'la' => 'Latin',
     'locale-admin' => 'Nyelvi adminisztrátor',
+    'other' => 'Egyéb',
     'president' => 'Elnök',
     'printer' => 'Nyomtató',
     'reception' => 'Porta',
