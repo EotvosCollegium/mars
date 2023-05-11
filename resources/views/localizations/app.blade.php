@@ -86,17 +86,10 @@
                         <div class="col s5" style="padding: 0.8rem;">
                             {{ $value }}
                         </div>
-                        @if($translations->where('approved', true)->count() != 0)
                         <div class="col s6">
                             <textarea id="{{ $lang . '.' . $fname . '.' . $key }}"
                                 class="materialize-textarea">@lang($fname.'.'.($fname == 'validation' ? 'attributes.' : '').$key)</textarea>
                         </div>
-                        @else
-                        <div class="col s6">
-                            <textarea id="{{ $lang . '.' . $fname . '.' . $key }}"
-                                class="materialize-textarea"></textarea>
-                        </div>
-                        @endif
                         <div class="col s1">
                             <button class="btn-floating waves-effect waves-light right" onclick="send('{{ App::getLocale() }}', '{{ $fname.'.'.$key }}', '{{ $lang }}')">
                                 <i class="material-icons">send</i>

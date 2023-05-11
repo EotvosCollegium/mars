@@ -48,7 +48,7 @@ class CommunityServiceController extends Controller
     public function create(Request $request)
     {
         if ($request->user()->cannot('create', CommunityService::class)) {
-            return back()->with('message', __('community-service.created-not-allowed'));
+            return back()->with('message', "Nem adhatsz hozzá közösségi tevékenységet! Próbáld meg aktiválni a félévedet.");
         }
         $request->validate([
             'approver' => 'required|exists:users,id',
@@ -56,7 +56,7 @@ class CommunityServiceController extends Controller
         ]);
 
         $communityService=CommunityService::create([
-            'requester_id' => Auth::user()->id,
+            'requester_id' => user()->id,
             'approver_id' => $request->approver,
             'semester_id' => Semester::current()->id,
             'approved' => null,
@@ -65,7 +65,7 @@ class CommunityServiceController extends Controller
 
         Mail::to($communityService->approver)->queue(new CommunityServiceRequested($communityService));
 
-        return back()->with('message', __('community-service.created-scf'));
+        return back()->with('message', __('general.successfully_added'));
     }
 
     public function approve(CommunityService $communityService)
@@ -76,7 +76,7 @@ class CommunityServiceController extends Controller
 
         Mail::to($communityService->requester)->queue(new CommunityServiceStatusChanged($communityService));
 
-        return back()->with('message', __('community-service.approve_scf'));
+        return back()->with('message', "Sikeresen jóváhagytad a közösségi tevékenységet!");
     }
 
     public function reject(CommunityService $communityService)
@@ -87,6 +87,6 @@ class CommunityServiceController extends Controller
 
         Mail::to($communityService->requester)->queue(new CommunityServiceStatusChanged($communityService));
 
-        return back()->with('message', __('community-service.reject_scf'));
+        return back()->with('message', "Sikeresen elutasítottad a közösségi tevékenységet!");
     }
 }

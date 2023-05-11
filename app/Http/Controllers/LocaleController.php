@@ -45,7 +45,7 @@ class LocaleController extends Controller
 
     public function add(Request $request)
     {
-        $user = Auth::user();
+        $user = user();
         LocalizationContribution::create([
             'language' => $request->language,
             'key' => $request->key,
@@ -84,7 +84,7 @@ class LocaleController extends Controller
     public function approveAll(Request $request)
     {
         foreach (LocalizationContribution::where('approved', false)->get() as $contribution) {
-            if (Auth::user()->cannot('approve', $contribution)) {
+            if (user()->cannot('approve', $contribution)) {
                 continue;
             }
 

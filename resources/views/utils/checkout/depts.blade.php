@@ -1,8 +1,11 @@
 @can('administrate', $checkout)
 <div class="card">
     <div class="card-content">
-        <span class="card-title">@lang('checkout.depts') </span>
-        <blockquote>@lang('checkout.pay_depts_descr')</blockquote>
+        <span class="card-title">Tartozások</span>
+        <blockquote>
+            Itt összesítve látod a tranzakciókat személyenként csoportosítva, amelyek még nem lettek törlesztve. A szemeszter elszámolásánál látod a részleteket, ahol törölni is tudod a tranzakciót, ha nem tervezed kifizetni (kivéve NETREG/KKT).<br>
+            Szedd be / fizesd ki az alábbi összegeket (pozitív összeg esetén a személy tartozik, negatív esetén a kassza)! Ezzel a tranzakciók még nem kerülnek a kasszába, de törleszted a tartozásokat.<br>
+        </blockquote>
         <table><tbody>
             @forelse($depts as $user)
               <tr>

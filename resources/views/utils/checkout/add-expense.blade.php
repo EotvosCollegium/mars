@@ -1,7 +1,7 @@
 @can('createTransaction', $checkout)
 <div class="card">
     <div class="card-content">
-        <span class="card-title">@lang('checkout.add_expense')</span>
+        <span class="card-title">Kiadás hozzáadása</span>
         <blockquote>
             @can('administrate', $checkout)
             Ha költöttél valamire vagy kifizettél valamit valakinek, akkor azt itt rögzítsd.
@@ -15,13 +15,22 @@
             Ha vettél valamit, itt rögzítsd. A kasszafelelős majd megtéríti az összeget.
             @endcan
         </blockquote>
-        <form method="POST" action="{{ route($route_base . '.transaction.add') }}">
+        @if($checkout->name == \App\Models\Checkout::STUDENTS_COUNCIL)
+        <blockquote>
+            @can('administrate', $checkout)
+            A műhelykiadásokat a műhelyek egyenlegeinél, a felhasznált egyenleg módosításánál rögzítsd.
+            @else
+            A műhelykiadásokat csak a kasszafelelős tudja közvetlenül kezelni, így azt ne itt rögzítsd.
+            @endcan
+        </blockquote>
+        @endif
+        <form method="POST" action="{{ route($route_base . '.expense.add') }}">
             @csrf
             <div class="row">
-                <x-input.text m=6 l=6 id="comment" required text="checkout.description" />
-                <x-input.text type="number" m=6 l=6 id="amount" min=0 required locale="checkout" />
+                <x-input.text m=6 l=6 id="comment" required text="Megjegyzés" />
+                <x-input.text type="number" m=6 l=6 id="amount" min=0 required text="Összeg" />
                 @can('administrate', $checkout)
-                <x-input.select m=6 l=6 id="payer" locale="checkout" :elements="\App\Models\User::collegists()" default="{{Auth::user()->id}}" :formatter="function($user) { return $user->uniqueName; }" />
+                <x-input.select m=6 l=6 id="payer" text="Fizető" :elements="\App\Models\User::collegists()" default="{{user()->id}}" :formatter="function($user) { return $user->uniqueName; }" />
                 <x-input.checkbox m=6 l=6 id="paid" checked text="A tartozás kifizetésre került"/>
                 @endcan
             </div>

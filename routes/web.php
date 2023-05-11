@@ -30,6 +30,7 @@ use App\Http\Controllers\StudentsCouncil\EconomicController;
 use App\Http\Controllers\StudentsCouncil\EpistolaController;
 use App\Http\Controllers\StudentsCouncil\MrAndMissController;
 use App\Http\Controllers\StudentsCouncil\CommunityServiceController;
+use App\Http\Controllers\StudentsCouncil\GeneralAssemblyController;
 use App\Http\Controllers\Dormitory\RoomController;
 use App\Models\Room;
 use Illuminate\Support\Facades\Auth;
@@ -69,6 +70,8 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
     Route::post('/users/{user}/personal_information', [UserController::class, 'updatePersonalInformation'])->name('users.update.personal');
     Route::post('/users/{user}/educational_information', [UserController::class, 'updateEducationalInformation'])->name('users.update.educational');
+    Route::post('/users/{user}/alfonso', [UserController::class, 'updateAlfonsoStatus'])->name('users.update.alfonso');
+    Route::post('/users/{user}/language_exam', [UserController::class, 'uploadLanguageExam'])->name('users.language_exams.upload');
     Route::post('/users/{user}/tenant_until', [UserController::class, 'updateTenantUntil'])->name('users.update.tenant_until');
     Route::post('/users/{user}/roles/{role}', [UserController::class, 'addRole'])->name('users.roles.add');
     Route::delete('/users/{user}/roles/{role}', [UserController::class, 'removeRole'])->name('users.roles.delete');
@@ -122,7 +125,8 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::get('/network/admin/checkout', [AdminCheckoutController::class, 'showCheckout'])->name('admin.checkout');
     Route::post('/network/admin/checkout/mark_as_paid/{user}', [AdminCheckoutController::class, 'markAsPaid'])->name('admin.checkout.pay');
     Route::post('/network/admin/checkout/to_checkout', [AdminCheckoutController::class, 'toCheckout'])->name('admin.checkout.to_checkout');
-    Route::post('/network/admin/checkout/transaction/add', [AdminCheckoutController::class, 'addExpense'])->name('admin.checkout.transaction.add');
+    Route::post('/network/admin/checkout/expense/add', [AdminCheckoutController::class, 'addExpense'])->name('admin.checkout.expense.add');
+    Route::post('/network/admin/checkout/income/add', [AdminCheckoutController::class, 'addIncome'])->name('admin.checkout.income.add');
     Route::get('/network/admin/checkout/transaction/delete/{transaction}', [EconomicController::class, 'deleteTransaction'])->name('admin.checkout.transaction.delete');
 
     /** Routers */
@@ -177,7 +181,8 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
 
     /** Students' Council */
     Route::get('/economic_committee', [EconomicController::class, 'index'])->name('economic_committee');
-    Route::post('/economic_committee/transaction/add', [EconomicController::class, 'addExpense'])->name('economic_committee.transaction.add');
+    Route::post('/economic_committee/expense/add', [EconomicController::class, 'addExpense'])->name('economic_committee.expense.add');
+    Route::post('/economic_committee/income/add', [EconomicController::class, 'addIncome'])->name('economic_committee.income.add');
     Route::get('/economic_committee/transaction/delete/{transaction}', [EconomicController::class, 'deleteTransaction'])->name('economic_committee.transaction.delete');
     Route::post('/economic_committee/mark_as_paid/{user}', [EconomicController::class, 'markAsPaid'])->name('economic_committee.pay');
     Route::post('/economic_committee/to_checkout', [EconomicController::class, 'toCheckout'])->name('economic_committee.to_checkout');
@@ -211,4 +216,16 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::post('/community_service/reject/{community_service}', [CommunityServiceController::class, 'reject'])->name('community_service.reject');
     Route::post('/community_service/create', [CommunityServiceController::class, 'create'])->name('community_service.create');
     Route::get('/community_service/search', [CommunityServiceController::class, 'search'])->name('community_service.search');
+
+    /** voting */
+    Route::get('/general_assemblies', [GeneralAssemblyController::class, 'index'])->name('general_assemblies.index');
+    Route::get('/general_assemblies/create', [GeneralAssemblyController::class, 'create'])->name('general_assemblies.create');
+    Route::post('/general_assemblies', [GeneralAssemblyController::class, 'store'])->name('general_assemblies.store');
+    Route::get('/general_assemblies/{general_assembly}', [GeneralAssemblyController::class, 'show'])->name('general_assemblies.show');
+    Route::post('/general_assemblies/{general_assembly}/close', [GeneralAssemblyController::class, 'closeAssembly'])->name('general_assemblies.close');
+    Route::get('/questions/create', [GeneralAssemblyController::class, 'newQuestion'])->name('questions.create');
+    Route::post('/questions', [GeneralAssemblyController::class, 'addQuestion'])->name('questions.store');
+    Route::post('/questions/{question}/close', [GeneralAssemblyController::class, 'closeQuestion'])->name('questions.close');
+    Route::post('/questions/{question}/votes', [GeneralAssemblyController::class, 'saveVote'])->name('questions.votes.store');
+    Route::get('/questions/{question}', [GeneralAssemblyController::class, 'viewQuestion'])->name('questions.show');
 });

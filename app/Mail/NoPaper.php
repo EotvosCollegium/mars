@@ -33,6 +33,6 @@ class NoPaper extends Mailable
     public function build()
     {
         return $this->markdown('emails.no_paper')
-            ->subject(__('mail.no-paper-subject'));
+            ->subject('Kifogyott a papír a nyomtatóból');
     }
 }

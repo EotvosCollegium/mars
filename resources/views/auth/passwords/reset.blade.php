@@ -10,9 +10,9 @@
                 <div class="card-content">
                     <div class="card-title"> @lang('passwords.resetpwd')</div>
                     <div class="row">
-                        <x-input.text id="email"      locale="registration" type="email" :value="$email" required autocomplete="email" autofocus/>
-                        <x-input.text id="password"   locale="registration" type="password" required autocomplete="new-password"/>
-                        <x-input.text id="confirmpwd" locale="registration" name="password_confirmation" type="password" required autocomplete="new-password"/>
+                        <x-input.text id="email"      text="registration.email" type="email" :value="$email" required autocomplete="email" autofocus/>
+                        <x-input.text id="password"   text="registration.password" type="password" required autocomplete="new-password"/>
+                        <x-input.text id="confirmpwd" text="registration.confirmpwd" name="password_confirmation" type="password" required autocomplete="new-password"/>
                     </div>
                 </div>
                 <div class="card-action">

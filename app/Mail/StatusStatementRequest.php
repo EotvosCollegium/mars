@@ -32,6 +32,6 @@ class StatusStatementRequest extends Mailable
     public function build()
     {
         return $this->markdown('emails.status_statement_request')
-                    ->subject(__('secretariat.status_statement_request_subject'));
+                    ->subject('Add meg a státuszod a következő félévre!');
     }
 }

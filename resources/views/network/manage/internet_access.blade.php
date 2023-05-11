@@ -1,4 +1,4 @@
-<span class="card-title">@lang('internet.internet_access')</span>
+<span class="card-title">Internetelérés</span>
 <div id="net_accesses-table"></div>
 <script type="text/javascript" src="{{ mix('js/moment.min.js') }}"></script>
 <script type="application/javascript">
@@ -8,11 +8,11 @@
         var actions = function (cell, formatterParams, onRendered) {
             var data = cell.getRow().getData();
             var active = (new Date(data.has_internet_until));
-            return $("<button class=\"btn waves-effect\" title=\"{{ $activation_date }}\">@lang('internet.update')</button>")
+            return $("<button class=\"btn waves-effect\" title=\"{{ $activation_date }}\">Frissítés</button>")
                 .click(function () {
                     saveData(cell, {...data, has_internet_until: "{{ $activation_date }}"});
                 }).toggle(data.has_internet_until == null || activation_date > active)
-                .add($("<button class=\"btn waves-effect\">@lang('internet.deactivate')</button>")
+                .add($("<button class=\"btn waves-effect\">Deaktivál</button>")
                     .click(function () {
                         saveData(cell, {...data, has_internet_until: null});
                     }).toggle(data.has_internet_until != null && active >= now)).wrapAll('<div></div>').parent()[0];
@@ -32,7 +32,7 @@
                     $(cell.getRow().getElement()).removeClass('tabulator-unsaved');
                 },
                 error: function (error) {
-                    ajaxError('@lang('internet.error')', '@lang('internet.ajax_error')', '@lang('internet.ok')', error);
+                    ajaxError('Hiba', 'AJAX hiba', 'OK', error);
                 }
             });
         };
@@ -66,14 +66,14 @@
             cellEdited: editCallback,
             columns: [
                 {
-                    title: "@lang('internet.username')",
+                    title: "Felhasználó",
                     field: "user.name",
                     sorter: "string",
                     headerFilter: 'input',
                     minWidth:200,
                 },
                 {
-                    title: "@lang('internet.internet_access')",
+                    title: "Internetelérés",
                     field: "has_internet_until",
                     sorter: "datetime",
                     formatter: dateFormatter,
@@ -81,7 +81,7 @@
                     minWidth:200,
                 },
                 {
-                    title: "@lang('internet.auto_approved_mac_slots')",
+                    title: "Alap MAC slot",
                     field: "auto_approved_mac_slots",
                     sorter: "number",
                     editor: 'number',

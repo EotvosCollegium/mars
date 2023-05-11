@@ -10,22 +10,22 @@ use App\Models\User;
 use App\Models\Workshop;
 use App\Models\WorkshopBalance;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
     public function profile()
     {
-        $user = Auth::user();
+        $user = user();
 
         return view('auth.user', [
             'user' => $user,
-            'semesters' => $user->allSemesters,
+            'semesters' => $user->semesterStatuses,
             'faculties' => Faculty::all(),
             'workshops' => Workshop::all()
         ]);
@@ -34,6 +34,7 @@ class UserController extends Controller
     public function updatePersonalInformation(Request $request, User $user): \Illuminate\Http\RedirectResponse
     {
         $this->authorize('view', $user);
+        session()->put('profile_current_page', 'personal_information');
 
         $isCollegist = $user->isCollegist();
 
@@ -63,11 +64,23 @@ class UserController extends Controller
         $validator->validate();
 
         $user->update(['email' => $request->email, 'name' => $request->name]);
-
+        $personal_data = $request->only([
+            'phone_number',
+            'mothers_name',
+            'place_of_birth',
+            'date_of_birth',
+            'country',
+            'county',
+            'zip_code',
+            'city',
+            'street_and_number',
+            'relatives_contact_data',
+            'tenant_until'
+        ]);
         if (!$user->hasPersonalInformation()) {
-            $user->personalInformation()->create($request->all());
+            $user->personalInformation()->create($personal_data);
         } else {
-            $user->personalInformation->update($request->all());
+            $user->personalInformation->update($personal_data);
         }
         if ($request->has('tenant_until')) {
             $date=min(Carbon::parse($request->tenant_until), Carbon::now()->addMonths(6));
@@ -81,6 +94,7 @@ class UserController extends Controller
     public function updateEducationalInformation(Request $request, User $user): \Illuminate\Http\RedirectResponse
     {
         $this->authorize('view', $user);
+        session()->put('profile_current_page', 'educational_information');
 
         $validator = Validator::make($request->all(), [
             'year_of_graduation' => 'required|integer|between:1895,' . date('Y'),
@@ -90,22 +104,109 @@ class UserController extends Controller
             'faculty.*' => 'exists:faculties,id',
             'workshop' => 'array',
             'workshop.*' => 'exists:workshops,id',
+            'study_line_index' => 'required|array|min:1',
             'email' => 'required|string|email|max:255',
-            'program' => 'required|array|min:1',
-            'program.*' => 'nullable|string'
+            'alfonso_language' => ['nullable', Rule::in(array_keys(config('app.alfonso_languages')))],
+            'alfonso_desired_level' => 'nullable|in:B2,C2',
+            'alfonso_passed_by' => 'nullable|date|before:today'
+        ]);
+
+        $validator->after(function ($validator) use ($request) {
+            foreach($request->input('study_line_index', []) as $index) {
+                if ($request->input('study_line_name_' . $index) == null) {
+                    $validator->errors()->add('study_line_name_'.$index, __('validation.required', ['attribute' => 'study_line_name']));
+                }
+                if ($request->input('study_line_level_' . $index) == null) {
+                    $validator->errors()->add('study_line_level_'.$index, __('validation.required', ['attribute' => 'study_line_level']));
+                }
+                if ($request->has('study_line_start_' . $index) == null) {
+                    $validator->errors()->add('study_line_start_'.$index, __('validation.required', ['attribute' => 'study_line_start']));
+                }
+            }
+        });
+
+        $validator->validate();
+
+        $educational_data = $request->only([
+            'year_of_graduation',
+            'high_school',
+            'neptun',
+            'email',
+            'alfonso_language',
+            'alfonso_desired_level',
+            'alfonso_passed_by'
+        ]);
+        DB::transaction(function () use ($user, $request, $educational_data) {
+            if (!$user->hasEducationalInformation()) {
+                $user->educationalInformation()->create($educational_data);
+            } else {
+                $user->educationalInformation->update($educational_data);
+            }
+
+            $user->workshops()->sync($request->input('workshop'));
+            $user->faculties()->sync($request->input('faculties'));
+
+            $user->educationalInformation->studyLines()->delete();
+            foreach($request->input('study_line_index') as $index) {
+                $user->educationalInformation->studyLines()->create([
+                    'name' => $request->input('study_line_name_'.$index),
+                    'type' => $request->input('study_line_level_'.$index),
+                    'start' => $request->input('study_line_start_'.$index),
+                    'end' => $request->input('study_line_end_'.$index, null),
+                ]);
+            }
+            WorkshopBalance::generateBalances(Semester::current()->id);
+        });
+
+
+        return redirect()->back()->with('message', __('general.successful_modification'));
+    }
+
+    public function updateAlfonsoStatus(Request $request, User $user)
+    {
+        $this->authorize('view', $user);
+        session()->put('profile_current_page', 'alfonso');
+
+        $validator = Validator::make($request->all(), [
+            'alfonso_language' => ['nullable', Rule::in(array_keys(config('app.alfonso_languages')))],
+            'alfonso_desired_level' => 'nullable|in:B2,C1',
+            'alfonso_passed_by' => 'nullable|date|before:today'
         ]);
 
         $validator->validate();
 
-        if (!$user->hasEducationalInformation()) {
-            $user->educationalInformation()->create($request->all());
-        } else {
-            $user->educationalInformation->update($request->all());
-        }
+        $user->educationalInformation?->update($request->only([
+            'alfonso_language',
+            'alfonso_desired_level',
+            'alfonso_passed_by'
+        ]));
 
-        $user->workshops()->sync($request->input('workshop'));
-        $user->faculties()->sync($request->input('faculties'));
-        WorkshopBalance::generateBalances(Semester::current()->id);
+        return redirect()->back()->with('message', __('general.successful_modification'));
+    }
+
+    public function uploadLanguageExam(Request $request, User $user)
+    {
+        $this->authorize('view', $user);
+        session()->put('profile_current_page', 'alfonso');
+
+        $validator = Validator::make($request->all(), [
+            'file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2000',
+            'language' => ['required', Rule::in(array_merge(array_keys(config('app.alfonso_languages')), ['other']))],
+            'level' => ['nullable', Rule::in(['A1', 'A2', 'B1', 'B2','C1', 'C2'])],
+            'type' => 'required|string|max:255',
+            'date' => 'required|date|before:today',
+        ]);
+
+        $validator->validate();
+
+        $path = $request->file('file')->store('uploads');
+        $user->educationalInformation->languageExams()->create([
+            'path' => $path,
+            'language' => $request->input('language'),
+            'level' => $request->input('level'),
+            'type' => $request->input('type'),
+            'date' => $request->input('date')
+        ]);
 
         return redirect()->back()->with('message', __('general.successful_modification'));
     }
@@ -128,7 +229,8 @@ class UserController extends Controller
 
     public function updatePassword(Request $request): \Illuminate\Http\RedirectResponse
     {
-        $user = Auth::user();
+        $user = user();
+        session()->put('profile_current_page', 'change_password');
 
         $validator = Validator::make($request->except('_token'), [
             'old_password' => 'required|string|current_password',
@@ -159,7 +261,7 @@ class UserController extends Controller
 
         return view('secretariat.user.show', [
             'user' => $user,
-            'semesters' => $user->allSemesters,
+            'semesters' => $user->semesterStatuses,
             'faculties' => Faculty::all(),
             'workshops' => Workshop::all()
         ]);
@@ -170,13 +272,13 @@ class UserController extends Controller
         $object_id = $request->get('object_id') ?? $request->get('workshop_id');
         $object = $object_id ? $role->getObject($object_id) : null;
         if ($request->user()->cannot('updatePermission', [$user, $role, $object])) {
-            return redirect()->back()->with('error', __('role.unauthorized'));
+            return redirect()->back()->with('error', 'Ezt a jogosultságot nem tudja kezelni!');
         }
 
         if ($user->addRole($role, $object)) {
             return redirect()->back()->with('message', __('general.successfully_added'));
         } else {
-            return redirect()->back()->with('error', __('role.role_can_not_be_attached'));
+            return redirect()->back()->with('error', 'Ezt a jogosultságot nem lehet hozzárendelni senkihez.');
         }
     }
 
@@ -186,7 +288,7 @@ class UserController extends Controller
         $object = $object_id ? $role->getObject($object_id) : null;
 
         if ($request->user()->cannot('updatePermission', [$user, $role, $object])) {
-            return redirect()->back()->with('error', __('role.unauthorized'));
+            return redirect()->back()->with('error', 'Ezt a jogosultságot nem tudja kezelni!');
         }
 
         $user->removeRole($role, $object ?? null);
@@ -199,11 +301,11 @@ class UserController extends Controller
      */
     public function showTenantUpdate()
     {
-        if (!Auth::user()->needsUpdateTenantUntil()) {
+        if (!user()->needsUpdateTenantUntil()) {
             return redirect('/');
         }
         return view('user.update_tenant_status', [
-            'user' => Auth::user(),
+            'user' => user(),
         ]);
     }
 
@@ -212,12 +314,12 @@ class UserController extends Controller
      */
     public function tenantToApplicant()
     {
-        if (!Auth::user()->isTenant() || Auth::user()->isCollegist()) {
+        if (!user()->isTenant() || user()->isCollegist()) {
             return abort(403);
         }
-        $user = Auth::user();
+        $user = user();
         $user->personalInformation()->update(['tenant_until' => null]);
-        $user->removeRole(Role::firstWhere('name', Role::TENANT));
+        $user->removeRole(Role::get(Role::TENANT));
         $user->setExtern();
         $user->update(['verified' => false]);
         $user->application()->create();

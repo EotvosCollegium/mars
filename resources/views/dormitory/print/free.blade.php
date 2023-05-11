@@ -1,4 +1,4 @@
-@if(!Auth::user()->freePages->isEmpty())
+@if(!user()->freePages->isEmpty())
 <div class="card">
     <div class="card-content">
         <div class="card-title">@lang('print.free')</div>
@@ -61,7 +61,7 @@
                     @can('viewAny', App\Models\FreePages::class) headerFilter: 'input' @endif
                 },
                 {
-                    title: "@lang('internet.comment')",
+                    title: "@lang('general.comment')",
                     field: "comment",
                     sorter: "string",
                     @can('viewAny', App\Models\FreePages::class) headerFilter: 'input' @endif

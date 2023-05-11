@@ -2,16 +2,16 @@
 <h1>@lang('mail.dear') {{ $recipient }}!</h1>
 <p>
     @if ($reopen === true)
-        @lang('faults.reopened_fault')
+        Egy hiba újra lett nyitva.
     @else
-        @lang('faults.new_fault')
+        Egy új hiba lett bejelentve.
     @endif
 </p>
-@lang('faults.details'):
+Részletek:
 <ul>
-    <li>@lang('faults.reporter'): {{ $fault->reporter->name }}</li>
-    <li>@lang('faults.location'): {{ $fault->location }}</li>
-    <li>@lang('faults.description'): {{ $fault->description }}</li>
+    <li>Hiba bejelentő: {{ $fault->reporter->name }}</li>
+    <li>Helyszín: {{ $fault->location }}</li>
+    <li>Leírás: {{ $fault->description }}</li>
 </ul>
 
 

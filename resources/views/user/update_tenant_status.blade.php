@@ -17,7 +17,7 @@
                         <x-input.datepicker
                                 id='tenant_until'
                                 required
-                                locale='user'
+                                text='user.tenant_until'
                                 :value="$user->personalInformation?->tenant_until" />
                         <x-input.button class="right" text="general.save" />
                     </div>
@@ -27,7 +27,7 @@
     </div>
 </div>
 
-@if (env('APPLICATION_DEADLINE')>\Carbon\Carbon::now() && Auth::user()->isTenant() && !Auth::user()->isCollegist())
+@if (env('APPLICATION_DEADLINE')>\Carbon\Carbon::now() && user()->isTenant() && !user()->isCollegist())
 <div class="row">
     <div class="col s12">
         <div class="card">

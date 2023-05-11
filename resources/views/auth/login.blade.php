@@ -19,8 +19,8 @@
                     <blockquote class="error">{{ $message }}</blockquote>
                     @enderror
                     <div class="row">
-                        <x-input.text id="email"    type="email"    locale="registration" required autocomplete="email" autofocus/>
-                        <x-input.text id="password" type="password" locale="registration" required autocomplete="current-password"/>
+                        <x-input.text id="email"    type="email"    text="user.email" required autocomplete="email" autofocus/>
+                        <x-input.text id="password" type="password" text="user.password" required autocomplete="current-password"/>
                         @if (Route::has('password.request'))
                         <span class="helper-text right">
                             <a href="{{ route('password.request') }}">

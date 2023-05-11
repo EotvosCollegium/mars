@@ -42,7 +42,14 @@ class CheckoutPolicy
      */
     public function addKKTNetreg(User $user): bool
     {
-        return $user->hasRole(Role::STUDENT_COUNCIL);
+        return $user->hasRole([
+            Role::SYS_ADMIN,
+            Role::STUDENT_COUNCIL => [
+                Role::ECONOMIC_VICE_PRESIDENT,
+                Role::CULTURAL_LEADER,
+                Role::CULTURAL_MEMBER
+            ]
+        ]);
     }
 
 

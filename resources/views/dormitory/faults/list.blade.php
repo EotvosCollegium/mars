@@ -42,7 +42,6 @@
 
             return $("<button type=\"button\" class=\"btn " + style + "\">" + text + "</button>").click(function () {
                 var data = cell.getRow().getData();
-                //confirm('@lang('internet.delete')', '@lang('internet.confirm_delete')', '@lang('internet.cancel')', '@lang('internet.delete')', function () {
                     $.post("{{ route('faults.update') }}", {id: data.id, status: formatterParams['status']}, function(data){
                         if (data !== "true"){
                             alert('@lang('faults.autherror')');
@@ -50,7 +49,6 @@
                             window.location.reload(true);
                         }
                     });
-                //});
             })[0];
         };
 
@@ -100,7 +98,7 @@
                  formatter: "datetime", formatterParams: {outputFormat: "YYYY. MM. DD. HH:mm"}},
                 {title: "@lang('faults.location')", field: "location", sorter: "string", widthGrow: 2, formatter: "textarea"},
                 {title: "@lang('faults.description')", field: "description", sorter: "string", widthGrow: 3, formatter: "textarea"},
-                @if(Auth::User()->hasRole(\App\Models\Role::STAFF))
+                @if(user()->hasRole(\App\Models\Role::STAFF))
                 {title: "", field: "id", headerSort: false, width: 100, formatter: button_formatter, formatterParams: {status: "{{ App\Models\Fault::DONE }}"}},
                 {title: "", field: "id", headerSort: false, width: 200, formatter: button_formatter, formatterParams: {status: "{{ App\Models\Fault::WONT_FIX }}"}},
                 {title: "", field: "id", headerSort: false, width: 130, formatter: button_formatter, formatterParams: {status: "{{ App\Models\Fault::UNSEEN }}"}}

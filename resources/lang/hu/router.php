@@ -11,7 +11,6 @@ return [
     'port' => 'Port',
     'room' => 'Szoba',
     'router' => 'Router',
-    'router_is_down_warning' => 'A :ip IP-címmel rendelkező router a :room számú szobában nem elérhető.',
     'router_is_down_warning_resident' => 'A szobádban (:room) található router nem elérhető. Próbáld meg kikapcsolni és újra bekapcsolni. Hogyha ez nem oldja meg a problémát, szólj a rendszergazdáknak: ',
     'router_monitor' => 'Router monitor',
     'serial_number' => 'Sorozatszám',

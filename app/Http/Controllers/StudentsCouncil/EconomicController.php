@@ -89,7 +89,7 @@ class EconomicController extends Controller
         // Creating transactions
         $kkt = Transaction::create([
             'checkout_id' => Checkout::studentsCouncil()->id,
-            'receiver_id' => Auth::user()->id,
+            'receiver_id' => user()->id,
             'payer_id' => $payer->id,
             'semester_id' => Semester::current()->id,
             'amount' => $request->kkt,
@@ -100,7 +100,7 @@ class EconomicController extends Controller
 
         $netreg = Transaction::create([
             'checkout_id' => Checkout::admin()->id,
-            'receiver_id' => Auth::user()->id,
+            'receiver_id' => user()->id,
             'payer_id' => $payer->id,
             'semester_id' => Semester::current()->id,
             'amount' => $request->netreg,
@@ -119,7 +119,7 @@ class EconomicController extends Controller
             ]);
         }
 
-        Mail::to($payer)->queue(new \App\Mail\Transactions($payer->name, [$kkt, $netreg], __('checkout.transaction_created'), $internet_expiration_message));
+        Mail::to($payer)->queue(new \App\Mail\Transactions($payer->name, [$kkt, $netreg], "Tranzakció létrehozva", $internet_expiration_message));
 
         return redirect()->back()->with('message', __('general.successfully_added'));
     }
@@ -148,7 +148,7 @@ class EconomicController extends Controller
         $workshop_balance->increment('used_balance', $request->amount);
         Transaction::create([
             'checkout_id' => Checkout::studentsCouncil()->id,
-            'receiver_id' => Auth::user()->id,
+            'receiver_id' => user()->id,
             'semester_id'=> $workshop_balance->semester->id,
             'amount' => (-1)*$request->amount,
             'payment_type_id' => PaymentType::workshopExpense()->id,

@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use App\Utils\DataCompresser;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -27,6 +25,9 @@ class EducationalInformation extends Model
         'year_of_acceptance',
         'email',
         'program',
+        'alfonso_language',
+        'alfonso_desired_level',
+        'alfonso_passed_by'
     ];
 
     public function user()
@@ -35,27 +36,18 @@ class EducationalInformation extends Model
     }
 
     /**
-     * Get the program attribute.
-     *
-     * @return Attribute
+     * The educational programs that belong to the educational information.
      */
-    protected function program(): Attribute
+    public function studyLines()
     {
-        return Attribute::make(
-            get: fn ($value): array => DataCompresser::decompressData($value),
-            set: fn ($value): string => DataCompresser::compressData($value),
-        );
+        return $this->hasMany(StudyLine::class);
     }
 
     /**
-     * Get the programs attribute.
-     *
-     * @return Attribute
+     * The uploaded language exams that belong to the educational information.
      */
-    protected function programs(): Attribute
+    public function languageExams()
     {
-        return Attribute::make(
-            get: fn (): string => join(', ', $this->program ?? []),
-        );
+        return $this->hasMany(LanguageExam::class);
     }
 }

@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('title')
-<a href="#!" class="breadcrumb">@lang('admin.admin')</a>
-<a href="#!" class="breadcrumb">@lang('admin.checkout')</a>
+<a href="#!" class="breadcrumb">@lang('general.admin')</a>
+<a href="#!" class="breadcrumb">Rendszergazdai kassza</a>
 @endsection
 @section('admin_module') active @endsection
 
@@ -10,33 +10,13 @@
 
 <div class="row">
     <div class="col s12">
-        <div class="card">
-            <div class="card-content">
-                <span class="card-title">@lang('checkout.checkout')</span>
-                <blockquote>
-                    @lang('checkout.current_balance'):
-                    <b class="coli-text text-orange"> {{ number_format($current_balance, 0, '.', ' ') }} Ft</b>.<br>
-                </blockquote>
-                @can('administrate', $checkout)
-                <blockquote>
-                    @lang('checkout.current_balance_in_checkout'):
-                    <b class="coli-text text-orange"> {{ number_format($current_balance_in_checkout, 0, '.', ' ') }} Ft</b>.<br>
-                    @if($transactions_not_in_checkout != 0)
-                    @lang('checkout.to_checkout'): <b>{{$transactions_not_in_checkout}} Ft</b>
-                    @endif
-                </blockquote>
-                @if($transactions_not_in_checkout != 0)
-                    <form method="POST" action="{{ route($route_base . '.to_checkout') }}">
-                        @csrf
-                        <x-input.button floating class="right green" icon="payments"/>
-                    </form>
-                @endif
-                @endcan
-            </div>
-        </div>
+        @include('utils.checkout.status')
         <div class="row">
             <div class="col s12">
-                @include('utils.checkout.add-transaction')
+                @include('utils.checkout.add-income')
+            </div>
+            <div class="col s12">
+                @include('utils.checkout.add-expense')
             </div>
             <div class="col s12">
                 @include('utils.checkout.depts')
@@ -61,11 +41,11 @@
                         <div class="col s12">
                             <table><tbody>
                                 @include('utils.checkout.header')
-                                <tr><th>@lang('checkout.incomes')</th></tr>
+                                <tr><th>Bevétel</th></tr>
                                 @include('utils.checkout.sum', ['paymentType' => \App\Models\PaymentType::print()])
                                 @include('utils.checkout.sum', ['paymentType' => \App\Models\PaymentType::netreg()])
                                 @include('utils.checkout.list', ['paymentType' => \App\Models\PaymentType::income()])
-                                <tr><th>@lang('checkout.expenses')</th></tr>
+                                <tr><th>Kiadás</th></tr>
                                 @include('utils.checkout.list', ['paymentType' => \App\Models\PaymentType::expense()])
                                 @include('utils.checkout.footer')
                             </tbody></table>

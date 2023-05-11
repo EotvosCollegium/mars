@@ -12,7 +12,7 @@
                 </div>
                 <div class="col s12 xl8">
                     @can('viewAnyApplication', \App\Models\User::class)
-                        @if(!auth()->user()->hasRole(\App\Models\Role::SYS_ADMIN) || $user->application->status == \App\Models\ApplicationForm::STATUS_IN_PROGRESS)
+                        @if(!user()->hasRole(\App\Models\Role::SYS_ADMIN) || $user->application->status == \App\Models\ApplicationForm::STATUS_IN_PROGRESS)
                             <span class="right">
                                 @include('auth.application.status', ['status' => $user->application->status])
                             </span>

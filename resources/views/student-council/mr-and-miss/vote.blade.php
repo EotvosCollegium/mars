@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('title')
-    <a href="#!" class="breadcrumb">@lang('role.student-council')</a>
-    <a href="#!" class="breadcrumb">@lang('mr-and-miss.mr-and-miss')</a>
+    <a href="#!" class="breadcrumb">Választmány</a>
+    <a href="#!" class="breadcrumb">Mr. és Miss Eötvös</a>
 @endsection
 
 @section('student_council_module')
@@ -14,16 +14,19 @@
         <div class="col s12">
             <div class="card">
                 <div class="card-content">
-                    <span class="card-title">@lang('mr-and-miss.vote')</span>
+                    <span class="card-title">Szavazás</span>
                     @can('manage', \App\Models\MrAndMiss::class)
                     <p>
-                        <x-input.button :href="route('mr_and_miss.categories')" :text="__('mr-and-miss.mr-and-miss-categories')" />
-                        <x-input.button :href="route('mr_and_miss.results')" :text="__('mr-and-miss.mr-and-miss-results')" />
+                        <x-input.button :href="route('mr_and_miss.categories')" text="Kategóriák" />
+                        <x-input.button :href="route('mr_and_miss.results')" text="Eredmények" />
                     </p>
                     @endcan
-                    <p>@lang('mr-and-miss.vote-explanation')</p>
+                    <p>
+                        Külön tudtok szavazni a Mr, a Miss, illetve az egyéni kategóriákban. Lehetőleg a keresők segítségével válasszátok ki a jelölteteket, azonban ha nem találjátok az illetőt a rendszerben, a sor végén található gombbal tudtok szabad kezes bevitelre váltani. 
+                        A határidőig bárhányszor módosíthatjátok a szavazatokat.
+                    </p>
                     <blockquote>
-                        @lang('mr-and-miss.deadline', ['deadline' => $deadline])
+                        A szavazás lezárásának határideje: {{ $deadline }}
                     </blockquote>
                     @foreach ($errors->all() as $error)
                         <blockquote class="error">{{ $error }}</blockquote>
@@ -38,7 +41,7 @@
                                     href="#tab1">{{ $miss_first ? 'miss' : 'mr' }}</a></li>
                             <li class="tab"><a href="#tab2">{{ $miss_first ? 'mr' : 'miss' }}</a></li>
                             <li class="tab"><a @if (session('activate_custom')) class="active" @endif
-                                    href="#tab3">@lang('mr-and-miss.custom')</a></li>
+                                    href="#tab3">Egyéni kategóriák</a></li>
                         </ul>
                     </div>
                     <div class="card-content lighten-4">
@@ -68,16 +71,16 @@
                 {{-- Custom categoories --}}
                 <div class="card">
                     <div class="card-content">
-                        <span class="card-title">@lang('mr-and-miss.add-custom')</span>
+                        <span class="card-title">Egyéni kategória hozzáadása</span>
                         <form action="{{ route('mr_and_miss.vote.custom') }}" method="post">
                             @csrf
                             <div class="row">
                                 <div class="input-field col xl3 switch s12">
                                     <label>
-                                        @lang('mr-and-miss.private')
+                                        Privát
                                         <input name="is-public" type="checkbox">
                                         <span class="lever"></span>
-                                        @lang('mr-and-miss.public')
+                                        Nyilvános
                                     </label>
                                 </div>
                                 <div class="input-field col xl1 s4">
@@ -86,12 +89,12 @@
                                         <option value="Miss">Miss</option>
                                     </select>
                                 </div>
-                                <x-input.text s=12 xl=8 id="title" locale="mr-and-miss" />
+                                <x-input.text s=12 xl=8 id="title" text="kategória neve" />
                             </div>
                             <blockquote>
-                                @lang('mr-and-miss.custom-category')
+                                A publikus egyéni kategóriákra mások is szavazhatnak, ezek másoknál is megjelennek. Az új kategóriára szavazni majd a kategória létrehozása után tudsz.
                             </blockquote>
-                            <button class="btn waves-effect waves-light" type="submit">@lang('print.add')
+                            <button class="btn waves-effect waves-light" type="submit">Hozzáadás
                                 <i class="material-icons right">add</i>
                             </button>
                         </form>

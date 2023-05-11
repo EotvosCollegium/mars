@@ -39,6 +39,6 @@ class CommunityServiceRequested extends Mailable
     public function build()
     {
         return $this->markdown('emails.community_service_requested')
-                    ->subject(__('mail.community_service_requested'));
+                    ->subject('Közösségi tevékenység kérelem');
     }
 }

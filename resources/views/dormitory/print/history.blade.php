@@ -6,28 +6,31 @@
         <script type="application/javascript">
         $(document).ready(function() {
             var deleteButton = function(cell, formatterParams, onRendered) {
-                return $(
+                var data = cell.getRow().getData();
+                if(data.state == '@lang('print.'.App\Models\PrintJob::QUEUED)'){
+                    return $(
                     "<button type=\"button\" class=\"btn waves-effect btn-fixed-height  coli blue\">@lang('print.cancel_job')</button>"
                     ).click(function() {
-                        var data = cell.getRow().getData();
-                        // confirm('@lang('print.cancel_job')','@lang('print.confirm_cancel')','@lang('print.cancel')','@lang('print.cancel_job')',function() {
-                            $.ajax({
-                                type: "POST",
-                                url: "{{ route('print.print_jobs.cancel', [':id']) }}".replace(':id', data.id),
-                                success: function() {
-                                    cell.getTable().setPage(cell.getTable().getPage());
-                                },
-                                error: function(error) {
-                                    ajaxError(
-                                        '@lang('internet.error')',
-                                        '@lang('internet.ajax_error')',
-                                        '@lang('internet.ok')',
-                                        error
-                                    );
-                                }
-                            });
-                        // });
+                        $.ajax({
+                            type: "POST",
+                            url: "{{ route('print.print_jobs.cancel', [':id']) }}".replace(':id', data.id),
+                            success: function() {
+                                cell.getTable().setPage(cell.getTable().getPage());
+                            },
+                            error: function(error) {
+                                ajaxError(
+                                    '@lang('internet.error')',
+                                    '@lang('internet.ajax_error')',
+                                    'ok',
+                                    error
+                                );
+                            }
+                        });
                     })[0];
+                } else {
+                    return '';
+                }
+
             };
             var dateFormatter = function(cell, formatterParams){
                 var value = cell.getValue();
@@ -55,6 +58,7 @@
                     },
                     @can('viewAny', App\Models\PrintJob::class)
                     {
+                        //TODO empty when not in admin view
                         title: "@lang('print.user')",
                         field: "user.name",
                         sorter: "string",

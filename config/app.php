@@ -64,6 +64,14 @@ return [
     'preventLazyLoading' => env('PREVENT_LAZY_LOADING', false) && env('APP_DEBUG', false),
 
     /*
+    |
+    | Other strictness settings
+    |
+    */
+    'preventSilantlyDiscardingAttributes' => env('PREVENT_SILANTLY_DISCARDING_ATTRIBUTES', false) && env('APP_DEBUG', false),
+    'preventAccessingMissingAttributes' => env('PREVENT_ACCESSING_MISSING_ATTRIBUTES', false) && env('APP_DEBUG', false),
+
+    /*
     |--------------------------------------------------------------------------
     | Application URL
     |--------------------------------------------------------------------------
@@ -112,6 +120,15 @@ return [
         'sp' => 'S - Español',
         'gr' => 'Ó - Ελληνικά',
         'hu' => 'M - Magyar',
+    ],
+    'alfonso_languages' => [
+        'en' => 'A - English',
+        'la' => 'L - Latina',
+        'fr' => 'F - Français',
+        'it' => 'O - Italiano',
+        'de' => 'N - Deutsch',
+        'sp' => 'S - Español',
+        'gr' => 'Ó - Ελληνικά'
     ],
 
     'locale_cookie_lifespan' => 9600,

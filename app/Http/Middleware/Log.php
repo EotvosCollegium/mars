@@ -18,7 +18,7 @@ class Log
     public function handle($request, Closure $next)
     {
         if (Auth::check() && $request->isMethod('post')) {
-            SystemLog::debug('User #'.Auth::user()->id.' sent request: path='
+            SystemLog::debug('User #'.user()->id.' sent request: path='
                 .$request->path().'&'
                 .http_build_query($request->input()));
         }

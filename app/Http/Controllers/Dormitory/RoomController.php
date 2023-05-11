@@ -54,13 +54,7 @@ class RoomController extends Controller
     {
         $this->authorize('updateAny', Room::class);
         $users=User::active()->resident()->get();
-        // Is an active tenant
-        $tenants=User::currentTenant()
-        // Or is a collegist (for externs living in the Collegium)
-        ->orWhereHas('roles', function ($q) {
-            $q->where('name', Role::COLLEGIST);
-        })
-        ->get();
+        $tenants=User::currentTenant()->get();
         $users=$users->concat($tenants)->unique();
         $rooms = Room::with('users')->get();
         return view('dormitory.rooms.modify', ['users' => $users, 'rooms' => $rooms]);
@@ -80,10 +74,10 @@ class RoomController extends Controller
         $validator->validate();
         $new_capacity=$room->capacity+($request->type=='add' ? 1 : -1);
         if ($new_capacity<$room->residentNumber()) {
-            return back()->with('error', __('rooms.no_capacity_error'));
+            return back()->with('error', 'Nincs elég hely a szobában');
         }
         if ($new_capacity>4 || $new_capacity<1) {
-            return back()->with('error', __('rooms.capacity_bounds_error'));
+            return back()->with('error', 'A lakószámnak 1 és 4 között kell lennie');
         }
         if ($request->type=='add') {
             $room->increment('capacity');
@@ -101,22 +95,11 @@ class RoomController extends Controller
     {
         $this->authorize('updateAny', Room::class);
 
-        $rooms=Room::all();
-        User::update(['room' => null]);
-        foreach ($rooms as $room) {
+        User::where('id', '>', 0)->update(['room' => null]);
+        foreach (Room::all() as $room) {
             $userIds=isset($request->rooms[$room->name]) ? $request->rooms[$room->name] : null;
-            if ($userIds!==null) {
-                foreach ($userIds as $userId) {
-                    // $userId can be 'null' if one of the users has been taken out of the assignment.
-                    if ($userId!='null') {
-                        $user=User::find($userId);
-                        if ($user!=null) {
-                            $user->update(['room' => $room->name]);
-                        }
-                    }
-                }
-            }
+            User::whereIn('id', $userIds ?? [])->update(['room' => $room->name]);
         }
-        return back();
+        return back()->with('message', __('general.successful_modification'));
     }
 }

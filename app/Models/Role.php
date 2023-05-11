@@ -34,6 +34,7 @@ class Role extends Model
     public const STUDENT_COUNCIL_SECRETARY = 'student-council-secretary';
     public const BOARD_OF_TRUSTEES_MEMBER = 'board-of-trustees-member';
     public const ETHICS_COMMISSIONER = 'ethics-commissioner';
+    public const ALUMNI = 'alumni';
 
     //Students' Committe role's objects
     public const PRESIDENT = 'president';
@@ -101,7 +102,8 @@ class Role extends Model
         self::STUDENT_COUNCIL,
         self::STUDENT_COUNCIL_SECRETARY,
         self::BOARD_OF_TRUSTEES_MEMBER,
-        self::ETHICS_COMMISSIONER
+        self::ETHICS_COMMISSIONER,
+        self::ALUMNI
     ];
 
     protected $fillable = [
@@ -114,7 +116,6 @@ class Role extends Model
     ];
 
     public $timestamps = false;
-
 
     public function users(): BelongsToMany
     {
@@ -130,7 +131,7 @@ class Role extends Model
     /**
      * Returns the role model for the given role name/id.
      */
-    public static function getRole(Role|string|int $role): Role
+    public static function get(Role|string|int $role): Role
     {
         if ($role instanceof Role) {
             return $role;
@@ -177,7 +178,6 @@ class Role extends Model
             } elseif (!isset($object)) {
                 $object = null;
             }
-
             if (!$this->isValid($object)) {
                 throw new InvalidArgumentException("Role object/workshop '".$object."' does not exist for the " . $this->name . " role.");
             }
@@ -215,25 +215,44 @@ class Role extends Model
         return User::role($this, $object)->get();
     }
 
-
-    public static function Collegist(): Role|null
+    /**
+     * Returns the role for the collegist.
+     */
+    public static function collegist(): Role
     {
         return self::where('name', self::COLLEGIST)->first();
     }
 
-    public static function StudentsCouncil(): Role|null
+     /**
+     * Returns the role for the students council.
+     */
+    public static function studentsCouncil(): Role
     {
         return self::where('name', self::STUDENT_COUNCIL)->first();
     }
 
-    public static function Director(): Role|null
+    /**
+     * Returns the role for the director.
+     */
+    public static function director(): Role
     {
         return self::where('name', self::DIRECTOR)->first();
     }
 
-    public static function SysAdmin(): Role|null
+    /**
+     * Returns the role for the system administrators.
+     */
+    public static function sysAdmin(): Role
     {
         return self::where('name', self::SYS_ADMIN)->first();
+    }
+
+    /**
+     * Returns the role for the alumni.
+     */
+    public static function alumni(): Role
+    {
+        return self::where('name', self::ALUMNI)->first();
     }
 
     /**
@@ -265,10 +284,11 @@ class Role extends Model
             self::LOCALE_ADMIN => 'amber',
             self::STUDENT_COUNCIL => 'green darken-4',
             self::APPLICATION_COMMITTEE_MEMBER => 'light-blue darken-4',
-            self::AGGREGATED_APPLICATION_COMMITTEE_MEMBER =>  'grey darken-2',
+            self::AGGREGATED_APPLICATION_COMMITTEE_MEMBER =>  'yellow darken-4',
             self::STUDENT_COUNCIL_SECRETARY => 'pink lighten-3',
-            self::BOARD_OF_TRUSTEES_MEMBER => 'black',
+            self::BOARD_OF_TRUSTEES_MEMBER => 'deep-orange darken-1',
             self::ETHICS_COMMISSIONER => 'green lighten-2',
+            self::ALUMNI => 'grey darken-1',
             default => 'grey',
         };
     }

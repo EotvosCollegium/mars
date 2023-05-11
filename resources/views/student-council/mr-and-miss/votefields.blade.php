@@ -28,6 +28,6 @@
     </div>
 @endforeach
 
-<button class="btn waves-effect waves-light" type="submit" id="mr-submit" name="action">@lang('general.save')
+<button class="btn waves-effect waves-light" type="submit" id="mr-submit" name="action">Mentés
     <i class="material-icons right">save</i>
 </button>

@@ -35,6 +35,6 @@ class StateCertificateRequest extends Mailable
     public function build()
     {
         return $this->markdown('emails.status_certificate_request')
-                    ->subject(__('mail.status_certificate_request_subject'));
+                    ->subject('Tagságigazolás igénylés');
     }
 }

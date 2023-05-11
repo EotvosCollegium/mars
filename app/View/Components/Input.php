@@ -23,7 +23,6 @@ abstract class Input extends Component
      * See https://laravel.com/docs/8.x/blade#components for more details.
      *
      * @param  string  $id  input id and default name
-     * @param  string  $locale  if text is not provided, the label will be @lang($locale.$id)
      * @param  string  $text  if provided, the label will be @lang($text)
      * @param  int  $s  size for small displays (default: 12)
      * @param  int  $m  size for medium displays  (default: s)
@@ -33,10 +32,10 @@ abstract class Input extends Component
      * @param $attributes any other attribute given will be added to the input tag
      * @return void
      */
-    public function __construct($id = null, $locale = null, $text = null, $s = 12, $m = null, $l = null, $xl = null, $onlyInput = false)
+    public function __construct($id = null, $text = null, $s = 12, $m = null, $l = null, $xl = null, $onlyInput = false)
     {
         $this->id = $id;
-        $this->label = __($text ?? ($locale.'.'.$id));
+        $this->label = __($text);
         $this->s = $s;
         $this->m = $m;
         $this->l = $l;

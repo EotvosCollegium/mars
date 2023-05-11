@@ -1,7 +1,7 @@
 <div>
     <div class="card">
         <div class="card-content">
-            <span class="card-title">@lang('general.filter')</span>
+            <span class="card-title">Szűrés</span>
             <input type="text" class="input-field" id="filter_name" placeholder="@lang('user.name')"
                    wire:model="filter_name"/>
             <input type="number" class="input-field" id="year_of_acceptance" placeholder="@lang('user.year_of_acceptance')"
@@ -40,7 +40,7 @@
                 @endif
             @endforeach
             <hr>
-            <h6>@lang('admin.statuses') ({{\App\Models\Semester::current()->tag}})</h6>
+            <h6>Státuszok ({{\App\Models\Semester::current()->tag}})</h6>
             @foreach (\App\Models\SemesterStatus::STATUSES as $s)
                 @if(in_array($s, $this->statuses))
                     <span class="new badge {{ \App\Models\SemesterStatus::color($s) }}" data-badge-caption=""
@@ -72,7 +72,7 @@
             {{-- List --}}
             <div class="row">
                 <div class="col s12 xl7">
-                    <span class="card-title">@lang('general.users')</span>
+                    <span class="card-title">Felhasználók</span>
                 </div>
             </div>
 
@@ -101,13 +101,22 @@
                         </div>
                         <!-- Status -->
                         <div class="col s12 xl1">
-                            @if($user->hasEducationalInformation())
+                            @if($user->isCollegist())
                                 @can('view', $user)
-                                    <span
-                                        class="new badge tag {{ \App\Models\SemesterStatus::color($user->getStatus()) }}"
-                                        data-badge-caption="">
-                                            @lang("user." . $user->getStatus())
-                                    </span>
+                                @php
+                                    $status = $user->getStatus();
+                                @endphp
+                                <span class="new badge {{ \App\Models\SemesterStatus::color($status?->status) }} right" data-badge-caption="">
+                                    <b> @if($status?->status) 
+                                        @lang("user." . $status->status)
+                                        @else
+                                        @lang("user.no_status")
+                                        @endif
+                                        @if($status?->comment) 
+                                        ({{$status->comment}}) 
+                                        @endif
+                                    </b>
+                                </span>
                                 @endcan
                             @endif
                         </div>

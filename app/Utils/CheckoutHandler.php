@@ -39,7 +39,7 @@ trait CheckoutHandler
     private function getData(Checkout $checkout): array
     {
         /** @var User $user */
-        $user = Auth::user();
+        $user = user();
 
         if ($user->can('administrate', $checkout)) {
             $depts = User::withWhereHas('transactionsReceived', function ($query) use ($checkout) {
@@ -108,8 +108,8 @@ trait CheckoutHandler
             ->where('checkout_id', $this->checkout()->id)
             ->whereNull('paid_at')->get();
 
-        Mail::to(Auth::user())->queue(new Transactions(Auth::user()->name, $transactions, __('checkout.transaction_updated'), "Az alábbi tranzakciókat kifizetted."));
-        Mail::to($user)->queue(new Transactions($user->name, $transactions, __('checkout.transaction_updated'), "Az alábbi tranzakciókat kifizették neked."));
+        Mail::to(user())->queue(new Transactions(user()->name, $transactions, "Tranzakció módosítva", "Az alábbi tranzakciókat kifizetted."));
+        Mail::to($user)->queue(new Transactions($user->name, $transactions, "Tranzakció módosítva", "Az alábbi tranzakciókat kifizették neked."));
 
         Transaction::where('receiver_id', $user->id)
             ->where('checkout_id', $this->checkout()->id)
@@ -128,12 +128,12 @@ trait CheckoutHandler
     {
         $this->authorize('administrate', $this->checkout());
 
-        $user = Auth::user();
+        $user = user();
 
         $transactions = Transaction::where('checkout_id', $this->checkout()->id)
             ->where('moved_to_checkout', null)->get();
 
-        Mail::to($user)->queue(new Transactions($user->name, $transactions, __('checkout.transaction_updated'), "A tranzakciók új státusza: szinkronizálva a kasszával. (Ettől függetlenül még tartozhatsz embereknek, nézd meg Uránban!)"));
+        Mail::to($user)->queue(new Transactions($user->name, $transactions, "Tranzakció módosítva", "A tranzakciók új státusza: szinkronizálva a kasszával. (Ettől függetlenül még tartozhatsz embereknek, nézd meg Uránban!)"));
 
         Transaction::where('checkout_id', $this->checkout()->id)
             ->where('moved_to_checkout', null)->update(['moved_to_checkout' => Carbon::now()]);
@@ -142,8 +142,39 @@ trait CheckoutHandler
     }
 
     /**
+     * Create a basic income transaction in the checkout.
+     *
+     * @param Request $request
+     * @return RedirectResponse
+     * @throws AuthorizationException
+     * @throws ValidationException
+     */
+    public function addIncome(Request $request): RedirectResponse
+    {
+        $this->authorize('administrate', $this->checkout());
+        $validator = Validator::make($request->all(), [
+            'comment' => 'required|string',
+            'amount' => 'required|integer|min:0',
+        ]);
+        $validator->validate();
+
+        Transaction::create([
+            'checkout_id'       => $this->checkout()->id,
+            'receiver_id'       => user()->id,
+            'payer_id'          => null,
+            'semester_id'       => Semester::current()->id,
+            'amount'            => $request->amount,
+            'payment_type_id'   => PaymentType::income()->id,
+            'comment'           => $request->comment,
+            'paid_at'           => Carbon::now(),
+        ]);
+
+        return back()->with('message', __('general.successfully_added'));
+
+    }
+
+    /**
      * Create a basic expense transaction in the checkout.
-     * Income can only be added as KKT/Netreg currently.
      * The receiver and the payer also will be the authenticated user
      * (since this does not mean a payment between users, just a transaction from the checkout).
      * The only exception for the payer is when the checkout handler administrates a transaction payed by someone else.
@@ -164,7 +195,7 @@ trait CheckoutHandler
         ]);
         $validator->validate();
 
-        $user = $request->has('payer') ? User::find($request->input('payer')) : auth()->user();
+        $user = $request->has('payer') ? User::find($request->input('payer')) : user();
         $paid = $request->has('paid');
 
         $transaction = Transaction::create([
@@ -182,7 +213,7 @@ trait CheckoutHandler
             new Transactions(
                 $user->name,
                 [$transaction],
-                __('checkout.transaction_created'),
+                "Tranzakció létrehozva",
                 "Az alábbi tranzakciók jöttek létre:"
             )
         );
@@ -192,7 +223,7 @@ trait CheckoutHandler
                 new Transactions(
                     $this->checkout()->handler->name,
                     [$transaction],
-                    __('checkout.transaction_created'),
+                    "Tranzakció létrehozva",
                     "Az alábbi tranzakciók jöttek létre:"
                 )
             );
@@ -212,10 +243,10 @@ trait CheckoutHandler
         $this->authorize('delete', $transaction);
 
         if ($transaction->payer) {
-            Mail::to($transaction->payer)->queue(new Transactions($transaction->payer->name, [$transaction], __('checkout.transaction_deleted'), __('checkout.transactions_has_been_deleted')));
+            Mail::to($transaction->payer)->queue(new Transactions($transaction->payer->name, [$transaction], "Tranzakció törölve", "A tranzakciók törlésre kerültek."));
         }
         if ($transaction->receiver && $transaction->receiver->id != $transaction->payer?->id) {
-            Mail::to($transaction->receiver)->queue(new Transactions($transaction->receiver->name, [$transaction], __('checkout.transaction_deleted'), __('checkout.transactions_has_been_deleted')));
+            Mail::to($transaction->receiver)->queue(new Transactions($transaction->receiver->name, [$transaction], "Tranzakció törölve", "A tranzakciók törlésre kerültek."));
         }
 
         $transaction->delete();

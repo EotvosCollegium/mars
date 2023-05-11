@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Auth;
 
 class StatusUpdated extends Mailable
 {
@@ -31,7 +32,7 @@ class StatusUpdated extends Mailable
         $this->semester = $semesterStatus->semester->tag;
         $this->status = __('user.'.$semesterStatus->status);
         $this->comment = $semesterStatus->comment;
-        $this->modifier = auth()->user();
+        $this->modifier = Auth::user();
     }
 
     /**
@@ -42,6 +43,6 @@ class StatusUpdated extends Mailable
     public function build()
     {
         return $this->markdown('emails.status_updated')
-                    ->subject(__('mail.status_updated', ['semester' => $this->semester, 'status' => $this->status]));
+                    ->subject("Új státusz a ".$this->semester." félévre: ".$this->status);
     }
 }

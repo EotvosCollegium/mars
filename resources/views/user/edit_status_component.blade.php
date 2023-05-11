@@ -1,35 +1,53 @@
-<div>
-    <span class="new badge {{ \App\Models\SemesterStatus::color($status) }}" data-badge-caption="" style="margin-right:20px">
-        <b>@lang("user." . $status)</b>
-    </span>
+<tr>
+    <td>
+        <b>{{$semester->tag}} @if($semester == \App\Models\Semester::current()) (jelenlegi) @endif</b>
+    </td>
     @can('updateStatus', $user)
-    <button
-        class="green tooltipped waves-effect btn-floating"
-        wire:click="set('ACTIVE')"
-        data-position="bottom"
-        data-tooltip="{{__('user.ACTIVE')}}">
-            <i class="material-icons">rowing</i>
-    </button>
-    <button
-        class="grey tooltipped waves-effect btn-floating"
-        wire:click="set('INACTIVE')"
-        data-position="bottom"
-        data-tooltip="{{__('user.INACTIVE')}}">
-            <i class="material-icons">power</i>
-    </button>
-    <button
-        class="tooltipped waves-effect btn-floating"
-        wire:click="set('PASSIVE')"
-        data-position="bottom"
-        data-tooltip="{{__('user.PASSIVE')}}">
-            <i class="material-icons">self_improvement</i>
-    </button>
-    <button
-        class="red tooltipped waves-effect btn-floating"
-        wire:click="set('DEACTIVATED')"
-        data-position="bottom"
-        data-tooltip="{{__('user.DEACTIVATED')}}">
-            <i class="material-icons">directions_run</i>
-    </button>
+    <td>
+        <input wire:model="comment" wire:change.debounce.150ms="save" placeholder="Megjegyzés" />
+    </td>
     @endcan
-</div>
+    <td>
+        <span class="new badge {{ \App\Models\SemesterStatus::color($status) }} right" data-badge-caption="">
+            <b> @if($status) 
+                @lang("user." . $status)
+                @else
+                @lang("user.no_status")
+                @endif
+                @if($comment) 
+                ({{$comment}}) 
+                @endif
+            </b>
+        </span>
+    </td>
+    @can('updateStatus', $user)
+    <td>  
+    <button
+            class="red tooltipped waves-effect btn-floating right"
+            style="margin-right: 5px; margin-left: 5px;"
+            wire:click="removeStatus"
+            data-position="bottom"
+            data-tooltip="Státusz törlése">
+                <i class="material-icons">close</i>
+        </button>
+        <button
+            class="gray tooltipped waves-effect btn-floating right"
+            style="margin-right: 5px; margin-left: 5px;"
+            wire:click="setStatus('PASSIVE')"
+            data-position="bottom"
+            data-tooltip="{{__('user.PASSIVE')}}">
+                <i class="material-icons">person_off</i>
+        </button>
+        <button
+            class="green tooltipped waves-effect btn-floating right"
+            style="margin-right: 5px; margin-left: 5px;"
+            wire:click="setStatus('ACTIVE')"
+            data-position="bottom"
+            data-tooltip="{{__('user.ACTIVE')}}">
+                <i class="material-icons">person</i>
+        </button>
+       
+    </td>
+    @endcan
+
+</tr>

@@ -20,15 +20,7 @@ class EpistolaController extends Controller
     {
         $this->authorize('view', EpistolaNews::class);
 
-        //sort by valid_until property with null values at the end
-        $unsent = EpistolaNews::where('sent', false)->get();//->sortBy(function ($result) {
-            //if ($result->valid_until == null)
-            //    if($result->date_for_sorting == null){
-            //        return PHP_INT_MAX;
-            //    }
-            //    return $result->date_for_sorting;
-            //return $result->valid_until;
-        //});
+        $unsent = EpistolaNews::where('sent', false)->get();
 
         $sent = EpistolaNews::where('sent', true)->get();
         return view(
@@ -118,7 +110,7 @@ class EpistolaController extends Controller
             $epistola->update($values);
         } else {
             $updated = false;
-            $values['uploader_id'] = Auth::user()->id;
+            $values['uploader_id'] = user()->id;
             $epistola = EpistolaNews::create($values);
         }
         return redirect(route('epistola'))->with('message', $updated ? __('general.successful_modification') : __('general.successfully_added'));
@@ -145,14 +137,7 @@ class EpistolaController extends Controller
     {
         $this->authorize('send', EpistolaNews::class);
 
-        $unsent = EpistolaNews::where('sent', false)->get()->sortBy(function ($result) {
-            if ($result->valid_until == null) {
-                return PHP_INT_MAX;
-            }
-            return $result->valid_until;
-        });
-
-        Mail::to(env('MAIL_KOMMBIZ'))->send(new EpistolaCollegii($unsent));
+        Mail::to(env('MAIL_KOMMBIZ'))->send(new EpistolaCollegii(self::getActiveNews()));
 
         EpistolaNews::where('sent', false)->update(['sent' => true]);
 

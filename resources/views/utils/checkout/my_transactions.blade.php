@@ -1,7 +1,7 @@
 @if(count($my_received_transactions))
 <div class="card">
     <div class="card-content">
-        <span class="card-title">@lang('checkout.my_received_transactions')</span>
+        <span class="card-title">A tranzakcióim</span>
         <div class="row">
             <div class="col s12">
             <table><tbody>
@@ -11,7 +11,7 @@
                         {{ $transaction->comment }}
                     </td>
                     <td>
-                        @if($transaction->payer_id != Auth::user()->id)
+                        @if($transaction->payer_id != user()->id)
                             {{ $transaction->payer?->name }}
                         @endif
                     </td>
@@ -31,13 +31,14 @@
         </div>
         <div class="row">
             <div class="col s8">
-                <b>@lang('checkout.sum')</b>
+                <b>Összesen</b>
             </div>
             <div class="col s4">
                 <b>{{ $my_received_transactions->sum('amount') }} Ft</b>
             </div>
             <div class="col s12">
-                <blockquote>@lang('checkout.depts_descr')</blockquote>
+                <blockquote>Ennyivel tartozol a kassza felé / tartozik a kassza. Keresd fel a kassza felelősét!<br>
+                Pozitív összeg esetén te tartozol, negatív esetén a kassza.</blockquote>
             </div>
         </div>
     </div>

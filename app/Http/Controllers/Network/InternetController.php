@@ -25,7 +25,7 @@ class InternetController extends Controller
 
     public function index()
     {
-        $internetAccess = Auth::user()->internetAccess;
+        $internetAccess = user()->internetAccess;
 
         return view('network.internet.app', ['internet_access' => $internetAccess]);
     }
@@ -42,7 +42,7 @@ class InternetController extends Controller
 
     public function getUsersMacAddresses(Request $request)
     {
-        $paginator = TabulatorPaginator::from(Auth::user()->macAddresses())
+        $paginator = TabulatorPaginator::from(user()->macAddresses())
             ->sortable(['mac_address', 'comment', 'state'])->paginate();
 
         $paginator->getCollection()->transform($this->translateStates());
@@ -89,7 +89,7 @@ class InternetController extends Controller
 
     public function resetWifiPassword(Request $request)
     {
-        Auth::user()->internetAccess->resetPassword();
+        user()->internetAccess->resetPassword();
 
         return redirect()->back();
     }
@@ -156,14 +156,14 @@ class InternetController extends Controller
         ]);
         $validator->validate();
 
-        if (Auth::user()->can('accept', MacAddress::class) && $request->has('user_id')) {
+        if (user()->can('accept', MacAddress::class) && $request->has('user_id')) {
             $request->validate([
                 'user_id' => 'integer|exists:users,id',
             ]);
             $target_id = $request->input('user_id');
             $state = MacAddress::APPROVED;
         } else {
-            $target_id = Auth::user()->id;
+            $target_id = user()->id;
             $state = MacAddress::REQUESTED;
         }
 
@@ -238,7 +238,7 @@ class InternetController extends Controller
         $validator->validate();
 
         foreach (User::role(Role::SYS_ADMIN)->get() as $admin) {
-            Mail::to($admin)->queue(new InternetFault($admin->name, Auth::user()->name, $request->report, $request->user_os));
+            Mail::to($admin)->queue(new InternetFault($admin->name, user()->name, $request->report, $request->user_os));
         }
         return redirect()->back()->with('message', __('mail.email_sent'));
     }
