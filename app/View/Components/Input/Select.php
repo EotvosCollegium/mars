@@ -49,7 +49,7 @@ class Select extends Input
     {
         $objects = [];
         foreach ($array as $key => $value) {
-            $objects[] = (object)["id" => $key, "name" => $value];
+            $objects[] = (object)["id" => $key, "name" => __($value)];
         }
         return collect($objects);
     }

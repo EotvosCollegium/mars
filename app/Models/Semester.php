@@ -66,6 +66,16 @@ class Semester extends Model
     }
 
     /**
+     * Alias for tag.
+     *
+     * @return Attribute
+     */
+    public function name(): Attribute
+    {
+        return $this->tag();
+    }
+
+    /**
      * Returns a semester by a tag (eg. 2020-2021-2).
      */
     public static function byTag(string $tag): Semester
