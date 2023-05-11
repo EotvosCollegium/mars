@@ -56,6 +56,7 @@ With these steps you should be able to run Mars on your machine:
 
 -   You can add your personal access token from GitHub to use the GitHub API (eg. bug reports are sent through this). [You can generate a token here.](https://github.com/settings/tokens) You have to check the 'public_repo' scope.
 -   If you want to test emails, change `MAIL_TEST_ADMIN` to your email (after seeding, you will be able to log in to the admin user with this email address) and set your email credentials (`MAIL_USERNAME` and `MAIL_PASSWORD`) - you might have to enable third party access to your email account.
+-  If you are working with uploaded files, run `php artisan storage:link` to make the uploads available by their paths in the url.
 
 ### For everyday use
 
