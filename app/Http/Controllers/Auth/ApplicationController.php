@@ -4,13 +4,10 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\ApplicationForm;
-use App\Models\EducationalInformation;
 use App\Models\Faculty;
-use App\Models\Role;
 use App\Models\User;
 use App\Models\Workshop;
 use Carbon\Carbon;
-use http\Env\Response;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;

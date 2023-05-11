@@ -162,6 +162,55 @@ class UserController extends Controller
         return redirect()->back()->with('message', __('general.successful_modification'));
     }
 
+    public function updateAlfonsoStatus(Request $request, User $user)
+    {
+        $this->authorize('view', $user);
+        session()->put('profile_current_page', 'alfonso');
+
+        $validator = Validator::make($request->all(), [
+            'alfonso_language' => ['nullable', Rule::in(array_keys(config('app.alfonso_languages')))],
+            'alfonso_desired_level' => 'nullable|in:B2,C1',
+            'alfonso_passed_by' => 'nullable|date|before:today'
+        ]);
+
+        $validator->validate();
+
+        $user->educationalInformation?->update($request->only([
+            'alfonso_language',
+            'alfonso_desired_level',
+            'alfonso_passed_by'
+        ]));
+
+        return redirect()->back()->with('message', __('general.successful_modification'));
+    }
+
+    public function uploadLanguageExam(Request $request, User $user)
+    {
+        $this->authorize('view', $user);
+        session()->put('profile_current_page', 'alfonso');
+
+        $validator = Validator::make($request->all(), [
+            'file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2000',
+            'language' => ['required', Rule::in(array_merge(array_keys(config('app.alfonso_languages')), ['other']))],
+            'level' => ['nullable', Rule::in(['A1', 'A2', 'B1', 'B2','C1', 'C2'])],
+            'type' => 'required|string|max:255',
+            'date' => 'required|date|before:today',
+        ]);
+
+        $validator->validate();
+
+        $path = $request->file('file')->store('uploads');
+        $user->educationalInformation->languageExams()->create([
+            'path' => $path,
+            'language' => $request->input('language'),
+            'level' => $request->input('level'),
+            'type' => $request->input('type'),
+            'date' => $request->input('date')
+        ]);
+
+        return redirect()->back()->with('message', __('general.successful_modification'));
+    }
+
     public function updateTenantUntil(Request $request, User $user)
     {
         $this->authorize('view', $user);

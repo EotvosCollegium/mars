@@ -14,7 +14,7 @@
                           :value="$user->educationalInformation?->year_of_acceptance"
                           required/>
         @else
-            <x-input.text s=12 m=6 id='year_of_acceptance' text='Felvételi éve' type='number'
+            <x-input.text s=12 m=6 id='year_of_acceptance' text='Collegiumi felvételi éve' type='number'
                           :value="date('Y')" disabled
                           required/>
         @endif
@@ -61,8 +61,8 @@
             @enderror
         </div>
     </div>
-    @foreach($user->educationalInformation?->studyLines as $program)
-        <div class="row" id="programme_{{$loop->index}}" style="margin:0">
+    @foreach($user->educationalInformation?->studyLines ?? [] as $program)
+        <div class="row program" id="programme_{{$loop->index}}" style="margin:0">
             <input type="hidden" name="study_line_index[]" value="{{$loop->index}}">
             <x-input.text id="study_line_name_{{ $loop->index }}"
                             s=4
@@ -97,39 +97,34 @@
             <x-input.button type="button" s="1" class="right red" floating icon="delete" onclick="removeProgram({{$loop->index}})"/>
         </div>
     @endforeach
-    <div id="program_new"></div>
-
-    <x-input.button type="button" floating icon="add" onclick="insertEmptyProgram()" />
-    <div class="row">
-        <div class="col">
-            <blockquote>Az <a href="https://eotvos.elte.hu/mukodes/szabalyzatok">ALFONSÓ program</a> keretében választott nyelv (később módosítható)</blockquote>
-        </div>
-        <x-input.select l=6 id="alfonso_language" text="Nyelv"
-                    value='{{ $user->educationalInformation?->alfonso_language }}'
-                    :elements="App\View\Components\Input\Select::convertArray(config('app.alfonso_languages'))"
-                    />
-        <x-input.select l=6 id="alfonso_desired_level" text="Elérni kívánt szint"
-            :value='$user->educationalInformation?->alfonso_desired_level'
-            :elements="['B2','C1']"
-        />
-
-        <x-input.button class="right" text="general.save" />
+    <x-input.button type="button" id="addProgram" floating icon="add" onclick="insertEmptyProgram()" />
+    <div class="row" style="margin: 0">
+            <x-input.button class="right" text="general.save" />
     </div>
 </form>
 
 @push('scripts')
 <script>
 function removeProgram(index) {
-    console.log("removeProgram", index)
-   $("#programme_" + index).remove();
+    console.log($('.program').length)
+    if($('.program').length > 1){
+        $("#programme_" + index).remove();
+    } else {
+        M.toast({html: 'Legalább egy szakot meg kell adni!'});
+    }
+
 }
 
 let programCounter = {{$user->educationalInformation?->studyLines?->count() ?? 0}};
+$(document).ready(function(){
+    if(programCounter == 0) {
+        insertEmptyProgram();
+    }
+  });
 function insertEmptyProgram() {
     let index = programCounter++;
-    console.log("insertEmptyProgram", index);
     let text = `
-    <div class="row" id="programme_`+index+`" style="margin:0">
+    <div class="row program" id="programme_`+index+`" style="margin:0">
             <input type="hidden" name="study_line_index[]" value="`+index+`">
             <x-input.text id="study_line_name_`+index+`"
                 s=4
@@ -156,7 +151,7 @@ function insertEmptyProgram() {
             <x-input.button  type="button" s="1" class="right red" floating icon="delete" onclick="removeProgram(`+ index +`)" />
         </div>
     `
-    $(text).insertBefore('#program_new');
+    $(text).insertBefore('#addProgram');
     $('select').formSelect();
 }
 </script>
