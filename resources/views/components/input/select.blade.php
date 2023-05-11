@@ -33,7 +33,7 @@
     @if($helper ?? null)
     <span class="helper-text">{{ $helper }}</span>
     @endif
-    @error($attributes->get('value'))
+    @error($attributes->get('value') && $attributes->get('value') != null)
         <span class="helper-text red-text">{{ $message }}</span>
     @enderror
     @error($id)

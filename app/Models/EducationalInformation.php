@@ -38,27 +38,10 @@ class EducationalInformation extends Model
     }
 
     /**
-     * Get the program attribute.
-     *
-     * @return Attribute
+     * The educational programs that belong to the educational information.
      */
-    protected function program(): Attribute
+    public function studyLines()
     {
-        return Attribute::make(
-            get: fn ($value): array => DataCompresser::decompressData($value),
-            set: fn ($value): string => DataCompresser::compressData($value),
-        );
-    }
-
-    /**
-     * Get the programs attribute.
-     *
-     * @return Attribute
-     */
-    protected function programs(): Attribute
-    {
-        return Attribute::make(
-            get: fn (): string => join(', ', $this->program ?? []),
-        );
+        return $this->hasMany(StudyLine::class);
     }
 }

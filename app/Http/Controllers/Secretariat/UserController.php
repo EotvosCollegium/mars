@@ -10,11 +10,11 @@ use App\Models\User;
 use App\Models\Workshop;
 use App\Models\WorkshopBalance;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 class UserController extends Controller
@@ -104,13 +104,26 @@ class UserController extends Controller
             'faculty.*' => 'exists:faculties,id',
             'workshop' => 'array',
             'workshop.*' => 'exists:workshops,id',
+            'study_line_index' => 'required|array|min:1',
             'email' => 'required|string|email|max:255',
-            'program' => 'required|array|min:1',
-            'program.*' => 'nullable|string',
             'alfonso_language' => ['nullable', Rule::in(array_keys(config('app.alfonso_languages')))],
             'alfonso_desired_level' => 'nullable|in:B2,C2',
             'alfonso_passed_by' => 'nullable|date|before:today'
         ]);
+
+        $validator->after(function ($validator) use ($request) {
+            foreach($request->input('study_line_index', []) as $index) {
+                if ($request->input('study_line_name_' . $index) == null) {
+                    $validator->errors()->add('study_line_name_'.$index, __('validation.required', ['attribute' => 'study_line_name']));
+                }
+                if ($request->input('study_line_level_' . $index) == null) {
+                    $validator->errors()->add('study_line_level_'.$index, __('validation.required', ['attribute' => 'study_line_level']));
+                }
+                if ($request->has('study_line_start_' . $index) == null) {
+                    $validator->errors()->add('study_line_start_'.$index, __('validation.required', ['attribute' => 'study_line_start']));
+                }
+            }
+        });
 
         $validator->validate();
 
@@ -119,20 +132,32 @@ class UserController extends Controller
             'high_school',
             'neptun',
             'email',
-            'program',
             'alfonso_language',
             'alfonso_desired_level',
             'alfonso_passed_by'
         ]);
-        if (!$user->hasEducationalInformation()) {
-            $user->educationalInformation()->create($educational_data);
-        } else {
-            $user->educationalInformation->update($educational_data);
-        }
+        DB::transaction(function () use ($user, $request, $educational_data) {
+            if (!$user->hasEducationalInformation()) {
+                $user->educationalInformation()->create($educational_data);
+            } else {
+                $user->educationalInformation->update($educational_data);
+            }
 
-        $user->workshops()->sync($request->input('workshop'));
-        $user->faculties()->sync($request->input('faculties'));
-        WorkshopBalance::generateBalances(Semester::current()->id);
+            $user->workshops()->sync($request->input('workshop'));
+            $user->faculties()->sync($request->input('faculties'));
+
+            $user->educationalInformation->studyLines()->delete();
+            foreach($request->input('study_line_index') as $index) {
+                $user->educationalInformation->studyLines()->create([
+                    'name' => $request->input('study_line_name_'.$index),
+                    'type' => $request->input('study_line_level_'.$index),
+                    'start' => $request->input('study_line_start_'.$index),
+                    'end' => $request->input('study_line_end_'.$index, null),
+                ]);
+            }
+            WorkshopBalance::generateBalances(Semester::current()->id);
+        });
+
 
         return redirect()->back()->with('message', __('general.successful_modification'));
     }
