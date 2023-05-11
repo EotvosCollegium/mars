@@ -44,12 +44,27 @@
                 });
                 $('.sidenav').sidenav();
                 $('.collapsible').collapsible();
+                $(".preloader").fadeOut();
             }
         );
     </script>
+    <style>
+    .no-js #loader { display: none;  }
+    .js #loader { display: block; position: absolute; left: 100px; top: 0; }
+    .preloader {
+        position: fixed;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        z-index: 9999;
+        background: url(loading.gif) center no-repeat #fff;
+    }
+    </style>
 
 </head>
 
+<div class="preloader"></div>
 <body class="{{ Cookie::get('theme') }}">
     <header>
         @include('layouts.navbar')
