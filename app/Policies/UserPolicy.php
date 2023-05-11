@@ -2,10 +2,12 @@
 
 namespace App\Policies;
 
+use App\Http\Controllers\Auth\ApplicationController;
 use App\Models\Role;
 use App\Models\RoleObject;
 use App\Models\User;
 use App\Models\Workshop;
+use Carbon\Carbon;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Support\Facades\Cache;
 use Maatwebsite\Excel\Row;
@@ -91,7 +93,8 @@ class UserPolicy
             Role::DIRECTOR,
             Role::WORKSHOP_ADMINISTRATOR,
             Role::WORKSHOP_LEADER,
-            Role::APPLICATION_COMMITTEE_MEMBER
+            Role::APPLICATION_COMMITTEE_MEMBER,
+            Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER
         ]);
     }
 
@@ -102,9 +105,10 @@ class UserPolicy
     public function viewAllApplications(User $user): bool
     {
         return $user->hasRole([
-                Role::SECRETARY,
-                Role::DIRECTOR,
-                Role::STUDENT_COUNCIL => Role::PRESIDENT
+            Role::SECRETARY,
+            Role::DIRECTOR,
+            Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS,
+            Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER
         ]);
     }
 
@@ -114,7 +118,21 @@ class UserPolicy
      */
     public function viewUnfinishedApplications(User $user): bool
     {
-        return $this->viewAllApplications($user);
+        return $user->hasRole([
+            Role::SECRETARY,
+            Role::DIRECTOR,
+            Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS,
+        ]);
+    }
+
+    /**
+     * Returns true if the user can finalize the application process.
+     * @param User $user
+     * @return bool
+     */
+    public function finalizeApplicationProcess(User $user): bool
+    {
+        return $user->hasRole([Role::SYS_ADMIN]) && ApplicationController::getApplicationDeadline()->addWeeks(3) < now();
     }
 
     /** Permission related policies */

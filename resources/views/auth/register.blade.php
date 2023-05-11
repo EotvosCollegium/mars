@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@php
+    $countries = require base_path('countries.php');
+@endphp
+
 @section('content')
 <div class="row">
     <div class="col s12 l8 xl6 offset-l2 offset-xl3">

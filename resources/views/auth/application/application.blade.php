@@ -12,19 +12,15 @@
                 </div>
                 <div class="col s12 xl8">
                     @can('viewAnyApplication', \App\Models\User::class)
-                        <span class="right">
-                            @include('auth.application.status', ['status' => $user->application->status])
-                            @if(user()->hasRole(\App\Models\Role::SYS_ADMIN))
-                                @if($user->application->status == \App\Models\ApplicationForm::STATUS_SUBMITTED)
-                                    <form method="POST" style="display: inline" action="{{route('applications.edit')}}">
-                                        @csrf
-                                        <input type="hidden" name="application" value="{{$user->application->id}}"/>
-                                        <input type="hidden" name="banish" value="true"/>
-                                        <x-input.button class="red tooltipped btn-small" data-tooltip="Elutasít" floating icon="close"/>
-                                    </form>
-                                @endif
+                        @if(!user()->hasRole(\App\Models\Role::SYS_ADMIN) || $user->application->status == \App\Models\ApplicationForm::STATUS_IN_PROGRESS)
+                            <span class="right">
+                                @include('auth.application.status', ['status' => $user->application->status])
+                            </span>
+                        @else
+                            @if($user->application->status != \App\Models\ApplicationForm::STATUS_IN_PROGRESS)
+                                @livewire('application-status-update', ['application' => $user->application])
                             @endif
-                        </span>
+                        @endif
                     @endcan
                     <div class="card-title">{{ $user->name }}</div>
                     <p style="margin-bottom: 5px"><a href="mailto:{{ $user->email }}">{{ $user->email }}</a></p>
@@ -37,14 +33,11 @@
                         @endif
                     </p>
                     <p style="margin-bottom: 5px">
-                        @forelse ($user->workshops as $workshop)
-                            <span class="new badge {{ $workshop->color() }} scale-transition tag"
-                                  style="float:none;padding:4px;margin:0 10px 0px 2px;" data-badge-caption="">
-                            <nobr>{{$workshop->name}} </nobr>
-                        </span>
-                        @empty
+                        @if ($user->workshops->count() > 0)
+                            @include('user.workshop_tags', ['user' => $user, 'newline' => true])
+                        @else
                             <span style="font-style:italic;color:red">hiányzó műhely</span>
-                        @endforelse
+                        @endif
                     </p>
                     <p>
                         @if ($user->isResident())

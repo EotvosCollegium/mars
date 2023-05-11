@@ -110,6 +110,11 @@ class Role extends Model
         'name', 'has_objects', 'has_workshops'
     ];
 
+    protected $casts = [
+        'has_objects' => 'boolean',
+        'has_workshops' => 'boolean'
+    ];
+
     public $timestamps = false;
 
     public function users(): BelongsToMany

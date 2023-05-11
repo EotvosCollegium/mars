@@ -7,12 +7,16 @@ use App\Models\ApplicationForm;
 use App\Models\Faculty;
 use App\Models\User;
 use App\Models\Workshop;
+use App\Models\RoleUser;
+use App\Models\File;
+
 use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Cache;
 
 class ApplicationController extends Controller
 {
@@ -22,7 +26,6 @@ class ApplicationController extends Controller
     private const DELETE_FILE_ROUTE = 'files.delete';
     private const ADD_PROFILE_PIC_ROUTE = 'files.profile';
     private const SUBMIT_ROUTE = 'submit';
-    private const PERSONAL_ROUTE = 'personal';
 
     /**
      * Return the view based on the request's page parameter.
@@ -124,14 +127,18 @@ class ApplicationController extends Controller
             }
             //hide unfinished
             if ($authUser->cannot('viewUnfinishedApplications', [User::class])) {
-                $applications->where('status', ApplicationForm::STATUS_SUBMITTED);
+                $applications->where(function ($query) {
+                    $query->where('status', ApplicationForm::STATUS_SUBMITTED)
+                        ->orWhere('status', ApplicationForm::STATUS_CALLED_IN)
+                        ->orWhere('status', ApplicationForm::STATUS_ACCEPTED);
+                });
             }
             //filter by status
             if ($request->has('status')) {
                 $applications->where('status', $request->input('status'));
             }
             return view('auth.application.applications', [
-                'applications' => $applications->with('user.educationalInformation')->get()->unique(),
+                'applications' => $applications->with('user.educationalInformation')->get()->unique()->sortBy('user.name'),
                 'workshop' => $request->input('workshop'), //filtered workshop
                 'workshops' => $workshops, //workshops that can be chosen to filter
                 'status' => $request->input('status'), //filtered status
@@ -149,12 +156,55 @@ class ApplicationController extends Controller
     {
         $this->authorize('viewAnyApplication', User::class);
         $application = ApplicationForm::findOrFail($request->input('application'));
+        $newStatus=$request->input('status_'.$application->user->id);
         if ($request->has('note')) {
             $application->update(['note' => $request->input('note')]);
-        } elseif ($request->has('banish')) {
-            $application->update(['status' => ApplicationForm::STATUS_BANISHED]);
+        } elseif ($newStatus) {
+            $application->update(['status' => $newStatus]);
+            if ($newStatus==ApplicationForm::STATUS_CALLED_IN || $newStatus==ApplicationForm::STATUS_ACCEPTED) {
+                $application->user->internetAccess->setWifiCredentials($application->user->educationalInformation->neptun??'wifiuser_'.$application->user->id);
+                $application->user->internetAccess()->update(['has_internet_until' => $this::getApplicationDeadline()->addMonths(1)]);
+            }
         }
         return redirect()->back();
+    }
+
+    /**
+     * Accept and delete applciations.
+     * @return RedirectResponse
+     * @throws AuthorizationException
+     */
+    public function finalizeApplicationProcess()
+    {
+        $this->authorize('finalizeApplicationProcess', User::class);
+
+        User::query()->withoutGlobalScope('verified')
+            ->where('verified', 0)
+            ->whereHas('application', function ($query) {
+                $query->where('status', ApplicationForm::STATUS_ACCEPTED);
+            })
+            ->update(['verified' => true]);
+        $usersToDelete=User::query()->withoutGlobalScope('verified')
+            ->where('verified', 0)->whereHas('application');
+        foreach ($usersToDelete->get() as $user) {
+            if ($user->profilePicture!=null) {
+                Storage::delete($user->profilePicture->path);
+                $user->profilePicture()->delete();
+            }
+        }
+        $files=File::where('application_form_id', '!=', null);
+        foreach ($files->get() as $file) {
+            Storage::delete($file->path);
+        }
+        $files->delete();
+        ApplicationForm::query()->delete();
+        $usersToDelete->forceDelete();
+        RoleUser::where('role_id', Role::getRole(Role::APPLICATION_COMMITTEE_MEMBER)->id)->delete();
+        RoleUser::where('role_id', Role::getRole(Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER)->id)->delete();
+
+
+        Cache::forget('collegists');
+        return back()->with('message', 'Sikeresen jóváhagyta az elfogadott jelentkezőket');
     }
 
     /**

@@ -26,7 +26,6 @@ class SemesterController extends Controller
     public function showStatusUpdate()
     {
         $this->authorize('is-collegist');
-
         $user = user();
         if (!self::isStatementAvailable()) {
             return redirect('home')->with('error', 'Lejárt a határidő a collegiumi státusz beállítására. Keresd fel a titkárságot vagy a rendszergazdákat.');

@@ -148,6 +148,7 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     /** Application handling */
     Route::get('/applications', [ApplicationController::class, 'showApplications'])->name('applications');
     Route::post('/applications', [ApplicationController::class, 'editApplication'])->name('applications.edit');
+    Route::post('/applications/finalize', [ApplicationController::class, 'finalizeApplicationProcess'])->name('applications.finalize');
 
     /** Faults */
     Route::get('/faults', [FaultController::class, 'index'])->name('faults');

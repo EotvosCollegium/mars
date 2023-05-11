@@ -50,7 +50,8 @@ class RegisterController extends Controller
     {
         return view('auth.register', [
             'user_type' => Role::COLLEGIST,
-            'application_open' => ApplicationController::getApplicationDeadline() > now()
+            'application_open' => ApplicationController::getApplicationDeadline() > now(),
+            // 'countries' => require base_path('countries.php'),
         ]);
     }
 
