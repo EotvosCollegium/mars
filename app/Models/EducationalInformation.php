@@ -75,15 +75,13 @@ class EducationalInformation extends Model
 
         $requirements = [];
         # default requirements without any language exams
-        foreach(array_keys(config('app.alfonso_languages')) as $language)
-        {
+        foreach(array_keys(config('app.alfonso_languages')) as $language) {
             $requirements[$language] = "B2";
         }
 
         if ($entryLevel->count() >= 2) {
             foreach($entryLevel as $exam) {
-                if(!in_array($exam->level, ["C1", "C2"]))
-                {
+                if(!in_array($exam->level, ["C1", "C2"])) {
                     $requirements[$exam->language] = "C1";
                 } else {
                     unset($requirements[$exam->language]);
@@ -104,7 +102,7 @@ class EducationalInformation extends Model
     public function alfonsoCompleted(): bool
     {
         foreach ($this->alfonsoRequirements() as $language => $level) {
-            if($this->checkIfPassed($language, $level)){
+            if($this->checkIfPassed($language, $level)) {
                 return true;
             }
         }
