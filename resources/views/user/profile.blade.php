@@ -28,6 +28,8 @@
                 @include('user.alfonso', ['user' => $user])
                 <div class="divider"></div>
                 @include('user.alfonso-language-exams', ['user' => $user])
+                <div class="divider"></div>
+                @include('user.alfonso-requirements', ['user' => $user])
             </div>
         </li>
     </ul>

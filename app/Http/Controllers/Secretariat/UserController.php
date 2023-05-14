@@ -98,6 +98,7 @@ class UserController extends Controller
 
         $validator = Validator::make($request->all(), [
             'year_of_graduation' => 'required|integer|between:1895,' . date('Y'),
+            'year_of_acceptance' => 'required|integer|between:1895,' . date('Y'),
             'high_school' => 'required|string|max:255',
             'neptun' => 'required|string|size:6',
             'faculty' => 'array',
@@ -129,6 +130,7 @@ class UserController extends Controller
 
         $educational_data = $request->only([
             'year_of_graduation',
+            'year_of_acceptance',
             'high_school',
             'neptun',
             'email',

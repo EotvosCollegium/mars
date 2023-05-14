@@ -7,7 +7,11 @@
                 <li>
                     <a href="{{ $exam->path }}">
                         {{ __('role.'.$exam->language) }} - {{ $exam->level }}</a>
-                    ({{ $exam->type}}, {{$exam->date}})
+                    @if($exam->wasBeforeEnrollment and !isset($application))
+                    ({{ $exam->type}}, {{$exam->date->format('Y-m')}}, collegista státusz előtt szerezve)
+                    @else
+                    ({{ $exam->type}}, {{$exam->date->format('Y-m')}})
+                    @endif
                 </li>
             @empty
                 <li>Nincs nyelvvizsga feltöltve.</li>

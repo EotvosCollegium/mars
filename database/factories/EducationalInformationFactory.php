@@ -12,10 +12,10 @@ class EducationalInformationFactory extends Factory
     public function definition()
     {
         return [
-            'year_of_graduation' => $this->faker->numberBetween($min = 1895, $max = date('Y')),
+            'year_of_graduation' => $this->faker->numberBetween($min = 2015, $max = date('Y')),
             'high_school' => $this->faker->company,
             'neptun' => $this->faker->regexify('[A-Z0-9]{6}'),
-            'year_of_acceptance' => $this->faker->numberBetween($min = 1895, $max = date('Y')),
+            'year_of_acceptance' => $this->faker->numberBetween($min = 2015, $max = date('Y')),
             'email' => $this->faker->unique()->safeEmail,
         ];
     }
