@@ -35,7 +35,7 @@ class LanguageExam extends Model
     /**
      * The educational information that belong to the language exam.
      */
-    public function educationalInformation() : BelongsTo
+    public function educationalInformation(): BelongsTo
     {
         return $this->belongsTo(EducationalInformation::class);
     }
@@ -44,10 +44,10 @@ class LanguageExam extends Model
      * return true if the date is before the user's enrollment date.
      * @return Attribute
      */
-    public function wasBeforeEnrollment() : Attribute
+    public function wasBeforeEnrollment(): Attribute
     {
         return Attribute::make(
-            get: fn () : bool =>
+            get: fn (): bool =>
                 $this->date->lt(
                     Carbon::createFromDate($this->educationalInformation->year_of_acceptance, 9, 1)
                 )
