@@ -86,7 +86,7 @@
         @if($only_tenant_until ?? false)
         </div>
         @endif
-        @if ($user->isTenant())
+        @if ($user->isTenant() && !isset($application))
             <x-input.datepicker
                 id='tenant_until'
                 required

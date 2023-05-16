@@ -8,7 +8,7 @@
     @if($workshops->count() > 1)
     <div class="card">
         <div class="card-content">
-            <div class="row center" style="margin-bottom: 0"> 
+            <div class="row center" style="margin-bottom: 0">
                 <form id="workshop-filter" method="GET" route="{{route('applications')}}">
                     <x-input.select id="workshop" :elements="$workshops" allow-empty :default="$workshop"
                                     text="Műhely"/>
@@ -25,19 +25,15 @@
                 <form id="empty-filter" method="GET" route="{{route('application')}}" style="{{($status=='' && $workshop=='')?'display: none':''}}">
                     <x-input.button id="delete-filter" text="Szűrő törlése"/>
                 </form>
-                @can('finalizeApplicationProcess', \App\Models\User::class)
-                    <form id="finalize-application-process" method="POST" action="{{route('applications.finalize')}}">
-                        @csrf
-                        <p>
-                            Hogyha a felvételi eljárás befejeződött, akkor a felvett jelentkezőket itt tudod jóváhagyni.
-                            Ezzel együtt minden más felvételiző elutasításra, anyagai törlésre, valamint az összes
-                            felvételihez kapcsolódó (felvételiztető) jog elvételre kerül.
-                        </p>
-                        <x-input.button text="Felvételi lezárása"/>
-                    </form>
-                @endcan
-                
             </div>
+            <blockquote>
+                @can('editApplicationStatus', \App\models\User::class)
+                <p>A jelentkezők aktuális státusza a jelentkezők számára nem nyilvános.</p>
+                @endcan
+                @if(user()->hasRole([\App\Models\Role::SYS_ADMIN, \App\Models\Role::SECRETARY]))
+                <p>{{$applicationDeadline->addWeeks(2)->format('Y. m. d.')}} után lehet a lap alján felvenni a kiválasztott jelentkezőket, ezzel véglegesíteni a felvételit.</p>
+                @endif
+            </blockquote>
 
             @push('scripts')
                 {{-- Show the empty filter button on change of the workshop selector --}}
@@ -59,5 +55,30 @@
     @endforeach
     <hr>
     <h6>Összesen: <b class="right">{{$applications->count()}} jelentkező</b></h6>
+    @can('finalizeApplicationProcess', \App\Models\User::class)
+    <div class="card" style="margin-top:20px">
+        <div class="card-content">
+            <div class="row" style="margin:0">
+                <form id="finalize-application-process" method="POST" action="{{route('applications.finalize')}}">
+                    @csrf
+                    <div class="col">
+                        Hogyha a felvételi eljárás befejeződött, akkor a felvett jelentkezőket itt lehet jóváhagyni.
+                        Ezzel együtt minden más felvételiző elutasításra, anyagai törlésre, valamint az összes
+                        felvételihez kapcsolódó (felvételiztető) jog elvételre kerül.
+                        A "Véglegesítve" és "Behívva" státuszú jelentkezőket előbb el kell utasítani, vagy fel kell hagyni.
+                    </div>
+                    <x-input.button class="red right" text="Felvételi lezárása"/>
+                </form>
+            </div>
+        </div>
+    </div>
+    @endcan
+    @can('viewAllApplications', \App\Models\User::class)
+    <div class="fixed-action-btn">
+        <a href="{{ route('applications.export') }}" class="btn-floating btn-large">
+            <i class="large material-icons">file_download</i>
+        </a>
+    </div>
+    @endcan
 
 @endsection

@@ -18,7 +18,7 @@
                             @endif" data-badge-caption="({{ $page->deadline }})">
                             {{ $page->amount }}
                             </span>
-                            <small>{{ $page->lastModifiedBy()->name }}: <i>{{ $page->comment }} </i></small>
+                            <small>{{ $page->lastModifiedBy()?->name }}: <i>{{ $page->comment }} </i></small>
                         </li>
                     @endforeach
                 </ul>

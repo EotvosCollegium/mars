@@ -15,8 +15,8 @@
                           required/>
         @else
             <x-input.text s=12 m=6 id='year_of_acceptance' text='Collegiumi felvételi éve' type='number'
-                          :value="date('Y')" disabled
-                          required/>
+                          :value="date('Y')" disabled/>
+            <input type="hidden" name="year_of_acceptance" value="{{date('Y')}}"/>
         @endif
         <x-input.text s=6 id="neptun" text="user.neptun"
                       :value="$user->educationalInformation?->neptun"
@@ -78,7 +78,7 @@
                                 'master' => 'MA/Msc',
                                 'phd' => 'Phd',
                                 'ot' => 'OT',
-                                'other' => _('general.other'),
+                                'other' => ' Egyéb',
                             ])"
                             required />
             <x-input.select id="study_line_start_{{ $loop->index }}"

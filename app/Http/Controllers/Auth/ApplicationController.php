@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Exports\ApplicantsExport;
 use App\Http\Controllers\Controller;
 use App\Models\ApplicationForm;
 use App\Models\Faculty;
@@ -9,7 +10,7 @@ use App\Models\User;
 use App\Models\Workshop;
 use App\Models\RoleUser;
 use App\Models\File;
-
+use App\Models\Role;
 use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\RedirectResponse;
@@ -17,6 +18,8 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ApplicationController extends Controller
 {
@@ -34,7 +37,7 @@ class ApplicationController extends Controller
      */
     public function showApplicationForm(Request $request): View
     {
-        if (!$request->user()->application) {
+        if (!isset($request->user()->application)) {
             $request->user()->application()->create();
         }
 
@@ -142,6 +145,7 @@ class ApplicationController extends Controller
                 'workshop' => $request->input('workshop'), //filtered workshop
                 'workshops' => $workshops, //workshops that can be chosen to filter
                 'status' => $request->input('status'), //filtered status
+                'applicationDeadline' => self::getApplicationDeadline(),
             ]);
         }
     }
@@ -161,10 +165,6 @@ class ApplicationController extends Controller
             $application->update(['note' => $request->input('note')]);
         } elseif ($newStatus) {
             $application->update(['status' => $newStatus]);
-            if ($newStatus==ApplicationForm::STATUS_CALLED_IN || $newStatus==ApplicationForm::STATUS_ACCEPTED) {
-                $application->user->internetAccess->setWifiCredentials($application->user->educationalInformation->neptun??'wifiuser_'.$application->user->id);
-                $application->user->internetAccess()->update(['has_internet_until' => $this::getApplicationDeadline()->addMonths(1)]);
-            }
         }
         return redirect()->back();
     }
@@ -177,31 +177,42 @@ class ApplicationController extends Controller
     public function finalizeApplicationProcess()
     {
         $this->authorize('finalizeApplicationProcess', User::class);
-
-        User::query()->withoutGlobalScope('verified')
+        Cache::forget('collegists');
+        $not_handled_applicants = User::query()->withoutGlobalScope('verified')
             ->where('verified', 0)
             ->whereHas('application', function ($query) {
-                $query->where('status', ApplicationForm::STATUS_ACCEPTED);
+                $query->whereIn('status', [ApplicationForm::STATUS_SUBMITTED, ApplicationForm::STATUS_SUBMITTED]);
             })
-            ->update(['verified' => true]);
-        $usersToDelete=User::query()->withoutGlobalScope('verified')
-            ->where('verified', 0)->whereHas('application');
-        foreach ($usersToDelete->get() as $user) {
-            if ($user->profilePicture!=null) {
-                Storage::delete($user->profilePicture->path);
-                $user->profilePicture()->delete();
+            ->count();
+        if ($not_handled_applicants > 0) {
+            return redirect()->back()->with('error', 'Még vannak feldolgozatlan jelentkezések!');
+        }
+        DB::transaction(function () {
+            User::query()->withoutGlobalScope('verified')
+                ->where('verified', 0)
+                ->whereHas('application', function ($query) {
+                    $query->where('status', ApplicationForm::STATUS_ACCEPTED);
+                })
+                ->update(['verified' => true]);
+            $usersToDelete = User::query()->withoutGlobalScope('verified')
+                ->where('verified', 0)->whereHas('application');
+            foreach ($usersToDelete->get() as $user) {
+                if ($user->profilePicture!=null) {
+                    Storage::delete($user->profilePicture->path);
+                    $user->profilePicture()->delete();
+                }
             }
-        }
-        $files=File::where('application_form_id', '!=', null);
-        foreach ($files->get() as $file) {
-            Storage::delete($file->path);
-        }
-        $files->delete();
-        ApplicationForm::query()->delete();
-        $usersToDelete->forceDelete();
-        RoleUser::where('role_id', Role::getRole(Role::APPLICATION_COMMITTEE_MEMBER)->id)->delete();
-        RoleUser::where('role_id', Role::getRole(Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER)->id)->delete();
+            $files = File::where('application_form_id', '!=', null);
+            foreach ($files->get() as $file) {
+                Storage::delete($file->path);
+            }
+            $files->delete();
+            ApplicationForm::query()->delete();
+            $usersToDelete->forceDelete();
 
+            RoleUser::where('role_id', Role::get(Role::APPLICATION_COMMITTEE_MEMBER)->id)->delete();
+            RoleUser::where('role_id', Role::get(Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER)->id)->delete();
+        });
 
         Cache::forget('collegists');
         return back()->with('message', 'Sikeresen jóváhagyta az elfogadott jelentkezőket');
@@ -232,7 +243,8 @@ class ApplicationController extends Controller
     public function storeQuestionsData(Request $request, User $user): void
     {
         $request->validate([
-            'status' => 'required|in:extern,resident'
+            'status' => 'required|in:extern,resident',
+            'graduation_average' => 'required|numeric',
         ]);
         if ($request->input('status') == 'resident') {
             $user->setResident();
@@ -312,19 +324,30 @@ class ApplicationController extends Controller
      * @param $user
      * @return RedirectResponse
      */
-    public function submitApplication($user)
+    public function submitApplication(User $user)
     {
-        if (now() > self::getApplicationDeadline()) {
-            return redirect()->route('application')->with('error', 'A jelentkezési határidő lejárt');
-        }
-        if (isset($user->application) && $user->application->status == ApplicationForm::STATUS_SUBMITTED) {
-            return redirect()->route('application')->with('error', 'Már véglegesítette a jelentkezését!');
-        }
-        if ($user->application->isReadyToSubmit()) {
+        $user->load('application');
+        if ($user->application->missingData() == []) {
             $user->application->update(['status' => ApplicationForm::STATUS_SUBMITTED]);
-            return redirect()->route('application')->with('message', 'Sikeresen véglegesítette a jelentkezését!');
+            $user->internetAccess->setWifiCredentials($user->educationalInformation->neptun);
+            $user->internetAccess()->update(['has_internet_until' => $this::getApplicationDeadline()->addMonth(1)]);
+            return back()->with('message', 'Sikeresen véglegesítette a jelentkezését!');
         } else {
-            abort(400);
+            return back()->with('error', 'Hiányzó adatok!');
         }
+    }
+
+    public function exportApplications()
+    {
+        $this->authorize('viewAllApplications', User::class);
+
+        $applications = ApplicationForm::with('user')
+                ->where('status', ApplicationForm::STATUS_SUBMITTED)
+                ->orWhere('status', ApplicationForm::STATUS_CALLED_IN)
+                ->orWhere('status', ApplicationForm::STATUS_ACCEPTED)
+                ->get();
+
+        return Excel::download(new ApplicantsExport($applications), 'felveteli.xlsx');
+
     }
 }

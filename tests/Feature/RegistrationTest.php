@@ -8,8 +8,8 @@ use App\Models\PersonalInformation;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
-use Hash;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 /**
@@ -38,10 +38,11 @@ class RegistrationTest extends TestCase
             $user_data,
         ));
 
-        $this->assertDatabaseHas('users', array_merge(
-            $user_data,
+        $this->assertDatabaseHas(
+            'users',
+            $user_data +
             ['verified' => 'false']
-        ));
+        );
         $user = User::where('email', $user_data['email'])->firstOrFail();
         $this->assertTrue(Hash::check('secret', $user->password));
         $this->assertDatabaseHas('internet_accesses', [
@@ -84,10 +85,11 @@ class RegistrationTest extends TestCase
             $personal_info_data
         ));
 
-        $this->assertDatabaseHas('users', array_merge(
-            $user_data,
+        $this->assertDatabaseHas(
+            'users',
+            $user_data +
             ['verified' => 'false']
-        ));
+        );
         $user = User::where('email', $user_data['email'])->firstOrFail();
         $this->assertTrue(Hash::check('secret', $user->password));
         $this->assertDatabaseHas('personal_information', array_merge(

@@ -8,7 +8,7 @@
 
     <div class="card">
         <div class="card-content">
-            @include('user.personal-information', ['user' => $user])
+            @include('user.personal-information', ['user' => $user, 'application' => true])
         </div>
     </div>
 

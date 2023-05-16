@@ -23,6 +23,7 @@
                 </tr>
             </tbody>
         </table>
+        @if(!isset($application))
         <div class="row">
             <div class="col s12 m12 l12 xl8">
                 <blockquote>
@@ -36,6 +37,7 @@
                 </form>
             </div>
         </div>
+        @endif
     </div>
 </div>
 

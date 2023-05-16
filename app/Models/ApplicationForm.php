@@ -214,66 +214,65 @@ class ApplicationForm extends Model
 
     /**
      * Determine whether the application is ready to submit.
-     * @return boolean
+     * @return array The missing data.
      */
-    public function isReadyToSubmit(): bool
+    public function missingData(): array
     {
         $user = $this->user;
         $educationalInformation = $user->educationalInformation;
+        $personalInformation = $user->personalInformation;
+
+        $missingData = [];
+
+        if (! isset($personalInformation)) {
+            $missingData[] = 'Személyes adatok';
+        }
 
         if (! isset($educationalInformation)) {
-            return false;
+            $missingData[] = 'Tanulmányi adatok';
+        }
+
+        if ($educationalInformation?->studyLines->count() == 0) {
+            $missingData[] =  'Megjelölt szak';
+        }
+
+        if (! isset($educationalInformation?->alfonso_language)) {
+            $missingData[] =  'Megjelölt ALFONSÓ nyelv';
+            //level is required when updating language
         }
 
         if (! isset($user->profilePicture)) {
-            return false;
+            $missingData[] =  'Profilkép';
         }
         if (count($this->files) < 2) {
-            return false;
+            $missingData[] =  'Legalább két feltöltött fájl';
         }
 
         if ($user->workshops->count() == 0) {
-            return false;
+            $missingData[] =  'Megjelölt műhely';
         }
+
         if ($user->faculties->count() == 0) {
-            return false;
+            $missingData[] =  'Megjelölt kar';
         }
 
         if (!$user->isResident() && !$user->isExtern()) {
-            return false;
+            $missingData[] =  'Megjelölt collegista státusz';
         }
 
-        if (! isset($educationalInformation->year_of_graduation)) {
-            return false;
-        }
-        if (! isset($educationalInformation->high_school)) {
-            return false;
-        }
-        if (! isset($educationalInformation->neptun)) {
-            return false;
-        }
-        if (! isset($educationalInformation->year_of_acceptance)) {
-            return false;
-        }
-        if (! isset($educationalInformation->email)) {
-            return false;
-        }
-        if (! isset($educationalInformation->program) || $educationalInformation->program == []) {
-            return false;
-        }
         if (! isset($this->graduation_average)) {
-            return false;
+            $missingData[] =  'Érettségi átlaga';
         }
         if (! isset($this->question_1) || $this->question_1 == []) {
-            return false;
+            $missingData[] =  '"Honnan hallott a Collegiumról?" kérdés';
         }
         if (! isset($this->question_2)) {
-            return false;
+            $missingData[] =  '"Miért kíván a Collegium tagja lenni?" kérdés';
         }
         if (! isset($this->question_3)) {
-            return false;
+            $missingData[] =  '"Tervez-e tovább tanulni a diplomája megszerzése után? Milyen tervei vannak az egyetem után?" kérdés';
         }
 
-        return true;
+        return $missingData;
     }
 }

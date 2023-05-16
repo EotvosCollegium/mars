@@ -8,7 +8,7 @@
 
     @include('auth.application.application')
 
-    @if($user->application->isReadyToSubmit() ?? false)
+    @if($user->application->missingData() == [])
         <div class="card">
             <form method="POST" action="{{ route('application.store', ['page' => 'submit']) }}">
                 @csrf
@@ -34,7 +34,13 @@
     @else
         <div class="card">
             <div class="card-content">
-                <blockquote>A jelentkezés véglegesítéséhez töltse ki a hiányzó mezőket.</blockquote>
+                <blockquote>A jelentkezés véglegesítéséhez töltse ki a hiányzó mezőket:
+                    <ul style="margin-left:20px;">
+                    @foreach ($user->application->missingData() as $data)
+                        <li style="list-style-type: circle !important">{{$data}}</li>
+                    @endforeach
+                    </ul>
+                </blockquote>
             </div>
         </div>
     @endif
