@@ -48,8 +48,7 @@ class StudyLine extends Model
     public function getName(): string
     {
         $name = $this->name;
-        if($this->type != 'other')
-        {
+        if($this->type != 'other') {
             $name .= ' '.self::TYPES[$this->type];
         }
         return $name;
@@ -57,8 +56,7 @@ class StudyLine extends Model
     public function getNameWithYear(): string
     {
         $name = $this->getName();
-        if($this->start)
-        {
+        if($this->start) {
             $name .= ' ('.$this->startSemester->tag.' - '.$this->endSemester?->tag.')';
         }
         return $name;

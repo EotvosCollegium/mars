@@ -53,7 +53,7 @@ class PersonalInformation extends Model
     /**
      * The user that owns the personal information.
      */
-    public function user() : BelongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
