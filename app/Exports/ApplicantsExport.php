@@ -45,6 +45,7 @@ class ApplicantsExport implements FromCollection, WithTitle, WithMapping, WithHe
             'Kar',
             'Megjelölt műhely',
             'Megjelölt státusz',
+            'Alfonsó',
             'Felvételi alatt itt lesz?',
             'Igényel szállást?'
         ];
@@ -72,6 +73,7 @@ class ApplicantsExport implements FromCollection, WithTitle, WithMapping, WithHe
             implode(",", $user->faculties->pluck('name')->toArray()),
             implode(",", $user->workshops->pluck('name')->toArray()),
             $user->isResident() ? 'Bentlakó' : 'Bejáró',
+            $user->educationalInformation?->alfonso_language . " " . $user->educationalInformation?->alfonso_desired_level,
             $application->present ?? "Igen",
             $user->application->accommodation ? "Igen" : "Nem"
         ];

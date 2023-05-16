@@ -50,7 +50,8 @@ class UsersExport implements FromCollection, WithTitle, WithMapping, WithHeading
             'Szak',
             'Kar',
             'Műhely',
-            'Bentlakó/Bejáró'
+            'Bentlakó/Bejáró',
+            'Alfonsó'
         ], $semesters);
     }
 
@@ -87,6 +88,7 @@ class UsersExport implements FromCollection, WithTitle, WithMapping, WithHeading
             implode(", ", $user->faculties->pluck('name')->toArray()),
             implode(", ", $user->workshops->pluck('name')->toArray()),
             $user->isResident() ? 'Bentlakó' : 'Bejáró',
+            $user->educationalInformation?->alfonso_language . " " . $user->educationalInformation?->alfonso_desired_level,
         ];
 
         return array_merge($data, $semesters);;
