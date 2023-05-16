@@ -141,16 +141,16 @@ class UserController extends Controller
 
             $user->load('educationalInformation');
 
-            if($request->has('workshop')){
+            if($request->has('workshop')) {
                 $user->workshops()->sync($request->input('workshop'));
                 WorkshopBalance::generateBalances(Semester::current()->id);
             }
 
-            if($request->has('faculty')){
+            if($request->has('faculty')) {
                 $user->faculties()->sync($request->input('faculty'));
             }
 
-            if($request->has('study_line_index')){
+            if($request->has('study_line_index')) {
                 $user->educationalInformation->studyLines()->delete();
                 foreach($request->input('study_line_index') as $index) {
                     $user->educationalInformation->studyLines()->create([

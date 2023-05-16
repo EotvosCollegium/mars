@@ -38,7 +38,8 @@ class RegistrationTest extends TestCase
             $user_data,
         ));
 
-        $this->assertDatabaseHas('users',
+        $this->assertDatabaseHas(
+            'users',
             $user_data +
             ['verified' => 'false']
         );
@@ -84,7 +85,8 @@ class RegistrationTest extends TestCase
             $personal_info_data
         ));
 
-        $this->assertDatabaseHas('users',
+        $this->assertDatabaseHas(
+            'users',
             $user_data +
             ['verified' => 'false']
         );

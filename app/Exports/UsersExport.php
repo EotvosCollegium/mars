@@ -60,8 +60,7 @@ class UsersExport implements FromCollection, WithTitle, WithMapping, WithHeading
             $status = $user->getStatus($semester);
             if($status) {
                 $text = __('user.'.$status->status);
-                if($status->comment)
-                {
+                if($status->comment) {
                     $text .= ' ('.$status->comment.')';
                 }
             }
@@ -89,7 +88,8 @@ class UsersExport implements FromCollection, WithTitle, WithMapping, WithHeading
             $user->isResident() ? 'Bentlakó' : 'Bejáró',
         ];
 
-        return array_merge($data, $semesters);;
+        return array_merge($data, $semesters);
+        ;
 
     }
 }
