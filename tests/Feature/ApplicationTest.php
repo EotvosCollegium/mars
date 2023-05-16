@@ -254,7 +254,7 @@ class ApplicationTest extends TestCase
 
         //alfonso
         $this->assertContains('Megjelölt ALFONSÓ nyelv', $user->application->missingData());
-        $response = $this->post('/users/'.$user->id.'/educational_information', [
+        $response = $this->post('/users/'.$user->id.'/alfonso', [
             'alfonso_language' => 'en',
             'alfonso_desired_level' => 'C1',
         ]);
@@ -406,6 +406,7 @@ class ApplicationTest extends TestCase
 
         $response = $this->post('/applications/finalize');
         $response->assertStatus(302);
+        echo var_dump($response->getSession());
         $response->assertSessionHas('error', 'Még vannak feldolgozatlan jelentkezések!');
     }
 
