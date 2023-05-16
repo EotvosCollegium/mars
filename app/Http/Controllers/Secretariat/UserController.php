@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Faculty;
 use App\Models\Role;
 use App\Models\Semester;
-use App\Models\StudyLine;
 use App\Models\User;
 use App\Models\Workshop;
 use App\Models\WorkshopBalance;
@@ -260,10 +259,8 @@ class UserController extends Controller
         return view('secretariat.user.list');
     }
 
-    public function show($id)
+    public function show(User $user)
     {
-        $user = User::findOrFail($id);
-
         $this->authorize('view', $user);
 
         return view('secretariat.user.show', [
@@ -326,9 +323,9 @@ class UserController extends Controller
         }
         $user = user();
         $user->personalInformation()->update(['tenant_until' => null]);
+        $user->update(['verified' => false]);
         $user->removeRole(Role::get(Role::TENANT));
         $user->setExtern();
-        $user->update(['verified' => false]);
         $user->application()->create();
         Cache::forget('collegists');
         return back();

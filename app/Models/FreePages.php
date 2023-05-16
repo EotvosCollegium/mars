@@ -44,6 +44,6 @@ class FreePages extends Model
 
     public function lastModifiedBy()
     {
-        return User::findOrFail($this->last_modified_by);
+        return User::find($this->last_modified_by);
     }
 }

@@ -1,7 +1,5 @@
 @extends('layouts.app')
 
-
-
 @section('content')
     <div class="card">
         <div class="card-content">
@@ -22,7 +20,9 @@
                     <small class="coli-text text-orange">(Meghosszabbítva)</small>
                 @endif
             </h6>
+            @if($user->application->status == App\Models\ApplicationForm::STATUS_IN_PROGRESS)
             Hátra van: <i>{{ \Carbon\Carbon::now()->diffInDays($deadline, false) }}</i> nap.
+            @endif
 
             <blockquote>
                 @if($user->application->status == App\Models\ApplicationForm::STATUS_IN_PROGRESS)
@@ -49,7 +49,7 @@
             @endforeach
         </div>
     </div>
-    @if($user->application->status != App\Models\ApplicationForm::STATUS_SUBMITTED)
+    @if($user->application->status == App\Models\ApplicationForm::STATUS_IN_PROGRESS)
         <nav class="nav-extended">
             <div class="nav-content">
                 <ul class="tabs tabs-transparent">

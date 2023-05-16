@@ -73,5 +73,12 @@
         </div>
     </div>
     @endcan
+    @can('viewAllApplications', \App\Models\User::class)
+    <div class="fixed-action-btn">
+        <a href="{{ route('applications.export') }}" class="btn-floating btn-large">
+            <i class="large material-icons">file_download</i>
+        </a>
+    </div>
+    @endcan
 
 @endsection

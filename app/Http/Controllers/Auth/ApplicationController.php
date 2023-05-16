@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Exports\ApplicantsExport;
 use App\Http\Controllers\Controller;
 use App\Models\ApplicationForm;
 use App\Models\Faculty;
@@ -18,6 +19,7 @@ use Illuminate\View\View;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ApplicationController extends Controller
 {
@@ -333,5 +335,19 @@ class ApplicationController extends Controller
         } else {
             return back()->with('error', 'Hiányzó adatok!');
         }
+    }
+
+    public function exportApplications()
+    {
+        $this->authorize('viewAllApplications', User::class);
+
+        $applications = ApplicationForm::with('user')
+                ->where('status', ApplicationForm::STATUS_SUBMITTED)
+                ->orWhere('status', ApplicationForm::STATUS_CALLED_IN)
+                ->orWhere('status', ApplicationForm::STATUS_ACCEPTED)
+                ->get();
+
+        return Excel::download(new ApplicantsExport($applications), 'felveteli.xlsx');
+
     }
 }

@@ -138,13 +138,7 @@
                                 <th scope="row">Szak(ok)</th>
                                 <td>
                                     @forelse($user->educationalInformation?->studyLines ?? [] as $studyLine)
-                                        {{ $studyLine->name }}
-                                        @if($studyLine->type != 'other')
-                                            @lang('user.'.$studyLine->type)
-                                        @endif
-                                        @if($studyLine->start)
-                                            ({{ $studyLine->startSemester->tag }} - {{ $studyLine->endSemester?->tag }})
-                                        @endif
+                                        {{ $studyLine->getName() }}
                                         <br>
                                     @empty
                                         <span style="font-style:italic;color:red">hiányzó szak</span>
