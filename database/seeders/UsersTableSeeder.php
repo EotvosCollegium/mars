@@ -15,6 +15,7 @@ use App\Models\WifiConnection;
 use App\Models\PrintAccount;
 use App\Models\PersonalInformation;
 use App\Models\EducationalInformation;
+use App\Models\StudyLine;
 use Illuminate\Database\Seeder;
 
 class UsersTableSeeder extends Seeder
@@ -83,7 +84,9 @@ class UsersTableSeeder extends Seeder
             $user->workshops()->attach(rand(1, count(Workshop::ALL)));
         }
         foreach (Role::all() as $role) {
-            if ($role->has_objects) {
+            if($role->name == Role::COLLEGIST){
+                $user->roles()->attach($role->id, ['object_id' => RoleObject::firstWhere('name', Role::RESIDENT)->id]);
+            } elseif ($role->has_objects) {
                 foreach ($role->objects as $object) {
                     $user->roles()->attach($role->id, ['object_id' => $object->id]);
                 }
@@ -114,6 +117,7 @@ class UsersTableSeeder extends Seeder
             ]
         );
         $user->educationalInformation()->save(EducationalInformation::factory()->make(['user_id' => $user->id]));
+        StudyLine::factory()->count(rand(1,2))->create(['educational_information_id' => $user->educationalInformation->id]);
         $user->roles()->attach(Role::get(Role::PRINTER)->id);
         $user->roles()->attach(Role::get(Role::INTERNET_USER)->id);
         $wifi_username = $user->internetAccess->setWifiCredentials();

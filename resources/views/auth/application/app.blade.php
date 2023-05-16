@@ -75,5 +75,8 @@
     @else
         @include('auth.application.application', ['user' => $user])
     @endif
+    @if($user->application->status != App\Models\ApplicationForm::STATUS_IN_PROGRESS && isset($user->internetAccess))
+        @include('network.internet.wifi_password', ['internet_access' => $user->internetAccess, 'application' => true])
+    @endif
 
 @endsection

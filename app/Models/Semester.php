@@ -31,7 +31,7 @@ class Semester extends Model
         'part',
     ];
 
-    private const SEPARATOR = '-';
+    private const SEPARATOR = '/';
 
     public const PARTS = [1, 2];
 
@@ -315,7 +315,12 @@ class Semester extends Model
 
     /* Helpers */
 
-    public function equals($other): bool
+    /**
+     * Semester is equal to the other semester.
+     * @param Semester $other
+     * @return bool
+     */
+    public function equals(Semester $other): bool
     {
         return $this->year == $other->year && $this->part == $other->part;
     }

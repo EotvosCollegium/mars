@@ -7,10 +7,8 @@ use App\Models\Role;
 use App\Models\RoleObject;
 use App\Models\User;
 use App\Models\Workshop;
-use Carbon\Carbon;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Support\Facades\Cache;
-use Maatwebsite\Excel\Row;
 
 class UserPolicy
 {
@@ -77,6 +75,9 @@ class UserPolicy
      */
     public function viewApplication(User $user, User $target): bool
     {
+        if ($user->id == $target->id) {
+            return true;
+        }
         return $target->workshops
                 ->intersect($user->applicationWorkshops())
                 ->count()>0;
@@ -95,6 +96,19 @@ class UserPolicy
             Role::WORKSHOP_LEADER,
             Role::APPLICATION_COMMITTEE_MEMBER,
             Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER
+        ]);
+    }
+
+    /**
+     * @param User $user
+     * @return bool
+     */
+    public function editApplicationStatus(User $user): bool
+    {
+        return $user->hasRole([
+            Role::SECRETARY,
+            Role::DIRECTOR,
+            Role::WORKSHOP_LEADER,
         ]);
     }
 
@@ -132,7 +146,7 @@ class UserPolicy
      */
     public function finalizeApplicationProcess(User $user): bool
     {
-        return $user->hasRole([Role::SYS_ADMIN]) && ApplicationController::getApplicationDeadline()->addWeeks(3) < now();
+        return $user->hasRole([Role::SYS_ADMIN, Role::SECRETARY]) && ApplicationController::getApplicationDeadline()->addWeeks(2) < now();
     }
 
     /** Permission related policies */

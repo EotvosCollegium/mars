@@ -62,6 +62,8 @@ return [
         'study_line_level' => 'study line level',
         'study_line_start' => 'study line start',
         'study_line_index' => 'study line',
+        'alfonso_language' => 'Alfonsó language',
+        'alfonso_desired_level' => 'Alfonsó level',
     ],
     'before' => 'The :attribute must be a date before :date.',
     'before_or_equal' => 'The :attribute must be a date before or equal to :date.',

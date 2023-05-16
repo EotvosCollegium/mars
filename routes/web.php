@@ -15,14 +15,12 @@ use App\Http\Controllers\Auth\ApplicationController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Dormitory\FaultController;
 use App\Http\Controllers\Dormitory\PrintController;
-use App\Http\Controllers\Dormitory\RoomAssignmentController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\Network\AdminCheckoutController;
 use App\Http\Controllers\Network\InternetController;
 use App\Http\Controllers\Network\RouterController;
 use App\Http\Controllers\Secretariat\DocumentController;
-use App\Http\Controllers\Secretariat\PermissionController;
 use App\Http\Controllers\Secretariat\RegistrationsController;
 use App\Http\Controllers\Secretariat\SemesterController;
 use App\Http\Controllers\Secretariat\UserController;
@@ -32,10 +30,8 @@ use App\Http\Controllers\StudentsCouncil\MrAndMissController;
 use App\Http\Controllers\StudentsCouncil\CommunityServiceController;
 use App\Http\Controllers\StudentsCouncil\GeneralAssemblyController;
 use App\Http\Controllers\Dormitory\RoomController;
-use App\Models\Room;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Models\User;
 
 Route::get('/', [HomeController::class, 'welcome'])->name('index');
 Route::get('/verification', [HomeController::class, 'verification'])->name('verification');
@@ -47,9 +43,16 @@ Auth::routes();
 
 Route::get('/register/guest', [RegisterController::class, 'showTenantRegistrationForm'])->name('register.guest');
 
-Route::middleware(['auth', 'only_hungarian'])->group(function () {
+Route::middleware(['auth', 'log', 'only_hungarian'])->group(function () {
     Route::get('/application', [ApplicationController::class, 'showApplicationForm'])->name('application');
+});
+Route::middleware(['auth', 'log'])->group(function () {
+    /** Routes that needs to be accessed during the application process */
     Route::post('/application', [ApplicationController::class, 'storeApplicationForm'])->name('application.store');
+    Route::post('/users/{user}/personal_information', [UserController::class, 'updatePersonalInformation'])->name('users.update.personal');
+    Route::post('/users/{user}/educational_information', [UserController::class, 'updateEducationalInformation'])->name('users.update.educational');
+    Route::post('/users/{user}/alfonso', [UserController::class, 'updateAlfonsoStatus'])->name('users.update.alfonso');
+    Route::post('/users/{user}/language_exam', [UserController::class, 'uploadLanguageExam'])->name('users.language_exams.upload');
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -68,10 +71,6 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::get('/profile', [UserController::class, 'profile'])->name('profile');
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
-    Route::post('/users/{user}/personal_information', [UserController::class, 'updatePersonalInformation'])->name('users.update.personal');
-    Route::post('/users/{user}/educational_information', [UserController::class, 'updateEducationalInformation'])->name('users.update.educational');
-    Route::post('/users/{user}/alfonso', [UserController::class, 'updateAlfonsoStatus'])->name('users.update.alfonso');
-    Route::post('/users/{user}/language_exam', [UserController::class, 'uploadLanguageExam'])->name('users.language_exams.upload');
     Route::post('/users/{user}/tenant_until', [UserController::class, 'updateTenantUntil'])->name('users.update.tenant_until');
     Route::post('/users/{user}/roles/{role}', [UserController::class, 'addRole'])->name('users.roles.add');
     Route::delete('/users/{user}/roles/{role}', [UserController::class, 'removeRole'])->name('users.roles.delete');

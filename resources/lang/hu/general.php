@@ -2,6 +2,7 @@
 
 return [
     'active_members' => 'Aktív tagok',
+    'add' => 'Hozzáad',
     'add_new' => 'Új hozzáadása',
     'admin' => 'Rendszergazda',
     'cancel' => 'Mégse',

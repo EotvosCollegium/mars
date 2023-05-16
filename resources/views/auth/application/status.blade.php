@@ -1,3 +1,4 @@
+@can('viewAnyApplication', \App\Models\User::class)
 @switch($status)
     @case(App\Models\ApplicationForm::STATUS_IN_PROGRESS)
         Folyamatban
@@ -17,3 +18,13 @@
     @default
         <i>Ismeretlen</i>
 @endswitch
+@endcan
+@cannot('viewAnyApplication', \App\Models\User::class)
+@switch($status)
+    @case(App\Models\ApplicationForm::STATUS_IN_PROGRESS)
+        Folyamatban
+        @break
+    @default
+        Véglegesítve
+@endswitch
+@endcannot

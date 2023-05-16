@@ -10,6 +10,7 @@ class StudyLine extends Model
     use HasFactory;
 
     protected $fillable = [
+        'educational_information_id',
         'name',
         'type',
         'start',
@@ -23,4 +24,15 @@ class StudyLine extends Model
         'ot' => 'OT',
         'other' => 'Other'
     ];
+
+    public function startSemester()
+    {
+        return $this->belongsTo(Semester::class, 'start');
+    }
+
+    public function endSemester()
+    {
+        return $this->belongsTo(Semester::class, 'end');
+    }
+
 }
