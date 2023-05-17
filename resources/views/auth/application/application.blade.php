@@ -11,26 +11,31 @@
                     @endif
                 </div>
                 <div class="col s12 xl8">
-                    @can('viewAnyApplication', \App\Models\User::class)
-                        @if(!user()->hasRole(\App\Models\Role::SYS_ADMIN) || $user->application->status == \App\Models\ApplicationForm::STATUS_IN_PROGRESS)
+                    @can('editApplicationStatus', \App\Models\User::class)
+                        @if(!(user()->isAdmin() || $user->application->status != \App\Models\ApplicationForm::STATUS_IN_PROGRESS))
                             <span class="right">
                                 @include('auth.application.status', ['status' => $user->application->status])
                             </span>
                         @else
-                            @if($user->application->status != \App\Models\ApplicationForm::STATUS_IN_PROGRESS)
-                                @livewire('application-status-update', ['application' => $user->application])
-                            @endif
+                            @livewire('application-status-update', ['application' => $user->application])
                         @endif
                     @endcan
+
                     <div class="card-title">{{ $user->name }}</div>
                     <p style="margin-bottom: 5px"><a href="mailto:{{ $user->email }}">{{ $user->email }}</a></p>
                     <p style="margin-bottom: 5px">{{ $user->personalInformation->phone_number }}</p>
                     <p style="margin-bottom: 5px">
-                        @if($user->educationalInformation && $user->educationalInformation->programs)
-                            {{ $user->educationalInformation->programs }}
-                        @else
+                        @forelse($user->educationalInformation?->studyLines ?? [] as $studyLine)
+                            @if($studyLine->end == null)
+                                {{ $studyLine->name }}
+                                @if($studyLine->type != 'other')
+                                    @lang('user.'.$studyLine->type)
+                                @endif
+                                <br>
+                            @endif
+                        @empty
                             <span style="font-style:italic;color:red">hiányzó szak</span>
-                        @endif
+                        @endforelse
                     </p>
                     <p style="margin-bottom: 5px">
                         @if ($user->workshops->count() > 0)
@@ -129,6 +134,16 @@
                                     @endforelse
                                 </td>
                             </tr>
+                            <tr>
+                                <th scope="row">Szak(ok)</th>
+                                <td>
+                                    @forelse($user->educationalInformation?->studyLines ?? [] as $studyLine)
+                                        {{ $studyLine->getName() }}
+                                        <br>
+                                    @empty
+                                        <span style="font-style:italic;color:red">hiányzó szak</span>
+                                    @endforelse
+                                </td>
                             <tr>
                                 <th scope="row">@lang('user.year_of_graduation')</th>
                                 <td>

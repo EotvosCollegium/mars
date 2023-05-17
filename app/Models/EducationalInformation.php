@@ -5,13 +5,19 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * @property array $program
- * @property string $programs
- * @property string $neptun
+ * @property StudyLine[]|Collection $studyLines
  * @property LanguageExam[]|Collection $languageExams
- *
+ * @property User $user
+ * @property string $year_of_graduation
+ * @property string $high_school
+ * @property string $neptun
+ * @property string $year_of_acceptance
+ * @property string $email
+ * @property string $alfonso_language
+ * @property string $alfonso_desired_level
  */
 class EducationalInformation extends Model
 {
@@ -26,7 +32,6 @@ class EducationalInformation extends Model
         'neptun',
         'year_of_acceptance',
         'email',
-        'program',
         'alfonso_language',
         'alfonso_desired_level',
         'alfonso_passed_by'
@@ -40,7 +45,7 @@ class EducationalInformation extends Model
     /**
      * The educational programs that belong to the educational information.
      */
-    public function studyLines()
+    public function studyLines(): HasMany
     {
         return $this->hasMany(StudyLine::class);
     }

@@ -2,39 +2,34 @@
 
 namespace App\Exports;
 
-use App\Models\Semester;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithTitle;
 
-class UsersExport implements FromCollection, WithTitle, WithMapping, WithHeadings, ShouldAutoSize
+class ApplicantsExport implements FromCollection, WithTitle, WithMapping, WithHeadings, ShouldAutoSize
 {
-    protected $users;
+    protected $applications;
 
-    public function __construct($users)
+    public function __construct($applications)
     {
-        $this->users = $users;
+        $this->applications = $applications;
     }
 
     public function collection()
     {
-        return $this->users;
+        return $this->applications;
     }
 
     public function title(): string
     {
-        return "Collegisták";
+        return "Felvételizők";
     }
 
     public function headings(): array
     {
-        $semesters = Semester::all()->sortByDesc('tag')->map(function ($semester) {
-            return 'Státusz ('.$semester->tag.')';
-        })->toArray();
-
-        return array_merge([
+        return [
             'Név',
             'E-mail',
             'Születési hely',
@@ -45,30 +40,22 @@ class UsersExport implements FromCollection, WithTitle, WithMapping, WithHeading
             'Érettségi éve',
             'Középiskola',
             'Neptun kód',
-            'Collegiumi felvétel éve',
             'Egyetemi e-mail',
             'Szak',
             'Kar',
-            'Műhely',
-            'Bentlakó/Bejáró',
-            'Alfonsó'
-        ], $semesters);
+            'Megjelölt műhely',
+            'Megjelölt státusz',
+            'Alfonsó',
+            'Felvételi alatt itt lesz?',
+            'Igényel szállást?'
+        ];
     }
 
-    public function map($user): array
+    public function map($application): array
     {
-        $semesters = Semester::all()->sortByDesc('tag')->map(function ($semester) use ($user) {
-            $status = $user->getStatus($semester);
-            if($status) {
-                $text = __('user.'.$status->status);
-                if($status->comment) {
-                    $text .= ' ('.$status->comment.')';
-                }
-            }
-            return $text ?? '';
-        })->toArray();
+        $user = $application->user;
 
-        $data = [
+        return [
             $user->name,
             $user->email,
             $user->personalInformation?->place_of_birth,
@@ -79,19 +66,16 @@ class UsersExport implements FromCollection, WithTitle, WithMapping, WithHeading
             $user->educationalInformation?->year_of_graduation,
             $user->educationalInformation?->high_school,
             $user->educationalInformation?->neptun,
-            $user->educationalInformation?->year_of_acceptance,
             $user->educationalInformation?->email,
             $user->educationalInformation?->studyLines?->map(function ($studyLine) {
                 return $studyLine->getNameWithYear();
             })->implode(', '),
-            implode(", ", $user->faculties->pluck('name')->toArray()),
-            implode(", ", $user->workshops->pluck('name')->toArray()),
+            implode(",", $user->faculties->pluck('name')->toArray()),
+            implode(",", $user->workshops->pluck('name')->toArray()),
             $user->isResident() ? 'Bentlakó' : 'Bejáró',
             $user->educationalInformation?->alfonso_language . " " . $user->educationalInformation?->alfonso_desired_level,
+            $application->present ?? "Igen",
+            $user->application->accommodation ? "Igen" : "Nem"
         ];
-
-        return array_merge($data, $semesters);
-        ;
-
     }
 }

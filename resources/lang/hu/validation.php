@@ -61,7 +61,9 @@ return [
         'study_line_name' => 'Szak neve',
         'study_line_level' => 'Képzési szint',
         'study_line_start' => 'Képzés kezdete',
-        'study_line_index' => 'Szak'
+        'study_line_index' => 'Szak',
+        'alfonso_language' => 'Alfonsó nyelv',
+        'alfonso_desired_level' => 'Alfonsó szint',
     ],
     'before' => 'A(z) :attribute :date előtti dátum kell, hogy legyen!',
     'before_or_equal' => 'A(z) :attribute nem lehet későbbi dátum, mint :date!',

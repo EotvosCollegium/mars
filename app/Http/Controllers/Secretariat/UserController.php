@@ -107,9 +107,6 @@ class UserController extends Controller
             'workshop.*' => 'exists:workshops,id',
             'study_line_index' => 'required|array|min:1',
             'email' => 'required|string|email|max:255',
-            'alfonso_language' => ['nullable', Rule::in(array_keys(config('app.alfonso_languages')))],
-            'alfonso_desired_level' => 'nullable|in:B2,C2',
-            'alfonso_passed_by' => 'nullable|date|before:today'
         ]);
 
         $validator->after(function ($validator) use ($request) {
@@ -133,10 +130,7 @@ class UserController extends Controller
             'year_of_acceptance',
             'high_school',
             'neptun',
-            'email',
-            'alfonso_language',
-            'alfonso_desired_level',
-            'alfonso_passed_by'
+            'email'
         ]);
         DB::transaction(function () use ($user, $request, $educational_data) {
             if (!$user->hasEducationalInformation()) {
@@ -145,19 +139,29 @@ class UserController extends Controller
                 $user->educationalInformation->update($educational_data);
             }
 
-            $user->workshops()->sync($request->input('workshop'));
-            $user->faculties()->sync($request->input('faculties'));
+            $user->load('educationalInformation');
 
-            $user->educationalInformation->studyLines()->delete();
-            foreach($request->input('study_line_index') as $index) {
-                $user->educationalInformation->studyLines()->create([
-                    'name' => $request->input('study_line_name_'.$index),
-                    'type' => $request->input('study_line_level_'.$index),
-                    'start' => $request->input('study_line_start_'.$index),
-                    'end' => $request->input('study_line_end_'.$index, null),
-                ]);
+            if($request->has('workshop')) {
+                $user->workshops()->sync($request->input('workshop'));
+                WorkshopBalance::generateBalances(Semester::current()->id);
             }
-            WorkshopBalance::generateBalances(Semester::current()->id);
+
+            if($request->has('faculty')) {
+                $user->faculties()->sync($request->input('faculty'));
+            }
+
+            if($request->has('study_line_index')) {
+                $user->educationalInformation->studyLines()->delete();
+                foreach($request->input('study_line_index') as $index) {
+                    $user->educationalInformation->studyLines()->create([
+                        'name' => $request->input('study_line_name_'.$index),
+                        'type' => $request->input('study_line_level_'.$index),
+                        'start' => $request->input('study_line_start_'.$index),
+                        'end' => $request->input('study_line_end_'.$index, null),
+                    ]);
+                }
+            }
+
         });
 
 
@@ -255,10 +259,8 @@ class UserController extends Controller
         return view('secretariat.user.list');
     }
 
-    public function show($id)
+    public function show(User $user)
     {
-        $user = User::findOrFail($id);
-
         $this->authorize('view', $user);
 
         return view('secretariat.user.show', [
@@ -321,9 +323,9 @@ class UserController extends Controller
         }
         $user = user();
         $user->personalInformation()->update(['tenant_until' => null]);
+        $user->update(['verified' => false]);
         $user->removeRole(Role::get(Role::TENANT));
         $user->setExtern();
-        $user->update(['verified' => false]);
         $user->application()->create();
         Cache::forget('collegists');
         return back();

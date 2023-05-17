@@ -2,6 +2,7 @@
 
 return [
     'active_members' => 'Active members',
+    'add' => 'Add',
     'add_new' => 'Add new',
     'admin' => 'Admin',
     'cancel' => 'Cancel',

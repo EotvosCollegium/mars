@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\EducationalInformation;
+use App\Models\StudyLine;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class EducationalInformationFactory extends Factory
