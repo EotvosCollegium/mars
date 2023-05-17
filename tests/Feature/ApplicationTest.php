@@ -404,7 +404,7 @@ class ApplicationTest extends TestCase
         $applicant_banished = User::factory()->create(['verified' => false]);
         $applicant_banished->application->update(['status' => ApplicationForm::STATUS_BANISHED]);
 
-        $response = $this->post('/applications/finalize');
+        $response = $this->post('/application/finalize');
         $response->assertStatus(302);
         $response->assertSessionHas('error', 'Még vannak feldolgozatlan jelentkezések!');
     }
@@ -432,7 +432,7 @@ class ApplicationTest extends TestCase
         $applicant_banished->application->update(['status' => ApplicationForm::STATUS_BANISHED]);
 
 
-        $response = $this->post('/applications/finalize');
+        $response = $this->post('/application/finalize');
         $response->assertStatus(302);
         $response->assertSessionHas('message', 'Sikeresen jóváhagyta az elfogadott jelentkezőket');
 

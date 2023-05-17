@@ -53,6 +53,7 @@ Route::middleware(['auth', 'log'])->group(function () {
     Route::post('/users/{user}/educational_information', [UserController::class, 'updateEducationalInformation'])->name('users.update.educational');
     Route::post('/users/{user}/alfonso', [UserController::class, 'updateAlfonsoStatus'])->name('users.update.alfonso');
     Route::post('/users/{user}/language_exam', [UserController::class, 'uploadLanguageExam'])->name('users.language_exams.upload');
+    Route::post('/application/finalize', [ApplicationController::class, 'finalizeApplicationProcess'])->name('application.finalize');
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -147,7 +148,6 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     /** Application handling */
     Route::get('/applications', [ApplicationController::class, 'showApplications'])->name('applications');
     Route::post('/applications', [ApplicationController::class, 'editApplication'])->name('applications.edit');
-    Route::post('/applications/finalize', [ApplicationController::class, 'finalizeApplicationProcess'])->name('applications.finalize');
     Route::get('/applications/export', [ApplicationController::class, 'exportApplications'])->name('applications.export');
 
     /** Faults */

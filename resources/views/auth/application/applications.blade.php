@@ -59,7 +59,7 @@
     <div class="card" style="margin-top:20px">
         <div class="card-content">
             <div class="row" style="margin:0">
-                <form id="finalize-application-process" method="POST" action="{{route('applications.finalize')}}">
+                <form id="finalize-application-process" method="POST" action="{{route('application.finalize')}}">
                     @csrf
                     <div class="col">
                         Hogyha a felvételi eljárás befejeződött, akkor a felvett jelentkezőket itt lehet jóváhagyni.
