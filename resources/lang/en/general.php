@@ -48,5 +48,6 @@ return [
     'upload' => 'Upload',
     'user' => 'User',
     'users' => 'Users',
+    'validation_errors' => 'Validation errors',
     'view_issue' => 'You can view and track your issue here.',
 ];

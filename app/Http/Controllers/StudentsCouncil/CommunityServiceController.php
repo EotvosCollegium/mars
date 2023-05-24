@@ -64,7 +64,7 @@ class CommunityServiceController extends Controller
 
         Mail::to($communityService->approver)->queue(new CommunityServiceRequested($communityService));
 
-        return back()->with('message', __('general.successfully_added'));
+        return back()->with('message', __('general.successfully_added'))->with('section', 'community_service');
     }
 
     public function approve(CommunityService $communityService)

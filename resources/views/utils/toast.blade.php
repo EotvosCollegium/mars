@@ -25,4 +25,17 @@
             });
         </script>
     @endif
+
+    @if($errors->any())
+        <script>
+            var toastHTML=`
+            <i class='material-icons' style='margin-right:5px'>error</i>
+            @lang('general.validation_errors')
+            `;
+            M.toast({
+                html: toastHTML,
+            });
+            console.warn(`{{var_dump($errors->all())}}`)
+        </script>
+    @endif
 @endpush

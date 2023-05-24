@@ -33,7 +33,8 @@
 <form method="POST" action="">
     @csrf
     <div class="row">
-        <x-input.text l=10 id="alfonso_note" text="Megjegyzés, helyesbítés, igazolt hiányzás"/>
+        <input type="hidden" name="section" value="general_assembly"/>
+        <x-input.text l=10 id="general_assembly_note" :value="$evaluation?->general_assembly_note" text="Megjegyzés, helyesbítés, igazolt hiányzás"/>
         <x-input.button l=2 class="right" text="general.save" />
     </div>
 </form>

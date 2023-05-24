@@ -34,7 +34,7 @@ class UserController extends Controller
     public function updatePersonalInformation(Request $request, User $user): \Illuminate\Http\RedirectResponse
     {
         $this->authorize('view', $user);
-        session()->put('profile_current_page', 'personal_information');
+        session()->put('section', 'personal_information');
 
         $isCollegist = $user->isCollegist();
 
@@ -94,7 +94,7 @@ class UserController extends Controller
     public function updateEducationalInformation(Request $request, User $user): \Illuminate\Http\RedirectResponse
     {
         $this->authorize('view', $user);
-        session()->put('profile_current_page', 'educational_information');
+        session()->put('section', 'educational_information');
 
         $validator = Validator::make($request->all(), [
             'year_of_graduation' => 'required|integer|between:1895,' . date('Y'),
@@ -171,7 +171,7 @@ class UserController extends Controller
     public function updateAlfonsoStatus(Request $request, User $user)
     {
         $this->authorize('view', $user);
-        session()->put('profile_current_page', 'alfonso');
+        session()->put('section', 'alfonso');
 
         $validator = Validator::make($request->all(), [
             'alfonso_language' => ['nullable', Rule::in(array_keys(config('app.alfonso_languages')))],
@@ -191,7 +191,7 @@ class UserController extends Controller
     public function uploadLanguageExam(Request $request, User $user)
     {
         $this->authorize('view', $user);
-        session()->put('profile_current_page', 'alfonso');
+        session()->put('section', 'alfonso');
 
         $validator = Validator::make($request->all(), [
             'file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2000',
@@ -234,7 +234,7 @@ class UserController extends Controller
     public function updatePassword(Request $request): \Illuminate\Http\RedirectResponse
     {
         $user = user();
-        session()->put('profile_current_page', 'change_password');
+        session()->put('section', 'change_password');
 
         $validator = Validator::make($request->except('_token'), [
             'old_password' => 'required|string|current_password',

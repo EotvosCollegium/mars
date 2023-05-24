@@ -1,8 +1,9 @@
 <form method="POST" action="">
     @csrf
     <div class="row">
-        <x-input.text s=6 type="number" min="1" max="5" step="0.01" id="avg_now" text="Átlag ({{\App\Models\Semester::current()->tag}})" helper="(ha ismert, tizedesponttal)"/>
-        <x-input.text s=6 type="number" min="1" max="5" step="0.01" id="avg_last" text="Átlag ({{\App\Models\Semester::previous()->tag}})" helper="(tizedesponttal)" />
+        <input type="hidden" name="section" value="avg"/>
+        <x-input.text s=6 type="number" min="1" max="5" step="0.01" id="current_avg" :value="$evaluation?->current_avg" text="Átlag ({{\App\Models\Semester::current()->tag}})" helper="(ha ismert, tizedesponttal)"/>
+        <x-input.text s=6 type="number" min="1" max="5" step="0.01" id="last_avg" :value="$evaluation?->last_avg" text="Átlag ({{\App\Models\Semester::previous()->tag}})" helper="(tizedesponttal)" />
     </div>
     <blockquote>
         <a href="https://eotvos.elte.hu/collegium/mukodes/szabalyzatok">CTSZK 7. § (4) b.</a>

@@ -328,6 +328,15 @@ class User extends Authenticatable implements HasLocalePreference
             ->withPivot(['status', 'verified', 'comment'])->using(SemesterStatus::class);
     }
 
+    /**
+     * Returns the semesters where the user has any status. The relation uses a SemesterStatus pivot class.
+     * @return HasMany
+     */
+    public function semesterEvaluations(): HasMany
+    {
+        return $this->hasMany(SemesterEvaluation::class);
+    }
+
     /* Transaction related */
 
     /**

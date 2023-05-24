@@ -1,6 +1,9 @@
-<form method="POST" action="">
+<form method="POST" action="{{ route('secretariat.evaluation.store') }}">
     @csrf
-    <!-- TODO Show existing courses -->
+    <input type="hidden" name="section" value="courses"/>
+    @foreach($evaluation?->courses ?? [] as $course)
+        @include('secretariat.evaluation-form.course', ['index' => $loop->index, 'value' => $course])
+    @endforeach
     <x-input.button type="button" id="addCourse" floating icon="add" onclick="insertEmptyCourse()" />
 
     <blockquote>
@@ -10,7 +13,7 @@
         A Collegiumból elbocsátható, aki a Collegiumban felvett óráját nem teljesítette.
     </blockquote>
     <div class="row">
-        <x-input.text l=10 id="alfonso_note" text="Megjegyzés, helyesbítés"/>
+        <x-input.text l=10 id="courses_note" :value="$evaluation?->courses_note" text="Megjegyzés, helyesbítés"/>
         <x-input.button l=2 class="right" text="general.save" />
     </div>
 </form>
@@ -20,7 +23,7 @@
 function removeCourse(index) {
     $("#course_" + index).remove();
 }
-let courseCounter = 0; //TODO
+let courseCounter = {{count($evaluation?->courses) ?? 0}}
 $(document).ready(function(){
     if(courseCounter == 0) {
         insertEmptyCourse();
