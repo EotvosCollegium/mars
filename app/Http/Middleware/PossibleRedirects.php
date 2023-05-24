@@ -28,7 +28,7 @@ class PossibleRedirects
             && $user->isCollegist()
             && !$user->getStatusFor(Semester::next())
             && SemesterEvaluationController::isEvaluationAvailable()) {
-               $request->session()->now('message', 'Töltsd ki a szemeszter végi kérdőívet a profilod alatt!');
+                $request->session()->now('message', 'Töltsd ki a szemeszter végi kérdőívet a profilod alatt!');
             }
             /**
              * Redirects teants to update their tenant_until property if it is in the past.

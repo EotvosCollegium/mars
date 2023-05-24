@@ -35,11 +35,11 @@ class SemesterEvaluationController extends Controller
     {
         $deadline = Carbon::parse(config('custom.semester_evaluation_deadline'));
         $semester_end = Carbon::parse(EventTrigger::find(EventTrigger::DEACTIVATE_STATUS_SIGNAL)->date);
-        if(!$deadline){
+        if(!$deadline) {
             return $semester_end;
         } else {
             //if the deadline has not been updated, use the semester_end
-            if($deadline < Semester::current()->getStartDate()){
+            if($deadline < Semester::current()->getStartDate()) {
                 return $semester_end;
             } else {
                 return $deadline;
@@ -55,7 +55,7 @@ class SemesterEvaluationController extends Controller
         if (!self::isEvaluationAvailable()) {
             return redirect('home')->with('error', 'Lejárt a határidő a kérdőív kitöltésére. Keresd fel a titkárságot.');
         }
-        return view('secretariat.evaluation-form.app',[
+        return view('secretariat.evaluation-form.app', [
             'user' => user(),
             'faculties' => Faculty::all(),
             'workshops' => Workshop::all(),
@@ -125,10 +125,11 @@ class SemesterEvaluationController extends Controller
             case 'other':
                 $evaluation->update(array_merge(
                     $request->only(['professional_results', 'research', 'publications', 'conferences', 'scholarships', 'educational_activity', 'public_life_activities']),
-                    ['can_be_shared' => $request->has('can_be_shared')]));
+                    ['can_be_shared' => $request->has('can_be_shared')]
+                ));
                 break;
             case 'feedback':
-                if($request->has('anonymous_feedback')){
+                if($request->has('anonymous_feedback')) {
                     Mail::to(User::president())
                         ->queue(new \App\Mail\AnonymousFeedback(User::president()->name, $request->feedback));
                     Mail::to(User::studentCouncilSecretary())

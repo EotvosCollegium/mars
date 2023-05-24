@@ -128,7 +128,7 @@ class SemesterEvaluation extends Model
     protected function professionalResults(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) : array => DataCompresser::decompressData($value),
+            get: fn ($value): array => DataCompresser::decompressData($value),
             set: fn ($value) => DataCompresser::compressData($value),
         );
     }
