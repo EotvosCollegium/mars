@@ -4,12 +4,14 @@
     $enrollmentYear = $user->educationalInformation->year_of_acceptance;
 @endphp
 
+@if($evaluation ?? false)
 <blockquote>
     <p>A fenti mezőket csak abban az esetben kell kitölteni, ha collegiumi nyelvórán vettél részt.</p>
     <p><b>Figyelem:</b> A nyelvi szakokon tanuló, honoráciort végző, vagy mesterszakos hallgatókra más feltételek vonatkozhatnak, mely esetben egyéni elbírálás szükséges. Ilyenkor töltsd ki a megjegyzés mezőt.</p>
     <p>Ha már elvégezted az előírt követelményeket, és nem folytatod a nyelvtanulást, akkor nem szükséges semmit kitölteni.</p>
     <p>Vedd figyelembe, hogy a követelmények pontos számolásához az összes, a collegista státusz megszerzése előtti nyelvvizsgákat is fel kell tölteni, és ellenőrizd a felvétel évét a tanulmányi adatoknál.</p>
 </blockquote>
+@endif
 
 <p>Az <a href="https://eotvos.elte.hu/collegium/mukodes/szabalyzatok">
     ALFONSÓ program 2. § (4)</a>

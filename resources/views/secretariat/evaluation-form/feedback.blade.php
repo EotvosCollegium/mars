@@ -8,7 +8,7 @@
     <div class="row">
         <input type="hidden" name="section" value="feedback"/>
         <x-input.textarea id="feedback" :value="$evaluation?->feedback" text="Visszajelzés..." style="height:100px" />
-        <x-input.checkbox id="anonym" s=10 text="Névtelen visszajelzés" />
+        <x-input.checkbox id="anonymous_feedback" s=10 text="Névtelen visszajelzés" />
         <x-input.button s=2 class="right" text="Küldés" />
     </div>
 </form>

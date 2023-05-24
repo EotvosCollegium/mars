@@ -110,12 +110,17 @@ class SemesterEvaluationController extends Controller
                     ['can_be_shared' => $request->has('can_be_shared')]));
                 break;
             case 'feedback':
-                if($request->has('anonymous_feedback') && $request->anonymous_feedback == 'on')
-                    break;//TOOD
-                else
+                if($request->has('anonymous_feedback')){
+                    Mail::to(User::president())
+                        ->queue(new \App\Mail\AnonymousFeedback(User::president()->name, $request->feedback));
+                    Mail::to(User::studentCouncilSecretary())
+                        ->queue(new \App\Mail\AnonymousFeedback(User::studentCouncilSecretary()->name, $request->feedback));
+                } else {
                     $evaluation->update($request->only(['feedback']));
+                }
                 break;
             case 'status':
+                $this->authorize('is-collegist');
                 $evaluation->update(array_merge(
                     $request->only(['next_status', 'next_status_note']),
                     [
@@ -137,26 +142,6 @@ class SemesterEvaluationController extends Controller
         }
 
         return back()->with('message', __('general.successful_modification'))->with('section', $request->section);
-    }
-
-    /**
-     * Update status information
-     */
-    public function storeStatus(Request $request)
-    {
-        $this->authorize('is-collegist');
-
-        $validator = Validator::make($request->all(), [
-            'semester_status' => 'required|in:' . SemesterStatus::ACTIVE . ',' . SemesterStatus::PASSIVE . ',' . Role::ALUMNI,
-            'comment' => 'nullable|string',
-            'resign_residency' => 'nullable'
-        ]);
-        $validator->validate();
-
-        $user = user();
-
-
-        return redirect('home')->with('message', __('general.successful_modification'));
     }
 
     /**
