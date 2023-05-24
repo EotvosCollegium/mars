@@ -236,7 +236,7 @@ class ApplicationTest extends TestCase
             'year_of_acceptance' => '2018',
             'high_school' => 'Test high school',
             'neptun' => 'NEPTUN',
-            'study_line_index' => ['1'],
+            'study_line_indices' => ['1'],
             'study_line_name_1' => 'Test study line',
             'study_line_level_1' => 'bachelor',
             'study_line_start_1' => Semester::current()->id,

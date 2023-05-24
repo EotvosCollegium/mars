@@ -33,9 +33,9 @@
                         jelentkezését.</p>
                     <p>Kérjük figyeljen a határidőre, mert utána már nem lesz lehetősége véglegesíteni azt.</p>
                     <p>Amennyiben bármi kérdése lenne a felvételivel kapcsolatban, kérjük, írjon a
-                        <a href="mailto:{{config('mail.secretary_mail)}}">{{config('mail.secretary_mail)}}</a> e-mail címre. Ha
+                        <a href="mailto:{{config('mail.secretary_mail')}}">{{config('mail.secretary_mail')}}</a> e-mail címre. Ha
                         technikai
-                        probléma adódna, kérjük, jelezze felénk a <a href="mailto:{{config('mail.sys_admin_mail)}}">{{config('mail.sys_admin_mail)}}</a>
+                        probléma adódna, kérjük, jelezze felénk a <a href="mailto:{{config('mail.sys_admin_mail')}}">{{config('mail.sys_admin_mail')}}</a>
                         e-mail címen.
                     </p>
                 @else

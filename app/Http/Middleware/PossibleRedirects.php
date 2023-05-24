@@ -2,7 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use App\Http\Controllers\Secretariat\SemesterController;
 use App\Http\Controllers\Secretariat\SemesterEvaluationController;
 use App\Models\Semester;
 use Closure;
