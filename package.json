@@ -17,7 +17,7 @@
         "popper.js": "^1.12",
         "resolve-url-loader": "^4.0.0",
         "sass": "^1.27.0",
-        "sass-loader": "7.*",
+        "sass-loader": "^13.2.2",
         "vue": "^2.6.12",
         "vue-template-compiler": "^2.6.12"
     },
