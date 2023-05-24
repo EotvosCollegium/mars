@@ -2,8 +2,7 @@
 
 namespace App\Models;
 
-use App\Http\Controllers\Secretariat\SecretariatController;
-use App\Http\Controllers\Secretariat\SemesterController;
+use App\Http\Controllers\Secretariat\SemesterEvaluationController;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
@@ -108,7 +107,7 @@ class EventTrigger extends Model
     private function handleSendStatusStatementRequest()
     {
         // Triggering the event
-        SemesterController::sendStatementMail();
+        SemesterEvaluationController::sendEvaluationAvailableMail();
 
         $this->update([
             // Update the new trigger date
@@ -119,7 +118,7 @@ class EventTrigger extends Model
     private function deactivateStatus()
     {
         // Triggering the event
-        SemesterController::finalizeStatements();
+        SemesterEvaluationController::finalizeStatements();
 
         $this->update([
             // Update the new trigger date

@@ -5,7 +5,7 @@
         searchable="@lang('general.search')"
         id="{{ $id }}"
         {{-- Required is not supported because the select does not support validation --}}
-        {{$attributes->whereDoesntStartWith('required')->whereDoesntStartWith('placeholder')->merge([
+        {{$attributes->whereDoesntStartWith('required')->merge([
             'name' => $id
         ])}}
         >
@@ -13,11 +13,11 @@
         <option
             value=""
             disabled="true"
-            selected="true">{{ $attributes->get('placeholder') ?? __('general.choose_option') }}
+            selected="true">{{ $placeholder ?? __('general.choose_option') }}
         </option>
         @endif
         @if($allowEmpty)
-        <option value=null></option>
+        <option value=''>{{is_string($allowEmpty) ? $allowEmpty : ""}}</option>
         @endif
         @foreach ($elements as $element)
             <option
@@ -45,17 +45,17 @@
 
 @push('scripts')
     <script>
-        //Initialize materialize select
-        var instances;
-        $(document).ready(
-        function() {
-            var elems = $('#{{ $id }}');
-            const options = [
-            @foreach ($elements as $element)
-                { name : '{{ $element->name ?? $element }}',  value : '{{ $element->id ?? $element }}'},
-            @endforeach
-            ];
-            instances = M.FormSelect.init(elems, options);
-        });
+        // //Initialize materialize select
+        // var instances;
+        // $(document).ready(
+        // function() {
+        //     var elems = $('#{{ $id }}');
+        //     const options = [
+        //     @foreach ($elements as $element)
+        //         { name : '{{ $element->name ?? $element }}',  value : '{{ $element->id ?? $element }}'},
+        //     @endforeach
+        //     ];
+        //     instances = M.FormSelect.init(elems, options);
+        // });
 </script>
 @endpush

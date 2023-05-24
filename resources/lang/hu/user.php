@@ -33,6 +33,7 @@ return [
     'germanisztika_muhely' => 'Germanisztika műhely',
     'handle_registrations' => 'Regisztrációk kezelése',
     'high_school' => 'Középiskola',
+    'in_case_of_tenants' => 'Vendégek esetén',
     'informatika_muhely' => 'Informatikai műhely',
     'informatikai_kar' => 'Informatikai Kar',
     'information_of_studies' => 'Tanulmányi adatok',

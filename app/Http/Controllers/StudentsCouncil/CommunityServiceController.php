@@ -23,8 +23,7 @@ class CommunityServiceController extends Controller
             'semesters' => Semester::withWhereHas('communityServices', function ($query) use ($request) {
                 $query->where('approver_id', $request->user()->id)
                     ->orWhere('requester_id', $request->user()->id);
-            })->get(),
-            'possible_approvers' => User::studentCouncilLeaders()
+            })->get()
         ]);
     }
 

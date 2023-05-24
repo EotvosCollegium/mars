@@ -39,19 +39,19 @@ class HomeController extends Controller
 
         $contacts['other'] = [
             Role::DIRECTOR => [
-                'name' => $director->name,
-                'email' => $director->email,
-                'phone_number' => $director->personalInformation->phone_number
+                'name' => $director?->name,
+                'email' => $director?->email,
+                'phone_number' => $director?->personalInformation?->phone_number
             ],
             Role::SECRETARY => [
-                'name' => $secretary->name,
-                'email' => $secretary->email,
-                'phone_number' => $secretary->personalInformation->phone_number
+                'name' => $secretary?->name,
+                'email' => $secretary?->email,
+                'phone_number' => $secretary?->personalInformation?->phone_number
             ],
             Role::STAFF => [
-                'name' => $staff->name,
-                'email' => $staff->email,
-                'phone_number' => $staff->personalInformation->phone_number
+                'name' => $staff?->name,
+                'email' => $staff?->email,
+                'phone_number' => $staff?->personalInformation?->phone_number
             ],
             'reception' => [
                 'phone_number' => env('PORTA_PHONE')

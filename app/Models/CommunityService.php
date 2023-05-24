@@ -50,9 +50,9 @@ class CommunityService extends Model
     {
         return Attribute::make(
             get: fn () => match ($this->approved) {
-                null =>  __('community-service.pending'),
-                1 => __('community-service.approved'),
-                0 => __('community-service.rejected'),
+                null =>  'függőben',
+                1 => 'jóváhagyott',
+                0 => 'elutasított',
                 default => throw new \Exception('Unexpected match value')
             },
         );

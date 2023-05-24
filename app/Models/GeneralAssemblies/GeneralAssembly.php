@@ -78,6 +78,38 @@ class GeneralAssembly extends Model
     }
 
     /**
+     * @param User $user The user to check.
+     * @return bool Whether the user has attended the general assembly. (voted for all questions except for max. 2)
+     */
+    public function isAttended(User $user): bool
+    {
+        $question_number = $this->questions()->count();
+        return $this->select('user_id')
+            ->from('question_user')
+            ->join('questions', 'questions.id', '=', 'question_user.question_id')
+            ->where('questions.general_assembly_id', $this->id)
+            ->groupBy('user_id')
+            ->havingRaw('count(*) >= ?-2', [$question_number])
+            ->having('user_id', $user->id)
+            ->exists();
+    }
+
+    /**
+     * @param User $user The user to check.
+     * @return bool Whether the user has attended at least one from the last two general assemblies.
+     */
+    public static function requirementsPassed(User $user): bool
+    {
+        $lastAssemblies = GeneralAssembly::all()->sortByDesc('closed_at')->take(2);
+        foreach ($lastAssemblies as $assembly) {
+            if ($assembly->isAttended($user)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Opens the question.
      * @throws Exception if it has already been opened.
      */

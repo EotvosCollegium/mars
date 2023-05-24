@@ -25,14 +25,6 @@
                     </div>
                     <div class="col s12">
                         @livewire('parent-child-form', [
-                        'title' => "Van nyelvvizsgám",
-                        'name' => 'language_exam',
-                        'helper' => 'Nyelv, szint, fajta',
-                        'optional' => true,
-                        'items' => $user->application->language_exam])
-                    </div>
-                    <div class="col s12">
-                        @livewire('parent-child-form', [
                         'title' => "Van versenyeredményem",
                         'name' => 'competition',
                         'helper' => 'Verseny, elért eredmény, év',
@@ -112,7 +104,7 @@
                     </div>
                     <x-input.textarea id="question_2" text="Miért kíván a Collegium tagja lenni?"
                                       helper="≈300-500 karakter" :value="$user->application->question_2"/>
-                    <x-input.textarea id="question_3" 
+                    <x-input.textarea id="question_3"
                                       text="Tervez-e tovább tanulni a diplomája megszerzése után? Milyen tervei vannak az egyetem után?"
                                       :value="$user->application->question_3"/>
                     <x-input.textarea id="question_4"

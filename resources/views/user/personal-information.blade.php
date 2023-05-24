@@ -91,6 +91,7 @@
                 id='tenant_until'
                 required
                 text='user.tenant_until'
+                :helper="'('.__('user.in_case_of_tenants').')'"
                 :value="$user->personalInformation?->tenant_until" />
         @endif
         <x-input.button class="right" text="general.save" />

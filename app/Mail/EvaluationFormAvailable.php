@@ -3,11 +3,10 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class StatusStatementRequest extends Mailable
+class EvaluationFormAvailable extends Mailable
 {
     use Queueable;
     use SerializesModels;
@@ -31,7 +30,7 @@ class StatusStatementRequest extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.status_statement_request')
-                    ->subject('Add meg a státuszod a következő félévre!');
+        return $this->markdown('emails.evaluation_form_available')
+                    ->subject('Az év végi értékelő form elérhető!');
     }
 }

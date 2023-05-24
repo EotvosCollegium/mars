@@ -22,7 +22,7 @@ use App\Http\Controllers\Network\InternetController;
 use App\Http\Controllers\Network\RouterController;
 use App\Http\Controllers\Secretariat\DocumentController;
 use App\Http\Controllers\Secretariat\RegistrationsController;
-use App\Http\Controllers\Secretariat\SemesterController;
+use App\Http\Controllers\Secretariat\SemesterEvaluationController;
 use App\Http\Controllers\Secretariat\UserController;
 use App\Http\Controllers\StudentsCouncil\EconomicController;
 use App\Http\Controllers\StudentsCouncil\EpistolaController;
@@ -162,9 +162,10 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::put('/rooms/update', [RoomController::class, 'updateResidents'])->name('rooms.update');
     Route::get('/rooms/modify', [RoomController::class, 'modify'])->name('rooms.modify');
 
-    /** Status update form */
-    Route::get('/secretariat/status-update', [SemesterController::class, 'showStatusUpdate'])->name('secretariat.status-update.show');
-    Route::post('/secretariat/status-update', [SemesterController::class, 'updateStatus'])->name('secretariat.status-update.update');
+    /** Evaluation form */
+    Route::get('/secretariat/evaluation', [SemesterEvaluationController::class, 'show'])->name('secretariat.evaluation.show');
+    Route::post('/secretariat/evaluation', [SemesterEvaluationController::class, 'store'])->name('secretariat.evaluation.store');
+    Route::post('/secretariat/evaluation/status_update', [SemesterEvaluationController::class, 'storeStatus'])->name('secretariat.evaluation.status-update');
 
     /** Documents */
     Route::get('/documents', [DocumentController::class, 'index'])->name('documents');

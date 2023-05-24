@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-@can('updateAny', \App\Models\Room::class) 
+@can('updateAny', \App\Models\Room::class)
 <div class="card">
     <div class="card-content">
     <blockquote>Ha a módosításnak egyes szobákban nincs hatása, győződj meg róla hogy minden személy egyszerre legfeljebb egy szobába van beosztva!</blockquote>
@@ -47,9 +47,9 @@
             @endphp
             @for ($i = 1; $i <= $room->capacity; $i++)
                 @if ($users_in_room->count()>=$i)
-                    <x-input.select form="update-all" :s="$width" allowEmpty="true" name="rooms[{{$room->name}}][]" id="{{$room->name}}_person_{{$i}}" :elements="$users" :default="$users_in_room[$i-1]" text="{{$i}}. lakó"/>
+                    <x-input.select form="update-all" :s="$width" allow-empty name="rooms[{{$room->name}}][]" id="{{$room->name}}_person_{{$i}}" :elements="$users" :default="$users_in_room[$i-1]" text="{{$i}}. lakó"/>
                 @else
-                    <x-input.select form="update-all" :s="$width" allowEmpty="true" name="rooms[{{$room->name}}][]" id="{{$room->name}}_person_{{$i}}" :elements="$users" text="{{$i}}. lakó"/>
+                    <x-input.select form="update-all" :s="$width" allow-empty name="rooms[{{$room->name}}][]" id="{{$room->name}}_person_{{$i}}" :elements="$users" text="{{$i}}. lakó"/>
                 @endif
             @endfor
         </div>

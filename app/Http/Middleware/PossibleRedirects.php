@@ -25,7 +25,7 @@ class PossibleRedirects
             if (!$request->routeIs('secretariat.status-update.*')
             && $user->isCollegist()
             && !$user->getStatus()
-            && SemesterController::isStatementAvailable()) {
+            && SemesterController::isEvaluationAvailable()) {
                 return redirect(route('secretariat.status-update.show'));
             }
             /**
