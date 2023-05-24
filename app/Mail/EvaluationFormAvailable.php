@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Http\Controllers\Secretariat\SemesterEvaluationController;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -20,7 +21,7 @@ class EvaluationFormAvailable extends Mailable
      */
     public function __construct()
     {
-        $this->deadline = \App\Models\EventTrigger::statementDeadline()->format('Y-m-d');
+        $this->deadline = SemesterEvaluationController::deadline()->format('Y-m-d');
     }
 
     /**

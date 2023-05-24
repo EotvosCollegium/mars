@@ -15,4 +15,6 @@ return [
     'application_deadline' => env('APPLICATION_DEADLINE'), //registration deadline for new collegists
     'application_extended' => env('APPLICATION_EXTENDED', false), //is the registration deadline extended?
 
+    'semester_evaluation_deadline' => env('SEMESTER_EVALUATION_DEADLINE'),
+
 ];

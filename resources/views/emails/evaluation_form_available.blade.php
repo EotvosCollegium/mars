@@ -3,7 +3,7 @@
 <p>
 Töltsd ki a szemeszter végi értékelő kérdőívet. Amennyiben nem töltöd ki {{$deadline}}-ig, elveszíted a státuszod!
 </p>
-@component('mail::button', ['url' => route('secretariat.status-update.show')])
+@component('mail::button', ['url' => route('secretariat.evaluation.show')])
 Kitöltés
 @endcomponent
 <p>@lang('mail.administrators')</p>

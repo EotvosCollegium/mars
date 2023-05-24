@@ -13,9 +13,9 @@
             <p>Technikai probléma, észrevétel esetén mindenképp <a href="{{route('index_reportbug')}}">jelentsd a problémát</a>.
                 Ha technikai gond miatt nem tudod megfelelően beadni a kérdőívet, akkor <a href="mailto:{{ config('mail.sys_admin_mail')}}">vedd fel a kapcsolatot a rendszergazdákkal</a>.</p>
             <p>Először ellenőrizd a személyes és tanulmányi adataid, minden hiányosságot és változást ments el.</p>
-            <p>A kérvényeket a <a href="mailto:{{ config('mail.secretary_email')}}"> titkárság</a> számára küldj el.</p>
+            <p>A kérvényeket a <a href="mailto:{{ config('mail.secretary_email')}}"> titkárság</a> számára küldd el.</p>
             <p>A válaszaidhoz a Tanári Kar, a Választmány elnöke és szakmai alelnöke, a titkárság, az igazgató és a rendszergazdák férnek hozzá.</p>
-            <p>A kitöltés határideje: TODO</p>
+            <p>A kitöltés határideje: {{ $deadline }} </p>
         </blockquote>
     </div>
 </div>

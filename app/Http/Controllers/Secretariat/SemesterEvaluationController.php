@@ -12,6 +12,7 @@ use App\Models\SemesterEvaluation;
 use App\Models\SemesterStatus;
 use App\Models\User;
 use App\Models\Workshop;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
@@ -21,17 +22,29 @@ class SemesterEvaluationController extends Controller
 {
     /**
      * Check if the evaluation is available.
-     * Based on the dates set in EventTriggers.
      */
     public static function isEvaluationAvailable()
     {
-        $statement_event = EventTrigger::find(EventTrigger::SEND_STATUS_STATEMENT_REQUEST)->date;
-        $deadline_event = EventTrigger::find(EventTrigger::DEACTIVATE_STATUS_SIGNAL)->date;
-        // If the deadline is closer than sending out the request, that means
-        // the request has been already sent out.
+        $available = EventTrigger::find(EventTrigger::SEMESTER_EVALUATION_AVAILABLE)->date;
+        $deadline = self::deadline();
 
-        return true; //TODO delete
-        return $deadline_event < $statement_event;
+        return $deadline >= $available;
+    }
+
+    public static function deadline(): Carbon
+    {
+        $deadline = Carbon::parse(config('custom.semester_evaluation_deadline'));
+        $semester_end = Carbon::parse(EventTrigger::find(EventTrigger::DEACTIVATE_STATUS_SIGNAL)->date);
+        if(!$deadline){
+            return $semester_end;
+        } else {
+            //if the deadline has not been updated, use the semester_end
+            if($deadline < Semester::current()->getStartDate()){
+                return $semester_end;
+            } else {
+                return $deadline;
+            }
+        }
     }
 
     /**
@@ -50,6 +63,7 @@ class SemesterEvaluationController extends Controller
             'general_assemblies' => GeneralAssembly::all()->sortByDesc('closed_at')->take(2),
             'community_services' => user()->communityServiceRequests()->where('semester_id', Semester::current()->id)->get(),
             'position_roles' => user()->roles()->whereIn('name', Role::STUDENT_POSTION_ROLES)->get(),
+            'deadline' => self::deadline(),
         ]);
     }
 
@@ -58,6 +72,10 @@ class SemesterEvaluationController extends Controller
      */
     public function store(Request $request)
     {
+        if (!self::isEvaluationAvailable()) {
+            return redirect('home')->with('error', 'Lejárt a határidő a kérdőív kitöltésére. Keresd fel a titkárságot.');
+        }
+
         $validator = Validator::make($request->all(), [
             'section' => 'required|in:alfonso,courses,avg,general_assembly,feedback,other,status',
             'alfonso_note' => 'nullable|string',
@@ -159,7 +177,7 @@ class SemesterEvaluationController extends Controller
     public static function finalizeStatements()
     {
         foreach (User::collegists() as $user) {
-            if (! $user->getStatus()?->status) {
+            if (! $user->getStatus(Semester::next())?->status) {
                 self::deactivateCollegist($user);
             }
         }

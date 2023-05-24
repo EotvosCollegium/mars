@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Http\Controllers\Secretariat\SemesterEvaluationController;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -33,13 +34,13 @@ class EventTrigger extends Model
     public const INTERNET_ACTIVATION_SIGNAL = 0;
     // Signal for notifying the students to make a statement regarding their status
     // in the next semester.
-    public const SEND_STATUS_STATEMENT_REQUEST = 1;
+    public const SEMESTER_EVALUATION_AVAILABLE = 1;
     // Deadline for the above signal; when triggered, everyone who did not make a
     // statement will be set to inactive.
     public const DEACTIVATE_STATUS_SIGNAL = 2;
     public const SIGNALS = [
         self::INTERNET_ACTIVATION_SIGNAL,
-        self::SEND_STATUS_STATEMENT_REQUEST,
+        self::SEMESTER_EVALUATION_AVAILABLE,
         self::DEACTIVATE_STATUS_SIGNAL,
     ];
 
@@ -59,18 +60,9 @@ class EventTrigger extends Model
 
     public static function internetActivationDeadline()
     {
-        return self::find(self::INTERNET_ACTIVATION_SIGNAL)->data;
+        return self::find(self::INTERNET_ACTIVATION_SIGNAL)->date;
     }
 
-    public static function statementRequestDate()
-    {
-        return self::find(self::SEND_STATUS_STATEMENT_REQUEST)->date;
-    }
-
-    public static function statementDeadline()
-    {
-        return self::find(self::DEACTIVATE_STATUS_SIGNAL)->date;
-    }
 
     /* Handlers which are fired when the set date is reached. */
 
@@ -80,8 +72,8 @@ class EventTrigger extends Model
             case self::INTERNET_ACTIVATION_SIGNAL:
                 $this->handleInternetActivationSignal();
                 break;
-            case self::SEND_STATUS_STATEMENT_REQUEST:
-                $this->handleSendStatusStatementRequest();
+            case self::SEMESTER_EVALUATION_AVAILABLE:
+                $this->handleSemesterEvaluationAvailable();
                 break;
             case self::DEACTIVATE_STATUS_SIGNAL:
                 $this->deactivateStatus();
@@ -99,30 +91,34 @@ class EventTrigger extends Model
         $this->update([
             // Update the new trigger date
             'date' => Semester::next()->getStartDate()->addMonth(1),
-            // Update the new activation deadline
-            'data' => Semester::next()->getStartDate()->addMonth(1),
+            'data' => null,
         ]);
     }
 
-    private function handleSendStatusStatementRequest()
+    private function handleSemesterEvaluationAvailable()
     {
-        // Triggering the event
-        SemesterEvaluationController::sendEvaluationAvailableMail();
+        DB::transaction(function () {
+            // Send notification
+            SemesterEvaluationController::sendEvaluationAvailableMail();
 
-        $this->update([
-            // Update the new trigger date
-            'date' => Semester::next()->getStartDate(),
-        ]);
+            $this->update([
+                // Update the new trigger date
+                'date' => Semester::next()->getEndDate()->subMonth(2),
+            ]);
+        });
     }
 
     private function deactivateStatus()
     {
-        // Triggering the event
-        SemesterEvaluationController::finalizeStatements();
+        DB::transaction(function () {
+            // Triggering the event
+            SemesterEvaluationController::finalizeStatements();
 
-        $this->update([
-            // Update the new trigger date
-            'date' => Semester::next()->getStartDate()->addMonth(1),
-        ]);
+            $this->update([
+                // Update the new trigger date
+                'date' => Semester::next()->getEndDate()->subDay(1)
+            ]);
+        });
+
     }
 }

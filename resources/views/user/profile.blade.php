@@ -93,8 +93,13 @@
             </div>
         </li>
     </ul>
+    @if($user->isCollegist() && true || \App\Http\Controllers\Secretariat\SemesterEvaluationController::isEvaluationAvailable())
+    <a href="{{ route('secretariat.evaluation.show') }}" class="btn left coli blue">Szemeszter értékelés</a>
+    @endif
+
     <form action="{{ route('logout') }}" method="POST">
         @csrf
-        <x-input.button class="right" text="general.logout"/>
+        <x-input.button only_input class="right" text="general.logout"/>
     </form>
+
 @endif

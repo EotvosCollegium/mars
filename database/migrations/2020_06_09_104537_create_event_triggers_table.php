@@ -38,14 +38,14 @@ class CreateEventTriggersTable extends Migration
         ]);
 
         EventTrigger::create([
-            'name' => 'send_status_statement_request',
+            'name' => 'SEMESTER_EVALUATION_AVAILABLE',
             'date' => Carbon::createFromDate(2021, 1, 1, 'Europe/Budapest'),
-            'signal' => EventTrigger::SEND_STATUS_STATEMENT_REQUEST,
+            'signal' => EventTrigger::SEMESTER_EVALUATION_AVAILABLE,
             'comment' => 'The trigger to nofify students about filling out statements regarding their status in the next semester',
         ]);
 
         EventTrigger::create([
-            'name' => 'deactivate_status_signal',
+            'name' => 'DEACTIVATE_STATUS_SIGNAL',
             'date' => Carbon::createFromDate(2021, 1, 15, 'Europe/Budapest'),
             'signal' => EventTrigger::DEACTIVATE_STATUS_SIGNAL,
             'comment' => 'The date when all students who did not make the above statement will lose their status for the next semester',

@@ -40,7 +40,7 @@ class Semester extends Model
     public const START_OF_SPRING_SEMESTER = 2;
     public const END_OF_SPRING_SEMESTER = 7;
     public const START_OF_AUTUMN_SEMESTER = 9;
-    public const END_OF_AUTUMN_SEMESTER = 1;
+    public const END_OF_AUTUMN_SEMESTER = 2;
 
     /**
      * Returns the existing semesters until the current one (included).
