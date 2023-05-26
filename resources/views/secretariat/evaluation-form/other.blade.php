@@ -6,7 +6,7 @@
             @livewire('parent-child-form', [
             'title' => "Szakmai eredmények",
             'name' => 'professional_results',
-            'items' => $evaluation->professional_results])
+            'items' => $evaluation?->professional_results])
         </div>
 
         <div class="col s12">

@@ -17,6 +17,11 @@
             <p>A válaszaidhoz a Tanári Kar, a Választmány elnöke és szakmai alelnöke, a titkárság, az igazgató és a rendszergazdák férnek hozzá.</p>
             <p>A kitöltés határideje: {{ $deadline }} </p>
         </blockquote>
+        @if(user()->isAdmin())
+        <blockquote class="error">
+            Megjegyzés rendszergazdáknak: a határidő állítható a .env fájlban. Ha nem lett frissítve előző szemeszterről, akkor az EventTriggertől függ.
+        </blockquote>
+        @endif
     </div>
 </div>
 <div class="row">

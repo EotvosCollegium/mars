@@ -25,9 +25,9 @@ class PossibleRedirects
             // Show a message if the semester evaluation can be filled out.
             if (!$request->routeIs('secretariat.evaluation.*')
             && $user->isCollegist()
-            && !$user->getStatusFor(Semester::next())
+            && $user->getStatus(Semester::next()) == null
             && SemesterEvaluationController::isEvaluationAvailable()) {
-                $request->session()->now('message', 'Töltsd ki a szemeszter végi kérdőívet a profilod alatt!');
+                $request->session()->flash('message', 'Töltsd ki a szemeszter végi kérdőívet a profilod alatt!');
             }
             /**
              * Redirects teants to update their tenant_until property if it is in the past.

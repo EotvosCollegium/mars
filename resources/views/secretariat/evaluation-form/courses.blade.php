@@ -23,7 +23,7 @@
 function removeCourse(index) {
     $("#course_" + index).remove();
 }
-let courseCounter = {{count($evaluation?->courses) ?? 0}}
+let courseCounter = {{count($evaluation?->courses ?? []) ?? 0}}
 $(document).ready(function(){
     if(courseCounter == 0) {
         insertEmptyCourse();
