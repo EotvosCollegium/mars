@@ -336,6 +336,9 @@ class ApplicationController extends Controller
         }
     }
 
+    /**
+     * Export all applications to excel
+     */
     public function exportApplications()
     {
         $this->authorize('viewAllApplications', User::class);
