@@ -93,7 +93,7 @@
             </div>
         </li>
     </ul>
-    @if($user->isCollegist() && true || \App\Http\Controllers\Secretariat\SemesterEvaluationController::isEvaluationAvailable())
+    @if($user->isCollegist() && \App\Http\Controllers\Secretariat\SemesterEvaluationController::isEvaluationAvailable())
     <a href="{{ route('secretariat.evaluation.show') }}" class="btn left coli blue">Szemeszter értékelés</a>
     @endif
 
