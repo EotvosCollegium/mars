@@ -8,6 +8,9 @@ return [
     // Test mail to seed the admin user with.
     'test_mail' => env('MAIL_TEST_ADMIN', 'example@uran.hu'),
 
+    'sys_admin_mail' => env('MAIL_SYSADMIN'),
+    'secretary_mail' => env('MAIL_SECRETARY'),
+
     /*
     |--------------------------------------------------------------------------
     | Mail Driver

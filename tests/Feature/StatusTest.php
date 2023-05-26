@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Http\Controllers\Secretariat\SemesterController;
+use App\Http\Controllers\Secretariat\SemesterEvaluationController;
 use App\Models\Role;
 use App\Models\Semester;
 use App\Models\SemesterStatus;
@@ -28,7 +28,7 @@ class StatusTest extends TestCase
         $user = User::factory()->create(['verified' => true]);
         $user->setCollegist(Role::RESIDENT);
 
-        SemesterController::finalizeStatements();
+        SemesterEvaluationController::finalizeStatements();
 
         $this->assertFalse($user->isCollegist());
         $this->assertTrue($user->hasRole(Role::ALUMNI));
@@ -44,12 +44,11 @@ class StatusTest extends TestCase
 
         $user = User::factory()->create(['verified' => true]);
         $user->setCollegist(Role::RESIDENT);
-        $user->setStatus(SemesterStatus::ACTIVE);
+        $user->setStatusFor(Semester::next(), SemesterStatus::ACTIVE);
 
-        SemesterController::finalizeStatements();
+        SemesterEvaluationController::finalizeStatements();
 
-        $this->assertTrue($user->isActive());
-        $this->assertTrue($user->isActive(Semester::current()));
+        $this->assertTrue($user->isActive(Semester::next()));
         $this->assertFalse($user->hasRole(Role::ALUMNI));
     }
 }

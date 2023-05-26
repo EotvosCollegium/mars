@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Secretariat\SemesterController;
+use App\Http\Controllers\Secretariat\SemesterEvaluationController;
 use App\Models\SemesterStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -25,7 +25,7 @@ return new class () extends Migration {
 
         SemesterStatus::withoutEvents(function () {
             foreach (SemesterStatus::where('status', 'DEACTIVATED')->get() as $semesterStatus) {
-                SemesterController::deactivateCollegist($semesterStatus->user);
+                SemesterEvaluationController::deactivateCollegist($semesterStatus->user);
             }
 
             SemesterStatus::whereIn('status', ['PENDING', 'INACTIVE'])->update(['status' => 'PASSIVE']);

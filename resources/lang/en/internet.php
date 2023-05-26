@@ -28,7 +28,7 @@ return [
     'report_fault_desc' => 'If you have any problem with the internet, please report it here. The system administrators will try to solve it as soon as possible.',
     'request' => 'Undo',
     'requested' => 'Requested',
-    'router_descr' => 'If the router is not available in your room, unplug it and plug it back in. If that doesn\'t solve the problem, <a href="root@eotvos.elte.hu">reach out to the system administrators</a>!',
+    'router_descr' => 'If the router is not available in your room, unplug it and plug it back in. If that doesn\'t solve the problem, <a href="mailto:root@eotvos.elte.hu">reach out to the system administrators</a>!',
     'router_warn' => 'Any modification to the router other than the above is prohibited (unplugging, plugging it into another connector, connecting another device to it with a cable, etc.), and is considered vandalism!',
     'show' => 'Show!',
     'state' => 'State',

@@ -58,7 +58,7 @@
         width: 100%;
         height: 100%;
         z-index: 9999;
-        background: url(loading.gif) center no-repeat #fff;
+        background: url(/loading.gif) center no-repeat #fff;
     }
     </style>
 
@@ -87,30 +87,25 @@
             'cookie': "@lang('cookie.message')",
             'header': "@lang('cookie.header')",
         };
-        </script>
-        @if (config('app.debug'))
-            <script>
-                $(document).ready(function(){
-                    $('.tooltipped').tooltip();
-                });
-            </script>
-        @endif
-        <script>
-            function toggleColorMode() {
-                var mode = (localStorage.getItem('mode') || 'dark') === 'dark' ? 'light' : 'dark';
-                localStorage.setItem('mode', mode);
-                if(localStorage.getItem('mode') === 'dark') {
-                    document.querySelector('body').classList.add('dark');
-                } else {
-                    document.querySelector('body').classList.remove('dark');
-                }
-
-                // Save as cookie
-                $.ajax({
-                    type: "POST",
-                    url: "{{ route('set-color-mode', [':mode']) }}".replace(':mode', mode),
-                });
+        $(document).ready(function(){
+            $('.tooltipped').tooltip();
+            $('select').formSelect();
+        });
+        function toggleColorMode() {
+            var mode = (localStorage.getItem('mode') || 'dark') === 'dark' ? 'light' : 'dark';
+            localStorage.setItem('mode', mode);
+            if(localStorage.getItem('mode') === 'dark') {
+                document.querySelector('body').classList.add('dark');
+            } else {
+                document.querySelector('body').classList.remove('dark');
             }
+
+            // Save as cookie
+            $.ajax({
+                type: "POST",
+                url: "{{ route('set-color-mode', [':mode']) }}".replace(':mode', mode),
+            });
+        }
         </script>
     @endpush
 

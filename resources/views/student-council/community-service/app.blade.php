@@ -13,15 +13,7 @@
 <div class="card">
     <div class="card-content">
         <span class="card-title">Új közösségi tevékenység hozzáadása</span>
-        <blockquote>A választott jóváhagyó e-mailben fog értesítést kapni a kérelemről</blockquote>
-        <form method="POST" action="{{ route('community_service.create') }}">
-            @csrf
-            <div class="row">
-                <x-input.text m=6 l=6 id="description" required text="leírás" />
-                <x-input.select m=6 l=6 id="approver" :elements="$possible_approvers" text="jóváhagyó"/>
-            </div>
-            <x-input.button floating class="btn=large right" icon="send" />
-        </form>
+        @include('student-council.community-service.request')
     </div>
 </div>
 @endcan

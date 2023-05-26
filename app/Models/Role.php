@@ -76,6 +76,15 @@ class Role extends Model
         self::SPORT_MEMBER,
     ];
 
+    public const STUDENT_POSTION_ROLES = [
+        self::SYS_ADMIN,
+        self::WORKSHOP_ADMINISTRATOR,
+        self::STUDENT_COUNCIL_SECRETARY,
+        self::STUDENT_COUNCIL,
+        self::BOARD_OF_TRUSTEES_MEMBER,
+        self::ETHICS_COMMISSIONER
+    ];
+
     // Module-related roles
     public const PRINTER = 'printer';
     public const INTERNET_USER = 'internet-user';

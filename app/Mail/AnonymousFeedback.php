@@ -3,25 +3,26 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class StatusStatementRequest extends Mailable
+class AnonymousFeedback extends Mailable
 {
     use Queueable;
     use SerializesModels;
 
-    public $deadline;
+    public $recipent;
+    public $feedback;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($recipent, $feedback)
     {
-        $this->deadline = \App\Models\EventTrigger::statementDeadline()->format('Y-m-d');
+        $this->recipent = $recipent;
+        $this->feedback = $feedback;
     }
 
     /**
@@ -31,7 +32,7 @@ class StatusStatementRequest extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.status_statement_request')
-                    ->subject('Add meg a státuszod a következő félévre!');
+        return $this->markdown('emails.anonymous_feedback')
+                    ->subject(__('mail.anonymous_feedback'));
     }
 }

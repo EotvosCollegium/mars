@@ -31,61 +31,15 @@ class HomeController extends Controller
 
         $information_general = DB::table('custom')->where('key', 'HOME_PAGE_NEWS')->first()->text;
 
-
-        $contacts = ['admins' => User::admins()];
-        $director = User::director();
-        $secretary = User::secretary();
-        $staff = User::staff();
-
-        $contacts['other'] = [
-            Role::DIRECTOR => [
-                'name' => $director->name,
-                'email' => $director->email,
-                'phone_number' => $director->personalInformation->phone_number
-            ],
-            Role::SECRETARY => [
-                'name' => $secretary->name,
-                'email' => $secretary->email,
-                'phone_number' => $secretary->personalInformation->phone_number
-            ],
-            Role::STAFF => [
-                'name' => $staff->name,
-                'email' => $staff->email,
-                'phone_number' => $staff->personalInformation->phone_number
-            ],
-            'reception' => [
-                'phone_number' => env('PORTA_PHONE')
-            ],
-            'doctor' => [
-                'name' => env('DOCTOR_NAME'),
-                'link' => env('DOCTOR_LINK')
-            ]
-        ];
-
         if (user()->hasRole(Role::COLLEGIST)) {
-            $student_council_objects = RoleObject::whereIn('name', Role::STUDENT_COUNCIL_LEADERS)
-                ->orWhereIn('name', Role::COMMITTEE_LEADERS)
-                ->get()->pluck('id')->toArray();
-            $student_council = RoleUser::where('role_id', Role::studentsCouncil()->id)
-                        ->whereIn('object_id', $student_council_objects)
-                        ->with('user')
-                        ->orderBy('object_id')
-                        ->get();
-            $contacts = array_merge($contacts, [
-                Role::STUDENT_COUNCIL => $student_council,
-                Role::STUDENT_COUNCIL_SECRETARY => User::studentCouncilSecretary(),
-                Role::BOARD_OF_TRUSTEES_MEMBER => User::boardOfTrusteesMembers(),
-                Role::ETHICS_COMMISSIONER => User::ethicsCommissioners(),
-            ]);
             $information_collegist = DB::table('custom')->where('key', 'HOME_PAGE_NEWS_COLLEGISTS')->first()->text;
         }
-
 
         return view('home', [
             'information_general' => $information_general,
             'information_collegist' => $information_collegist ?? null,
             'epistola' => $epistola ?? null,
-            'contacts' => $contacts
+            'contacts' => $this->getHomePageContacts()
         ]);
     }
 
@@ -212,5 +166,59 @@ class HomeController extends Controller
         $response_array = json_decode($content, true);
 
         return view('report_bug', ['url' => $response_array['html_url']]);
+    }
+
+    /**
+     * Get the contacts for the home page.
+     */
+    private function getHomePageContacts(): array
+    {
+        $contacts = ['admins' => User::admins()];
+        $director = User::director();
+        $secretary = User::secretary();
+        $staff = User::staff();
+
+        $contacts['other'] = [
+            Role::DIRECTOR => [
+                'name' => $director?->name,
+                'email' => $director?->email,
+                'phone_number' => $director?->personalInformation?->phone_number
+            ],
+            Role::SECRETARY => [
+                'name' => $secretary?->name,
+                'email' => $secretary?->email,
+                'phone_number' => $secretary?->personalInformation?->phone_number
+            ],
+            Role::STAFF => [
+                'name' => $staff?->name,
+                'email' => $staff?->email,
+                'phone_number' => $staff?->personalInformation?->phone_number
+            ],
+            'reception' => [
+                'phone_number' => env('PORTA_PHONE')
+            ],
+            'doctor' => [
+                'name' => env('DOCTOR_NAME'),
+                'link' => env('DOCTOR_LINK')
+            ]
+        ];
+
+        if (user()->hasRole(Role::COLLEGIST)) {
+            $student_council_objects = RoleObject::whereIn('name', Role::STUDENT_COUNCIL_LEADERS)
+                ->orWhereIn('name', Role::COMMITTEE_LEADERS)
+                ->get()->pluck('id')->toArray();
+            $student_council = RoleUser::where('role_id', Role::studentsCouncil()->id)
+                        ->whereIn('object_id', $student_council_objects)
+                        ->with('user')
+                        ->orderBy('object_id')
+                        ->get();
+            $contacts = array_merge($contacts, [
+                Role::STUDENT_COUNCIL => $student_council,
+                Role::STUDENT_COUNCIL_SECRETARY => User::studentCouncilSecretary(),
+                Role::BOARD_OF_TRUSTEES_MEMBER => User::boardOfTrusteesMembers(),
+                Role::ETHICS_COMMISSIONER => User::ethicsCommissioners(),
+            ]);
+        }
+        return $contacts;
     }
 }

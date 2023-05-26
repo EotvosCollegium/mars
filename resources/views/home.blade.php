@@ -83,9 +83,9 @@
                 <br>
                 <!-- Student Council Secretary -->
                 <b>@lang('role.'.\App\Models\Role::STUDENT_COUNCIL_SECRETARY)</b>:
-                <i>{{$contacts[\App\Models\Role::STUDENT_COUNCIL_SECRETARY]->name}}</i>
-                @if($contacts[\App\Models\Role::STUDENT_COUNCIL_SECRETARY]->room)
-                ({{$contacts[\App\Models\Role::STUDENT_COUNCIL_SECRETARY]->room}}. szoba)
+                <i>{{$contacts[\App\Models\Role::STUDENT_COUNCIL_SECRETARY]?->name}}</i>
+                @if($contacts[\App\Models\Role::STUDENT_COUNCIL_SECRETARY]?->room)
+                ({{$contacts[\App\Models\Role::STUDENT_COUNCIL_SECRETARY]?->room}}. szoba)
                 @endif
                 <br>
                 <!-- Board of trustees members -->

@@ -114,16 +114,25 @@ class EducationalInformation extends Model
         return false;
     }
 
+     /**
+     * @return bool true if the collegist can complete the requirements in the future
+     */
+    public function alfonsoCanBeCompleted(): bool
+    {
+        //a B2 language exam can always be passed in 3 years
+        return now() < Carbon::createFromDate($this->year_of_acceptance + 3, 9, 1);
+    }
+
     /**
      * @return bool check if a language exam is passed at least in the given level
      */
     private function checkIfPassed($language, $level): bool
     {
         if($level == "B2") {
-            $deadline = Carbon::createFromDate($this->year_of_acceptance + 2, 9, 1);
+            $deadline = Carbon::createFromDate($this->year_of_acceptance + 3, 9, 1);
             $levels = ["B2", "C1", "C2"];
         } else {
-            $deadline = Carbon::createFromDate($this->year_of_acceptance + 3, 9, 1);
+            $deadline = Carbon::createFromDate($this->year_of_acceptance + 2, 9, 1);
             $levels = ["C1", "C2"];
         }
         return $this->languageExamsAfterAcceptance()

@@ -4,24 +4,35 @@
     $enrollmentYear = $user->educationalInformation->year_of_acceptance;
 @endphp
 
-<p>Az <a href="https://eotvos.elte.hu/collegium/mukodes/szabalyzatok"
-    style="text-decoration:underline">
-    ALFONSÓ program</a>
-    szerint {{ $enrollmentYear + 2}} szeptemberéig kell elérned a B2 szintet a(z) {{ implode(", ", array_map(fn($k) => __('role.'.$k), $b2)) }} nyelvek egyikéből.
-    @if(count($c1) == 1)
-    , vagy {{ $enrollmentYear + 3}} szeptemberéig kell elérned a C1 szintet a(z) {{ implode(", ", array_map(fn($k) => __('role.'.$k), $c1)) }} nyelvből.
-    @elseif(count($c1) > 1)
-    , vagy {{ $enrollmentYear + 3}} szeptemberéig kell elérned a C1 szintet a(z) {{ implode(", ", array_map(fn($k) => __('role.'.$k), $c1)) }} nyelvek egyikéből.
-    @endif
-</p>
+@if($evaluation ?? false)
 <blockquote>
-    Figyelem: A nyelvi szakokon tanuló hallgatókra más feltételek vonatkozhatnak, mely esetben egyéni elbírálás szükséges.
+    <p>A fenti mezőket csak abban az esetben kell kitölteni, ha collegiumi nyelvórán vettél részt.</p>
+    <p><b>Figyelem:</b> A nyelvi szakokon tanuló, honoráciort végző, vagy mesterszakos hallgatókra más feltételek vonatkozhatnak, mely esetben egyéni elbírálás szükséges. Ilyenkor töltsd ki a megjegyzés mezőt.</p>
+    <p>Ha már elvégezted az előírt követelményeket, és nem folytatod a nyelvtanulást, akkor nem szükséges semmit kitölteni.</p>
+    <p>Vedd figyelembe, hogy a követelmények pontos számolásához az összes, a collegista státusz megszerzése előtti nyelvvizsgákat is fel kell tölteni, és ellenőrizd a felvétel évét a tanulmányi adatoknál.</p>
 </blockquote>
+@endif
+
+<p>Az <a href="https://eotvos.elte.hu/collegium/mukodes/szabalyzatok">
+    ALFONSÓ program 2. § (4)</a>
+    szerint {{ $enrollmentYear + 3}} szeptemberéig kell elérned a B2 szintet a(z) {{ implode(", ", array_map(fn($k) => __('role.'.$k), $b2)) }} nyelvek egyikéből
+    @if(count($c1) == 1)
+    , vagy {{ $enrollmentYear + 2}} szeptemberéig kell elérned a C1 szintet a(z) {{ implode(", ", array_map(fn($k) => __('role.'.$k), $c1)) }} nyelvből
+    @elseif(count($c1) > 1)
+    , vagy {{ $enrollmentYear + 2}} szeptemberéig kell elérned a C1 szintet a(z) {{ implode(", ", array_map(fn($k) => __('role.'.$k), $c1)) }} nyelvek egyikéből
+    @endif
+    .
+</p>
+
 <p>A követelményeket
     @if($user->educationalInformation->alfonsoCompleted())
-        <span class="green-text"> teljesítetted</span>.
+        <span class="green-text">teljesítetted</span>.
     @else
-        <span class="coli-text text-orange"> még nem teljesítetted</span>.
+        @if($user->educationalInformation->alfonsoCanBeCompleted())
+            <span class="coli-text text-orange">még nem teljesítetted</span>.
+        @else
+            <span class="red-text">nem teljesítetted</span>.
+        @endif
     @endif
 </p>
 

@@ -255,7 +255,6 @@ class ApplicationController extends Controller
         ApplicationForm::updateOrCreate(['user_id' => $user->id], [
             'graduation_average' => $request->input('graduation_average'),
             'semester_average' => $request->input('semester_average'),
-            'language_exam' => $request->input('language_exam'),
             'competition' => $request->input('competition'),
             'publication' => $request->input('publication'),
             'foreign_studies' => $request->input('foreign_studies'),

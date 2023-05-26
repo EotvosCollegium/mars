@@ -31,7 +31,7 @@ class StudyLine extends Model
         'bachelor' => 'BSc',
         'master' => 'MSc',
         'phd' => 'PhD',
-        'ot' => 'OT',
+        'ot' => 'Osztatlan',
         'other' => 'Other'
     ];
 

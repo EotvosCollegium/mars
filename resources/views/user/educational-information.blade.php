@@ -61,43 +61,10 @@
             @enderror
         </div>
     </div>
-    @foreach($user->educationalInformation?->studyLines ?? [] as $program)
-        <div class="row program" id="programme_{{$loop->index}}" style="margin:0">
-            <input type="hidden" name="study_line_index[]" value="{{$loop->index}}">
-            <x-input.text id="study_line_name_{{ $loop->index }}"
-                            s=4
-                            text="user.study_line"
-                            :value="$program->name"
-                            required />
-            <x-input.select id="study_line_level_{{ $loop->index }}"
-                            s=3
-                            text="user.study_line_level"
-                            :value="$program->type"
-                            :elements="App\View\Components\Input\Select::convertArray([
-                                'bachelor' => 'BA/BSc',
-                                'master' => 'MA/Msc',
-                                'phd' => 'Phd',
-                                'ot' => 'OT',
-                                'other' => ' Egyéb',
-                            ])"
-                            required />
-            <x-input.select id="study_line_start_{{ $loop->index }}"
-                        s=2
-                        text="user.study_line_start"
-                        :value="$program->start"
-                        :elements="\App\Models\Semester::all()"
-                        required />
-            <x-input.select id="study_line_end_{{ $loop->index }}"
-                        s=2
-                        text="user.study_line_end"
-                        :value="$program->end"
-                        :elements="\App\Models\Semester::all()"
-                        helper="Nem kötelező mező" />
-
-            <x-input.button type="button" s="1" class="right red" floating icon="delete" onclick="removeProgram({{$loop->index}})"/>
-        </div>
+    @foreach($user->educationalInformation?->studyLines ?? [] as $studyLine)
+        @include('user.study-line-selector', ['index' => $loop->index, 'value' => $studyLine])
     @endforeach
-    <x-input.button type="button" id="addProgram" floating icon="add" onclick="insertEmptyProgram()" />
+    <x-input.button type="button" id="addStudyLine" floating icon="add" onclick="insertEmptyStudyLine()" />
     <div class="row" style="margin: 0">
             <x-input.button class="right" text="general.save" />
     </div>
@@ -105,53 +72,26 @@
 
 @push('scripts')
 <script>
-function removeProgram(index) {
-    console.log($('.program').length)
-    if($('.program').length > 1){
-        $("#programme_" + index).remove();
+function removeStudyLine(index) {
+    if($('.study_line').length > 1){
+        $("#study_line_" + index).remove();
     } else {
         M.toast({html: 'Legalább egy szakot meg kell adni!'});
     }
 
 }
-
-let programCounter = {{$user->educationalInformation?->studyLines?->count() ?? 0}};
+let studyLineCounter = {{$user->educationalInformation?->studyLines?->count() ?? 0}};
 $(document).ready(function(){
-    if(programCounter == 0) {
-        insertEmptyProgram();
+    if(studyLineCounter == 0) {
+        insertEmptyStudyLine();
     }
   });
-function insertEmptyProgram() {
-    let index = programCounter++;
+function insertEmptyStudyLine() {
+    let index = studyLineCounter++;
     let text = `
-    <div class="row program" id="programme_`+index+`" style="margin:0">
-            <input type="hidden" name="study_line_index[]" value="`+index+`">
-            <x-input.text id="study_line_name_`+index+`"
-                s=4
-                text="user.study_line" />
-            <x-input.select id="study_line_level_`+index+`"
-                            s=3
-                            text="user.study_line_level"
-                            :elements="App\View\Components\Input\Select::convertArray([
-                                'bachelor' => 'BA/BSc',
-                                'master' => 'MA/Msc',
-                                'phd' => 'Phd',
-                                'ot' => 'OT',
-                                'other' => _('general.other'),
-                            ])" />
-            <x-input.select id="study_line_start_`+index+`"
-                        s=2
-                        text="user.study_line_start"
-                        :elements="\App\Models\Semester::all()" />
-            <x-input.select id="study_line_end_`+index+`"
-                        s=2
-                        text="user.study_line_end"
-                        :elements="\App\Models\Semester::all()"
-                        helper="Nem kötelező mező" />
-            <x-input.button  type="button" s="1" class="right red" floating icon="delete" onclick="removeProgram(`+ index +`)" />
-        </div>
+    @include('user.study-line-selector', ['index' => '.index.', 'value' => null])
     `
-    $(text).insertBefore('#addProgram');
+    $(text.replace(/.index./g, index)).insertBefore('#addStudyLine');
     $('select').formSelect();
 }
 </script>
