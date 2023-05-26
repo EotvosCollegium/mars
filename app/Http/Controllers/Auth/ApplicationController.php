@@ -214,7 +214,7 @@ class ApplicationController extends Controller
             RoleUser::where('role_id', Role::get(Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER)->id)->delete();
         });
 
-        Cache::forget('collegists');
+        Cache::clear();
         return back()->with('message', 'Sikeresen jóváhagyta az elfogadott jelentkezőket');
     }
 
