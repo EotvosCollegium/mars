@@ -30,12 +30,12 @@ class CreateEventTriggersTable extends Migration
             $table->boolean('verified')->default(false);
         });
 
-        EventTrigger::create([
-            'name' => 'internet_valid_until',
-            'date' => Semester::next()->getStartDate()->addMonth(1),
-            'signal' => EventTrigger::INTERNET_ACTIVATION_SIGNAL,
-            'comment' => 'When the date is reached, activating internet will have new default value',
-        ]);
+        // EventTrigger::create([
+        //     'name' => 'internet_valid_until',
+        //     'date' => Semester::next()->getStartDate()->addMonth(1),
+        //     'signal' => EventTrigger::INTERNET_ACTIVATION_SIGNAL,
+        //     'comment' => 'When the date is reached, activating internet will have new default value',
+        // ]);
 
         EventTrigger::create([
             'name' => 'SEMESTER_EVALUATION_AVAILABLE',

@@ -56,10 +56,6 @@ Route::middleware(['auth', 'log'])->group(function () {
     Route::post('/application/finalize', [ApplicationController::class, 'finalizeApplicationProcess'])->name('application.finalize');
 });
 
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::post('/user/update_password', [UserController::class, 'updatePassword'])->name('users.update.password');
-});
-
 Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::post('/home/edit', [HomeController::class, 'editNews'])->name('home.edit');
@@ -75,6 +71,7 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::post('/users/{user}/tenant_until', [UserController::class, 'updateTenantUntil'])->name('users.update.tenant_until');
     Route::post('/users/{user}/roles/{role}', [UserController::class, 'addRole'])->name('users.roles.add');
     Route::delete('/users/{user}/roles/{role}', [UserController::class, 'removeRole'])->name('users.roles.delete');
+    Route::post('/users/update_password', [UserController::class, 'updatePassword'])->name('users.update.password')->withoutMiddleware('log');
     Route::get('/users/tenant_update/show', [UserController::class, 'showTenantUpdate'])->name('users.tenant-update.show');
     Route::get('/users/tenant_update/applicant', [UserController::class, 'tenantToApplicant'])->name('users.tenant-update.to-applicant');
 
@@ -227,6 +224,7 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::get('/questions/create', [GeneralAssemblyController::class, 'newQuestion'])->name('questions.create');
     Route::post('/questions', [GeneralAssemblyController::class, 'addQuestion'])->name('questions.store');
     Route::post('/questions/{question}/close', [GeneralAssemblyController::class, 'closeQuestion'])->name('questions.close');
-    Route::post('/questions/{question}/votes', [GeneralAssemblyController::class, 'saveVote'])->name('questions.votes.store');
+    Route::post('/questions/{question}/votes', [GeneralAssemblyController::class, 'saveVote'])->name('questions.votes.store')->withoutMiddleware('log');
+    ;
     Route::get('/questions/{question}', [GeneralAssemblyController::class, 'viewQuestion'])->name('questions.show');
 });

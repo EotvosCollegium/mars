@@ -4,15 +4,14 @@ namespace App\Http\Controllers\Network;
 
 use App\Http\Controllers\Controller;
 use App\Mail\InternetFault;
-use App\Models\EventTrigger;
 use App\Models\InternetAccess;
 use App\Models\MacAddress;
 use App\Models\Role;
+use App\Models\Semester;
 use App\Models\User;
 use App\Models\WifiConnection;
 use App\Utils\TabulatorPaginator;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
@@ -34,7 +33,7 @@ class InternetController extends Controller
     {
         $this->authorize('handleAny', InternetAccess::class);
 
-        $activationDate = EventTrigger::internetActivationDeadline();
+        $activationDate = self::getInternetDeadline();
         $users = User::role(Role::INTERNET_USER)->with('internetAccess.wifiConnections')->get();
 
         return view('network.manage.app', ['activation_date' => $activationDate, 'users' => $users]);
@@ -132,13 +131,12 @@ class InternetController extends Controller
             ->where('user_id', '=', $internetAccess->user_id)->first();
     }
 
-    // TODO policy?
     public static function extendUsersInternetAccess(User $user)
     {
         $internetAccess = $user->internetAccess;
 
         if ($internetAccess != null) {
-            $internetAccess->update(['has_internet_until' => EventTrigger::internetActivationDeadline()]);
+            $internetAccess->update(['has_internet_until' => self::getInternetDeadline()]);
 
             return $internetAccess->has_internet_until;
         } else {
@@ -241,5 +239,10 @@ class InternetController extends Controller
             Mail::to($admin)->queue(new InternetFault($admin->name, user()->name, $request->report, $request->user_os));
         }
         return redirect()->back()->with('message', __('mail.email_sent'));
+    }
+
+    private static function getInternetDeadline()
+    {
+        return Semester::next()->getStartDate()->addMonth();
     }
 }

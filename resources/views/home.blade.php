@@ -69,14 +69,14 @@
                 <i><a href="mailto:{{ env('MAIL_VALASZTMANY') }}">{{env('MAIL_VALASZTMANY')}}</a></i><br>
                 @foreach($contacts[\App\Models\Role::STUDENT_COUNCIL] as $roleuser)
                 <b>@lang('role.'.$roleuser->object->name)</b>:
-                    <i>{{$roleuser->user->name}}</i>
+                    <i>{{$roleuser->user?->name}}</i>
                     @if($roleuser->object->name == \App\Models\Role::PRESIDENT)
                     <a href="mailto:{{ env('MAIL_ELNOK') }}">{{env('MAIL_ELNOK')}}</a>
-                    <a href="mailto:{{ $roleuser->user->email }}">{{ $roleuser->user->email }}</a>
-                    {{ $roleuser->user->personalInformation->phone_number }}
+                    <a href="mailto:{{ $roleuser->user?->email }}">{{ $roleuser->user?->email }}</a>
+                    {{ $roleuser->user?->personalInformation?->phone_number }}
                     @endif
-                    @if($roleuser->user->room)
-                    ({{$roleuser->user->room}}. szoba)
+                    @if($roleuser->user?->room)
+                    ({{$roleuser->user?->room}}. szoba)
                     @endif
                 <br>
                 @endforeach
