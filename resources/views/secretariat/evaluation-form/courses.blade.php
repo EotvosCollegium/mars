@@ -1,5 +1,6 @@
 <form method="POST" action="{{ route('secretariat.evaluation.store') }}">
     @csrf
+    <blockquote>Alfonsó és nyelvi szintfelmérő kurzusokkal együtt.</blockquote>
     <input type="hidden" name="section" value="courses"/>
     @foreach($evaluation?->courses ?? [] as $course)
         @include('secretariat.evaluation-form.course', ['index' => $loop->index, 'value' => $course])
