@@ -19,7 +19,7 @@
         </blockquote>
         @if(user()->isAdmin())
         <blockquote class="error">
-            Megjegyzés rendszergazdáknak: a határidő állítható a .env fájlban. Ha nem lett frissítve előző szemeszterről, akkor az EventTriggertől függ.
+            Megjegyzés rendszergazdáknak: a határidő állítható a .env fájlban. Ha nem lett frissítve előző szemeszterről, akkor a deactivate status signal EventTrigger értékével megegyezik. Az EventTrigger aktiválásakor alumnivá állítja a rendszer azokat, akik nem töltötték ki a következő félévre a státuszukat.
         </blockquote>
         @endif
     </div>

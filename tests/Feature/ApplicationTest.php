@@ -416,7 +416,7 @@ class ApplicationTest extends TestCase
      */
     public function test_finalize()
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['verified' => true]);
         $user->addRole(Role::firstWhere('name', Role::SYS_ADMIN));
         $user->addRole(Role::firstWhere('name', Role::APPLICATION_COMMITTEE_MEMBER));
         $user->addRole(Role::firstWhere('name', Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER));
