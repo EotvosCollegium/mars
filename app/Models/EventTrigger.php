@@ -71,8 +71,7 @@ class EventTrigger extends Model
             case self::DEACTIVATE_STATUS_SIGNAL:
                 return new DeactivateStatus();
             default:
-                Log::warning('Event Trigger got undefined signal: '.$this->signal);
-                break;
+                throw new \Exception("Unknown signal: " . $this->signal);
         }
     }
 

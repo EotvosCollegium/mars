@@ -45,5 +45,6 @@ class RefreshEventTriggers extends Command
                 $event->getTrigger()->handle();
             }
         }
+        return 0;
     }
 }

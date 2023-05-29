@@ -243,6 +243,6 @@ class InternetController extends Controller
 
     private static function getInternetDeadline()
     {
-        return Semester::next()->getStartDate()->addMonth(1);
+        return Semester::next()->getStartDate()->addMonth();
     }
 }

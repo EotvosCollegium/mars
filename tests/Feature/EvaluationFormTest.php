@@ -21,6 +21,9 @@ class EvaluationFormTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * Helper function to create a user that has not filled in their status for the next semester.
+     */
     private function createUser(): User
     {
         $user = User::factory()->create();
@@ -33,6 +36,9 @@ class EvaluationFormTest extends TestCase
         return $user;
     }
 
+    /**
+     * Helper function to assert that the form is available.
+     */
     private function assertFormAvailable()
     {
         $this->assertTrue(SemesterEvaluationController::isEvaluationAvailable());
@@ -45,6 +51,9 @@ class EvaluationFormTest extends TestCase
         $response->assertSessionHas('message', 'Töltsd ki a szemeszter végi kérdőívet a profilod alatt!');
     }
 
+    /**
+     * Helper function to assert that the form is not available.
+     */
     private function assertFormDoesNotAvailable()
     {
         $this->assertFalse(SemesterEvaluationController::isEvaluationAvailable());

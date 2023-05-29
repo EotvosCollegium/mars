@@ -13,11 +13,11 @@ class DeactivateStatus implements EventTriggerInterface
      */
     public function nextDate(): Carbon
     {
-        $date = Semester::current()->getEndDate()->subDay(1);
+        $date = Semester::current()->getEndDate()->subDay();
         if($date->gt(Carbon::now())) {
             return $date;
         } else {
-            return Semester::next()->getEndDate()->subDay(1);
+            return Semester::next()->getEndDate()->subDay();
         }
 
     }
