@@ -17,7 +17,7 @@ return new class () extends Migration {
             $table->dropColumn('data');
         });
 
-        EventTrigger::find(0)->delete();
+        EventTrigger::find(0)?->delete();
     }
 
     /**
