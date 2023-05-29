@@ -74,8 +74,8 @@ class EvaluationFormTest extends TestCase
     {
         $this->createUser();
 
-        EventTrigger::find(EventTrigger::DEACTIVATE_STATUS_SIGNAL)->update(['date' => now()->addDays(3)]);
-        EventTrigger::find(EventTrigger::SEMESTER_EVALUATION_AVAILABLE)->update(['date' => now()->addDays(5)]);
+        EventTrigger::find(EventTrigger::DEACTIVATE_STATUS_SIGNAL)->update(['date' => now()->addDays(1)]);
+        EventTrigger::find(EventTrigger::SEMESTER_EVALUATION_AVAILABLE)->update(['date' => Semester::next()->getEndDate()->subMonth()]);
         Config::set('custom.semester_evaluation_deadline', null);
 
         $this->assertFormAvailable();
@@ -88,8 +88,8 @@ class EvaluationFormTest extends TestCase
     {
         $this->createUser();
 
-        EventTrigger::find(EventTrigger::DEACTIVATE_STATUS_SIGNAL)->update(['date' => now()->addDays(3)]);
-        EventTrigger::find(EventTrigger::SEMESTER_EVALUATION_AVAILABLE)->update(['date' => now()->addDays(5)]);
+        EventTrigger::find(EventTrigger::DEACTIVATE_STATUS_SIGNAL)->update(['date' => now()->addDays(2)]);
+        EventTrigger::find(EventTrigger::SEMESTER_EVALUATION_AVAILABLE)->update(['date' => Semester::next()->getEndDate()->subMonth()]);
         Config::set('custom.semester_evaluation_deadline', Semester::previous()->getEndDate()->subDays(1));
 
         $this->assertFormAvailable();

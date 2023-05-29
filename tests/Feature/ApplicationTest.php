@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\Workshop;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
@@ -420,6 +421,7 @@ class ApplicationTest extends TestCase
         $user->addRole(Role::firstWhere('name', Role::SYS_ADMIN));
         $user->addRole(Role::firstWhere('name', Role::APPLICATION_COMMITTEE_MEMBER));
         $user->addRole(Role::firstWhere('name', Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER));
+        Config::set('custom.application_deadline', now()->subWeeks(3));
         $this->actingAs($user);
 
         $applicant_in_progress = User::factory()->create(['verified' => false]);

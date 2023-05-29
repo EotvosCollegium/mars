@@ -28,16 +28,17 @@ class SemesterEvaluationController extends Controller
         $available = EventTrigger::find(EventTrigger::SEMESTER_EVALUATION_AVAILABLE)->date;
         $deadline = self::deadline();
 
-        return now() <= $deadline && now() >= $available;
+        return now() <= $deadline && $available >= Semester::next()->getStartDate();
     }
 
     public static function deadline(): Carbon
     {
-        $custom_deadline = Carbon::parse(config('custom.semester_evaluation_deadline'));
-        $system_deadline = Carbon::parse(EventTrigger::find(EventTrigger::DEACTIVATE_STATUS_SIGNAL)->date);
-        if(!$custom_deadline) {
+        $custom_deadline = config('custom.semester_evaluation_deadline');
+        $system_deadline = EventTrigger::find(EventTrigger::DEACTIVATE_STATUS_SIGNAL)->date;
+        if(!isset($custom_deadline)) {
             return $system_deadline;
         } else {
+            $custom_deadline = Carbon::parse($custom_deadline);
             //if the deadline has not been updated, use the system_deadline
             if($custom_deadline < Semester::current()->getStartDate()) {
                 return $system_deadline;
