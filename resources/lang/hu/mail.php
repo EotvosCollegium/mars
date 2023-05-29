@@ -2,6 +2,7 @@
 
 return [
     'administrators' => 'A rendszergazdák',
+    'anonymous_feedback' => 'Visszajelzés a Választmány számára',
     'approved_registration' => 'A regisztrációdat jóváhagyták.',
     'dear' => 'Kedves',
     'email_sent' => 'Rendszergazdák értesítve',

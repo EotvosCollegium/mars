@@ -15,7 +15,7 @@
             <p>Először ellenőrizd a személyes és tanulmányi adataid, minden hiányosságot és változást ments el.</p>
             <p>A kérvényeket a <a href="mailto:{{ config('mail.secretary_email')}}"> titkárság</a> számára küldd el.</p>
             <p>A válaszaidhoz a Tanári Kar, a Választmány elnöke és szakmai alelnöke, a titkárság, az igazgató és a rendszergazdák férnek hozzá.</p>
-            <p>A kitöltés határideje: {{ $deadline }} </p>
+            <p>A kitöltés határideje: <i class="coli-text text-orange">{{ $deadline }}</i> (Figyelem, a határidő változhat a tanári értekezlet pontos időpontja függvényében, ezért figyeld az ezzel kapcsolatos híreket.)</p>
         </blockquote>
         @if(user()->isAdmin())
         <blockquote class="error">
@@ -56,7 +56,7 @@
                     </div>
                 </div>
                 @include('user.alfonso', ['user' => $user])
-                @include('user.alfonso-requirements', ['user' => $user])
+                @include('user.alfonso-requirements', ['user' => $user, 'evaluation' => true])
                 <form method="POST" action="">
                     @csrf
                     <div class="row">

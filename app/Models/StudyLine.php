@@ -48,7 +48,7 @@ class StudyLine extends Model
     public function getName(): string
     {
         $name = $this->name;
-        if($this->type != 'other') {
+        if(isset($this->type) && $this->type != 'other') {
             $name .= ' '.self::TYPES[$this->type];
         }
         return $name;
