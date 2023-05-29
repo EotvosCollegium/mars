@@ -14,9 +14,9 @@ class SemesterEvaluationAvailable implements EventTriggerInterface
     public function nextDate(): Carbon
     {
         $date = Semester::current()->getEndDate()->subMonth(2);
-        if($date->gt(Carbon::now()))
+        if($date->gt(Carbon::now())) {
             return $date;
-        else {
+        } else {
             return Semester::next()->getEndDate()->subMonth(2);
         }
 
@@ -25,10 +25,10 @@ class SemesterEvaluationAvailable implements EventTriggerInterface
     /**
      * Send email notification.
      */
-    public function handle() {
+    public function handle()
+    {
 
         SemesterEvaluationController::sendEvaluationAvailableMail();
     }
 
 }
-

@@ -224,6 +224,7 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::get('/questions/create', [GeneralAssemblyController::class, 'newQuestion'])->name('questions.create');
     Route::post('/questions', [GeneralAssemblyController::class, 'addQuestion'])->name('questions.store');
     Route::post('/questions/{question}/close', [GeneralAssemblyController::class, 'closeQuestion'])->name('questions.close');
-    Route::post('/questions/{question}/votes', [GeneralAssemblyController::class, 'saveVote'])->name('questions.votes.store')->withoutMiddleware('log');;
+    Route::post('/questions/{question}/votes', [GeneralAssemblyController::class, 'saveVote'])->name('questions.votes.store')->withoutMiddleware('log');
+    ;
     Route::get('/questions/{question}', [GeneralAssemblyController::class, 'viewQuestion'])->name('questions.show');
 });
