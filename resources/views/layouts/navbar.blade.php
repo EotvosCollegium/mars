@@ -108,7 +108,7 @@
                     </div>
                 </li>
                 @endcan
-                @can('is-collegist')
+                @can('is-admin')
                 {{-- Sysadmin module --}}
                 <li class="@yield('admin_module')">
                     <a class="collapsible-header waves-effect" style="padding-left:32px">
