@@ -108,7 +108,7 @@
                     </div>
                 </li>
                 @endcan
-                @can('is-admin')
+                @if(Gate::allows('is-collegist', $user) || Gate::allows('is-admin', $user))
                 {{-- Sysadmin module --}}
                 <li class="@yield('admin_module')">
                     <a class="collapsible-header waves-effect" style="padding-left:32px">
