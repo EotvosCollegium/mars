@@ -70,7 +70,7 @@ class StatusesExport implements FromCollection, WithTitle, WithMapping, WithHead
     public function registerEvents(): array
     {
         return [
-            AfterSheet::class => function(AfterSheet $event) {
+            AfterSheet::class => function (AfterSheet $event) {
                 $event->sheet->getDelegate()->freezePane('C2');
             },
         ];

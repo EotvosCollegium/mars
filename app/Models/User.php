@@ -484,7 +484,7 @@ class User extends Authenticatable implements HasLocalePreference
             return $query->collegists();
         }
         if(user()->can('viewSome', User::class)) {
-            return $query->collegists()->whereHas('workshops', function ($query)  {
+            return $query->collegists()->whereHas('workshops', function ($query) {
                 $query->whereIn('id', user()->roleWorkshops());
             });
         }

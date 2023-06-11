@@ -278,7 +278,7 @@ class UserController extends Controller
     {
         $this->authorize('viewAny', User::class);
 
-        return Excel::download(new UsersExport, 'uran_export.xlsx');
+        return Excel::download(new UsersExport(), 'uran_export.xlsx');
     }
 
     public function addRole(Request $request, User $user, Role $role)

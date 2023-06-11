@@ -45,7 +45,7 @@ class SemesterStatus extends Pivot
         return $this->belongsTo(Semester::class);
     }
 
-    public function translatedStatus() : string
+    public function translatedStatus(): string
     {
         return __('user.'.$this->status)
             . ($this->comment ? ' (' . $this->comment . ')' : '');

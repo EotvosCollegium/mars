@@ -82,7 +82,7 @@ class CollegistsExport implements FromCollection, WithTitle, WithMapping, WithHe
             implode(" \n", $user->workshops->pluck('name')->toArray()),
             $user->isResident() ? 'Bentlakó' : 'Bejáró',
             $user->getStatus($this->semester)?->translatedStatus(),
-            ($user->educationalInformation?->alfonso_language ? __('role.'.$user->educationalInformation?->alfonso_language) . " " . $user->educationalInformation?->alfonso_desired_level  : "" ),
+            ($user->educationalInformation?->alfonso_language ? __('role.'.$user->educationalInformation?->alfonso_language) . " " . $user->educationalInformation?->alfonso_desired_level : ""),
             ($user->educationalInformation?->alfonsoCompleted() ?? false)
                 ? 'Igen'
                 : (($user->educationalInformation?->alfonsoCanBeCompleted() ?? true) ? "Folyamatban" : "Nem"),
@@ -93,7 +93,7 @@ class CollegistsExport implements FromCollection, WithTitle, WithMapping, WithHe
     public function registerEvents(): array
     {
         return [
-            AfterSheet::class    => function(AfterSheet $event) {
+            AfterSheet::class    => function (AfterSheet $event) {
                 $event->sheet->getDelegate()->freezePane('C2');
             },
         ];

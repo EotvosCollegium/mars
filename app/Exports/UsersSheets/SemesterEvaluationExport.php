@@ -24,7 +24,7 @@ class SemesterEvaluationExport implements FromCollection, WithTitle, WithMapping
         $last_semester_id = SemesterEvaluation::query()->orderBy('created_at', 'desc')->first()->semester_id;
         $evaluations = SemesterEvaluation::where('semester_id', $last_semester_id);
 
-        if(user()->hasRole(Role::WORKSHOP_ADMINISTRATOR)){
+        if(user()->hasRole(Role::WORKSHOP_ADMINISTRATOR)) {
             $workshops = user()->roleWorkshops();
             $users = User::query()->whereHas('workshops', function ($query) use ($workshops) {
                 $query->whereIn('id', $workshops->pluck('id'));
@@ -91,7 +91,7 @@ class SemesterEvaluationExport implements FromCollection, WithTitle, WithMapping
             $user->getStatus($evaluation->semester)?->translatedStatus(),
             $user->getStatus($evaluation->semester->succ())?->translatedStatus(),
             $evaluation->will_write_request ? "Igen" : '',
-            ($user->educationalInformation?->alfonso_language ? __('role.'.$user->educationalInformation?->alfonso_language) . " " . $user->educationalInformation?->alfonso_desired_level  : "" ),
+            ($user->educationalInformation?->alfonso_language ? __('role.'.$user->educationalInformation?->alfonso_language) . " " . $user->educationalInformation?->alfonso_desired_level : ""),
             ($user->educationalInformation?->alfonsoCompleted() ?? false)
                 ? 'Igen'
                 : (($user->educationalInformation?->alfonsoCanBeCompleted() ?? true) ? "Folyamatban" : "Nem"),
@@ -103,9 +103,11 @@ class SemesterEvaluationExport implements FromCollection, WithTitle, WithMapping
             })->implode(" \n"),
             $evaluation->general_assembly_note,
             $user->roles()->whereIn('name', Role::STUDENT_POSTION_ROLES)->get()->map(function ($role) {
-                if($role->has_objects || $role->has_workshops)
-                { return $role->translatedName . " (" .$role->pivot->translatedName. ")";
-                } else { return $role->translatedName; }
+                if($role->has_objects || $role->has_workshops) {
+                    return $role->translatedName . " (" .$role->pivot->translatedName. ")";
+                } else {
+                    return $role->translatedName;
+                }
             })->implode(" \n"),
             $user->communityServiceRequests()->where('semester_id', $evaluation->semester->id)->get()->map(function ($communityService) {
                 return $communityService->description;
@@ -124,7 +126,7 @@ class SemesterEvaluationExport implements FromCollection, WithTitle, WithMapping
     public function registerEvents(): array
     {
         return [
-            AfterSheet::class    => function(AfterSheet $event) {
+            AfterSheet::class    => function (AfterSheet $event) {
                 $event->sheet->getDelegate()->freezePane('C2');
             },
         ];
