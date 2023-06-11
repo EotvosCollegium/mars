@@ -70,6 +70,7 @@ return [
     'study_line' => 'Educational Program/Study line',
     'study_line_end' => 'End',
     'study_line_level' => 'Level',
+    'study_line_minor' => 'Minor / Specialization',
     'study_line_start' => 'Start',
     'surname' => 'Surname',
     'szlavisztika_muhely' => 'Szlavisztika műhely',

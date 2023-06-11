@@ -70,6 +70,7 @@ return [
     'study_line' => 'Szak',
     'study_line_end' => 'Képzés vége',
     'study_line_level' => 'Képzési szint',
+    'study_line_minor' => 'Minor / Specializáció',
     'study_line_start' => 'Képzés kezdete',
     'surname' => 'vezetéknév',
     'szlavisztika_muhely' => 'Szlavisztika műhely',

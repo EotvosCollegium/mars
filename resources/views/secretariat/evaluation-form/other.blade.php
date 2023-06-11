@@ -27,7 +27,7 @@
             @livewire('parent-child-form', [
             'title' => "Konferenciarészvétel",
             'name' => 'conferences',
-            'helper' => 'TDK/OTDK, nemzetközi/hazai konferencián előadás/poszter',
+            'helper' => 'pl. TDK/OTDK, nemzetközi/hazai konferencián előadás/poszter',
             'items' => $evaluation?->conferences])
         </div>
         <div class="col s12">
@@ -47,6 +47,7 @@
             @livewire('parent-child-form', [
             'title' => "Közéleti tevékenységek",
             'name' => 'public_life_activities',
+            'helper' => 'Pl. kari HÖK',
             'items' => $evaluation?->public_life_activities])
         </div>
         <x-input.checkbox id="can_be_shared"

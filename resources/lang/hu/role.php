@@ -48,7 +48,7 @@ return [
     'sport-referent' => 'Sportbizottsági referens',
     'staff' => 'Gondnokság',
     'student-council' => 'Választmány',
-    'student-council-secretary' => 'CHÖK Titkár',
+    'student-council-secretary' => 'CHÖK-titkár',
     'sys-admin' => 'Rendszergazda',
     'sys-admins' => 'Rendszergazdák',
     'tenant' => 'Vendég',

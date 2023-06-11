@@ -158,6 +158,7 @@ class UserController extends Controller
                     $user->educationalInformation->studyLines()->create([
                         'name' => $request->input('study_line_name_'.$index),
                         'type' => $request->input('study_line_level_'.$index),
+                        'minor' => $request->input('study_line_minor_'.$index),
                         'start' => $request->input('study_line_start_'.$index),
                         'end' => $request->input('study_line_end_'.$index, null),
                     ]);
