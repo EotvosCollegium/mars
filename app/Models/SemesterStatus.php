@@ -45,6 +45,12 @@ class SemesterStatus extends Pivot
         return $this->belongsTo(Semester::class);
     }
 
+    public function translatedStatus(): string
+    {
+        return __('user.'.$this->status)
+            . ($this->comment ? ' (' . $this->comment . ')' : '');
+    }
+
 
     /**
      * Returns the color belonging to the status.

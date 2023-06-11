@@ -117,7 +117,7 @@ class ApplicationController extends Controller
                 'user' => $user,
             ]);
         } else { //return all applications that can be visible
-            $this->authorize('viewAnyApplication', User::class);
+            $this->authorize('viewSomeApplication', User::class);
             $workshops = $authUser->applicationWorkshops();
             $applications = ApplicationForm::select('*');
             $applications->join('workshop_users', 'application_forms.user_id', '=', 'workshop_users.user_id');
@@ -158,7 +158,7 @@ class ApplicationController extends Controller
      */
     public function editApplication(Request $request): RedirectResponse
     {
-        $this->authorize('viewAnyApplication', User::class);
+        $this->authorize('viewSomeApplication', User::class);
         $application = ApplicationForm::findOrFail($request->input('application'));
         $newStatus=$request->input('status_'.$application->user->id);
         if ($request->has('note')) {

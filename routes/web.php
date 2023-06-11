@@ -67,6 +67,7 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     /** User related routes */
     Route::get('/profile', [UserController::class, 'profile'])->name('profile');
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::get('/users/export', [UserController::class, 'export'])->name('users.export');
     Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
     Route::post('/users/{user}/tenant_until', [UserController::class, 'updateTenantUntil'])->name('users.update.tenant_until');
     Route::post('/users/{user}/roles/{role}', [UserController::class, 'addRole'])->name('users.roles.add');
@@ -162,7 +163,6 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     /** Evaluation form */
     Route::get('/secretariat/evaluation', [SemesterEvaluationController::class, 'show'])->name('secretariat.evaluation.show');
     Route::post('/secretariat/evaluation', [SemesterEvaluationController::class, 'store'])->name('secretariat.evaluation.store');
-    Route::post('/secretariat/evaluation/status_update', [SemesterEvaluationController::class, 'storeStatus'])->name('secretariat.evaluation.status-update');
 
     /** Documents */
     Route::get('/documents', [DocumentController::class, 'index'])->name('documents');

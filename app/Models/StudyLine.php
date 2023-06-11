@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $start
  * @property int $end
  * @property string $name
+ * @property string $minor
  * @property string $type
  * @property Semester $startSemester
  * @property Semester $endSemester
@@ -22,6 +23,7 @@ class StudyLine extends Model
     protected $fillable = [
         'educational_information_id',
         'name',
+        'minor',
         'type',
         'start',
         'end'
@@ -50,6 +52,10 @@ class StudyLine extends Model
         $name = $this->name;
         if(isset($this->type) && $this->type != 'other') {
             $name .= ' '.self::TYPES[$this->type];
+
+        }
+        if(isset($this->minor)) {
+            $name .= ' - minor: '.$this->minor;
         }
         return $name;
     }
