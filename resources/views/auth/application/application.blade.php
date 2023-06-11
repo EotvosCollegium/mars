@@ -27,10 +27,7 @@
                     <p style="margin-bottom: 5px">
                         @forelse($user->educationalInformation?->studyLines ?? [] as $studyLine)
                             @if($studyLine->end == null)
-                                {{ $studyLine->name }}
-                                @if($studyLine->type != 'other')
-                                    @lang('user.'.$studyLine->type)
-                                @endif
+                                {{ $studyLine->getName() }}
                                 <br>
                             @endif
                         @empty
