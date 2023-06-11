@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Secretariat;
 
+use App\Exports\UsersExport;
 use App\Http\Controllers\Controller;
 use App\Models\Faculty;
 use App\Models\Role;
@@ -16,6 +17,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
 {
@@ -267,6 +269,16 @@ class UserController extends Controller
             'faculties' => Faculty::all(),
             'workshops' => Workshop::all()
         ]);
+    }
+
+    /**
+     * Export users to excel
+     */
+    public function export()
+    {
+        $this->authorize('viewAny', User::class);
+
+        return Excel::download(new UsersExport, 'uran_export.xlsx');
     }
 
     public function addRole(Request $request, User $user, Role $role)

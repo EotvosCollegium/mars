@@ -83,21 +83,8 @@ class UsersTableSeeder extends Seeder
         for ($x = 0; $x < rand(1, 3); $x++) {
             $user->workshops()->attach(rand(1, count(Workshop::ALL)));
         }
-        foreach (Role::all() as $role) {
-            if($role->name == Role::COLLEGIST) {
-                $user->roles()->attach($role->id, ['object_id' => RoleObject::firstWhere('name', Role::RESIDENT)->id]);
-            } elseif ($role->has_objects) {
-                foreach ($role->objects as $object) {
-                    $user->roles()->attach($role->id, ['object_id' => $object->id]);
-                }
-            } elseif ($role->has_workshops) {
-                foreach (Workshop::all() as $workshop) {
-                    $user->roles()->attach($role->id, ['workshop_id' => $workshop->id]);
-                }
-            } else {
-                $user->roles()->attach($role->id);
-            }
-        }
+        $user->roles()->attach(Role::collegist()->id, ['object_id' => RoleObject::firstWhere('name', Role::RESIDENT)->id]);
+        $user->roles()->attach(Role::sysAdmin()->id);
         $wifi_username = $user->internetAccess->setWifiCredentials();
         WifiConnection::factory($user->id % 5)->create(['wifi_username' => $wifi_username]);
         Checkout::query()->update(['handler_id' => $user->id]);

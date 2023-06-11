@@ -58,7 +58,7 @@
         <li><a class="waves-effect" href="{{ route('rooms') }}"><i class="material-icons left">bed</i>Szobabeosztás</a></li>
         @endcan
         <!-- applications page -->
-        @can('viewAnyApplication', \App\Models\User::class)
+        @can('viewSomeApplication', \App\Models\User::class)
             <li><a class="waves-effect" href="{{ route('applications') }}"><i class="material-icons left">person_search</i>Felvételi</a></li>
         @endcan
         <!-- collapsible modules -->

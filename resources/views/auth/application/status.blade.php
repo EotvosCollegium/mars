@@ -1,4 +1,4 @@
-@can('viewAnyApplication', \App\Models\User::class)
+@can('viewSomeApplication', \App\Models\User::class)
 @switch($status)
     @case(App\Models\ApplicationForm::STATUS_IN_PROGRESS)
         Folyamatban
@@ -19,7 +19,7 @@
         <i>Ismeretlen</i>
 @endswitch
 @endcan
-@cannot('viewAnyApplication', \App\Models\User::class)
+@cannot('viewSomeApplication', \App\Models\User::class)
 @switch($status)
     @case(App\Models\ApplicationForm::STATUS_IN_PROGRESS)
         Folyamatban

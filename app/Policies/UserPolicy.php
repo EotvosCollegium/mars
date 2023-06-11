@@ -21,9 +21,40 @@ class UserPolicy
         }
     }
 
+
     /**
      * @param User $user
      * @return bool
+     */
+    public function viewAll(User $user): bool
+    {
+        return $user->hasRole([
+            Role::STAFF,
+            Role::SECRETARY,
+            Role::DIRECTOR,
+            Role::STUDENT_COUNCIL_SECRETARY,
+            Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS,
+        ]);
+    }
+
+    /**
+     * @param User $user
+     * @return bool
+     */
+    public function viewSome(User $user): bool
+    {
+        return $this->viewAll($user)
+            || $user->hasRole([
+                Role::WORKSHOP_ADMINISTRATOR,
+                Role::WORKSHOP_LEADER,
+            ]);
+    }
+
+    /**
+     * @param User $user
+     * @return bool
+     *
+     * @deprecated use viewAll or viewSome instead
      */
     public function viewAny(User $user): bool
     {
@@ -37,6 +68,21 @@ class UserPolicy
                 Role::STUDENT_COUNCIL_SECRETARY,
                 Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS,
             ]);
+    }
+
+    /**
+     * @param User $user
+     * @return bool
+     */
+    public function viewSemesterEvaluation(User $user): bool
+    {
+        return $user->hasRole([
+            Role::SECRETARY,
+            Role::DIRECTOR,
+            Role::WORKSHOP_LEADER,
+            Role::STUDENT_COUNCIL_SECRETARY,
+            Role::STUDENT_COUNCIL => [Role::PRESIDENT, Role::SCIENCE_VICE_PRESIDENT]
+        ]);
     }
 
     /**
@@ -58,7 +104,7 @@ class UserPolicy
                     Role::STUDENT_COUNCIL_SECRETARY,
                 ]);
             })) || $target->workshops
-                    ->intersect($user->roleWorkshops())
+                    ->intersect($user->roleWorkshops)
                     ->count()>0;
         } elseif ($target->hasRole(Role::TENANT)) {
             return $user->hasRole([Role::STAFF, Role::STUDENT_COUNCIL => Role::PRESIDENT]);
@@ -78,8 +124,15 @@ class UserPolicy
         if ($user->id == $target->id) {
             return true;
         }
+        if($user->can('viewAllApplications')) {
+            return true;
+        }
+
         return $target->workshops
-                ->intersect($user->applicationWorkshops())
+                ->intersect($user->applicationCommitteWorkshops)
+                ->count()>0
+            || $target->workshops
+                ->intersect($user->roleWorkshops)
                 ->count()>0;
     }
 
@@ -87,7 +140,7 @@ class UserPolicy
      * @param User $user
      * @return bool
      */
-    public function viewAnyApplication(User $user): bool
+    public function viewSomeApplication(User $user): bool
     {
         return $user->hasRole([
             Role::SECRETARY,
@@ -233,7 +286,7 @@ class UserPolicy
         }
 
         if ($role->name == Role::APPLICATION_COMMITTEE_MEMBER) {
-            return $user->roleWorkshops()->contains($object->id);
+            return $user->roleWorkshops->contains($object->id);
         }
 
         if ($role->name == Role::WORKSHOP_LEADER) {
@@ -242,7 +295,7 @@ class UserPolicy
 
         if ($role->name == Role::WORKSHOP_ADMINISTRATOR) {
             return ($user->hasRole(Role::WORKSHOP_LEADER)
-                    && $user->roleWorkshops()->contains($object->id)
+                    && $user->roleWorkshops->contains($object->id)
             ) || $user->hasRole([
                 Role::STUDENT_COUNCIL_SECRETARY,
                 Role::SECRETARY,
@@ -293,7 +346,7 @@ class UserPolicy
         if ($user->hasRole(Role::SECRETARY)) {
             return true;
         }
-        return $user->roleWorkshops()->intersect($target->workshops)->count() > 0;
+        return $user->roleWorkshops->intersect($target->workshops)->count() > 0;
     }
 
     /**
@@ -307,6 +360,6 @@ class UserPolicy
         if ($user->hasRole(Role::SECRETARY)) {
             return true;
         }
-        return $user->roleWorkshops()->has($workshop->id);
+        return $user->roleWorkshops->has($workshop->id);
     }
 }

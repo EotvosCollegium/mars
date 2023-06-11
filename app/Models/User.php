@@ -216,6 +216,38 @@ class User extends Authenticatable implements HasLocalePreference
     }
 
     /**
+     * The workshops where the user is a leader or administrator.
+     * @return BelongsToMany
+     */
+    public function roleWorkshops(): BelongsToMany
+    {
+        return $this->hasManyThrough(
+            Workshop::class,
+            RoleUser::class,
+            'user_id',
+            'id',
+            'id',
+            'workshop_id'
+        )->whereIn('roles.name', [Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR]);
+    }
+
+    /**
+     * The workshops where the user is in the application committe.
+     * @return BelongsToMany
+     */
+    public function applicationCommitteWorkshops(): BelongsToMany
+    {
+        return $this->hasManyThrough(
+            Workshop::class,
+            RoleUser::class,
+            'user_id',
+            'id',
+            'id',
+            'workshop_id'
+        )->whereIn('roles.name', [Role::APPLICATION_COMMITTEE_MEMBER]);
+    }
+
+    /**
      * The faculties where the user is a member.
      * @return BelongsToMany
      */
@@ -433,6 +465,30 @@ class User extends Authenticatable implements HasLocalePreference
         return $query->whereHas('roles', function ($q) use ($role) {
             $q->where('role_users.role_id', $role->id);
         });
+    }
+
+    /**
+     * Scope a query to only include users whose data can be accessed by the given user.
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeCanView(Builder $query): Builder
+    {
+        if(user()->isAdmin()) {
+            return $query;
+        }
+        if(user()->hasRole(Role::STAFF)) {
+            return $query->role(Role::TENANT);
+        }
+        if(user()->can('viewAll', User::class)) {
+            return $query->collegists();
+        }
+        if(user()->can('viewSome', User::class)) {
+            return $query->collegists()->whereHas('workshops', function ($query)  {
+                $query->whereIn('id', user()->roleWorkshops());
+            });
+        }
+        return $query->where('id', user()->id);
     }
 
     /**
@@ -870,43 +926,6 @@ class User extends Authenticatable implements HasLocalePreference
         return $this->getStatus($semester)?->status == SemesterStatus::ACTIVE;
     }
 
-
-    /* Workshop related */
-
-    /**
-     * Return workshop administrators/leaders' workshops.
-     * @return Workshop[]|Collection
-     */
-    public function roleWorkshops(): array|Collection
-    {
-        return Workshop::whereIn(
-            'id',
-            $this->roles()->whereIn('name', [Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR])
-                ->pluck('role_users.workshop_id')
-        )->get();
-    }
-
-    /**
-     * Return the workshops connected to the application committees.
-     * @return Workshop[]|Collection
-     */
-    public function applicationWorkshops(): array|Collection
-    {
-        if ($this->can('viewAllApplications', User::class)) {
-            return Workshop::all();
-        } else {
-            return Workshop::whereIn(
-                'id',
-                $this->roles()
-                    ->whereIn('name', [
-                        Role::APPLICATION_COMMITTEE_MEMBER,
-                        Role::WORKSHOP_LEADER,
-                        Role::WORKSHOP_ADMINISTRATOR
-                    ])
-                    ->pluck('role_users.workshop_id')
-            )->get();
-        }
-    }
 
     /* Printing related */
 

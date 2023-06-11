@@ -59,13 +59,6 @@
         </div>
     </div>
 
-    {{-- Export --}}
-    <div class="fixed-action-btn">
-        <a wire:click="exportUsers" class="btn-floating btn-large">
-            <i class="large material-icons">file_download</i>
-        </a>
-    </div>
-
     <div class="card">
         <div class="card-content">
 
@@ -107,13 +100,10 @@
                                     $status = $user->getStatus();
                                 @endphp
                                 <span class="new badge {{ \App\Models\SemesterStatus::color($status?->status) }} right" data-badge-caption="">
-                                    <b> @if($status?->status) 
-                                        @lang("user." . $status->status)
+                                    <b> @if($status?->status)
+                                        {{ $status->translatedStatus()}}
                                         @else
                                         @lang("user.no_status")
-                                        @endif
-                                        @if($status?->comment) 
-                                        ({{$status->comment}}) 
                                         @endif
                                     </b>
                                 </span>

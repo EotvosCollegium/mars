@@ -1,0 +1,101 @@
+<?php
+
+namespace App\Exports\UsersSheets;
+
+use App\Models\Semester;
+use App\Models\User;
+use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Concerns\WithTitle;
+use Maatwebsite\Excel\Events\AfterSheet;
+
+class CollegistsExport implements FromCollection, WithTitle, WithMapping, WithHeadings, ShouldAutoSize, WithEvents
+{
+    protected $users;
+    protected $semester;
+
+    public function __construct()
+    {
+        $this->users = User::canView()->orderBy('name')->get();
+        $this->semester = Semester::current();
+    }
+
+    public function collection()
+    {
+        return $this->users;
+    }
+
+    public function title(): string
+    {
+        return "Collegisták";
+    }
+
+    public function headings(): array
+    {
+        return [
+            'Név',
+            'Neptun kód',
+            'E-mail',
+            'Egyetemi e-mail',
+            'Születési hely',
+            'Születési idő',
+            'Anyja neve',
+            'Telefonszám',
+            'Lakhely',
+            'Érettségi éve',
+            'Középiskola',
+            'Collegiumi felvétel éve',
+            'Szak',
+            'Kar',
+            'Műhely',
+            'Bentlakó/Bejáró',
+            'Státusz ('.$this->semester->tag.')',
+            'Alfonsó',
+            'Alfonsó teljesítve?',
+            'Szobaszám',
+        ];
+    }
+
+    public function map($user): array
+    {
+
+        return [
+            $user->name,
+            $user->educationalInformation?->neptun,
+            $user->email,
+            $user->educationalInformation?->email,
+            $user->personalInformation?->place_of_birth,
+            $user->personalInformation?->date_of_birth,
+            $user->personalInformation?->mothers_name,
+            $user->personalInformation?->phone_number,
+            $user->personalInformation?->getAddress(),
+            $user->educationalInformation?->year_of_graduation,
+            $user->educationalInformation?->high_school,
+            $user->educationalInformation?->year_of_acceptance,
+            $user->educationalInformation?->studyLines?->map(function ($studyLine) {
+                return $studyLine->getNameWithYear();
+            })->implode(" \n"),
+            implode(" \n", $user->faculties->pluck('name')->toArray()),
+            implode(" \n", $user->workshops->pluck('name')->toArray()),
+            $user->isResident() ? 'Bentlakó' : 'Bejáró',
+            $user->getStatus($this->semester)?->translatedStatus(),
+            ($user->educationalInformation?->alfonso_language ? __('role.'.$user->educationalInformation?->alfonso_language) . " " . $user->educationalInformation?->alfonso_desired_level  : "" ),
+            ($user->educationalInformation?->alfonsoCompleted() ?? false)
+                ? 'Igen'
+                : (($user->educationalInformation?->alfonsoCanBeCompleted() ?? true) ? "Folyamatban" : "Nem"),
+            $user->room,
+        ];
+    }
+
+    public function registerEvents(): array
+    {
+        return [
+            AfterSheet::class    => function(AfterSheet $event) {
+                $event->sheet->getDelegate()->freezePane('C2');
+            },
+        ];
+    }
+}

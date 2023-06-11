@@ -57,7 +57,7 @@ class ListUsers extends Component
             }
         });
 
-        return $query->orderBy('name')->get();
+        return $query->canView()->orderBy('name')->get();
     }
 
     public function addRole($role_id)
@@ -88,11 +88,6 @@ class ListUsers extends Component
     public function deleteWorkshop($workshop_id)
     {
         $this->workshops = \array_diff($this->workshops, [$workshop_id]);
-    }
-
-    public function exportUsers()
-    {
-        return Excel::download(new UsersExport($this->users), 'users.xlsx');
     }
 
     public function render()
