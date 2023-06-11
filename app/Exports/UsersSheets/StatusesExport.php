@@ -19,7 +19,7 @@ class StatusesExport implements FromCollection, WithTitle, WithMapping, WithHead
     public function __construct()
     {
         $this->users = User::canView()->orderBy('name')->get();
-        $this->semesters = Semester::allUntilCurrent()->sortBy('tag');
+        $this->semesters = Semester::allUntilCurrent()->sortByDesc('tag');
     }
 
     public function collection()

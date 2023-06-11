@@ -25,7 +25,7 @@ class SemesterEvaluationExport implements FromCollection, WithTitle, WithMapping
         $evaluations = SemesterEvaluation::where('semester_id', $last_semester_id);
 
         if(user()->hasRole(Role::WORKSHOP_ADMINISTRATOR)) {
-            $workshops = user()->roleWorkshops();
+            $workshops = user()->roleWorkshops;
             $users = User::query()->whereHas('workshops', function ($query) use ($workshops) {
                 $query->whereIn('id', $workshops->pluck('id'));
             })->get();

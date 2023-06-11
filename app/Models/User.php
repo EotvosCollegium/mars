@@ -216,36 +216,36 @@ class User extends Authenticatable implements HasLocalePreference
     }
 
     /**
-     * The workshops where the user is a leader or administrator.
-     * @return BelongsToMany
-     */
-    public function roleWorkshops(): BelongsToMany
-    {
-        return $this->hasManyThrough(
-            Workshop::class,
-            RoleUser::class,
-            'user_id',
-            'id',
-            'id',
-            'workshop_id'
-        )->whereIn('roles.name', [Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR]);
-    }
+    * The workshops where the user is a leader or administrator.
+    * @return HasManyThrough
+    */
+   public function roleWorkshops() : HasManyThrough
+   {
+       return $this->hasManyThrough(
+           Workshop::class,
+           RoleUser::class,
+           'user_id',
+           'id',
+           'id',
+           'workshop_id'
+       )->whereIn('role_id', [Role::get(Role::WORKSHOP_LEADER)->id, Role::get(Role::WORKSHOP_ADMINISTRATOR)->id]);
+   }
 
-    /**
-     * The workshops where the user is in the application committe.
-     * @return BelongsToMany
-     */
-    public function applicationCommitteWorkshops(): BelongsToMany
-    {
-        return $this->hasManyThrough(
-            Workshop::class,
-            RoleUser::class,
-            'user_id',
-            'id',
-            'id',
-            'workshop_id'
-        )->whereIn('roles.name', [Role::APPLICATION_COMMITTEE_MEMBER]);
-    }
+   /**
+    * The workshops where the user is in the application committe.
+    * @return HasManyThrough
+    */
+   public function applicationCommitteWorkshops(): HasManyThrough
+   {
+       return $this->hasManyThrough(
+           Workshop::class,
+           RoleUser::class,
+           'user_id',
+           'id',
+           'id',
+           'workshop_id'
+       )->where('role_id', Role::get(Role::APPLICATION_COMMITTEE_MEMBER)->id);
+   }
 
     /**
      * The faculties where the user is a member.
@@ -481,11 +481,11 @@ class User extends Authenticatable implements HasLocalePreference
             return $query->role(Role::TENANT);
         }
         if(user()->can('viewAll', User::class)) {
-            return $query->collegists();
+            return $query->collegist();
         }
         if(user()->can('viewSome', User::class)) {
-            return $query->collegists()->whereHas('workshops', function ($query) {
-                $query->whereIn('id', user()->roleWorkshops());
+            return $query->collegist()->whereHas('workshops', function ($query) {
+                $query->whereIn('id', user()->roleWorkshops->pluck('id')->toArray());
             });
         }
         return $query->where('id', user()->id);
