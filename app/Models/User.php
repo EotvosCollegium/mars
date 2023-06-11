@@ -219,7 +219,7 @@ class User extends Authenticatable implements HasLocalePreference
     * The workshops where the user is a leader or administrator.
     * @return HasManyThrough
     */
-   public function roleWorkshops() : HasManyThrough
+   public function roleWorkshops(): HasManyThrough
    {
        return $this->hasManyThrough(
            Workshop::class,
