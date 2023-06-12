@@ -29,6 +29,9 @@
 <ul class="sidenav sidenav-fixed" id="sidenav">
     <!-- logo -->
     @include('layouts.logo')
+    @if(config('app.env') == 'production' && config('app.debug'))
+    <li class="grey darken-1 white-text" style="padding:5px;line-height:1.5em">@lang('general.debug_descr')</li>
+    @endif
 
     <!-- main options -->
     @if(Auth::user()?->verified)

@@ -12,6 +12,7 @@ return [
     'choose_option' => 'Choose an option...',
     'comment' => 'Comment',
     'contacts' => 'Contacts',
+    'debug_descr' => 'The site is under maintenance. Some features (eg. printing) may not work as expected, so we recommend you to come back later.',
     'description' => 'Description',
     'failed' => 'An error occurred. Please contact system administrators!',
     'filter' => 'Filter',
