@@ -15,7 +15,7 @@
             <ul style="margin-left:20px;margin-top:0">
                 <li style="list-style-type: circle !important">Aktív - Aktív tagja leszel a Collegiumnak.</li>
                 <li style="list-style-type: circle !important">Passzív - Külföldi féléven leszel vagy passzív vagy az egyetemen. A collegista státuszod megmarad, de a kötelezettségeid szünetelnek (pl. óralátogatás). Ha bentlakó vagy, a helyed ideiglenesen megszűnik.</li>
-                <li style="list-style-type: circle !important">Alumni - Kilépsz a Collegiumból, vagy megszűnik a hallgatói jogviszonyod.</li>
+                <li style="list-style-type: circle !important">Alumni - Kilépsz a Collegiumból, vagy megszűnik a hallgatói jogviszonyod - figyelem: győződj meg róla, hogy minden mást kitöltöttél, mielőtt alumnivá állítod magad!</li>
             </ul>
             Egyéb esetben írj kérvényt az igazgatónak, és jelöld be a célként kitűzött státuszt.
             <div class="row">
