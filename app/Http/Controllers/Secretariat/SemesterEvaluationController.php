@@ -53,6 +53,7 @@ class SemesterEvaluationController extends Controller
      */
     public function show()
     {
+        $this->authorize('is-collegist');
         if (!self::isEvaluationAvailable()) {
             return redirect('home')->with('error', 'Lejárt a határidő a kérdőív kitöltésére. Keresd fel a titkárságot.');
         }
@@ -73,6 +74,7 @@ class SemesterEvaluationController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('is-collegist');
         if (!self::isEvaluationAvailable()) {
             return redirect('home')->with('error', 'Lejárt a határidő a kérdőív kitöltésére. Keresd fel a titkárságot.');
         }
