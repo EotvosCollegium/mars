@@ -12,6 +12,7 @@ return [
     'choose_option' => 'Válassz...',
     'comment' => 'Megjegyzés',
     'contacts' => 'Elérhetőségek',
+    'debug_descr' => 'Az oldal karbantartás alatt van. Néhány funkció (pl. nyomtatás) nem működik megfelelően. Látogass vissza később.',
     'description' => 'Leírás',
     'failed' => 'Hiba történt. Kérlek, írj a rendszergazdáknak!',
     'filter' => 'Szűrés',
