@@ -438,7 +438,7 @@ class User extends Authenticatable implements HasLocalePreference
             return $query;
         }
         if(user()->hasRole(Role::STAFF)) {
-            return $query->role(Role::TENANT);
+            return $query->withRole(Role::TENANT);
         }
         if(user()->can('viewAll', User::class)) {
             return $query->collegist();
@@ -488,7 +488,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function scopeResident(Builder $query): Builder
     {
-        return $query->role(Role::COLLEGIST, Role::RESIDENT);
+        return $query->withRole(Role::COLLEGIST, Role::RESIDENT);
     }
 
     /**
@@ -499,7 +499,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function scopeExtern(Builder $query): Builder
     {
-        return $query->role(Role::COLLEGIST, RoleObject::firstWhere('name', Role::EXTERN));
+        return $query->withRole(Role::COLLEGIST, RoleObject::firstWhere('name', Role::EXTERN));
     }
 
     /**
@@ -511,7 +511,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function scopeCurrentTenant(Builder $query): Builder
     {
-        return $query->role(Role::TENANT)
+        return $query->withRole(Role::TENANT)
             ->whereHas('personalInformation', function ($q) {
                 $q->where('tenant_until', '>', now());
             });
@@ -538,7 +538,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function scopeHasToPayKKTNetregInSemester(Builder $query, int $semester_id): Builder
     {
-        return $query->role(Role::collegist())->active($semester_id)
+        return $query->withRole(Role::collegist())->active($semester_id)
             ->whereDoesntHave('transactionsPaid', function ($query) use ($semester_id) {
                 $query->where('semester_id', $semester_id);
                 $query->whereIn('payment_type_id', [PaymentType::kkt()->id, PaymentType::netreg()->id]);
@@ -876,7 +876,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public static function admins(): Collection|array
     {
-        return self::role(Role::SYS_ADMIN)->get();
+        return self::withRole(Role::SYS_ADMIN)->get();
     }
 
     /**
@@ -884,7 +884,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public static function collegists(): Collection|array
     {
-        return self::role(Role::COLLEGIST)->get();
+        return self::withRole(Role::COLLEGIST)->get();
     }
 
     /**
@@ -909,7 +909,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public static function president(): ?User
     {
-        return self::role(Role::STUDENT_COUNCIL, Role::PRESIDENT)->first();
+        return self::withRole(Role::STUDENT_COUNCIL, Role::PRESIDENT)->first();
     }
 
     /**
@@ -917,7 +917,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public static function studentCouncilSecretary(): ?User
     {
-        return self::role(Role::STUDENT_COUNCIL_SECRETARY)->first();
+        return self::withRole(Role::STUDENT_COUNCIL_SECRETARY)->first();
     }
 
     /**
@@ -925,7 +925,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public static function boardOfTrusteesMembers(): Collection|array
     {
-        return self::role(Role::BOARD_OF_TRUSTEES_MEMBER)->get();
+        return self::withRole(Role::BOARD_OF_TRUSTEES_MEMBER)->get();
     }
 
     /**
@@ -933,7 +933,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public static function ethicsCommissioners(): Collection|array
     {
-        return self::role(Role::ETHICS_COMMISSIONER)->get();
+        return self::withRole(Role::ETHICS_COMMISSIONER)->get();
     }
 
     /**
@@ -941,7 +941,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public static function director(): ?User
     {
-        return self::role(Role::director())->first();
+        return self::withRole(Role::director())->first();
     }
 
     /**
@@ -949,7 +949,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public static function secretary(): ?User
     {
-        return self::role(Role::SECRETARY)->first();
+        return self::withRole(Role::SECRETARY)->first();
     }
 
     /**
@@ -957,7 +957,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public static function staff(): ?User
     {
-        return self::role(Role::STAFF)->first();
+        return self::withRole(Role::STAFF)->first();
     }
 
     /**
@@ -965,7 +965,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public static function printers(): Collection|array
     {
-        return self::role(Role::PRINTER)->get();
+        return self::withRole(Role::PRINTER)->get();
     }
 
     /**
@@ -973,7 +973,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public static function tenants(): Collection|array
     {
-        return self::role(Role::TENANT)->get();
+        return self::withRole(Role::TENANT)->get();
     }
 
     /**

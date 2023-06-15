@@ -18,13 +18,15 @@ trait HasRoles
 
     /**
      * Scope a query to only include users with the given role.
+     * Usage: ->withRole(...)
+     * See also: hasRole(...) getter for User models.
      *
      * @param Builder $query
      * @param Role|string $role
      * @param Workshop|RoleObject|string|null $object
      * @return Builder
      */
-    public function scopeRole(Builder $query, Role|string $role, Workshop|RoleObject|string $object = null): Builder
+    public function scopeWithRole(Builder $query, Role|string $role, Workshop|RoleObject|string $object = null): Builder
     {
         $role = Role::get($role);
         if ($object) {
@@ -49,6 +51,8 @@ trait HasRoles
 
     /**
      * Decides if the user has any of the given roles.
+     * See also: withRole(...) scope for query builders.
+     *
      * If a base_role => [possible_objects] array is given, it will check if the user has the base_role with any of the possible_objects.
      *
      * Example usage:

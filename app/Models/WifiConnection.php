@@ -53,7 +53,7 @@ class WifiConnection extends Model
 
     public static function notifications()
     {
-        return User::role(Role::get(Role::INTERNET_USER))
+        return User::withRole(Role::get(Role::INTERNET_USER))
             ->whereHas('internetAccess', function($q) {
                 return $q->reachedWifiConnectionLimit();
             })->count();
