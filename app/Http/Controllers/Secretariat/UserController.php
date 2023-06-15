@@ -310,9 +310,7 @@ class UserController extends Controller
         if (!user()->needsUpdateTenantUntil()) {
             return redirect('/');
         }
-        return view('user.update_tenant_status', [
-            'user' => user(),
-        ]);
+        return view('user.update_tenant_status');
     }
 
     /**

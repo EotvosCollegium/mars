@@ -123,6 +123,7 @@ trait HasRoles
                 //delete other object, if exists
                 $this->roles()->detach($role->id);
                 $this->roles()->attach($role->id, ['object_id' => $object->id]);
+                Cache::forget('collegists');
             }
             elseif ($this->roles()->where('id', $role->id)->wherePivot('object_id', $object->id)->doesntExist()) {
                 $this->roles()->attach($role->id, ['object_id' => $object->id]);
@@ -154,7 +155,13 @@ trait HasRoles
         } else {
             $this->roles()->detach($role->id);
         }
-        Cache::forget('collegists');
+
+        if($role->name == Role::COLLEGIST) {
+            Cache::forget('collegists');
+        }
+        if($role->name == Role::SYS_ADMIN) {
+            Cache::forget('sys-admins');
+        }
     }
 
 
