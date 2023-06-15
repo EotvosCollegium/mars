@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Faculty;
 use App\Models\Role;
 use App\Models\Semester;
+use App\Models\StudyLine;
 use App\Models\User;
 use App\Models\Workshop;
 use App\Models\WorkshopBalance;
@@ -107,23 +108,13 @@ class UserController extends Controller
             'faculty.*' => 'exists:faculties,id',
             'workshop' => 'array',
             'workshop.*' => 'exists:workshops,id',
-            'study_line_indices' => 'required|array|min:1',
+            'study_lines' => 'array',
+            'study_lines.*.name' => 'required|string|max:255',
+            'study_lines.*.level' => ['required', Rule::in(array_keys(StudyLine::TYPES))],
+            'study_lines.*.minor' => 'nullable|string|max:255',
+            'study_lines.*.start' => 'required',
             'email' => 'required|string|email|max:255',
         ]);
-
-        $validator->after(function ($validator) use ($request) {
-            foreach($request->input('study_line_indices', []) as $index) {
-                if ($request->input('study_line_name_' . $index) == null) {
-                    $validator->errors()->add('study_line_name_'.$index, __('validation.required', ['attribute' => 'study_line_name']));
-                }
-                if ($request->input('study_line_level_' . $index) == null) {
-                    $validator->errors()->add('study_line_level_'.$index, __('validation.required', ['attribute' => 'study_line_level']));
-                }
-                if ($request->has('study_line_start_' . $index) == null) {
-                    $validator->errors()->add('study_line_start_'.$index, __('validation.required', ['attribute' => 'study_line_start']));
-                }
-            }
-        });
 
         $validator->validate();
 
@@ -152,15 +143,15 @@ class UserController extends Controller
                 $user->faculties()->sync($request->input('faculty'));
             }
 
-            if($request->has('study_line_indices')) {
+            if($request->has('study_lines')) {
                 $user->educationalInformation->studyLines()->delete();
-                foreach($request->input('study_line_indices') as $index) {
+                foreach($request->input('study_lines') as $studyLine) {
                     $user->educationalInformation->studyLines()->create([
-                        'name' => $request->input('study_line_name_'.$index),
-                        'type' => $request->input('study_line_level_'.$index),
-                        'minor' => $request->input('study_line_minor_'.$index),
-                        'start' => $request->input('study_line_start_'.$index),
-                        'end' => $request->input('study_line_end_'.$index, null),
+                        'name' => $studyLine["name"],
+                        'type' => $studyLine["level"],
+                        'minor' => $studyLine["minor"] ?? "",
+                        'start' => $studyLine["start"],
+                        'end' => $studyLine["end"] ?? "",
                     ]);
                 }
             }

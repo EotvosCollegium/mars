@@ -30,11 +30,11 @@ class StudyLine extends Model
     ];
 
     public const TYPES = [
-        'bachelor' => 'BSc',
-        'master' => 'MSc',
+        'bachelor' => 'BA/BSc',
+        'master' => 'MA/MSc',
         'phd' => 'PhD',
         'ot' => 'Osztatlan',
-        'other' => 'Other'
+        'other' => 'Egyéb'
     ];
 
     public function startSemester()
