@@ -149,9 +149,9 @@ class UserController extends Controller
                     $user->educationalInformation->studyLines()->create([
                         'name' => $studyLine["name"],
                         'type' => $studyLine["level"],
-                        'minor' => $studyLine["minor"] ?? "",
+                        'minor' => $studyLine["minor"] ?? null,
                         'start' => $studyLine["start"],
-                        'end' => $studyLine["end"] ?? "",
+                        'end' => $studyLine["end"] ?? null,
                     ]);
                 }
             }
