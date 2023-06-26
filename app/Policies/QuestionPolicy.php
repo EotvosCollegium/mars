@@ -18,7 +18,7 @@ class QuestionPolicy
     */
     public function vote(User $user, Question $question): bool
     {
-        return $question->isOpen() && $user->isCollegist() && $user->isActive() && !$question->hasVoted($user);
+        return $question->isOpen() && $user->isCollegist(false) && $user->isActive() && !$question->hasVoted($user);
     }
 
     /**
