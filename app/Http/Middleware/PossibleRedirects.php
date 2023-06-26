@@ -18,13 +18,13 @@ class PossibleRedirects
      */
     public function handle(Request $request, Closure $next)
     {
-        $user=$request->user();
+        $user = $request->user();
         // Enable the user to logout, change language and check if the users exists and is verified
         if (!($request->is('logout') || $request->routeIs('setlocale')) && $user && $user->verified && $request->method() == 'GET') {
 
             // Show a message if the semester evaluation can be filled out.
             if (!$request->routeIs('secretariat.evaluation.*')
-            && $user->isCollegist()
+            && $user->isCollegist(false)
             && $user->getStatus(Semester::next()) == null
             && SemesterEvaluationController::isEvaluationAvailable()) {
                 $request->session()->flash('message', 'Töltsd ki a szemeszter végi kérdőívet a profilod alatt!');

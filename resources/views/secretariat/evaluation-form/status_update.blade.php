@@ -1,6 +1,12 @@
 <div class="card">
     <div class="card-content">
         <span class="card-title">Nyilatkozz a következő félévedről ({{\App\Models\Semester::next()->tag}})!</span>
+        @if(user()->hasRole(App\Models\Role::ALUMNI))
+        <blockquote>
+            A beállított státuszod: <span class="coli-text text-blue">alumni</span>.
+            Ha ez véletlen lenne, akkor keresd fel a titkárságot!
+        </blockquote>
+        @else
         <form action="{{ route('secretariat.evaluation.store') }}" method="post">
             @csrf
             <input type="hidden" name="section" value="status" />
@@ -39,5 +45,6 @@
                 <x-input.button class="right" text="general.save" />
             </div>
         </form>
+        @endif
     </div>
 </div>

@@ -64,10 +64,10 @@ class AuthServiceProvider extends ServiceProvider
             return $user->hasRole(Role::SECRETARY);
         });
         Gate::define('document.status-certificate', function ($user) {
-            return $user->isCollegist();
+            return $user->isCollegist(false);
         });
         Gate::define('document.register-statement', function ($user) {
-            return $user->isCollegist()
+            return $user->isCollegist(false)
                 || $user->hasRole(Role::TENANT);
         });
         Gate::define('document.import-license', function ($user) {

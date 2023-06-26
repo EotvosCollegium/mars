@@ -43,7 +43,7 @@
         </li>
     </ul>
     {{-- Statuses --}}
-    @if($user->isCollegist() || $user->hasRole(\App\Models\Role::alumni()))
+    @if($user->isCollegist())
         <ul class="collapsible">
             <li>
                 <div class="collapsible-header"><b>Státuszok</b></div>
