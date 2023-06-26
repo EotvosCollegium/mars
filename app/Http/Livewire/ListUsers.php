@@ -3,7 +3,6 @@
 namespace App\Http\Livewire;
 
 use App\Models\Semester;
-use App\Models\SemesterStatus;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
@@ -12,14 +11,14 @@ class ListUsers extends Component
 {
     public $roles = [];
     public $workshops = [];
-    public $statuses = SemesterStatus::STATUSES;
+    public $statuses = [];
 
     public $year_of_acceptance = null;
     public $filter_name = '';
 
     public function getUsersProperty()
     {
-        $query = User::with(['roles', 'workshops', 'educationalInformation', 'semesterStatuses']);
+        $query = User::canView();
 
         $query->where(function (Builder $query) {
             foreach ($this->roles as $role) {
@@ -55,7 +54,9 @@ class ListUsers extends Component
             }
         });
 
-        return $query->canView()->orderBy('name')->get();
+        return $query
+            ->with(['roles', 'workshops', 'educationalInformation', 'semesterStatuses'])
+            ->orderBy('name')->get();
     }
 
     public function addRole($role_id)
