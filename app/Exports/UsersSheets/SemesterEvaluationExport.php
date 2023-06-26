@@ -22,17 +22,13 @@ class SemesterEvaluationExport implements FromCollection, WithTitle, WithMapping
     public function __construct()
     {
         $last_semester_id = SemesterEvaluation::query()->orderBy('created_at', 'desc')->first()->semester_id;
-        $evaluations = SemesterEvaluation::where('semester_id', $last_semester_id);
-
-        if(user()->hasRole(Role::WORKSHOP_ADMINISTRATOR)) {
-            $workshops = user()->roleWorkshops;
-            $users = User::query()->whereHas('workshops', function ($query) use ($workshops) {
-                $query->whereIn('id', $workshops->pluck('id'));
-            })->get();
-            $evaluations = $evaluations->whereIn('user_id', $users->pluck('id'));
-        }
-
-        $this->evaluations = $evaluations->with('user')->get()->sortBy(fn ($evaluation) => $evaluation->user->name);
+        $users = User::query()->canView()->get(['id'])->pluck('id');
+        $this->evaluations = SemesterEvaluation::query()
+            ->where('semester_id', $last_semester_id)
+            ->whereIn('user_id', $users)
+            ->with('user')
+            ->get()
+            ->sortBy(fn ($evaluation) => $evaluation->user->name);
     }
 
     public function collection()
