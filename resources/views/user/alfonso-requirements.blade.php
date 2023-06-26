@@ -7,7 +7,7 @@
 @if($evaluation ?? false)
 <blockquote>
     <p>A fenti mezőket csak abban az esetben kell kitölteni, ha collegiumi nyelvórán vettél részt.</p>
-    <p><b>Figyelem:</b> A nyelvi szakokon tanuló, honoráciort végző, vagy mesterszakos hallgatókra más feltételek vonatkozhatnak, mely esetben egyéni elbírálás szükséges. Ilyenkor töltsd ki a megjegyzés mezőt.</p>
+    <p><b>Figyelem:</b> A nyelvi vagy tanári szakokon tanuló, honoráciort végző, senior vagy mesterszakos hallgatókra más feltételek vonatkozhatnak, mely esetben egyéni elbírálás szükséges. Ilyenkor töltsd ki a megjegyzés mezőt.</p>
     <p>Ha már elvégezted az előírt követelményeket, és nem folytatod a nyelvtanulást, akkor nem szükséges semmit kitölteni.</p>
     <p>Vedd figyelembe, hogy a követelmények pontos számolásához az összes, a collegista státusz megszerzése előtti nyelvvizsgákat is fel kell tölteni, és ellenőrizd a felvétel évét a tanulmányi adatoknál.</p>
 </blockquote>

@@ -142,7 +142,6 @@ class SemesterEvaluationController extends Controller
                 }
                 break;
             case 'status':
-                $this->authorize('is-collegist');
                 $evaluation->update(array_merge(
                     $request->only(['next_status', 'next_status_note']),
                     [
@@ -152,7 +151,11 @@ class SemesterEvaluationController extends Controller
                 ));
                 if ($request->next_status == Role::ALUMNI) {
                     self::deactivateCollegist($user);
+                    return redirect()->route('home')->with('message', __('general.successful_modification'));
                 } else {
+                    if(!isset($request->next_status)) {
+                        return back()->with('error', "A státusz megadása kötelező!")->with('section', $request->section);
+                    }
                     $user->setStatusFor(Semester::next(), $request->next_status, $request->next_status_note);
                     if ($request->has('resign_residency') && $user->isResident()) {
                         $user->setExtern();

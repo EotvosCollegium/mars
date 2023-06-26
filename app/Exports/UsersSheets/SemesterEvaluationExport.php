@@ -95,7 +95,7 @@ class SemesterEvaluationExport implements FromCollection, WithTitle, WithMapping
             $evaluation->alfonso_note,
             $evaluation->current_avg,
             $evaluation->last_avg,
-            implode(" \n", array_map(fn ($course) => $course['code'] . " " . $course['name'] . ' - ' . $course['grade'], $evaluation->courses)),
+            implode(" \n", array_map(fn ($course) => $course['code'] . " " . $course['name'] . ' - ' . $course['grade'] ?? "N/A", $evaluation->courses)),
             GeneralAssembly::all()->sortByDesc('closed_at')->take(2)->map(function ($generalAssembly) use ($user) {
                 return $generalAssembly->isAttended($user) ? "Részt vett" : "Nem vett részt";
             })->implode(" \n"),
