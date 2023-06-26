@@ -22,7 +22,7 @@
                     xl=4 s=6
                     text="user.study_line_minor"
                     :value="$value?->minor"
-                    helper="BTK-soknak"/>
+                    />
         <x-input.select id="study_line_start_{{ $index }}"
                     xl=6 s=6
                     text="user.study_line_start"
