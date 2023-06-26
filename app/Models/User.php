@@ -219,33 +219,33 @@ class User extends Authenticatable implements HasLocalePreference
     * The workshops where the user is a leader or administrator.
     * @return HasManyThrough
     */
-   public function roleWorkshops(): HasManyThrough
-   {
-       return $this->hasManyThrough(
-           Workshop::class,
-           RoleUser::class,
-           'user_id',
-           'id',
-           'id',
-           'workshop_id'
-       )->whereIn('role_id', [Role::get(Role::WORKSHOP_LEADER)->id, Role::get(Role::WORKSHOP_ADMINISTRATOR)->id]);
-   }
+    public function roleWorkshops(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            Workshop::class,
+            RoleUser::class,
+            'user_id',
+            'id',
+            'id',
+            'workshop_id'
+        )->whereIn('role_id', [Role::get(Role::WORKSHOP_LEADER)->id, Role::get(Role::WORKSHOP_ADMINISTRATOR)->id]);
+    }
 
-   /**
-    * The workshops where the user is in the application committe.
-    * @return HasManyThrough
-    */
-   public function applicationCommitteWorkshops(): HasManyThrough
-   {
-       return $this->hasManyThrough(
-           Workshop::class,
-           RoleUser::class,
-           'user_id',
-           'id',
-           'id',
-           'workshop_id'
-       )->where('role_id', Role::get(Role::APPLICATION_COMMITTEE_MEMBER)->id);
-   }
+    /**
+     * The workshops where the user is in the application committe.
+     * @return HasManyThrough
+     */
+    public function applicationCommitteWorkshops(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            Workshop::class,
+            RoleUser::class,
+            'user_id',
+            'id',
+            'id',
+            'workshop_id'
+        )->where('role_id', Role::get(Role::APPLICATION_COMMITTEE_MEMBER)->id);
+    }
 
     /**
      * The faculties where the user is a member.
@@ -497,11 +497,11 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function scopeCollegist(): Builder
     {
-        return $this->where(function($query) {
+        return $this->where(function ($query) {
             return $query->role(Role::COLLEGIST)
-                ->orWhere(function($query) {
+                ->orWhere(function ($query) {
                     return $query->role(Role::ALUMNI);
-            });
+                });
         });
     }
 
@@ -676,7 +676,8 @@ class User extends Authenticatable implements HasLocalePreference
             Cache::remember('alumni', 60, function () {
                 return Role::alumni()->getUsers()->pluck('id')->toArray();
             })
-        );;
+        );
+        ;
     }
 
     /**
