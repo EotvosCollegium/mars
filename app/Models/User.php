@@ -657,10 +657,11 @@ class User extends Authenticatable implements HasLocalePreference
     }
 
     /**
-     * Determine if the user is a collegist (including alumni). Uses cache.
+     * Determine if the user is a collegist. Uses cache.
+     * @param bool $alumni whether to include alumni
      * @return boolean
      */
-    public function isCollegist(): bool
+    public function isCollegist($alumni = true): bool
     {
         if($this->verified == false) {
             return $this->roles()->where('role_id', Role::collegist()->id)->exists();
@@ -671,13 +672,12 @@ class User extends Authenticatable implements HasLocalePreference
             Cache::remember('collegists', 60, function () {
                 return Role::collegist()->getUsers()->pluck('id')->toArray();
             })
-        ) || in_array(
+        ) || ($alumni && in_array(
             $this->id,
             Cache::remember('alumni', 60, function () {
                 return Role::alumni()->getUsers()->pluck('id')->toArray();
             })
-        );
-        ;
+        ));
     }
 
     /**
@@ -1027,7 +1027,7 @@ class User extends Authenticatable implements HasLocalePreference
     }
 
     /**
-     * @return array|User[]|Collection the collegists
+     * @return array|User[]|Collection the collegists (without alumni)
      */
     public static function collegists(): Collection|array
     {
