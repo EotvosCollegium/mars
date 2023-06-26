@@ -18,7 +18,7 @@ class PossibleRedirects
      */
     public function handle(Request $request, Closure $next)
     {
-        $user = user();
+        $user = $request->user();
         // Enable the user to logout, change language and check if the users exists and is verified
         if (!($request->is('logout') || $request->routeIs('setlocale')) && $user && $user->verified && $request->method() == 'GET') {
 
