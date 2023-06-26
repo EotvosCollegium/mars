@@ -151,6 +151,7 @@ class SemesterEvaluationController extends Controller
                 ));
                 if ($request->next_status == Role::ALUMNI) {
                     self::deactivateCollegist($user);
+                    return redirect()->route('home')->with('message', __('general.successful_modification'));
                 } else {
                     if(!isset($request->next_status)) {
                         return back()->with('error', "A státusz megadása kötelező!")->with('section', $request->section);

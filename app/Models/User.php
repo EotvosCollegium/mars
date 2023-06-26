@@ -657,8 +657,7 @@ class User extends Authenticatable implements HasLocalePreference
     }
 
     /**
-     * Determine if the user is a collegist. Uses cache.
-     * @param bool $alumni whether to include alumni
+     * Determine if the user is a collegist (including alumni). Uses cache.
      * @return boolean
      */
     public function isCollegist($alumni = true): bool
