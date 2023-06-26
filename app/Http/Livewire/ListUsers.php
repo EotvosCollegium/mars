@@ -2,13 +2,11 @@
 
 namespace App\Http\Livewire;
 
-use App\Exports\UsersExport;
 use App\Models\Semester;
 use App\Models\SemesterStatus;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
-use Maatwebsite\Excel\Facades\Excel;
 
 class ListUsers extends Component
 {
