@@ -671,7 +671,7 @@ class User extends Authenticatable implements HasLocalePreference
             Cache::remember('collegists', 60, function () {
                 return Role::collegist()->getUsers()->pluck('id')->toArray();
             })
-        ) || ($alumni && in_array(
+        ) || ($alumni === true && in_array(
             $this->id,
             Cache::remember('alumni', 60, function () {
                 return Role::alumni()->getUsers()->pluck('id')->toArray();
@@ -743,6 +743,15 @@ class User extends Authenticatable implements HasLocalePreference
     public function setExtern(): void
     {
         $this->setCollegist(Role::EXTERN);
+    }
+
+    /**
+     * Determine if the user has an alumni role.
+     * @return boolean
+     */
+    public function isAlumni(): bool
+    {
+        return $this->hasRole(Role::ALUMNI);
     }
 
     /**
