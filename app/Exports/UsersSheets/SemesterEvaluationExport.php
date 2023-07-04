@@ -17,14 +17,15 @@ use Maatwebsite\Excel\Events\AfterSheet;
 class SemesterEvaluationExport implements FromCollection, WithTitle, WithMapping, WithHeadings, ShouldAutoSize, WithEvents
 {
     protected $evaluations;
+    protected $semester;
     protected $show_feedback = false;
 
     public function __construct()
     {
-        $last_semester_id = SemesterEvaluation::query()->orderBy('created_at', 'desc')->first()->semester_id;
+        $this->semester = SemesterEvaluation::query()->orderBy('created_at', 'desc')->first()->semester;
         $users = User::query()->canView()->get(['id'])->pluck('id');
         $this->evaluations = SemesterEvaluation::query()
-            ->where('semester_id', $last_semester_id)
+            ->where('semester_id', $this->semester->id)
             ->whereIn('user_id', $users)
             ->with('user')
             ->get()
@@ -38,7 +39,7 @@ class SemesterEvaluationExport implements FromCollection, WithTitle, WithMapping
 
     public function title(): string
     {
-        return "Szemeszter végi értékelés";
+        return str_replace("/", "-", $this->semester->tag) . " értékelés";
     }
 
     public function headings(): array
@@ -48,7 +49,7 @@ class SemesterEvaluationExport implements FromCollection, WithTitle, WithMapping
             'Neptun kód',
             'Szak',
             'Műhely',
-            'Bentlakó/Bejáró',
+            'Collegista státusz',
             'Lemondott bentlakó helyéről',
             'Státusz (jelenlegi)',
             'Státusz (következő)',
@@ -83,7 +84,7 @@ class SemesterEvaluationExport implements FromCollection, WithTitle, WithMapping
             $user->educationalInformation?->neptun,
             implode(" \n", $user->faculties->pluck('name')->toArray()),
             implode(" \n", $user->workshops->pluck('name')->toArray()),
-            $user->isResident() ? 'Bentlakó' : 'Bejáró',
+            $user->isResident() ? 'Bentlakó' : ($user->isExtern() ? 'Bejáró' : ($user->isAlumni() ? "Alumni" : ($user->isTenant() ? "Vendég" : ""))),
             $evaluation->resign_residency ? 'Igen' : '',
             $user->getStatus($evaluation->semester)?->translatedStatus(),
             $user->getStatus($evaluation->semester->succ())?->translatedStatus(),
