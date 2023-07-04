@@ -232,9 +232,9 @@ class Role extends Model
         return self::where('name', self::COLLEGIST)->first();
     }
 
-     /**
-     * Returns the role for the students council.
-     */
+    /**
+    * Returns the role for the students council.
+    */
     public static function studentsCouncil(): Role
     {
         return self::where('name', self::STUDENT_COUNCIL)->first();

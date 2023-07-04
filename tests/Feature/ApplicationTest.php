@@ -410,7 +410,7 @@ class ApplicationTest extends TestCase
         $response->assertSessionHas('error', 'Még vannak feldolgozatlan jelentkezések!');
     }
 
-        /**
+    /**
      * Test the admin finalization
      *
      * @return void

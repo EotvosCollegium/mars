@@ -124,8 +124,7 @@ trait HasRoles
                 $this->roles()->detach($role->id);
                 $this->roles()->attach($role->id, ['object_id' => $object->id]);
                 Cache::forget('collegists');
-            }
-            elseif ($this->roles()->where('id', $role->id)->wherePivot('object_id', $object->id)->doesntExist()) {
+            } elseif ($this->roles()->where('id', $role->id)->wherePivot('object_id', $object->id)->doesntExist()) {
                 $this->roles()->attach($role->id, ['object_id' => $object->id]);
             }
         } elseif ($role->has_workshops) {
