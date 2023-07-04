@@ -67,7 +67,7 @@ class InternetAccess extends Model
     public function scopeReachedWifiConnectionLimit(Builder $query)
     {
         return $query->whereHas('wifiConnections', function ($subquery) {
-            $subquery->havingRaw('COUNT(*) > wifi_connection_limit');
+            $subquery->groupBy('user_id')->havingRaw('COUNT(*) > wifi_connection_limit');
         });
     }
 
