@@ -11,6 +11,7 @@
             </div>
         </li>
     </ul>
+    @if($user->hasEducationalInformation())
     {{-- Educational information --}}
     <ul class="collapsible">
         <li @if(session()->get('section') == "educational_information") class="active" @endif>
@@ -33,6 +34,7 @@
             </div>
         </li>
     </ul>
+    @endif
     {{-- Roles --}}
     <ul class="collapsible">
         <li>

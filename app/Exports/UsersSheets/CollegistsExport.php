@@ -30,7 +30,7 @@ class CollegistsExport implements FromCollection, WithTitle, WithMapping, WithHe
 
     public function title(): string
     {
-        return "Collegisták";
+        return user()->isAdmin() ? "Felhasználók" : "Collegisták";
     }
 
     public function headings(): array
@@ -51,7 +51,7 @@ class CollegistsExport implements FromCollection, WithTitle, WithMapping, WithHe
             'Szak',
             'Kar',
             'Műhely',
-            'Bentlakó/Bejáró',
+            'Collegista státusz',
             'Státusz ('.$this->semester->tag.')',
             'Alfonsó',
             'Alfonsó teljesítve?',
@@ -80,7 +80,7 @@ class CollegistsExport implements FromCollection, WithTitle, WithMapping, WithHe
             })->implode(" \n"),
             implode(" \n", $user->faculties->pluck('name')->toArray()),
             implode(" \n", $user->workshops->pluck('name')->toArray()),
-            $user->isResident() ? 'Bentlakó' : 'Bejáró',
+            $user->isResident() ? 'Bentlakó' : ($user->isExtern() ? 'Bejáró' : ($user->isAlumni() ? "Alumni" : ($user->isTenant() ? "Vendég" : ""))),
             $user->getStatus($this->semester)?->translatedStatus(),
             ($user->educationalInformation?->alfonso_language ? __('role.'.$user->educationalInformation?->alfonso_language) . " " . $user->educationalInformation?->alfonso_desired_level : ""),
             ($user->educationalInformation?->alfonsoCompleted() ?? false)
