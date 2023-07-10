@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * @property StudyLine[]|Collection $studyLines
  * @property LanguageExam[]|Collection $languageExams
+ * @property LanguageExam[]|Collection $languageExamsBeforeAcceptance
+ * @property LanguageExam[]|Collection $languageExamsAfterAcceptance
  * @property User $user
  * @property string $year_of_graduation
  * @property string $high_school
