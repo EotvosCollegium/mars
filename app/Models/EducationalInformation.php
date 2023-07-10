@@ -116,9 +116,9 @@ class EducationalInformation extends Model
         return false;
     }
 
-     /**
-     * @return bool true if the collegist can complete the requirements in the future
-     */
+    /**
+    * @return bool true if the collegist can complete the requirements in the future
+    */
     public function alfonsoCanBeCompleted(): bool
     {
         //a B2 language exam can always be passed in 3 years
