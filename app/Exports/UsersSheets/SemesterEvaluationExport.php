@@ -22,10 +22,10 @@ class SemesterEvaluationExport implements FromCollection, WithTitle, WithMapping
 
     public function __construct()
     {
-        $this->semester = SemesterEvaluation::query()->orderBy('created_at', 'desc')->first()->semester;
+        $this->semester = SemesterEvaluation::query()->orderBy('created_at', 'desc')->first()?->semester;
         $users = User::query()->canView()->get(['id'])->pluck('id');
         $this->evaluations = SemesterEvaluation::query()
-            ->where('semester_id', $this->semester->id)
+            ->where('semester_id', $this->semester?->id)
             ->whereIn('user_id', $users)
             ->with('user')
             ->get()
@@ -39,7 +39,7 @@ class SemesterEvaluationExport implements FromCollection, WithTitle, WithMapping
 
     public function title(): string
     {
-        return str_replace("/", "-", $this->semester->tag) . " értékelés";
+        return str_replace("/", "-", $this->semester?->tag) . " értékelés";
     }
 
     public function headings(): array
@@ -54,6 +54,8 @@ class SemesterEvaluationExport implements FromCollection, WithTitle, WithMapping
             'Státusz (jelenlegi)',
             'Státusz (következő)',
             'Kérvényt ír',
+            'Nyelvvizsgák felvétel előtt',
+            'Nyelvvizsgák felvétel után',
             'Alfonsó tanult nyelv',
             'Alfonsót teljesített?',
             'Alfonsó megjegyzés',
@@ -80,7 +82,7 @@ class SemesterEvaluationExport implements FromCollection, WithTitle, WithMapping
         $user = $evaluation->user;
 
         return [
-            $user->name,
+            '=HYPERLINK("'.route('users.show', ['user'=> $user->id]).'", "'.$user->name.'")',
             $user->educationalInformation?->neptun,
             implode(" \n", $user->faculties->pluck('name')->toArray()),
             implode(" \n", $user->workshops->pluck('name')->toArray()),
@@ -89,6 +91,12 @@ class SemesterEvaluationExport implements FromCollection, WithTitle, WithMapping
             $user->getStatus($evaluation->semester)?->translatedStatus(),
             $user->getStatus($evaluation->semester->succ())?->translatedStatus(),
             $evaluation->will_write_request ? "Igen" : '',
+            $user->educationalInformation?->languageExamsBeforeAcceptance?->map(function ($exam) {
+                return implode(", ", [__('role.'.$exam->language), $exam->level, $exam->type, $exam->date->format('Y-m')]);
+            })->implode(" \n"),
+            $user->educationalInformation?->languageExamsAfterAcceptance?->map(function ($exam) {
+                return implode(", ", [__('role.'.$exam->language), $exam->level, $exam->type, $exam->date->format('Y-m')]);
+            })->implode(" \n"),
             ($user->educationalInformation?->alfonso_language ? __('role.'.$user->educationalInformation?->alfonso_language) . " " . $user->educationalInformation?->alfonso_desired_level : ""),
             ($user->educationalInformation?->alfonsoCompleted() ?? false)
                 ? 'Igen'

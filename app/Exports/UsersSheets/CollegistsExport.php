@@ -38,6 +38,8 @@ class CollegistsExport implements FromCollection, WithTitle, WithMapping, WithHe
         return [
             'Név',
             'Neptun kód',
+            'Collegista státusz',
+            'Státusz ('.$this->semester->tag.')',
             'E-mail',
             'Egyetemi e-mail',
             'Születési hely',
@@ -51,8 +53,8 @@ class CollegistsExport implements FromCollection, WithTitle, WithMapping, WithHe
             'Szak',
             'Kar',
             'Műhely',
-            'Collegista státusz',
-            'Státusz ('.$this->semester->tag.')',
+            'Nyelvvizsgák felvétel előtt',
+            'Nyelvvizsgák felvétel után',
             'Alfonsó',
             'Alfonsó teljesítve?',
             'Szobaszám',
@@ -63,8 +65,10 @@ class CollegistsExport implements FromCollection, WithTitle, WithMapping, WithHe
     {
 
         return [
-            $user->name,
+            '=HYPERLINK("'.route('users.show', ['user'=> $user->id]).'", "'.$user->name.'")',
             $user->educationalInformation?->neptun,
+            $user->isResident() ? 'Bentlakó' : ($user->isExtern() ? 'Bejáró' : ($user->isAlumni() ? "Alumni" : ($user->isTenant() ? "Vendég" : ""))),
+            $user->getStatus($this->semester)?->translatedStatus(),
             $user->email,
             $user->educationalInformation?->email,
             $user->personalInformation?->place_of_birth,
@@ -80,8 +84,12 @@ class CollegistsExport implements FromCollection, WithTitle, WithMapping, WithHe
             })->implode(" \n"),
             implode(" \n", $user->faculties->pluck('name')->toArray()),
             implode(" \n", $user->workshops->pluck('name')->toArray()),
-            $user->isResident() ? 'Bentlakó' : ($user->isExtern() ? 'Bejáró' : ($user->isAlumni() ? "Alumni" : ($user->isTenant() ? "Vendég" : ""))),
-            $user->getStatus($this->semester)?->translatedStatus(),
+            $user->educationalInformation?->languageExamsBeforeAcceptance?->map(function ($exam) {
+                return implode(", ", [__('role.'.$exam->language), $exam->level, $exam->type, $exam->date->format('Y-m')]);
+            })->implode(" \n"),
+            $user->educationalInformation?->languageExamsAfterAcceptance?->map(function ($exam) {
+                return implode(", ", [__('role.'.$exam->language), $exam->level, $exam->type, $exam->date->format('Y-m')]);
+            })->implode(" \n"),
             ($user->educationalInformation?->alfonso_language ? __('role.'.$user->educationalInformation?->alfonso_language) . " " . $user->educationalInformation?->alfonso_desired_level : ""),
             ($user->educationalInformation?->alfonsoCompleted() ?? false)
                 ? 'Igen'
