@@ -37,7 +37,7 @@
     @endif
     {{-- Roles --}}
     <ul class="collapsible">
-        <li>
+        <li @if(session()->get('section') == "roles") class="active" @endif>
             <div class="collapsible-header"><b>@lang('role.roles')</b></div>
             <div class="collapsible-body">
                 @include('user.roles', ['user' => $user])
