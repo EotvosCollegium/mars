@@ -34,7 +34,7 @@ class InternetController extends Controller
         $this->authorize('handleAny', InternetAccess::class);
 
         $activationDate = self::getInternetDeadline();
-        $users = User::role(Role::INTERNET_USER)->with('internetAccess.wifiConnections')->get();
+        $users = User::withRole(Role::INTERNET_USER)->with('internetAccess.wifiConnections')->get();
 
         return view('network.manage.app', ['activation_date' => $activationDate, 'users' => $users]);
     }
@@ -235,7 +235,7 @@ class InternetController extends Controller
         ]);
         $validator->validate();
 
-        foreach (User::role(Role::SYS_ADMIN)->get() as $admin) {
+        foreach (User::withRole(Role::SYS_ADMIN)->get() as $admin) {
             Mail::to($admin)->queue(new InternetFault($admin->name, user()->name, $request->report, $request->user_os));
         }
         return redirect()->back()->with('message', __('mail.email_sent'));

@@ -45,7 +45,7 @@ class PrintController extends Controller
     public function noPaper()
     {
         $reporterName = user()->name;
-        $admins = User::role(Role::SYS_ADMIN)->get();
+        $admins = User::withRole(Role::SYS_ADMIN)->get();
         foreach ($admins as $admin) {
             if (config('mail.active')) {
                 Mail::to($admin)->send(new NoPaper($admin->name, $reporterName));
