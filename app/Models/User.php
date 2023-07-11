@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Mail\Invitation;
+use App\Utils\HasRoles;
 use App\Utils\NotificationCounter;
 use Carbon\Carbon;
 use Illuminate\Contracts\Translation\HasLocalePreference;
@@ -66,6 +67,8 @@ class User extends Authenticatable implements HasLocalePreference
     use NotificationCounter;
     use Notifiable;
     use HasFactory;
+    use HasRoles;
+
 
     /**
      * The "booting" method of the model.
@@ -437,37 +440,6 @@ class User extends Authenticatable implements HasLocalePreference
     */
 
     /**
-     * Scope a query to only include users with the given role.
-     *
-     * @param Builder $query
-     * @param Role|string $role
-     * @param Workshop|RoleObject|string|null $object
-     * @return Builder
-     */
-    public function scopeRole(Builder $query, Role|string $role, Workshop|RoleObject|string $object = null): Builder
-    {
-        $role = Role::get($role);
-        if ($object) {
-            $object = $role->getObject($object);
-        }
-        if ($object instanceof RoleObject) {
-            return $query->whereHas('roles', function ($q) use ($role, $object) {
-                $q->where('role_users.role_id', $role->id)
-                    ->where('role_users.object_id', $object->id);
-            });
-        }
-        if ($object instanceof Workshop) {
-            return $query->whereHas('roles', function ($q) use ($role, $object) {
-                $q->where('role_users.role_id', $role->id)
-                    ->where('role_users.workshop_id', $object->id);
-            });
-        }
-        return $query->whereHas('roles', function ($q) use ($role) {
-            $q->where('role_users.role_id', $role->id);
-        });
-    }
-
-    /**
      * Scope a query to only include users whose data can be accessed by the given user.
      * @param Builder $query
      * @return Builder
@@ -478,7 +450,7 @@ class User extends Authenticatable implements HasLocalePreference
             return $query;
         }
         if(user()->hasRole(Role::STAFF)) {
-            return $query->role(Role::TENANT);
+            return $query->withRole(Role::TENANT);
         }
         if(user()->can('viewAll', User::class)) {
             return $query->collegist();
@@ -528,7 +500,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function scopeResident(Builder $query): Builder
     {
-        return $query->role(Role::COLLEGIST, Role::RESIDENT);
+        return $query->withRole(Role::COLLEGIST, Role::RESIDENT);
     }
 
     /**
@@ -539,7 +511,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function scopeExtern(Builder $query): Builder
     {
-        return $query->role(Role::COLLEGIST, RoleObject::firstWhere('name', Role::EXTERN));
+        return $query->withRole(Role::COLLEGIST, RoleObject::firstWhere('name', Role::EXTERN));
     }
 
     /**
@@ -551,7 +523,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function scopeCurrentTenant(Builder $query): Builder
     {
-        return $query->role(Role::TENANT)
+        return $query->withRole(Role::TENANT)
             ->whereHas('personalInformation', function ($q) {
                 $q->where('tenant_until', '>', now());
             });
@@ -578,7 +550,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function scopeHasToPayKKTNetregInSemester(Builder $query, int $semester_id): Builder
     {
-        return $query->role(Role::collegist())->active($semester_id)
+        return $query->withRole(Role::collegist())->active($semester_id)
             ->whereDoesntHave('transactionsPaid', function ($query) use ($semester_id) {
                 $query->where('semester_id', $semester_id);
                 $query->whereIn('payment_type_id', [PaymentType::kkt()->id, PaymentType::netreg()->id]);
@@ -687,8 +659,8 @@ class User extends Authenticatable implements HasLocalePreference
     {
         $role = Role::collegist();
         $object = $role->getObject($objectName);
-        $this->roles()->detach($role->id);
-        $this->roles()->attach($role->id, ['object_id' => $object->id]);
+        $this->removeRole($role);
+        $this->addRole($role, $object);
 
         Cache::forget('collegists');
         WorkshopBalance::generateBalances(Semester::current()->id);
@@ -779,114 +751,6 @@ class User extends Authenticatable implements HasLocalePreference
     public function needsUpdateTenantUntil(): bool
     {
         return $this->isTenant() && !$this->isCurrentTenant();
-    }
-
-    /**
-     * Decides if the user has any of the given roles.
-     * If a base_role => [possible_objects] array is given, it will check if the user has the base_role with any of the possible_objects.
-     *
-     * Example usage:
-     * hasRole(Role::COLLEGIST)
-     * hasRole(Role::collegist()))
-     * hasRole([Role::COLLEGIST => Role::EXTERN])
-     * hasRole([Role::COLLEGIST => 4, Role::get(Role::WORKSHOP_LEADER)])
-     * hasRole([Role::STUDENT_COUNCIL => [Role::PRESIDENT, Role::SCIENCE_VICE_PRESIDENT]]])
-     *
-     * @param $roles Role|name|id|[Role|name|id|[Role|name => RoleObject|Workshop|name|id]]
-     * @return bool
-     */
-    public function hasRole($roles): bool
-    {
-        if (!is_array($roles)) {
-            $roles = [$roles];
-        }
-
-        $query = $this->roles();
-        $query->where(function ($query) use ($roles) {
-            foreach ($roles as $key => $value) {
-                $query->orWhere(function ($query) use ($key, $value) {
-                    if (is_integer($key)) {
-                        //indexed with integers, object not passed
-                        $role = Role::get($value);
-                        $query->where('role_id', $role->id);
-                    } else {
-                        $role = Role::get($key);
-                        $query->where('role_id', $role->id);
-                        if (!is_array($value)) {
-                            $value = [$value];
-                        }
-                        //check if user has any of the objects
-                        $query->where(function ($query) use ($role, $value) {
-                            foreach ($value as $object) {
-                                $object = $role->getObject($object);
-                                if ($object instanceof Workshop) {
-                                    $query->orWhere('workshop_id', $object->id);
-                                } elseif ($object instanceof RoleObject) {
-                                    $query->orWhere('object_id', $object->id);
-                                }
-                            }
-                        });
-                    }
-                });
-            }
-        });
-
-        return $query->exists();
-    }
-
-    /**
-     * Attach a role to the user.
-     * @param Role $role
-     * @param RoleObject|Workshop|null $object
-     * @return bool
-     */
-    public function addRole(Role $role, Workshop|RoleObject $object = null): bool
-    {
-        if (!$role->isValid($object)) {
-            return false;
-        }
-
-        if ($role->has_objects) {
-            //if adding a collegist role to a collegist
-            if ($role->name == Role::COLLEGIST) {
-                //just change resident/extern status.
-                $this->setCollegist($object->name);
-            }
-            if ($this->roles()->where('id', $role->id)->wherePivot('object_id', $object->id)->doesntExist()) {
-                $this->roles()->attach([
-                    $role->id => ['object_id' => $object->id],
-                ]);
-            }
-        } elseif ($role->has_workshops) {
-            if ($this->roles()->where('id', $role->id)->wherePivot('workshop_id', $object->id)->doesntExist()) {
-                $this->roles()->attach([
-                    $role->id => ['workshop_id' => $object->id],
-                ]);
-            }
-        } else {
-            if ($this->roles()->where('id', $role->id)->doesntExist()) {
-                $this->roles()->attach($role->id);
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Detach a role from a user. Assumes a valid role-object pair.
-     * @param Role $role
-     * @param RoleObject|Workshop|null $object
-     * @return void
-     */
-    public function removeRole(Role $role, Workshop|RoleObject $object = null): void
-    {
-        if ($role->has_objects && isset($object)) {
-            $this->roles()->where('roles.id', $role->id)->wherePivot('object_id', $object->id)->detach($role->id);
-        } elseif ($role->has_workshops && isset($object)) {
-            $this->roles()->where('roles.id', $role->id)->wherePivot('workshop_id', $object->id)->detach($role->id);
-        } else {
-            $this->roles()->detach($role->id);
-        }
-        Cache::forget('collegists');
     }
 
     /* Status related */
@@ -1031,7 +895,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public static function admins(): Collection|array
     {
-        return self::role(Role::SYS_ADMIN)->get();
+        return self::withRole(Role::SYS_ADMIN)->get();
     }
 
     /**
@@ -1039,7 +903,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public static function collegists(): Collection|array
     {
-        return self::role(Role::COLLEGIST)->get();
+        return self::withRole(Role::COLLEGIST)->get();
     }
 
     /**
@@ -1064,7 +928,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public static function president(): ?User
     {
-        return self::role(Role::STUDENT_COUNCIL, Role::PRESIDENT)->first();
+        return self::withRole(Role::STUDENT_COUNCIL, Role::PRESIDENT)->first();
     }
 
     /**
@@ -1072,7 +936,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public static function studentCouncilSecretary(): ?User
     {
-        return self::role(Role::STUDENT_COUNCIL_SECRETARY)->first();
+        return self::withRole(Role::STUDENT_COUNCIL_SECRETARY)->first();
     }
 
     /**
@@ -1080,7 +944,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public static function boardOfTrusteesMembers(): Collection|array
     {
-        return self::role(Role::BOARD_OF_TRUSTEES_MEMBER)->get();
+        return self::withRole(Role::BOARD_OF_TRUSTEES_MEMBER)->get();
     }
 
     /**
@@ -1088,7 +952,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public static function ethicsCommissioners(): Collection|array
     {
-        return self::role(Role::ETHICS_COMMISSIONER)->get();
+        return self::withRole(Role::ETHICS_COMMISSIONER)->get();
     }
 
     /**
@@ -1096,7 +960,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public static function director(): ?User
     {
-        return self::role(Role::director())->first();
+        return self::withRole(Role::director())->first();
     }
 
     /**
@@ -1104,7 +968,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public static function secretary(): ?User
     {
-        return self::role(Role::SECRETARY)->first();
+        return self::withRole(Role::SECRETARY)->first();
     }
 
     /**
@@ -1112,7 +976,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public static function staff(): ?User
     {
-        return self::role(Role::STAFF)->first();
+        return self::withRole(Role::STAFF)->first();
     }
 
     /**
@@ -1120,7 +984,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public static function printers(): Collection|array
     {
-        return self::role(Role::PRINTER)->get();
+        return self::withRole(Role::PRINTER)->get();
     }
 
     /**
@@ -1128,7 +992,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public static function tenants(): Collection|array
     {
-        return self::role(Role::TENANT)->get();
+        return self::withRole(Role::TENANT)->get();
     }
 
     /**

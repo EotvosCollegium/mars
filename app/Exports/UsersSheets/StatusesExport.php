@@ -10,6 +10,7 @@ use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithTitle;
+use Maatwebsite\Excel\Events\AfterSheet;
 
 class StatusesExport implements FromCollection, WithTitle, WithMapping, WithHeadings, ShouldAutoSize, WithEvents
 {
@@ -59,7 +60,7 @@ class StatusesExport implements FromCollection, WithTitle, WithMapping, WithHead
         })->toArray();
 
         $data = [
-            $user->name,
+            '=HYPERLINK("'.route('users.show', ['user'=> $user->id]).'", "'.$user->name.'")',
             $user->educationalInformation?->neptun,
             $user->educationalInformation?->year_of_acceptance,
         ];

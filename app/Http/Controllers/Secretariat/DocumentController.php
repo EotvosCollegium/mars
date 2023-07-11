@@ -112,7 +112,7 @@ class DocumentController extends Controller
         Gate::authorize('document.status-certificate');
 
         $url = route('documents.status-cert.show', ['id' => user()->id]);
-        $secretaries = User::role(Role::SECRETARY)->get();
+        $secretaries = User::withRole(Role::SECRETARY)->get();
         foreach ($secretaries as $recipient) {
             Mail::to($recipient)->queue(new \App\Mail\StateCertificateRequest($recipient->name, user()->name, $url));
         }

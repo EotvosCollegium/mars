@@ -237,10 +237,10 @@ class ApplicationTest extends TestCase
             'year_of_acceptance' => '2018',
             'high_school' => 'Test high school',
             'neptun' => 'NEPTUN',
-            'study_line_indices' => ['1'],
-            'study_line_name_1' => 'Test study line',
-            'study_line_level_1' => 'bachelor',
-            'study_line_start_1' => Semester::current()->id,
+            'study_lines' => [[
+                "name" => "Test study line",
+                "level" => "bachelor",
+                "start" => Semester::current()->id]],
             'email' => 'study@email.com',
             'workshop' => [Workshop::first()->id],
             'faculty' => [Faculty::first()->id],
@@ -410,7 +410,7 @@ class ApplicationTest extends TestCase
         $response->assertSessionHas('error', 'Még vannak feldolgozatlan jelentkezések!');
     }
 
-        /**
+    /**
      * Test the admin finalization
      *
      * @return void
