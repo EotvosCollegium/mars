@@ -144,6 +144,18 @@ class User extends Authenticatable implements HasLocalePreference
         );
     }
 
+    /**
+     * Get the reached_wifi_connection_limit attribute.
+     *
+     * @return Attribute
+     */
+    public function reachedWifiConnectionLimit(): Attribute
+    {
+        return Attribute::make(
+            get: fn (): bool => $this->internetAccess->reachedWifiConnectionLimit()
+        );
+    }
+
 
     /*
     |--------------------------------------------------------------------------

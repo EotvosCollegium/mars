@@ -15,7 +15,7 @@
         </tr>
     </thead>
     <tbody>
-        @forelse ($users_above_treshold as $user)
+        @forelse ($users->where('reachedWifiConnectionLimit', true) as $user)
         <tr>
             <td>
                 <b>{{ $user->name }}</b>

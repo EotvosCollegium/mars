@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 
 /**
@@ -60,15 +59,8 @@ class InternetAccess extends Model
         return $this->hasMany('App\Models\WifiConnection', 'wifi_username', 'wifi_username');
     }
 
-    /**
-     * Scope a query to only include internet accesses that have reached their wifi connection limit.
-     * Usage: ...->reachedWifiConnectionLimit()->...
-     */
-    public function scopeReachedWifiConnectionLimit(Builder $query)
+    public function reachedWifiConnectionLimit(): bool
     {
-        return $query->whereHas('wifiConnections', function ($subquery) {
-            $subquery->groupBy('user_id')->havingRaw('COUNT(*) > wifi_connection_limit');
-        });
+        return $this->wifiConnections->count() > $this->wifi_connection_limit;
     }
-
 }

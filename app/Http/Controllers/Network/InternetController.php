@@ -34,12 +34,16 @@ class InternetController extends Controller
         $this->authorize('handleAny', InternetAccess::class);
 
         $activationDate = self::getInternetDeadline();
+<<<<<<< HEAD
         $users = User::withRole(Role::INTERNET_USER)->with('internetAccess.wifiConnections')->get();
         $users_above_treshold = User::withRole(Role::INTERNET_USER)->whereHas('internetAccess', function ($q) {
             return $q->reachedWifiConnectionLimit();
         })->get();
+=======
+        $users = User::role(Role::INTERNET_USER)->with('internetAccess.wifiConnections')->get();
+>>>>>>> parent of 69405d0 (refactor reachedWifiConnectionLimit())
 
-        return view('network.manage.app', ['activation_date' => $activationDate, 'users' => $users, 'users_above_treshold' => $users_above_treshold]);
+        return view('network.manage.app', ['activation_date' => $activationDate, 'users' => $users]);
     }
 
     public function getUsersMacAddresses(Request $request)
