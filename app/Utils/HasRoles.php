@@ -148,9 +148,9 @@ trait HasRoles
     public function removeRole(Role $role, Workshop|RoleObject $object = null): void
     {
         if ($role->has_objects && isset($object)) {
-            $this->roles()->where('id', $role->id)->wherePivot('object_id', $object->id)->detach();
+            $this->roles()->where('roles.id', $role->id)->wherePivot('object_id', $object->id)->detach($role->id);
         } elseif ($role->has_workshops && isset($object)) {
-            $this->roles()->where('id', $role->id)->wherePivot('workshop_id', $object->id)->detach();
+            $this->roles()->where('roles.id', $role->id)->wherePivot('workshop_id', $object->id)->detach($role->id);
         } else {
             $this->roles()->detach($role->id);
         }

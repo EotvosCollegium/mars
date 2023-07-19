@@ -753,8 +753,6 @@ class User extends Authenticatable implements HasLocalePreference
         return $this->isTenant() && !$this->isCurrentTenant();
     }
 
-
-
     /* Status related */
 
     /**

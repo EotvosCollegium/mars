@@ -275,6 +275,8 @@ class UserController extends Controller
 
     public function addRole(Request $request, User $user, Role $role)
     {
+        session()->put('section', 'roles');
+
         $object_id = $request->get('object_id') ?? $request->get('workshop_id');
         $object = $object_id ? $role->getObject($object_id) : null;
         if ($request->user()->cannot('updatePermission', [$user, $role, $object])) {
@@ -290,6 +292,8 @@ class UserController extends Controller
 
     public function removeRole(Request $request, User $user, Role $role)
     {
+        session()->put('section', 'roles');
+
         $object_id = $request->get('object');
         $object = $object_id ? $role->getObject($object_id) : null;
 
