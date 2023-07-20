@@ -424,6 +424,7 @@ class ApplicationTest extends TestCase
         Config::set('custom.application_deadline', now()->subWeeks(3));
         $this->actingAs($user);
 
+        ApplicationForm::query()->delete();
         $applicant_in_progress = User::factory()->create(['verified' => false]);
         $applicant_in_progress->application->update(['status' => ApplicationForm::STATUS_IN_PROGRESS]);
 
@@ -436,7 +437,6 @@ class ApplicationTest extends TestCase
 
         $response = $this->post('/application/finalize');
         $response->assertStatus(302);
-        echo var_dump($response);
         $response->assertSessionHas('message', 'Sikeresen jóváhagyta az elfogadott jelentkezőket');
 
         $applicant_accepted->refresh();

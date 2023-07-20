@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Mail\Invitation;
 use App\Models\Internet\InternetAccess;
+use App\Models\Internet\MacAddress;
+use App\Models\Internet\WifiConnection;
 use App\Utils\HasRoles;
 use App\Utils\NotificationCounter;
 use Carbon\Carbon;
@@ -44,7 +46,7 @@ use Illuminate\Support\Facades\Mail;
  * @property PrintAccountHistory[]|Collection $printHistory
  * @property PrintJob[]|Collection $printJobs
  * @property InternetAccess|null $internetAccess
- * @property MacAddresses[]|Collection $macAddresses
+ * @property MacAddress[]|Collection $macAddresses
  * @property WifiConnection[]|Collection $wifiConnections
  * @property Semester[]|Collection $semesterStatuses
  * @property Transaction[]|Collection $transactionsPaid

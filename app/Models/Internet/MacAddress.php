@@ -2,6 +2,7 @@
 
 namespace App\Models\Internet;
 
+use App\Models\User;
 use App\Utils\NotificationCounter;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
