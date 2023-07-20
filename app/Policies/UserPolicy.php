@@ -148,6 +148,7 @@ class UserPolicy
             Role::WORKSHOP_ADMINISTRATOR,
             Role::WORKSHOP_LEADER,
             Role::APPLICATION_COMMITTEE_MEMBER,
+            Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS,
             Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER
         ]);
     }

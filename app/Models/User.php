@@ -459,9 +459,9 @@ class User extends Authenticatable implements HasLocalePreference
     public function scopeCollegist(): Builder
     {
         return $this->where(function ($query) {
-            return $query->role(Role::COLLEGIST)
+            return $query->withRole(Role::COLLEGIST)
                 ->orWhere(function ($query) {
-                    return $query->role(Role::ALUMNI);
+                    return $query->withRole(Role::ALUMNI);
                 });
         });
     }
