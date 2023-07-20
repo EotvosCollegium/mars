@@ -1,4 +1,5 @@
 <span class="card-title">Internetelérés</span>
+<blockquote>Az aktuális internetelérés határidő: {{ $activation_date }}</blockquote>
 <div id="net_accesses-table"></div>
 <script type="text/javascript" src="{{ mix('js/moment.min.js') }}"></script>
 <script type="application/javascript">
@@ -39,8 +40,8 @@
 
         var editCallback = function (cell) {
             saveData(cell);
-        };        
-        
+        };
+
         var dateFormatter = function(cell, formatterParams){
             var value = cell.getValue();
             if(value){

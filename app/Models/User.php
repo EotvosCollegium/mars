@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use App\Mail\Invitation;
+use App\Models\Internet\InternetAccess;
+use App\Models\Internet\MacAddress;
+use App\Models\Internet\WifiConnection;
 use App\Utils\HasRoles;
 use App\Utils\NotificationCounter;
 use Carbon\Carbon;
@@ -28,7 +31,6 @@ use Illuminate\Support\Facades\Mail;
  * @property string $unique_name
  * @property string $password
  * @property string $remember_token
- * @property bool $reached_wifi_connection_limit
  * @property bool $verified
  * @property Role[]|Collection $roles
  * @property PersonalInformation|null $personalInformation
@@ -44,7 +46,7 @@ use Illuminate\Support\Facades\Mail;
  * @property PrintAccountHistory[]|Collection $printHistory
  * @property PrintJob[]|Collection $printJobs
  * @property InternetAccess|null $internetAccess
- * @property MacAddresses[]|Collection $macAddresses
+ * @property MacAddress[]|Collection $macAddresses
  * @property WifiConnection[]|Collection $wifiConnections
  * @property Semester[]|Collection $semesterStatuses
  * @property Transaction[]|Collection $transactionsPaid
@@ -143,19 +145,6 @@ class User extends Authenticatable implements HasLocalePreference
             }
         );
     }
-
-    /**
-     * Get the reached_wifi_connection_limit attribute.
-     *
-     * @return Attribute
-     */
-    public function reachedWifiConnectionLimit(): Attribute
-    {
-        return Attribute::make(
-            get: fn (): bool => $this->internetAccess->reachedWifiConnectionLimit()
-        );
-    }
-
 
     /*
     |--------------------------------------------------------------------------

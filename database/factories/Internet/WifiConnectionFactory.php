@@ -1,8 +1,8 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\Internet;
 
-use App\Models\WifiConnection;
+use App\Models\Internet\WifiConnection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class WifiConnectionFactory extends Factory
@@ -15,7 +15,10 @@ class WifiConnectionFactory extends Factory
             'ip' => $this->faker->unique()->ipv4,
             'mac_address' => $this->faker->macAddress,
             'wifi_username' => 'wifiuser'.$this->faker->numberBetween(1, 10),
-            'created_at' => $this->faker->dateTimeBetween($startDate = '-15 days', $endDate = 'now', $timezone = null),
+            'lease_start' => $this->faker->dateTime(),
+            'lease_end' => $this->faker->dateTime(),
+            'radius_timestamp' => $this->faker->dateTime(),
+            'note' => ''
         ];
     }
 }

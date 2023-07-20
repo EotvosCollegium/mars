@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Router;
+use App\Models\Internet\Router;
 use Illuminate\Database\Seeder;
 
 class RouterSeeder extends Seeder

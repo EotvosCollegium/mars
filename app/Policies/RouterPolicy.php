@@ -3,7 +3,7 @@
 namespace App\Policies;
 
 use App\Models\Role;
-use App\Models\Router;
+use App\Models\Internet\Router;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 

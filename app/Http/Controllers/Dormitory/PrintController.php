@@ -20,7 +20,6 @@ use App\Models\PaymentType;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -47,9 +46,7 @@ class PrintController extends Controller
         $reporterName = user()->name;
         $admins = User::withRole(Role::SYS_ADMIN)->get();
         foreach ($admins as $admin) {
-            if (config('mail.active')) {
-                Mail::to($admin)->send(new NoPaper($admin->name, $reporterName));
-            }
+            Mail::to($admin)->send(new NoPaper($admin->name, $reporterName));
         }
         Cache::put('print.no-paper', now(), 3600);
         return redirect()->back()->with('message', __('mail.email_sent'));

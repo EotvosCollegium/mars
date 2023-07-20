@@ -1,7 +1,9 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Internet;
 
+use App\Models\Room;
+use App\Models\User;
 use App\Utils\NotificationCounter;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -52,7 +54,7 @@ class Router extends Model
             foreach (User::admins() as $admin) {
                 Mail::to($admin)->queue(new \App\Mail\RouterWarning($admin, $this));
             }
-            $room=Room::firstWhere('name', $this->room);
+            $room = Room::firstWhere('name', $this->room);
             if ($room!=null) {
                 foreach ($room->users as $resident) {
                     Mail::to($resident)->queue(new \App\Mail\RouterWarningResident($resident, $this));

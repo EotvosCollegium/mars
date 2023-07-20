@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\InternetAccess;
+use App\Models\Internet\InternetAccess;
 use Illuminate\Database\Migrations\Migration;
 
 class SetMacToOne extends Migration
