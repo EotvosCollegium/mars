@@ -4,12 +4,17 @@ namespace App\Models\Internet;
 
 use App\Utils\NotificationCounter;
 use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * @property mixed $user_id
+ * @property string $user_id
+ * @property string $mac_address
+ * @property string $comment
+ * @property string $state
+ * @property string $ip
+ * @property User $user
  */
 class MacAddress extends Model
 {
@@ -32,41 +37,13 @@ class MacAddress extends Model
         'state' => self::REQUESTED,
     ];
 
-    protected $dispatchesEvents = [
-        'saved' => \App\Events\MacAddressSaved::class,
-        'deleted' => \App\Events\MacAddressDeleted::class,
-    ];
 
-    public function getState($value)
-    {
-        return strtoupper($value);
-    }
-
-    public function user()
+    public function user() : BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function setNextIp()
-    {
-        if ($this->state == MacAddress::APPROVED) {
-            $last_ip = self::max('ip') ?? config('custom.physical-first-ip');
-            $bytes = explode('.', $last_ip);
-            if ($bytes[3] == "255") {
-                $bytes[2] = strval(intval($bytes[2]) + 1); // Assuming it's safe
-                $bytes[3] = "1";
-            } else {
-                $bytes[3] = strval(intval($bytes[3]) + 1);
-            }
-            // TODO: if this ip reaches config('custom.physical-last-ip'), we should do something
-            $this->ip =implode('.', $bytes);
-            Log::info($this->ip . " is now attached to " . $this->mac_address . " for user " . $this->user->name);
-        } else {
-            Log::info($this->ip . " is now detached from " . $this->mac_address . " for user " . $this->user->name);
-            $this->ip = null;
-        }
-        $this->saveQuietly();
-    }
+
     /**
      * Format and set the mac_address attribute.
      *

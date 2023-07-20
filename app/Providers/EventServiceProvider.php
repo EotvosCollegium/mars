@@ -2,11 +2,7 @@
 
 namespace App\Providers;
 
-use App\Events\MacAddressDeleted;
-use App\Events\MacAddressSaved;
-use App\Listeners\AutoApproveMacAddresses;
 use App\Listeners\MailGate;
-use App\Listeners\UpdatePhysicalIP;
 use App\Models\FreePages;
 use App\Models\PrintAccount;
 use App\Models\SemesterStatus;
@@ -28,13 +24,6 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         Registered::class => [
             SendEmailVerificationNotification::class,
-        ],
-        MacAddressSaved::class => [
-            AutoApproveMacAddresses::class,
-            UpdatePhysicalIP::class,
-        ],
-        MacAddressDeleted::class => [
-            AutoApproveMacAddresses::class,
         ],
         MessageSending::class => [
             MailGate::class,
