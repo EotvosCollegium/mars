@@ -101,7 +101,7 @@
                     minWidth:140,
                 },
                 {title: "", field: "state", width:"130", headerSort: false, formatter: actions, minWidth:140},
-                {title: "", field: "id", headerSort: false, formatter: deleteButton},
+                {title: "", field: "id", headerSort: false, formatter: deleteButton, minWidth:140},
             ],
         });
     });

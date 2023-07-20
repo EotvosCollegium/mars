@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Utils\NotificationCounter;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,6 +14,7 @@ use Illuminate\Database\Eloquent\Model;
 class MacAddress extends Model
 {
     use HasFactory;
+    use NotificationCounter;
 
     public const REQUESTED = 'REQUESTED';
     public const APPROVED = 'APPROVED';
@@ -75,5 +77,10 @@ class MacAddress extends Model
         return Attribute::make(
             set: fn ($value) => str_replace('-', ':', strtoupper($value)),
         );
+    }
+
+    public static function notifications()
+    {
+        return self::where('state', self::REQUESTED)->count();
     }
 }

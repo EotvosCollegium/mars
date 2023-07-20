@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Utils\NotificationCounter;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,28 +9,27 @@ use Illuminate\Database\Eloquent\Model;
 class WifiConnection extends Model
 {
     use HasFactory;
-    use NotificationCounter;
 
-    protected $table = 'wifi_connections';
-    protected $primaryKey = 'id';
-    public $incrementing = true;
-    public $timestamps = true;
+    public $timestamps = false;
     protected $fillable = [
-        'ip',
         'mac_address',
         'wifi_username',
+        'lease_start',
+        'lease_end',
+        'radius_timestamp',
+        'note',
     ];
 
     public function internetAccess()
     {
-        return $this->belongsTo('App\Models\InernetAccess', 'wifi_username', 'wifi_username');
+        return $this->belongsTo(InternetAccess::class, 'wifi_username', 'wifi_username');
     }
 
     public function user()
     {
         return $this->hasOneThrough(
-            'App\Models\User',
-            'App\Models\InternetAccess',
+            User::class,
+            InternetAccess::class,
             'wifi_username', // Foreign key on InternetAccess table...
             'id', // Foreign key on Users table...
             'wifi_username', // Local key on WifiConnection table...
@@ -51,9 +49,4 @@ class WifiConnection extends Model
         return 'green';
     }
 
-    public static function notifications()
-    {
-        return User::withRole(Role::get(Role::INTERNET_USER))
-            ->get()->where('reachedWifiConnectionLimit', true)->count();
-    }
 }

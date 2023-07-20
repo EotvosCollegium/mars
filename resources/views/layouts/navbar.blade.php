@@ -135,7 +135,7 @@
                             <li>
                                 <a class="waves-effect" href="{{ route('internet.admin') }}">
                                     <i class="material-icons left">wifi</i>Internet elérés
-                                    @notification(\App\Models\WifiConnection::class)
+                                    @notification(\App\Models\MacAddress::class)
                                 </a>
                             </li>
                             @endcan

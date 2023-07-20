@@ -1,32 +1,40 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Jobs;
 
 use Carbon\Carbon;
-use Illuminate\Console\Command;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
-class ProcessWifiConnections extends Command
+class ProcessWifiConnections implements ShouldQueue
 {
-    protected $signature = 'internet:process_wifi_connections';
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
-    protected $description = 'Process the radius log and leases file to store wifi connections in the database';
-
+    /**
+     * Execute the job.
+     *
+     * @return void
+     */
     public function handle()
     {
         $radiusLogFile = config('internet.radius_log_path');
         $leasesFile = config('internet.dhcp_leases_path');
 
-        $this->info('Processing radius log...');
         $radiusEntries = $this->parseRadiusLog($radiusLogFile);
 
-        $this->info('Processing leases file...');
         $leasesEntries = $this->parseLeasesFile($leasesFile);
 
-        $this->info('Storing data in the database...');
         $this->processAndStoreData($radiusEntries, $leasesEntries);
 
-        $this->info('Processing completed successfully!');
+        Log::info("Wifi connections processed successfully");
     }
 
     private function parseRadiusLog($filePath)
@@ -44,8 +52,6 @@ class ProcessWifiConnections extends Command
                 'mac' => $mac,
                 'timestamp' => Carbon::parse($dateTimeString)
             ];
-            $this->info($mac . " => " . $match[8] . " (".$dateTimeString .")");
-
         }
 
         return $radiusEntries;
@@ -72,7 +78,6 @@ class ProcessWifiConnections extends Command
                 'end' => Carbon::parse($leaseEndDateTime),
                 'note' => $match[15] ?? "",
             ];
-            $this->info($mac . " => " . $match[1] . " (".$leaseStartDateTime . " - ". $leaseEndDateTime .")");
         }
 
         return $leasesEntries;
@@ -96,8 +101,6 @@ class ProcessWifiConnections extends Command
 
             $lease = $this->findLeaseByMAC($radiusEntry['mac'], $leasesEntries);
             if($lease){
-                $this->info($radiusEntry['user'] . " => " . $lease['ip'] . " (" .$radiusEntry['mac'] . ")");
-
                 DB::table('wifi_connections')->insert([
                     'ip' => $lease['ip'],
                     'mac_address' => $radiusEntry['mac'],
@@ -108,7 +111,7 @@ class ProcessWifiConnections extends Command
                     'note' => $lease['note']
                 ]);
             } else {
-                $this->warn("Can not find lease for mac " . $radiusEntry['mac'] . " (" . $radiusEntry['user'].")");
+                Log::warning("Can not find lease for mac " . $radiusEntry['mac'] . " (" . $radiusEntry['user'].")");
             }
 
         }

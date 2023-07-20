@@ -13,7 +13,7 @@ class InternetAccess extends Model
 {
     protected $primaryKey = 'user_id';
 
-    protected $fillable = ['user_id', 'wifi_username', 'wifi_connection_limit', 'has_internet_until', 'wifi_password'];
+    protected $fillable = ['user_id', 'wifi_username', 'has_internet_until', 'wifi_password'];
     protected $hidden = ['wifi_password'];
 
     protected $dates = [
@@ -56,11 +56,6 @@ class InternetAccess extends Model
 
     public function wifiConnections()
     {
-        return $this->hasMany('App\Models\WifiConnection', 'wifi_username', 'wifi_username');
-    }
-
-    public function reachedWifiConnectionLimit(): bool
-    {
-        return $this->wifiConnections->count() > $this->wifi_connection_limit;
+        return $this->hasMany(WifiConnection::class, 'wifi_username', 'wifi_username');
     }
 }

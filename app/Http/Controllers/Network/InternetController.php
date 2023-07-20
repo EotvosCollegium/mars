@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Network;
 
 use App\Http\Controllers\Controller;
 use App\Mail\InternetFault;
+use App\Mail\MacNeedsApproval;
 use App\Models\InternetAccess;
 use App\Models\MacAddress;
 use App\Models\Role;
@@ -12,6 +13,7 @@ use App\Models\User;
 use App\Models\WifiConnection;
 use App\Utils\TabulatorPaginator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
@@ -150,19 +152,21 @@ class InternetController extends Controller
 
         $validator = Validator::make($request->all(), [
             'comment' => 'required|max:255',
+            'user_id' => 'nullable|exists:users,id',
             'mac_address' => ['required', 'regex:/((([a-fA-F0-9]{2}[-:]){5}([a-fA-F0-9]{2}))|(([a-fA-F0-9]{2}:){5}([a-fA-F0-9]{2})))/i'],
         ]);
         $validator->validate();
 
         if (user()->can('accept', MacAddress::class) && $request->has('user_id')) {
-            $request->validate([
-                'user_id' => 'integer|exists:users,id',
-            ]);
             $target_id = $request->input('user_id');
             $state = MacAddress::APPROVED;
         } else {
             $target_id = user()->id;
             $state = MacAddress::REQUESTED;
+
+            foreach (User::admins() as $admin) {
+                Mail::to($admin)->send(new MacNeedsApproval($admin->name, user()->name));
+            }
         }
 
         MacAddress::create([
@@ -175,15 +179,16 @@ class InternetController extends Controller
         return redirect()->back()->with('message', __('general.successfully_added'));
     }
 
-    public function getWifiConnectionsAdmin()
+    public function getWifiConnectionsAdmin(Request $request)
     {
         $this->authorize('viewAny', WifiConnection::class);
 
-        $paginator = TabulatorPaginator::from(WifiConnection::join('internet_accesses as i', 'i.wifi_username', 'wifi_connections.wifi_username')
-            ->join('users as user', 'user.id', '=', 'i.user_id')
-            ->select('wifi_connections.*')->with('user'))
-            ->sortable(['user.name', 'wifi_username', 'mac_address'])
-            ->filterable(['user.name', 'wifi_username', 'mac_address'])
+        $paginator = TabulatorPaginator::from(
+            WifiConnection::query()
+                ->groupBy(['wifi_username', 'mac_address', 'ip', 'lease_start', 'lease_end', 'note'])
+                ->select(['wifi_username', 'mac_address', 'ip', 'lease_start', 'lease_end', 'note', DB::raw('COUNT(*) as radius_connections')])
+            )->sortable(['wifi_username', 'mac_address', 'ip', 'lease_start'])
+            ->filterable(['wifi_username', 'mac_address', 'ip', 'lease_start'])
             ->paginate();
 
         return $paginator;
@@ -208,17 +213,6 @@ class InternetController extends Controller
 
             return $data;
         };
-    }
-
-    public function approveWifiConnections($user)
-    {
-        $this->authorize('approveAny', WifiConnection::class);
-
-        $user = User::findOrFail($user);
-
-        $user->internetAccess->increment('wifi_connection_limit');
-
-        return redirect()->back()->with('message', __('general.successful_modification'));
     }
 
     /**

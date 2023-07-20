@@ -19,6 +19,10 @@ return new class extends Migration
             $table->datetime('radius_timestamp')->nullable();
             $table->string('note');
         });
+
+        Schema::table('internet_accesses', function (Illuminate\Database\Schema\Blueprint $table) {
+            $table->dropColumn('wifi_connection_limit');
+        });
     }
 
     /**
@@ -29,10 +33,14 @@ return new class extends Migration
     public function down()
     {
         Schema::table('wifi_connections', function (Blueprint $table) {
-            $table->removeColumn('lease_start');
-            $table->removeColumn('lease_end');
-            $table->removeColumn('radius_timestamp');
-            $table->removeColumn('note');
+            $table->dropColumn('lease_start');
+            $table->dropColumn('lease_end');
+            $table->dropColumn('radius_timestamp');
+            $table->dropColumn('note');
+        });
+
+        Schema::table('internet_accesses', function (Blueprint $table) {
+            $table->integer('wifi_connection_limit')->default(2);
         });
     }
 };

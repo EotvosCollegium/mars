@@ -28,7 +28,6 @@ use Illuminate\Support\Facades\Mail;
  * @property string $unique_name
  * @property string $password
  * @property string $remember_token
- * @property bool $reached_wifi_connection_limit
  * @property bool $verified
  * @property Role[]|Collection $roles
  * @property PersonalInformation|null $personalInformation
@@ -143,19 +142,6 @@ class User extends Authenticatable implements HasLocalePreference
             }
         );
     }
-
-    /**
-     * Get the reached_wifi_connection_limit attribute.
-     *
-     * @return Attribute
-     */
-    public function reachedWifiConnectionLimit(): Attribute
-    {
-        return Attribute::make(
-            get: fn (): bool => $this->internetAccess->reachedWifiConnectionLimit()
-        );
-    }
-
 
     /*
     |--------------------------------------------------------------------------
