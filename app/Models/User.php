@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Mail\Invitation;
+use App\Models\Internet\InternetAccess;
 use App\Utils\HasRoles;
 use App\Utils\NotificationCounter;
 use Carbon\Carbon;

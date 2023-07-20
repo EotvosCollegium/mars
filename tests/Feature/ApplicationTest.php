@@ -436,6 +436,7 @@ class ApplicationTest extends TestCase
 
         $response = $this->post('/application/finalize');
         $response->assertStatus(302);
+        echo var_dump($response);
         $response->assertSessionHas('message', 'Sikeresen jóváhagyta az elfogadott jelentkezőket');
 
         $applicant_accepted->refresh();
