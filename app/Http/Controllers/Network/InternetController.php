@@ -29,14 +29,14 @@ class InternetController extends Controller
         $this->middleware('can:possess,App\Models\Internet\InternetAccess');
     }
 
-    public function index() : View
+    public function index(): View
     {
         $internetAccess = user()->internetAccess;
 
         return view('network.internet.app', ['internet_access' => $internetAccess]);
     }
 
-    public function admin() : View
+    public function admin(): View
     {
         $this->authorize('handleAny', InternetAccess::class);
 
@@ -46,7 +46,7 @@ class InternetController extends Controller
         return view('network.manage.app', ['activation_date' => $activationDate, 'users' => $users]);
     }
 
-    public function getUsersMacAddresses(Request $request) : LengthAwarePaginator
+    public function getUsersMacAddresses(Request $request): LengthAwarePaginator
     {
         $paginator = TabulatorPaginator::from(user()->macAddresses())
             ->sortable(['mac_address', 'comment', 'state'])->paginate();
@@ -56,7 +56,7 @@ class InternetController extends Controller
         return $paginator;
     }
 
-    public function getUsersMacAddressesAdmin(Request $request) : LengthAwarePaginator
+    public function getUsersMacAddressesAdmin(Request $request): LengthAwarePaginator
     {
         $this->authorize('viewAny', MacAddress::class);
 
@@ -72,7 +72,7 @@ class InternetController extends Controller
         return $paginator;
     }
 
-    public function getInternetAccessesAdmin() : LengthAwarePaginator
+    public function getInternetAccessesAdmin(): LengthAwarePaginator
     {
         $this->authorize('viewAny', InternetAccess::class);
 
@@ -84,7 +84,7 @@ class InternetController extends Controller
         return $paginator;
     }
 
-    public function deleteMacAddress(Request $request, $id) : Response
+    public function deleteMacAddress(Request $request, $id): Response
     {
         $macAddress = MacAddress::findOrFail($id);
 
@@ -95,14 +95,14 @@ class InternetController extends Controller
         return response("", 204);
     }
 
-    public function resetWifiPassword(Request $request) : RedirectResponse
+    public function resetWifiPassword(Request $request): RedirectResponse
     {
         user()->internetAccess->resetPassword();
 
         return redirect()->back();
     }
 
-    public function editMacAddress(Request $request, $id) : MacAddress
+    public function editMacAddress(Request $request, $id): MacAddress
     {
         $macAddress = MacAddress::findOrFail($id);
 
@@ -119,7 +119,7 @@ class InternetController extends Controller
         return $this->translateStates()($macAddress);
     }
 
-    public function editInternetAccess(Request $request, $id) : InternetAccess
+    public function editInternetAccess(Request $request, $id): InternetAccess
     {
         $internetAccess = InternetAccess::findOrFail($id);
 
@@ -140,7 +140,7 @@ class InternetController extends Controller
             ->where('user_id', '=', $internetAccess->user_id)->first();
     }
 
-    public static function extendUsersInternetAccess(User $user) : ?Carbon
+    public static function extendUsersInternetAccess(User $user): ?Carbon
     {
         $internetAccess = $user->internetAccess;
 
@@ -153,7 +153,7 @@ class InternetController extends Controller
         }
     }
 
-    public function addMacAddress(Request $request) : RedirectResponse
+    public function addMacAddress(Request $request): RedirectResponse
     {
         $this->authorize('create', MacAddress::class);
 
@@ -168,7 +168,7 @@ class InternetController extends Controller
         if (user()->can('accept', MacAddress::class) && $request->has('user_id')) {
             $target_id = $request->input('user_id');
             $state = MacAddress::APPROVED;
-        } else if($internetAccess->auto_approved_mac_slots > user()->macAddresses()->count()) {
+        } elseif($internetAccess->auto_approved_mac_slots > user()->macAddresses()->count()) {
             $target_id = user()->id;
             $state = MacAddress::APPROVED;
         } else {
@@ -190,7 +190,7 @@ class InternetController extends Controller
         return redirect()->back()->with('message', __('general.successfully_added'));
     }
 
-    public function getWifiConnectionsAdmin(Request $request) : LengthAwarePaginator
+    public function getWifiConnectionsAdmin(Request $request): LengthAwarePaginator
     {
         $this->authorize('viewAny', WifiConnection::class);
 
@@ -198,7 +198,7 @@ class InternetController extends Controller
             WifiConnection::query()
                 ->groupBy(['wifi_username', 'mac_address', 'ip', 'lease_start', 'lease_end', 'note'])
                 ->select(['wifi_username', 'mac_address', 'ip', 'lease_start', 'lease_end', 'note', DB::raw('COUNT(*) as radius_connections')])
-            )->sortable(['wifi_username', 'mac_address', 'ip', 'lease_start'])
+        )->sortable(['wifi_username', 'mac_address', 'ip', 'lease_start'])
             ->filterable(['wifi_username', 'mac_address', 'ip', 'lease_start'])
             ->paginate();
 
@@ -232,7 +232,7 @@ class InternetController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function reportFault(Request $request) : RedirectResponse
+    public function reportFault(Request $request): RedirectResponse
     {
         $validator = Validator::make($request->all(), [
             'report' => 'required|string',
@@ -246,7 +246,7 @@ class InternetController extends Controller
         return redirect()->back()->with('message', __('mail.email_sent'));
     }
 
-    private static function getInternetDeadline() : Carbon
+    private static function getInternetDeadline(): Carbon
     {
         return Semester::next()->getStartDate()->addMonth();
     }

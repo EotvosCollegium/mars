@@ -35,12 +35,12 @@ class WifiConnection extends Model
         'note',
     ];
 
-    public function internetAccess() : BelongsTo
+    public function internetAccess(): BelongsTo
     {
         return $this->belongsTo(InternetAccess::class, 'wifi_username', 'wifi_username');
     }
 
-    public function user() : HasOneThrough
+    public function user(): HasOneThrough
     {
         return $this->hasOneThrough(
             User::class,
@@ -52,7 +52,7 @@ class WifiConnection extends Model
         );
     }
 
-    public function getColor() : string
+    public function getColor(): string
     {
         if ($this->created_at > Carbon::now()->subDays(5)) {
             return 'red';

@@ -100,7 +100,7 @@ class ProcessWifiConnections implements ShouldQueue
         foreach ($radiusEntries as $radiusEntry) {
 
             $lease = $this->findLeaseByMAC($radiusEntry['mac'], $leasesEntries);
-            if($lease){
+            if($lease) {
                 DB::table('wifi_connections')->insert([
                     'ip' => $lease['ip'],
                     'mac_address' => $radiusEntry['mac'],

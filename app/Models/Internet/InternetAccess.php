@@ -31,17 +31,17 @@ class InternetAccess extends Model
         'has_internet_until',
     ];
 
-    public function user() : BelongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function wifiConnections() : HasMany
+    public function wifiConnections(): HasMany
     {
         return $this->hasMany(WifiConnection::class, 'wifi_username', 'wifi_username');
     }
 
-    public function isActive() : bool
+    public function isActive(): bool
     {
         return $this->has_internet_until != null && $this->has_internet_until > date('Y-m-d');
     }
@@ -49,7 +49,7 @@ class InternetAccess extends Model
     /**
      * Set wifi username based on neptun code or user_id and set random wifi password.
      */
-    public function setWifiCredentials($username = null) : string
+    public function setWifiCredentials($username = null): string
     {
         if ($username === null) {
             $username = $this->user?->educationalInformation?->neptun ?? 'guest_'.Str::random(6);
@@ -65,7 +65,7 @@ class InternetAccess extends Model
     /**
      * Set a random wifi password.
      */
-    public function resetPassword() : void
+    public function resetPassword(): void
     {
         $this->update(['wifi_password' => Str::random(8)]);
     }
