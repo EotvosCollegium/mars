@@ -8,12 +8,16 @@ use Illuminate\Support\Str;
 
 /**
  * @property mixed $user_id
+ * @property mixed $wifi_username
+ * @property mixed $has_internet_until
+ * @property mixed $wifi_password
+ * @property mixed $auto_approved_mac_slots
  */
 class InternetAccess extends Model
 {
     protected $primaryKey = 'user_id';
 
-    protected $fillable = ['user_id', 'wifi_username', 'has_internet_until', 'wifi_password'];
+    protected $fillable = ['user_id', 'wifi_username', 'has_internet_until', 'wifi_password', 'auto_approved_mac_slots'];
     protected $hidden = ['wifi_password'];
 
     protected $dates = [

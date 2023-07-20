@@ -1,0 +1,5954 @@
+# The format of this file is documented in the dhcpd.leases(5) manual page.
+# This lease file was written by isc-dhcp-4.4.1
+
+# authoring-byte-order entry is generated, DO NOT DELETE
+authoring-byte-order little-endian;
+
+lease 157.181.121.131 {
+  starts 3 2023/03/01 09:30:14;
+  ends 3 2023/03/01 09:50:14;
+  tstp 3 2023/03/01 09:50:14;
+  cltt 3 2023/03/01 09:30:14;
+  binding state free;
+  hardware ethernet 48:2a:e3:2f:65:06;
+  uid "\001H*\343/e\006";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.121.130 {
+  starts 3 2023/03/08 20:27:08;
+  ends 3 2023/03/08 20:47:08;
+  tstp 3 2023/03/08 20:47:08;
+  cltt 3 2023/03/08 20:27:08;
+  binding state free;
+  hardware ethernet c8:3a:35:36:88:10;
+  uid "\001\310:56\210\020";
+}
+lease 157.181.121.135 {
+  starts 3 2023/03/22 16:47:01;
+  ends 3 2023/03/22 16:49:01;
+  tstp 3 2023/03/22 16:49:01;
+  cltt 3 2023/03/22 16:47:01;
+  binding state free;
+  hardware ethernet d0:50:99:5d:61:d4;
+  uid "\001\320P\231]a\324";
+}
+lease 157.181.121.151 {
+  starts 3 2023/06/07 09:35:03;
+  ends 3 2023/06/07 09:55:03;
+  tstp 3 2023/06/07 09:55:03;
+  cltt 3 2023/06/07 09:35:03;
+  binding state free;
+  hardware ethernet 94:0c:6d:f6:5d:2f;
+  uid "\001\224\014m\366]/";
+  set vendor-class-identifier = "MSFT 98\000_";
+}
+lease 157.181.121.153 {
+  starts 0 2023/06/25 04:14:36;
+  ends 0 2023/06/25 04:16:36;
+  tstp 0 2023/06/25 04:16:36;
+  cltt 0 2023/06/25 04:14:36;
+  binding state free;
+  hardware ethernet bc:5f:f4:b3:10:8f;
+  set vendor-class-identifier = "PXEClient:Arch:00000:UNDI:002001";
+}
+lease 157.181.121.154 {
+  starts 0 2023/06/25 04:14:43;
+  ends 0 2023/06/25 04:16:43;
+  tstp 0 2023/06/25 04:16:43;
+  cltt 0 2023/06/25 04:14:43;
+  binding state free;
+  hardware ethernet bc:5f:f4:b3:10:8f;
+  set vendor-class-identifier = "PXEClient:Arch:00000:UNDI:002001";
+}
+lease 157.181.121.155 {
+  starts 0 2023/06/25 04:14:48;
+  ends 0 2023/06/25 04:16:48;
+  tstp 0 2023/06/25 04:16:48;
+  cltt 0 2023/06/25 04:14:48;
+  binding state free;
+  hardware ethernet bc:5f:f4:b3:10:8f;
+  set vendor-class-identifier = "PXEClient:Arch:00000:UNDI:002001";
+}
+lease 157.181.121.156 {
+  starts 0 2023/06/25 04:14:53;
+  ends 0 2023/06/25 04:16:53;
+  tstp 0 2023/06/25 04:16:53;
+  cltt 0 2023/06/25 04:14:53;
+  binding state free;
+  hardware ethernet bc:5f:f4:b3:10:8f;
+  set vendor-class-identifier = "PXEClient:Arch:00000:UNDI:002001";
+}
+lease 157.181.121.152 {
+  starts 0 2023/06/25 04:15:21;
+  ends 0 2023/06/25 04:35:21;
+  tstp 0 2023/06/25 04:35:21;
+  cltt 0 2023/06/25 04:15:21;
+  binding state free;
+  hardware ethernet bc:5f:f4:b3:10:8f;
+  uid "\001\274_\364\263\020\217";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.121.133 {
+  starts 4 2023/01/05 17:13:16;
+  ends never;
+  tstp never;
+  cltt 3 2023/06/14 07:21:44;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  dynamic-bootp;
+  hardware ethernet 00:00:00:00:00:0e;
+}
+lease 157.181.200.145 {
+  starts 2 2023/04/18 17:28:35;
+  ends 2 2023/04/18 19:08:35;
+  tstp 2 2023/04/18 19:08:35;
+  cltt 2 2023/04/18 17:32:37;
+  binding state free;
+  hardware ethernet 26:ec:7e:53:ed:ee;
+  uid "\001&\354~S\355\356";
+}
+lease 157.181.201.233 {
+  starts 3 2023/04/19 05:07:08;
+  ends 3 2023/04/19 06:47:08;
+  tstp 3 2023/04/19 06:47:08;
+  cltt 3 2023/04/19 05:07:08;
+  binding state free;
+  hardware ethernet ce:7d:3d:f0:77:ac;
+  uid "\001\316}=\360w\254";
+}
+lease 157.181.200.32 {
+  starts 3 2023/04/19 05:18:46;
+  ends 3 2023/04/19 06:58:46;
+  tstp 3 2023/04/19 06:58:46;
+  cltt 3 2023/04/19 05:18:46;
+  binding state free;
+  hardware ethernet 66:76:75:a4:74:63;
+  uid "\001fvu\244tc";
+}
+lease 157.181.201.18 {
+  starts 3 2023/04/19 15:18:54;
+  ends 3 2023/04/19 16:33:54;
+  tstp 3 2023/04/19 16:33:54;
+  cltt 3 2023/04/19 15:18:54;
+  binding state free;
+  hardware ethernet 82:61:5e:b3:b2:81;
+  uid "\001\202a^\263\262\201";
+}
+lease 157.181.201.30 {
+  starts 4 2023/04/20 22:54:13;
+  ends 4 2023/04/20 22:55:29;
+  tstp 4 2023/04/20 22:55:29;
+  cltt 4 2023/04/20 22:54:13;
+  binding state free;
+  hardware ethernet e8:3f:67:fc:f1:bb;
+  uid "\001\350?g\374\361\273";
+}
+lease 157.181.201.181 {
+  starts 5 2023/04/21 08:32:00;
+  ends 5 2023/04/21 09:57:21;
+  tstp 5 2023/04/21 09:57:21;
+  cltt 5 2023/04/21 08:39:45;
+  binding state free;
+  hardware ethernet dc:16:b2:4c:d4:ab;
+  uid "\001\334\026\262L\324\253";
+}
+lease 157.181.200.53 {
+  starts 5 2023/04/21 08:52:05;
+  ends 5 2023/04/21 10:32:05;
+  tstp 5 2023/04/21 10:32:05;
+  cltt 5 2023/04/21 08:52:05;
+  binding state free;
+  hardware ethernet ae:68:28:69:34:6b;
+  uid "\001\256h(i4k";
+  set vendor-class-identifier = "android-dhcp-11";
+}
+lease 157.181.201.73 {
+  starts 5 2023/04/21 12:54:00;
+  ends 5 2023/04/21 14:34:00;
+  tstp 5 2023/04/21 14:34:00;
+  cltt 5 2023/04/21 12:55:06;
+  binding state free;
+  hardware ethernet 24:da:33:ff:e4:60;
+  uid "\001$\3323\377\344`";
+  set vendor-class-identifier = "HUAWEI:android:ANE";
+}
+lease 157.181.200.41 {
+  starts 5 2023/04/21 18:44:10;
+  ends 5 2023/04/21 20:24:10;
+  tstp 5 2023/04/21 20:24:10;
+  cltt 5 2023/04/21 18:44:10;
+  binding state free;
+  hardware ethernet f0:c4:2f:d7:70:8e;
+  uid "\001\360\304/\327p\216";
+  set vendor-class-identifier = "HUAWEI:android:HRY-L21T";
+}
+lease 157.181.201.223 {
+  starts 0 2023/04/23 00:34:54;
+  ends 0 2023/04/23 00:48:11;
+  tstp 0 2023/04/23 00:48:11;
+  cltt 0 2023/04/23 00:34:54;
+  binding state free;
+  hardware ethernet e8:3f:67:fc:f1:bb;
+  uid "\001\350?g\374\361\273";
+}
+lease 157.181.201.39 {
+  starts 0 2023/04/23 18:01:51;
+  ends 0 2023/04/23 18:01:52;
+  tstp 0 2023/04/23 18:01:52;
+  cltt 0 2023/04/23 18:01:51;
+  binding state free;
+  hardware ethernet 24:6f:8c:de:41:25;
+  uid "\001$o\214\336A%";
+}
+lease 157.181.201.187 {
+  starts 1 2023/04/24 09:06:34;
+  ends 1 2023/04/24 10:46:34;
+  tstp 1 2023/04/24 10:46:34;
+  cltt 1 2023/04/24 09:06:34;
+  binding state free;
+  hardware ethernet 70:f7:54:6c:de:94;
+  uid "\377Tl\336\224\000\001\000\001+\233\277\360p\367Tl\336\224";
+  set vendor-class-identifier = "dhcpcd-8.1.6:Linux-5.4.70-v1.3.3-rm11x:armv7l:Freescale";
+}
+lease 157.181.200.88 {
+  starts 1 2023/04/24 15:59:58;
+  ends 1 2023/04/24 17:39:58;
+  tstp 1 2023/04/24 17:39:58;
+  cltt 1 2023/04/24 15:59:58;
+  binding state free;
+  hardware ethernet 10:0b:a9:0a:c5:ec;
+  uid "\001\020\013\251\012\305\354";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.40 {
+  starts 1 2023/04/24 17:07:59;
+  ends 1 2023/04/24 18:47:59;
+  tstp 1 2023/04/24 18:47:59;
+  cltt 1 2023/04/24 17:07:59;
+  binding state free;
+  hardware ethernet 30:d1:6b:f9:43:27;
+  uid "\0010\321k\371C'";
+}
+lease 157.181.200.8 {
+  starts 1 2023/04/24 17:18:18;
+  ends 1 2023/04/24 18:58:18;
+  tstp 1 2023/04/24 18:58:18;
+  cltt 1 2023/04/24 17:18:18;
+  binding state free;
+  hardware ethernet 82:61:5e:b3:b2:81;
+  uid "\001\202a^\263\262\201";
+  set vendor-class-identifier = "HUAWEI:android:ELE";
+}
+lease 157.181.200.202 {
+  starts 1 2023/04/24 21:35:23;
+  ends 1 2023/04/24 23:15:23;
+  tstp 1 2023/04/24 23:15:23;
+  cltt 1 2023/04/24 21:35:23;
+  binding state free;
+  hardware ethernet 74:59:09:13:db:a4;
+  uid "\001tY\011\023\333\244";
+  set vendor-class-identifier = "HUAWEI:android:POT-L21";
+}
+lease 157.181.201.51 {
+  starts 2 2023/04/25 13:45:23;
+  ends 2 2023/04/25 15:25:23;
+  tstp 2 2023/04/25 15:25:23;
+  cltt 2 2023/04/25 13:45:23;
+  binding state free;
+  hardware ethernet 74:59:09:13:db:a4;
+  uid "\001tY\011\023\333\244";
+  set vendor-class-identifier = "HUAWEI:android:POT-L21";
+}
+lease 157.181.201.88 {
+  starts 2 2023/04/25 13:46:21;
+  ends 2 2023/04/25 15:26:21;
+  tstp 2 2023/04/25 15:26:21;
+  cltt 2 2023/04/25 13:46:21;
+  binding state free;
+  hardware ethernet 74:59:09:13:db:a4;
+  uid "\001tY\011\023\333\244";
+  set vendor-class-identifier = "HUAWEI:android:POT-L21";
+}
+lease 157.181.201.207 {
+  starts 5 2023/04/28 07:51:26;
+  ends 5 2023/04/28 09:31:26;
+  tstp 5 2023/04/28 09:31:26;
+  cltt 5 2023/04/28 07:51:26;
+  binding state free;
+  hardware ethernet 82:61:5e:b3:b2:81;
+  uid "\001\202a^\263\262\201";
+  set vendor-class-identifier = "HUAWEI:android:ELE";
+}
+lease 157.181.201.220 {
+  starts 5 2023/04/28 14:38:00;
+  ends 5 2023/04/28 16:18:00;
+  tstp 5 2023/04/28 16:18:00;
+  cltt 5 2023/04/28 15:00:24;
+  binding state free;
+  hardware ethernet 10:cf:0f:c1:d6:12;
+  uid "\001\020\317\017\301\326\022";
+}
+lease 157.181.201.79 {
+  starts 5 2023/04/28 16:45:19;
+  ends 5 2023/04/28 17:55:28;
+  tstp 5 2023/04/28 17:55:28;
+  cltt 5 2023/04/28 16:45:19;
+  binding state free;
+  hardware ethernet f0:c4:2f:d7:70:8e;
+  uid "\001\360\304/\327p\216";
+}
+lease 157.181.200.40 {
+  starts 6 2023/04/29 12:32:44;
+  ends 6 2023/04/29 14:12:44;
+  tstp 6 2023/04/29 14:12:44;
+  cltt 6 2023/04/29 12:32:44;
+  binding state free;
+  hardware ethernet 82:61:5e:b3:b2:81;
+  uid "\001\202a^\263\262\201";
+  set vendor-class-identifier = "HUAWEI:android:ELE";
+}
+lease 157.181.201.141 {
+  starts 0 2023/04/30 18:08:04;
+  ends 0 2023/04/30 19:48:04;
+  tstp 0 2023/04/30 19:48:04;
+  cltt 0 2023/04/30 18:08:04;
+  binding state free;
+  hardware ethernet 70:3a:51:2a:12:10;
+  uid "\001p:Q*\022\020";
+  set vendor-class-identifier = "android-dhcp-9";
+}
+lease 157.181.201.77 {
+  starts 2 2023/05/02 05:02:11;
+  ends 2 2023/05/02 06:42:11;
+  tstp 2 2023/05/02 06:42:11;
+  cltt 2 2023/05/02 05:02:11;
+  binding state free;
+  hardware ethernet 1a:9e:6a:ae:32:8f;
+  uid "\001\032\236j\2562\217";
+}
+lease 157.181.201.202 {
+  starts 2 2023/05/02 21:19:23;
+  ends 2 2023/05/02 22:59:23;
+  tstp 2 2023/05/02 22:59:23;
+  cltt 2 2023/05/02 21:19:24;
+  binding state free;
+  hardware ethernet 10:8e:e0:2f:18:9c;
+  uid "\001\020\216\340/\030\234";
+  set vendor-class-identifier = "android-dhcp-9";
+}
+lease 157.181.200.158 {
+  starts 2 2023/05/02 23:32:49;
+  ends 3 2023/05/03 01:12:49;
+  tstp 3 2023/05/03 01:12:49;
+  cltt 2 2023/05/02 23:32:49;
+  binding state free;
+  hardware ethernet 88:40:3b:87:d1:ba;
+  uid "\001\210@;\207\321\272";
+  set vendor-class-identifier = "HUAWEI:android:MAR";
+}
+lease 157.181.201.15 {
+  starts 3 2023/05/03 05:10:05;
+  ends 3 2023/05/03 06:50:05;
+  tstp 3 2023/05/03 06:50:05;
+  cltt 3 2023/05/03 05:10:37;
+  binding state free;
+  hardware ethernet da:9b:82:ba:b8:49;
+  uid "\001\332\233\202\272\270I";
+}
+lease 157.181.201.208 {
+  starts 4 2023/05/04 05:23:46;
+  ends 4 2023/05/04 07:03:46;
+  tstp 4 2023/05/04 07:03:46;
+  cltt 4 2023/05/04 05:23:46;
+  binding state free;
+  hardware ethernet dc:dc:e2:16:01:3e;
+  uid "\001\334\334\342\026\001>";
+  set vendor-class-identifier = "android-dhcp-11";
+}
+lease 157.181.201.190 {
+  starts 4 2023/05/04 15:41:38;
+  ends 4 2023/05/04 17:21:38;
+  tstp 4 2023/05/04 17:21:38;
+  cltt 4 2023/05/04 15:41:44;
+  binding state free;
+  hardware ethernet d8:f3:bc:33:35:c9;
+  uid "\001\330\363\27435\311";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.198 {
+  starts 5 2023/05/05 17:19:50;
+  ends 5 2023/05/05 18:59:50;
+  tstp 5 2023/05/05 18:59:50;
+  cltt 5 2023/05/05 17:19:50;
+  binding state free;
+  hardware ethernet e8:3f:67:fc:f1:bb;
+  uid "\001\350?g\374\361\273";
+  set vendor-class-identifier = "HUAWEI:android:MAR";
+}
+lease 157.181.201.46 {
+  starts 6 2023/05/06 07:42:13;
+  ends 6 2023/05/06 09:22:13;
+  tstp 6 2023/05/06 09:22:13;
+  cltt 6 2023/05/06 08:06:11;
+  binding state free;
+  hardware ethernet 16:70:45:0d:91:b8;
+  uid "\001\026pE\015\221\270";
+}
+lease 157.181.200.197 {
+  starts 6 2023/05/06 08:43:06;
+  ends 6 2023/05/06 10:23:06;
+  tstp 6 2023/05/06 10:23:06;
+  cltt 6 2023/05/06 08:43:06;
+  binding state free;
+  hardware ethernet 42:58:30:50:69:db;
+  uid "\001BX0Pi\333";
+  set vendor-class-identifier = "HUAWEI:android:YAL";
+}
+lease 157.181.200.14 {
+  starts 6 2023/05/06 11:08:02;
+  ends 6 2023/05/06 12:48:02;
+  tstp 6 2023/05/06 12:48:02;
+  cltt 6 2023/05/06 11:08:02;
+  binding state free;
+  hardware ethernet 82:61:5e:b3:b2:81;
+  uid "\001\202a^\263\262\201";
+  set vendor-class-identifier = "HUAWEI:android:ELE";
+}
+lease 157.181.201.184 {
+  starts 0 2023/05/07 15:03:03;
+  ends 0 2023/05/07 15:05:03;
+  tstp 0 2023/05/07 15:05:03;
+  cltt 0 2023/05/07 15:03:03;
+  binding state free;
+  hardware ethernet 82:61:5e:b3:b2:81;
+  uid "\001\202a^\263\262\201";
+  set vendor-class-identifier = "HUAWEI:android:ELE";
+  client-hostname "HUAWEI_P30-d25279e066b56d";
+}
+lease 157.181.201.105 {
+  starts 2 2023/05/09 15:06:32;
+  ends 2 2023/05/09 16:46:32;
+  tstp 2 2023/05/09 16:46:32;
+  cltt 2 2023/05/09 15:06:32;
+  binding state free;
+  hardware ethernet 3a:44:eb:42:99:ca;
+  uid "\001:D\353B\231\312";
+}
+lease 157.181.201.108 {
+  starts 3 2023/05/10 19:41:32;
+  ends 3 2023/05/10 21:21:32;
+  tstp 3 2023/05/10 21:21:32;
+  cltt 3 2023/05/10 19:41:32;
+  binding state free;
+  hardware ethernet 80:30:49:ce:80:27;
+  uid "\001\2000I\316\200'";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.67 {
+  starts 4 2023/05/11 03:28:26;
+  ends 4 2023/05/11 03:49:36;
+  tstp 4 2023/05/11 03:49:36;
+  cltt 4 2023/05/11 03:28:26;
+  binding state free;
+  hardware ethernet f0:c4:2f:d7:70:8e;
+  uid "\001\360\304/\327p\216";
+}
+lease 157.181.200.20 {
+  starts 4 2023/05/11 05:57:15;
+  ends 4 2023/05/11 07:37:15;
+  tstp 4 2023/05/11 07:37:15;
+  cltt 4 2023/05/11 06:18:16;
+  binding state free;
+  hardware ethernet 64:80:99:88:c4:f8;
+  uid "\001d\200\231\210\304\370";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.131 {
+  starts 5 2023/05/12 07:46:41;
+  ends 5 2023/05/12 09:26:41;
+  tstp 5 2023/05/12 09:26:41;
+  cltt 5 2023/05/12 07:46:41;
+  binding state free;
+  hardware ethernet ac:d1:b8:1b:2f:59;
+  uid "\001\254\321\270\033/Y";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.173 {
+  starts 6 2023/05/13 19:48:29;
+  ends 6 2023/05/13 21:28:29;
+  tstp 6 2023/05/13 21:28:29;
+  cltt 6 2023/05/13 19:48:29;
+  binding state free;
+  hardware ethernet c0:b6:f9:ec:6e:c2;
+  uid "\001\300\266\371\354n\302";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.145 {
+  starts 6 2023/05/13 20:21:41;
+  ends 6 2023/05/13 22:01:41;
+  tstp 6 2023/05/13 22:01:41;
+  cltt 6 2023/05/13 20:21:41;
+  binding state free;
+  hardware ethernet 7c:f3:1b:f1:78:3e;
+  uid "\001|\363\033\361x>";
+  set vendor-class-identifier = "android-dhcp-9";
+}
+lease 157.181.200.230 {
+  starts 0 2023/05/14 06:01:16;
+  ends 0 2023/05/14 07:41:16;
+  tstp 0 2023/05/14 07:41:16;
+  cltt 0 2023/05/14 06:01:16;
+  binding state free;
+  hardware ethernet 6a:27:b7:f8:fa:06;
+  uid "\001j'\267\370\372\006";
+}
+lease 157.181.201.84 {
+  starts 0 2023/05/14 07:03:01;
+  ends 0 2023/05/14 08:43:01;
+  tstp 0 2023/05/14 08:43:01;
+  cltt 0 2023/05/14 07:15:10;
+  binding state free;
+  hardware ethernet 6e:02:ec:d6:34:ff;
+  uid "\001n\002\354\3264\377";
+  set vendor-class-identifier = "android-dhcp-11";
+}
+lease 157.181.200.150 {
+  starts 0 2023/05/14 13:05:09;
+  ends 0 2023/05/14 13:09:14;
+  tstp 0 2023/05/14 13:09:14;
+  cltt 0 2023/05/14 13:05:09;
+  binding state free;
+  hardware ethernet 24:6f:8c:de:41:25;
+  uid "\001$o\214\336A%";
+}
+lease 157.181.201.147 {
+  starts 0 2023/05/14 13:26:44;
+  ends 0 2023/05/14 13:28:44;
+  tstp 0 2023/05/14 13:28:44;
+  cltt 0 2023/05/14 13:26:44;
+  binding state free;
+  hardware ethernet a0:a4:c5:71:1a:29;
+  uid "\001\240\244\305q\032)";
+  set vendor-class-identifier = "MSFT 5.0";
+  client-hostname "DESKTOP-THU27QD";
+}
+lease 157.181.201.102 {
+  starts 0 2023/05/14 19:36:16;
+  ends 0 2023/05/14 19:43:46;
+  tstp 0 2023/05/14 19:43:46;
+  cltt 0 2023/05/14 19:36:16;
+  binding state free;
+  hardware ethernet dc:16:b2:4c:d4:ab;
+  uid "\001\334\026\262L\324\253";
+}
+lease 157.181.201.209 {
+  starts 2 2023/05/16 07:44:41;
+  ends 2 2023/05/16 09:24:41;
+  tstp 2 2023/05/16 09:24:41;
+  cltt 2 2023/05/16 07:44:41;
+  binding state free;
+  hardware ethernet 1a:fc:fe:fc:ae:ff;
+  uid "\001\032\374\376\374\256\377";
+}
+lease 157.181.200.248 {
+  starts 2 2023/05/16 19:19:26;
+  ends 2 2023/05/16 19:21:26;
+  tstp 2 2023/05/16 19:21:26;
+  cltt 2 2023/05/16 19:19:26;
+  binding state free;
+  hardware ethernet da:ec:5a:bf:42:fc;
+  uid "\001\332\354Z\277B\374";
+}
+lease 157.181.200.28 {
+  starts 2 2023/05/16 21:54:34;
+  ends 2 2023/05/16 23:34:34;
+  tstp 2 2023/05/16 23:34:34;
+  cltt 2 2023/05/16 21:54:44;
+  binding state free;
+  hardware ethernet a6:2f:4c:49:4e:0f;
+  uid "\001\246/LIN\017";
+}
+lease 157.181.201.60 {
+  starts 2 2023/05/16 22:30:49;
+  ends 3 2023/05/17 00:10:49;
+  tstp 3 2023/05/17 00:10:49;
+  cltt 2 2023/05/16 22:30:49;
+  binding state free;
+  hardware ethernet ca:f4:6c:d2:10:18;
+  uid "\001\312\364l\322\020\030";
+  set vendor-class-identifier = "android-dhcp-12";
+}
+lease 157.181.200.89 {
+  starts 3 2023/05/17 20:39:49;
+  ends 3 2023/05/17 22:19:49;
+  tstp 3 2023/05/17 22:19:49;
+  cltt 3 2023/05/17 20:54:35;
+  binding state free;
+  hardware ethernet d0:9c:7a:e6:cc:13;
+  uid "\001\320\234z\346\314\023";
+  set vendor-class-identifier = "android-dhcp-10";
+}
+lease 157.181.201.74 {
+  starts 4 2023/05/18 05:15:39;
+  ends 4 2023/05/18 06:55:39;
+  tstp 4 2023/05/18 06:55:39;
+  cltt 4 2023/05/18 05:15:39;
+  binding state free;
+  hardware ethernet 02:ed:cb:26:b0:20;
+  uid "\001\002\355\313&\260 ";
+}
+lease 157.181.200.165 {
+  starts 4 2023/05/18 11:37:54;
+  ends 4 2023/05/18 13:17:54;
+  tstp 4 2023/05/18 13:17:54;
+  cltt 4 2023/05/18 11:37:54;
+  binding state free;
+  hardware ethernet 24:6f:8c:de:41:25;
+  uid "\001$o\214\336A%";
+  set vendor-class-identifier = "HUAWEI:android:POT-L21";
+}
+lease 157.181.201.110 {
+  starts 0 2023/05/21 11:47:39;
+  ends 0 2023/05/21 13:27:39;
+  tstp 0 2023/05/21 13:27:39;
+  cltt 0 2023/05/21 11:47:39;
+  binding state free;
+  hardware ethernet d6:9c:06:a9:35:d6;
+  uid "\001\326\234\006\2515\326";
+}
+lease 157.181.200.182 {
+  starts 0 2023/05/21 20:12:07;
+  ends 0 2023/05/21 21:52:07;
+  tstp 0 2023/05/21 21:52:07;
+  cltt 0 2023/05/21 20:12:07;
+  binding state free;
+  hardware ethernet 94:65:9c:b8:16:95;
+  uid "\001\224e\234\270\026\225";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.232 {
+  starts 1 2023/05/22 10:08:52;
+  ends 1 2023/05/22 11:48:52;
+  tstp 1 2023/05/22 11:48:52;
+  cltt 1 2023/05/22 10:16:18;
+  binding state free;
+  hardware ethernet f6:7a:a9:b9:fc:3c;
+  uid "\001\366z\251\271\374<";
+  set vendor-class-identifier = "android-dhcp-12";
+}
+lease 157.181.201.121 {
+  starts 1 2023/05/22 10:29:51;
+  ends 1 2023/05/22 12:09:51;
+  tstp 1 2023/05/22 12:09:51;
+  cltt 1 2023/05/22 10:29:51;
+  binding state free;
+  hardware ethernet d2:f7:13:5b:dd:6b;
+  uid "\001\322\367\023[\335k";
+}
+lease 157.181.200.98 {
+  starts 1 2023/05/22 11:15:26;
+  ends 1 2023/05/22 12:55:26;
+  tstp 1 2023/05/22 12:55:26;
+  cltt 1 2023/05/22 11:15:26;
+  binding state free;
+  hardware ethernet 00:45:e2:6e:08:11;
+  uid "\001\000E\342n\010\021";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.160 {
+  starts 2 2023/05/23 10:32:50;
+  ends 2 2023/05/23 12:12:50;
+  tstp 2 2023/05/23 12:12:50;
+  cltt 2 2023/05/23 10:32:50;
+  binding state free;
+  hardware ethernet f4:8c:50:c5:a3:41;
+  uid "\001\364\214P\305\243A";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.124 {
+  starts 2 2023/05/23 10:53:38;
+  ends 2 2023/05/23 12:33:38;
+  tstp 2 2023/05/23 12:33:38;
+  cltt 2 2023/05/23 10:53:38;
+  binding state free;
+  hardware ethernet 24:6f:8c:de:41:25;
+  uid "\001$o\214\336A%";
+  set vendor-class-identifier = "HUAWEI:android:POT-L21";
+}
+lease 157.181.201.180 {
+  starts 2 2023/05/23 15:44:13;
+  ends 2 2023/05/23 17:24:13;
+  tstp 2 2023/05/23 17:24:13;
+  cltt 2 2023/05/23 15:44:13;
+  binding state free;
+  hardware ethernet b8:8a:60:97:33:e4;
+  uid "\001\270\212`\2273\344";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.29 {
+  starts 2 2023/05/23 19:26:04;
+  ends 2 2023/05/23 21:06:04;
+  tstp 2 2023/05/23 21:06:04;
+  cltt 2 2023/05/23 19:26:04;
+  binding state free;
+  hardware ethernet 64:6c:80:56:8a:47;
+  uid "\001dl\200V\212G";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.133 {
+  starts 3 2023/05/24 06:20:13;
+  ends 3 2023/05/24 08:00:13;
+  tstp 3 2023/05/24 08:00:13;
+  cltt 3 2023/05/24 06:20:13;
+  binding state free;
+  hardware ethernet b6:70:de:b7:d9:bf;
+  uid "\001\266p\336\267\331\277";
+  set vendor-class-identifier = "android-dhcp-13";
+}
+lease 157.181.201.61 {
+  starts 3 2023/05/24 13:06:53;
+  ends 3 2023/05/24 14:46:53;
+  tstp 3 2023/05/24 14:46:53;
+  cltt 3 2023/05/24 13:06:53;
+  binding state free;
+  hardware ethernet 58:00:e3:df:e8:f3;
+  uid "\001X\000\343\337\350\363";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.39 {
+  starts 3 2023/05/24 15:19:15;
+  ends 3 2023/05/24 16:59:15;
+  tstp 3 2023/05/24 16:59:15;
+  cltt 3 2023/05/24 15:19:18;
+  binding state free;
+  hardware ethernet dc:16:b2:4c:d4:ab;
+  uid "\001\334\026\262L\324\253";
+  set vendor-class-identifier = "HUAWEI:android:POT-L21";
+}
+lease 157.181.201.98 {
+  starts 3 2023/05/24 19:17:39;
+  ends 3 2023/05/24 20:57:39;
+  tstp 3 2023/05/24 20:57:39;
+  cltt 3 2023/05/24 19:18:46;
+  binding state free;
+  hardware ethernet 00:0a:f5:ef:b7:0e;
+  uid "\001\000\012\365\357\267\016";
+  set vendor-class-identifier = "android-dhcp-11";
+}
+lease 157.181.201.136 {
+  starts 4 2023/05/25 06:47:18;
+  ends 4 2023/05/25 08:27:18;
+  tstp 4 2023/05/25 08:27:18;
+  cltt 4 2023/05/25 06:47:18;
+  binding state free;
+  hardware ethernet 82:61:5e:b3:b2:81;
+  uid "\001\202a^\263\262\201";
+  set vendor-class-identifier = "HUAWEI:android:ELE";
+}
+lease 157.181.200.223 {
+  starts 4 2023/05/25 16:19:54;
+  ends 4 2023/05/25 17:59:54;
+  tstp 4 2023/05/25 17:59:54;
+  cltt 4 2023/05/25 16:25:15;
+  binding state free;
+  hardware ethernet 84:1b:77:9e:33:d8;
+  uid "\001\204\033w\2363\330";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.222 {
+  starts 4 2023/05/25 19:00:40;
+  ends 4 2023/05/25 20:40:40;
+  tstp 4 2023/05/25 20:40:40;
+  cltt 4 2023/05/25 19:00:40;
+  binding state free;
+  hardware ethernet 18:d9:8f:8c:08:dd;
+  uid "\001\030\331\217\214\010\335";
+  set vendor-class-identifier = "HUAWEI:android:MAR";
+}
+lease 157.181.200.42 {
+  starts 5 2023/05/26 11:56:19;
+  ends 5 2023/05/26 13:36:19;
+  tstp 5 2023/05/26 13:36:19;
+  cltt 5 2023/05/26 11:56:19;
+  binding state free;
+  hardware ethernet 70:e7:2c:a6:03:08;
+  uid "\001p\347,\246\003\010";
+}
+lease 157.181.200.193 {
+  starts 5 2023/05/26 12:27:23;
+  ends 5 2023/05/26 14:07:23;
+  tstp 5 2023/05/26 14:07:23;
+  cltt 5 2023/05/26 12:27:23;
+  binding state free;
+  hardware ethernet 14:ab:c5:37:f2:d0;
+  uid "\001\024\253\3057\362\320";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.125 {
+  starts 5 2023/05/26 17:05:58;
+  ends 5 2023/05/26 18:45:58;
+  tstp 5 2023/05/26 18:45:58;
+  cltt 5 2023/05/26 17:05:58;
+  binding state free;
+  hardware ethernet c0:e4:34:bc:b5:71;
+  uid "\001\300\3444\274\265q";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.164 {
+  starts 0 2023/05/28 11:55:33;
+  ends 0 2023/05/28 13:35:33;
+  tstp 0 2023/05/28 13:35:33;
+  cltt 0 2023/05/28 11:55:33;
+  binding state free;
+  hardware ethernet ec:9a:74:f9:0b:0e;
+  uid "\001\354\232t\371\013\016";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.152 {
+  starts 1 2023/05/29 16:55:13;
+  ends 1 2023/05/29 18:35:13;
+  tstp 1 2023/05/29 18:35:13;
+  cltt 1 2023/05/29 17:17:10;
+  binding state free;
+  hardware ethernet 9e:b0:fc:ec:22:46;
+  uid "\001\236\260\374\354\"F";
+}
+lease 157.181.201.65 {
+  starts 1 2023/05/29 21:05:57;
+  ends 1 2023/05/29 22:45:57;
+  tstp 1 2023/05/29 22:45:57;
+  cltt 1 2023/05/29 21:06:03;
+  binding state free;
+  hardware ethernet 3c:55:76:c8:40:05;
+  uid "\001<Uv\310@\005";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.1 {
+  starts 2 2023/05/30 07:01:13;
+  ends 2 2023/05/30 08:41:13;
+  tstp 2 2023/05/30 08:41:13;
+  cltt 2 2023/05/30 07:18:17;
+  binding state free;
+  hardware ethernet 2e:40:b7:75:d4:a5;
+  uid "\001.@\267u\324\245";
+  set vendor-class-identifier = "android-dhcp-11";
+}
+lease 157.181.201.143 {
+  starts 2 2023/05/30 09:06:36;
+  ends 2 2023/05/30 09:08:36;
+  tstp 2 2023/05/30 09:08:36;
+  cltt 2 2023/05/30 09:06:36;
+  binding state free;
+  hardware ethernet e8:3f:67:fc:f1:bb;
+  uid "\001\350?g\374\361\273";
+  set vendor-class-identifier = "HUAWEI:android:MAR";
+  client-hostname "HUAWEI_P30_lite-2d751d945";
+}
+lease 157.181.200.105 {
+  starts 2 2023/05/30 11:40:20;
+  ends 2 2023/05/30 13:20:20;
+  tstp 2 2023/05/30 13:20:20;
+  cltt 2 2023/05/30 11:41:26;
+  binding state free;
+  hardware ethernet c8:58:c0:99:32:20;
+  uid "\001\310X\300\2312 ";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.55 {
+  starts 2 2023/05/30 12:56:16;
+  ends 2 2023/05/30 14:36:16;
+  tstp 2 2023/05/30 14:36:16;
+  cltt 2 2023/05/30 13:08:18;
+  binding state free;
+  hardware ethernet c8:09:a8:22:59:f7;
+  uid "\001\310\011\250\"Y\367";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.91 {
+  starts 3 2023/05/31 06:33:14;
+  ends 3 2023/05/31 08:13:14;
+  tstp 3 2023/05/31 08:13:14;
+  cltt 3 2023/05/31 06:33:14;
+  binding state free;
+  hardware ethernet c4:85:08:2b:89:64;
+  uid "\001\304\205\010+\211d";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.174 {
+  starts 4 2023/06/01 08:03:00;
+  ends 4 2023/06/01 09:43:00;
+  tstp 4 2023/06/01 09:43:00;
+  cltt 4 2023/06/01 08:03:00;
+  binding state free;
+  hardware ethernet 1e:d8:fc:03:a9:af;
+  uid "\001\036\330\374\003\251\257";
+}
+lease 157.181.201.155 {
+  starts 4 2023/06/01 15:30:26;
+  ends 4 2023/06/01 17:10:26;
+  tstp 4 2023/06/01 17:10:26;
+  cltt 4 2023/06/01 15:30:26;
+  binding state free;
+  hardware ethernet ee:41:f3:07:05:4d;
+  uid "\001\356A\363\007\005M";
+  set vendor-class-identifier = "android-dhcp-11";
+}
+lease 157.181.201.54 {
+  starts 4 2023/06/01 17:05:09;
+  ends 4 2023/06/01 18:45:09;
+  tstp 4 2023/06/01 18:45:09;
+  cltt 4 2023/06/01 17:05:09;
+  binding state free;
+  hardware ethernet 24:6f:8c:de:41:25;
+  uid "\001$o\214\336A%";
+  set vendor-class-identifier = "HUAWEI:android:POT-L21";
+}
+lease 157.181.201.132 {
+  starts 4 2023/06/01 22:35:38;
+  ends 5 2023/06/02 00:15:38;
+  tstp 5 2023/06/02 00:15:38;
+  cltt 4 2023/06/01 22:57:00;
+  binding state free;
+  hardware ethernet 9e:2d:99:7a:d0:d3;
+  uid "\001\236-\231z\320\323";
+}
+lease 157.181.200.106 {
+  starts 5 2023/06/02 03:50:32;
+  ends 5 2023/06/02 05:30:32;
+  tstp 5 2023/06/02 05:30:32;
+  cltt 5 2023/06/02 03:50:33;
+  binding state free;
+  hardware ethernet f8:af:05:4d:46:5a;
+  uid "\001\370\257\005MFZ";
+  set vendor-class-identifier = "HUAWEI:android:AGS3K-W09";
+}
+lease 157.181.200.235 {
+  starts 5 2023/06/02 18:07:19;
+  ends 5 2023/06/02 19:47:19;
+  tstp 5 2023/06/02 19:47:19;
+  cltt 5 2023/06/02 18:07:19;
+  binding state free;
+  hardware ethernet 2c:6f:c9:15:1a:27;
+  uid "\001,o\311\025\032'";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.201 {
+  starts 5 2023/06/02 19:40:32;
+  ends 5 2023/06/02 21:20:32;
+  tstp 5 2023/06/02 21:20:32;
+  cltt 5 2023/06/02 19:45:05;
+  binding state free;
+  hardware ethernet 98:fa:9b:02:b4:90;
+  uid "\001\230\372\233\002\264\220";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.12 {
+  starts 6 2023/06/03 07:32:54;
+  ends 6 2023/06/03 09:12:54;
+  tstp 6 2023/06/03 09:12:54;
+  cltt 6 2023/06/03 07:32:54;
+  binding state free;
+  hardware ethernet aa:b6:ce:08:91:b0;
+  uid "\001\252\266\316\010\221\260";
+}
+lease 157.181.201.150 {
+  starts 6 2023/06/03 15:21:10;
+  ends 6 2023/06/03 17:01:10;
+  tstp 6 2023/06/03 17:01:10;
+  cltt 6 2023/06/03 15:21:10;
+  binding state free;
+  hardware ethernet 46:b6:ff:e6:20:a5;
+  uid "\001F\266\377\346 \245";
+  set vendor-class-identifier = "android-dhcp-12";
+}
+lease 157.181.201.211 {
+  starts 6 2023/06/03 15:38:33;
+  ends 6 2023/06/03 17:18:33;
+  tstp 6 2023/06/03 17:18:33;
+  cltt 6 2023/06/03 15:38:33;
+  binding state free;
+  hardware ethernet 72:e6:c1:6f:c6:e9;
+  uid "\001r\346\301o\306\351";
+  set vendor-class-identifier = "android-dhcp-12";
+}
+lease 157.181.200.113 {
+  starts 6 2023/06/03 18:50:35;
+  ends 6 2023/06/03 20:05:49;
+  tstp 6 2023/06/03 20:05:49;
+  cltt 6 2023/06/03 18:50:35;
+  binding state free;
+  hardware ethernet 82:61:5e:b3:b2:81;
+  uid "\001\202a^\263\262\201";
+}
+lease 157.181.200.171 {
+  starts 0 2023/06/04 04:45:30;
+  ends 0 2023/06/04 06:25:30;
+  tstp 0 2023/06/04 06:25:30;
+  cltt 0 2023/06/04 04:45:30;
+  binding state free;
+  hardware ethernet 00:93:37:6e:58:5c;
+  uid "\001\000\2237nX\\";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.64 {
+  starts 0 2023/06/04 15:20:11;
+  ends 0 2023/06/04 17:00:11;
+  tstp 0 2023/06/04 17:00:11;
+  cltt 0 2023/06/04 15:20:33;
+  binding state free;
+  hardware ethernet 82:c5:e2:c0:2c:5e;
+  uid "\001\202\305\342\300,^";
+}
+lease 157.181.200.239 {
+  starts 0 2023/06/04 15:23:27;
+  ends 0 2023/06/04 17:03:27;
+  tstp 0 2023/06/04 17:03:27;
+  cltt 0 2023/06/04 15:23:27;
+  binding state free;
+  hardware ethernet 1c:0d:7d:c7:20:d4;
+  uid "\001\034\015}\307 \324";
+}
+lease 157.181.201.63 {
+  starts 0 2023/06/04 17:52:00;
+  ends 0 2023/06/04 19:32:00;
+  tstp 0 2023/06/04 19:32:00;
+  cltt 0 2023/06/04 17:52:00;
+  binding state free;
+  hardware ethernet 8c:85:90:bf:de:80;
+  uid "\001\214\205\220\277\336\200";
+}
+lease 157.181.201.87 {
+  starts 1 2023/06/05 05:54:22;
+  ends 1 2023/06/05 07:34:22;
+  tstp 1 2023/06/05 07:34:22;
+  cltt 1 2023/06/05 05:54:22;
+  binding state free;
+  hardware ethernet 20:34:fb:92:55:2b;
+  uid "\001 4\373\222U+";
+  set vendor-class-identifier = "android-dhcp-10";
+}
+lease 157.181.201.94 {
+  starts 1 2023/06/05 16:41:39;
+  ends 1 2023/06/05 17:24:10;
+  tstp 1 2023/06/05 17:24:10;
+  cltt 1 2023/06/05 16:41:39;
+  binding state free;
+  hardware ethernet 24:6f:8c:de:41:25;
+  uid "\001$o\214\336A%";
+}
+lease 157.181.201.75 {
+  starts 1 2023/06/05 19:04:11;
+  ends 1 2023/06/05 19:11:56;
+  tstp 1 2023/06/05 19:11:56;
+  cltt 1 2023/06/05 19:04:11;
+  binding state free;
+  hardware ethernet 24:6f:8c:de:41:25;
+  uid "\001$o\214\336A%";
+}
+lease 157.181.200.3 {
+  starts 1 2023/06/05 19:21:00;
+  ends 1 2023/06/05 21:01:00;
+  tstp 1 2023/06/05 21:01:00;
+  cltt 1 2023/06/05 19:34:37;
+  binding state free;
+  hardware ethernet 4e:c0:a5:ca:9f:b2;
+  uid "\001N\300\245\312\237\262";
+}
+lease 157.181.200.118 {
+  starts 2 2023/06/06 15:38:09;
+  ends 2 2023/06/06 16:16:22;
+  tstp 2 2023/06/06 16:16:22;
+  cltt 2 2023/06/06 15:38:09;
+  binding state free;
+  hardware ethernet e8:3f:67:fc:f1:bb;
+  uid "\001\350?g\374\361\273";
+}
+lease 157.181.201.117 {
+  starts 3 2023/06/07 04:57:30;
+  ends 3 2023/06/07 06:37:30;
+  tstp 3 2023/06/07 06:37:30;
+  cltt 3 2023/06/07 04:57:30;
+  binding state free;
+  hardware ethernet 6e:31:f7:e6:03:38;
+  uid "\001n1\367\346\0038";
+}
+lease 157.181.200.153 {
+  starts 3 2023/06/07 09:04:20;
+  ends 3 2023/06/07 10:44:20;
+  tstp 3 2023/06/07 10:44:20;
+  cltt 3 2023/06/07 09:04:20;
+  binding state free;
+  hardware ethernet f6:2e:ca:8c:3a:ea;
+  uid "\001\366.\312\214:\352";
+  set vendor-class-identifier = "android-dhcp-10";
+}
+lease 157.181.201.70 {
+  starts 3 2023/06/07 13:27:51;
+  ends 3 2023/06/07 15:07:51;
+  tstp 3 2023/06/07 15:07:51;
+  cltt 3 2023/06/07 13:27:51;
+  binding state free;
+  hardware ethernet 14:5a:fc:80:70:49;
+  uid "\001\024Z\374\200pI";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.113 {
+  starts 4 2023/06/08 04:06:48;
+  ends 4 2023/06/08 05:46:48;
+  tstp 4 2023/06/08 05:46:48;
+  cltt 4 2023/06/08 04:18:08;
+  binding state free;
+  hardware ethernet c4:86:e9:e5:67:7d;
+  set vendor-class-identifier = "dhcpcd-5.5.6";
+}
+lease 157.181.201.11 {
+  starts 4 2023/06/08 04:32:06;
+  ends 4 2023/06/08 06:12:06;
+  tstp 4 2023/06/08 06:12:06;
+  cltt 4 2023/06/08 04:32:13;
+  binding state free;
+  hardware ethernet c0:b8:83:a5:e3:8f;
+  uid "\001\300\270\203\245\343\217";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.168 {
+  starts 4 2023/06/08 08:40:52;
+  ends 4 2023/06/08 10:20:52;
+  tstp 4 2023/06/08 10:20:52;
+  cltt 4 2023/06/08 08:41:08;
+  binding state free;
+  hardware ethernet 14:20:5e:31:3e:64;
+  uid "\001\024 ^1>d";
+}
+lease 157.181.201.99 {
+  starts 4 2023/06/08 13:51:37;
+  ends 4 2023/06/08 15:31:37;
+  tstp 4 2023/06/08 15:31:37;
+  cltt 4 2023/06/08 13:51:38;
+  binding state free;
+  hardware ethernet 24:6f:8c:de:41:25;
+  uid "\001$o\214\336A%";
+  set vendor-class-identifier = "HUAWEI:android:POT-L21";
+}
+lease 157.181.201.25 {
+  starts 5 2023/06/09 11:16:53;
+  ends 5 2023/06/09 12:56:53;
+  tstp 5 2023/06/09 12:56:53;
+  cltt 5 2023/06/09 11:16:53;
+  binding state free;
+  hardware ethernet bc:85:56:1c:ad:57;
+  uid "\001\274\205V\034\255W";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.219 {
+  starts 5 2023/06/09 12:16:02;
+  ends 5 2023/06/09 13:56:02;
+  tstp 5 2023/06/09 13:56:02;
+  cltt 5 2023/06/09 12:16:02;
+  binding state free;
+  hardware ethernet 74:70:fd:f7:d9:0b;
+  uid "\001tp\375\367\331\013";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.47 {
+  starts 5 2023/06/09 15:55:46;
+  ends 5 2023/06/09 17:35:46;
+  tstp 5 2023/06/09 17:35:46;
+  cltt 5 2023/06/09 15:55:46;
+  binding state free;
+  hardware ethernet 70:1c:e7:22:f0:24;
+  uid "\001p\034\347\"\360$";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.102 {
+  starts 6 2023/06/10 13:21:34;
+  ends 6 2023/06/10 15:01:34;
+  tstp 6 2023/06/10 15:01:34;
+  cltt 6 2023/06/10 13:22:17;
+  binding state free;
+  hardware ethernet 8c:7a:3d:99:d7:c2;
+  uid "\001\214z=\231\327\302";
+  set vendor-class-identifier = "android-dhcp-12";
+}
+lease 157.181.200.156 {
+  starts 0 2023/06/11 05:43:12;
+  ends 0 2023/06/11 05:45:12;
+  tstp 0 2023/06/11 05:45:12;
+  cltt 0 2023/06/11 05:43:12;
+  binding state free;
+  hardware ethernet b2:33:db:73:58:de;
+  uid "\001\2623\333sX\336";
+  client-hostname "Kende-iPhone-ja";
+}
+lease 157.181.201.104 {
+  starts 0 2023/06/11 19:50:16;
+  ends 0 2023/06/11 21:30:16;
+  tstp 0 2023/06/11 21:30:16;
+  cltt 0 2023/06/11 19:51:00;
+  binding state free;
+  hardware ethernet dc:6a:e7:6e:f2:ae;
+  uid "\001\334j\347n\362\256";
+  set vendor-class-identifier = "android-dhcp-11";
+}
+lease 157.181.200.211 {
+  starts 1 2023/06/12 09:29:51;
+  ends 1 2023/06/12 11:09:51;
+  tstp 1 2023/06/12 11:09:51;
+  cltt 1 2023/06/12 09:29:51;
+  binding state free;
+  hardware ethernet 48:68:4a:f7:d1:8b;
+  uid "\001HhJ\367\321\213";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.16 {
+  starts 2 2023/06/13 17:04:37;
+  ends 2 2023/06/13 18:44:37;
+  tstp 2 2023/06/13 18:44:37;
+  cltt 2 2023/06/13 17:16:57;
+  binding state free;
+  hardware ethernet 1a:e1:d9:6a:8d:a9;
+  uid "\001\032\341\331j\215\251";
+  set vendor-class-identifier = "android-dhcp-13";
+}
+lease 157.181.201.191 {
+  starts 2 2023/06/13 17:36:42;
+  ends 2 2023/06/13 19:16:42;
+  tstp 2 2023/06/13 19:16:42;
+  cltt 2 2023/06/13 17:37:19;
+  binding state free;
+  hardware ethernet 16:d7:8d:57:a6:74;
+  uid "\001\026\327\215W\246t";
+}
+lease 157.181.200.129 {
+  starts 3 2023/06/14 15:26:13;
+  ends 3 2023/06/14 15:28:13;
+  tstp 3 2023/06/14 15:28:13;
+  cltt 3 2023/06/14 15:26:13;
+  binding state free;
+  hardware ethernet c8:94:02:35:c7:53;
+  uid "\001\310\224\0025\307S";
+  set vendor-class-identifier = "MSFT 5.0";
+  client-hostname "LAPTOP-33G1BIBH";
+}
+lease 157.181.201.225 {
+  starts 4 2023/06/15 12:18:03;
+  ends 4 2023/06/15 13:58:03;
+  tstp 4 2023/06/15 13:58:03;
+  cltt 4 2023/06/15 12:18:03;
+  binding state free;
+  hardware ethernet 70:f7:54:6c:de:94;
+  uid "\377Tl\336\224\000\001\000\001+\331\026Fp\367Tl\336\224";
+  set vendor-class-identifier = "dhcpcd-8.1.6:Linux-5.4.70-v1.3.3-rm11x:armv7l:Freescale";
+}
+lease 157.181.200.46 {
+  starts 5 2023/06/16 01:26:31;
+  ends 5 2023/06/16 03:06:31;
+  tstp 5 2023/06/16 03:06:31;
+  cltt 5 2023/06/16 01:26:31;
+  binding state free;
+  hardware ethernet 46:ab:8b:ea:c0:95;
+  uid "\001F\253\213\352\300\225";
+}
+lease 157.181.201.179 {
+  starts 5 2023/06/16 06:48:35;
+  ends 5 2023/06/16 08:28:35;
+  tstp 5 2023/06/16 08:28:35;
+  cltt 5 2023/06/16 06:52:45;
+  binding state free;
+  hardware ethernet f8:34:41:63:9e:0d;
+  uid "\001\3704Ac\236\015";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.93 {
+  starts 5 2023/06/16 15:01:01;
+  ends 5 2023/06/16 16:41:01;
+  tstp 5 2023/06/16 16:41:01;
+  cltt 5 2023/06/16 15:01:01;
+  binding state free;
+  hardware ethernet 0c:8b:fd:b9:4d:71;
+  uid "\001\014\213\375\271Mq";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.215 {
+  starts 0 2023/06/18 00:20:49;
+  ends 0 2023/06/18 02:00:49;
+  tstp 0 2023/06/18 02:00:49;
+  cltt 0 2023/06/18 00:20:49;
+  binding state free;
+  hardware ethernet e0:d4:64:3e:54:a9;
+  uid "\001\340\324d>T\251";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.24 {
+  starts 0 2023/06/18 01:03:35;
+  ends 0 2023/06/18 02:43:35;
+  tstp 0 2023/06/18 02:43:35;
+  cltt 0 2023/06/18 01:17:58;
+  binding state free;
+  hardware ethernet 7a:37:3a:15:3f:6f;
+  uid "\001z7:\025?o";
+  set vendor-class-identifier = "android-dhcp-12";
+}
+lease 157.181.201.165 {
+  starts 0 2023/06/18 11:41:29;
+  ends 0 2023/06/18 13:21:29;
+  tstp 0 2023/06/18 13:21:29;
+  cltt 0 2023/06/18 11:41:29;
+  binding state free;
+  hardware ethernet bc:61:93:99:5f:f2;
+  uid "\001\274a\223\231_\362";
+  set vendor-class-identifier = "android-dhcp-11";
+}
+lease 157.181.200.87 {
+  starts 0 2023/06/18 14:22:42;
+  ends 0 2023/06/18 16:02:42;
+  tstp 0 2023/06/18 16:02:42;
+  cltt 0 2023/06/18 14:22:42;
+  binding state free;
+  hardware ethernet 00:45:e2:6f:32:61;
+  uid "\001\000E\342o2a";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.32 {
+  starts 0 2023/06/18 19:41:02;
+  ends 0 2023/06/18 21:21:02;
+  tstp 0 2023/06/18 21:21:02;
+  cltt 0 2023/06/18 19:41:02;
+  binding state free;
+  hardware ethernet a6:65:ee:4a:48:96;
+  uid "\001\246e\356JH\226";
+  set vendor-class-identifier = "android-dhcp-13";
+}
+lease 157.181.201.154 {
+  starts 2 2023/06/20 03:16:41;
+  ends 2 2023/06/20 04:56:41;
+  tstp 2 2023/06/20 04:56:41;
+  cltt 2 2023/06/20 03:16:41;
+  binding state free;
+  hardware ethernet d6:55:45:8d:93:13;
+  uid "\001\326UE\215\223\023";
+}
+lease 157.181.200.84 {
+  starts 2 2023/06/20 15:58:07;
+  ends 2 2023/06/20 16:00:07;
+  tstp 2 2023/06/20 16:00:07;
+  cltt 2 2023/06/20 15:58:07;
+  binding state free;
+  hardware ethernet 42:ef:8b:07:e5:66;
+  uid "\001B\357\213\007\345f";
+  client-hostname "ViPhone";
+}
+lease 157.181.200.91 {
+  starts 2 2023/06/20 17:06:57;
+  ends 2 2023/06/20 18:46:57;
+  tstp 2 2023/06/20 18:46:57;
+  cltt 2 2023/06/20 17:07:49;
+  binding state free;
+  hardware ethernet f6:be:0c:8a:8d:50;
+  uid "\001\366\276\014\212\215P";
+  set vendor-class-identifier = "android-dhcp-11";
+}
+lease 157.181.201.212 {
+  starts 2 2023/06/20 18:33:16;
+  ends 2 2023/06/20 20:13:16;
+  tstp 2 2023/06/20 20:13:16;
+  cltt 2 2023/06/20 18:33:16;
+  binding state free;
+  hardware ethernet 14:5a:fc:5e:af:13;
+  uid "\001\024Z\374^\257\023";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.18 {
+  starts 2 2023/06/20 20:11:44;
+  ends 2 2023/06/20 21:51:44;
+  tstp 2 2023/06/20 21:51:44;
+  cltt 2 2023/06/20 20:11:44;
+  binding state free;
+  hardware ethernet 62:cf:21:d3:50:35;
+  uid "\001b\317!\323P5";
+  set vendor-class-identifier = "android-dhcp-11";
+}
+lease 157.181.201.56 {
+  starts 2 2023/06/20 20:47:27;
+  ends 2 2023/06/20 22:27:27;
+  tstp 2 2023/06/20 22:27:27;
+  cltt 2 2023/06/20 20:47:27;
+  binding state free;
+  hardware ethernet a0:e7:0b:c1:4a:12;
+  uid "\001\240\347\013\301J\022";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.222 {
+  starts 3 2023/06/21 06:15:15;
+  ends 3 2023/06/21 07:55:15;
+  tstp 3 2023/06/21 07:55:15;
+  cltt 3 2023/06/21 06:31:21;
+  binding state free;
+  hardware ethernet 4a:c8:cc:85:fe:7f;
+  uid "\001J\310\314\205\376\177";
+}
+lease 157.181.200.108 {
+  starts 3 2023/06/21 13:40:03;
+  ends 3 2023/06/21 15:20:03;
+  tstp 3 2023/06/21 15:20:03;
+  cltt 3 2023/06/21 13:45:15;
+  binding state free;
+  hardware ethernet 90:cd:b6:6d:05:df;
+  uid "\001\220\315\266m\005\337";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.100 {
+  starts 3 2023/06/21 16:42:18;
+  ends 3 2023/06/21 18:22:18;
+  tstp 3 2023/06/21 18:22:18;
+  cltt 3 2023/06/21 16:43:03;
+  binding state free;
+  hardware ethernet a8:76:50:a9:ec:46;
+  uid "\001\250vP\251\354F";
+  set vendor-class-identifier = "android-dhcp-13";
+}
+lease 157.181.201.19 {
+  starts 3 2023/06/21 20:48:39;
+  ends 3 2023/06/21 21:14:34;
+  tstp 3 2023/06/21 21:14:34;
+  cltt 3 2023/06/21 20:48:39;
+  binding state free;
+  hardware ethernet 24:6f:8c:de:41:25;
+  uid "\001$o\214\336A%";
+}
+lease 157.181.201.119 {
+  starts 4 2023/06/22 00:01:54;
+  ends 4 2023/06/22 01:41:54;
+  tstp 4 2023/06/22 01:41:54;
+  cltt 4 2023/06/22 00:17:02;
+  binding state free;
+  hardware ethernet c4:61:8b:7f:4e:4d;
+  uid "\001\304a\213\177NM";
+}
+lease 157.181.201.175 {
+  starts 4 2023/06/22 03:10:09;
+  ends 4 2023/06/22 04:50:09;
+  tstp 4 2023/06/22 04:50:09;
+  cltt 4 2023/06/22 03:10:09;
+  binding state free;
+  hardware ethernet a4:45:19:68:79:dc;
+  uid "\001\244E\031hy\334";
+  set vendor-class-identifier = "android-dhcp-10";
+}
+lease 157.181.200.70 {
+  starts 4 2023/06/22 04:40:54;
+  ends 4 2023/06/22 06:20:54;
+  tstp 4 2023/06/22 06:20:54;
+  cltt 4 2023/06/22 04:57:58;
+  binding state free;
+  hardware ethernet 16:b2:c3:bc:64:e2;
+  uid "\001\026\262\303\274d\342";
+  set vendor-class-identifier = "android-dhcp-12";
+}
+lease 157.181.201.33 {
+  starts 4 2023/06/22 07:13:44;
+  ends 4 2023/06/22 08:53:44;
+  tstp 4 2023/06/22 08:53:44;
+  cltt 4 2023/06/22 07:13:44;
+  binding state free;
+  hardware ethernet 00:f4:8d:e7:f1:45;
+  uid "\001\000\364\215\347\361E";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.172 {
+  starts 4 2023/06/22 08:13:06;
+  ends 4 2023/06/22 09:53:06;
+  tstp 4 2023/06/22 09:53:06;
+  cltt 4 2023/06/22 08:13:06;
+  binding state free;
+  hardware ethernet 2a:a5:b9:ea:ab:4e;
+  uid "\001*\245\271\352\253N";
+  set vendor-class-identifier = "android-dhcp-13";
+}
+lease 157.181.201.27 {
+  starts 4 2023/06/22 12:06:36;
+  ends 4 2023/06/22 13:46:36;
+  tstp 4 2023/06/22 13:46:36;
+  cltt 4 2023/06/22 12:06:36;
+  binding state free;
+  hardware ethernet 70:f7:54:6c:de:94;
+  uid "\377Tl\336\224\000\001\000\001,!\314\004p\367Tl\336\224";
+  set vendor-class-identifier = "dhcpcd-8.1.6:Linux-5.4.70-v1.3.4-rm11x:armv7l:Freescale";
+}
+lease 157.181.200.212 {
+  starts 5 2023/06/23 17:35:16;
+  ends 5 2023/06/23 19:15:16;
+  tstp 5 2023/06/23 19:15:16;
+  cltt 5 2023/06/23 17:47:23;
+  binding state free;
+  hardware ethernet 7a:33:75:b6:d6:7d;
+  uid "\001z3u\266\326}";
+}
+lease 157.181.201.82 {
+  starts 5 2023/06/23 22:49:01;
+  ends 6 2023/06/24 00:29:01;
+  tstp 6 2023/06/24 00:29:01;
+  cltt 5 2023/06/23 22:49:01;
+  binding state free;
+  hardware ethernet 7c:89:56:a3:49:74;
+  uid "\001|\211V\243It";
+  set vendor-class-identifier = "android-dhcp-9";
+}
+lease 157.181.201.192 {
+  starts 6 2023/06/24 08:47:08;
+  ends 6 2023/06/24 10:27:08;
+  tstp 6 2023/06/24 10:27:08;
+  cltt 6 2023/06/24 09:05:46;
+  binding state free;
+  hardware ethernet 7a:33:c8:6c:43:45;
+  uid "\001z3\310lCE";
+  set vendor-class-identifier = "android-dhcp-13";
+}
+lease 157.181.201.135 {
+  starts 6 2023/06/24 13:09:30;
+  ends 6 2023/06/24 14:49:30;
+  tstp 6 2023/06/24 14:49:30;
+  cltt 6 2023/06/24 13:09:30;
+  binding state free;
+  hardware ethernet 48:a4:72:cf:61:01;
+  uid "\001H\244r\317a\001";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.187 {
+  starts 0 2023/06/25 20:23:40;
+  ends 0 2023/06/25 22:03:40;
+  tstp 0 2023/06/25 22:03:40;
+  cltt 0 2023/06/25 20:23:40;
+  binding state free;
+  hardware ethernet 82:61:5e:b3:b2:81;
+  uid "\001\202a^\263\262\201";
+  set vendor-class-identifier = "HUAWEI:android:ELE";
+}
+lease 157.181.201.24 {
+  starts 0 2023/06/25 22:22:15;
+  ends 1 2023/06/26 00:02:15;
+  tstp 1 2023/06/26 00:02:15;
+  cltt 0 2023/06/25 22:22:15;
+  binding state free;
+  hardware ethernet 88:53:2e:a1:cc:7d;
+  uid "\001\210S.\241\314}";
+}
+lease 157.181.200.69 {
+  starts 1 2023/06/26 10:57:59;
+  ends 1 2023/06/26 12:37:59;
+  tstp 1 2023/06/26 12:37:59;
+  cltt 1 2023/06/26 10:57:59;
+  binding state free;
+  hardware ethernet 40:a1:08:05:36:0c;
+  set vendor-class-identifier = "android-dhcp-7.0";
+}
+lease 157.181.200.90 {
+  starts 1 2023/06/26 12:06:40;
+  ends 1 2023/06/26 13:46:40;
+  tstp 1 2023/06/26 13:46:40;
+  cltt 1 2023/06/26 12:06:40;
+  binding state free;
+  hardware ethernet 84:be:52:26:07:63;
+  set vendor-class-identifier = "dhcpcd-5.5.6";
+}
+lease 157.181.201.53 {
+  starts 1 2023/06/26 16:49:37;
+  ends 1 2023/06/26 18:29:37;
+  tstp 1 2023/06/26 18:29:37;
+  cltt 1 2023/06/26 16:49:37;
+  binding state free;
+  hardware ethernet 98:3b:8f:1a:52:a7;
+  uid "\001\230;\217\032R\247";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.132 {
+  starts 1 2023/06/26 17:02:56;
+  ends 1 2023/06/26 18:42:56;
+  tstp 1 2023/06/26 18:42:56;
+  cltt 1 2023/06/26 17:02:56;
+  binding state free;
+  hardware ethernet 42:be:eb:76:8d:1e;
+  uid "\001B\276\353v\215\036";
+}
+lease 157.181.201.183 {
+  starts 1 2023/06/26 18:59:26;
+  ends 1 2023/06/26 19:01:26;
+  tstp 1 2023/06/26 19:01:26;
+  cltt 1 2023/06/26 18:59:26;
+  binding state free;
+  hardware ethernet fa:69:18:28:24:79;
+  uid "\001\372i\030($y";
+}
+lease 157.181.201.5 {
+  starts 1 2023/06/26 18:27:48;
+  ends 1 2023/06/26 20:07:48;
+  tstp 1 2023/06/26 20:07:48;
+  cltt 1 2023/06/26 18:27:48;
+  binding state free;
+  hardware ethernet 82:61:5e:b3:b2:81;
+  uid "\001\202a^\263\262\201";
+  set vendor-class-identifier = "HUAWEI:android:ELE";
+}
+lease 157.181.201.194 {
+  starts 1 2023/06/26 19:47:06;
+  ends 1 2023/06/26 21:27:06;
+  tstp 1 2023/06/26 21:27:06;
+  cltt 1 2023/06/26 19:57:39;
+  binding state free;
+  hardware ethernet 22:51:bd:f3:0d:0e;
+  uid "\001\"Q\275\363\015\016";
+  set vendor-class-identifier = "android-dhcp-13";
+}
+lease 157.181.201.45 {
+  starts 2 2023/06/27 13:37:22;
+  ends 2 2023/06/27 15:17:22;
+  tstp 2 2023/06/27 15:17:22;
+  cltt 2 2023/06/27 13:37:22;
+  binding state free;
+  hardware ethernet f4:60:e2:39:81:4a;
+  uid "\001\364`\3429\201J";
+  set vendor-class-identifier = "android-dhcp-9";
+}
+lease 157.181.201.138 {
+  starts 2 2023/06/27 14:26:59;
+  ends 2 2023/06/27 16:06:59;
+  tstp 2 2023/06/27 16:06:59;
+  cltt 2 2023/06/27 14:49:47;
+  binding state free;
+  hardware ethernet 36:db:33:bb:1f:b5;
+  uid "\0016\3333\273\037\265";
+}
+lease 157.181.200.33 {
+  starts 2 2023/06/27 14:29:59;
+  ends 2 2023/06/27 16:09:59;
+  tstp 2 2023/06/27 16:09:59;
+  cltt 2 2023/06/27 14:33:22;
+  binding state free;
+  hardware ethernet 14:5a:fc:28:59:91;
+  uid "\001\024Z\374(Y\221";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.171 {
+  starts 2 2023/06/27 17:12:25;
+  ends 2 2023/06/27 17:22:59;
+  tstp 2 2023/06/27 17:22:59;
+  cltt 2 2023/06/27 17:12:26;
+  binding state free;
+  hardware ethernet 24:6f:8c:de:41:25;
+  uid "\001$o\214\336A%";
+}
+lease 157.181.200.183 {
+  starts 2 2023/06/27 16:37:09;
+  ends 2 2023/06/27 18:17:09;
+  tstp 2 2023/06/27 18:17:09;
+  cltt 2 2023/06/27 16:37:09;
+  binding state free;
+  hardware ethernet d0:9c:7a:e9:22:5e;
+  uid "\001\320\234z\351\"^";
+  set vendor-class-identifier = "android-dhcp-10";
+}
+lease 157.181.200.240 {
+  starts 2 2023/06/27 18:46:56;
+  ends 2 2023/06/27 20:26:56;
+  tstp 2 2023/06/27 20:26:56;
+  cltt 2 2023/06/27 18:57:09;
+  binding state free;
+  hardware ethernet e6:84:1a:0b:69:fc;
+  uid "\001\346\204\032\013i\374";
+  set vendor-class-identifier = "android-dhcp-13";
+}
+lease 157.181.200.194 {
+  starts 2 2023/06/27 20:43:26;
+  ends 2 2023/06/27 22:23:26;
+  tstp 2 2023/06/27 22:23:26;
+  cltt 2 2023/06/27 20:43:26;
+  binding state free;
+  hardware ethernet be:68:31:02:ef:51;
+  uid "\001\276h1\002\357Q";
+  set vendor-class-identifier = "android-dhcp-12";
+}
+lease 157.181.201.148 {
+  starts 3 2023/06/28 08:11:27;
+  ends 3 2023/06/28 08:39:00;
+  tstp 3 2023/06/28 08:39:00;
+  cltt 3 2023/06/28 08:11:27;
+  binding state free;
+  hardware ethernet 24:6f:8c:de:41:25;
+  uid "\001$o\214\336A%";
+}
+lease 157.181.201.203 {
+  starts 3 2023/06/28 11:21:14;
+  ends 3 2023/06/28 13:01:14;
+  tstp 3 2023/06/28 13:01:14;
+  cltt 3 2023/06/28 11:30:43;
+  binding state free;
+  hardware ethernet 9c:30:5b:62:de:db;
+  uid "\001\2340[b\336\333";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.206 {
+  starts 3 2023/06/28 11:21:41;
+  ends 3 2023/06/28 13:01:41;
+  tstp 3 2023/06/28 13:01:41;
+  cltt 3 2023/06/28 11:21:41;
+  binding state free;
+  hardware ethernet 24:6f:8c:de:41:25;
+  uid "\001$o\214\336A%";
+  set vendor-class-identifier = "HUAWEI:android:POT-L21";
+}
+lease 157.181.201.2 {
+  starts 3 2023/06/28 16:09:04;
+  ends 3 2023/06/28 16:11:04;
+  tstp 3 2023/06/28 16:11:04;
+  cltt 3 2023/06/28 16:09:04;
+  binding state free;
+  hardware ethernet 74:59:09:13:db:a4;
+  uid "\001tY\011\023\333\244";
+  set vendor-class-identifier = "HUAWEI:android:POT-L21";
+  client-hostname "HUAWEI_P_smart_2019-b2b26";
+}
+lease 157.181.201.52 {
+  starts 3 2023/06/28 15:16:01;
+  ends 3 2023/06/28 16:56:01;
+  tstp 3 2023/06/28 16:56:01;
+  cltt 3 2023/06/28 15:16:01;
+  binding state free;
+  hardware ethernet 6c:f0:49:6c:66:99;
+  uid "\001l\360Ilf\231";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.229 {
+  starts 3 2023/06/28 16:22:05;
+  ends 3 2023/06/28 18:02:05;
+  tstp 3 2023/06/28 18:02:05;
+  cltt 3 2023/06/28 16:22:05;
+  binding state free;
+  hardware ethernet 68:14:01:5f:77:21;
+  uid "\001h\024\001_w!";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.65 {
+  starts 3 2023/06/28 17:05:15;
+  ends 3 2023/06/28 18:45:15;
+  tstp 3 2023/06/28 18:45:15;
+  cltt 3 2023/06/28 17:23:58;
+  binding state free;
+  hardware ethernet e6:03:c3:dc:ac:71;
+  uid "\001\346\003\303\334\254q";
+  set vendor-class-identifier = "android-dhcp-12";
+}
+lease 157.181.201.78 {
+  starts 3 2023/06/28 21:21:20;
+  ends 3 2023/06/28 23:01:20;
+  tstp 3 2023/06/28 23:01:20;
+  cltt 3 2023/06/28 21:21:20;
+  binding state free;
+  hardware ethernet 98:22:ef:f2:7f:ff;
+  uid "\001\230\"\357\362\177\377";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.124 {
+  starts 3 2023/06/28 21:59:29;
+  ends 3 2023/06/28 23:39:29;
+  tstp 3 2023/06/28 23:39:29;
+  cltt 3 2023/06/28 21:59:31;
+  binding state free;
+  hardware ethernet d2:f0:b1:a5:60:96;
+  uid "\001\322\360\261\245`\226";
+}
+lease 157.181.201.85 {
+  starts 4 2023/06/29 07:03:03;
+  ends 4 2023/06/29 08:43:03;
+  tstp 4 2023/06/29 08:43:03;
+  cltt 4 2023/06/29 07:03:03;
+  binding state free;
+  hardware ethernet bc:54:51:ff:f6:ae;
+  uid "\001\274TQ\377\366\256";
+  set vendor-class-identifier = "android-dhcp-8.0.0";
+}
+lease 157.181.201.38 {
+  starts 4 2023/06/29 07:58:30;
+  ends 4 2023/06/29 09:38:30;
+  tstp 4 2023/06/29 09:38:30;
+  cltt 4 2023/06/29 07:58:30;
+  binding state free;
+  hardware ethernet b8:8a:60:9d:81:a9;
+  uid "\001\270\212`\235\201\251";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.142 {
+  starts 4 2023/06/29 08:41:19;
+  ends 4 2023/06/29 10:21:19;
+  tstp 4 2023/06/29 10:21:19;
+  cltt 4 2023/06/29 08:41:25;
+  binding state free;
+  hardware ethernet 1c:99:57:8d:49:33;
+  uid "\001\034\231W\215I3";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.169 {
+  starts 4 2023/06/29 09:08:18;
+  ends 4 2023/06/29 10:48:18;
+  tstp 4 2023/06/29 10:48:18;
+  cltt 4 2023/06/29 09:08:18;
+  binding state free;
+  hardware ethernet a0:a4:c5:71:1a:29;
+  uid "\001\240\244\305q\032)";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.173 {
+  starts 4 2023/06/29 12:19:22;
+  ends 4 2023/06/29 13:59:22;
+  tstp 4 2023/06/29 13:59:22;
+  cltt 4 2023/06/29 12:19:22;
+  binding state free;
+  hardware ethernet 80:30:49:02:54:97;
+  uid "\001\2000I\002T\227";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.10 {
+  starts 4 2023/06/29 20:10:08;
+  ends 4 2023/06/29 21:50:08;
+  tstp 4 2023/06/29 21:50:08;
+  cltt 4 2023/06/29 20:10:26;
+  binding state free;
+  hardware ethernet 20:4e:f6:f2:30:a1;
+  uid "\001 N\366\3620\241";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.205 {
+  starts 4 2023/06/29 21:52:48;
+  ends 4 2023/06/29 23:32:48;
+  tstp 4 2023/06/29 23:32:48;
+  cltt 4 2023/06/29 21:52:48;
+  binding state free;
+  hardware ethernet 80:91:33:21:21:cb;
+  uid "\001\200\2213!!\313";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.8 {
+  starts 5 2023/06/30 04:53:43;
+  ends 5 2023/06/30 05:33:58;
+  tstp 5 2023/06/30 05:33:58;
+  cltt 5 2023/06/30 04:53:43;
+  binding state free;
+  hardware ethernet 66:d2:a4:3c:35:5b;
+  uid "\001f\322\244<5[";
+}
+lease 157.181.201.195 {
+  starts 5 2023/06/30 08:47:57;
+  ends 5 2023/06/30 10:27:57;
+  tstp 5 2023/06/30 10:27:57;
+  cltt 5 2023/06/30 08:47:57;
+  binding state free;
+  hardware ethernet 0c:e4:41:f4:18:8b;
+  uid "\001\014\344A\364\030\213";
+}
+lease 157.181.200.174 {
+  starts 5 2023/06/30 10:25:50;
+  ends 5 2023/06/30 12:05:50;
+  tstp 5 2023/06/30 12:05:50;
+  cltt 5 2023/06/30 10:43:22;
+  binding state free;
+  hardware ethernet a2:4c:1e:0c:e2:52;
+  uid "\001\242L\036\014\342R";
+}
+lease 157.181.200.123 {
+  starts 5 2023/06/30 14:41:03;
+  ends 5 2023/06/30 16:21:03;
+  tstp 5 2023/06/30 16:21:03;
+  cltt 5 2023/06/30 14:41:03;
+  binding state free;
+  hardware ethernet f8:b5:4d:eb:24:e0;
+  uid "\001\370\265M\353$\340";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.47 {
+  starts 5 2023/06/30 20:41:37;
+  ends 5 2023/06/30 22:21:37;
+  tstp 5 2023/06/30 22:21:37;
+  cltt 5 2023/06/30 20:41:37;
+  binding state free;
+  hardware ethernet 0a:22:4c:9a:6a:f7;
+  uid "\001\012\"L\232j\367";
+  set vendor-class-identifier = "android-dhcp-12";
+}
+lease 157.181.200.225 {
+  starts 5 2023/06/30 21:45:43;
+  ends 5 2023/06/30 23:25:43;
+  tstp 5 2023/06/30 23:25:43;
+  cltt 5 2023/06/30 21:45:43;
+  binding state free;
+  hardware ethernet dc:66:72:b9:07:b9;
+  uid "\001\334fr\271\007\271";
+  set vendor-class-identifier = "android-dhcp-7.0";
+}
+lease 157.181.201.23 {
+  starts 5 2023/06/30 22:00:44;
+  ends 5 2023/06/30 23:40:44;
+  tstp 5 2023/06/30 23:40:44;
+  cltt 5 2023/06/30 22:00:44;
+  binding state free;
+  hardware ethernet 80:91:33:c0:5c:c3;
+  uid "\001\200\2213\300\\\303";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.234 {
+  starts 5 2023/06/30 22:17:38;
+  ends 5 2023/06/30 23:57:38;
+  tstp 5 2023/06/30 23:57:38;
+  cltt 5 2023/06/30 22:17:38;
+  binding state free;
+  hardware ethernet 9c:d2:1e:a7:2d:49;
+  uid "\001\234\322\036\247-I";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.125 {
+  starts 5 2023/06/30 22:57:02;
+  ends 6 2023/07/01 00:37:02;
+  tstp 6 2023/07/01 00:37:02;
+  cltt 5 2023/06/30 22:57:02;
+  binding state free;
+  hardware ethernet ce:04:60:64:eb:2f;
+  uid "\001\316\004`d\353/";
+  set vendor-class-identifier = "android-dhcp-12";
+}
+lease 157.181.200.143 {
+  starts 6 2023/07/01 00:02:47;
+  ends 6 2023/07/01 01:42:47;
+  tstp 6 2023/07/01 01:42:47;
+  cltt 6 2023/07/01 00:02:47;
+  binding state free;
+  hardware ethernet 2e:aa:40:ed:21:22;
+  uid "\001.\252@\355!\"";
+  set vendor-class-identifier = "android-dhcp-13";
+}
+lease 157.181.201.213 {
+  starts 6 2023/07/01 12:47:20;
+  ends 6 2023/07/01 14:27:20;
+  tstp 6 2023/07/01 14:27:20;
+  cltt 6 2023/07/01 12:47:20;
+  binding state free;
+  hardware ethernet f8:89:d2:9e:e2:fd;
+  uid "\001\370\211\322\236\342\375";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.153 {
+  starts 6 2023/07/01 20:46:29;
+  ends 6 2023/07/01 22:26:29;
+  tstp 6 2023/07/01 22:26:29;
+  cltt 6 2023/07/01 20:46:29;
+  binding state free;
+  hardware ethernet b4:70:64:9b:c9:88;
+  uid "\001\264pd\233\311\210";
+  set vendor-class-identifier = "android-dhcp-12";
+}
+lease 157.181.200.37 {
+  starts 1 2023/07/03 04:21:56;
+  ends 1 2023/07/03 06:01:56;
+  tstp 1 2023/07/03 06:01:56;
+  cltt 1 2023/07/03 04:21:56;
+  binding state free;
+  hardware ethernet 18:01:f1:e3:3f:d3;
+  set vendor-class-identifier = "android-dhcp-8.1.0";
+}
+lease 157.181.201.35 {
+  starts 1 2023/07/03 12:36:28;
+  ends 1 2023/07/03 14:16:28;
+  tstp 1 2023/07/03 14:16:28;
+  cltt 1 2023/07/03 12:36:28;
+  binding state free;
+  hardware ethernet b8:76:3f:1d:1f:13;
+  uid "\001\270v?\035\037\023";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.92 {
+  starts 1 2023/07/03 21:57:23;
+  ends 1 2023/07/03 23:37:23;
+  tstp 1 2023/07/03 23:37:23;
+  cltt 1 2023/07/03 22:06:58;
+  binding state free;
+  hardware ethernet 70:cd:0d:94:d6:6c;
+  uid "\001p\315\015\224\326l";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.106 {
+  starts 1 2023/07/03 23:11:41;
+  ends 2 2023/07/04 00:51:41;
+  tstp 2 2023/07/04 00:51:41;
+  cltt 1 2023/07/03 23:11:41;
+  binding state free;
+  hardware ethernet 34:e1:2d:85:ec:c9;
+  uid "\0014\341-\205\354\311";
+}
+lease 157.181.201.17 {
+  starts 2 2023/07/04 10:29:44;
+  ends 2 2023/07/04 12:09:44;
+  tstp 2 2023/07/04 12:09:44;
+  cltt 2 2023/07/04 10:29:44;
+  binding state free;
+  hardware ethernet 5e:58:03:ac:41:75;
+  uid "\001^X\003\254Au";
+  set vendor-class-identifier = "android-dhcp-12";
+}
+lease 157.181.200.114 {
+  starts 2 2023/07/04 10:30:42;
+  ends 2 2023/07/04 12:10:42;
+  tstp 2 2023/07/04 12:10:42;
+  cltt 2 2023/07/04 10:32:06;
+  binding state free;
+  hardware ethernet 50:98:39:f6:f6:a4;
+  uid "\001P\2309\366\366\244";
+  set vendor-class-identifier = "android-dhcp-11";
+}
+lease 157.181.201.128 {
+  starts 2 2023/07/04 13:05:59;
+  ends 2 2023/07/04 14:45:59;
+  tstp 2 2023/07/04 14:45:59;
+  cltt 2 2023/07/04 13:05:59;
+  binding state free;
+  hardware ethernet d8:3b:bf:92:45:55;
+  uid "\001\330;\277\222EU";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.13 {
+  starts 2 2023/07/04 16:08:06;
+  ends 2 2023/07/04 17:48:06;
+  tstp 2 2023/07/04 17:48:06;
+  cltt 2 2023/07/04 16:08:06;
+  binding state free;
+  hardware ethernet 34:75:63:25:58:d2;
+  uid "\0014uc%X\322";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.120 {
+  starts 2 2023/07/04 16:32:22;
+  ends 2 2023/07/04 18:12:22;
+  tstp 2 2023/07/04 18:12:22;
+  cltt 2 2023/07/04 16:32:22;
+  binding state free;
+  hardware ethernet 50:2f:9b:9f:55:b0;
+  uid "\001P/\233\237U\260";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.82 {
+  starts 2 2023/07/04 16:32:28;
+  ends 2 2023/07/04 18:12:28;
+  tstp 2 2023/07/04 18:12:28;
+  cltt 2 2023/07/04 16:46:15;
+  binding state free;
+  hardware ethernet aa:a7:a4:73:d2:3c;
+  uid "\001\252\247\244s\322<";
+  set vendor-class-identifier = "android-dhcp-13";
+}
+lease 157.181.201.0 {
+  starts 2 2023/07/04 16:46:12;
+  ends 2 2023/07/04 18:26:12;
+  tstp 2 2023/07/04 18:26:12;
+  cltt 2 2023/07/04 16:46:12;
+  binding state free;
+  hardware ethernet ba:d5:a8:73:ae:da;
+  uid "\001\272\325\250s\256\332";
+  set vendor-class-identifier = "android-dhcp-13";
+}
+lease 157.181.200.241 {
+  starts 2 2023/07/04 17:13:44;
+  ends 2 2023/07/04 18:53:44;
+  tstp 2 2023/07/04 18:53:44;
+  cltt 2 2023/07/04 17:13:44;
+  binding state free;
+  hardware ethernet 74:e5:f9:19:87:78;
+  uid "\001t\345\371\031\207x";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.217 {
+  starts 2 2023/07/04 17:43:19;
+  ends 2 2023/07/04 19:23:19;
+  tstp 2 2023/07/04 19:23:19;
+  cltt 2 2023/07/04 17:43:19;
+  binding state free;
+  hardware ethernet 90:e8:68:8e:f9:1f;
+  uid "\001\220\350h\216\371\037";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.95 {
+  starts 2 2023/07/04 22:07:06;
+  ends 2 2023/07/04 23:47:06;
+  tstp 2 2023/07/04 23:47:06;
+  cltt 2 2023/07/04 22:07:06;
+  binding state free;
+  hardware ethernet 02:01:98:51:66:b9;
+  uid "\001\002\001\230Qf\271";
+}
+lease 157.181.200.144 {
+  starts 3 2023/07/05 00:36:23;
+  ends 3 2023/07/05 02:16:23;
+  tstp 3 2023/07/05 02:16:23;
+  cltt 3 2023/07/05 00:36:23;
+  binding state free;
+  hardware ethernet 00:93:37:c9:3a:f1;
+  uid "\001\000\2237\311:\361";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.101 {
+  starts 3 2023/07/05 04:50:31;
+  ends 3 2023/07/05 06:30:31;
+  tstp 3 2023/07/05 06:30:31;
+  cltt 3 2023/07/05 04:50:31;
+  binding state free;
+  hardware ethernet e6:a9:31:6a:71:de;
+  uid "\001\346\2511jq\336";
+  set vendor-class-identifier = "HUAWEI:android:DRA";
+}
+lease 157.181.201.158 {
+  starts 3 2023/07/05 06:36:02;
+  ends 3 2023/07/05 08:16:02;
+  tstp 3 2023/07/05 08:16:02;
+  cltt 3 2023/07/05 06:36:02;
+  binding state free;
+  hardware ethernet 64:5d:86:b7:bc:40;
+  uid "\001d]\206\267\274@";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.224 {
+  starts 3 2023/07/05 08:01:15;
+  ends 3 2023/07/05 09:41:15;
+  tstp 3 2023/07/05 09:41:15;
+  cltt 3 2023/07/05 08:04:08;
+  binding state free;
+  hardware ethernet 20:c1:9b:39:a1:52;
+  uid "\001 \301\2339\241R";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.45 {
+  starts 3 2023/07/05 09:36:02;
+  ends 3 2023/07/05 11:16:02;
+  tstp 3 2023/07/05 11:16:02;
+  cltt 3 2023/07/05 09:36:02;
+  binding state free;
+  hardware ethernet 14:c2:13:0d:9e:78;
+  uid "\001\024\302\023\015\236x";
+}
+lease 157.181.201.26 {
+  starts 3 2023/07/05 10:46:19;
+  ends 3 2023/07/05 12:26:19;
+  tstp 3 2023/07/05 12:26:19;
+  cltt 3 2023/07/05 10:46:19;
+  binding state free;
+  hardware ethernet 68:07:15:ae:1b:db;
+  uid "\001h\007\025\256\033\333";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.27 {
+  starts 3 2023/07/05 11:25:46;
+  ends 3 2023/07/05 13:05:46;
+  tstp 3 2023/07/05 13:05:46;
+  cltt 3 2023/07/05 11:25:46;
+  binding state free;
+  hardware ethernet 7c:fd:6b:1a:07:59;
+  uid "\001|\375k\032\007Y";
+  set vendor-class-identifier = "android-dhcp-11";
+}
+lease 157.181.200.121 {
+  starts 3 2023/07/05 11:47:41;
+  ends 3 2023/07/05 13:27:41;
+  tstp 3 2023/07/05 13:27:41;
+  cltt 3 2023/07/05 12:08:46;
+  binding state free;
+  hardware ethernet 00:b5:d0:ff:56:75;
+  uid "\001\000\265\320\377Vu";
+  set vendor-class-identifier = "android-dhcp-9";
+}
+lease 157.181.200.161 {
+  starts 3 2023/07/05 14:41:29;
+  ends 3 2023/07/05 16:21:29;
+  tstp 3 2023/07/05 16:21:29;
+  cltt 3 2023/07/05 14:41:29;
+  binding state free;
+  hardware ethernet 3c:a0:67:00:bc:24;
+  uid "\001<\240g\000\274$";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.218 {
+  starts 3 2023/07/05 14:56:35;
+  ends 3 2023/07/05 16:36:35;
+  tstp 3 2023/07/05 16:36:35;
+  cltt 3 2023/07/05 14:56:35;
+  binding state free;
+  hardware ethernet cc:73:14:66:f2:ec;
+  uid "\001\314s\024f\362\354";
+  set vendor-class-identifier = "android-dhcp-9";
+}
+lease 157.181.201.177 {
+  starts 3 2023/07/05 15:59:21;
+  ends 3 2023/07/05 17:39:21;
+  tstp 3 2023/07/05 17:39:21;
+  cltt 3 2023/07/05 16:05:33;
+  binding state free;
+  hardware ethernet 94:17:00:fd:f9:a9;
+  uid "\001\224\027\000\375\371\251";
+  set vendor-class-identifier = "android-dhcp-10";
+}
+lease 157.181.200.221 {
+  starts 3 2023/07/05 16:40:22;
+  ends 3 2023/07/05 18:20:22;
+  tstp 3 2023/07/05 18:20:22;
+  cltt 3 2023/07/05 16:40:22;
+  binding state free;
+  hardware ethernet 00:be:3b:4d:6c:01;
+  uid "\001\000\276;Ml\001";
+  set vendor-class-identifier = "HUAWEI:android:ANE";
+}
+lease 157.181.201.43 {
+  starts 3 2023/07/05 19:24:04;
+  ends 3 2023/07/05 19:26:04;
+  tstp 3 2023/07/05 19:26:04;
+  cltt 3 2023/07/05 19:24:04;
+  binding state free;
+  hardware ethernet b8:8a:60:a7:08:8c;
+  uid "\001\270\212`\247\010\214";
+  set vendor-class-identifier = "MSFT 5.0";
+  client-hostname "DESKTOP-4C5CCUC";
+}
+lease 157.181.200.38 {
+  starts 3 2023/07/05 19:30:14;
+  ends 3 2023/07/05 19:49:49;
+  tstp 3 2023/07/05 19:49:49;
+  cltt 3 2023/07/05 19:30:14;
+  binding state free;
+  hardware ethernet 82:61:5e:b3:b2:81;
+  uid "\001\202a^\263\262\201";
+}
+lease 157.181.201.227 {
+  starts 3 2023/07/05 19:23:59;
+  ends 3 2023/07/05 21:03:59;
+  tstp 3 2023/07/05 21:03:59;
+  cltt 3 2023/07/05 19:27:34;
+  binding state free;
+  hardware ethernet 18:d9:8f:8c:07:d0;
+  uid "\001\030\331\217\214\007\320";
+  set vendor-class-identifier = "HUAWEI:android:MAR";
+}
+lease 157.181.200.168 {
+  starts 3 2023/07/05 22:29:22;
+  ends 4 2023/07/06 00:09:22;
+  tstp 4 2023/07/06 00:09:22;
+  cltt 3 2023/07/05 22:39:57;
+  binding state free;
+  hardware ethernet f4:46:37:52:ed:c4;
+  uid "\001\364F7R\355\304";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.122 {
+  starts 3 2023/07/05 23:14:01;
+  ends 4 2023/07/06 00:54:01;
+  tstp 4 2023/07/06 00:54:01;
+  cltt 3 2023/07/05 23:14:01;
+  binding state free;
+  hardware ethernet 5c:3a:45:da:1b:5b;
+  uid "\001\\:E\332\033[";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.42 {
+  starts 4 2023/07/06 07:22:14;
+  ends 4 2023/07/06 09:02:14;
+  tstp 4 2023/07/06 09:02:14;
+  cltt 4 2023/07/06 07:22:14;
+  binding state free;
+  hardware ethernet b8:8a:60:a4:38:0f;
+  uid "\001\270\212`\2448\017";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.245 {
+  starts 4 2023/07/06 10:46:33;
+  ends 4 2023/07/06 10:48:33;
+  tstp 4 2023/07/06 10:48:33;
+  cltt 4 2023/07/06 10:46:33;
+  binding state free;
+  hardware ethernet 92:13:1d:52:9f:6b;
+  uid "\001\222\023\035R\237k";
+}
+lease 157.181.200.5 {
+  starts 4 2023/07/06 10:08:12;
+  ends 4 2023/07/06 11:48:12;
+  tstp 4 2023/07/06 11:48:12;
+  cltt 4 2023/07/06 10:08:12;
+  binding state free;
+  hardware ethernet e4:b9:7a:12:a0:5c;
+  uid "\001\344\271z\022\240\\";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.144 {
+  starts 4 2023/07/06 10:30:08;
+  ends 4 2023/07/06 12:10:08;
+  tstp 4 2023/07/06 12:10:08;
+  cltt 4 2023/07/06 10:30:08;
+  binding state free;
+  hardware ethernet 30:d1:6b:02:30:bf;
+  uid "\0010\321k\0020\277";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.138 {
+  starts 4 2023/07/06 10:36:58;
+  ends 4 2023/07/06 12:16:58;
+  tstp 4 2023/07/06 12:16:58;
+  cltt 4 2023/07/06 10:39:45;
+  binding state free;
+  hardware ethernet 72:b9:69:7e:52:ce;
+  uid "\001r\271i~R\316";
+  set vendor-class-identifier = "android-dhcp-13";
+}
+lease 157.181.201.37 {
+  starts 4 2023/07/06 11:28:08;
+  ends 4 2023/07/06 13:08:08;
+  tstp 4 2023/07/06 13:08:08;
+  cltt 4 2023/07/06 11:28:51;
+  binding state free;
+  hardware ethernet c8:94:02:a7:fc:b9;
+  uid "\001\310\224\002\247\374\271";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.81 {
+  starts 4 2023/07/06 13:48:07;
+  ends 4 2023/07/06 15:28:07;
+  tstp 4 2023/07/06 15:28:07;
+  cltt 4 2023/07/06 13:48:07;
+  binding state free;
+  hardware ethernet 40:a3:cc:60:7a:3e;
+  uid "\001@\243\314`z>";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.148 {
+  starts 4 2023/07/06 14:14:13;
+  ends 4 2023/07/06 15:54:13;
+  tstp 4 2023/07/06 15:54:13;
+  cltt 4 2023/07/06 14:23:41;
+  binding state free;
+  hardware ethernet 00:0a:82:ef:b7:0e;
+  uid "\001\000\012\202\357\267\016";
+  set vendor-class-identifier = "android-dhcp-11";
+}
+lease 157.181.201.100 {
+  starts 4 2023/07/06 17:10:13;
+  ends 4 2023/07/06 18:50:13;
+  tstp 4 2023/07/06 18:50:13;
+  cltt 4 2023/07/06 17:16:20;
+  binding state free;
+  hardware ethernet 14:77:40:c3:26:a1;
+  uid "\001\024w@\303&\241";
+  set vendor-class-identifier = "HUAWEI:android:HRY-L21T";
+}
+lease 157.181.201.228 {
+  starts 4 2023/07/06 17:18:50;
+  ends 4 2023/07/06 18:58:50;
+  tstp 4 2023/07/06 18:58:50;
+  cltt 4 2023/07/06 17:33:44;
+  binding state free;
+  hardware ethernet 0c:7a:15:ae:99:3a;
+  uid "\001\014z\025\256\231:";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.41 {
+  starts 4 2023/07/06 18:20:09;
+  ends 4 2023/07/06 20:00:09;
+  tstp 4 2023/07/06 20:00:09;
+  cltt 4 2023/07/06 18:20:09;
+  binding state free;
+  hardware ethernet 84:3a:4b:22:5f:9a;
+  uid "\001\204:K\"_\232";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.79 {
+  starts 4 2023/07/06 22:13:51;
+  ends 4 2023/07/06 23:53:51;
+  tstp 4 2023/07/06 23:53:51;
+  cltt 4 2023/07/06 22:13:51;
+  binding state free;
+  hardware ethernet ec:2e:98:e9:fe:5b;
+  uid "\001\354.\230\351\376[";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.199 {
+  starts 4 2023/07/06 22:27:40;
+  ends 5 2023/07/07 00:07:40;
+  tstp 5 2023/07/07 00:07:40;
+  cltt 4 2023/07/06 22:27:40;
+  binding state free;
+  hardware ethernet 70:c9:4e:db:0c:cd;
+  uid "\001p\311N\333\014\315";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.57 {
+  starts 4 2023/07/06 23:34:33;
+  ends 5 2023/07/07 01:14:33;
+  tstp 5 2023/07/07 01:14:33;
+  cltt 4 2023/07/06 23:34:33;
+  binding state free;
+  hardware ethernet 80:30:49:01:16:db;
+  uid "\001\2000I\001\026\333";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.34 {
+  starts 5 2023/07/07 01:08:38;
+  ends 5 2023/07/07 02:48:38;
+  tstp 5 2023/07/07 02:48:38;
+  cltt 5 2023/07/07 01:08:38;
+  binding state free;
+  hardware ethernet 3c:a9:f4:7b:05:38;
+  uid "\001<\251\364{\0058";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.111 {
+  starts 5 2023/07/07 03:37:47;
+  ends 5 2023/07/07 05:17:47;
+  tstp 5 2023/07/07 05:17:47;
+  cltt 5 2023/07/07 03:53:10;
+  binding state free;
+  hardware ethernet de:5d:a8:89:1f:95;
+  uid "\001\336]\250\211\037\225";
+  set vendor-class-identifier = "android-dhcp-13";
+}
+lease 157.181.201.59 {
+  starts 5 2023/07/07 03:43:38;
+  ends 5 2023/07/07 05:23:38;
+  tstp 5 2023/07/07 05:23:38;
+  cltt 5 2023/07/07 03:43:38;
+  binding state free;
+  hardware ethernet a0:80:69:cd:64:0f;
+  uid "\001\240\200i\315d\017";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.77 {
+  starts 5 2023/07/07 10:27:43;
+  ends 5 2023/07/07 12:07:43;
+  tstp 5 2023/07/07 12:07:43;
+  cltt 5 2023/07/07 10:27:43;
+  binding state free;
+  hardware ethernet fa:0e:48:8f:e2:22;
+  uid "\001\372\016H\217\342\"";
+  set vendor-class-identifier = "android-dhcp-11";
+}
+lease 157.181.201.130 {
+  starts 5 2023/07/07 10:42:47;
+  ends 5 2023/07/07 12:22:47;
+  tstp 5 2023/07/07 12:22:47;
+  cltt 5 2023/07/07 10:49:21;
+  binding state free;
+  hardware ethernet dc:16:b2:4c:d4:ab;
+  uid "\001\334\026\262L\324\253";
+  set vendor-class-identifier = "HUAWEI:android:POT-L21";
+}
+lease 157.181.200.81 {
+  starts 5 2023/07/07 10:44:20;
+  ends 5 2023/07/07 12:24:20;
+  tstp 5 2023/07/07 12:24:20;
+  cltt 5 2023/07/07 10:57:23;
+  binding state free;
+  hardware ethernet 3e:03:2a:d2:b1:ca;
+  uid "\001>\003*\322\261\312";
+  set vendor-class-identifier = "android-dhcp-12";
+}
+lease 157.181.201.217 {
+  starts 5 2023/07/07 17:35:41;
+  ends 5 2023/07/07 19:15:41;
+  tstp 5 2023/07/07 19:15:41;
+  cltt 5 2023/07/07 17:35:41;
+  binding state free;
+  hardware ethernet 3c:77:e6:e2:02:fb;
+  uid "\001<w\346\342\002\373";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.44 {
+  starts 5 2023/07/07 20:38:34;
+  ends 5 2023/07/07 21:09:19;
+  tstp 5 2023/07/07 21:09:19;
+  cltt 5 2023/07/07 20:38:34;
+  binding state free;
+  hardware ethernet ec:56:23:f7:fe:46;
+  uid "\001\354V#\367\376F";
+}
+lease 157.181.200.139 {
+  starts 5 2023/07/07 19:38:29;
+  ends 5 2023/07/07 21:18:29;
+  tstp 5 2023/07/07 21:18:29;
+  cltt 5 2023/07/07 19:38:29;
+  binding state free;
+  hardware ethernet 0a:fe:55:f3:e2:af;
+  uid "\001\012\376U\363\342\257";
+}
+lease 157.181.200.198 {
+  starts 6 2023/07/08 04:01:34;
+  ends 6 2023/07/08 05:41:34;
+  tstp 6 2023/07/08 05:41:34;
+  cltt 6 2023/07/08 04:21:15;
+  binding state free;
+  hardware ethernet 52:a8:d8:c7:e6:69;
+  uid "\001R\250\330\307\346i";
+}
+lease 157.181.200.167 {
+  starts 6 2023/07/08 04:12:16;
+  ends 6 2023/07/08 05:52:16;
+  tstp 6 2023/07/08 05:52:16;
+  cltt 6 2023/07/08 04:22:19;
+  binding state free;
+  hardware ethernet ea:40:b4:88:f5:e4;
+  uid "\001\352@\264\210\365\344";
+}
+lease 157.181.201.235 {
+  starts 6 2023/07/08 07:42:09;
+  ends 6 2023/07/08 09:22:09;
+  tstp 6 2023/07/08 09:22:09;
+  cltt 6 2023/07/08 07:59:56;
+  binding state free;
+  hardware ethernet 7c:50:79:2a:80:73;
+  uid "\001|Py*\200s";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.146 {
+  starts 6 2023/07/08 15:12:50;
+  ends 6 2023/07/08 16:52:50;
+  tstp 6 2023/07/08 16:52:50;
+  cltt 6 2023/07/08 15:12:50;
+  binding state free;
+  hardware ethernet 7e:39:82:70:24:56;
+  uid "\001~9\202p$V";
+}
+lease 157.181.200.178 {
+  starts 6 2023/07/08 23:52:44;
+  ends 0 2023/07/09 01:32:44;
+  tstp 0 2023/07/09 01:32:44;
+  cltt 6 2023/07/08 23:52:44;
+  binding state free;
+  hardware ethernet 84:3a:4b:3d:be:08;
+  uid "\001\204:K=\276\010";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.218 {
+  starts 0 2023/07/09 06:40:17;
+  ends 0 2023/07/09 08:20:17;
+  tstp 0 2023/07/09 08:20:17;
+  cltt 0 2023/07/09 06:46:37;
+  binding state free;
+  hardware ethernet aa:3b:61:77:1e:90;
+  uid "\001\252;aw\036\220";
+}
+lease 157.181.200.188 {
+  starts 0 2023/07/09 15:33:37;
+  ends 0 2023/07/09 17:13:37;
+  tstp 0 2023/07/09 17:13:37;
+  cltt 0 2023/07/09 15:33:37;
+  binding state free;
+  hardware ethernet ba:6d:59:b5:ec:5a;
+  uid "\001\272mY\265\354Z";
+  set vendor-class-identifier = "android-dhcp-10";
+}
+lease 157.181.200.35 {
+  starts 1 2023/07/10 06:26:05;
+  ends 1 2023/07/10 08:06:05;
+  tstp 1 2023/07/10 08:06:05;
+  cltt 1 2023/07/10 06:28:12;
+  binding state free;
+  hardware ethernet ee:42:4d:32:25:d7;
+  uid "\001\356BM2%\327";
+}
+lease 157.181.200.6 {
+  starts 1 2023/07/10 08:28:05;
+  ends 1 2023/07/10 10:08:05;
+  tstp 1 2023/07/10 10:08:05;
+  cltt 1 2023/07/10 08:28:05;
+  binding state free;
+  hardware ethernet e0:ac:cb:91:5a:dc;
+  uid "\001\340\254\313\221Z\334";
+}
+lease 157.181.200.74 {
+  starts 1 2023/07/10 08:57:01;
+  ends 1 2023/07/10 10:37:01;
+  tstp 1 2023/07/10 10:37:01;
+  cltt 1 2023/07/10 08:57:01;
+  binding state free;
+  hardware ethernet c0:e4:34:dc:12:11;
+  uid "\001\300\3444\334\022\021";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.62 {
+  starts 1 2023/07/10 11:00:41;
+  ends 1 2023/07/10 12:40:41;
+  tstp 1 2023/07/10 12:40:41;
+  cltt 1 2023/07/10 11:00:41;
+  binding state free;
+  hardware ethernet 98:43:fa:07:8d:02;
+  uid "\001\230C\372\007\215\002";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.83 {
+  starts 1 2023/07/10 11:05:43;
+  ends 1 2023/07/10 12:45:43;
+  tstp 1 2023/07/10 12:45:43;
+  cltt 1 2023/07/10 11:05:43;
+  binding state free;
+  hardware ethernet 02:71:7b:48:78:f5;
+  uid "\001\002q{Hx\365";
+  set vendor-class-identifier = "android-dhcp-11";
+}
+lease 157.181.200.50 {
+  starts 1 2023/07/10 11:28:12;
+  ends 1 2023/07/10 13:08:12;
+  tstp 1 2023/07/10 13:08:12;
+  cltt 1 2023/07/10 11:48:38;
+  binding state free;
+  hardware ethernet 52:47:78:0b:ac:d2;
+  uid "\001RGx\013\254\322";
+  set vendor-class-identifier = "android-dhcp-12";
+}
+lease 157.181.201.80 {
+  starts 1 2023/07/10 12:43:40;
+  ends 1 2023/07/10 14:23:40;
+  tstp 1 2023/07/10 14:23:40;
+  cltt 1 2023/07/10 12:43:40;
+  binding state free;
+  hardware ethernet 34:e1:2d:ec:c8:8b;
+  uid "\0014\341-\354\310\213";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.62 {
+  starts 1 2023/07/10 18:48:34;
+  ends 1 2023/07/10 20:28:34;
+  tstp 1 2023/07/10 20:28:34;
+  cltt 1 2023/07/10 18:48:34;
+  binding state free;
+  hardware ethernet e8:5a:8b:22:9a:11;
+  uid "\001\350Z\213\"\232\021";
+  set vendor-class-identifier = "android-dhcp-11";
+}
+lease 157.181.201.163 {
+  starts 2 2023/07/11 07:57:41;
+  ends 2 2023/07/11 09:37:41;
+  tstp 2 2023/07/11 09:37:41;
+  cltt 2 2023/07/11 07:57:41;
+  binding state free;
+  hardware ethernet e2:81:ca:97:25:23;
+  uid "\001\342\201\312\227%#";
+  set vendor-class-identifier = "android-dhcp-11";
+}
+lease 157.181.200.115 {
+  starts 2 2023/07/11 08:41:56;
+  ends 2 2023/07/11 10:21:56;
+  tstp 2 2023/07/11 10:21:56;
+  cltt 2 2023/07/11 08:41:56;
+  binding state free;
+  hardware ethernet 68:bf:c4:1c:cd:4a;
+  uid "\001h\277\304\034\315J";
+  set vendor-class-identifier = "android-dhcp-13";
+}
+lease 157.181.200.95 {
+  starts 2 2023/07/11 10:41:37;
+  ends 2 2023/07/11 12:21:37;
+  tstp 2 2023/07/11 12:21:37;
+  cltt 2 2023/07/11 10:41:37;
+  binding state free;
+  hardware ethernet 4c:34:88:29:34:d4;
+  uid "\001L4\210)4\324";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.49 {
+  starts 2 2023/07/11 12:41:23;
+  ends 2 2023/07/11 14:21:23;
+  tstp 2 2023/07/11 14:21:23;
+  cltt 2 2023/07/11 13:02:50;
+  binding state free;
+  hardware ethernet 58:20:59:b2:77:1e;
+  uid "\001X Y\262w\036";
+  set vendor-class-identifier = "android-dhcp-9";
+}
+lease 157.181.201.139 {
+  starts 2 2023/07/11 14:25:30;
+  ends 2 2023/07/11 16:05:30;
+  tstp 2 2023/07/11 16:05:30;
+  cltt 2 2023/07/11 14:48:33;
+  binding state free;
+  hardware ethernet 00:e0:4c:68:01:6a;
+  uid "\001\000\340Lh\001j";
+}
+lease 157.181.200.192 {
+  starts 2 2023/07/11 16:36:14;
+  ends 2 2023/07/11 18:16:14;
+  tstp 2 2023/07/11 18:16:14;
+  cltt 2 2023/07/11 16:53:58;
+  binding state free;
+  hardware ethernet e2:23:f2:11:95:2c;
+  uid "\001\342#\362\021\225,";
+}
+lease 157.181.200.166 {
+  starts 2 2023/07/11 17:20:17;
+  ends 2 2023/07/11 19:00:17;
+  tstp 2 2023/07/11 19:00:17;
+  cltt 2 2023/07/11 17:20:17;
+  binding state free;
+  hardware ethernet 14:9f:3c:cb:5f:54;
+  uid "\001\024\237<\313_T";
+  set vendor-class-identifier = "android-dhcp-8.0.0";
+}
+lease 157.181.200.203 {
+  starts 2 2023/07/11 17:40:19;
+  ends 2 2023/07/11 19:20:19;
+  tstp 2 2023/07/11 19:20:19;
+  cltt 2 2023/07/11 17:40:19;
+  binding state free;
+  hardware ethernet cc:2f:71:fe:6a:be;
+  uid "\001\314/q\376j\276";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.86 {
+  starts 2 2023/07/11 18:59:36;
+  ends 2 2023/07/11 20:39:36;
+  tstp 2 2023/07/11 20:39:36;
+  cltt 2 2023/07/11 19:18:58;
+  binding state free;
+  hardware ethernet 4a:38:fa:b7:5a:ca;
+  uid "\001J8\372\267Z\312";
+  set vendor-class-identifier = "android-dhcp-13";
+}
+lease 157.181.200.226 {
+  starts 3 2023/07/12 05:35:45;
+  ends 3 2023/07/12 07:15:45;
+  tstp 3 2023/07/12 07:15:45;
+  cltt 3 2023/07/12 05:35:45;
+  binding state free;
+  hardware ethernet 08:d4:0c:59:da:4e;
+  uid "\001\010\324\014Y\332N";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.147 {
+  starts 3 2023/07/12 10:58:16;
+  ends 3 2023/07/12 12:38:16;
+  tstp 3 2023/07/12 12:38:16;
+  cltt 3 2023/07/12 10:58:16;
+  binding state free;
+  hardware ethernet f0:c4:2f:d7:70:8e;
+  uid "\001\360\304/\327p\216";
+  set vendor-class-identifier = "HUAWEI:android:HRY-L21T";
+}
+lease 157.181.200.243 {
+  starts 3 2023/07/12 12:40:52;
+  ends 3 2023/07/12 14:20:52;
+  tstp 3 2023/07/12 14:20:52;
+  cltt 3 2023/07/12 12:50:29;
+  binding state free;
+  hardware ethernet d8:5d:e2:98:d1:65;
+  uid "\001\330]\342\230\321e";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.255 {
+  starts 3 2023/07/12 12:43:12;
+  ends 3 2023/07/12 14:23:12;
+  tstp 3 2023/07/12 14:23:12;
+  cltt 3 2023/07/12 12:43:12;
+  binding state free;
+  hardware ethernet 34:6f:24:8a:5e:ef;
+  uid "\0014o$\212^\357";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.209 {
+  starts 3 2023/07/12 13:17:15;
+  ends 3 2023/07/12 14:57:15;
+  tstp 3 2023/07/12 14:57:15;
+  cltt 3 2023/07/12 13:27:39;
+  binding state free;
+  hardware ethernet 26:84:01:d1:09:66;
+  uid "\001&\204\001\321\011f";
+  set vendor-class-identifier = "android-dhcp-10";
+}
+lease 157.181.200.55 {
+  starts 3 2023/07/12 14:44:43;
+  ends 3 2023/07/12 16:24:43;
+  tstp 3 2023/07/12 16:24:43;
+  cltt 3 2023/07/12 14:44:43;
+  binding state free;
+  hardware ethernet f0:d5:bf:eb:dc:19;
+  uid "\001\360\325\277\353\334\031";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.233 {
+  starts 3 2023/07/12 15:12:58;
+  ends 3 2023/07/12 16:52:58;
+  tstp 3 2023/07/12 16:52:58;
+  cltt 3 2023/07/12 15:28:45;
+  binding state free;
+  hardware ethernet 16:d9:ef:81:64:29;
+  uid "\001\026\331\357\201d)";
+}
+lease 157.181.201.146 {
+  starts 3 2023/07/12 16:03:28;
+  ends 3 2023/07/12 17:43:28;
+  tstp 3 2023/07/12 17:43:28;
+  cltt 3 2023/07/12 16:17:45;
+  binding state free;
+  hardware ethernet dc:b7:2e:5a:97:f0;
+  uid "\001\334\267.Z\227\360";
+  set vendor-class-identifier = "android-dhcp-11";
+}
+lease 157.181.201.126 {
+  starts 3 2023/07/12 16:46:26;
+  ends 3 2023/07/12 18:26:26;
+  tstp 3 2023/07/12 18:26:26;
+  cltt 3 2023/07/12 16:48:51;
+  binding state free;
+  hardware ethernet 00:be:3b:4d:6c:01;
+  uid "\001\000\276;Ml\001";
+  set vendor-class-identifier = "HUAWEI:android:ANE";
+}
+lease 157.181.200.204 {
+  starts 3 2023/07/12 17:46:47;
+  ends 3 2023/07/12 19:26:47;
+  tstp 3 2023/07/12 19:26:47;
+  cltt 3 2023/07/12 17:46:47;
+  binding state free;
+  hardware ethernet 64:6c:80:1e:05:5b;
+  uid "\001dl\200\036\005[";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.7 {
+  starts 3 2023/07/12 18:09:54;
+  ends 3 2023/07/12 19:49:54;
+  tstp 3 2023/07/12 19:49:54;
+  cltt 3 2023/07/12 18:12:15;
+  binding state free;
+  hardware ethernet 20:c1:9b:72:ab:37;
+  uid "\001 \301\233r\2537";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.234 {
+  starts 3 2023/07/12 19:32:23;
+  ends 3 2023/07/12 21:12:23;
+  tstp 3 2023/07/12 21:12:23;
+  cltt 3 2023/07/12 19:32:23;
+  binding state free;
+  hardware ethernet 1c:bf:c0:02:be:7b;
+  uid "\001\034\277\300\002\276{";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.16 {
+  starts 3 2023/07/12 21:20:32;
+  ends 3 2023/07/12 23:00:32;
+  tstp 3 2023/07/12 23:00:32;
+  cltt 3 2023/07/12 21:38:44;
+  binding state free;
+  hardware ethernet e4:a4:71:4b:06:c7;
+  uid "\001\344\244qK\006\307";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.10 {
+  starts 3 2023/07/12 22:42:13;
+  ends 4 2023/07/13 00:22:13;
+  tstp 4 2023/07/13 00:22:13;
+  cltt 3 2023/07/12 22:42:13;
+  binding state free;
+  hardware ethernet d4:54:8b:7f:b6:1f;
+  uid "\001\324T\213\177\266\037";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.76 {
+  starts 3 2023/07/12 23:01:38;
+  ends 4 2023/07/13 00:41:38;
+  tstp 4 2023/07/13 00:41:38;
+  cltt 3 2023/07/12 23:01:38;
+  binding state free;
+  hardware ethernet 30:f7:72:03:84:b9;
+  uid "\0010\367r\003\204\271";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.191 {
+  starts 4 2023/07/13 01:09:33;
+  ends 4 2023/07/13 02:49:33;
+  tstp 4 2023/07/13 02:49:33;
+  cltt 4 2023/07/13 01:09:33;
+  binding state free;
+  hardware ethernet c4:93:d9:a1:30:32;
+  uid "\001\304\223\331\24102";
+  set vendor-class-identifier = "android-dhcp-9";
+}
+lease 157.181.201.224 {
+  starts 4 2023/07/13 08:25:17;
+  ends 4 2023/07/13 10:05:17;
+  tstp 4 2023/07/13 10:05:17;
+  cltt 4 2023/07/13 08:27:37;
+  binding state free;
+  hardware ethernet 5e:e2:0d:96:92:0d;
+  uid "\001^\342\015\226\222\015";
+  set vendor-class-identifier = "android-dhcp-13";
+}
+lease 157.181.200.92 {
+  starts 4 2023/07/13 08:26:13;
+  ends 4 2023/07/13 10:06:13;
+  tstp 4 2023/07/13 10:06:13;
+  cltt 4 2023/07/13 08:26:13;
+  binding state free;
+  hardware ethernet 08:c5:e1:a2:96:1b;
+  uid "\001\010\305\341\242\226\033";
+  set vendor-class-identifier = "android-dhcp-9";
+}
+lease 157.181.200.80 {
+  starts 4 2023/07/13 08:46:37;
+  ends 4 2023/07/13 10:26:37;
+  tstp 4 2023/07/13 10:26:37;
+  cltt 4 2023/07/13 08:53:48;
+  binding state free;
+  hardware ethernet 5a:68:5f:1e:f8:dd;
+  uid "\001Zh_\036\370\335";
+}
+lease 157.181.200.61 {
+  starts 4 2023/07/13 09:26:37;
+  ends 4 2023/07/13 11:06:37;
+  tstp 4 2023/07/13 11:06:37;
+  cltt 4 2023/07/13 09:39:18;
+  binding state free;
+  hardware ethernet ec:d0:9f:2c:05:a2;
+  uid "\001\354\320\237,\005\242";
+  set vendor-class-identifier = "android-dhcp-7.1.2";
+}
+lease 157.181.200.242 {
+  starts 4 2023/07/13 10:35:21;
+  ends 4 2023/07/13 12:15:21;
+  tstp 4 2023/07/13 12:15:21;
+  cltt 4 2023/07/13 10:35:21;
+  binding state free;
+  hardware ethernet d8:f8:83:bc:12:fe;
+  uid "\001\330\370\203\274\022\376";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.226 {
+  starts 4 2023/07/13 15:57:26;
+  ends 4 2023/07/13 17:37:26;
+  tstp 4 2023/07/13 17:37:26;
+  cltt 4 2023/07/13 16:14:40;
+  binding state free;
+  hardware ethernet 1c:cc:d6:2a:55:d9;
+  uid "\001\034\314\326*U\331";
+  set vendor-class-identifier = "android-dhcp-11";
+}
+lease 157.181.200.30 {
+  starts 4 2023/07/13 16:13:23;
+  ends 4 2023/07/13 17:53:23;
+  tstp 4 2023/07/13 17:53:23;
+  cltt 4 2023/07/13 16:13:23;
+  binding state free;
+  hardware ethernet ee:79:17:6e:22:4b;
+  uid "\001\356y\027n\"K";
+  set vendor-class-identifier = "android-dhcp-11";
+}
+lease 157.181.201.122 {
+  starts 4 2023/07/13 16:25:01;
+  ends 4 2023/07/13 18:05:01;
+  tstp 4 2023/07/13 18:05:01;
+  cltt 4 2023/07/13 16:37:08;
+  binding state free;
+  hardware ethernet 44:af:28:0e:e8:ef;
+  uid "\001D\257(\016\350\357";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.101 {
+  starts 4 2023/07/13 17:14:56;
+  ends 4 2023/07/13 18:54:56;
+  tstp 4 2023/07/13 18:54:56;
+  cltt 4 2023/07/13 17:14:56;
+  binding state free;
+  hardware ethernet 80:91:33:da:cc:2f;
+  uid "\001\200\2213\332\314/";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.190 {
+  starts 4 2023/07/13 18:50:45;
+  ends 4 2023/07/13 20:30:45;
+  tstp 4 2023/07/13 20:30:45;
+  cltt 4 2023/07/13 18:50:45;
+  binding state free;
+  hardware ethernet 32:17:86:6a:a6:56;
+  uid "\0012\027\206j\246V";
+  set vendor-class-identifier = "android-dhcp-10";
+}
+lease 157.181.201.97 {
+  starts 4 2023/07/13 19:03:31;
+  ends 4 2023/07/13 20:43:31;
+  tstp 4 2023/07/13 20:43:31;
+  cltt 4 2023/07/13 19:12:21;
+  binding state free;
+  hardware ethernet 00:c0:ca:ae:b9:c4;
+  uid "\001\000\300\312\256\271\304";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.129 {
+  starts 4 2023/07/13 19:05:10;
+  ends 4 2023/07/13 20:45:10;
+  tstp 4 2023/07/13 20:45:10;
+  cltt 4 2023/07/13 19:18:44;
+  binding state free;
+  hardware ethernet d4:d2:52:41:7f:cb;
+  uid "\001\324\322RA\177\313";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.216 {
+  starts 4 2023/07/13 19:31:37;
+  ends 4 2023/07/13 21:11:37;
+  tstp 4 2023/07/13 21:11:37;
+  cltt 4 2023/07/13 19:31:37;
+  binding state free;
+  hardware ethernet 4c:d5:77:2a:72:67;
+  uid "\001L\325w*rg";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.6 {
+  starts 4 2023/07/13 20:36:31;
+  ends 4 2023/07/13 22:16:31;
+  tstp 4 2023/07/13 22:16:31;
+  cltt 4 2023/07/13 20:36:31;
+  binding state free;
+  hardware ethernet 5c:3a:45:9d:8d:4b;
+  uid "\001\\:E\235\215K";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.25 {
+  starts 4 2023/07/13 20:56:17;
+  ends 4 2023/07/13 22:36:17;
+  tstp 4 2023/07/13 22:36:17;
+  cltt 4 2023/07/13 20:56:17;
+  binding state free;
+  hardware ethernet 64:5d:86:95:ae:7a;
+  uid "\001d]\206\225\256z";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.20 {
+  starts 4 2023/07/13 21:59:51;
+  ends 4 2023/07/13 23:39:51;
+  tstp 4 2023/07/13 23:39:51;
+  cltt 4 2023/07/13 21:59:51;
+  binding state free;
+  hardware ethernet c8:94:02:7b:89:4f;
+  uid "\001\310\224\002{\211O";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.205 {
+  starts 4 2023/07/13 23:27:57;
+  ends 5 2023/07/14 01:07:57;
+  tstp 5 2023/07/14 01:07:57;
+  cltt 4 2023/07/13 23:27:57;
+  binding state free;
+  hardware ethernet f8:ac:65:a9:36:20;
+  uid "\001\370\254e\2516 ";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.193 {
+  starts 5 2023/07/14 00:29:18;
+  ends 5 2023/07/14 02:09:18;
+  tstp 5 2023/07/14 02:09:18;
+  cltt 5 2023/07/14 00:29:18;
+  binding state free;
+  hardware ethernet 70:18:8b:7f:c8:c7;
+  uid "\001p\030\213\177\310\307";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.107 {
+  starts 5 2023/07/14 00:54:54;
+  ends 5 2023/07/14 02:34:54;
+  tstp 5 2023/07/14 02:34:54;
+  cltt 5 2023/07/14 00:54:54;
+  binding state free;
+  hardware ethernet 9e:82:5a:58:6c:bd;
+  uid "\001\236\202ZXl\275";
+}
+lease 157.181.200.99 {
+  starts 5 2023/07/14 03:40:56;
+  ends 5 2023/07/14 05:20:56;
+  tstp 5 2023/07/14 05:20:56;
+  cltt 5 2023/07/14 03:40:56;
+  binding state free;
+  hardware ethernet 70:a6:cc:6e:d0:ed;
+  uid "\001p\246\314n\320\355";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.155 {
+  starts 5 2023/07/14 05:18:48;
+  ends 5 2023/07/14 06:58:48;
+  tstp 5 2023/07/14 06:58:48;
+  cltt 5 2023/07/14 05:19:32;
+  binding state free;
+  hardware ethernet ac:fd:ce:ba:9d:cf;
+  uid "\001\254\375\316\272\235\317";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.15 {
+  starts 5 2023/07/14 06:04:33;
+  ends 5 2023/07/14 07:44:33;
+  tstp 5 2023/07/14 07:44:33;
+  cltt 5 2023/07/14 06:18:08;
+  binding state free;
+  hardware ethernet fe:69:8e:17:f9:44;
+  uid "\001\376i\216\027\371D";
+  set vendor-class-identifier = "android-dhcp-13";
+}
+lease 157.181.200.117 {
+  starts 5 2023/07/14 06:06:27;
+  ends 5 2023/07/14 07:46:27;
+  tstp 5 2023/07/14 07:46:27;
+  cltt 5 2023/07/14 06:07:12;
+  binding state free;
+  hardware ethernet 94:e2:3c:0e:c6:58;
+  uid "\001\224\342<\016\306X";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.75 {
+  starts 5 2023/07/14 06:17:04;
+  ends 5 2023/07/14 07:57:04;
+  tstp 5 2023/07/14 07:57:04;
+  cltt 5 2023/07/14 06:22:52;
+  binding state free;
+  hardware ethernet 5a:8e:0e:d9:28:e1;
+  uid "\001Z\216\016\331(\341";
+  set vendor-class-identifier = "android-dhcp-13";
+}
+lease 157.181.201.197 {
+  starts 5 2023/07/14 06:27:06;
+  ends 5 2023/07/14 08:07:06;
+  tstp 5 2023/07/14 08:07:06;
+  cltt 5 2023/07/14 06:49:55;
+  binding state free;
+  hardware ethernet 56:4f:e8:23:cf:a2;
+  uid "\001VO\350#\317\242";
+  set vendor-class-identifier = "android-dhcp-12";
+}
+lease 157.181.201.50 {
+  starts 5 2023/07/14 11:14:58;
+  ends 5 2023/07/14 12:54:58;
+  tstp 5 2023/07/14 12:54:58;
+  cltt 5 2023/07/14 11:39:57;
+  binding state free;
+  hardware ethernet a2:40:a6:16:49:0a;
+  uid "\001\242@\246\026I\012";
+  set vendor-class-identifier = "android-dhcp-12";
+}
+lease 157.181.201.137 {
+  starts 5 2023/07/14 15:21:21;
+  ends 5 2023/07/14 17:01:21;
+  tstp 5 2023/07/14 17:01:21;
+  cltt 5 2023/07/14 15:21:36;
+  binding state free;
+  hardware ethernet 0c:9a:3c:b5:58:0b;
+  uid "\001\014\232<\265X\013";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.14 {
+  starts 5 2023/07/14 20:38:11;
+  ends 5 2023/07/14 22:18:11;
+  tstp 5 2023/07/14 22:18:11;
+  cltt 5 2023/07/14 20:38:11;
+  binding state free;
+  hardware ethernet cc:3d:82:27:6c:49;
+  uid "\001\314=\202'lI";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.247 {
+  starts 6 2023/07/15 00:28:46;
+  ends 6 2023/07/15 02:08:46;
+  tstp 6 2023/07/15 02:08:46;
+  cltt 6 2023/07/15 00:28:46;
+  binding state free;
+  hardware ethernet f4:b7:e2:bb:39:c5;
+  uid "\001\364\267\342\2739\305";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.48 {
+  starts 6 2023/07/15 06:36:13;
+  ends 6 2023/07/15 06:56:25;
+  tstp 6 2023/07/15 06:56:25;
+  cltt 6 2023/07/15 06:36:13;
+  binding state free;
+  hardware ethernet f0:c4:2f:d7:70:8e;
+  uid "\001\360\304/\327p\216";
+}
+lease 157.181.201.115 {
+  starts 6 2023/07/15 06:01:03;
+  ends 6 2023/07/15 07:41:03;
+  tstp 6 2023/07/15 07:41:03;
+  cltt 6 2023/07/15 06:01:03;
+  binding state free;
+  hardware ethernet 72:99:de:56:62:58;
+  uid "\001r\231\336VbX";
+}
+lease 157.181.200.73 {
+  starts 6 2023/07/15 08:52:32;
+  ends 6 2023/07/15 10:32:32;
+  tstp 6 2023/07/15 10:32:32;
+  cltt 6 2023/07/15 08:52:32;
+  binding state free;
+  hardware ethernet 8e:74:19:82:b3:cd;
+  uid "\001\216t\031\202\263\315";
+  set vendor-class-identifier = "android-dhcp-13";
+}
+lease 157.181.200.151 {
+  starts 6 2023/07/15 09:38:39;
+  ends 6 2023/07/15 11:18:39;
+  tstp 6 2023/07/15 11:18:39;
+  cltt 6 2023/07/15 09:38:39;
+  binding state free;
+  hardware ethernet 20:47:da:11:0c:d7;
+  uid "\001 G\332\021\014\327";
+  set vendor-class-identifier = "android-dhcp-9";
+}
+lease 157.181.201.214 {
+  starts 6 2023/07/15 10:31:38;
+  ends 6 2023/07/15 12:11:38;
+  tstp 6 2023/07/15 12:11:38;
+  cltt 6 2023/07/15 10:42:38;
+  binding state free;
+  hardware ethernet 7a:7b:12:91:38:59;
+  uid "\001z{\022\2218Y";
+  set vendor-class-identifier = "android-dhcp-12";
+}
+lease 157.181.201.49 {
+  starts 6 2023/07/15 11:42:27;
+  ends 6 2023/07/15 13:22:27;
+  tstp 6 2023/07/15 13:22:27;
+  cltt 6 2023/07/15 11:42:27;
+  binding state free;
+  hardware ethernet 00:45:e2:07:4c:63;
+  uid "\001\000E\342\007Lc";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.13 {
+  starts 6 2023/07/15 11:52:24;
+  ends 6 2023/07/15 13:32:24;
+  tstp 6 2023/07/15 13:32:24;
+  cltt 6 2023/07/15 11:52:24;
+  binding state free;
+  hardware ethernet 74:59:09:13:db:a4;
+  uid "\001tY\011\023\333\244";
+  set vendor-class-identifier = "HUAWEI:android:POT-L21";
+}
+lease 157.181.201.131 {
+  starts 6 2023/07/15 12:36:42;
+  ends 6 2023/07/15 14:16:42;
+  tstp 6 2023/07/15 14:16:42;
+  cltt 6 2023/07/15 12:36:42;
+  binding state free;
+  hardware ethernet dc:e9:94:66:13:d9;
+  uid "\001\334\351\224f\023\331";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.137 {
+  starts 6 2023/07/15 15:14:50;
+  ends 6 2023/07/15 15:16:50;
+  tstp 6 2023/07/15 15:16:50;
+  cltt 6 2023/07/15 15:14:50;
+  binding state free;
+  hardware ethernet 20:2b:20:7b:e6:c7;
+  uid "\001 + {\346\307";
+  set vendor-class-identifier = "MSFT 5.0";
+  client-hostname "DESKTOP-C7RQ1CC";
+}
+lease 157.181.200.96 {
+  starts 6 2023/07/15 13:40:34;
+  ends 6 2023/07/15 15:20:34;
+  tstp 6 2023/07/15 15:20:34;
+  cltt 6 2023/07/15 13:42:17;
+  binding state free;
+  hardware ethernet 80:65:7c:df:bf:92;
+  uid "\001\200e|\337\277\222";
+}
+lease 157.181.200.236 {
+  starts 6 2023/07/15 14:23:17;
+  ends 6 2023/07/15 16:03:17;
+  tstp 6 2023/07/15 16:03:17;
+  cltt 6 2023/07/15 14:23:17;
+  binding state free;
+  hardware ethernet dc:8b:28:83:25:61;
+  uid "\001\334\213(\203%a";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.160 {
+  starts 6 2023/07/15 14:44:33;
+  ends 6 2023/07/15 16:24:33;
+  tstp 6 2023/07/15 16:24:33;
+  cltt 6 2023/07/15 14:44:33;
+  binding state free;
+  hardware ethernet 50:5b:c2:e8:76:31;
+  uid "\001P[\302\350v1";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.128 {
+  starts 6 2023/07/15 16:24:16;
+  ends 6 2023/07/15 18:04:16;
+  tstp 6 2023/07/15 18:04:16;
+  cltt 6 2023/07/15 16:24:16;
+  binding state free;
+  hardware ethernet c0:e4:34:d8:e8:9f;
+  uid "\001\300\3444\330\350\237";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.140 {
+  starts 6 2023/07/15 16:34:56;
+  ends 6 2023/07/15 18:14:56;
+  tstp 6 2023/07/15 18:14:56;
+  cltt 6 2023/07/15 16:34:56;
+  binding state free;
+  hardware ethernet fc:44:82:6f:5b:fd;
+  uid "\001\374D\202o[\375";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.136 {
+  starts 6 2023/07/15 16:35:53;
+  ends 6 2023/07/15 18:15:53;
+  tstp 6 2023/07/15 18:15:53;
+  cltt 6 2023/07/15 16:39:00;
+  binding state free;
+  hardware ethernet d8:f3:bc:40:5b:e3;
+  uid "\001\330\363\274@[\343";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.71 {
+  starts 6 2023/07/15 18:28:28;
+  ends 6 2023/07/15 20:08:28;
+  tstp 6 2023/07/15 20:08:28;
+  cltt 6 2023/07/15 18:28:28;
+  binding state free;
+  hardware ethernet 24:77:03:ab:17:54;
+  uid "\001$w\003\253\027T";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.119 {
+  starts 6 2023/07/15 22:17:43;
+  ends 6 2023/07/15 23:57:43;
+  tstp 6 2023/07/15 23:57:43;
+  cltt 6 2023/07/15 22:17:43;
+  binding state free;
+  hardware ethernet fc:b3:bc:a7:eb:6c;
+  uid "\001\374\263\274\247\353l";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.90 {
+  starts 0 2023/07/16 00:23:23;
+  ends 0 2023/07/16 02:03:23;
+  tstp 0 2023/07/16 02:03:23;
+  cltt 0 2023/07/16 00:23:23;
+  binding state free;
+  hardware ethernet 00:e0:4c:68:01:03;
+  uid "\001\000\340Lh\001\003";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.109 {
+  starts 0 2023/07/16 01:22:23;
+  ends 0 2023/07/16 03:02:23;
+  tstp 0 2023/07/16 03:02:23;
+  cltt 0 2023/07/16 01:43:50;
+  binding state free;
+  hardware ethernet 90:78:b2:a3:13:99;
+  uid "\001\220x\262\243\023\231";
+  set vendor-class-identifier = "android-dhcp-11";
+}
+lease 157.181.200.104 {
+  starts 0 2023/07/16 10:26:05;
+  ends 0 2023/07/16 12:06:05;
+  tstp 0 2023/07/16 12:06:05;
+  cltt 0 2023/07/16 10:26:05;
+  binding state free;
+  hardware ethernet 88:10:8f:7d:03:da;
+  uid "\001\210\020\217}\003\332";
+  set vendor-class-identifier = "HUAWEI:android:ANE";
+}
+lease 157.181.201.221 {
+  starts 0 2023/07/16 10:46:08;
+  ends 0 2023/07/16 12:26:08;
+  tstp 0 2023/07/16 12:26:08;
+  cltt 0 2023/07/16 11:10:58;
+  binding state free;
+  hardware ethernet 42:58:30:50:69:db;
+  uid "\001BX0Pi\333";
+  set vendor-class-identifier = "HUAWEI:android:YAL";
+}
+lease 157.181.200.43 {
+  starts 0 2023/07/16 10:46:19;
+  ends 0 2023/07/16 12:26:19;
+  tstp 0 2023/07/16 12:26:19;
+  cltt 0 2023/07/16 10:57:57;
+  binding state free;
+  hardware ethernet 2a:74:01:55:44:92;
+  uid "\001*t\001UD\222";
+  set vendor-class-identifier = "android-dhcp-11";
+}
+lease 157.181.201.31 {
+  starts 0 2023/07/16 10:46:39;
+  ends 0 2023/07/16 12:26:39;
+  tstp 0 2023/07/16 12:26:39;
+  cltt 0 2023/07/16 10:46:39;
+  binding state free;
+  hardware ethernet 4e:8c:75:17:29:b9;
+  uid "\001N\214u\027)\271";
+}
+lease 157.181.201.185 {
+  starts 0 2023/07/16 17:36:43;
+  ends 0 2023/07/16 19:16:43;
+  tstp 0 2023/07/16 19:16:43;
+  cltt 0 2023/07/16 17:36:43;
+  binding state free;
+  hardware ethernet 6a:59:01:3c:2e:e8;
+  uid "\001jY\001<.\350";
+  set vendor-class-identifier = "android-dhcp-11";
+}
+lease 157.181.201.134 {
+  starts 0 2023/07/16 18:13:35;
+  ends 0 2023/07/16 19:53:35;
+  tstp 0 2023/07/16 19:53:35;
+  cltt 0 2023/07/16 18:13:35;
+  binding state free;
+  hardware ethernet 24:6f:8c:de:41:25;
+  uid "\001$o\214\336A%";
+  set vendor-class-identifier = "HUAWEI:android:POT-L21";
+}
+lease 157.181.200.210 {
+  starts 0 2023/07/16 19:52:44;
+  ends 0 2023/07/16 21:32:44;
+  tstp 0 2023/07/16 21:32:44;
+  cltt 0 2023/07/16 19:52:44;
+  binding state free;
+  hardware ethernet 7c:b5:66:45:08:c6;
+  uid "\001|\265fE\010\306";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.66 {
+  starts 0 2023/07/16 20:01:15;
+  ends 0 2023/07/16 21:41:15;
+  tstp 0 2023/07/16 21:41:15;
+  cltt 0 2023/07/16 20:01:16;
+  binding state free;
+  hardware ethernet 24:da:33:d3:98:19;
+  uid "\001$\3323\323\230\031";
+  set vendor-class-identifier = "HUAWEI:android:SNE";
+}
+lease 157.181.200.7 {
+  starts 0 2023/07/16 20:04:08;
+  ends 0 2023/07/16 21:44:08;
+  tstp 0 2023/07/16 21:44:08;
+  cltt 0 2023/07/16 20:04:08;
+  binding state free;
+  hardware ethernet 3a:b6:b3:bc:20:43;
+  uid "\001:\266\263\274 C";
+  set vendor-class-identifier = "android-dhcp-10";
+}
+lease 157.181.200.207 {
+  starts 0 2023/07/16 20:06:20;
+  ends 0 2023/07/16 21:46:20;
+  tstp 0 2023/07/16 21:46:20;
+  cltt 0 2023/07/16 20:15:32;
+  binding state free;
+  hardware ethernet 26:c6:29:3c:bd:04;
+  uid "\001&\306)<\275\004";
+  set vendor-class-identifier = "android-dhcp-12";
+}
+lease 157.181.201.167 {
+  starts 0 2023/07/16 21:33:30;
+  ends 0 2023/07/16 23:13:30;
+  tstp 0 2023/07/16 23:13:30;
+  cltt 0 2023/07/16 21:34:09;
+  binding state free;
+  hardware ethernet 96:80:89:e2:5c:ea;
+  uid "\001\226\200\211\342\\\352";
+  set vendor-class-identifier = "android-dhcp-10";
+}
+lease 157.181.200.116 {
+  starts 0 2023/07/16 23:52:07;
+  ends 1 2023/07/17 01:32:07;
+  tstp 1 2023/07/17 01:32:07;
+  cltt 0 2023/07/16 23:52:07;
+  binding state free;
+  hardware ethernet f0:18:98:9b:fe:bf;
+  uid "\001\360\030\230\233\376\277";
+}
+lease 157.181.200.140 {
+  starts 1 2023/07/17 05:58:02;
+  ends 1 2023/07/17 07:38:02;
+  tstp 1 2023/07/17 07:38:02;
+  cltt 1 2023/07/17 05:58:02;
+  binding state free;
+  hardware ethernet 3a:64:20:7e:6c:3d;
+  uid "\001:d ~l=";
+}
+lease 157.181.200.189 {
+  starts 1 2023/07/17 07:35:46;
+  ends 1 2023/07/17 09:15:46;
+  tstp 1 2023/07/17 09:15:46;
+  cltt 1 2023/07/17 07:35:47;
+  binding state free;
+  hardware ethernet c6:97:e9:80:8b:d4;
+  uid "\001\306\227\351\200\213\324";
+}
+lease 157.181.200.246 {
+  starts 1 2023/07/17 08:05:56;
+  ends 1 2023/07/17 09:45:56;
+  tstp 1 2023/07/17 09:45:56;
+  cltt 1 2023/07/17 08:21:19;
+  binding state free;
+  hardware ethernet aa:4d:3f:3c:a2:37;
+  uid "\001\252M?<\2427";
+  set vendor-class-identifier = "android-dhcp-13";
+}
+lease 157.181.201.166 {
+  starts 1 2023/07/17 09:57:15;
+  ends 1 2023/07/17 11:37:15;
+  tstp 1 2023/07/17 11:37:15;
+  cltt 1 2023/07/17 10:06:35;
+  binding state free;
+  hardware ethernet 7e:1e:92:1d:7b:c6;
+  uid "\001~\036\222\035{\306";
+  set vendor-class-identifier = "android-dhcp-13";
+}
+lease 157.181.200.228 {
+  starts 1 2023/07/17 10:34:18;
+  ends 1 2023/07/17 12:14:18;
+  tstp 1 2023/07/17 12:14:18;
+  cltt 1 2023/07/17 10:34:18;
+  binding state free;
+  hardware ethernet 64:5d:86:8a:4d:23;
+  uid "\001d]\206\212M#";
+}
+lease 157.181.200.126 {
+  starts 1 2023/07/17 10:48:23;
+  ends 1 2023/07/17 12:28:23;
+  tstp 1 2023/07/17 12:28:23;
+  cltt 1 2023/07/17 10:48:23;
+  binding state free;
+  hardware ethernet f0:03:8c:85:52:cf;
+  uid "\001\360\003\214\205R\317";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.21 {
+  starts 1 2023/07/17 11:05:44;
+  ends 1 2023/07/17 12:45:44;
+  tstp 1 2023/07/17 12:45:44;
+  cltt 1 2023/07/17 11:05:44;
+  binding state free;
+  hardware ethernet 8c:c8:4b:f3:9b:9d;
+  uid "\001\214\310K\363\233\235";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.159 {
+  starts 1 2023/07/17 11:21:52;
+  ends 1 2023/07/17 13:01:52;
+  tstp 1 2023/07/17 13:01:52;
+  cltt 1 2023/07/17 11:26:10;
+  binding state free;
+  hardware ethernet 74:59:09:13:db:a4;
+  uid "\001tY\011\023\333\244";
+  set vendor-class-identifier = "HUAWEI:android:POT-L21";
+}
+lease 157.181.201.151 {
+  starts 1 2023/07/17 13:14:21;
+  ends 1 2023/07/17 14:54:21;
+  tstp 1 2023/07/17 14:54:21;
+  cltt 1 2023/07/17 13:28:57;
+  binding state free;
+  hardware ethernet 82:5d:c7:3b:75:18;
+  uid "\001\202]\307;u\030";
+}
+lease 157.181.200.249 {
+  starts 1 2023/07/17 17:12:06;
+  ends 1 2023/07/17 18:52:06;
+  tstp 1 2023/07/17 18:52:06;
+  cltt 1 2023/07/17 17:12:07;
+  binding state free;
+  hardware ethernet 24:d0:df:b5:ef:a8;
+  uid "\001$\320\337\265\357\250";
+}
+lease 157.181.201.9 {
+  starts 1 2023/07/17 18:22:00;
+  ends 1 2023/07/17 20:02:00;
+  tstp 1 2023/07/17 20:02:00;
+  cltt 1 2023/07/17 18:42:02;
+  binding state free;
+  hardware ethernet da:8a:38:62:7e:c2;
+  uid "\001\332\2128b~\302";
+}
+lease 157.181.200.112 {
+  starts 1 2023/07/17 18:43:17;
+  ends 1 2023/07/17 20:23:17;
+  tstp 1 2023/07/17 20:23:17;
+  cltt 1 2023/07/17 18:51:04;
+  binding state free;
+  hardware ethernet 22:db:77:8d:a7:e4;
+  uid "\001\"\333w\215\247\344";
+}
+lease 157.181.201.215 {
+  starts 1 2023/07/17 21:39:27;
+  ends 1 2023/07/17 23:19:27;
+  tstp 1 2023/07/17 23:19:27;
+  cltt 1 2023/07/17 21:47:38;
+  binding state free;
+  hardware ethernet dc:6a:e7:be:6b:a8;
+  uid "\001\334j\347\276k\250";
+  set vendor-class-identifier = "android-dhcp-11";
+}
+lease 157.181.200.180 {
+  starts 2 2023/07/18 06:17:50;
+  ends 2 2023/07/18 07:57:50;
+  tstp 2 2023/07/18 07:57:50;
+  cltt 2 2023/07/18 06:19:09;
+  binding state free;
+  hardware ethernet 00:b5:d0:5d:7b:b9;
+  uid "\001\000\265\320]{\271";
+  set vendor-class-identifier = "android-dhcp-9";
+}
+lease 157.181.201.127 {
+  starts 2 2023/07/18 06:53:52;
+  ends 2 2023/07/18 08:33:52;
+  tstp 2 2023/07/18 08:33:52;
+  cltt 2 2023/07/18 07:06:31;
+  binding state free;
+  hardware ethernet 9a:bc:ec:c9:bd:4c;
+  uid "\001\232\274\354\311\275L";
+  set vendor-class-identifier = "android-dhcp-13";
+}
+lease 157.181.201.89 {
+  starts 2 2023/07/18 08:33:02;
+  ends 2 2023/07/18 10:13:02;
+  tstp 2 2023/07/18 10:13:02;
+  cltt 2 2023/07/18 08:52:28;
+  binding state free;
+  hardware ethernet 2e:a1:f2:98:1a:99;
+  uid "\001.\241\362\230\032\231";
+}
+lease 157.181.201.123 {
+  starts 2 2023/07/18 08:36:58;
+  ends 2 2023/07/18 10:16:58;
+  tstp 2 2023/07/18 10:16:58;
+  cltt 2 2023/07/18 08:36:58;
+  binding state free;
+  hardware ethernet 9c:5c:f9:ce:91:4e;
+  uid "\001\234\\\371\316\221N";
+  set vendor-class-identifier = "android-dhcp-8.0.0";
+}
+lease 157.181.200.231 {
+  starts 2 2023/07/18 12:15:41;
+  ends 2 2023/07/18 13:55:41;
+  tstp 2 2023/07/18 13:55:41;
+  cltt 2 2023/07/18 12:15:41;
+  binding state free;
+  hardware ethernet ac:67:5d:ef:55:38;
+  uid "\001\254g]\357U8";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.152 {
+  starts 2 2023/07/18 12:54:15;
+  ends 2 2023/07/18 14:34:15;
+  tstp 2 2023/07/18 14:34:15;
+  cltt 2 2023/07/18 12:54:15;
+  binding state free;
+  hardware ethernet ea:e8:0e:00:6b:f6;
+  uid "\001\352\350\016\000k\366";
+}
+lease 157.181.200.227 {
+  starts 2 2023/07/18 13:38:12;
+  ends 2 2023/07/18 15:18:12;
+  tstp 2 2023/07/18 15:18:12;
+  cltt 2 2023/07/18 13:58:48;
+  binding state free;
+  hardware ethernet 52:18:e5:a4:3d:da;
+  uid "\001R\030\345\244=\332";
+}
+lease 157.181.200.57 {
+  starts 2 2023/07/18 14:06:31;
+  ends 2 2023/07/18 15:46:31;
+  tstp 2 2023/07/18 15:46:31;
+  cltt 2 2023/07/18 14:20:58;
+  binding state free;
+  hardware ethernet 8c:d9:d6:21:60:40;
+  uid "\001\214\331\326!`@";
+  set vendor-class-identifier = "android-dhcp-11";
+}
+lease 157.181.201.120 {
+  starts 2 2023/07/18 15:04:03;
+  ends 2 2023/07/18 16:44:03;
+  tstp 2 2023/07/18 16:44:03;
+  cltt 2 2023/07/18 15:08:45;
+  binding state free;
+  hardware ethernet a6:f3:86:1d:c1:39;
+  uid "\001\246\363\206\035\3019";
+  set vendor-class-identifier = "android-dhcp-13";
+}
+lease 157.181.200.130 {
+  starts 2 2023/07/18 16:32:54;
+  ends 2 2023/07/18 18:12:54;
+  tstp 2 2023/07/18 18:12:54;
+  cltt 2 2023/07/18 16:37:20;
+  binding state free;
+  hardware ethernet 2e:d3:98:1f:3c:31;
+  uid "\001.\323\230\037<1";
+  set vendor-class-identifier = "android-dhcp-13";
+}
+lease 157.181.200.163 {
+  starts 2 2023/07/18 16:35:48;
+  ends 2 2023/07/18 18:15:48;
+  tstp 2 2023/07/18 18:15:48;
+  cltt 2 2023/07/18 17:00:16;
+  binding state free;
+  hardware ethernet d6:9e:6a:b6:9c:a3;
+  uid "\001\326\236j\266\234\243";
+}
+lease 157.181.200.127 {
+  starts 2 2023/07/18 18:49:50;
+  ends 2 2023/07/18 20:29:50;
+  tstp 2 2023/07/18 20:29:50;
+  cltt 2 2023/07/18 19:13:28;
+  binding state free;
+  hardware ethernet 1a:6a:93:1e:83:05;
+  uid "\001\032j\223\036\203\005";
+}
+lease 157.181.200.9 {
+  starts 2 2023/07/18 20:48:24;
+  ends 2 2023/07/18 22:28:24;
+  tstp 2 2023/07/18 22:28:24;
+  cltt 2 2023/07/18 20:51:28;
+  binding state free;
+  hardware ethernet 3a:9f:49:e7:e2:d7;
+  uid "\001:\237I\347\342\327";
+}
+lease 157.181.200.56 {
+  starts 2 2023/07/18 21:16:56;
+  ends 2 2023/07/18 22:56:56;
+  tstp 2 2023/07/18 22:56:56;
+  cltt 2 2023/07/18 21:32:35;
+  binding state free;
+  hardware ethernet 96:45:e3:63:da:e9;
+  uid "\001\226E\343c\332\351";
+}
+lease 157.181.200.86 {
+  starts 2 2023/07/18 21:25:47;
+  ends 2 2023/07/18 23:05:47;
+  tstp 2 2023/07/18 23:05:47;
+  cltt 2 2023/07/18 21:25:47;
+  binding state free;
+  hardware ethernet e6:11:a1:64:b5:8e;
+  uid "\001\346\021\241d\265\216";
+}
+lease 157.181.200.94 {
+  starts 2 2023/07/18 22:05:06;
+  ends 2 2023/07/18 23:45:06;
+  tstp 2 2023/07/18 23:45:06;
+  cltt 2 2023/07/18 22:05:06;
+  binding state free;
+  hardware ethernet 7a:70:5c:32:cc:2a;
+  uid "\001zp\\2\314*";
+}
+lease 157.181.201.96 {
+  starts 2 2023/07/18 22:11:12;
+  ends 2 2023/07/18 23:51:12;
+  tstp 2 2023/07/18 23:51:12;
+  cltt 2 2023/07/18 22:11:12;
+  binding state free;
+  hardware ethernet e0:dc:ff:f9:dc:cb;
+  uid "\001\340\334\377\371\334\313";
+  set vendor-class-identifier = "android-dhcp-11";
+}
+lease 157.181.200.85 {
+  starts 2 2023/07/18 22:24:49;
+  ends 3 2023/07/19 00:04:49;
+  tstp 3 2023/07/19 00:04:49;
+  cltt 2 2023/07/18 22:24:50;
+  binding state free;
+  hardware ethernet cc:73:14:c4:8e:f9;
+  uid "\001\314s\024\304\216\371";
+  set vendor-class-identifier = "android-dhcp-9";
+}
+lease 157.181.200.186 {
+  starts 2 2023/07/18 22:53:26;
+  ends 3 2023/07/19 00:33:26;
+  tstp 3 2023/07/19 00:33:26;
+  cltt 2 2023/07/18 23:06:47;
+  binding state free;
+  hardware ethernet 26:6b:cb:0b:f8:d4;
+  uid "\001&k\313\013\370\324";
+}
+lease 157.181.201.162 {
+  starts 2 2023/07/18 23:32:33;
+  ends 3 2023/07/19 01:12:33;
+  tstp 3 2023/07/19 01:12:33;
+  cltt 2 2023/07/18 23:32:33;
+  binding state free;
+  hardware ethernet ae:62:60:2b:8a:f3;
+  uid "\001\256b`+\212\363";
+}
+lease 157.181.200.48 {
+  starts 3 2023/07/19 07:37:26;
+  ends 3 2023/07/19 09:17:26;
+  tstp 3 2023/07/19 09:17:26;
+  cltt 3 2023/07/19 07:37:26;
+  binding state free;
+  hardware ethernet 0c:2f:b0:a1:cd:50;
+  uid "\001\014/\260\241\315P";
+  set vendor-class-identifier = "android-dhcp-9";
+}
+lease 157.181.201.161 {
+  starts 3 2023/07/19 08:40:39;
+  ends 3 2023/07/19 10:20:39;
+  tstp 3 2023/07/19 10:20:39;
+  cltt 3 2023/07/19 08:40:39;
+  binding state free;
+  hardware ethernet 9e:2d:d7:08:72:65;
+  uid "\001\236-\327\010re";
+}
+lease 157.181.201.68 {
+  starts 3 2023/07/19 08:43:05;
+  ends 3 2023/07/19 10:23:05;
+  tstp 3 2023/07/19 10:23:05;
+  cltt 3 2023/07/19 08:43:05;
+  binding state free;
+  hardware ethernet 6e:32:c0:b9:d9:f9;
+  uid "\001n2\300\271\331\371";
+  set vendor-class-identifier = "android-dhcp-13";
+}
+lease 157.181.200.244 {
+  starts 3 2023/07/19 09:20:37;
+  ends 3 2023/07/19 11:00:37;
+  tstp 3 2023/07/19 11:00:37;
+  cltt 3 2023/07/19 09:21:16;
+  binding state free;
+  hardware ethernet 52:1f:b4:61:54:13;
+  uid "\001R\037\264aT\023";
+  set vendor-class-identifier = "android-dhcp-11";
+}
+lease 157.181.200.83 {
+  starts 3 2023/07/19 11:26:44;
+  ends 3 2023/07/19 12:15:34;
+  tstp 3 2023/07/19 12:15:34;
+  cltt 3 2023/07/19 11:26:44;
+  binding state free;
+  hardware ethernet 00:be:3b:4d:6c:01;
+  uid "\001\000\276;Ml\001";
+}
+lease 157.181.201.67 {
+  starts 3 2023/07/19 12:15:34;
+  ends 3 2023/07/19 13:55:34;
+  tstp 3 2023/07/19 13:55:34;
+  cltt 3 2023/07/19 12:15:35;
+  binding state free;
+  hardware ethernet 00:be:3b:4d:6c:01;
+  uid "\001\000\276;Ml\001";
+  set vendor-class-identifier = "HUAWEI:android:ANE";
+}
+lease 157.181.200.26 {
+  starts 3 2023/07/19 12:31:58;
+  ends 3 2023/07/19 14:11:58;
+  tstp 3 2023/07/19 14:11:58;
+  cltt 3 2023/07/19 12:31:58;
+  binding state free;
+  hardware ethernet d8:f2:ca:19:ad:70;
+  uid "\001\330\362\312\031\255p";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.71 {
+  starts 3 2023/07/19 13:08:37;
+  ends 3 2023/07/19 14:48:37;
+  tstp 3 2023/07/19 14:48:37;
+  cltt 3 2023/07/19 13:33:01;
+  binding state free;
+  hardware ethernet e0:cc:f8:7f:5f:ae;
+  uid "\001\340\314\370\177_\256";
+  set vendor-class-identifier = "android-dhcp-9";
+}
+lease 157.181.200.237 {
+  starts 3 2023/07/19 14:02:28;
+  ends 3 2023/07/19 15:42:28;
+  tstp 3 2023/07/19 15:42:28;
+  cltt 3 2023/07/19 14:05:27;
+  binding state free;
+  hardware ethernet 76:1b:2d:40:a5:b6;
+  uid "\001v\033-@\245\266";
+  set vendor-class-identifier = "android-dhcp-11";
+}
+lease 157.181.200.60 {
+  starts 3 2023/07/19 14:34:41;
+  ends 3 2023/07/19 16:14:41;
+  tstp 3 2023/07/19 16:14:41;
+  cltt 3 2023/07/19 14:58:14;
+  binding state free;
+  hardware ethernet 80:86:f2:47:db:f5;
+  uid "\001\200\206\362G\333\365";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.36 {
+  starts 3 2023/07/19 15:07:30;
+  ends 3 2023/07/19 16:47:30;
+  tstp 3 2023/07/19 16:47:30;
+  cltt 3 2023/07/19 15:10:58;
+  binding state free;
+  hardware ethernet 50:3d:c6:08:98:92;
+  uid "\001P=\306\010\230\222";
+  set vendor-class-identifier = "android-dhcp-12";
+}
+lease 157.181.201.196 {
+  starts 3 2023/07/19 15:13:48;
+  ends 3 2023/07/19 16:53:48;
+  tstp 3 2023/07/19 16:53:48;
+  cltt 3 2023/07/19 15:24:52;
+  binding state free;
+  hardware ethernet 44:af:28:c1:d7:02;
+  uid "\001D\257(\301\327\002";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.76 {
+  starts 3 2023/07/19 15:37:11;
+  ends 3 2023/07/19 17:17:11;
+  tstp 3 2023/07/19 17:17:11;
+  cltt 3 2023/07/19 15:37:11;
+  binding state free;
+  hardware ethernet e0:0a:f6:cc:b1:65;
+  uid "\001\340\012\366\314\261e";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.72 {
+  starts 3 2023/07/19 16:28:49;
+  ends 3 2023/07/19 18:08:49;
+  tstp 3 2023/07/19 18:08:49;
+  cltt 3 2023/07/19 16:28:55;
+  binding state free;
+  hardware ethernet 5c:3a:45:1e:4f:e7;
+  uid "\001\\:E\036O\347";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.188 {
+  starts 3 2023/07/19 16:31:07;
+  ends 3 2023/07/19 18:11:07;
+  tstp 3 2023/07/19 18:11:07;
+  cltt 3 2023/07/19 16:31:07;
+  binding state free;
+  hardware ethernet d0:b1:28:c8:6c:99;
+  uid "\001\320\261(\310l\231";
+  set vendor-class-identifier = "android-dhcp-9";
+}
+lease 157.181.200.200 {
+  starts 3 2023/07/19 17:55:35;
+  ends 3 2023/07/19 18:13:15;
+  tstp 3 2023/07/19 18:13:15;
+  cltt 3 2023/07/19 17:55:35;
+  binding state free;
+  hardware ethernet f0:c4:2f:d7:70:8e;
+  uid "\001\360\304/\327p\216";
+}
+lease 157.181.200.59 {
+  starts 3 2023/07/19 16:34:56;
+  ends 3 2023/07/19 18:14:56;
+  tstp 3 2023/07/19 18:14:56;
+  cltt 3 2023/07/19 16:34:56;
+  binding state free;
+  hardware ethernet 18:3e:ef:f1:72:ba;
+  uid "\001\030>\357\361r\272";
+}
+lease 157.181.200.179 {
+  starts 3 2023/07/19 16:55:24;
+  ends 3 2023/07/19 18:35:24;
+  tstp 3 2023/07/19 18:35:24;
+  cltt 3 2023/07/19 16:55:47;
+  binding state free;
+  hardware ethernet a2:bf:78:80:83:05;
+  uid "\001\242\277x\200\203\005";
+  set vendor-class-identifier = "android-dhcp-12";
+}
+lease 157.181.200.141 {
+  starts 3 2023/07/19 17:05:06;
+  ends 3 2023/07/19 18:45:06;
+  tstp 3 2023/07/19 18:45:06;
+  cltt 3 2023/07/19 17:05:06;
+  binding state free;
+  hardware ethernet a6:b7:9f:95:c7:df;
+  uid "\001\246\267\237\225\307\337";
+}
+lease 157.181.201.44 {
+  starts 3 2023/07/19 18:07:38;
+  ends 3 2023/07/19 19:47:38;
+  tstp 3 2023/07/19 19:47:38;
+  cltt 3 2023/07/19 18:07:40;
+  binding state free;
+  hardware ethernet 74:4c:a1:83:6e:3b;
+  uid "\001tL\241\203n;";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.186 {
+  starts 3 2023/07/19 21:30:37;
+  ends 3 2023/07/19 21:50:30;
+  tstp 3 2023/07/19 21:50:30;
+  cltt 3 2023/07/19 21:30:37;
+  binding state free;
+  hardware ethernet 74:0a:e1:7c:9a:0f;
+  uid "\001t\012\341|\232\017";
+}
+lease 157.181.200.220 {
+  starts 3 2023/07/19 21:17:22;
+  ends 3 2023/07/19 22:57:22;
+  tstp 3 2023/07/19 22:57:22;
+  cltt 3 2023/07/19 21:17:22;
+  binding state free;
+  hardware ethernet 84:5c:f3:c5:10:c0;
+  uid "\001\204\\\363\305\020\300";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.157 {
+  starts 3 2023/07/19 21:36:38;
+  ends 3 2023/07/19 23:16:38;
+  tstp 3 2023/07/19 23:16:38;
+  cltt 3 2023/07/19 21:54:10;
+  binding state free;
+  hardware ethernet 8c:c8:4b:10:29:e9;
+  uid "\001\214\310K\020)\351";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.169 {
+  starts 3 2023/07/19 21:38:26;
+  ends 3 2023/07/19 23:18:26;
+  tstp 3 2023/07/19 23:18:26;
+  cltt 3 2023/07/19 21:38:26;
+  binding state free;
+  hardware ethernet 12:b0:5c:92:d5:a6;
+  uid "\001\022\260\\\222\325\246";
+  set vendor-class-identifier = "android-dhcp-12";
+}
+lease 157.181.201.142 {
+  starts 3 2023/07/19 21:48:14;
+  ends 3 2023/07/19 23:28:14;
+  tstp 3 2023/07/19 23:28:14;
+  cltt 3 2023/07/19 21:48:14;
+  binding state free;
+  hardware ethernet d8:0b:9a:b7:46:7c;
+  uid "\001\330\013\232\267F|";
+  set vendor-class-identifier = "android-dhcp-9";
+}
+lease 157.181.200.254 {
+  starts 3 2023/07/19 21:51:31;
+  ends 3 2023/07/19 23:31:31;
+  tstp 3 2023/07/19 23:31:31;
+  cltt 3 2023/07/19 21:51:31;
+  binding state free;
+  hardware ethernet f8:e4:e3:82:ea:d8;
+  uid "\001\370\344\343\202\352\330";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.201.116 {
+  starts 3 2023/07/19 22:04:08;
+  ends 3 2023/07/19 23:44:08;
+  tstp 3 2023/07/19 23:44:08;
+  cltt 3 2023/07/19 22:04:08;
+  binding state free;
+  hardware ethernet 00:be:3b:4d:6c:01;
+  uid "\001\000\276;Ml\001";
+  set vendor-class-identifier = "HUAWEI:android:ANE";
+}
+lease 157.181.201.210 {
+  starts 3 2023/07/19 23:03:04;
+  ends 4 2023/07/20 00:43:04;
+  tstp 4 2023/07/20 00:43:04;
+  cltt 3 2023/07/19 23:03:04;
+  binding state free;
+  hardware ethernet aa:79:6c:a0:d4:6b;
+  uid "\001\252yl\240\324k";
+  set vendor-class-identifier = "android-dhcp-12";
+}
+lease 157.181.201.170 {
+  starts 3 2023/07/19 23:04:24;
+  ends 4 2023/07/20 00:44:24;
+  tstp 4 2023/07/20 00:44:24;
+  cltt 3 2023/07/19 23:04:24;
+  binding state free;
+  hardware ethernet 64:6c:80:78:0a:eb;
+  uid "\001dl\200x\012\353";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.252 {
+  starts 3 2023/07/19 23:16:18;
+  ends 4 2023/07/20 00:56:18;
+  tstp 4 2023/07/20 00:56:18;
+  cltt 3 2023/07/19 23:16:18;
+  binding state free;
+  hardware ethernet b0:c0:90:68:5c:c3;
+  uid "\001\260\300\220h\\\303";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.216 {
+  starts 4 2023/07/20 01:27:26;
+  ends 4 2023/07/20 01:50:48;
+  tstp 4 2023/07/20 01:50:48;
+  cltt 4 2023/07/20 01:44:47;
+  binding state free;
+  hardware ethernet 24:da:33:d3:98:19;
+  uid "\001$\3323\323\230\031";
+}
+lease 157.181.201.103 {
+  starts 4 2023/07/20 01:48:41;
+  ends 4 2023/07/20 03:28:41;
+  tstp 4 2023/07/20 03:28:41;
+  cltt 4 2023/07/20 01:50:48;
+  binding state free;
+  hardware ethernet 24:da:33:d3:98:19;
+  uid "\001$\3323\323\230\031";
+  set vendor-class-identifier = "HUAWEI:android:SNE";
+}
+lease 157.181.200.208 {
+  starts 4 2023/07/20 03:07:41;
+  ends 4 2023/07/20 04:47:41;
+  tstp 4 2023/07/20 04:47:41;
+  cltt 4 2023/07/20 03:07:41;
+  binding state free;
+  hardware ethernet ba:c5:29:6f:96:03;
+  uid "\001\272\305)o\226\003";
+}
+lease 157.181.200.11 {
+  starts 4 2023/07/20 03:49:57;
+  ends 4 2023/07/20 05:29:57;
+  tstp 4 2023/07/20 05:29:57;
+  cltt 4 2023/07/20 03:49:57;
+  binding state free;
+  hardware ethernet 8a:1b:1b:72:c9:4b;
+  uid "\001\212\033\033r\311K";
+  set vendor-class-identifier = "android-dhcp-13";
+}
+lease 157.181.200.175 {
+  starts 4 2023/07/20 04:22:32;
+  ends 4 2023/07/20 06:02:32;
+  tstp 4 2023/07/20 06:02:32;
+  cltt 4 2023/07/20 04:22:32;
+  binding state free;
+  hardware ethernet 9c:bc:f0:ac:af:29;
+  uid "\001\234\274\360\254\257)";
+  set vendor-class-identifier = "android-dhcp-11";
+}
+lease 157.181.201.22 {
+  starts 4 2023/07/20 04:40:47;
+  ends 4 2023/07/20 06:20:47;
+  tstp 4 2023/07/20 06:20:47;
+  cltt 4 2023/07/20 04:40:47;
+  binding state free;
+  hardware ethernet 22:52:06:aa:06:87;
+  uid "\001\"R\006\252\006\207";
+  set vendor-class-identifier = "android-dhcp-11";
+}
+lease 157.181.201.93 {
+  starts 4 2023/07/20 04:49:58;
+  ends 4 2023/07/20 06:29:58;
+  tstp 4 2023/07/20 06:29:58;
+  cltt 4 2023/07/20 05:05:25;
+  binding state free;
+  hardware ethernet de:81:19:28:89:c8;
+  uid "\001\336\201\031(\211\310";
+}
+lease 157.181.200.78 {
+  starts 4 2023/07/20 05:24:54;
+  ends 4 2023/07/20 07:04:54;
+  tstp 4 2023/07/20 07:04:54;
+  cltt 4 2023/07/20 05:24:54;
+  binding state free;
+  hardware ethernet d2:85:da:85:02:b3;
+  uid "\001\322\205\332\205\002\263";
+  set vendor-class-identifier = "android-dhcp-12";
+}
+lease 157.181.201.176 {
+  starts 4 2023/07/20 05:29:36;
+  ends 4 2023/07/20 07:09:36;
+  tstp 4 2023/07/20 07:09:36;
+  cltt 4 2023/07/20 05:30:50;
+  binding state free;
+  hardware ethernet c6:40:61:2c:d8:04;
+  uid "\001\306@a,\330\004";
+}
+lease 157.181.200.184 {
+  starts 4 2023/07/20 05:40:22;
+  ends 4 2023/07/20 07:20:22;
+  tstp 4 2023/07/20 07:20:22;
+  cltt 4 2023/07/20 05:41:53;
+  binding state free;
+  hardware ethernet b6:d4:bc:b4:1a:f2;
+  uid "\001\266\324\274\264\032\362";
+}
+lease 157.181.200.214 {
+  starts 4 2023/07/20 05:40:39;
+  ends 4 2023/07/20 07:20:39;
+  tstp 4 2023/07/20 07:20:39;
+  cltt 4 2023/07/20 05:40:39;
+  binding state free;
+  hardware ethernet 2a:9d:a5:c1:c7:1e;
+  uid "\001*\235\245\301\307\036";
+}
+lease 157.181.200.68 {
+  starts 4 2023/07/20 05:41:28;
+  ends 4 2023/07/20 07:21:28;
+  tstp 4 2023/07/20 07:21:28;
+  cltt 4 2023/07/20 06:06:23;
+  binding state free;
+  hardware ethernet da:68:1c:09:81:9c;
+  uid "\001\332h\034\011\201\234";
+  set vendor-class-identifier = "android-dhcp-11";
+}
+lease 157.181.200.12 {
+  starts 4 2023/07/20 05:58:38;
+  ends 4 2023/07/20 07:38:38;
+  tstp 4 2023/07/20 07:38:38;
+  cltt 4 2023/07/20 05:58:38;
+  binding state free;
+  hardware ethernet 66:d1:4d:df:e8:0a;
+  uid "\001f\321M\337\350\012";
+}
+lease 157.181.200.176 {
+  starts 4 2023/07/20 06:00:37;
+  ends 4 2023/07/20 07:40:37;
+  tstp 4 2023/07/20 07:40:37;
+  cltt 4 2023/07/20 06:00:37;
+  binding state free;
+  hardware ethernet be:aa:40:ca:49:3b;
+  uid "\001\276\252@\312I;";
+  set vendor-class-identifier = "android-dhcp-11";
+}
+lease 157.181.200.251 {
+  starts 4 2023/07/20 06:03:06;
+  ends 4 2023/07/20 07:43:06;
+  tstp 4 2023/07/20 07:43:06;
+  cltt 4 2023/07/20 06:05:37;
+  binding state free;
+  hardware ethernet 36:f8:21:52:83:e1;
+  uid "\0016\370!R\203\341";
+}
+lease 157.181.200.253 {
+  starts 4 2023/07/20 06:03:22;
+  ends 4 2023/07/20 07:43:22;
+  tstp 4 2023/07/20 07:43:22;
+  cltt 4 2023/07/20 06:06:07;
+  binding state free;
+  hardware ethernet da:db:68:18:e8:de;
+  uid "\001\332\333h\030\350\336";
+}
+lease 157.181.200.107 {
+  starts 4 2023/07/20 06:03:59;
+  ends 4 2023/07/20 07:43:59;
+  tstp 4 2023/07/20 07:43:59;
+  cltt 4 2023/07/20 06:05:24;
+  binding state free;
+  hardware ethernet 9e:ad:a0:5c:37:44;
+  uid "\001\236\255\240\\7D";
+  set vendor-class-identifier = "android-dhcp-13";
+}
+lease 157.181.200.51 {
+  starts 4 2023/07/20 06:09:07;
+  ends 4 2023/07/20 07:49:07;
+  tstp 4 2023/07/20 07:49:07;
+  cltt 4 2023/07/20 06:09:37;
+  binding state free;
+  hardware ethernet 4e:ce:0e:da:4e:c0;
+  uid "\001N\316\016\332N\300";
+}
+lease 157.181.200.185 {
+  starts 4 2023/07/20 06:09:13;
+  ends 4 2023/07/20 07:49:13;
+  tstp 4 2023/07/20 07:49:13;
+  cltt 4 2023/07/20 06:17:13;
+  binding state free;
+  hardware ethernet 5a:6b:0d:d0:76:b7;
+  uid "\001Zk\015\320v\267";
+}
+lease 157.181.201.4 {
+  starts 4 2023/07/20 06:12:38;
+  ends 4 2023/07/20 07:52:38;
+  tstp 4 2023/07/20 07:52:38;
+  cltt 4 2023/07/20 06:12:38;
+  binding state free;
+  hardware ethernet 94:e9:79:48:b7:af;
+  uid "\001\224\351yH\267\257";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.29 {
+  starts 4 2023/07/20 06:12:47;
+  ends 4 2023/07/20 07:52:47;
+  tstp 4 2023/07/20 07:52:47;
+  cltt 4 2023/07/20 06:37:29;
+  binding state free;
+  hardware ethernet 7a:b9:9a:71:5d:8e;
+  uid "\001z\271\232q]\216";
+  set vendor-class-identifier = "android-dhcp-11";
+}
+lease 157.181.201.66 {
+  starts 4 2023/07/20 07:28:51;
+  ends 4 2023/07/20 07:57:39;
+  tstp 4 2023/07/20 07:57:39;
+  cltt 4 2023/07/20 07:28:51;
+  binding state free;
+  hardware ethernet 82:61:5e:b3:b2:81;
+  uid "\001\202a^\263\262\201";
+}
+lease 157.181.201.149 {
+  starts 4 2023/07/20 06:18:29;
+  ends 4 2023/07/20 07:58:29;
+  tstp 4 2023/07/20 07:58:29;
+  cltt 4 2023/07/20 06:18:29;
+  binding state free;
+  hardware ethernet 74:0a:e1:7c:9a:0f;
+  uid "\001t\012\341|\232\017";
+  set vendor-class-identifier = "HUAWEI:android:MAR";
+}
+lease 157.181.200.63 {
+  starts 4 2023/07/20 06:19:54;
+  ends 4 2023/07/20 07:59:54;
+  tstp 4 2023/07/20 07:59:54;
+  cltt 4 2023/07/20 06:19:54;
+  binding state free;
+  hardware ethernet 06:62:b0:90:ca:9d;
+  uid "\001\006b\260\220\312\235";
+  set vendor-class-identifier = "android-dhcp-13";
+}
+lease 157.181.201.189 {
+  starts 4 2023/07/20 06:20:42;
+  ends 4 2023/07/20 08:00:42;
+  tstp 4 2023/07/20 08:00:42;
+  cltt 4 2023/07/20 06:20:42;
+  binding state free;
+  hardware ethernet be:d1:b4:7a:33:0e;
+  uid "\001\276\321\264z3\016";
+  set vendor-class-identifier = "android-dhcp-13";
+}
+lease 157.181.201.118 {
+  starts 4 2023/07/20 06:23:17;
+  ends 4 2023/07/20 08:03:17;
+  tstp 4 2023/07/20 08:03:17;
+  cltt 4 2023/07/20 06:23:17;
+  binding state free;
+  hardware ethernet 00:be:3b:4d:6c:01;
+  uid "\001\000\276;Ml\001";
+  set vendor-class-identifier = "HUAWEI:android:ANE";
+}
+lease 157.181.200.199 {
+  starts 4 2023/07/20 06:42:57;
+  ends 4 2023/07/20 08:22:57;
+  tstp 4 2023/07/20 08:22:57;
+  cltt 4 2023/07/20 06:42:57;
+  binding state free;
+  hardware ethernet 7c:04:d0:cb:59:d6;
+  uid "\001|\004\320\313Y\326";
+}
+lease 157.181.201.112 {
+  starts 4 2023/07/20 06:49:29;
+  ends 4 2023/07/20 08:29:29;
+  tstp 4 2023/07/20 08:29:29;
+  cltt 4 2023/07/20 06:49:29;
+  binding state free;
+  hardware ethernet d2:59:86:31:cf:f4;
+  uid "\001\322Y\2061\317\364";
+  set vendor-class-identifier = "android-dhcp-11";
+}
+lease 157.181.201.28 {
+  starts 4 2023/07/20 06:51:28;
+  ends 4 2023/07/20 08:31:28;
+  tstp 4 2023/07/20 08:31:28;
+  cltt 4 2023/07/20 06:51:28;
+  binding state free;
+  hardware ethernet ca:2d:2c:6d:7e:f9;
+  uid "\001\312-,m~\371";
+}
+lease 157.181.201.200 {
+  starts 4 2023/07/20 06:55:13;
+  ends 4 2023/07/20 08:35:13;
+  tstp 4 2023/07/20 08:35:13;
+  cltt 4 2023/07/20 07:19:31;
+  binding state free;
+  hardware ethernet 42:7a:46:ec:4a:02;
+  uid "\001BzF\354J\002";
+}
+lease 157.181.200.164 {
+  starts 4 2023/07/20 07:01:09;
+  ends 4 2023/07/20 08:41:09;
+  tstp 4 2023/07/20 08:41:09;
+  cltt 4 2023/07/20 07:20:54;
+  binding state free;
+  hardware ethernet ac:d5:64:9f:fe:c3;
+  uid "\001\254\325d\237\376\303";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.134 {
+  starts 4 2023/07/20 07:11:32;
+  ends 4 2023/07/20 08:51:32;
+  tstp 4 2023/07/20 08:51:32;
+  cltt 4 2023/07/20 07:35:38;
+  binding state free;
+  hardware ethernet c6:a4:ef:1e:5f:19;
+  uid "\001\306\244\357\036_\031";
+}
+lease 157.181.200.172 {
+  starts 4 2023/07/20 07:16:17;
+  ends 4 2023/07/20 08:56:17;
+  tstp 4 2023/07/20 08:56:17;
+  cltt 4 2023/07/20 07:16:17;
+  binding state free;
+  hardware ethernet 5e:59:c3:b7:9c:23;
+  uid "\001^Y\303\267\234#";
+  set vendor-class-identifier = "android-dhcp-13";
+}
+lease 157.181.200.206 {
+  starts 4 2023/07/20 07:17:43;
+  ends 4 2023/07/20 08:57:43;
+  tstp 4 2023/07/20 08:57:43;
+  cltt 4 2023/07/20 07:17:43;
+  binding state free;
+  hardware ethernet 98:9e:63:8c:ff:10;
+  uid "\001\230\236c\214\377\020";
+}
+lease 157.181.200.149 {
+  starts 4 2023/07/20 07:29:43;
+  ends 4 2023/07/20 09:09:43;
+  tstp 4 2023/07/20 09:09:43;
+  cltt 4 2023/07/20 07:35:39;
+  binding state free;
+  hardware ethernet 36:ec:0a:a9:d1:19;
+  uid "\0016\354\012\251\321\031";
+}
+lease 157.181.201.178 {
+  starts 4 2023/07/20 07:31:04;
+  ends 4 2023/07/20 09:11:04;
+  tstp 4 2023/07/20 09:11:04;
+  cltt 4 2023/07/20 07:31:04;
+  binding state free;
+  hardware ethernet 0a:c6:73:80:e6:98;
+  uid "\001\012\306s\200\346\230";
+  set vendor-class-identifier = "android-dhcp-13";
+}
+lease 157.181.201.3 {
+  starts 4 2023/07/20 07:39:23;
+  ends 4 2023/07/20 09:19:23;
+  tstp 4 2023/07/20 09:19:23;
+  cltt 4 2023/07/20 08:02:33;
+  binding state free;
+  hardware ethernet 9a:80:b2:3d:7b:11;
+  uid "\001\232\200\262={\021";
+}
+lease 157.181.200.196 {
+  starts 4 2023/07/20 07:57:39;
+  ends 4 2023/07/20 09:37:39;
+  tstp 4 2023/07/20 09:37:39;
+  cltt 4 2023/07/20 08:02:02;
+  binding state free;
+  hardware ethernet 82:61:5e:b3:b2:81;
+  uid "\001\202a^\263\262\201";
+  set vendor-class-identifier = "HUAWEI:android:ELE";
+}
+lease 157.181.200.97 {
+  starts 4 2023/07/20 07:59:49;
+  ends 4 2023/07/20 09:39:49;
+  tstp 4 2023/07/20 09:39:49;
+  cltt 4 2023/07/20 07:59:49;
+  binding state free;
+  hardware ethernet 4a:59:f1:36:6f:49;
+  uid "\001JY\3616oI";
+  set vendor-class-identifier = "android-dhcp-13";
+}
+lease 157.181.200.159 {
+  starts 4 2023/07/20 08:03:29;
+  ends 4 2023/07/20 09:43:29;
+  tstp 4 2023/07/20 09:43:29;
+  cltt 4 2023/07/20 08:03:29;
+  binding state free;
+  hardware ethernet 0c:e4:a0:60:60:8b;
+  uid "\001\014\344\240``\213";
+  set vendor-class-identifier = "HUAWEI:android:MAR";
+}
+lease 157.181.200.170 {
+  starts 4 2023/07/20 08:05:31;
+  ends 4 2023/07/20 09:45:31;
+  tstp 4 2023/07/20 09:45:31;
+  cltt 4 2023/07/20 08:05:31;
+  binding state free;
+  hardware ethernet 20:f4:78:2f:73:0c;
+  uid "\001 \364x/s\014";
+  set vendor-class-identifier = "android-dhcp-11";
+}
+lease 157.181.201.156 {
+  starts 4 2023/07/20 08:16:26;
+  ends 4 2023/07/20 09:56:26;
+  tstp 4 2023/07/20 09:56:26;
+  cltt 4 2023/07/20 08:16:26;
+  binding state free;
+  hardware ethernet 7a:4a:f9:94:74:f5;
+  uid "\001zJ\371\224t\365";
+  set vendor-class-identifier = "android-dhcp-12";
+}
+lease 157.181.201.69 {
+  starts 4 2023/07/20 08:29:48;
+  ends 4 2023/07/20 10:09:48;
+  tstp 4 2023/07/20 10:09:48;
+  cltt 4 2023/07/20 08:29:48;
+  binding state free;
+  hardware ethernet fa:b9:55:3e:f2:5d;
+  uid "\001\372\271U>\362]";
+  set vendor-class-identifier = "android-dhcp-12";
+}
+lease 157.181.200.181 {
+  starts 4 2023/07/20 09:55:30;
+  ends 4 2023/07/20 10:11:01;
+  tstp 4 2023/07/20 10:11:01;
+  cltt 4 2023/07/20 10:08:36;
+  binding state free;
+  hardware ethernet f0:c4:2f:d7:70:8e;
+  uid "\001\360\304/\327p\216";
+}
+lease 157.181.201.201 {
+  starts 4 2023/07/20 08:41:34;
+  ends 4 2023/07/20 10:21:34;
+  tstp 4 2023/07/20 10:21:34;
+  cltt 4 2023/07/20 09:05:44;
+  binding state free;
+  hardware ethernet 8a:2f:0c:fb:c1:64;
+  uid "\001\212/\014\373\301d";
+  set vendor-class-identifier = "android-dhcp-13";
+}
+lease 157.181.200.19 {
+  starts 4 2023/07/20 09:10:00;
+  ends 4 2023/07/20 10:50:00;
+  tstp 4 2023/07/20 10:50:00;
+  cltt 4 2023/07/20 09:10:00;
+  binding state free;
+  hardware ethernet 80:c5:f2:66:ff:ff;
+  uid "\001\200\305\362f\377\377";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.200.195 {
+  starts 4 2023/07/20 09:30:14;
+  ends 4 2023/07/20 11:10:14;
+  cltt 4 2023/07/20 09:30:14;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet e8:3f:67:fc:f1:bb;
+  uid "\001\350?g\374\361\273";
+  set vendor-class-identifier = "HUAWEI:android:MAR";
+  client-hostname "HUAWEI_P30_lite-2d751d945";
+}
+lease 157.181.200.250 {
+  starts 4 2023/07/20 09:37:45;
+  ends 4 2023/07/20 11:17:45;
+  cltt 4 2023/07/20 09:37:45;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet c2:53:75:97:8f:07;
+  uid "\001\302Su\227\217\007";
+  set vendor-class-identifier = "android-dhcp-11";
+  client-hostname "realme-C11-2021";
+}
+lease 157.181.200.58 {
+  starts 4 2023/07/20 09:55:29;
+  ends 4 2023/07/20 11:35:29;
+  cltt 4 2023/07/20 09:55:46;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet d2:57:82:95:dd:c9;
+  uid "\001\322W\202\225\335\311";
+}
+lease 157.181.201.111 {
+  starts 4 2023/07/20 10:11:01;
+  ends 4 2023/07/20 11:51:01;
+  cltt 4 2023/07/20 10:11:01;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet f0:c4:2f:d7:70:8e;
+  uid "\001\360\304/\327p\216";
+  set vendor-class-identifier = "HUAWEI:android:HRY-L21T";
+  client-hostname "HONOR_20e-4fbc89d908fa5fc";
+}
+lease 157.181.200.157 {
+  starts 4 2023/07/20 10:18:22;
+  ends 4 2023/07/20 11:58:22;
+  cltt 4 2023/07/20 10:18:22;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet 6a:26:30:99:eb:8f;
+  uid "\001j&0\231\353\217";
+  set vendor-class-identifier = "android-dhcp-10";
+  client-hostname "Orsi-Galaxy-S9-eszkoze";
+}
+lease 157.181.201.114 {
+  starts 4 2023/07/20 10:22:00;
+  ends 4 2023/07/20 12:02:00;
+  cltt 4 2023/07/20 10:35:04;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet c2:10:7f:55:f2:c5;
+  uid "\001\302\020\177U\362\305";
+  set vendor-class-identifier = "android-dhcp-13";
+  client-hostname "Luca-s-S21-Ultra";
+}
+lease 157.181.200.72 {
+  starts 4 2023/07/20 10:22:44;
+  ends 4 2023/07/20 12:02:44;
+  cltt 4 2023/07/20 10:22:44;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet 0a:c9:c4:f9:cf:b8;
+  uid "\001\012\311\304\371\317\270";
+  set vendor-class-identifier = "android-dhcp-13";
+  client-hostname "Biborka-S20-eszkoze";
+}
+lease 157.181.201.204 {
+  starts 4 2023/07/20 10:23:24;
+  ends 4 2023/07/20 12:03:24;
+  cltt 4 2023/07/20 10:32:15;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet 90:17:c8:69:c5:b1;
+  uid "\001\220\027\310i\305\261";
+  set vendor-class-identifier = "HUAWEI:android:MAR";
+  client-hostname "HUAWEI_P30_lite-635717227";
+}
+lease 157.181.200.31 {
+  starts 4 2023/07/20 10:24:17;
+  ends 4 2023/07/20 12:04:17;
+  cltt 4 2023/07/20 10:24:54;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet e8:2a:44:0f:f2:fd;
+  uid "\001\350*D\017\362\375";
+  set vendor-class-identifier = "MSFT 5.0";
+  client-hostname "ASUS-Laptop";
+}
+lease 157.181.201.36 {
+  starts 4 2023/07/20 10:28:39;
+  ends 4 2023/07/20 12:08:39;
+  cltt 4 2023/07/20 10:28:39;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet 80:2b:f9:33:b0:91;
+  uid "\001\200+\3713\260\221";
+  set vendor-class-identifier = "MSFT 5.0";
+  client-hostname "DESKTOP-68EQNA2";
+}
+lease 157.181.200.103 {
+  starts 4 2023/07/20 10:29:06;
+  ends 4 2023/07/20 12:09:06;
+  cltt 4 2023/07/20 10:32:20;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet ea:54:de:0b:67:0d;
+  uid "\001\352T\336\013g\015";
+  set vendor-class-identifier = "android-dhcp-13";
+  client-hostname "Galaxy-A52s-5G";
+}
+lease 157.181.200.109 {
+  starts 4 2023/07/20 10:29:08;
+  ends 4 2023/07/20 12:09:08;
+  cltt 4 2023/07/20 10:29:08;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet d8:9b:3b:73:22:06;
+  uid "\001\330\233;s\"\006";
+  set vendor-class-identifier = "HUAWEI:android:SNE";
+  client-hostname "HUAWEI_Mate_20_lite-c3e91";
+}
+lease 157.181.201.58 {
+  starts 4 2023/07/20 10:29:58;
+  ends 4 2023/07/20 12:09:58;
+  cltt 4 2023/07/20 10:29:58;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet 8e:8e:cf:e8:83:4d;
+  uid "\001\216\216\317\350\203M";
+  set vendor-class-identifier = "android-dhcp-12";
+  client-hostname "Markusz-A52-eszkoze";
+}
+lease 157.181.201.64 {
+  starts 4 2023/07/20 10:32:52;
+  ends 4 2023/07/20 12:12:52;
+  cltt 4 2023/07/20 10:45:30;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet b4:69:21:f0:db:a6;
+  uid "\001\264i!\360\333\246";
+  set vendor-class-identifier = "MSFT 5.0";
+  client-hostname "DESKTOP-8MLEG7R";
+}
+lease 157.181.200.177 {
+  starts 4 2023/07/20 10:36:24;
+  ends 4 2023/07/20 12:16:24;
+  cltt 4 2023/07/20 10:36:24;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet 5c:51:4f:46:1c:ed;
+  uid "\001\\QOF\034\355";
+  set vendor-class-identifier = "MSFT 5.0";
+  client-hostname "DESKTOP-CRSHESN";
+}
+lease 157.181.200.21 {
+  starts 4 2023/07/20 10:38:56;
+  ends 4 2023/07/20 12:18:56;
+  cltt 4 2023/07/20 10:38:56;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet 6a:01:89:b3:50:60;
+  uid "\001j\001\211\263P`";
+  set vendor-class-identifier = "android-dhcp-13";
+  client-hostname "Andras-s-Galaxy-Tab-S6-Lite";
+}
+lease 157.181.200.4 {
+  starts 4 2023/07/20 10:43:01;
+  ends 4 2023/07/20 12:23:01;
+  cltt 4 2023/07/20 10:56:15;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet 86:44:11:36:df:75;
+  uid "\001\206D\0216\337u";
+  set vendor-class-identifier = "android-dhcp-10";
+  client-hostname "OnePlus5";
+}
+lease 157.181.200.52 {
+  starts 4 2023/07/20 10:45:09;
+  ends 4 2023/07/20 12:25:09;
+  cltt 4 2023/07/20 10:45:09;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet 16:5b:95:38:78:6f;
+  uid "\001\026[\2258xo";
+}
+lease 157.181.200.135 {
+  starts 4 2023/07/20 10:45:17;
+  ends 4 2023/07/20 12:25:17;
+  cltt 4 2023/07/20 10:45:17;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet 62:75:14:ce:6e:7a;
+  uid "\001bu\024\316nz";
+  set vendor-class-identifier = "android-dhcp-13";
+  client-hostname "Adam-Tab-S6-Lite-eszkoze";
+}
+lease 157.181.200.110 {
+  starts 4 2023/07/20 10:45:26;
+  ends 4 2023/07/20 12:25:26;
+  cltt 4 2023/07/20 10:45:26;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet 00:be:3b:4d:6c:01;
+  uid "\001\000\276;Ml\001";
+  set vendor-class-identifier = "HUAWEI:android:ANE";
+  client-hostname "HUAWEI_P20_lite-810afbf01";
+}
+lease 157.181.200.133 {
+  starts 4 2023/07/20 10:45:51;
+  ends 4 2023/07/20 12:25:51;
+  cltt 4 2023/07/20 10:48:06;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet 4c:49:e3:61:22:80;
+  uid "\001LI\343a\"\200";
+  set vendor-class-identifier = "android-dhcp-9";
+  client-hostname "MI6-MiPhone";
+}
+lease 157.181.200.238 {
+  starts 4 2023/07/20 10:46:46;
+  ends 4 2023/07/20 12:26:46;
+  cltt 4 2023/07/20 10:46:46;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet e2:1c:4a:26:29:89;
+  uid "\001\342\034J&)\211";
+}
+lease 157.181.200.54 {
+  starts 4 2023/07/20 10:47:37;
+  ends 4 2023/07/20 12:27:37;
+  cltt 4 2023/07/20 10:47:37;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet 5a:a1:d8:37:a0:48;
+  uid "\001Z\241\3307\240H";
+  set vendor-class-identifier = "android-dhcp-13";
+  client-hostname "Monika-A52s-eszkoze";
+}
+lease 157.181.201.182 {
+  starts 4 2023/07/20 10:49:47;
+  ends 4 2023/07/20 12:29:47;
+  cltt 4 2023/07/20 10:49:47;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet 46:d2:dc:5b:f5:ee;
+  uid "\001F\322\334[\365\356";
+  set vendor-class-identifier = "android-dhcp-13";
+  client-hostname "Galaxy-S20";
+}
+lease 157.181.200.23 {
+  starts 4 2023/07/20 10:50:30;
+  ends 4 2023/07/20 12:30:30;
+  cltt 4 2023/07/20 10:50:30;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet 00:be:3b:4d:6c:01;
+  uid "\001\000\276;Ml\001";
+  set vendor-class-identifier = "HUAWEI:android:ANE";
+  client-hostname "HUAWEI_P20_lite-810afbf01";
+}
+lease 157.181.200.22 {
+  starts 4 2023/07/20 10:57:22;
+  ends 4 2023/07/20 12:37:22;
+  cltt 4 2023/07/20 10:57:22;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet a6:de:65:36:91:82;
+  uid "\001\246\336e6\221\202";
+  set vendor-class-identifier = "android-dhcp-13";
+  client-hostname "Kincso-A32-eszkoze";
+}
+lease 157.181.200.162 {
+  starts 4 2023/07/20 10:59:32;
+  ends 4 2023/07/20 12:39:32;
+  cltt 4 2023/07/20 10:59:32;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet ec:56:23:f7:fe:46;
+  uid "\001\354V#\367\376F";
+  set vendor-class-identifier = "HUAWEI:android:FIG-L31";
+  client-hostname "HUAWEI_P_smart-fd0b59b439";
+}
+lease 157.181.200.17 {
+  starts 4 2023/07/20 11:04:58;
+  ends 4 2023/07/20 12:44:58;
+  cltt 4 2023/07/20 11:04:58;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet a4:55:90:f7:7b:1e;
+  uid "\001\244U\220\367{\036";
+  set vendor-class-identifier = "android-dhcp-10";
+  client-hostname "M2004J19C-Redmi9";
+}
+lease 157.181.200.154 {
+  starts 4 2023/07/20 11:05:41;
+  ends 4 2023/07/20 12:45:41;
+  cltt 4 2023/07/20 11:05:41;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet 84:16:f9:59:6a:42;
+  uid "\001\204\026\371YjB";
+  set vendor-class-identifier = "MSFT 5.0";
+  client-hostname "Archer_C2";
+}
+lease 157.181.201.34 {
+  starts 4 2023/07/20 11:07:14;
+  ends 4 2023/07/20 12:47:14;
+  cltt 4 2023/07/20 11:07:14;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet 5e:64:1e:f3:5c:3a;
+  uid "\001^d\036\363\\:";
+  set vendor-class-identifier = "android-dhcp-13";
+  client-hostname "Timea-A13-eszkoze";
+}
+lease 157.181.201.219 {
+  starts 4 2023/07/20 11:07:28;
+  ends 4 2023/07/20 12:47:28;
+  cltt 4 2023/07/20 11:07:28;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet b0:fc:36:15:9a:5b;
+  uid "\001\260\3746\025\232[";
+  set vendor-class-identifier = "MSFT 5.0";
+  client-hostname "LenY";
+}
+lease 157.181.200.213 {
+  starts 3 2023/01/04 11:07:25;
+  ends never;
+  tstp never;
+  cltt 3 2023/01/18 01:11:34;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  dynamic-bootp;
+  hardware ethernet 00:00:00:00:00:0e;
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.4 {
+  starts 1 2022/10/03 16:07:08;
+  ends 1 2022/10/03 16:09:08;
+  tstp 1 2022/10/03 16:09:08;
+  cltt 1 2022/10/03 16:07:08;
+  binding state free;
+  hardware ethernet 98:e7:43:11:c8:f1;
+  uid "\001\230\347C\021\310\361";
+}
+lease 157.181.120.5 {
+  starts 2 2022/10/04 15:13:33;
+  ends 2 2022/10/04 15:15:33;
+  tstp 2 2022/10/04 15:15:33;
+  cltt 2 2022/10/04 15:13:33;
+  binding state free;
+  hardware ethernet 18:31:bf:7e:dc:c8;
+  uid "\001\0301\277~\334\310";
+}
+lease 157.181.120.6 {
+  starts 2 2022/10/04 18:29:33;
+  ends 2 2022/10/04 18:31:33;
+  tstp 2 2022/10/04 18:31:33;
+  cltt 2 2022/10/04 18:29:33;
+  binding state free;
+  hardware ethernet f4:30:b9:86:c6:b1;
+  uid "\001\3640\271\206\306\261";
+}
+lease 157.181.120.112 {
+  starts 6 2022/10/08 06:45:56;
+  ends 6 2022/10/08 18:45:56;
+  tstp 6 2022/10/08 18:45:56;
+  cltt 6 2022/10/08 06:45:56;
+  binding state free;
+  hardware ethernet f8:a9:63:e7:b8:58;
+  uid "\001\370\251c\347\270X";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.191 {
+  starts 5 2022/10/14 05:08:34;
+  ends 5 2022/10/14 17:08:34;
+  tstp 5 2022/10/14 17:08:34;
+  cltt 5 2022/10/14 05:08:34;
+  binding state free;
+  hardware ethernet 10:65:30:3f:07:27;
+  uid "\001\020e0?\007'";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.184 {
+  starts 6 2022/10/15 17:14:18;
+  ends 0 2022/10/16 05:14:18;
+  tstp 0 2022/10/16 05:14:18;
+  cltt 6 2022/10/15 19:03:13;
+  binding state free;
+  hardware ethernet e8:d8:d1:66:95:4d;
+  uid "\001\350\330\321f\225M";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.179 {
+  starts 4 2022/10/20 06:36:43;
+  ends 4 2022/10/20 18:36:43;
+  tstp 4 2022/10/20 18:36:43;
+  cltt 4 2022/10/20 06:36:43;
+  binding state free;
+  hardware ethernet 8c:04:ba:2e:8d:93;
+  uid "\001\214\004\272.\215\223";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.173 {
+  starts 3 2022/10/26 05:35:08;
+  ends 3 2022/10/26 17:35:08;
+  tstp 3 2022/10/26 17:35:08;
+  cltt 3 2022/10/26 05:35:08;
+  binding state free;
+  hardware ethernet c0:3e:ba:53:05:f0;
+  set vendor-class-identifier = "dhcpcd-9.4.0:Linux-5.14.11-superschaf-x64:x86_64:GenuineIntel";
+}
+lease 157.181.120.185 {
+  starts 3 2022/10/26 18:36:31;
+  ends 4 2022/10/27 06:36:31;
+  tstp 4 2022/10/27 06:36:31;
+  cltt 3 2022/10/26 18:36:31;
+  binding state free;
+  hardware ethernet 54:ee:75:1e:6b:3e;
+  uid "\001T\356u\036k>";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.197 {
+  starts 5 2022/10/28 11:24:26;
+  ends 5 2022/10/28 23:24:26;
+  tstp 5 2022/10/28 23:24:26;
+  cltt 5 2022/10/28 11:24:26;
+  binding state free;
+  hardware ethernet c0:3e:ba:53:05:f0;
+  uid "\001\300>\272S\005\360";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.153 {
+  starts 6 2022/10/29 17:18:02;
+  ends 0 2022/10/30 05:18:02;
+  tstp 0 2022/10/30 05:18:02;
+  cltt 6 2022/10/29 18:32:26;
+  binding state free;
+  hardware ethernet fc:08:4a:69:d1:91;
+  uid "\001\374\010Ji\321\221";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.51 {
+  starts 0 2022/11/13 21:43:05;
+  ends 1 2022/11/14 09:43:05;
+  tstp 1 2022/11/14 09:43:05;
+  cltt 0 2022/11/13 21:46:04;
+  binding state free;
+  hardware ethernet 98:29:a6:31:9d:1c;
+  uid "\001\230)\2461\235\034";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.158 {
+  starts 0 2022/11/20 12:31:25;
+  ends 1 2022/11/21 00:31:25;
+  tstp 1 2022/11/21 00:31:25;
+  cltt 0 2022/11/20 13:06:26;
+  binding state free;
+  hardware ethernet 8c:16:45:c4:ab:d8;
+  uid "\001\214\026E\304\253\330";
+}
+lease 157.181.120.142 {
+  starts 4 2022/11/24 16:01:24;
+  ends 5 2022/11/25 04:01:24;
+  tstp 5 2022/11/25 04:01:24;
+  cltt 4 2022/11/24 16:01:24;
+  binding state free;
+  hardware ethernet 04:92:26:00:33:03;
+  uid "\001\004\222&\0003\003";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.144 {
+  starts 5 2022/12/02 02:10:37;
+  ends 5 2022/12/02 14:10:37;
+  tstp 5 2022/12/02 14:10:37;
+  cltt 5 2022/12/02 02:10:37;
+  binding state free;
+  hardware ethernet ec:f4:bb:93:92:2f;
+  uid "\001\354\364\273\223\222/";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.135 {
+  starts 5 2022/12/09 11:00:15;
+  ends 5 2022/12/09 23:00:15;
+  tstp 5 2022/12/09 23:00:15;
+  cltt 5 2022/12/09 11:00:15;
+  binding state free;
+  hardware ethernet 8c:8c:aa:17:9e:a2;
+  uid "\001\214\214\252\027\236\242";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.38 {
+  starts 5 2022/12/16 16:18:25;
+  ends 6 2022/12/17 04:18:25;
+  tstp 6 2022/12/17 04:18:25;
+  cltt 5 2022/12/16 16:19:51;
+  binding state free;
+  hardware ethernet 0c:9d:92:36:bf:ab;
+  uid "\001\014\235\2226\277\253";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.180 {
+  starts 4 2022/12/22 21:32:01;
+  ends 5 2022/12/23 09:32:01;
+  tstp 5 2022/12/23 09:32:01;
+  cltt 4 2022/12/22 21:32:01;
+  binding state free;
+  hardware ethernet 98:fa:9b:02:b4:90;
+  uid "\001\230\372\233\002\264\220";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.161 {
+  starts 3 2022/12/28 12:53:28;
+  ends 4 2022/12/29 00:53:28;
+  tstp 4 2022/12/29 00:53:28;
+  cltt 3 2022/12/28 12:53:28;
+  binding state free;
+  hardware ethernet 80:ce:62:4f:8a:2f;
+  uid "\001\200\316bO\212/";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.140 {
+  starts 4 2023/01/05 11:43:11;
+  ends 4 2023/01/05 23:43:11;
+  tstp 4 2023/01/05 23:43:11;
+  cltt 4 2023/01/05 11:43:11;
+  binding state free;
+  hardware ethernet b8:2a:72:ba:e8:10;
+  uid "\001\270*r\272\350\020";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.175 {
+  starts 2 2023/01/24 15:35:19;
+  ends 3 2023/01/25 03:35:19;
+  tstp 3 2023/01/25 03:35:19;
+  cltt 2 2023/01/24 15:35:19;
+  binding state free;
+  hardware ethernet 98:e7:f4:86:d9:bf;
+  uid "\001\230\347\364\206\331\277";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.176 {
+  starts 5 2023/02/03 11:44:08;
+  ends 5 2023/02/03 23:44:08;
+  tstp 5 2023/02/03 23:44:08;
+  cltt 5 2023/02/03 12:48:53;
+  binding state free;
+  hardware ethernet f8:75:a4:98:5c:72;
+  uid "\001\370u\244\230\\r";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.168 {
+  starts 4 2023/02/16 07:54:13;
+  ends 4 2023/02/16 19:54:13;
+  tstp 4 2023/02/16 19:54:13;
+  cltt 4 2023/02/16 07:54:13;
+  binding state free;
+  hardware ethernet 38:f3:ab:44:15:58;
+  uid "\0018\363\253D\025X";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.103 {
+  starts 6 2023/02/18 07:04:53;
+  ends 6 2023/02/18 19:04:53;
+  tstp 6 2023/02/18 19:04:53;
+  cltt 6 2023/02/18 07:04:53;
+  binding state free;
+  hardware ethernet f4:30:b9:86:c6:b1;
+  uid "\001\3640\271\206\306\261";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.27 {
+  starts 2 2023/02/21 21:03:18;
+  ends 3 2023/02/22 09:03:18;
+  tstp 3 2023/02/22 09:03:18;
+  cltt 2 2023/02/21 21:03:18;
+  binding state free;
+  hardware ethernet 68:f7:28:ef:45:1e;
+  uid "\001h\367(\357E\036";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.61 {
+  starts 5 2023/02/24 10:31:52;
+  ends 5 2023/02/24 22:31:52;
+  tstp 5 2023/02/24 22:31:52;
+  cltt 5 2023/02/24 10:52:23;
+  binding state free;
+  hardware ethernet f4:39:09:ca:db:5b;
+  uid "\001\3649\011\312\333[";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.148 {
+  starts 2 2023/03/07 09:57:18;
+  ends 2 2023/03/07 21:57:18;
+  tstp 2 2023/03/07 21:57:18;
+  cltt 2 2023/03/07 09:57:18;
+  binding state free;
+  hardware ethernet 00:21:85:12:1c:a1;
+  uid "\001\000!\205\022\034\241";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.136 {
+  starts 4 2023/03/09 13:04:26;
+  ends 4 2023/03/09 13:06:26;
+  tstp 4 2023/03/09 13:06:26;
+  cltt 4 2023/03/09 13:04:26;
+  binding state free;
+  hardware ethernet 38:f3:ab:cd:b8:f4;
+  uid "\0018\363\253\315\270\364";
+}
+lease 157.181.120.169 {
+  starts 4 2023/03/09 08:01:15;
+  ends 4 2023/03/09 20:01:15;
+  tstp 4 2023/03/09 20:01:15;
+  cltt 4 2023/03/09 08:01:15;
+  binding state free;
+  hardware ethernet 98:28:a6:25:81:51;
+  uid "\001\230(\246%\201Q";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.110 {
+  starts 2 2023/03/14 15:18:36;
+  ends 3 2023/03/15 03:18:36;
+  tstp 3 2023/03/15 03:18:36;
+  cltt 2 2023/03/14 15:18:36;
+  binding state free;
+  hardware ethernet 38:f3:ab:44:10:7c;
+  uid "\0018\363\253D\020|";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.174 {
+  starts 4 2023/03/16 13:07:06;
+  ends 5 2023/03/17 01:07:06;
+  tstp 5 2023/03/17 01:07:06;
+  cltt 4 2023/03/16 13:07:06;
+  binding state free;
+  hardware ethernet 24:1b:7a:f8:eb:57;
+  uid "\001$\033z\370\353W";
+}
+lease 157.181.120.130 {
+  starts 3 2023/03/22 19:25:50;
+  ends 4 2023/03/23 07:25:50;
+  tstp 4 2023/03/23 07:25:50;
+  cltt 3 2023/03/22 19:33:29;
+  binding state free;
+  hardware ethernet 2c:60:0c:de:b9:8e;
+  uid "\001,`\014\336\271\216";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.131 {
+  starts 4 2023/03/23 08:50:32;
+  ends 4 2023/03/23 20:50:32;
+  tstp 4 2023/03/23 20:50:32;
+  cltt 4 2023/03/23 08:50:32;
+  binding state free;
+  hardware ethernet 00:50:b6:25:5b:d9;
+  uid "\001\000P\266%[\331";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.132 {
+  starts 5 2023/03/24 21:44:12;
+  ends 6 2023/03/25 09:44:12;
+  tstp 6 2023/03/25 09:44:12;
+  cltt 5 2023/03/24 21:44:12;
+  binding state free;
+  hardware ethernet a8:b1:3b:73:3a:1f;
+  uid "\001\250\261;s:\037";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.139 {
+  starts 1 2023/03/27 14:37:10;
+  ends 2 2023/03/28 02:37:10;
+  tstp 2 2023/03/28 02:37:10;
+  cltt 1 2023/03/27 14:37:10;
+  binding state free;
+  hardware ethernet a4:4c:c8:09:15:7d;
+  uid "\001\244L\310\011\025}";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.166 {
+  starts 1 2023/04/24 16:12:47;
+  ends 2 2023/04/25 04:12:47;
+  tstp 2 2023/04/25 04:12:47;
+  cltt 1 2023/04/24 16:12:47;
+  binding state free;
+  hardware ethernet c4:34:6b:27:d6:ac;
+  uid "\001\3044k'\326\254";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.134 {
+  starts 4 2023/05/11 07:26:50;
+  ends 4 2023/05/11 19:26:50;
+  tstp 4 2023/05/11 19:26:50;
+  cltt 4 2023/05/11 08:25:27;
+  binding state free;
+  hardware ethernet 98:4b:e1:c4:e3:2f;
+  uid "\001\230K\341\304\343/";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.194 {
+  starts 5 2023/05/12 19:13:38;
+  ends 6 2023/05/13 07:13:38;
+  tstp 6 2023/05/13 07:13:38;
+  cltt 5 2023/05/12 19:13:38;
+  binding state free;
+  hardware ethernet b0:5a:da:b4:a7:4a;
+  uid "\001\260Z\332\264\247J";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.151 {
+  starts 4 2023/05/18 13:07:59;
+  ends 5 2023/05/19 01:07:59;
+  tstp 5 2023/05/19 01:07:59;
+  cltt 4 2023/05/18 14:51:27;
+  binding state free;
+  hardware ethernet fc:3f:db:47:05:fd;
+  uid "\001\374?\333G\005\375";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.172 {
+  starts 2 2023/05/23 13:24:09;
+  ends 3 2023/05/24 01:24:09;
+  tstp 3 2023/05/24 01:24:09;
+  cltt 2 2023/05/23 13:24:09;
+  binding state free;
+  hardware ethernet 34:48:ed:2e:62:f0;
+  uid "\0014H\355.b\360";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.165 {
+  starts 3 2023/05/24 16:05:30;
+  ends 4 2023/05/25 04:05:30;
+  tstp 4 2023/05/25 04:05:30;
+  cltt 3 2023/05/24 16:05:30;
+  binding state free;
+  hardware ethernet 00:e0:4c:68:12:20;
+  uid "\001\000\340Lh\022 ";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.146 {
+  starts 4 2023/05/25 15:07:49;
+  ends 5 2023/05/26 03:07:49;
+  tstp 5 2023/05/26 03:07:49;
+  cltt 4 2023/05/25 16:00:47;
+  binding state free;
+  hardware ethernet 00:e0:81:39:1c:97;
+  uid "\001\000\340\2019\034\227";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.156 {
+  starts 5 2023/05/26 12:12:12;
+  ends 6 2023/05/27 00:12:12;
+  tstp 6 2023/05/27 00:12:12;
+  cltt 5 2023/05/26 12:12:12;
+  binding state free;
+  hardware ethernet 70:9e:29:e4:d0:67;
+  uid "\001p\236)\344\320g";
+  set vendor-class-identifier = "PS4\000";
+}
+lease 157.181.120.128 {
+  starts 6 2023/05/27 09:20:47;
+  ends 6 2023/05/27 21:20:47;
+  tstp 6 2023/05/27 21:20:47;
+  cltt 6 2023/05/27 09:49:28;
+  binding state free;
+  hardware ethernet 60:45:cb:27:8f:74;
+  uid "\001`E\313'\217t";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.154 {
+  starts 1 2023/05/29 19:01:08;
+  ends 1 2023/05/29 19:03:08;
+  tstp 1 2023/05/29 19:03:08;
+  cltt 1 2023/05/29 19:01:08;
+  binding state free;
+  hardware ethernet 1c:69:7a:00:16:24;
+  uid "\001\034iz\000\026$";
+  set vendor-class-identifier = "TP-LINK VSY";
+}
+lease 157.181.120.159 {
+  starts 3 2023/05/31 19:03:10;
+  ends 4 2023/06/01 07:03:10;
+  tstp 4 2023/06/01 07:03:10;
+  cltt 3 2023/05/31 19:03:10;
+  binding state free;
+  hardware ethernet 00:e0:4c:68:01:03;
+  uid "\001\000\340Lh\001\003";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.126 {
+  starts 3 2023/06/07 15:38:40;
+  ends 4 2023/06/08 03:38:40;
+  tstp 4 2023/06/08 03:38:40;
+  cltt 3 2023/06/07 15:38:40;
+  binding state free;
+  hardware ethernet f4:ee:08:d7:3b:76;
+  uid "\001\364\356\010\327;v";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.150 {
+  starts 1 2023/06/12 13:55:12;
+  ends 2 2023/06/13 01:55:12;
+  tstp 2 2023/06/13 01:55:12;
+  cltt 1 2023/06/12 13:55:12;
+  binding state free;
+  hardware ethernet 28:ee:52:02:06:f5;
+  uid "\001(\356R\002\006\365";
+}
+lease 157.181.120.167 {
+  starts 4 2023/06/15 18:29:13;
+  ends 5 2023/06/16 06:29:13;
+  tstp 5 2023/06/16 06:29:13;
+  cltt 4 2023/06/15 20:03:07;
+  binding state free;
+  hardware ethernet 10:7b:44:b8:74:ef;
+  uid "\001\020{D\270t\357";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.186 {
+  starts 0 2023/06/18 10:08:42;
+  ends 0 2023/06/18 22:08:42;
+  tstp 0 2023/06/18 22:08:42;
+  cltt 0 2023/06/18 10:10:36;
+  binding state free;
+  hardware ethernet c0:18:50:1c:ce:f2;
+  uid "\001\300\030P\034\316\362";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.113 {
+  starts 2 2023/06/20 10:59:55;
+  ends 2 2023/06/20 22:59:55;
+  tstp 2 2023/06/20 22:59:55;
+  cltt 2 2023/06/20 13:49:29;
+  binding state free;
+  hardware ethernet b4:a9:fc:e7:f4:e7;
+  uid "\001\264\251\374\347\364\347";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.163 {
+  starts 2 2023/06/20 13:54:54;
+  ends 3 2023/06/21 01:54:54;
+  tstp 3 2023/06/21 01:54:54;
+  cltt 2 2023/06/20 15:58:09;
+  binding state free;
+  hardware ethernet fc:3f:db:47:c1:35;
+  uid "\001\374?\333G\3015";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.137 {
+  starts 4 2023/06/22 21:42:37;
+  ends 5 2023/06/23 09:42:37;
+  tstp 5 2023/06/23 09:42:37;
+  cltt 4 2023/06/22 21:42:37;
+  binding state free;
+  hardware ethernet 3c:2c:30:d6:0d:a1;
+  uid "\001<,0\326\015\241";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.170 {
+  starts 5 2023/06/23 20:24:35;
+  ends 6 2023/06/24 08:24:35;
+  tstp 6 2023/06/24 08:24:35;
+  cltt 5 2023/06/23 20:24:35;
+  binding state free;
+  hardware ethernet b4:a9:fc:8c:42:ee;
+  uid "\001\264\251\374\214B\356";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.193 {
+  starts 2 2023/06/27 14:24:15;
+  ends 3 2023/06/28 02:24:15;
+  tstp 3 2023/06/28 02:24:15;
+  cltt 2 2023/06/27 16:51:44;
+  binding state free;
+  hardware ethernet 54:af:97:f4:8c:f6;
+  uid "\001T\257\227\364\214\366";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.3 {
+  starts 2 2023/06/27 18:23:46;
+  ends 3 2023/06/28 06:23:46;
+  tstp 3 2023/06/28 06:23:46;
+  cltt 2 2023/06/27 18:23:46;
+  binding state free;
+  hardware ethernet 38:f3:ab:cd:b8:f4;
+  uid "\0018\363\253\315\270\364";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.190 {
+  starts 3 2023/06/28 10:31:13;
+  ends 3 2023/06/28 22:31:13;
+  tstp 3 2023/06/28 22:31:13;
+  cltt 3 2023/06/28 10:31:13;
+  binding state free;
+  hardware ethernet 18:03:73:d3:99:7e;
+  uid "\001\030\003s\323\231~";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.143 {
+  starts 4 2023/06/29 06:11:17;
+  ends 4 2023/06/29 18:11:17;
+  tstp 4 2023/06/29 18:11:17;
+  cltt 4 2023/06/29 06:11:17;
+  binding state free;
+  hardware ethernet 04:92:26:16:4c:ad;
+  uid "\001\004\222&\026L\255";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.124 {
+  starts 4 2023/06/29 09:24:49;
+  ends 4 2023/06/29 21:24:49;
+  tstp 4 2023/06/29 21:24:49;
+  cltt 4 2023/06/29 09:24:49;
+  binding state free;
+  hardware ethernet 88:51:fb:c7:a9:29;
+  uid "\001\210Q\373\307\251)";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.149 {
+  starts 4 2023/06/29 14:14:51;
+  ends 5 2023/06/30 02:14:51;
+  tstp 5 2023/06/30 02:14:51;
+  cltt 4 2023/06/29 14:14:51;
+  binding state free;
+  hardware ethernet 3c:2c:30:a7:c8:e5;
+  uid "\001<,0\247\310\345";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.164 {
+  starts 5 2023/06/30 09:40:36;
+  ends 5 2023/06/30 21:40:36;
+  tstp 5 2023/06/30 21:40:36;
+  cltt 5 2023/06/30 09:40:36;
+  binding state free;
+  hardware ethernet b8:2a:72:99:70:d8;
+  uid "\001\270*r\231p\330";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.114 {
+  starts 6 2023/07/01 08:48:52;
+  ends 6 2023/07/01 20:48:52;
+  tstp 6 2023/07/01 20:48:52;
+  cltt 6 2023/07/01 09:29:09;
+  binding state free;
+  hardware ethernet 48:0f:cf:d8:4e:ba;
+}
+lease 157.181.120.115 {
+  starts 0 2023/07/02 15:54:56;
+  ends 1 2023/07/03 03:54:56;
+  tstp 1 2023/07/03 03:54:56;
+  cltt 0 2023/07/02 15:54:56;
+  binding state free;
+  hardware ethernet 8c:16:45:be:c4:d9;
+  uid "\001\214\026E\276\304\331";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.116 {
+  starts 1 2023/07/03 03:33:19;
+  ends 1 2023/07/03 15:33:19;
+  tstp 1 2023/07/03 15:33:19;
+  cltt 1 2023/07/03 03:33:19;
+  binding state free;
+  hardware ethernet 04:42:1a:af:e7:e6;
+  uid "\001\004B\032\257\347\346";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.171 {
+  starts 2 2023/07/04 18:00:51;
+  ends 3 2023/07/05 06:00:51;
+  tstp 3 2023/07/05 06:00:51;
+  cltt 2 2023/07/04 18:00:51;
+  binding state free;
+  hardware ethernet e4:a8:df:b8:74:3e;
+  uid "\001\344\250\337\270t>";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.18 {
+  starts 3 2023/07/05 04:52:15;
+  ends 3 2023/07/05 16:52:15;
+  tstp 3 2023/07/05 16:52:15;
+  cltt 3 2023/07/05 04:52:15;
+  binding state free;
+  hardware ethernet 28:d2:44:10:3a:79;
+  uid "\001(\322D\020:y";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.138 {
+  starts 3 2023/07/05 10:59:24;
+  ends 3 2023/07/05 22:59:24;
+  tstp 3 2023/07/05 22:59:24;
+  cltt 3 2023/07/05 10:59:24;
+  binding state free;
+  hardware ethernet c8:3a:35:36:88:10;
+  uid "\001\310:56\210\020";
+}
+lease 157.181.120.147 {
+  starts 3 2023/07/05 14:40:53;
+  ends 4 2023/07/06 02:40:53;
+  tstp 4 2023/07/06 02:40:53;
+  cltt 3 2023/07/05 15:22:59;
+  binding state free;
+  hardware ethernet b0:5c:da:20:bf:74;
+  uid "\001\260\\\332 \277t";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.152 {
+  starts 0 2023/07/09 19:12:07;
+  ends 1 2023/07/10 07:12:07;
+  tstp 1 2023/07/10 07:12:07;
+  cltt 0 2023/07/09 21:35:09;
+  binding state free;
+  hardware ethernet d0:17:c2:13:19:4e;
+  uid "\001\320\027\302\023\031N";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.181 {
+  starts 1 2023/07/10 08:57:44;
+  ends 1 2023/07/10 20:57:44;
+  tstp 1 2023/07/10 20:57:44;
+  cltt 1 2023/07/10 08:57:44;
+  binding state free;
+  hardware ethernet a8:5e:45:c3:d5:d7;
+  uid "\001\250^E\303\325\327";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.111 {
+  starts 3 2023/07/12 16:33:21;
+  ends 4 2023/07/13 04:33:21;
+  tstp 4 2023/07/13 04:33:21;
+  cltt 3 2023/07/12 16:33:21;
+  binding state free;
+  hardware ethernet 48:ba:4e:58:7c:8f;
+  uid "\001H\272NX|\217";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.178 {
+  starts 4 2023/07/13 06:10:56;
+  ends 4 2023/07/13 18:10:56;
+  tstp 4 2023/07/13 18:10:56;
+  cltt 4 2023/07/13 06:10:56;
+  binding state free;
+  hardware ethernet c0:4a:00:44:69:99;
+  uid "\001\300J\000Di\231";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.32 {
+  starts 4 2023/07/13 08:04:24;
+  ends 4 2023/07/13 20:04:24;
+  tstp 4 2023/07/13 20:04:24;
+  cltt 4 2023/07/13 08:04:24;
+  binding state free;
+  hardware ethernet 30:8d:99:c5:8f:0a;
+  uid "\0010\215\231\305\217\012";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.177 {
+  starts 0 2023/07/16 16:56:24;
+  ends 1 2023/07/17 04:56:24;
+  tstp 1 2023/07/17 04:56:24;
+  cltt 0 2023/07/16 19:40:44;
+  binding state free;
+  hardware ethernet d8:9d:67:c8:96:a6;
+  uid "\001\330\235g\310\226\246";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.36 {
+  starts 0 2023/07/16 18:45:08;
+  ends 1 2023/07/17 06:45:08;
+  tstp 1 2023/07/17 06:45:08;
+  cltt 0 2023/07/16 18:45:08;
+  binding state free;
+  hardware ethernet 00:6f:00:01:22:ed;
+  uid "\001\000o\000\001\"\355";
+}
+lease 157.181.120.119 {
+  starts 1 2023/07/17 20:20:45;
+  ends 2 2023/07/18 08:20:45;
+  tstp 2 2023/07/18 08:20:45;
+  cltt 1 2023/07/17 20:20:45;
+  binding state free;
+  hardware ethernet 3c:52:82:03:13:d9;
+  uid "\001<R\202\003\023\331";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.118 {
+  starts 1 2023/07/17 20:39:23;
+  ends 2 2023/07/18 08:39:23;
+  tstp 2 2023/07/18 08:39:23;
+  cltt 1 2023/07/17 20:39:23;
+  binding state free;
+  hardware ethernet 30:e1:71:8d:4e:1f;
+  uid "\0010\341q\215N\037";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.2 {
+  starts 1 2023/07/17 20:49:36;
+  ends 2 2023/07/18 08:49:36;
+  tstp 2 2023/07/18 08:49:36;
+  cltt 1 2023/07/17 20:49:36;
+  binding state free;
+  hardware ethernet 00:0e:c6:ae:a0:c1;
+  uid "\001\000\016\306\256\240\301";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.145 {
+  starts 2 2023/07/18 08:34:26;
+  ends 2 2023/07/18 20:34:26;
+  tstp 2 2023/07/18 20:34:26;
+  cltt 2 2023/07/18 10:41:00;
+  binding state free;
+  hardware ethernet e8:d8:d1:58:02:64;
+  uid "\001\350\330\321X\002d";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.155 {
+  starts 2 2023/07/18 09:37:50;
+  ends 2 2023/07/18 21:37:50;
+  tstp 2 2023/07/18 21:37:50;
+  cltt 2 2023/07/18 09:37:50;
+  binding state free;
+  hardware ethernet ec:9a:74:f9:0b:0e;
+  uid "\001\354\232t\371\013\016";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.95 {
+  starts 2 2023/07/18 12:40:55;
+  ends 3 2023/07/19 00:40:55;
+  tstp 3 2023/07/19 00:40:55;
+  cltt 2 2023/07/18 12:43:20;
+  binding state free;
+  hardware ethernet a8:1e:84:45:68:3b;
+  uid "\001\250\036\204Eh;";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.129 {
+  starts 2 2023/07/18 16:01:41;
+  ends 3 2023/07/19 04:01:41;
+  tstp 3 2023/07/19 04:01:41;
+  cltt 2 2023/07/18 16:01:41;
+  binding state free;
+  hardware ethernet 7c:c2:c6:1b:81:a6;
+  uid "\001|\302\306\033\201\246";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.187 {
+  starts 2 2023/07/18 21:40:51;
+  ends 3 2023/07/19 09:40:51;
+  tstp 3 2023/07/19 09:40:51;
+  cltt 2 2023/07/18 21:58:13;
+  binding state free;
+  hardware ethernet 00:e0:4c:68:b1:bb;
+  uid "\001\000\340Lh\261\273";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.188 {
+  starts 3 2023/07/19 06:23:08;
+  ends 3 2023/07/19 18:23:08;
+  tstp 3 2023/07/19 18:23:08;
+  cltt 3 2023/07/19 06:30:41;
+  binding state free;
+  hardware ethernet e0:70:ea:a9:eb:9b;
+  uid "\001\340p\352\251\353\233";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.160 {
+  starts 3 2023/07/19 07:31:53;
+  ends 3 2023/07/19 19:31:53;
+  tstp 3 2023/07/19 19:31:53;
+  cltt 3 2023/07/19 07:31:53;
+  binding state free;
+  hardware ethernet b0:6e:bf:4e:f9:df;
+  uid "\001\260n\277N\371\337";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.198 {
+  starts 3 2023/07/19 20:25:50;
+  ends 4 2023/07/20 08:25:50;
+  tstp 4 2023/07/20 08:25:50;
+  cltt 3 2023/07/19 20:25:50;
+  binding state free;
+  hardware ethernet 18:31:bf:7e:dc:c8;
+  uid "\001\0301\277~\334\310";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.123 {
+  starts 3 2023/07/19 20:30:35;
+  ends 4 2023/07/20 08:30:35;
+  tstp 4 2023/07/20 08:30:35;
+  cltt 3 2023/07/19 20:30:35;
+  binding state free;
+  hardware ethernet 1c:c1:de:59:1f:98;
+  uid "\001\034\301\336Y\037\230";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.192 {
+  starts 3 2023/07/19 21:01:27;
+  ends 4 2023/07/20 09:01:27;
+  tstp 4 2023/07/20 09:01:27;
+  cltt 3 2023/07/19 21:55:42;
+  binding state free;
+  hardware ethernet 74:d0:2b:23:37:96;
+  uid "\001t\320+#7\226";
+  set vendor-class-identifier = "MSFT 5.0";
+}
+lease 157.181.120.133 {
+  starts 4 2023/07/20 03:35:36;
+  ends 4 2023/07/20 15:35:36;
+  cltt 4 2023/07/20 05:02:56;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet d4:be:d9:5c:22:37;
+  uid "\001\324\276\331\\\"7";
+  set vendor-class-identifier = "MSFT 5.0";
+  client-hostname "DESKTOP-RTPPQGV";
+}
+lease 157.181.120.189 {
+  starts 4 2023/07/20 05:04:36;
+  ends 4 2023/07/20 17:04:36;
+  cltt 4 2023/07/20 05:04:36;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet a8:1e:84:16:00:cb;
+  uid "\001\250\036\204\026\000\313";
+  set vendor-class-identifier = "MSFT 5.0";
+  client-hostname "Alex";
+}
+lease 157.181.120.196 {
+  starts 4 2023/07/20 05:39:50;
+  ends 4 2023/07/20 17:39:50;
+  cltt 4 2023/07/20 05:39:50;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet 58:6d:8f:51:55:97;
+  uid "\001Xm\217QU\227";
+}
+lease 157.181.120.195 {
+  starts 4 2023/07/20 05:57:49;
+  ends 4 2023/07/20 17:57:49;
+  cltt 4 2023/07/20 08:56:57;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet 28:92:4a:55:0b:43;
+  uid "\001(\222JU\013C";
+  set vendor-class-identifier = "MSFT 5.0";
+  client-hostname "HP_G6";
+}
+lease 157.181.120.127 {
+  starts 4 2023/07/20 06:43:13;
+  ends 4 2023/07/20 18:43:13;
+  cltt 4 2023/07/20 06:43:13;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet 10:fe:ed:7f:44:de;
+  uid "\001\020\376\355\177D\336";
+  set vendor-class-identifier = "udhcp 0.9.9-pre";
+}
+lease 157.181.120.79 {
+  starts 4 2023/07/20 07:01:40;
+  ends 4 2023/07/20 19:01:40;
+  cltt 4 2023/07/20 07:21:31;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet 98:e7:43:11:c8:f1;
+  uid "\001\230\347C\021\310\361";
+  set vendor-class-identifier = "MSFT 5.0";
+  client-hostname "DESKTOP-UPJ8DN9";
+}
+lease 157.181.120.199 {
+  starts 4 2023/07/20 07:05:11;
+  ends 4 2023/07/20 19:05:11;
+  cltt 4 2023/07/20 07:05:11;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet 28:ee:52:73:13:44;
+  uid "\001(\356Rs\023D";
+  set vendor-class-identifier = "MSFT 5.0";
+  client-hostname "Archer_C80";
+}
+lease 157.181.120.183 {
+  starts 4 2023/07/20 07:27:07;
+  ends 4 2023/07/20 19:27:07;
+  cltt 4 2023/07/20 07:27:07;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet 84:16:f9:59:2d:31;
+  uid "\001\204\026\371Y-1";
+  set vendor-class-identifier = "MSFT 5.0";
+  client-hostname "Archer_C2";
+}
+lease 157.181.120.117 {
+  starts 4 2023/07/20 07:50:35;
+  ends 4 2023/07/20 19:50:35;
+  cltt 4 2023/07/20 07:50:35;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet 6c:24:08:fb:bc:7b;
+  uid "\001l$\010\373\274{";
+  set vendor-class-identifier = "MSFT 5.0";
+  client-hostname "DESKTOP-C7RQ1CC";
+}
+lease 157.181.120.182 {
+  starts 4 2023/07/20 09:03:31;
+  ends 4 2023/07/20 21:03:31;
+  cltt 4 2023/07/20 09:03:31;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet a4:2b:b0:d9:fc:99;
+  uid "\001\244+\260\331\374\231";
+  set vendor-class-identifier = "MSFT 5.0";
+  client-hostname "Archer_C2";
+}
+lease 157.181.120.200 {
+  starts 4 2023/07/20 09:07:38;
+  ends 4 2023/07/20 21:07:38;
+  cltt 4 2023/07/20 09:07:38;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet 84:16:f9:21:1a:c3;
+  uid "\001\204\026\371!\032\303";
+  set vendor-class-identifier = "MSFT 5.0";
+  client-hostname "Archer_C2";
+}
+lease 157.181.120.157 {
+  starts 4 2023/07/20 09:28:08;
+  ends 4 2023/07/20 21:28:08;
+  cltt 4 2023/07/20 09:28:08;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet 34:60:f9:d6:4c:31;
+  uid "\0014`\371\326L1";
+  set vendor-class-identifier = "MSFT 5.0";
+  client-hostname "TL-WR840N";
+}
+lease 157.181.120.125 {
+  starts 4 2023/07/20 09:29:30;
+  ends 4 2023/07/20 21:29:30;
+  cltt 4 2023/07/20 09:29:30;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet c0:25:2f:ab:2b:3d;
+  uid "\001\300%/\253+=";
+  set vendor-class-identifier = "MSFT 5.0";
+  client-hostname "MW302R";
+}
+lease 157.181.120.141 {
+  starts 4 2023/07/20 09:37:30;
+  ends 4 2023/07/20 21:37:30;
+  cltt 4 2023/07/20 09:37:30;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet c0:4a:00:b3:f8:e3;
+  uid "\001\300J\000\263\370\343";
+  set vendor-class-identifier = "MSFT 5.0";
+  client-hostname "TL-WR841N";
+}
+lease 157.181.120.162 {
+  starts 3 2023/01/04 12:32:06;
+  ends never;
+  tstp never;
+  cltt 1 2023/05/22 19:27:30;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  dynamic-bootp;
+  hardware ethernet 00:00:00:00:00:0e;
+}
+lease 157.181.200.157 {
+  starts 4 2023/07/20 11:08:23;
+  ends 4 2023/07/20 12:48:23;
+  cltt 4 2023/07/20 11:08:23;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet 6a:26:30:99:eb:8f;
+  uid "\001j&0\231\353\217";
+  set vendor-class-identifier = "android-dhcp-10";
+  client-hostname "Orsi-Galaxy-S9-eszkoze";
+}
+lease 157.181.200.195 {
+  starts 4 2023/07/20 09:30:14;
+  ends 4 2023/07/20 11:10:14;
+  tstp 4 2023/07/20 11:10:14;
+  cltt 4 2023/07/20 09:30:14;
+  binding state free;
+  hardware ethernet e8:3f:67:fc:f1:bb;
+  uid "\001\350?g\374\361\273";
+  set vendor-class-identifier = "HUAWEI:android:MAR";
+}

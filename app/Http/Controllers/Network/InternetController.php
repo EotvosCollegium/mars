@@ -156,13 +156,17 @@ class InternetController extends Controller
             'mac_address' => ['required', 'regex:/((([a-fA-F0-9]{2}[-:]){5}([a-fA-F0-9]{2}))|(([a-fA-F0-9]{2}:){5}([a-fA-F0-9]{2})))/i'],
         ]);
         $validator->validate();
+        $internetAccess = user()->internetAccess;
 
         if (user()->can('accept', MacAddress::class) && $request->has('user_id')) {
             $target_id = $request->input('user_id');
             $state = MacAddress::APPROVED;
-        } else {
+        } else if($internetAccess->auto_approved_mac_slots > user()->macAddresses()->count()) {
             $target_id = user()->id;
+            $state = MacAddress::APPROVED;
+        } else {
             $state = MacAddress::REQUESTED;
+            $target_id = user()->id;
 
             foreach (User::admins() as $admin) {
                 Mail::to($admin)->send(new MacNeedsApproval($admin->name, user()->name));
