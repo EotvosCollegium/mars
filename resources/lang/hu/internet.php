@@ -25,7 +25,7 @@ return [
     'rejected' => 'Elutasított',
     'report' => 'A probléma leírása',
     'report_fault' => 'Hiba bejelentése',
-    'report_fault_desc' => 'Ha bármi probléma merül fel az interneteléréseddel kapcsolatban, kérlek jelentsd be az alábbi űrlap kitöltésével. A rendszergazdák megpróbálják minél hamarabb megoldani a problémát.',
+    'report_fault_desc' => 'Ha bármi probléma merül fel az interneteléréseddel kapcsolatban, kérlek jelentsd be az alábbi űrlap kitöltésével. Próbáld meg a hibát minél pontosabban leírni és jelezd, mikor vagy a szobában, hogy a rendszergazdák fel tudjanak keresni.',
     'request' => 'Visszavon',
     'requested' => 'Elbírálásra vár',
     'router_descr' => 'Ha a router a szobádban nem elérhető, húzd ki a konnektorból, majd vissza. Ha ez nem oldja meg a problémát, <a href="mailto:root@eotvos.elte.hu"> keresd a rendszergazdákat!</a>.',

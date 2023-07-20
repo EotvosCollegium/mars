@@ -5,7 +5,7 @@
             <ul>
             @forelse ($user->educationalInformation?->languageExams?->sortBy('date') ?? [] as $exam)
                 <li>
-                    <a href="{{ $exam->path }}">
+                    <a href="/{{ $exam->path }}">
                         {{ __('role.'.$exam->language) }} - {{ $exam->level }}</a>
                     @if($exam->wasBeforeEnrollment and !isset($application))
                     ({{ $exam->type}}, {{$exam->date->format('Y-m')}}, collegista státusz előtt szerezve)
