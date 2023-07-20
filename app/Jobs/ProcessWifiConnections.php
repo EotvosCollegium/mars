@@ -11,6 +11,9 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * This script loads the radius log file and the dhcp leases file and stores the wifi connections in the wifi_connections table.
+ */
 class ProcessWifiConnections implements ShouldQueue
 {
     use Dispatchable;

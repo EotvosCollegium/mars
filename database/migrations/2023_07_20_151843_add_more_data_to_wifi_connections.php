@@ -19,8 +19,12 @@ return new class () extends Migration {
             $table->string('note');
         });
 
-        Schema::table('internet_accesses', function (Illuminate\Database\Schema\Blueprint $table) {
+        Schema::table('internet_accesses', function (Blueprint $table) {
             $table->dropColumn('wifi_connection_limit');
+        });
+
+        Schema::table('mac_addresses', function (Blueprint $table) {
+            $table->dropColumn('ip');
         });
     }
 
@@ -40,6 +44,10 @@ return new class () extends Migration {
 
         Schema::table('internet_accesses', function (Blueprint $table) {
             $table->integer('wifi_connection_limit')->default(2);
+        });
+
+        Schema::table('mac_addresses', function (Blueprint $table) {
+            $table->string('ip')->nullable();
         });
     }
 };

@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\Internet;
 
 use App\Models\Internet\MacAddress;
 use Illuminate\Database\Eloquent\Factories\Factory;
