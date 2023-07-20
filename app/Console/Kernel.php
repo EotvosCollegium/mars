@@ -33,6 +33,7 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('backup:clean')->daily()->at('01:00');
         $schedule->command('backup:run --only-db')->daily()->at('01:30');
+        $schedule->command('internet:process_wifi_connections')->daily()->at('23:59');
     }
 
     /**
