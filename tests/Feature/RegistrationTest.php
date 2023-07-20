@@ -97,8 +97,7 @@ class RegistrationTest extends TestCase
             $personal_info_data
         ));
         $this->assertDatabaseHas('internet_accesses', [
-            'user_id' => $user->id,
-            'wifi_username' => 'wifiuser'.$user->id
+            'user_id' => $user->id
         ]);
         $this->assertDatabaseHas('print_accounts', [
             'user_id' => $user->id,

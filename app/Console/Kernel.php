@@ -27,9 +27,10 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             \App\Models\EventTrigger::listen();
         })->daily()->at('13:00');
-        foreach (\App\Models\Router::all() as $router) {
+        foreach (\App\Models\Internet\Router::all() as $router) {
             $schedule->job(new \App\Jobs\PingRouter($router))->everyFiveMinutes();
         }
+        $schedule->job(new \App\Jobs\ProcessWifiConnections())->dailyAt('01:00');
 
         $schedule->command('backup:clean')->daily()->at('01:00');
         $schedule->command('backup:run --only-db')->daily()->at('01:30');

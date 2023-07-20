@@ -40,7 +40,7 @@
         <li><a class="waves-effect" href="{{ route('print') }}"><i class="material-icons left">local_printshop</i>@lang('print.print')</a></li>
         @endif
         <!-- internet page -->
-        @can('possess', \App\Models\InternetAccess::class)
+        @can('possess', \App\Models\Internet\InternetAccess::class)
         <li><a class="waves-effect" href="{{ route('internet') }}"><i class="material-icons left">wifi</i>@lang('internet.internet')</a></li>
         @endif
         <!-- faults page -->
@@ -131,18 +131,18 @@
                             @endcan
 
                             <!-- internet admin -->
-                            @can('handleAny', \App\Models\InternetAccess::class)
+                            @can('handleAny', \App\Models\Internet\InternetAccess::class)
                             <li>
                                 <a class="waves-effect" href="{{ route('internet.admin') }}">
                                     <i class="material-icons left">wifi</i>Internet elérés
-                                    @notification(\App\Models\WifiConnection::class)
+                                    @notification(\App\Models\Internet\MacAddress::class)
                                 </a>
                             </li>
                             @endcan
                             <li>
                                 <a class="waves-effect" href="{{ route('routers') }}">
                                     <i class="material-icons left">router</i>Routerek
-                                    @notification(\App\Models\Router::class)
+                                    @notification(\App\Models\Internet\Router::class)
                                 </a>
                             </li>
                             @can('view', \App\Models\Checkout::admin())

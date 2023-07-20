@@ -2,30 +2,27 @@
 
 namespace App\Mail;
 
-use App\Models\Internet\Router;
-use App\Models\User;
-
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class RouterWarningResident extends Mailable
+class MacNeedsApproval extends Mailable
 {
     use Queueable;
     use SerializesModels;
 
-    public User $recipient;
-    public Router $router;
+    public string $recipient;
+    public string $reporter;
 
     /**
      * Create a new message instance.
      *
-     * @return void
+     * @param  string  $userName
      */
-    public function __construct($recipient, $router)
+    public function __construct(string $recipient, string $reporter)
     {
         $this->recipient = $recipient;
-        $this->router = $router;
+        $this->reporter = $reporter;
     }
 
     /**
@@ -35,7 +32,7 @@ class RouterWarningResident extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.router_status_warning_resident')
-                    ->subject(__('mail.router_status_warning'));
+        return $this->markdown('emails.mac_needs_approval')
+            ->subject('MAC cím jóváhagyásra vár');
     }
 }

@@ -1,35 +1,28 @@
 <div class="study_line" id="study_line_{{$index}}">
     <div class="row" style="margin:0">
-        <input type="hidden" name="study_line_indices[]" value="{{$index}}">
-        <x-input.text id="study_line_name_{{ $index }}"
+        <x-input.text id="study_lines[{{ $index }}][name]"
                         xl=6
                         text="user.study_line"
                         :value="$value?->name"
                         required />
-        <x-input.select id="study_line_level_{{ $index }}"
+        <x-input.select id="study_lines[{{ $index }}][level]"
                         xl=2 s=6
                         text="user.study_line_level"
                         :value="$value?->type"
-                        :elements="App\View\Components\Input\Select::convertArray([
-                            'bachelor' => 'BA/BSc',
-                            'master' => 'MA/MSc',
-                            'phd' => 'PhD',
-                            'ot' => 'Osztatlan',
-                            'other' => ' Egyéb',
-                        ])"
+                        :elements="App\View\Components\Input\Select::convertArray(\App\Models\StudyLine::TYPES)"
                         required />
-        <x-input.text id="study_line_minor_{{ $index }}"
+        <x-input.text id="study_lines[{{ $index }}][minor]"
                     xl=4 s=6
                     text="user.study_line_minor"
                     :value="$value?->minor"
                     />
-        <x-input.select id="study_line_start_{{ $index }}"
+        <x-input.select id="study_lines[{{ $index }}][start]"
                     xl=6 s=6
                     text="user.study_line_start"
                     :value="$value?->start"
                     :elements="\App\Models\Semester::all()"
                     required />
-        <x-input.select id="study_line_end_{{ $index }}"
+        <x-input.select id="study_lines[{{ $index }}][end]"
                     xl=5 s=5
                     text="user.study_line_end"
                     :value="$value?->end"

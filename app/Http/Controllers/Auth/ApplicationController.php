@@ -35,10 +35,14 @@ class ApplicationController extends Controller
      * @param Request $request
      * @return View
      */
-    public function showApplicationForm(Request $request): View
+    public function showApplicationForm(Request $request): View|RedirectResponse
     {
-        if (!isset($request->user()->application)) {
-            $request->user()->application()->create();
+        if (user()->hasRole(Role::get(Role::TENANT))) {
+            //let the user delete their tenant status
+            return view('user.update_tenant_status');
+        }
+        if (user()->application()->doesntExist()) {
+            user()->application()->create();
         }
 
         $data = [

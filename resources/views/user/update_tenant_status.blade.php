@@ -10,7 +10,7 @@
             <div class="card-content">
                 <span class="card-title">@lang('user.update_tenant_status')</span>
                 <blockquote>@lang('user.set_tenant_until')</blockquote>
-                <form method="POST" action="{{ route('users.update.tenant_until', ['user' => $user]) }}">
+                <form method="POST" action="{{ route('users.update.tenant_until', ['user' => user()]) }}">
                     @csrf
                     <div class="row">
                         <input type="hidden" name="only_tenant_until" value="true"/>
@@ -18,7 +18,7 @@
                                 id='tenant_until'
                                 required
                                 text='user.tenant_until'
-                                :value="$user->personalInformation?->tenant_until" />
+                                :value="user()->personalInformation?->tenant_until" />
                         <x-input.button class="right" text="general.save" />
                     </div>
                 </form>

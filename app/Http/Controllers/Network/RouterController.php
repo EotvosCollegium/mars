@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Network;
 
 use App\Http\Controllers\Controller;
-use App\Models\Router;
+use App\Models\Internet\Router;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -11,7 +11,7 @@ class RouterController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('can:possess,App\Models\InternetAccess');
+        $this->middleware('can:possess,App\Models\Internet\InternetAccess');
     }
 
     public function index()

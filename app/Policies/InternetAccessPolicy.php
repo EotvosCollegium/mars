@@ -2,7 +2,7 @@
 
 namespace App\Policies;
 
-use App\Models\InternetAccess;
+use App\Models\Internet\InternetAccess;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;

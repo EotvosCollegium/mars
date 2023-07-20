@@ -14,8 +14,8 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        \App\Models\MacAddress::class => \App\Policies\MacAddressPolicy::class,
-        \App\Models\InternetAccess::class => \App\Policies\InternetAccessPolicy::class,
+        \App\Models\Internet\MacAddress::class => \App\Policies\MacAddressPolicy::class,
+        \App\Models\Internet\InternetAccess::class => \App\Policies\InternetAccessPolicy::class,
         \App\Models\PrintJob::class => \App\Policies\PrintJobPolicy::class,
         \App\Models\PrintAccount::class => \App\Policies\PrintAccountPolicy::class,
         \App\Models\FreePages::class => \App\Policies\FreePagesPolicy::class,
@@ -25,7 +25,7 @@ class AuthServiceProvider extends ServiceProvider
         \App\Models\Transaction::class => \App\Policies\TransactionPolicy::class,
         \App\Models\Fault::class => \App\Policies\FaultPolicy::class,
         \App\Models\EpistolaNews::class => \App\Policies\EpistolaPolicy::class,
-        \App\Models\Router::class => \App\Policies\RouterPolicy::class,
+        \App\Models\Internet\Router::class => \App\Policies\RouterPolicy::class,
         \App\Models\MrAndMissVote::class => \App\Policies\MrAndMissPolicy::class,
         \App\Models\CommunityService::class => \App\Policies\CommunityServicePolicy::class,
     ];

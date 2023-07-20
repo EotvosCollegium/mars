@@ -4,42 +4,49 @@ namespace App\Http\Controllers\Network;
 
 use App\Http\Controllers\Controller;
 use App\Mail\InternetFault;
-use App\Models\InternetAccess;
-use App\Models\MacAddress;
+use App\Mail\MacNeedsApproval;
+use App\Models\Internet\InternetAccess;
+use App\Models\Internet\MacAddress;
 use App\Models\Role;
 use App\Models\Semester;
 use App\Models\User;
-use App\Models\WifiConnection;
+use App\Models\Internet\WifiConnection;
 use App\Utils\TabulatorPaginator;
+use Carbon\Carbon;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\View\View;
 
 class InternetController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('can:possess,App\Models\InternetAccess');
+        $this->middleware('can:possess,App\Models\Internet\InternetAccess');
     }
 
-    public function index()
+    public function index(): View
     {
         $internetAccess = user()->internetAccess;
 
         return view('network.internet.app', ['internet_access' => $internetAccess]);
     }
 
-    public function admin()
+    public function admin(): View
     {
         $this->authorize('handleAny', InternetAccess::class);
 
         $activationDate = self::getInternetDeadline();
-        $users = User::role(Role::INTERNET_USER)->with('internetAccess.wifiConnections')->get();
+        $users = User::withRole(Role::INTERNET_USER)->with('internetAccess.wifiConnections')->get();
 
         return view('network.manage.app', ['activation_date' => $activationDate, 'users' => $users]);
     }
 
-    public function getUsersMacAddresses(Request $request)
+    public function getUsersMacAddresses(Request $request): LengthAwarePaginator
     {
         $paginator = TabulatorPaginator::from(user()->macAddresses())
             ->sortable(['mac_address', 'comment', 'state'])->paginate();
@@ -49,7 +56,7 @@ class InternetController extends Controller
         return $paginator;
     }
 
-    public function getUsersMacAddressesAdmin(Request $request)
+    public function getUsersMacAddressesAdmin(Request $request): LengthAwarePaginator
     {
         $this->authorize('viewAny', MacAddress::class);
 
@@ -65,7 +72,7 @@ class InternetController extends Controller
         return $paginator;
     }
 
-    public function getInternetAccessesAdmin()
+    public function getInternetAccessesAdmin(): LengthAwarePaginator
     {
         $this->authorize('viewAny', InternetAccess::class);
 
@@ -77,23 +84,25 @@ class InternetController extends Controller
         return $paginator;
     }
 
-    public function deleteMacAddress(Request $request, $id)
+    public function deleteMacAddress(Request $request, $id): Response
     {
         $macAddress = MacAddress::findOrFail($id);
 
         $this->authorize('delete', $macAddress);
 
         $macAddress->delete();
+
+        return response("", 204);
     }
 
-    public function resetWifiPassword(Request $request)
+    public function resetWifiPassword(Request $request): RedirectResponse
     {
         user()->internetAccess->resetPassword();
 
         return redirect()->back();
     }
 
-    public function editMacAddress(Request $request, $id)
+    public function editMacAddress(Request $request, $id): MacAddress
     {
         $macAddress = MacAddress::findOrFail($id);
 
@@ -105,12 +114,12 @@ class InternetController extends Controller
 
         $macAddress->save();
 
-        $macAddress = $macAddress->refresh(); // auto approve maybe modified this
+        $macAddress = $macAddress->refresh();
 
         return $this->translateStates()($macAddress);
     }
 
-    public function editInternetAccess(Request $request, $id)
+    public function editInternetAccess(Request $request, $id): InternetAccess
     {
         $internetAccess = InternetAccess::findOrFail($id);
 
@@ -131,7 +140,7 @@ class InternetController extends Controller
             ->where('user_id', '=', $internetAccess->user_id)->first();
     }
 
-    public static function extendUsersInternetAccess(User $user)
+    public static function extendUsersInternetAccess(User $user): ?Carbon
     {
         $internetAccess = $user->internetAccess;
 
@@ -144,25 +153,31 @@ class InternetController extends Controller
         }
     }
 
-    public function addMacAddress(Request $request)
+    public function addMacAddress(Request $request): RedirectResponse
     {
         $this->authorize('create', MacAddress::class);
 
         $validator = Validator::make($request->all(), [
             'comment' => 'required|max:255',
+            'user_id' => 'nullable|exists:users,id',
             'mac_address' => ['required', 'regex:/((([a-fA-F0-9]{2}[-:]){5}([a-fA-F0-9]{2}))|(([a-fA-F0-9]{2}:){5}([a-fA-F0-9]{2})))/i'],
         ]);
         $validator->validate();
+        $internetAccess = user()->internetAccess;
 
         if (user()->can('accept', MacAddress::class) && $request->has('user_id')) {
-            $request->validate([
-                'user_id' => 'integer|exists:users,id',
-            ]);
             $target_id = $request->input('user_id');
             $state = MacAddress::APPROVED;
-        } else {
+        } elseif($internetAccess->auto_approved_mac_slots > user()->macAddresses()->count()) {
             $target_id = user()->id;
+            $state = MacAddress::APPROVED;
+        } else {
             $state = MacAddress::REQUESTED;
+            $target_id = user()->id;
+
+            foreach (User::admins() as $admin) {
+                Mail::to($admin)->send(new MacNeedsApproval($admin->name, user()->name));
+            }
         }
 
         MacAddress::create([
@@ -175,15 +190,16 @@ class InternetController extends Controller
         return redirect()->back()->with('message', __('general.successfully_added'));
     }
 
-    public function getWifiConnectionsAdmin()
+    public function getWifiConnectionsAdmin(Request $request): LengthAwarePaginator
     {
         $this->authorize('viewAny', WifiConnection::class);
 
-        $paginator = TabulatorPaginator::from(WifiConnection::join('internet_accesses as i', 'i.wifi_username', 'wifi_connections.wifi_username')
-            ->join('users as user', 'user.id', '=', 'i.user_id')
-            ->select('wifi_connections.*')->with('user'))
-            ->sortable(['user.name', 'wifi_username', 'mac_address'])
-            ->filterable(['user.name', 'wifi_username', 'mac_address'])
+        $paginator = TabulatorPaginator::from(
+            WifiConnection::query()
+                ->groupBy(['wifi_username', 'mac_address', 'ip', 'lease_start', 'lease_end', 'note'])
+                ->select(['wifi_username', 'mac_address', 'ip', 'lease_start', 'lease_end', 'note', DB::raw('COUNT(*) as radius_connections')])
+        )->sortable(['wifi_username', 'mac_address', 'ip', 'lease_start'])
+            ->filterable(['wifi_username', 'mac_address', 'ip', 'lease_start'])
             ->paginate();
 
         return $paginator;
@@ -210,24 +226,13 @@ class InternetController extends Controller
         };
     }
 
-    public function approveWifiConnections($user)
-    {
-        $this->authorize('approveAny', WifiConnection::class);
-
-        $user = User::findOrFail($user);
-
-        $user->internetAccess->increment('wifi_connection_limit');
-
-        return redirect()->back()->with('message', __('general.successful_modification'));
-    }
-
     /**
      * Sends an email to all admins with the report of a fault.
      *
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function reportFault(Request $request)
+    public function reportFault(Request $request): RedirectResponse
     {
         $validator = Validator::make($request->all(), [
             'report' => 'required|string',
@@ -235,13 +240,13 @@ class InternetController extends Controller
         ]);
         $validator->validate();
 
-        foreach (User::role(Role::SYS_ADMIN)->get() as $admin) {
+        foreach (User::withRole(Role::SYS_ADMIN)->get() as $admin) {
             Mail::to($admin)->queue(new InternetFault($admin->name, user()->name, $request->report, $request->user_os));
         }
         return redirect()->back()->with('message', __('mail.email_sent'));
     }
 
-    private static function getInternetDeadline()
+    private static function getInternetDeadline(): Carbon
     {
         return Semester::next()->getStartDate()->addMonth();
     }

@@ -221,7 +221,7 @@ class Role extends Model
      */
     public function getUsers(Workshop|RoleObject $object = null): Collection|array
     {
-        return User::role($this, $object)->get();
+        return User::withRole($this, $object)->get();
     }
 
     /**
@@ -232,9 +232,9 @@ class Role extends Model
         return self::where('name', self::COLLEGIST)->first();
     }
 
-     /**
-     * Returns the role for the students council.
-     */
+    /**
+    * Returns the role for the students council.
+    */
     public static function studentsCouncil(): Role
     {
         return self::where('name', self::STUDENT_COUNCIL)->first();
