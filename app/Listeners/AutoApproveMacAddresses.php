@@ -2,7 +2,7 @@
 
 namespace App\Listeners;
 
-use App\Models\MacAddress;
+use App\Models\Internet\MacAddress;
 
 class AutoApproveMacAddresses
 {

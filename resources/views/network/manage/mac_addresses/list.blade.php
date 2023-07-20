@@ -25,15 +25,15 @@
             return $("<button type=\"button\" style=\"margin: 2px;\" class=\"btn waves-effect red\">Elutasít</button></br>")
                 .click(function () {
                 changeState('rejected');
-            }).toggle(data._state === '{{ \App\Models\MacAddress::REQUESTED }}')
+            }).toggle(data._state === '{{ \App\Models\Internet\MacAddress::REQUESTED }}')
                 .add($("<button type=\"button\" style=\"margin: 2px;\" class=\"btn waves-effect green\">Elfogad</button></br>")
                     .click(function () {
                 changeState('approved');
-            }).toggle(data._state === '{{ \App\Models\MacAddress::REQUESTED }}'))
+            }).toggle(data._state === '{{ \App\Models\Internet\MacAddress::REQUESTED }}'))
                 .add($("<button type=\"button\" style=\"margin: 2px;\" class=\"btn waves-effect\">Visszavon</button></br>")
                     .click(function () {
                 changeState('requested');
-            }).toggle(data._state !== '{{ \App\Models\MacAddress::REQUESTED }}')).wrapAll('<div></div>').parent()[0];
+            }).toggle(data._state !== '{{ \App\Models\Internet\MacAddress::REQUESTED }}')).wrapAll('<div></div>').parent()[0];
         };
 
         var deleteButton = function (cell, formatterParams, onRendered) {

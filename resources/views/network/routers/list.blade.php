@@ -23,7 +23,7 @@
                             <th>@lang('router.room')</th>
                             <th>@lang('router.state')</th>
                             <th>@lang('router.failing_since')</th>
-                            @can('create', \App\Models\Router::class)
+                            @can('create', \App\Models\Internet\Router::class)
                                 <th>
                                     <a href="{{ route('routers.create') }}" class="btn-floating waves-effect waves-light right">
                                         <i class="material-icons">add</i>

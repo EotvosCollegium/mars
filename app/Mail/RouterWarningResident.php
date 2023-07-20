@@ -2,7 +2,7 @@
 
 namespace App\Mail;
 
-use App\Models\Router;
+use App\Models\Internet\Router;
 use App\Models\User;
 
 use Illuminate\Bus\Queueable;

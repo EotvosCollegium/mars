@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\Router;
+use App\Models\Internet\Router;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class RouterFactory extends Factory

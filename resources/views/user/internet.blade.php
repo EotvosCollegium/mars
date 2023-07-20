@@ -28,9 +28,9 @@
                         @can('view', $mac)
                         <li>
                         <span class="new badge
-                            @if($mac->state == \App\Models\MacAddress::APPROVED)
+                            @if($mac->state == \App\Models\Internet\MacAddress::APPROVED)
                                 green
-                            @elseif($mac->state == \App\Models\MacAddress::REQUESTED)
+                            @elseif($mac->state == \App\Models\Internet\MacAddress::REQUESTED)
                                 orange
                             @else
                                 red

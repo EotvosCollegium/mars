@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\WifiConnection;
+use App\Models\Internet\WifiConnection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class WifiConnectionFactory extends Factory

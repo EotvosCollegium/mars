@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Internet;
 
 use App\Utils\NotificationCounter;
 use Illuminate\Database\Eloquent\Casts\Attribute;

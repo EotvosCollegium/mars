@@ -5,12 +5,12 @@ namespace App\Http\Controllers\Network;
 use App\Http\Controllers\Controller;
 use App\Mail\InternetFault;
 use App\Mail\MacNeedsApproval;
-use App\Models\InternetAccess;
-use App\Models\MacAddress;
+use App\Models\Internet\InternetAccess;
+use App\Models\Internet\MacAddress;
 use App\Models\Role;
 use App\Models\Semester;
 use App\Models\User;
-use App\Models\WifiConnection;
+use App\Models\Internet\WifiConnection;
 use App\Utils\TabulatorPaginator;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
@@ -26,7 +26,7 @@ class InternetController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('can:possess,App\Models\InternetAccess');
+        $this->middleware('can:possess,App\Models\Internet\InternetAccess');
     }
 
     public function index() : View
