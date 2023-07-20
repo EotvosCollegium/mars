@@ -65,7 +65,7 @@
                         Hogyha a felvételi eljárás befejeződött, akkor a felvett jelentkezőket itt lehet jóváhagyni.
                         Ezzel együtt minden más felvételiző elutasításra, anyagai törlésre, valamint az összes
                         felvételihez kapcsolódó (felvételiztető) jog elvételre kerül.
-                        A "Véglegesítve" és "Behívva" státuszú jelentkezőket előbb el kell utasítani, vagy fel kell hagyni.
+                        A "Véglegesítve" és "Behívva" státuszú jelentkezőket előbb el kell utasítani, vagy fel kell venni.
                     </div>
                     <x-input.button class="red right" text="Felvételi lezárása"/>
                 </form>
