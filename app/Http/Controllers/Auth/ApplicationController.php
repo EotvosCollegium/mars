@@ -50,7 +50,7 @@ class ApplicationController extends Controller
             'faculties' => Faculty::all(),
             'deadline' => self::getApplicationDeadline(),
             'deadline_extended' => self::isDeadlineExtended(),
-            'user' => Auth::user(),
+            'user' => user(),
         ];
         switch ($request->input('page')) {
             case (self::EDUCATIONAL_ROUTE):
