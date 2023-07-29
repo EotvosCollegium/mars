@@ -124,7 +124,7 @@ class UserPolicy
         if ($user->id == $target->id) {
             return true;
         }
-        if($user->can('viewAllApplications')) {
+        if($user->can('viewAllApplications', User::class)) {
             return true;
         }
 
