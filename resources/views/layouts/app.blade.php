@@ -45,6 +45,11 @@
                 $('.sidenav').sidenav();
                 $('.collapsible').collapsible();
                 $(".preloader").fadeOut();
+                // Attach a submit event handler to all forms
+                $('form').submit(function() {
+                    // Disable the submit button of the current form
+                    $(this).find(':submit').prop('disabled', true);
+                });
             }
         );
     </script>

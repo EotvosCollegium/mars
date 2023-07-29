@@ -64,7 +64,7 @@
                 $('#info-box').css('display','block');
                 people=$(this).data('info').split(';');
                 htmlString='';
-                
+
                 people.forEach(element => {
                     if(element!=''){
                         htmlString+='<li>'+element+'</li>';
@@ -91,7 +91,7 @@
             $('#info-box').css('left',e.pageX+10);
         }).mouseover();
         // If the search button is hit, search for the name or the room number and add blink property to the matching room
-        $("#name").submit(function(e){
+        $("#nameSubmit").click(function(e){
             query=$('#nameInput').val();
             query2=query;
             if(query.trim().length>0 && !isNaN(query)){
@@ -106,7 +106,7 @@
 
         });
     });
-    
+
 </script>
 @section('content')
 <div class="row">
@@ -129,7 +129,7 @@
                 </svg>
                 @endcan
                 {{-- The goal was to make an interactive map of the Collegium and show the room occupation on it.
-                    This can be achieved by using an svg (vector graphic image) and modifying its style properties 
+                    This can be achieved by using an svg (vector graphic image) and modifying its style properties
                     using javascript. The problem with this is that the info shown by the javascript all has to be put inside
                     of the HTML when creating the file as javascript cannot access the database. This is the reason the data-info
                     tag is used. The dynamic styling is accomplished with JQuery.
@@ -147,7 +147,7 @@
                     </style>
                     <g id="em2" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" inkscape:version="1.1.2 (b8e25be833, 2022-02-05)" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" sodipodi:docname="drawing.svg">
                         @foreach ($roomNumbersSecondFloor as $roomNumber)
-                        <path id="{{'room'.$roomNumber}}" 
+                        <path id="{{'room'.$roomNumber}}"
                             class="st1"
                             data-info="{{ $rooms->firstWhere('name', $roomNumber)->users->pluck('name')->join(';') }}"
                             @can('updateAny', \App\Models\Room::class) style="fill: {{ $rooms->firstWhere('name', $roomNumber)->color() }}" @endcan
@@ -171,10 +171,10 @@
                     <g id="em3">
                         <rect x="272.2" y="15.4" class="st9" width="503" height="503"/>
                         @foreach ($roomNumbersThirdFloor as $roomNumber)
-                        <polygon id="{{'room'.$roomNumber}}" 
-                            @can('updateAny', \App\Models\Room::class) style="fill: {{ $rooms->firstWhere('name', $roomNumber)->color() }}" @endcan 
+                        <polygon id="{{'room'.$roomNumber}}"
+                            @can('updateAny', \App\Models\Room::class) style="fill: {{ $rooms->firstWhere('name', $roomNumber)->color() }}" @endcan
                             data-info="{{ $rooms->firstWhere('name', $roomNumber)->users->pluck('name')->join(';') }}"
-                            class="st1" 
+                            class="st1"
                             points="{{$roomCoords['room'.$roomNumber]}}"/>
                         <text transform="{{$roomCoords['text'.$roomNumber]}}" class="st4">{{$roomNumber}}</text>
                         @endforeach
@@ -191,12 +191,12 @@
                     </g>
                 </svg>
                 <div class="row">
-                    <form id="name", onsubmit="return false;" style="vertical-align: top">
+                    <div style="vertical-align: top">
                         <x-input.text s=9  id="nameInput" text="Keress névre vagy szobaszámra" type="text" />
-                        <x-input.button s=3 class="right coli blue" text="Keresés" />
-                    </form>
+                        <x-input.button s=3 id="nameSubmit" class="right coli blue" text="Keresés" />
+                    </div>
                 </div>
-                @can('updateAny', \App\Models\Room::class) 
+                @can('updateAny', \App\Models\Room::class)
                 <div class="center row">
                     <x-input.button class="coli blue" text="Szobabeosztás szerkesztése" :href="route('rooms.modify')"/>
                 </div>
