@@ -122,7 +122,7 @@ class ApplicationController extends Controller
             ]);
         } else { //return all applications that can be visible
             $this->authorize('viewSomeApplication', User::class);
-            if($authUser->can('viewAllApplications', User::class)){
+            if($authUser->can('viewAllApplications', User::class)) {
                 $workshops = Workshop::all();
             } else {
                 $workshops = $authUser->roleWorkshops->concat($authUser->applicationCommitteWorkshops);
