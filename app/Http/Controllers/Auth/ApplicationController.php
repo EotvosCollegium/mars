@@ -122,7 +122,11 @@ class ApplicationController extends Controller
             ]);
         } else { //return all applications that can be visible
             $this->authorize('viewSomeApplication', User::class);
-            $workshops = $authUser->roleWorkshops->concat($authUser->applicationCommitteWorkshops);
+            if($authUser->can('viewAllApplications', User::class)){
+                $workshops = Workshop::all();
+            } else {
+                $workshops = $authUser->roleWorkshops->concat($authUser->applicationCommitteWorkshops);
+            }
             $applications = ApplicationForm::select('*');
             $applications->join('workshop_users', 'application_forms.user_id', '=', 'workshop_users.user_id');
             if ($request->has('workshop') && $request->input('workshop') !== "null" && $workshops->contains($request->input('workshop'))) {

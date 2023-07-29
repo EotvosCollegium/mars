@@ -15,6 +15,7 @@
                     xl=4 s=6
                     text="user.study_line_minor"
                     :value="$value?->minor"
+		    helper="Nem kötelező"
                     />
         <x-input.select id="study_lines[{{ $index }}][start]"
                     xl=6 s=6
@@ -29,7 +30,7 @@
                     :elements="\App\Models\Semester::all()"
                     placeholder="Nincs teljesítve"
                     allow-empty="Nincs teljesítve"
-                    helper="Csak teljesítéskor töltendő ki" />
+                    helper="Csak teljesítés után töltendő ki" />
 
         <x-input.button type="button" s="1" class="right red" floating icon="delete" onclick="removeStudyLine({{$index}})"/>
     </div>
