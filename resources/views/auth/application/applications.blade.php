@@ -30,9 +30,9 @@
                 @can('editApplicationStatus', \App\models\User::class)
                 <p>A jelentkezők aktuális státusza a jelentkezők számára nem nyilvános.</p>
                 @endcan
-                @if(user()->hasRole([\App\Models\Role::SYS_ADMIN, \App\Models\Role::SECRETARY]))
+                @can('finalizeApplicationProcess', \App\Models\User::class)
                 <p>{{$applicationDeadline->addWeeks(2)->format('Y. m. d.')}} után lehet a lap alján felvenni a kiválasztott jelentkezőket, ezzel véglegesíteni a felvételit.</p>
-                @endif
+                @endcan
             </blockquote>
 
             @push('scripts')
@@ -56,6 +56,7 @@
     <hr>
     <h6>Összesen: <b class="right">{{$applications->count()}} jelentkező</b></h6>
     @can('finalizeApplicationProcess', \App\Models\User::class)
+    @if($applicationDeadline->addWeeks(2) < now())
     <div class="card" style="margin-top:20px">
         <div class="card-content">
             <div class="row" style="margin:0">
@@ -72,6 +73,7 @@
             </div>
         </div>
     </div>
+    @endif
     @endcan
     @can('viewAllApplications', \App\Models\User::class)
     <div class="fixed-action-btn">

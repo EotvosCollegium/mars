@@ -200,7 +200,7 @@ class UserPolicy
      */
     public function finalizeApplicationProcess(User $user): bool
     {
-        return $user->hasRole([Role::SYS_ADMIN, Role::SECRETARY]) && ApplicationController::getApplicationDeadline()->addWeeks(2) < now();
+        return $user->hasRole([Role::SYS_ADMIN, Role::SECRETARY]);
     }
 
     /** Permission related policies */
