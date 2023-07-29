@@ -16,7 +16,7 @@ A Collegiumban az ALFONSÓ nyelvi program keretében nyelvoktatás folyik.
                     value='{{ $user->educationalInformation?->alfonso_language }}'
                     :elements="App\View\Components\Input\Select::convertArray(config('app.alfonso_languages'))"
                     allow-empty
-                    :helper="isset($application) ? '(később módosítható)' : ''"
+                    :helper="isset($application) ? '(később módosítható, nem része a felvételi eljárásnak)' : ''"
                     />
         <x-input.select l=5 id="alfonso_desired_level" text="Elérni kívánt szint"
             :value='$user->educationalInformation?->alfonso_desired_level'
