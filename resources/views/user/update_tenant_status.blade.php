@@ -27,7 +27,11 @@
     </div>
 </div>
 
-@if (env('APPLICATION_DEADLINE')>\Carbon\Carbon::now() && user()->isTenant() && !user()->isCollegist())
+@if (
+    App\Http\Controllers\Auth\ApplicationController::getApplicationDeadline() > \Carbon\Carbon::now()
+    && user()->isTenant()
+    && !user()->isCollegist(false)
+)
 <div class="row">
     <div class="col s12">
         <div class="card">
