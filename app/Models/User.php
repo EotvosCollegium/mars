@@ -428,11 +428,11 @@ class User extends Authenticatable implements HasLocalePreference
     |--------------------------------------------------------------------------
     */
 
-     /**
-     * Scope a query to only include verified users. See also: global 'verified' scope.
-     * @param Builder $query
-     * @return Builder
-     */
+    /**
+    * Scope a query to only include verified users. See also: global 'verified' scope.
+    * @param Builder $query
+    * @return Builder
+    */
     public function scopeVerified(Builder $query): Builder
     {
         return $query->where('verified', false);
