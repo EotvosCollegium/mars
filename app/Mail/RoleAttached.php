@@ -5,6 +5,7 @@ namespace App\Mail;
 use App\Models\User;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Auth;
 
 class RoleAttached extends Mailable
 {
@@ -25,7 +26,7 @@ class RoleAttached extends Mailable
         $this->recipient = $recipient;
         $this->roleName = $roleName;
         $this->objectName = $objectName;
-        $this->modifier = user();
+        $this->modifier = Auth::user();
     }
 
     /**
