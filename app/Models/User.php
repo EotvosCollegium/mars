@@ -428,6 +428,16 @@ class User extends Authenticatable implements HasLocalePreference
     |--------------------------------------------------------------------------
     */
 
+     /**
+     * Scope a query to only include verified users. See also: global 'verified' scope.
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeVerified(Builder $query): Builder
+    {
+        return $query->where('verified', false);
+    }
+
     /**
      * Scope a query to only include users whose data can be accessed by the given user.
      * @param Builder $query
@@ -1006,9 +1016,10 @@ class User extends Authenticatable implements HasLocalePreference
     protected static function booted()
     {
         // You can use `withoutGlobalScope('verified')` to include the unverified users in queries.
+        // Use local "verified" scope for queries that run automatically without Auth::user().
         static::addGlobalScope('verified', function (Builder $builder) {
             if (Auth::hasUser() && user()->verified) {
-                $builder->where('verified', true);
+                return $builder->verified();
             }
         });
     }
