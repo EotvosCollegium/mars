@@ -1,7 +1,6 @@
 <?php
 
 use App\Models\User;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 
 if (! function_exists('user')) {
@@ -18,8 +17,6 @@ if (! function_exists('user')) {
         $user = Auth::user();
         if($user) {
             return $user;
-        } else if(App::environment() == 'testing') {
-            return User::factory()->create(['verified' => true]);
         } else {
             throw new \Illuminate\Auth\AuthenticationException("The session does not have an authenticated user");
         }
