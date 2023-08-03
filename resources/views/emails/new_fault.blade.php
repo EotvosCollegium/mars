@@ -13,8 +13,4 @@ Részletek:
     <li>Helyszín: {{ $fault->location }}</li>
     <li>Leírás: {{ $fault->description }}</li>
 </ul>
-
-
-
-<p>@lang('mail.administrators')</p>
 @endcomponent

@@ -568,7 +568,7 @@ class User extends Authenticatable implements HasLocalePreference
     public function preferredLocale(): string
     {
         // default english, see issue #11
-        return $this->isCollegist() ? 'hu' : 'en';
+        return $this->hasRole(Role::TENANT) ? 'en' : 'hu';
     }
 
     /**

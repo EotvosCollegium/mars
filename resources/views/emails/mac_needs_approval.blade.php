@@ -6,5 +6,4 @@
     @component('mail::button', ['url' => route('internet.admin')])
     Részletek
     @endcomponent
-    <p>@lang('mail.administrators')</p>
 @endcomponent

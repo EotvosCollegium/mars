@@ -6,5 +6,4 @@
 @component('mail::button', ['url' => $url])
 @lang('mail.show')
 @endcomponent
-<p>@lang('mail.administrators')</p>
 @endcomponent

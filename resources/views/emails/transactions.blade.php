@@ -21,6 +21,4 @@
 </li>
 @endforeach
 </ul>
-
-<p>@lang('mail.administrators')</p>
 @endcomponent
