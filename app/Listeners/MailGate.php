@@ -2,6 +2,8 @@
 
 namespace App\Listeners;
 
+use Illuminate\Support\Facades\App;
+
 class MailGate
 {
     /**
@@ -23,7 +25,7 @@ class MailGate
     public function handle($event)
     {
         // Prevent the propagation of the event here, therefore stopping the mail.
-        if (config('app.debug') && !config('mail.active')) {
+        if ((config('app.debug') && !config('mail.active')) || App::environment() == 'testing') {
             return false;
         }
     }
