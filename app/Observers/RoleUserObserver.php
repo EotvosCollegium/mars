@@ -15,7 +15,7 @@ class RoleUserObserver
      */
     public function created(RoleUser $roleUser)
     {
-        if($roleUser->user->verified){
+        if($roleUser->user->verified) {
             Mail::to($roleUser->user)->queue(new \App\Mail\RoleAttached($roleUser->user->name, $roleUser->role->translatedName, $roleUser->translatedName));
         }
     }
@@ -28,7 +28,7 @@ class RoleUserObserver
      */
     public function deleted(RoleUser $roleUser)
     {
-        if($roleUser->user->verified){
+        if($roleUser->user->verified) {
             Mail::to($roleUser->user)->queue(new \App\Mail\RoleDetached($roleUser->user->name, $roleUser->role->translatedName, $roleUser->translatedName));
         }
     }
