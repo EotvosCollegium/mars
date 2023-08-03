@@ -17,5 +17,4 @@
 Részletek
 @endcomponent
 </div>
-<p>@lang('mail.administrators')</p>
 @endcomponent

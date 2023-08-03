@@ -7,5 +7,4 @@ A kérdőív kitöltése kötelező, ellenkező esetben a határidő lejárta ut
 @component('mail::button', ['url' => route('secretariat.evaluation.show')])
 Kitöltés
 @endcomponent
-<p>@lang('mail.administrators')</p>
 @endcomponent

@@ -19,5 +19,4 @@
             Új link kérése
         @endcomponent
     </div>
-    <p>A rendszergazdák</p>
 @endcomponent

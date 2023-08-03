@@ -38,6 +38,8 @@ return [
     'printer' => 'Nyomtató',
     'reception' => 'Porta',
     'resident' => 'Bentlakó',
+    'role_attached' => 'Új jogosultság: :role',
+    'role_detached' => 'Eltávolított jogosultság: :role',
     'roles' => 'Jogosultságok',
     'science-vice-president' => 'Szakmai alelnök',
     'secretary' => 'Titkárság',

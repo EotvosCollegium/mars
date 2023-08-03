@@ -4,6 +4,4 @@
         {{ $approver->name }} {{$approved?'jóváhagyta':'elutasította'}} a közösségi tevékenységedet: <br>
         "{{ $description }}"
     </p>
-
-    @lang('mail.administrators')
 @endcomponent

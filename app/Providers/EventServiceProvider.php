@@ -5,9 +5,11 @@ namespace App\Providers;
 use App\Listeners\MailGate;
 use App\Models\FreePages;
 use App\Models\PrintAccount;
+use App\Models\RoleUser;
 use App\Models\SemesterStatus;
 use App\Observers\FreePagesObserver;
 use App\Observers\PrintAccountObserver;
+use App\Observers\RoleUserObserver;
 use App\Observers\StatusObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -42,5 +44,6 @@ class EventServiceProvider extends ServiceProvider
         SemesterStatus::observe(StatusObserver::class);
         FreePages::observe(FreePagesObserver::class);
         PrintAccount::observe(PrintAccountObserver::class);
+        RoleUser::observe(RoleUserObserver::class);
     }
 }
