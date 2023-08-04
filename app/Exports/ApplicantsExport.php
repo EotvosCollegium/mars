@@ -31,6 +31,7 @@ class ApplicantsExport implements FromCollection, WithTitle, WithMapping, WithHe
     {
         return [
             'Név',
+            'Jelentkezés státusza',
             'E-mail',
             'Születési hely',
             'Születési idő',
@@ -57,6 +58,7 @@ class ApplicantsExport implements FromCollection, WithTitle, WithMapping, WithHe
 
         return [
             $user->name,
+            $user->application->status,
             $user->email,
             $user->personalInformation?->place_of_birth,
             $user->personalInformation?->date_of_birth,

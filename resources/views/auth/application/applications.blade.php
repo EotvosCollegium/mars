@@ -27,7 +27,7 @@
                 </form>
             </div>
             <blockquote>
-                @can('editApplicationStatus', \App\models\User::class)
+                @can('editApplicationStatus', \App\Models\User::class)
                 <p>A jelentkezők aktuális státusza a jelentkezők számára nem nyilvános.</p>
                 @endcan
                 @can('finalizeApplicationProcess', \App\Models\User::class)
