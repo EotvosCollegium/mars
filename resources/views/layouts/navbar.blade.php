@@ -160,7 +160,12 @@
                     <!-- user management -->
                     <li>
                         <a class="waves-effect" href="{{ route('users.index') }}">
-                            <i class="material-icons left">supervisor_account</i> Felhasználók
+                            <i class="material-icons left">supervisor_account</i>
+                            @if(user()->hasRole([\App\Models\Role::SYS_ADMIN, \App\Models\Role::STAFF]))
+                            Felhasználók
+                            @else
+                            Collegisták
+                            @endif
                         </a>
                     </li>
                 @endcan

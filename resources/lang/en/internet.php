@@ -37,7 +37,7 @@ return [
     'user_os' => 'Your operating system',
     'wifi_connections' => 'WiFi Connections',
     'wifi_password' => 'Wifi password',
-    'wifi_password_info' => 'You can connect to ejcwifi_radius with the credentials listed below. You can change your password to a randomly generated one. If your device asks for more information to connect to the network, you can try these:<br>1. EAP method: PEAP<br>2. Phase 2 authentication: -<br>3. CA certificate: -<br>4. Anonymous identity: same as username<br>If the problem persists, <a href="mailto:root@eotvos.elte.hu">ask the Admins for help</a>.',
+    'wifi_password_info' => 'You can connect to ejcwifi_radius with the credentials listed below. You can change your password to a randomly generated one. If your device asks for more information to connect to the network, you can try these:<br>1. EAP method: PEAP<br>2. Phase 2 authentication: -<br>3. CA certificate: - (or `Trust on first use`)<br>4. Anonymous identity: same as username<br>If the problem persists, <a href="mailto:root@eotvos.elte.hu">ask the Admins for help</a>.',
     'wifi_password_null' => 'You have no wifi password at the moment. You can generate one below.',
     'wifi_password_reset_warning' => 'You must log in again if you request a new password! It might take a few minutes to update.',
     'wifi_user' => 'Wifi username',

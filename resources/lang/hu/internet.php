@@ -37,7 +37,7 @@ return [
     'user_os' => 'Az operációs rendszered',
     'wifi_connections' => 'WiFi csatlakozások',
     'wifi_password' => 'Wifi jelszó',
-    'wifi_password_info' => 'Az ejcwifi_radius hálózatra a lenti adatokkal jelentkezhetsz be. Lehetőséged van a jelszavadat egy másik véletlenszerű jelszóra megváltoztatni.<br> Amennyiben Androidos/Linuxos eszközön plusz adatokat kér a hálózatba való bejelentkezéshez, akkor ezekkel a beállításokkal próbálkozz:<br>1. EAP módszer: PEAP<br>2. Phase 2 hitelesítés: nincs<br>3. CA tanusítvány: nincs<br>4. Névtelen azonosító: wifi felhasználó név<br>Ha így sem jársz sikerrel, <a href="mailto:root@eotvos.elte.hu">keresd a rendszergazdákat</a>!',
+    'wifi_password_info' => 'Az ejcwifi_radius hálózatra a lenti adatokkal jelentkezhetsz be. Lehetőséged van a jelszavadat egy másik véletlenszerű jelszóra megváltoztatni.<br> Amennyiben Androidos/Linuxos eszközön plusz adatokat kér a hálózatba való bejelentkezéshez, akkor ezekkel a beállításokkal próbálkozz:<br>1. EAP módszer: PEAP<br>2. Phase 2 hitelesítés: nincs<br>3. CA tanusítvány: nincs/megbízás első használatkor<br>4. Névtelen azonosító: wifi felhasználó név<br>Ha így sem jársz sikerrel, <a href="mailto:root@eotvos.elte.hu">keresd a rendszergazdákat</a>!',
     'wifi_password_null' => 'Jelenleg nincs wifi jelszavad. Generálhatsz lent.',
     'wifi_password_reset_warning' => 'Ha új jelszót igényelsz, mindenhol újra be kell jelentkezned! Az új jelszó beállítása pár percet igénybe vehet.',
     'wifi_user' => 'Wifi felhasználói név',
