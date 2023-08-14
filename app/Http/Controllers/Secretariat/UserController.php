@@ -63,13 +63,13 @@ class UserController extends Controller
 
         $user->update(['email' => $request->email, 'name' => $request->name]);
         $personal_data = Arr::except($data, ['name', 'email', 'tenant_until']);
-        
+
         if (!$user->hasPersonalInformation()) {
             $user->personalInformation()->create($personal_data);
         } else {
             $user->personalInformation()->update($personal_data);
         }
-        
+
         if ($request->has('tenant_until')) {
             $date = min(Carbon::parse($request->tenant_until), Carbon::now()->addMonths(6));
             $user->personalInformation()->update(['tenant_until' => $date]);

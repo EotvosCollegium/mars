@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Log;
 
 class SameOrUnique implements Rule
 {
-
     private User $user;
     private string $className;
     private string $fieldName;
@@ -42,7 +41,7 @@ class SameOrUnique implements Rule
         $databaseValue = null;
         $query = $this->className::query();
         if ($this->className != User::class) {
-            // If the field is not contained in the user, find it from the class given. 
+            // If the field is not contained in the user, find it from the class given.
             // PHP can get the attribute from a string (which {$this->fiendName} is).
             $databaseValue = $this->className::query()->firstWhere('user_id', '=', $this->user->id)->{$this->fieldName};
         } else {
