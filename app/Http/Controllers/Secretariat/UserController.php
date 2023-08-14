@@ -11,6 +11,7 @@ use App\Models\StudyLine;
 use App\Models\User;
 use App\Models\Workshop;
 use App\Models\WorkshopBalance;
+use App\Rules\SameOrUnique;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -42,7 +43,7 @@ class UserController extends Controller
         $isCollegist = $user->isCollegist();
 
         $validator = Validator::make($request->all(), [
-            'email' => 'required|email|max:225',
+            'email' => ['required', 'email', 'max:225', new SameOrUnique($user)],
             'name' => 'required|string|max:255',
             'phone_number' => 'required|string|min:8|max:18',
             'mothers_name' => [Rule::requiredIf($isCollegist), 'max:225'],
@@ -56,13 +57,13 @@ class UserController extends Controller
             'tenant_until'=> [Rule::requiredIf($user->isTenant()), 'date', 'after:today'],
             'relatives_contact_data' => ['nullable', 'string', 'max:255'],
         ]);
-        if ($user->email != $request->email) {
-            if (User::where('email', $request->email)->exists()) {
-                $validator->after(function ($validator) {
-                    $validator->errors()->add('email', __('validation.unique', ['attribute' => 'e-mail']));
-                });
-            }
-        }
+        // if ($user->email != $request->email) {
+        //     if (User::where('email', $request->email)->exists()) {
+        //         $validator->after(function ($validator) {
+        //             $validator->errors()->add('email', __('validation.unique', ['attribute' => 'e-mail']));
+        //         });
+        //     }
+        // }
 
         $validator->validate();
 
@@ -83,7 +84,7 @@ class UserController extends Controller
         if (!$user->hasPersonalInformation()) {
             $user->personalInformation()->create($personal_data);
         } else {
-            $user->personalInformation->update($personal_data);
+            $user->personalInformation()->update($personal_data);
         }
         if ($request->has('tenant_until')) {
             $date=min(Carbon::parse($request->tenant_until), Carbon::now()->addMonths(6));
@@ -113,7 +114,7 @@ class UserController extends Controller
             'study_lines.*.level' => ['required', Rule::in(array_keys(StudyLine::TYPES))],
             'study_lines.*.minor' => 'nullable|string|max:255',
             'study_lines.*.start' => 'required',
-            'email' => 'required|string|email|max:255',
+            'email' => ['required', 'string', 'email', 'max:255', new SameOrUnique($user, 'email', 'educationalInformation')]
         ]);
 
         $validator->validate();
