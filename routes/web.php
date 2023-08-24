@@ -11,6 +11,7 @@
 |
 */
 
+use App\Http\Controllers\Auth\ApplicantsController;
 use App\Http\Controllers\Auth\ApplicationController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Dormitory\FaultController;
@@ -43,17 +44,14 @@ Auth::routes();
 
 Route::get('/register/guest', [RegisterController::class, 'showTenantRegistrationForm'])->name('register.guest');
 
-Route::middleware(['auth', 'log', 'only_hungarian'])->group(function () {
-    Route::get('/application', [ApplicationController::class, 'showApplicationForm'])->name('application');
-});
 Route::middleware(['auth', 'log'])->group(function () {
-    /** Routes that needs to be accessed during the application process */
-    Route::post('/application', [ApplicationController::class, 'storeApplicationForm'])->name('application.store');
+    /** Routes that needs to be accessed during the application process - for non verified users */
+    Route::get ('/application', [ApplicationController::class, 'show'])->name('application')->middleware('only_hungarian');
+    Route::post('/application', [ApplicationController::class, 'store'])->name('application.store');
     Route::post('/users/{user}/personal_information', [UserController::class, 'updatePersonalInformation'])->name('users.update.personal');
     Route::post('/users/{user}/educational_information', [UserController::class, 'updateEducationalInformation'])->name('users.update.educational');
     Route::post('/users/{user}/alfonso', [UserController::class, 'updateAlfonsoStatus'])->name('users.update.alfonso');
     Route::post('/users/{user}/language_exam', [UserController::class, 'uploadLanguageExam'])->name('users.language_exams.upload');
-    Route::post('/application/finalize', [ApplicationController::class, 'finalizeApplicationProcess'])->name('application.finalize');
 });
 
 Route::middleware(['auth', 'log', 'verified'])->group(function () {
@@ -143,9 +141,12 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
         Route::post('/secretariat/registrations/invite', [RegistrationsController::class, 'invite'])->name('secretariat.registrations.invite');
     });
     /** Application handling */
-    Route::get('/applications', [ApplicationController::class, 'showApplications'])->name('applications');
-    Route::post('/applications', [ApplicationController::class, 'editApplication'])->name('applications.edit');
-    Route::get('/applications/export', [ApplicationController::class, 'exportApplications'])->name('applications.export');
+    Route::get('/applicants', [ApplicantsController::class, 'index'])->name('applicants.index');
+    Route::get('/applications/{id}', [ApplicantsController::class, 'show'])->name('applicants.show');
+    Route::get('/applications/{id}/edit', [ApplicantsController::class, 'edit'])->name('applicants.edit');
+    Route::post('/applicants/{id}', [ApplicantsController::class, 'update'])->name('applicants.update');
+    Route::post('/applicants/finalize', [ApplicantsController::class, 'finalize'])->name('applicants.finalize');
+    Route::get('/applicants/export', [ApplicationController::class, 'export'])->name('applications.export');
 
     /** Faults */
     Route::get('/faults', [FaultController::class, 'index'])->name('faults');
