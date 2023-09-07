@@ -75,7 +75,7 @@
             @lang('main.essential')</a><br class="mobile-break" />
         <a href="#">
             @lang('main.modern')</a><br class="mobile-break" />
-        <a href="https://github.com/luksan47/mars">
+        <a href="https://github.com/EotvosCollegium/mars">
             @lang('main.open')</a><br class="mobile-break" />
     </div>
 
