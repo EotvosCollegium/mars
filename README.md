@@ -15,9 +15,9 @@ Urán is a Laravel based application. For more information, see the [official La
 ## Contributions
 
 Contributions are welcome from both developers and other volunteers. If you are a developer, checkout our
-[Contribution guidlines](https://github.com/luksan47/mars/blob/master/CONTRIBUTING.md) to get started.
+[Contribution guidlines](CONTRIBUTING.md) to get started.
 If not, the easiest thing right now is catching up with our language files. You can find them
-[here](https://github.com/luksan47/mars/tree/master/resources/lang). Each folder contains translations a specific
+[here](resources/lang). Each folder contains translations a specific
 language, where in each file we assign the proper words/sentences to the keys we use in the code.
 
 ## License
