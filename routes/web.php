@@ -30,6 +30,8 @@ use App\Http\Controllers\StudentsCouncil\MrAndMissController;
 use App\Http\Controllers\StudentsCouncil\CommunityServiceController;
 use App\Http\Controllers\StudentsCouncil\GeneralAssemblyController;
 use App\Http\Controllers\Dormitory\RoomController;
+use App\Http\Controllers\StudentsCouncil\GeneralAssemblyPresenceCheckController;
+use App\Http\Controllers\StudentsCouncil\GeneralAssemblyQuestionController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -215,15 +217,12 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::get('/community_service/search', [CommunityServiceController::class, 'search'])->name('community_service.search');
 
     /** voting */
-    Route::get('/general_assemblies', [GeneralAssemblyController::class, 'index'])->name('general_assemblies.index');
-    Route::get('/general_assemblies/create', [GeneralAssemblyController::class, 'create'])->name('general_assemblies.create');
-    Route::post('/general_assemblies', [GeneralAssemblyController::class, 'store'])->name('general_assemblies.store');
-    Route::get('/general_assemblies/{general_assembly}', [GeneralAssemblyController::class, 'show'])->name('general_assemblies.show');
+    Route::resource("general_assemblies", GeneralAssemblyController::class)->only(['index', 'create', 'store', 'show']);
     Route::post('/general_assemblies/{general_assembly}/close', [GeneralAssemblyController::class, 'closeAssembly'])->name('general_assemblies.close');
-    Route::get('/questions/create', [GeneralAssemblyController::class, 'newQuestion'])->name('questions.create');
-    Route::post('/questions', [GeneralAssemblyController::class, 'addQuestion'])->name('questions.store');
-    Route::post('/questions/{question}/close', [GeneralAssemblyController::class, 'closeQuestion'])->name('questions.close');
-    Route::post('/questions/{question}/votes', [GeneralAssemblyController::class, 'saveVote'])->name('questions.votes.store')->withoutMiddleware('log');
-    ;
-    Route::get('/questions/{question}', [GeneralAssemblyController::class, 'viewQuestion'])->name('questions.show');
+    Route::resource("general_assemblies.questions", GeneralAssemblyQuestionController::class)->only(['create', 'store', 'show']);
+    Route::post('/general_assemblies/{general_assembly}/questions/{question}/close', [GeneralAssemblyQuestionController::class, 'closeQuestion'])->name('general_assemblies.questions.close');
+    Route::post('/general_assemblies/{general_assembly}/questions/{question}/votes', [GeneralAssemblyQuestionController::class, 'saveVote'])->name('general_assemblies.questions.votes.store')->withoutMiddleware('log');
+    Route::resource("general_assemblies.presence_checks", GeneralAssemblyPresenceCheckController::class)->only(['create', 'store', 'show']);
+    Route::post('/general_assemblies/{general_assembly}/presence_checks/{presence_check}/close', [GeneralAssemblyPresenceCheckController::class, 'closePresenceCheck'])->name('general_assemblies.presence_checks.close');
+    Route::post('/general_assemblies/{general_assembly}/presence_checks/{presence_check}/sign_presence', [GeneralAssemblyPresenceCheckController::class, 'signPresence'])->name('general_assemblies.presence_checks.presence.store')->withoutMiddleware('log');
 });

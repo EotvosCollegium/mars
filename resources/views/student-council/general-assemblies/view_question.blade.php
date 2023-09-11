@@ -13,7 +13,10 @@
     @can('vote', $question)
     <div class="col s12">
         <div class="card">
-            <form method="POST" action="{{ route('questions.votes.store', $question->id)}}">
+            <form method="POST" action="{{ route('general_assemblies.questions.votes.store', [
+                "general_assembly" => $question->generalAssembly->id,
+                "question" => $question->id,
+            ])}}">
                 @csrf
                 <div class="card-content">
                     <span class="card-title">
@@ -82,7 +85,10 @@
                     </blockquote>
                     @if($question->isOpen())
                         @can('administer', \App\Models\GeneralAssemblies\GeneralAssembly::class)
-                        <form action="{{ route('questions.close', $question->id) }}" method="POST" style="display:inline;">
+                        <form action="{{ route('general_assemblies.questions.close', [
+                            "general_assembly" => $question->generalAssembly->id,
+                            "question" => $question->id,
+                        ]) }}" method="POST" style="display:inline;">
                             @csrf
                             <x-input.button only-input text="voting.close_question" class="red" />
                         </form>

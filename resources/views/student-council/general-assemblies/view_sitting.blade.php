@@ -73,7 +73,7 @@
                         <th>
                             @if($general_assembly->isOpen())
                             @can('administer', $general_assembly)
-                            <x-input.button href="{{ route('questions.create', ['general_assembly' => $general_assembly]) }}" floating class="right" icon="add" />
+                            <x-input.button href="{{ route('general_assemblies.questions.create', ['general_assembly' => $general_assembly]) }}" floating class="right" icon="add" />
                             @endcan
                             @endif
                         </th>
@@ -88,7 +88,10 @@
                             {{$question->closed_at}}
                             @if($question->isOpen())
                             @can('administer', $general_assembly)
-                            <form action="{{ route('questions.close', $question->id) }}" method="POST">
+                            <form action="{{ route('general_assemblies.questions.close', [
+                                "general_assembly" => $general_assembly->id,
+                                "question" => $question->id,
+                            ]) }}" method="POST">
                                 @csrf
                                 <x-input.button text="voting.close_question" class="red" />
                             </form>
@@ -96,10 +99,77 @@
                             @endif
                         </td>
                         <td>
+                            @php
+                                $route = route('general_assemblies.questions.show', [
+                                        "general_assembly" => $general_assembly->id,
+                                        "question" => $question->id,
+                                ]);
+                            @endphp
                             @can('vote', $question)
-                            <x-input.button href="{{ route('questions.show', $question->id) }}" floating class="right" icon="thumbs_up_down" />
+                            <x-input.button href="{{ $route }}" floating class="right" icon="thumbs_up_down" />
                             @elsecan('viewResults', $question)
-                            <x-input.button href="{{ route('questions.show', $question->id) }}" floating class="right" icon="remove_red_eye" />
+                            <x-input.button href="{{ $route }}" floating class="right" icon="remove_red_eye" />
+                            @endcan
+                        </td>
+                    </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col s12">
+        <div class="card">
+            <div class="card-content">
+                <span class="card-title">@lang('voting.presence_checks')</span>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>@lang('voting.presence_note')</th>
+                        <th>@lang('voting.opened_at')</th>
+                        <th>@lang('voting.closed_at')</th>
+                        <th>
+                            @if($general_assembly->isOpen())
+                            @can('administer', $general_assembly)
+                            <x-input.button href="{{ route('general_assemblies.presence_checks.create', ['general_assembly' => $general_assembly]) }}" floating class="right" icon="add" />
+                            @endcan
+                            @endif
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach ($general_assembly->presenceChecks()->orderByDesc('opened_at')->get() as $presence_check)
+                    <tr>
+                        <td>{{$presence_check->title}}</td>
+                        <td>{{$presence_check->opened_at}}</td>
+                        <td>
+                            {{$presence_check->closed_at}}
+                            @if($presence_check->isOpen())
+                            @can('administer', $general_assembly)
+                            <form action="{{ route('general_assemblies.presence_checks.close', [
+                                "general_assembly" => $general_assembly->id,
+                                "presence_check" => $presence_check->id,
+                            ]) }}" method="POST">
+                                @csrf
+                                <x-input.button text="voting.close_presence_check" class="red" />
+                            </form>
+                            @endcan
+                            @endif
+                        </td>
+                        <td>
+                            @php
+                                $route = route('general_assemblies.presence_checks.show', [
+                                        "general_assembly" => $general_assembly->id,
+                                        "presence_check" => $presence_check->id,
+                                ]);
+                            @endphp
+                            @can('signPresence', $presence_check)
+                            <x-input.button href="{{ $route }}" floating class="right" icon="thumbs_up_down" />
+                            @elsecan('viewResults', $question)
+                            <x-input.button href="{{ $route }}" floating class="right" icon="remove_red_eye" />
                             @endcan
                         </td>
                     </tr>

@@ -32,4 +32,10 @@ return [
     'vote' => 'Vote',
     'voting' => 'Voting',
     'warning' => 'Warning: you cannot change your vote after you have submitted it.',
+    'presence_checks' => 'Presence checks',
+    'presence_check_title' => 'Presence check #:number',
+    'submit_presence_check' => 'I am here',
+    'close_presence_check' => 'Close presence check',
+    'presence_note' => 'Note',
+    'new_presence_check' => 'New presence check',
 ];
