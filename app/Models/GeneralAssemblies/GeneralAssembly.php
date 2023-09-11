@@ -60,7 +60,7 @@ class GeneralAssembly extends Model
      */
     public function hasBeenOpened(): bool
     {
-        return $this->opened_at!=null && $this->opened_at<=now();
+        return $this->opened_at != null && $this->opened_at <= now();
     }
 
     /**
@@ -77,7 +77,7 @@ class GeneralAssembly extends Model
      */
     public function isClosed(): bool
     {
-        return $this->closed_at!=null && $this->closed_at<=now();
+        return $this->closed_at != null && $this->closed_at <= now();
     }
 
     /**
@@ -90,7 +90,7 @@ class GeneralAssembly extends Model
             return collect([]);
         }
         return User::whereHas(
-            'presenceChecks', 
+            'presenceChecks',
             fn (Builder $query) => $query->where('presence_checks.general_assembly_id', $this->id),
             '>=',
             $this->getPresenceChecksNeededAttribute(),
@@ -110,9 +110,9 @@ class GeneralAssembly extends Model
                 $this->id,
             )
             ->count()
-            >= 
-            $this->getPresenceChecksNeededAttribute() 
-            || 
+            >=
+            $this->getPresenceChecksNeededAttribute()
+            ||
             $this->excusedUsers()->where('user_id', $user->id)->count() > 0;
     }
 
@@ -140,7 +140,7 @@ class GeneralAssembly extends Model
         if ($this->isOpen() || $this->isClosed()) {
             throw new \Exception("tried to open general assembly when it has already been opened");
         }
-        $this->update(['opened_at'=>now()]);
+        $this->update(['opened_at' => now()]);
     }
 
     /**
@@ -160,7 +160,7 @@ class GeneralAssembly extends Model
                 $question->close();
             }
         }
-        $this->update(['closed_at'=>now()]);
+        $this->update(['closed_at' => now()]);
     }
 
     /**
@@ -171,7 +171,7 @@ class GeneralAssembly extends Model
         $presenceCheckCount = $this->presenceChecks()->count();
         return $presenceCheckCount <= 2 ? $presenceCheckCount : $presenceCheckCount - 2;
     }
-    
+
     /**
      * Returns a random 6 char string, refreshed every minute.
      */

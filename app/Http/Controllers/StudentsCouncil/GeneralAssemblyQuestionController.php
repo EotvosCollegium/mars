@@ -8,12 +8,13 @@ use App\Models\GeneralAssemblies\QuestionOption;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class GeneralAssemblyQuestionController extends Controller {
-
+class GeneralAssemblyQuestionController extends Controller
+{
     /**
      * Returns the 'new question' page.
      */
-    public function create(GeneralAssembly $generalAssembly) {
+    public function create(GeneralAssembly $generalAssembly)
+    {
         $this->authorize('administer', GeneralAssembly::class);
 
         if (!$generalAssembly->isOpen()) {
@@ -27,7 +28,8 @@ class GeneralAssemblyQuestionController extends Controller {
     /**
      * Saves a new question.
      */
-    public function store(Request $request, GeneralAssembly $generalAssembly) {
+    public function store(Request $request, GeneralAssembly $generalAssembly)
+    {
         $this->authorize('administer', GeneralAssembly::class);
 
         $validator = Validator::make($request->all(), [
@@ -71,7 +73,8 @@ class GeneralAssemblyQuestionController extends Controller {
     /**
      * Returns a page with the options (and results, if authorized) of a question.
      */
-    public function show(GeneralAssembly $generalAssembly, $question) {
+    public function show(GeneralAssembly $generalAssembly, $question)
+    {
         $this->authorize('viewAny', GeneralAssembly::class);
         $question = $generalAssembly->questions()->findOrFail($question);
         return view('student-council.general-assemblies.view_question', [
@@ -82,7 +85,8 @@ class GeneralAssemblyQuestionController extends Controller {
     /**
      * Closes a question.
      */
-    public function closeQuestion(GeneralAssembly $generalAssembly, $question) {
+    public function closeQuestion(GeneralAssembly $generalAssembly, $question)
+    {
         $this->authorize('administer', GeneralAssembly::class);
         $question = $generalAssembly->questions()->findOrFail($question);
         if (!$question->isOpen()) {
@@ -95,7 +99,8 @@ class GeneralAssemblyQuestionController extends Controller {
     /**
      * Saves a vote.
      */
-    public function saveVote(Request $request, GeneralAssembly $generalAssembly, $question) {
+    public function saveVote(Request $request, GeneralAssembly $generalAssembly, $question)
+    {
         $question = $generalAssembly->questions()->findOrFail($question);
         $this->authorize('vote', $question); //this also checks whether the user has already voted
 

@@ -8,12 +8,13 @@ use App\Models\GeneralAssemblies\PresenceCheck;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class GeneralAssemblyPresenceCheckController extends Controller {
-
+class GeneralAssemblyPresenceCheckController extends Controller
+{
     /**
      * Returns the 'new question' page.
      */
-    public function create(GeneralAssembly $generalAssembly) {
+    public function create(GeneralAssembly $generalAssembly)
+    {
         $this->authorize('administer', GeneralAssembly::class);
 
         if (!$generalAssembly->isOpen()) {
@@ -27,7 +28,8 @@ class GeneralAssemblyPresenceCheckController extends Controller {
     /**
      * Saves a new question.
      */
-    public function store(Request $request, GeneralAssembly $generalAssembly) {
+    public function store(Request $request, GeneralAssembly $generalAssembly)
+    {
         $this->authorize('administer', GeneralAssembly::class);
 
         $data = $request->validate([
@@ -37,7 +39,7 @@ class GeneralAssemblyPresenceCheckController extends Controller {
         if (!$generalAssembly->isOpen()) {
             abort(401, "tried to modify a general assembly which was not open");
         }
-        
+
         $presenceCheck = $generalAssembly->presenceChecks()->create($data + [
             'opened_at' => now(),
         ]);
@@ -51,7 +53,8 @@ class GeneralAssemblyPresenceCheckController extends Controller {
     /**
      * Returns a page with the options (and results, if authorized) of a question.
      */
-    public function show(GeneralAssembly $generalAssembly, $presenceCheck) {
+    public function show(GeneralAssembly $generalAssembly, $presenceCheck)
+    {
         $this->authorize('viewAny', GeneralAssembly::class);
         $presenceCheck = $generalAssembly->presenceChecks()->findOrFail($presenceCheck);
         return view('student-council.general-assemblies.presence-checks.show', [
@@ -63,7 +66,8 @@ class GeneralAssemblyPresenceCheckController extends Controller {
     /**
      * Closes a question.
      */
-    public function closePresenceCheck(GeneralAssembly $generalAssembly, $presenceCheck) {
+    public function closePresenceCheck(GeneralAssembly $generalAssembly, $presenceCheck)
+    {
         $this->authorize('administer', GeneralAssembly::class);
         $presenceCheck = $generalAssembly->presenceChecks()->findOrFail($presenceCheck);
         if (!$presenceCheck->isOpen()) {
@@ -76,7 +80,8 @@ class GeneralAssemblyPresenceCheckController extends Controller {
     /**
      * Saves a vote.
      */
-    public function signPresence(Request $request, GeneralAssembly $generalAssembly, $presenceCheck) {
+    public function signPresence(Request $request, GeneralAssembly $generalAssembly, $presenceCheck)
+    {
         /** @var PresenceCheck */
         $presenceCheck = $generalAssembly->presenceChecks()->findOrFail($presenceCheck);
         $this->authorize('signPresence', $presenceCheck); //this also checks whether the user has already voted

@@ -40,7 +40,7 @@ class PresenceCheck extends Model
      */
     public function hasBeenOpened(): bool
     {
-        return $this->opened_at!=null && $this->opened_at<=now();
+        return $this->opened_at != null && $this->opened_at <= now();
     }
 
     /**
@@ -56,7 +56,7 @@ class PresenceCheck extends Model
      */
     public function isClosed(): bool
     {
-        return $this->closed_at!=null && $this->closed_at<=now();
+        return $this->closed_at != null && $this->closed_at <= now();
     }
 
     /**
@@ -78,7 +78,7 @@ class PresenceCheck extends Model
         if (!$this->isOpen()) {
             throw new \Exception("question not open");
         }
-        
+
         $this->users()->attach($user->id);
     }
 
