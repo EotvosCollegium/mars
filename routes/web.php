@@ -228,8 +228,8 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::get('/general_assemblies/{general_assembly}/questions/{question}', [GeneralAssemblyQuestionController::class, 'show'])->name('general_assemblies.questions.show');
     Route::post('/general_assemblies/{general_assembly}/questions/{question}/close', [GeneralAssemblyQuestionController::class, 'closeQuestion'])->name('general_assemblies.questions.close');
     Route::post('/general_assemblies/{general_assembly}/questions/{question}/votes', [GeneralAssemblyQuestionController::class, 'saveVote'])->name('general_assemblies.questions.votes.store')->withoutMiddleware('log');
-    
-    Route::get('/general_assemblies/{general_assembly}/presence_checks/create' , [GeneralAssemblyPresenceCheckController::class, 'create'])->name('general_assemblies.presence_checks.create');
+
+    Route::get('/general_assemblies/{general_assembly}/presence_checks/create', [GeneralAssemblyPresenceCheckController::class, 'create'])->name('general_assemblies.presence_checks.create');
     Route::post('/general_assemblies/{general_assembly}/presence_checks', [GeneralAssemblyPresenceCheckController::class, 'store'])->name('general_assemblies.presence_checks.store');
     Route::get('/general_assemblies/{general_assembly}/presence_checks/{presence_check}', [GeneralAssemblyPresenceCheckController::class, 'show'])->name('general_assemblies.presence_checks.show');
     Route::post('/general_assemblies/{general_assembly}/presence_checks/{presence_check}/close', [GeneralAssemblyPresenceCheckController::class, 'closePresenceCheck'])->name('general_assemblies.presence_checks.close');
