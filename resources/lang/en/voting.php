@@ -38,4 +38,5 @@ return [
     'close_presence_check' => 'Close presence check',
     'presence_note' => 'Note',
     'new_presence_check' => 'New presence check',
+    'excused_users' => 'Excused users',
 ];

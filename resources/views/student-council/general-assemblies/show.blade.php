@@ -52,7 +52,7 @@
                     </tbody>
                 </table>
                 <blockquote>
-                    * Résztvevőnek számít az, aki legfeljebb 2 kivételével az összes kérdésre szavazatot adott le. Csak aktív státuszú collegisták szavazhatnak.
+                    * Résztvevőnek számít az, aki legfeljebb 2 jelenlét-ellenőrzésen nem vett részt (amennyiben összesen legfeljebb 2 volt, úgy az összes jelenlét-ellenőrzésen részt vettek számítanak). Csak aktív státuszú collegisták szavazhatnak.
                 </blockquote>
             </div>
         </div>
@@ -180,4 +180,8 @@
         </div>
     </div>
 </div>
+
+@can('administer', $general_assembly)
+    @livewire('excused-users', ['general_assembly' => $general_assembly])
+@endcan
 @endsection

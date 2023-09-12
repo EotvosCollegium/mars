@@ -17,7 +17,7 @@ class GeneralAssemblyController extends Controller
     public function index()
     {
         $this->authorize('viewAny', GeneralAssembly::class);
-        return view('student-council.general-assemblies.list', [
+        return view('student-council.general-assemblies.index', [
             "general_assemblies" => GeneralAssembly::orderByDesc('opened_at')->get()
         ]);
     }
@@ -28,7 +28,7 @@ class GeneralAssemblyController extends Controller
     public function create()
     {
         $this->authorize('administer', GeneralAssembly::class);
-        return view('student-council.general-assemblies.new_sitting');
+        return view('student-council.general-assemblies.create');
     }
 
     /**
@@ -48,7 +48,7 @@ class GeneralAssemblyController extends Controller
             'opened_at' => now(),
         ]);
 
-        return view('student-council.general-assemblies.view_sitting', [
+        return view('student-council.general-assemblies.show', [
             "general_assembly" => $general_assembly,
             "passcode" => GeneralAssembly::getTemporaryPasscode()
         ]);
@@ -61,7 +61,7 @@ class GeneralAssemblyController extends Controller
     {
         $this->authorize('viewAny', GeneralAssembly::class);
 
-        return view('student-council.general-assemblies.view_sitting', [
+        return view('student-council.general-assemblies.show', [
             "general_assembly" => $general_assembly,
             "passcode" => GeneralAssembly::getTemporaryPasscode()
         ]);

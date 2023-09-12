@@ -20,7 +20,7 @@ class GeneralAssemblyQuestionController extends Controller
         if (!$generalAssembly->isOpen()) {
             abort(401, "tried to modify a general_assembly which was not open");
         }
-        return view('student-council.general-assemblies.new_question', [
+        return view('student-council.general-assemblies.questions.create', [
             "general_assembly" => $generalAssembly
         ]);
     }
@@ -77,7 +77,7 @@ class GeneralAssemblyQuestionController extends Controller
     {
         $this->authorize('viewAny', GeneralAssembly::class);
         $question = $generalAssembly->questions()->findOrFail($question);
-        return view('student-council.general-assemblies.view_question', [
+        return view('student-council.general-assemblies.questions.show', [
             "question" => $question
         ]);
     }
