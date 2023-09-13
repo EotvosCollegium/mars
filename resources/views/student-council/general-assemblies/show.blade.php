@@ -168,7 +168,7 @@
                             @endphp
                             @can('signPresence', $presence_check)
                             <x-input.button href="{{ $route }}" floating class="right" icon="thumbs_up_down" />
-                            @elsecan('viewResults', $question)
+                            @elsecan('viewResults', $presence_check)
                             <x-input.button href="{{ $route }}" floating class="right" icon="remove_red_eye" />
                             @endcan
                         </td>
