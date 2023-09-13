@@ -422,6 +422,10 @@ class User extends Authenticatable implements HasLocalePreference
         return $this->hasMany(CommunityService::class, 'approver_id');
     }
 
+    /**
+     * Returns the general assembly presence checks the user has signed.
+     * @return BelongsToMany 
+     */
     public function presenceChecks(): BelongsToMany
     {
         return $this->belongsToMany(PresenceCheck::class);

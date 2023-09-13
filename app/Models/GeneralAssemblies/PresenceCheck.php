@@ -82,6 +82,11 @@ class PresenceCheck extends Model
         $this->users()->attach($user->id);
     }
 
+    /**
+     * Closes the presence check.
+     * @throws Exception if presenceCheck is already closed.
+     * @throws Exception if presenceCheck is not open.
+     */
     public function close(): void
     {
         if ($this->isClosed()) {
@@ -93,6 +98,9 @@ class PresenceCheck extends Model
         $this->update(['closed_at'=>now()]);
     }
 
+    /**
+     * @return string The title of the presence check.
+     */
     public function getTitleAttribute(): string
     {
         $number = $this->generalAssembly->presenceChecks()->where('opened_at', '<=', $this->opened_at)->count();
