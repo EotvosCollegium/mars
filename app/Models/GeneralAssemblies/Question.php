@@ -92,10 +92,10 @@ class Question extends Model
     public function close(): void
     {
         if ($this->isClosed()) {
-            throw new \Exception("tried to close general assembly when it has already been closed");
+            throw new \Exception("tried to close question when it has already been closed");
         }
-        if (!$this->isOpen()) {
-            throw new \Exception("tried to close general assembly when it was not open");
+        if (!$this->hasBeenOpened()) {
+            throw new \Exception("tried to close question when it has not been opened");
         }
         $this->update(['closed_at'=>now()]);
     }

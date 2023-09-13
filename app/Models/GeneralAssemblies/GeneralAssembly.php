@@ -60,7 +60,7 @@ class GeneralAssembly extends Model
      */
     public function hasBeenOpened(): bool
     {
-        return $this->opened_at != null && $this->opened_at <= now();
+        return !empty($this->opened_at) && $this->opened_at <= now();
     }
 
     /**
@@ -77,7 +77,7 @@ class GeneralAssembly extends Model
      */
     public function isClosed(): bool
     {
-        return $this->closed_at != null && $this->closed_at <= now();
+        return !empty($this->closed_at) && $this->closed_at <= now();
     }
 
     /**
@@ -137,7 +137,7 @@ class GeneralAssembly extends Model
      */
     public function open(): void
     {
-        if ($this->isOpen() || $this->isClosed()) {
+        if ($this->hasBeenOpened()) {
             throw new \Exception("tried to open general assembly when it has already been opened");
         }
         $this->update(['opened_at' => now()]);

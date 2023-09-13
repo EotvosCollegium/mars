@@ -17,8 +17,8 @@ class GeneralAssemblyQuestionController extends Controller
     {
         $this->authorize('administer', GeneralAssembly::class);
 
-        if (!$generalAssembly->isOpen()) {
-            abort(401, "tried to modify a general_assembly which was not open");
+        if ($generalAssembly->isClosed()) {
+            abort(401, "tried to modify a general_assembly which has been closed");
         }
         return view('student-council.general-assemblies.questions.create', [
             "general_assembly" => $generalAssembly
@@ -48,14 +48,13 @@ class GeneralAssemblyQuestionController extends Controller
         }
         $validator->validate();
 
-        if (!$generalAssembly->isOpen()) {
-            abort(401, "tried to modify a general assembly which was not open");
+        if ($generalAssembly->isClosed()) {
+            abort(401, "tried to modify a general assembly which has been closed");
         }
 
         $question = $generalAssembly->questions()->create([
             'title' => $request->title,
-            'max_options' => $request->max_options,
-            'opened_at' => now()
+            'max_options' => $request->max_options
         ]);
         foreach ($options as $option) {
             $question->options()->create([
@@ -80,6 +79,24 @@ class GeneralAssemblyQuestionController extends Controller
         return view('student-council.general-assemblies.questions.show', [
             "question" => $question
         ]);
+    }
+
+    /**
+     * Opens a question.
+     */
+    public function openQuestion(GeneralAssembly $generalAssembly, $question)
+    {
+        $this->authorize('administer', GeneralAssembly::class);
+        $this->authorize('administer', GeneralAssembly::class);
+        $question = $generalAssembly->questions()->findOrFail($question);
+        if (!$generalAssembly->isOpen()) {
+            abort(401, "tried to open a question when the sitting itself was not open");
+        }
+        if ($question->hasBeenOpened()) {
+            abort(401, "tried to open a question which has already been opened");
+        }
+        $question->open();
+        return back()->with('message', __('voting.question_opened'));
     }
 
     /**
