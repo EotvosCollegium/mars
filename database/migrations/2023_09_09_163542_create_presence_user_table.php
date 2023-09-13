@@ -18,6 +18,7 @@ return new class () extends Migration {
             $table->id();
             $table->foreignIdFor(PresenceCheck::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
+            $table->unique(['presence_check_id', 'user_id']);
             $table->timestamps();
         });
     }

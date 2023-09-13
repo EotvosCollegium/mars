@@ -52,7 +52,7 @@ class GeneralAssembly extends Model
      */
     public function excusedUsers(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'general_assembly_user');
+        return $this->belongsToMany(User::class, 'general_assembly_excused_users');
     }
 
     /**
@@ -155,9 +155,14 @@ class GeneralAssembly extends Model
         if (!$this->isOpen()) {
             throw new \Exception("tried to close general assembly when it was not open");
         }
-        foreach ($this->presenceChecks()->get() as $question) {
+        foreach ($this->questions as $question) {
             if ($question->isOpen()) {
                 $question->close();
+            }
+        }
+        foreach($this->presenceChecks as $presenceCheck) {
+            if ($presenceCheck->isOpen()) {
+                $presenceCheck->close();
             }
         }
         $this->update(['closed_at' => now()]);

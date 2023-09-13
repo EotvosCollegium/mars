@@ -13,11 +13,13 @@ return new class () extends Migration {
      * @return void
      */
     public function up()
-    {
+    {   
+        // The table is for the excused users of a general assembly
         Schema::create('general_assembly_user', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(GeneralAssembly::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
+            $table->unique(['general_assembly_id', 'user_id']);
             $table->timestamps();
         });
     }

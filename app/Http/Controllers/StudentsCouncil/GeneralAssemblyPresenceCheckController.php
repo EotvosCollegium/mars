@@ -33,7 +33,7 @@ class GeneralAssemblyPresenceCheckController extends Controller
         $this->authorize('administer', GeneralAssembly::class);
 
         $data = $request->validate([
-            'note' => 'string',
+            'note' => 'nullable|string',
         ]);
 
         if (!$generalAssembly->isOpen()) {
@@ -64,7 +64,7 @@ class GeneralAssemblyPresenceCheckController extends Controller
     }
 
     /**
-     * Closes a question.
+     * Closes a presence check.
      */
     public function closePresenceCheck(GeneralAssembly $generalAssembly, $presenceCheck)
     {

@@ -82,6 +82,17 @@ class PresenceCheck extends Model
         $this->users()->attach($user->id);
     }
 
+    public function close(): void
+    {
+        if ($this->isClosed()) {
+            throw new \Exception("tried to close general assembly when it has already been closed");
+        }
+        if (!$this->isOpen()) {
+            throw new \Exception("tried to close general assembly when it was not open");
+        }
+        $this->update(['closed_at'=>now()]);
+    }
+
     public function getTitleAttribute(): string
     {
         $number = $this->generalAssembly->presenceChecks()->where('opened_at', '<=', $this->opened_at)->count();

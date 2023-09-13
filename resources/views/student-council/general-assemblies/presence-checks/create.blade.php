@@ -20,7 +20,7 @@
                 @endforeach
                     <span class="card-title">@lang('voting.new_presence_check')</span>
                     <div class="row">
-                        <x-input.text s="12" type="text" text="voting.presence_note" id="note" maxlength="100" required/>
+                        <x-input.text s="12" type="text" text="voting.presence_note" id="note" maxlength="100"/>
                     </div>
                 </div>
                 <div class="card-action right-align">

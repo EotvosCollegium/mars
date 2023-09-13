@@ -12,7 +12,7 @@
                                     text="Collegisták"
                                     wire:model="user"
                                     :elements="\App\Models\User::collegists()"
-                                    :formatter="fn($user) => $user->uniqueName" 
+                                    :formatter="fn($user) => $user->uniqueName"
                                     :allowEmpty
                                 />
                             </div>
@@ -25,7 +25,7 @@
                 <table>
                     <thead>
                     <tr>
-                        <th>@lang('general.name')</th>
+                        <th>Név</th>
                         <th></th>
                     </tr>
                     </thead>
