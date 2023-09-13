@@ -11,7 +11,8 @@ class ExcusedUsers extends Component
     public GeneralAssembly $general_assembly;
     public $user;
 
-    public function addUser() {
+    public function addUser()
+    {
         $this->validate([
             'user' => 'required|exists:users,id',
         ]);
@@ -19,7 +20,8 @@ class ExcusedUsers extends Component
         $this->user = null;
     }
 
-    public function removeUser($userId) {
+    public function removeUser($userId)
+    {
         $this->general_assembly->excusedUsers()->detach($userId);
     }
 
