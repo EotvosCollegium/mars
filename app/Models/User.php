@@ -424,7 +424,7 @@ class User extends Authenticatable implements HasLocalePreference
 
     /**
      * Returns the general assembly presence checks the user has signed.
-     * @return BelongsToMany 
+     * @return BelongsToMany
      */
     public function presenceChecks(): BelongsToMany
     {
