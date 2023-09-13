@@ -90,7 +90,7 @@ class PresenceCheck extends Model
         if (!$this->isOpen()) {
             throw new \Exception("tried to close general assembly when it was not open");
         }
-        $this->update(['closed_at'=>now()]);
+        $this->update(['closed_at' => now()]);
     }
 
     public function getTitleAttribute(): string
