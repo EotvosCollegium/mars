@@ -8,6 +8,7 @@ return [
     'close_sitting' => 'Ülés lezárása',
     'closed' => 'Lezárva',
     'closed_at' => 'Lezárva',
+    'code' => 'Kód',
     'description' => 'A szavazatod névtelen és nem köthető a felhasználódhoz, de a szavazatod ténye nyilvános. Szavazni a vetítőn látható kód beírásával lehet.',
     'general_assemblies' => 'Közgyűlések',
     'incorrect_passcode' => 'Érvénytelen kód',

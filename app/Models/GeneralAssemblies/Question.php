@@ -51,7 +51,7 @@ class Question extends Model
      */
     public function hasBeenOpened(): bool
     {
-        return $this->opened_at!=null && $this->opened_at<=now();
+        return $this->opened_at != null && $this->opened_at <= now();
     }
 
     /**
@@ -67,7 +67,7 @@ class Question extends Model
      */
     public function isClosed(): bool
     {
-        return $this->closed_at!=null && $this->closed_at<=now();
+        return $this->closed_at != null && $this->closed_at <= now();
     }
 
     /**
@@ -82,7 +82,7 @@ class Question extends Model
         if ($this->isOpen() || $this->isClosed()) {
             throw new \Exception("tried to open question when it has already been opened");
         }
-        $this->update(['opened_at'=>now()]);
+        $this->update(['opened_at' => now()]);
     }
 
     /**
@@ -97,7 +97,7 @@ class Question extends Model
         if (!$this->hasBeenOpened()) {
             throw new \Exception("tried to close question when it has not been opened");
         }
-        $this->update(['closed_at'=>now()]);
+        $this->update(['closed_at' => now()]);
     }
 
     /**
@@ -105,7 +105,7 @@ class Question extends Model
      */
     public function isMultipleChoice(): bool
     {
-        return $this->max_options>1;
+        return $this->max_options > 1;
     }
 
     /**

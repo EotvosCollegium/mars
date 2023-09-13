@@ -15,7 +15,9 @@
                 <span class="card-title">{{ $general_assembly->title }}
                     @if($general_assembly->isOpen())
                     <span class="right">
-                        @livewire('passcode')
+                        <a href="{{ route('general_assemblies.show_code', $general_assembly) }}">
+                            @livewire('passcode')
+                        </a>
                     </span>
                     @endif
                 </span>
@@ -99,7 +101,20 @@
                     @foreach ($general_assembly->questions()->orderByDesc('opened_at')->get() as $question)
                     <tr>
                         <td>{{$question->title}}</td>
-                        <td>{{$question->opened_at}}</td>
+                        <td>
+                            {{$question->opened_at}}
+                            @if(!$question->hasBeenOpened() && $general_assembly->isOpen())
+                            @can('administer', $general_assembly)
+                            <form action="{{ route('general_assemblies.questions.open', [
+                                "general_assembly" => $general_assembly->id,
+                                "question" => $question->id,
+                            ]) }}" method="POST">
+                                @csrf
+                                <x-input.button text="voting.open_question" class="green" />
+                            </form>
+                            @endcan
+                            @endif
+                        </td>
                         <td>
                             {{$question->closed_at}}
                             @if($question->isOpen())

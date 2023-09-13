@@ -8,6 +8,7 @@ return [
     'close_sitting' => 'Close general assembly',
     'closed' => 'Closed',
     'closed_at' => 'Closed at',
+    'code' => 'Code',
     'description' => 'Your vote is anonymous and can not be connected to you. You can only vote with entering the code given by the organizers.',
     'general_assemblies' => 'General assemblies',
     'incorrect_passcode' => 'Incorrect passcode',

@@ -221,6 +221,7 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::get("/general_assemblies/create", [GeneralAssemblyController::class, 'create'])->name('general_assemblies.create');
     Route::post("/general_assemblies", [GeneralAssemblyController::class, 'store'])->name('general_assemblies.store');
     Route::get("/general_assemblies/{general_assembly}", [GeneralAssemblyController::class, 'show'])->name('general_assemblies.show');
+    Route::get("/general_assemblies/{general_assembly}/code", [GeneralAssemblyController::class, 'showCode'])->name('general_assemblies.show_code');
     Route::post('/general_assemblies/{general_assembly}/open', [GeneralAssemblyController::class, 'openAssembly'])->name('general_assemblies.open');
     Route::post('/general_assemblies/{general_assembly}/close', [GeneralAssemblyController::class, 'closeAssembly'])->name('general_assemblies.close');
 
