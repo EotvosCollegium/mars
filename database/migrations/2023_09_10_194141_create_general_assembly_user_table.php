@@ -13,7 +13,7 @@ return new class () extends Migration {
      * @return void
      */
     public function up()
-    {   
+    {
         // The table is for the excused users of a general assembly
         Schema::create('general_assembly_user', function (Blueprint $table) {
             $table->id();
