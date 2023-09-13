@@ -32,4 +32,11 @@ return [
     'vote' => 'Szavazás',
     'voting' => 'Szavazás',
     'warning' => 'A szavazatot utólag már nem lehet módosítani!',
+    'presence_checks' => 'Jelenlét-ellenőrzések',
+    'presence_check_title' => ':number. jelenlét-ellenőrzés',
+    'submit_presence_check' => 'Itt vagyok',
+    'close_presence_check' => 'Jelenlét-ellenőrzés lezárása',
+    'presence_note' => 'Megjegyzés',
+    'new_presence_check' => 'Új jelenlét-ellenőrzés',
+    'excused_users' => 'Igazolt hiányzók'
 ];

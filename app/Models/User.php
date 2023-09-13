@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Mail\Invitation;
+use App\Models\GeneralAssemblies\PresenceCheck;
 use App\Models\Internet\InternetAccess;
 use App\Models\Internet\MacAddress;
 use App\Models\Internet\WifiConnection;
@@ -421,6 +422,14 @@ class User extends Authenticatable implements HasLocalePreference
         return $this->hasMany(CommunityService::class, 'approver_id');
     }
 
+    /**
+     * Returns the general assembly presence checks the user has signed.
+     * @return BelongsToMany
+     */
+    public function presenceChecks(): BelongsToMany
+    {
+        return $this->belongsToMany(PresenceCheck::class);
+    }
 
     /*
     |--------------------------------------------------------------------------

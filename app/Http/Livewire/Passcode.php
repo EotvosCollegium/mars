@@ -3,7 +3,7 @@
 namespace App\Http\Livewire;
 
 use Livewire\Component;
-use App\Http\Controllers\StudentsCouncil\GeneralAssemblyController;
+use App\Models\GeneralAssemblies\GeneralAssembly;
 
 class Passcode extends Component
 {
@@ -12,7 +12,7 @@ class Passcode extends Component
      */
     public function getPasscodeProperty()
     {
-        return app(GeneralAssemblyController::class)->getTemporaryPasscode();
+        return app(GeneralAssembly::class)->getTemporaryPasscode();
     }
 
     /**

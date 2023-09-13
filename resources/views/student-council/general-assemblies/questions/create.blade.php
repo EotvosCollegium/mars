@@ -12,7 +12,7 @@
 <div class="row">
     <div class="col s12">
         <div class="card">
-            <form action="{{ route('questions.store', ['general_assembly' => $general_assembly]) }}" method="POST">
+            <form action="{{ route('general_assemblies.questions.store', ['general_assembly' => $general_assembly]) }}" method="POST">
                 @csrf
                 <div class="card-content">
                 @foreach ($errors->all() as $error)
