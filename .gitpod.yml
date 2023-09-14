@@ -10,7 +10,6 @@ tasks:
       composer install --ignore-platform-reqs
       php artisan key:generate
       php artisan storage:link
-      php artisan serve
 
   - name: Install Node dependencies and run Vite
     openMode: split-right
