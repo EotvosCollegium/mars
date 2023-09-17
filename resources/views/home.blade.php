@@ -104,7 +104,7 @@
                     @if(!$loop->first)|@endif
                     <i>{{$user->name}}</i>
                     @if($user->hasEducationalInformation())
-                    <a href="mailto:{{$user->educationalInformation->email}}"> {{$user->educationalInformation->email}}</a>
+                    <a href="mailto:{{$user->email}}"> {{$user->email}}</a>
                     @endif
                     @if($user->room)
                     ({{$user->room}}. szoba)
