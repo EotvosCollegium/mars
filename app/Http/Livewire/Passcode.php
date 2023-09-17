@@ -28,7 +28,9 @@ class Passcode extends Component
      */
     public function render()
     {
-        return view('student-council.general-assemblies.passcode',
-                                 ['isFullscreen' => $this->isFullscreen]);
+        return view(
+            'student-council.general-assemblies.passcode',
+            ['isFullscreen' => $this->isFullscreen]
+        );
     }
 }
