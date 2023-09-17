@@ -14,11 +14,10 @@
         <div class="card">
             <div class="card-content">
                 <span class="card-title">{{ $general_assembly->title }}</span>
-                <div class="center" style="font-size: 15em;"
                     @if($general_assembly->isOpen())
-                        @livewire('passcode')
+                    {{-- the @can is already in the livewire --}}
+                        @livewire('passcode', ['isFullscreen' => true])
                     @endif
-                </div>
             </div>
         </div>
     </div>

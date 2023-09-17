@@ -16,7 +16,7 @@
                     @if($general_assembly->isOpen())
                     <span class="right">
                         <a href="{{ route('general_assemblies.show_code', $general_assembly) }}">
-                            @livewire('passcode')
+                            @livewire('passcode', ['isFullscreen' => false])
                         </a>
                     </span>
                     @endif

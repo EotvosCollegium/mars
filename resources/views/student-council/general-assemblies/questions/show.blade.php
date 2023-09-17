@@ -22,7 +22,7 @@
                     <span class="card-title">
                         {{ $question->title }}
                         <span class="right">
-                            @livewire('passcode')
+                            @livewire('passcode', ['isFullscreen' => false])
                         </span>
                     </span>
                     <blockquote>@lang('voting.description')</blockquote>
