@@ -28,7 +28,9 @@ class WorkshopBalance extends Model
     /**
      * Generates all the workshops' allocated balance in the current semester.
      * For all active members in a workshop who payed kkt:
-     *      payed kkt * (isResident ? 0.6 : 0.45) / member's workshops' count
+     *      payed kkt * (isResident ? config('custom.workshop_balance_resident)
+     *                              : config('custom.workshop_balance_extern))
+     *                / member's workshops' count
      */
     public static function generateBalances($semester_id)
     {
@@ -46,7 +48,6 @@ class WorkshopBalance extends Model
             self::insert($balances);
         }
 
-        $users_has_to_pay_kktnetreg = User::hasToPayKKTNetregInSemester($semester_id)->pluck('id', 'id')->toArray();
         $active_users = User::active($semester_id)->with(['roles' => function ($q) {
             $q->where('name', Role::COLLEGIST);
         }, 'workshops:id'])->get()->keyBy('id')->all();
@@ -58,9 +59,9 @@ class WorkshopBalance extends Model
             $not_yet_paid = 0;
             foreach ($workshop->users as $member) {
                 if (isset($active_users[$member->id])) {
-                    if (!isset($users_has_to_pay_kktnetreg[$member->id])) {
+                    $amount = $member->payedKKTInSemester(Semester::find($semester_id));
+                    if ($amount != 0) {
                         $user = $active_users[$member->id];
-                        $amount = config('custom.kkt');
                         if ($user->isResident()) {
                             $amount *= config('custom.workshop_balance_resident');
                             $resident++;

@@ -878,7 +878,7 @@ class User extends Authenticatable implements HasLocalePreference
         $transaction = $this->transactionsPaid()
             ->where('payment_type_id', PaymentType::kkt()->id)
             ->where('semester_id', $semester->id)
-            ->get();
+            ->first();
 
         return $transaction ? $transaction->amount : 0;
     }
