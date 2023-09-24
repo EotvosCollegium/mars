@@ -41,7 +41,7 @@ class InternetController extends Controller
         $this->authorize('handleAny', InternetAccess::class);
 
         $activationDate = self::getInternetDeadline();
-        $users = User::withRole(Role::INTERNET_USER)->with('internetAccess.wifiConnections')->get();
+        $users = User::withRole(Role::INTERNET_USER)->with('internetAccess')->get();
 
         return view('network.manage.app', ['activation_date' => $activationDate, 'users' => $users]);
     }
