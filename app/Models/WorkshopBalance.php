@@ -65,7 +65,7 @@ class WorkshopBalance extends Model
             $not_yet_paid = 0;
             foreach ($workshop->users as $member) {
                 if (isset($active_users[$member->id])) {
-                    if ($member->payedKKTInSemester(Semester::find($semester_id)) != 0) {
+                    if (!is_null($member->payedKKTInSemester(Semester::find($semester_id)))) {
                         $user = $active_users[$member->id];
                         $amount = config('custom.kkt');
                         if ($user->isResident()) {
