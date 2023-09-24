@@ -15,11 +15,17 @@ class WorkshopBalance extends Model
         'used_balance',
     ];
 
+    /**
+     * Returns the workshop the balance belongs to.
+     */
     public function workshop()
     {
         return $this->belongsTo('App\Models\Workshop');
     }
 
+    /**
+     * Returns the semester the balance has been calculated for.
+     */
     public function semester()
     {
         return $this->belongsTo('App\Models\Semester');
