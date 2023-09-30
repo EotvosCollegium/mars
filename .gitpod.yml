@@ -23,7 +23,7 @@ tasks:
   - name: Start DB
     openMode: split-right
     command: |
-      docker compose up -d
+      docker compose  -f docker-compose.gitpod.yml up -d
 
 ports:
   - port: 3306
