@@ -221,11 +221,14 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::get("/general_assemblies/create", [GeneralAssemblyController::class, 'create'])->name('general_assemblies.create');
     Route::post("/general_assemblies", [GeneralAssemblyController::class, 'store'])->name('general_assemblies.store');
     Route::get("/general_assemblies/{general_assembly}", [GeneralAssemblyController::class, 'show'])->name('general_assemblies.show');
+    Route::get("/general_assemblies/{general_assembly}/code", [GeneralAssemblyController::class, 'showCode'])->name('general_assemblies.show_code');
+    Route::post('/general_assemblies/{general_assembly}/open', [GeneralAssemblyController::class, 'openAssembly'])->name('general_assemblies.open');
     Route::post('/general_assemblies/{general_assembly}/close', [GeneralAssemblyController::class, 'closeAssembly'])->name('general_assemblies.close');
 
     Route::get('/general_assemblies/{general_assembly}/questions/create', [GeneralAssemblyQuestionController::class, 'create'])->name('general_assemblies.questions.create');
     Route::post('/general_assemblies/{general_assembly}/questions', [GeneralAssemblyQuestionController::class, 'store'])->name('general_assemblies.questions.store');
     Route::get('/general_assemblies/{general_assembly}/questions/{question}', [GeneralAssemblyQuestionController::class, 'show'])->name('general_assemblies.questions.show');
+    Route::post('/general_assemblies/{general_assembly}/questions/{question}/open', [GeneralAssemblyQuestionController::class, 'openQuestion'])->name('general_assemblies.questions.open');
     Route::post('/general_assemblies/{general_assembly}/questions/{question}/close', [GeneralAssemblyQuestionController::class, 'closeQuestion'])->name('general_assemblies.questions.close');
     Route::post('/general_assemblies/{general_assembly}/questions/{question}/votes', [GeneralAssemblyQuestionController::class, 'saveVote'])->name('general_assemblies.questions.votes.store')->withoutMiddleware('log');
 

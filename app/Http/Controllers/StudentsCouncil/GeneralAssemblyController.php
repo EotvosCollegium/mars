@@ -45,7 +45,6 @@ class GeneralAssemblyController extends Controller
 
         $general_assembly = GeneralAssembly::create([
             'title' => $request->title,
-            'opened_at' => now(),
         ]);
 
         return view('student-council.general-assemblies.show', [
@@ -65,6 +64,32 @@ class GeneralAssemblyController extends Controller
             "general_assembly" => $general_assembly,
             "passcode" => GeneralAssembly::getTemporaryPasscode()
         ]);
+    }
+
+    /**
+     * Returns a page with only the code of a general_assembly with a large font.
+     */
+    public function showCode(GeneralAssembly $general_assembly)
+    {
+        $this->authorize('administer', GeneralAssembly::class);
+
+        return view('student-council.general-assemblies.show-code', [
+            "general_assembly" => $general_assembly,
+            "passcode" => GeneralAssembly::getTemporaryPasscode()
+        ]);
+    }
+
+    /**
+     * Opens a GeneralAssembly.
+     */
+    public function openAssembly(GeneralAssembly $general_assembly)
+    {
+        $this->authorize('administer', GeneralAssembly::class);
+        if ($general_assembly->hasBeenOpened()) {
+            abort(401, "tried to open a general_assembly which has already been opened");
+        }
+        $general_assembly->open();
+        return back()->with('message', __('voting.sitting_opened'));
     }
 
     /**
