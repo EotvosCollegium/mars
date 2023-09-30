@@ -2,11 +2,18 @@
 
 ## The basics
 
-We use the [Laravel framework](https://laravel.com/docs/6.x/), to learn more about it, read the basics section of its documentation.
+We use the [Laravel framework](https://laravel.com/), to learn more about it, read the basics section of its documentation.
 It's also good to check out the previous commits, to see how to implement that part or that. Might seem a lot first, but it's really easy,
 thanks to Laravel.
 
 ## Development
+
+### Developing on the cloud with gitpod (for starters or for slow machines)
+
+1. Ask for access to our gitpod organization
+2. Select a workspace or create a new one from the project.
+3. You still need to run `php artisan migrate:fresh --seed` to get the DB seeded. The site is served at `http://localhost:8000`. 
+4. Use with care, we have 50 hours of free usage per month. 
 
 ### Universal (using VS Code dev containers  - recommended)
 
