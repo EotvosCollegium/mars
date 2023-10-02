@@ -50,10 +50,14 @@ class RoomController extends Controller
         );
     }
 
+    /**
+     * Returns the view used to update the rooms;
+     * with the users' and rooms' lists preloaded.
+     */
     public function modify()
     {
         $this->authorize('updateAny', Room::class);
-        $users=User::active()->resident()->get();
+        $users=User::active()->get();       // externs too (to solve the resident-extern problem temporarily)
         $tenants=User::currentTenant()->get();
         $users=$users->concat($tenants)->unique();
         $rooms = Room::with('users')->get();
