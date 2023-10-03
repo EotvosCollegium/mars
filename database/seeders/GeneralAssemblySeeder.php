@@ -16,7 +16,7 @@ class GeneralAssemblySeeder extends Seeder
     public function run()
     {
         $openSitting = GeneralAssembly::create([
-            'title' => "Today's general_assembly",
+            'title' => "Today's general assembly",
             'opened_at' => now(),
         ]);
 

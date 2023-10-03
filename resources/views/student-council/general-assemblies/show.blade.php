@@ -13,27 +13,42 @@
         <div class="card">
             <div class="card-content">
                 <span class="card-title">{{ $general_assembly->title }}
+                    @if($general_assembly->isOpen())
                     <span class="right">
-                        @livewire('passcode')
+                        <a href="{{ route('general_assemblies.show_code', $general_assembly) }}">
+                            @livewire('passcode', ['isFullscreen' => false])
+                        </a>
                     </span>
+                    @endif
                 </span>
                 <table>
                     <tbody>
                         <tr>
                             <th scope="row">@lang('voting.opened_at')</th>
-                            <td>{{ $general_assembly->opened_at }}</td>
+                            <td>{{ $general_assembly->opened_at }}
+
+                                @can('administer', $general_assembly)
+                                @if(!$general_assembly->hasBeenOpened())
+                                <form action="{{ route('general_assemblies.open', $general_assembly->id) }}" method="POST">
+                                    @csrf
+                                    <x-input.button text="voting.open_sitting" class="green" />
+                                </form>
+                                @endif
+                                @endcan
+                            </td>
                         </tr>
                         <tr>
                             <th scope="row">@lang('voting.closed_at')</th>
                             <td>{{ $general_assembly->closed_at }}
-                            @if($general_assembly->isOpen())
-                            @can('administer', $general_assembly)
-                                <form action="{{ route('general_assemblies.close', $general_assembly->id) }}" method="POST">
-                                    @csrf
-                                    <x-input.button text="voting.close_sitting" class="red" />
-                                </form>
-                            @endcan
-                            @endif
+
+                                @can('administer', $general_assembly)
+                                @if($general_assembly->isOpen())
+                                    <form action="{{ route('general_assemblies.close', $general_assembly->id) }}" method="POST">
+                                        @csrf
+                                        <x-input.button text="voting.close_sitting" class="red" />
+                                    </form>
+                                @endif
+                                @endcan
                             </td>
                         </tr>
                         <tr>
@@ -54,6 +69,9 @@
                 <blockquote>
                     * Résztvevőnek számít az, aki legfeljebb 2 jelenlét-ellenőrzésen nem vett részt (amennyiben összesen legfeljebb 2 volt, úgy az összes jelenlét-ellenőrzésen részt vettek számítanak). Csak aktív státuszú collegisták szavazhatnak.
                 </blockquote>
+                @if(!Auth::user()->isActive())
+                <blockquote class="red-text">@lang('voting.not_active')</blockquote>
+                @endif
             </div>
         </div>
     </div>
@@ -71,7 +89,7 @@
                         <th>@lang('voting.opened_at')</th>
                         <th>@lang('voting.closed_at')</th>
                         <th>
-                            @if($general_assembly->isOpen())
+                            @if(!$general_assembly->isClosed())
                             @can('administer', $general_assembly)
                             <x-input.button href="{{ route('general_assemblies.questions.create', ['general_assembly' => $general_assembly]) }}" floating class="right" icon="add" />
                             @endcan
@@ -83,7 +101,20 @@
                     @foreach ($general_assembly->questions()->orderByDesc('opened_at')->get() as $question)
                     <tr>
                         <td>{{$question->title}}</td>
-                        <td>{{$question->opened_at}}</td>
+                        <td>
+                            {{$question->opened_at}}
+                            @if(!$question->hasBeenOpened() && $general_assembly->isOpen())
+                            @can('administer', $general_assembly)
+                            <form action="{{ route('general_assemblies.questions.open', [
+                                "general_assembly" => $general_assembly->id,
+                                "question" => $question->id,
+                            ]) }}" method="POST">
+                                @csrf
+                                <x-input.button text="voting.open_question" class="green" />
+                            </form>
+                            @endcan
+                            @endif
+                        </td>
                         <td>
                             {{$question->closed_at}}
                             @if($question->isOpen())

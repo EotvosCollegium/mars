@@ -22,7 +22,7 @@
                     <span class="card-title">
                         {{ $presence_check->title }}
                         <span class="right">
-                            @livewire('passcode')
+                            @livewire('passcode', ['isFullscreen' => false])
                         </span>
                     </span>
                     <div class="row">
