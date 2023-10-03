@@ -11,8 +11,8 @@ thanks to Laravel.
 ### Developing on the cloud with gitpod (for starters or for slow machines)
 
 1. Ask for access to our gitpod organization
-2. Select a workspace or create a new one from the project.
-3. You still need to run `php artisan migrate:fresh --seed` to get the DB seeded. The site is served at `http://localhost:8000`. 
+2. Go to projects, and go to the bracnhes under the Mars project. Create a new workspace for your branch and open it in the browser or VS Code locally.
+3. You will see three terminals. One for the server, one for npm, and one for the database. You can close the last two once the scripts are finished, but you still need to run `php artisan migrate:fresh --seed` to get the DB seeded. The site is served at `http://localhost:8000` (or check the first few lines server logs). 
 4. Use with care, we have 50 hours of free usage per month. 
 
 ### Universal (using VS Code dev containers  - recommended)
