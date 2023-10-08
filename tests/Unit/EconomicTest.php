@@ -21,7 +21,7 @@ class EconomicTest extends TestCase
 
         $transactions = \App\Models\Transaction::whereIn(
             'payment_type_id',
-            [\App\Models\PaymentType::kkt()->id, \App\Models\PaymentType::netreg()->id]
+            [\App\Models\PaymentType::kkt()->id]
         )
             ->where('semester_id', \App\Models\Semester::current()->id)
             ->get();
