@@ -19,8 +19,10 @@ class EconomicTest extends TestCase
     {
         // Should we generate users here?
 
-        $transactions = \App\Models\Transaction::whereIn('payment_type_id',
-          [\App\Models\PaymentType::kkt()->id, \App\Models\PaymentType::netreg()->id])
+        $transactions = \App\Models\Transaction::whereIn(
+            'payment_type_id',
+            [\App\Models\PaymentType::kkt()->id, \App\Models\PaymentType::netreg()->id]
+        )
             ->where('semester_id', \App\Models\Semester::current()->id)
             ->get();
         $skkt = $transactions->where('payment_type_id', \App\Models\PaymentType::kkt()->id)
