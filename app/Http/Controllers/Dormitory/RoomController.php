@@ -57,7 +57,7 @@ class RoomController extends Controller
     public function modify()
     {
         $this->authorize('updateAny', Room::class);
-        $users = User::active()->get();       // externs too (to solve the resident-extern problem temporarily)
+        $users = User::collegist()->active()->get();       // externs too (to solve the resident-extern problem temporarily)
         $tenants = User::currentTenant()->get();
         $users = $users->concat($tenants)->unique();
         $rooms = Room::with('users')->get();
