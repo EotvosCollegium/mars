@@ -19,17 +19,16 @@ class EconomicTest extends TestCase
     {
         // Should we generate users here?
 
-        $transactions = \App\Models\Transaction::whereIn(
+        $skkt = \App\Models\Transaction::where(
             'payment_type_id',
-            [\App\Models\PaymentType::kkt()->id]
+            \App\Models\PaymentType::kkt()->id
         )
             ->where('semester_id', \App\Models\Semester::current()->id)
-            ->get();
-        $skkt = $transactions->where('payment_type_id', \App\Models\PaymentType::kkt()->id)
             ->sum('amount');
 
         \App\Models\WorkshopBalance::generateBalances(\App\Models\Semester::current()->id);
-        $sum = \App\Models\WorkshopBalance::all()->sum('allocated_balance');
+        $sum = \App\Models\WorkshopBalance::where('semester_id', \App\Models\Semester::current()->id)
+            ->sum('allocated_balance');
 
         /*
         echo($skkt);
