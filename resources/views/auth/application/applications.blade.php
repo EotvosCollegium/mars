@@ -31,7 +31,7 @@
                 <p>A jelentkezők aktuális státusza a jelentkezők számára nem nyilvános.</p>
                 @endcan
                 @can('finalizeApplicationProcess', \App\Models\User::class)
-                <p>{{$applicationDeadline->addWeeks(2)->format('Y. m. d.')}} után lehet a lap alján felvenni a kiválasztott jelentkezőket, ezzel véglegesíteni a felvételit.</p>
+                <p>{{$applicationDeadline->addWeeks(1)->format('Y. m. d.')}} után lehet a lap alján felvenni a kiválasztott jelentkezőket, ezzel véglegesíteni a felvételit.</p>
                 @endcan
             </blockquote>
 
@@ -56,7 +56,7 @@
     <hr>
     <h6>Összesen: <b class="right">{{$applications->count()}} jelentkező</b></h6>
     @can('finalizeApplicationProcess', \App\Models\User::class)
-    @if($applicationDeadline->addWeeks(2) < now())
+    @if($applicationDeadline->addWeeks(1) < now())
     <div class="card" style="margin-top:20px">
         <div class="card-content">
             <div class="row" style="margin:0">

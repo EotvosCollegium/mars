@@ -308,7 +308,7 @@ class UserController extends Controller
      */
     public function tenantToApplicant()
     {
-        if (!user()->isTenant() || user()->isCollegist()) {
+        if (!user()->isTenant() || user()->isCollegist(false)) {
             return abort(403);
         }
         $user = user();
