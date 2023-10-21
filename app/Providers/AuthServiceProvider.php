@@ -28,6 +28,9 @@ class AuthServiceProvider extends ServiceProvider
         \App\Models\Internet\Router::class => \App\Policies\RouterPolicy::class,
         \App\Models\MrAndMissVote::class => \App\Policies\MrAndMissPolicy::class,
         \App\Models\CommunityService::class => \App\Policies\CommunityServicePolicy::class,
+        \App\Models\GeneralAssemblies\GeneralAssembly::class => \App\Policies\GeneralAssemblyPolicy::class,
+        \App\Models\GeneralAssemblies\Question::class => \App\Policies\QuestionPolicy::class,
+        \App\Models\GeneralAssemblies\PresenceCheck::class => \App\Policies\PresenceCheckPolicy::class,
     ];
 
     /**

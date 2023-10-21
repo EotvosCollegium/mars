@@ -13,17 +13,21 @@
     @can('vote', $question)
     <div class="col s12">
         <div class="card">
-            <form method="POST" action="{{ route('questions.votes.store', $question->id)}}">
+            <form method="POST" action="{{ route('general_assemblies.questions.votes.store', [
+                "general_assembly" => $question->generalAssembly->id,
+                "question" => $question->id,
+            ])}}">
                 @csrf
                 <div class="card-content">
                     <span class="card-title">
                         {{ $question->title }}
                         <span class="right">
-                            @livewire('passcode')
+                            @livewire('passcode', ['isFullscreen' => false])
                         </span>
                     </span>
                     <blockquote>@lang('voting.description')</blockquote>
                     <blockquote class="error">@lang('voting.warning')</blockquote>
+                    <blockquote>@lang('voting.max_options') {{$question->max_options}}</blockquote>
                     <div class="row">
                     @foreach($question->options()->get() as $option)
                         @if($question->max_options==1)
@@ -51,27 +55,36 @@
     @can('viewResults', $question)
     <div class="col s12">
         <ul class="collapsible">
-            <li @if($question->isClosed()) class="active" @endif>
+            <li @if(!$question->isOpen()) class="active" @endif>
                 <div class="collapsible-header">
+                    @if($question->hasBeenOpened())
                     <b>@lang('voting.results')</b>
+                    @else
+                    <b>@lang('voting.open_question')</b>
+                    @endif
                 </div>
                 <div class="collapsible-body">
                     <table>
                         <thead>
                             <tr>
                                 <th>{{ $question->title }}</th>
+                                @if($question->isClosed())
                                 <th>{{ $question->users()->count() }}</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($question->options->sortByDesc('votes') as $option)
                             <tr>
                                 <td>{{$option->title}}</td>
+                                @if($question->hasBeenOpened())
                                 <td><b>{{$option->votes}}</b></td>
+                                @endif
                             </tr>
                             @endforeach
                         </tbody>
                     </table>
+                    @if($question->isClosed())
                     <blockquote>
                         <b>Szavaztak:</b>
                         <ul>
@@ -80,14 +93,37 @@
                         @endforeach
                         </ul>
                     </blockquote>
-                    @if($question->isOpen())
-                        @can('administer', \App\Models\GeneralAssemblies\GeneralAssembly::class)
-                        <form action="{{ route('questions.close', $question->id) }}" method="POST" style="display:inline;">
-                            @csrf
-                            <x-input.button only-input text="voting.close_question" class="red" />
-                        </form>
-                        @endcan
                     @endif
+                    @can('administer', \App\Models\GeneralAssemblies\GeneralAssembly::class)
+                        @if($question->isOpen())
+                        <p>
+                            <form action="{{ route('general_assemblies.questions.close', [
+                                "general_assembly" => $question->generalAssembly->id,
+                                "question" => $question->id,
+                            ]) }}" method="POST" style="display:inline;">
+                        </p>
+                        @elseif(!$question->hasBeenOpened())
+                            @if($question->generalAssembly->isOpen())
+                            <p>
+                                <form action="{{ route('general_assemblies.questions.open', [
+                                "general_assembly" => $question->generalAssembly->id,
+                                "question" => $question->id,
+                            ]) }}" method="POST" style="display:inline;">
+                                    @csrf
+                                    <x-input.button only-input text="voting.open_question" class="green" />
+                                </form>
+                            </p>
+                            @else
+                            <p class="red-text"><i>
+                                @if($question->generalAssembly->hasBeenOpened())
+                                @lang('voting.question_not_opened')
+                                @else
+                                @lang('voting.question_after_sitting')
+                                @endif
+                            </i></p>
+                            @endif
+                        @endif
+                    @endcan
                 </div>
             </li>
         </ul>
