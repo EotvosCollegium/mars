@@ -273,6 +273,9 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * Removes the given role from the user.
+     */
     public function removeRole(Request $request, User $user, Role $role)
     {
         session()->put('section', 'roles');
