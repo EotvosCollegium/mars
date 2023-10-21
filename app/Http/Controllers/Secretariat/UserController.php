@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Secretariat;
 
 use App\Exports\UsersExport;
 use App\Http\Controllers\Controller;
+use App\Models\EducationalInformation;
 use App\Models\Faculty;
 use App\Models\Role;
 use App\Models\Semester;
@@ -11,10 +12,13 @@ use App\Models\StudyLine;
 use App\Models\User;
 use App\Models\Workshop;
 use App\Models\WorkshopBalance;
+use App\Rules\SameOrUnique;
+use Arr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
@@ -34,15 +38,15 @@ class UserController extends Controller
         ]);
     }
 
-    public function updatePersonalInformation(Request $request, User $user): \Illuminate\Http\RedirectResponse
+    public function updatePersonalInformation(Request $request, User $user): RedirectResponse
     {
         $this->authorize('view', $user);
         session()->put('section', 'personal_information');
 
         $isCollegist = $user->isCollegist();
 
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email|max:225',
+        $data = $request->validate([
+            'email' => ['required', 'email', 'max:225', new SameOrUnique($user)],
             'name' => 'required|string|max:255',
             'phone_number' => 'required|string|min:8|max:18',
             'mothers_name' => [Rule::requiredIf($isCollegist), 'max:225'],
@@ -56,50 +60,31 @@ class UserController extends Controller
             'tenant_until' => [Rule::requiredIf($user->isTenant()), 'date', 'after:today'],
             'relatives_contact_data' => ['nullable', 'string', 'max:255'],
         ]);
-        if ($user->email != $request->email) {
-            if (User::where('email', $request->email)->exists()) {
-                $validator->after(function ($validator) {
-                    $validator->errors()->add('email', __('validation.unique', ['attribute' => 'e-mail']));
-                });
-            }
-        }
-
-        $validator->validate();
 
         $user->update(['email' => $request->email, 'name' => $request->name]);
-        $personal_data = $request->only([
-            'phone_number',
-            'mothers_name',
-            'place_of_birth',
-            'date_of_birth',
-            'country',
-            'county',
-            'zip_code',
-            'city',
-            'street_and_number',
-            'relatives_contact_data',
-            'tenant_until'
-        ]);
+        $personal_data = Arr::except($data, ['name', 'email', 'tenant_until']);
+
         if (!$user->hasPersonalInformation()) {
             $user->personalInformation()->create($personal_data);
         } else {
-            $user->personalInformation->update($personal_data);
+            $user->personalInformation()->update($personal_data);
         }
+
         if ($request->has('tenant_until')) {
             $date = min(Carbon::parse($request->tenant_until), Carbon::now()->addMonths(6));
-            $user->personalInformation->update(['tenant_until' => $date]);
+            $user->personalInformation()->update(['tenant_until' => $date]);
             $user->internetAccess()->update(['has_internet_until' => $date]);
         }
 
         return redirect()->back()->with('message', __('general.successful_modification'));
     }
 
-    public function updateEducationalInformation(Request $request, User $user): \Illuminate\Http\RedirectResponse
+    public function updateEducationalInformation(Request $request, User $user): RedirectResponse
     {
         $this->authorize('view', $user);
         session()->put('section', 'educational_information');
 
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'year_of_graduation' => 'required|integer|between:1895,' . date('Y'),
             'year_of_acceptance' => 'required|integer|between:1895,' . date('Y'),
             'high_school' => 'required|string|max:255',
@@ -113,10 +98,8 @@ class UserController extends Controller
             'study_lines.*.level' => ['required', Rule::in(array_keys(StudyLine::TYPES))],
             'study_lines.*.minor' => 'nullable|string|max:255',
             'study_lines.*.start' => 'required',
-            'email' => 'required|string|email|max:255',
+            'email' => ['required', 'string', 'email', 'max:255', new SameOrUnique($user, EducationalInformation::class)]
         ]);
-
-        $validator->validate();
 
         $educational_data = $request->only([
             'year_of_graduation',
@@ -129,7 +112,7 @@ class UserController extends Controller
             if (!$user->hasEducationalInformation()) {
                 $user->educationalInformation()->create($educational_data);
             } else {
-                $user->educationalInformation->update($educational_data);
+                $user->educationalInformation()->update($educational_data);
             }
 
             $user->load('educationalInformation');
@@ -225,7 +208,7 @@ class UserController extends Controller
         return redirect(route('home'))->with('message', __('general.successful_modification'));
     }
 
-    public function updatePassword(Request $request): \Illuminate\Http\RedirectResponse
+    public function updatePassword(Request $request): RedirectResponse
     {
         $user = user();
         session()->put('section', 'change_password');
@@ -290,6 +273,9 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * Removes the given role from the user.
+     */
     public function removeRole(Request $request, User $user, Role $role)
     {
         session()->put('section', 'roles');
