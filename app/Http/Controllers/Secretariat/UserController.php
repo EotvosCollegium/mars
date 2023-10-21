@@ -98,7 +98,7 @@ class UserController extends Controller
             'study_lines.*.level' => ['required', Rule::in(array_keys(StudyLine::TYPES))],
             'study_lines.*.minor' => 'nullable|string|max:255',
             'study_lines.*.start' => 'required',
-            'email' => ['required', 'string', 'email', 'max:255', new SameOrUnique($user, 'email', EducationalInformation::class)]
+            'email' => ['required', 'string', 'email', 'max:255', new SameOrUnique($user, EducationalInformation::class)]
         ]);
 
         $educational_data = $request->only([

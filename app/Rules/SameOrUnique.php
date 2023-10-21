@@ -42,8 +42,8 @@ class SameOrUnique implements Rule
         $query = $this->className::query();
         if ($this->className != User::class) {
             // If the field is not contained in the user, find it from the class given.
-            // PHP can get the attribute from a string (which {$this->fiendName} is).
-            $databaseValue = $this->className::query()->firstWhere('user_id', '=', $this->user->id)->{$this->fieldName};
+            // PHP can get the attribute from a string (which {$this->fieldName} is).
+            $databaseValue = $this->className::query()->firstWhere('user_id', '=', $this->user->id)?->{$this->fieldName};
         } else {
             $databaseValue = $this->user->{$this->fieldName};
         }
