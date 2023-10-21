@@ -62,9 +62,10 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Initialize and load Google Storage driver.
      */
-    private function loadGoogleStorageDriver(string $driverName = 'google') {
+    private function loadGoogleStorageDriver(string $driverName = 'google')
+    {
         try {
-            Storage::extend($driverName, function($app, $config) {
+            Storage::extend($driverName, function ($app, $config) {
                 $options = [];
 
                 if (!empty($config['teamDriveId'] ?? null)) {
