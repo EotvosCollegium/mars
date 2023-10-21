@@ -53,7 +53,7 @@ class UserController extends Controller
             'zip_code' => [Rule::requiredIf($isCollegist), 'string', 'max:31'],
             'city' => [Rule::requiredIf($isCollegist), 'string', 'max:255'],
             'street_and_number' => [Rule::requiredIf($isCollegist), 'string', 'max:255'],
-            'tenant_until'=> [Rule::requiredIf($user->isTenant()), 'date', 'after:today'],
+            'tenant_until' => [Rule::requiredIf($user->isTenant()), 'date', 'after:today'],
             'relatives_contact_data' => ['nullable', 'string', 'max:255'],
         ]);
         if ($user->email != $request->email) {
@@ -86,9 +86,9 @@ class UserController extends Controller
             $user->personalInformation->update($personal_data);
         }
         if ($request->has('tenant_until')) {
-            $date=min(Carbon::parse($request->tenant_until), Carbon::now()->addMonths(6));
-            $user->personalInformation->update(['tenant_until'=>$date]);
-            $user->internetAccess()->update(['has_internet_until'=>$date]);
+            $date = min(Carbon::parse($request->tenant_until), Carbon::now()->addMonths(6));
+            $user->personalInformation->update(['tenant_until' => $date]);
+            $user->internetAccess()->update(['has_internet_until' => $date]);
         }
 
         return redirect()->back()->with('message', __('general.successful_modification'));
@@ -214,13 +214,13 @@ class UserController extends Controller
         $this->authorize('view', $user);
 
         $validator = Validator::make($request->all(), [
-            'tenant_until'=> 'required|date|after:today',
+            'tenant_until' => 'required|date|after:today',
         ]);
         $validator->validate();
 
         $date = min(Carbon::parse($request->tenant_until), Carbon::now()->addMonths(6));
-        $user->personalInformation->update(['tenant_until'=>$date]);
-        $user->internetAccess()->update(['has_internet_until'=>$date]);
+        $user->personalInformation->update(['tenant_until' => $date]);
+        $user->internetAccess()->update(['has_internet_until' => $date]);
 
         return redirect(route('home'))->with('message', __('general.successful_modification'));
     }
@@ -322,7 +322,7 @@ class UserController extends Controller
      */
     public function tenantToApplicant()
     {
-        if (!user()->isTenant() || user()->isCollegist()) {
+        if (!user()->isTenant() || user()->isCollegist(false)) {
             return abort(403);
         }
         $user = user();
