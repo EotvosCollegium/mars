@@ -117,6 +117,7 @@ return [
              */
             'disks' => [
                 'backup',
+                'google_admin'
             ],
         ],
 
