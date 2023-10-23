@@ -13,7 +13,7 @@ class PersonalInformationFactory extends Factory
     {
         return [
             'place_of_birth' => $this->faker->city,
-            'date_of_birth' =>$this->faker->date($format = 'Y-m-d', $max = 'now'),
+            'date_of_birth' => $this->faker->date($format = 'Y-m-d', $max = 'now'),
             'mothers_name' => $this->faker->name($gender = 'female'),
             'phone_number' => $this->faker->numerify('+36 (##) ###-####'),
             'country' => $this->faker->country,
@@ -22,7 +22,7 @@ class PersonalInformationFactory extends Factory
             'city' => $this->faker->city,
             'street_and_number' => $this->faker->streetAddress,
             'tenant_until' => $this->faker->date($format = 'Y-m-d', $min = 'now'),
-            'research_topics' => $this->faker->paragraph(random_int(1,3)),
+            'research_topics' => $this->faker->paragraph(random_int(1, 3)),
             'extra_information' => $this->faker->realText($maxNbChars = 500, $indexSize = 2),
         ];
     }
