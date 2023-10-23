@@ -59,6 +59,8 @@ class UserController extends Controller
             'street_and_number' => [Rule::requiredIf($isCollegist), 'string', 'max:255'],
             'tenant_until' => [Rule::requiredIf($user->isTenant()), 'date', 'after:today'],
             'relatives_contact_data' => ['nullable', 'string', 'max:255'],
+            'research_topics' => ['nullable', 'string', 'max:1000'],
+            'extra_information' => ['nullable', 'string', 'max:1500'],
         ]);
 
         $user->update(['email' => $request->email, 'name' => $request->name]);

@@ -22,6 +22,8 @@ class PersonalInformationFactory extends Factory
             'city' => $this->faker->city,
             'street_and_number' => $this->faker->streetAddress,
             'tenant_until' => $this->faker->date($format = 'Y-m-d', $min = 'now'),
+            'research_topics' => $this->faker->paragraph(random_int(1,3)),
+            'extra_information' => $this->faker->realText($maxNbChars = 500, $indexSize = 2),
         ];
     }
 }
