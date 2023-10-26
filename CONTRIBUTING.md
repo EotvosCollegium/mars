@@ -67,7 +67,7 @@ Most of the above setup is a one-time thing to do. However, whenever you start w
 
 You can log in to our seeded admin user with email `MAIL_TEST_ADMIN` (`example@eotvos.elte.hu` by default - you can find this in your .env file) and with password `asdasdasd`. See `database/seeds/UsersTableSeeder.php` for more predefined users.
 
-## Alternative: running Docker from terminal
+## Alternative: running Docker from terminal with Sail
 
 This method is known to work under Linux (Ubuntu 20.04, to be precise). Maybe it also works with WSL2.
 
