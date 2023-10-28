@@ -16,6 +16,7 @@ use App\Rules\SameOrUnique;
 use Arr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
@@ -38,12 +39,53 @@ class UserController extends Controller
         ]);
     }
 
+    /**
+     * Stores a new profile picture.
+     * @param Request $request
+     * @param User $user
+     * @return void
+     */
+    public function storeProfilePicture(Request $request, User $user): void
+    {
+        $request->validate([
+            'picture' => 'required|mimes:jpg,jpeg,png,gif,svg',
+        ]);
+        $path = $request->file('picture')->store('avatars');
+        $old_profile = $user->profilePicture;
+        if ($old_profile) {
+            Storage::delete($old_profile->path);
+            $old_profile->update(['path' => $path]);
+        } else {
+            $user->profilePicture()->create(['path' => $path, 'name' => 'profile_picture']);
+        }
+    }
+
+    /**
+     * Deletes the profile picture.
+     * @param Request $request
+     * @param User $user
+     * @return void
+     */
+    public function deleteProfilePicture(Request $request, User $user): void {
+        $profile = $user->profilePicture;
+        if ($profile) {
+            Storage::delete($profile->path);
+            $profile->update(['path' => $path]);
+        }
+    }
+
+
     public function updatePersonalInformation(Request $request, User $user): RedirectResponse
     {
         $this->authorize('view', $user);
         session()->put('section', 'personal_information');
 
         $isCollegist = $user->isCollegist();
+
+        // For updating the profile picture:
+        if ($request->hasFile('picture')) {
+            $this->storeProfilePicture($request, $user);
+        }
 
         $data = $request->validate([
             'email' => ['required', 'email', 'max:225', new SameOrUnique($user)],

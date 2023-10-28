@@ -10,6 +10,10 @@ class EducationalInformationFactory extends Factory
 {
     protected $model = EducationalInformation::class;
 
+    /**
+     * Provides what kind of content Faker should generate
+     * for a dummy user.
+     */
     public function definition()
     {
         return [
