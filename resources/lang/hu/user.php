@@ -62,7 +62,7 @@ return [
     'program' => 'Szak',
     'relatives_contact_data' => 'Hozzátartozók neve és elérhetőségei',
     'relatives_contact_data_desc' => 'Baleset esetén értesítendő a különböző rendezvényeinken (nem kötelező mező)',
-    'research_topic' => 'Kutatási téma (témák)',
+    'research_topics' => 'Kutatási téma (témák)',
     'semesters' => 'Szemeszterek',
     'set_tenant_until' => 'Ellenőrizd és frissítsd a tervezett kiköltözésed időpontját, hogy visszakapd a hozzáférésed az Uránhoz és az internethez. Ezt fél évente meg kell újítanod.',
     'skandinavisztika_muhely' => 'Skandinavisztika műhely',
