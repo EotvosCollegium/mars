@@ -66,7 +66,8 @@ class UserController extends Controller
      * @param User $user
      * @return void
      */
-    public function deleteProfilePicture(Request $request, User $user): void {
+    public function deleteProfilePicture(Request $request, User $user): void
+    {
         $profile = $user->profilePicture;
         if ($profile) {
             Storage::delete($profile->path);
