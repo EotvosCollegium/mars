@@ -22,15 +22,22 @@ class RoleTest extends TestCase
         $user->setExtern();
 
         $this->assertTrue($user->isExtern());
+        $this->assertFalse($user->resides());
         $this->assertTrue($user->hasRole(Role::get(Role::COLLEGIST)));
         $this->assertTrue($user->hasRole([Role::COLLEGIST => Role::EXTERN]));
 
         $user->setCollegist(Role::RESIDENT);
 
         $this->assertTrue($user->isResident());
+        $this->assertTrue($user->resides());
         $this->assertTrue($user->hasRole(Role::get(Role::COLLEGIST)));
         $this->assertTrue($user->hasRole([Role::COLLEGIST => Role::RESIDENT]));
 
+        $user->setCollegist(Role::RESIDENT_EXTERN);
+        $this->assertTrue($user->isResidentExtern());
+        $this->assertTrue($user->resides());
+        $this->assertTrue($user->hasRole(Role::get(Role::COLLEGIST)));
+        $this->assertTrue($user->hasRole([Role::COLLEGIST => Role::RESIDENT_EXTERN]));
 
     }
 

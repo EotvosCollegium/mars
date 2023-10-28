@@ -157,7 +157,7 @@ class SemesterEvaluationController extends Controller
                         return back()->with('error', "A státusz megadása kötelező!")->with('section', $request->section);
                     }
                     $user->setStatusFor(Semester::next(), $request->next_status, $request->next_status_note);
-                    if ($request->has('resign_residency') && $user->isResident()) {
+                    if ($request->has('resign_residency') && $user->resides()) {
                         $user->setExtern();
                     }
                 }

@@ -58,6 +58,7 @@
                                 <span>@lang('role.resident')</span>
                             </label>
                         </p>
+                        {{-- resident-extern status is irrelevant here --}}
                         <p>
                             @php $checked = old('status') ?  old('status') == 'extern' : $user->isExtern() @endphp
                             <label>

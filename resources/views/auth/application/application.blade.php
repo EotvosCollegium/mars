@@ -48,6 +48,12 @@
                             @lang('role.resident')
                         </span>
                         @endif
+                        @if ($user->isResidentExtern())
+                            <span class="new badge cyan darken-4 tag" style="float:none;padding:4px;margin:0 10px 0px 2px;"
+                                  data-badge-caption="">
+                            @lang('role.resident-extern')
+                        </span>
+                        @endif
                         @if ($user->isExtern())
                             <span class="new badge coli orange tag"
                                   style="float:none;padding:4px;margin:0 10px 0px 2px;"
@@ -55,7 +61,7 @@
                             @lang('role.extern')
                         </span>
                         @endif
-                        @if(!$user->isResident() && !$user->isExtern())
+                        @if(!$user->resides() && !$user->isExtern())
                             <span style="font-style:italic;color:red">hiányzó státusz</span>
                         @endif
                     </p>

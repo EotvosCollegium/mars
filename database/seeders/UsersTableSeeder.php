@@ -97,10 +97,7 @@ class UsersTableSeeder extends Seeder
         $user->roles()->attach(
             Role::get(Role::COLLEGIST)->id,
             [
-                'object_id' => rand(
-                    RoleObject::firstWhere('name', 'resident')->id,
-                    RoleObject::firstWhere('name', 'extern')->id
-                )
+                'object_id' => RoleObject::firstWhere('name', Role::STATUSES[rand(0, count(Role::STATUSES)-1)])->id
             ]
         );
         $user->educationalInformation()->save(EducationalInformation::factory()->make(['user_id' => $user->id]));

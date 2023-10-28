@@ -60,6 +60,7 @@ use Illuminate\Support\Facades\Mail;
  * @method collegist()
  * @method active()
  * @method resident()
+ * @method residentExtern()
  * @method extern()
  * @method currentTenant()
  * @method hasToPayKKTNetregInSemester(int $semester_id)
@@ -534,6 +535,28 @@ class User extends Authenticatable implements HasLocalePreference
     }
 
     /**
+     * Scope a query to only include resident-extern users.
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeResidentExtern(Builder $query): Builder
+    {
+        return $query->withRole(Role::COLLEGIST, RoleObject::firstWhere('name', Role::RESIDENT_EXTERN));
+    }
+
+    /**
+     * Scope a query to only include users who are either residents or resident-externs.
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeResides(Builder $query): Builder
+    {
+        return $query->resident()->orWhere->residentExtern();
+    }
+
+    /**
      * Scope a query to only include extern users.
      *
      * @param Builder $query
@@ -682,7 +705,7 @@ class User extends Authenticatable implements HasLocalePreference
     }
 
     /**
-     * Attach collegist role as extern or resident.
+     * Attach collegist role as extern, resident-extern or resident.
      * If the user is already a collegist, the object is updated.
      */
     public function setCollegist($objectName): void
@@ -719,6 +742,43 @@ class User extends Authenticatable implements HasLocalePreference
     public function setResident(): void
     {
         $this->setCollegist(Role::RESIDENT);
+    }
+
+    /**
+     * Decides if the user is a resident-extern currently.
+     *
+     * @return bool
+     */
+    public function isResidentExtern(): bool
+    {
+        //Is this 'if' for applications? Maybe it could be deleted then.
+        if($this->verified == false) {
+            return $this->roles()
+            ->where('role_id', Role::collegist()->id)
+            ->where('object_id', RoleObject::firstWhere('name', Role::RESIDENT_EXTERN)->id)
+            ->exists();
+        }
+        return $this->hasRole([Role::COLLEGIST => Role::RESIDENT_EXTERN]);
+    }
+
+    /**
+     * Set the collegist to be resident-extern.
+     * Only applies for collegists.
+     */
+    public function setResidentExtern(): void
+    {
+        $this->setCollegist(Role::RESIDENT_EXTERN);
+    }
+
+    /**
+     * Decides if the user is a resident or resident-extern.
+     * Returns true if the user is a collegist
+     * who effectively lives in the building
+     * (so has either of the two roles).
+     */
+    public function resides(): bool
+    {
+        return $this->isResident() || $this->isResidentExtern();
     }
 
     /**

@@ -38,6 +38,7 @@ return [
     'printer' => 'Nyomtató',
     'reception' => 'Porta',
     'resident' => 'Bentlakó',
+    'resident-extern' => 'Bentlakó-bejáró',
     'role_attached' => 'Új jogosultság: :role',
     'role_detached' => 'Eltávolított jogosultság: :role',
     'roles' => 'Jogosultságok',

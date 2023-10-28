@@ -38,6 +38,7 @@ return [
     'printer' => 'Printer',
     'reception' => 'Reception desk',
     'resident' => 'Resident',
+    'resident-extern' => 'Resident-extern',
     'role_attached' => 'New role: :role',
     'role_detached' => 'Role detached: :role',
     'roles' => 'Roles',

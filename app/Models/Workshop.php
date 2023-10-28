@@ -73,6 +73,13 @@ class Workshop extends Model
         });
     }
 
+    public function residentExterns()
+    {
+        return $this->users->filter(function ($user, $key) {
+            return $user->isResidentExtern();
+        });
+    }
+
     public function externs()
     {
         return $this->users->filter(function ($user, $key) {

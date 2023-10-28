@@ -86,7 +86,8 @@ class SemesterEvaluationExport implements FromCollection, WithTitle, WithMapping
             $user->educationalInformation?->neptun,
             implode(" \n", $user->faculties->pluck('name')->toArray()),
             implode(" \n", $user->workshops->pluck('name')->toArray()),
-            $user->isResident() ? 'Bentlakó' : ($user->isExtern() ? 'Bejáró' : ($user->isAlumni() ? "Alumni" : ($user->isTenant() ? "Vendég" : ""))),
+            $user->isResident() ? 'Bentlakó' : ($user->isResidentExtern() ? 'Bentlakó-bejáró' :
+                ($user->isExtern() ? 'Bejáró' : ($user->isAlumni() ? "Alumni" : ($user->isTenant() ? "Vendég" : "")))),
             $evaluation->resign_residency ? 'Igen' : '',
             $user->getStatus($evaluation->semester)?->translatedStatus(),
             $user->getStatus($evaluation->semester->succ())?->translatedStatus(),

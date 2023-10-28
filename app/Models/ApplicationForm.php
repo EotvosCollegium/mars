@@ -286,7 +286,7 @@ class ApplicationForm extends Model
             $missingData[] =  'Megjelölt kar';
         }
 
-        if (!$user->isResident() && !$user->isExtern()) {
+        if (!$user->resides() && !$user->isExtern()) {
             $missingData[] =  'Megjelölt collegista státusz';
         }
 

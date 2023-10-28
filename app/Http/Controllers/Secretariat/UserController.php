@@ -364,7 +364,7 @@ class UserController extends Controller
         $user->personalInformation()->update(['tenant_until' => null]);
         $user->update(['verified' => false]);
         $user->removeRole(Role::get(Role::TENANT));
-        $user->setExtern();
+        $user->setResidentExtern();
         $user->application()->create();
         Cache::forget('collegists');
         return back();

@@ -104,7 +104,9 @@ class Role extends Model
 
     //collegist related roles
     public const RESIDENT = 'resident';
+    public const RESIDENT_EXTERN = 'resident-extern';
     public const EXTERN = 'extern';
+    public const STATUSES = [self::RESIDENT, self::RESIDENT_EXTERN, self::EXTERN];
 
     // all roles
     public const ALL = [

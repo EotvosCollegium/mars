@@ -113,6 +113,7 @@ class WorkshopBalance extends Model
                             $amount *= $workshop_balance_resident;
                             $resident++;
                         } else {
+                            // resident-externs belong here
                             $amount *= $workshop_balance_extern;
                             $extern++;
                         }
