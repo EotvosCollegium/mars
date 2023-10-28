@@ -26,6 +26,13 @@ $link-color: color("coli", "orange");
 //(will include the previous ones also, but it won't overwrite those)
 @import "~@materializecss/materialize/sass/materialize.scss";
 
+//for the Material Icons font hosted locally
+i.material-icons {
+    font-family: 'Material Icons', 'Open Sans', 'sans-serif';
+    font-style: normal;
+    font-size: x-large;
+}
+
 /* overwrite some materialize classes */
 .card a {
     text-decoration: underline;
