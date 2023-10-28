@@ -82,14 +82,6 @@
             text='user.relatives_contact_data'
             :helper="__('user.relatives_contact_data_desc')"
             :value="$user->personalInformation?->relatives_contact_data" />
-        <x-input.textarea
-            id='research_topics'
-            text='user.research_topics'
-            :value="$user->personalInformation?->research_topics" />
-        <x-input.textarea
-            id='extra_information'
-            text='user.extra_information'
-            :value="$user->personalInformation?->extra_information" />
         @endif
         @if($only_tenant_until ?? false)
         </div>
