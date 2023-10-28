@@ -61,11 +61,17 @@ class Workshop extends Model
         self::TORTENESZ,
     ];
 
+    /**
+     * Lists all members of the workshop.
+     */
     public function users()
     {
         return $this->belongsToMany(User::class, 'workshop_users');
     }
 
+    /**
+     * Lists the workshop's residents.
+     */
     public function residents()
     {
         return $this->users->filter(function ($user, $key) {
@@ -73,6 +79,9 @@ class Workshop extends Model
         });
     }
 
+    /**
+     * Lists the workshop's resident-externs.
+     */
     public function residentExterns()
     {
         return $this->users->filter(function ($user, $key) {
@@ -80,6 +89,9 @@ class Workshop extends Model
         });
     }
 
+    /**
+     * Lists the workshop's externs.
+     */
     public function externs()
     {
         return $this->users->filter(function ($user, $key) {
@@ -104,6 +116,9 @@ class Workshop extends Model
         return $this->balances()->firstWhere('semester_id', $semester ?? Semester::current()->id);
     }
 
+    /**
+     * Returns the color of the workshop's badge to be displayed.
+     */
     public function color()
     {
         switch ($this->name) {

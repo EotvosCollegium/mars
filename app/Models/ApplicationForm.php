@@ -119,6 +119,9 @@ class ApplicationForm extends Model
         return $this->belongsTo('App\Models\User')->withoutGlobalScope('verified');
     }
 
+    /**
+     * Lists the files belonging to the application form.
+     */
     public function files(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany('App\Models\File');

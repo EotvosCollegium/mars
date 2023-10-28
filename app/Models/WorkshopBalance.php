@@ -50,7 +50,7 @@ class WorkshopBalance extends Model
     }
 
     /**
-     * Returns the semester the balance has been calculated for.
+     * Returns the semester the balance belongs to.
      */
     public function semester()
     {
