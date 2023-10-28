@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -11,6 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property User $receiver
  * @property Checkout $checkout
  * @property User $payer
+ * @property File|null $receipt
  */
 class Transaction extends Model
 {
@@ -65,5 +67,14 @@ class Transaction extends Model
             return $value;
         }
         return __('checkout.'.$this->type->name);
+    }
+
+    /**
+     * The receipt uploaded for the transaction, if there is one.
+     * @return HasOne
+     */
+    public function receipt(): HasOne
+    {
+        return $this->hasOne(File::class);
     }
 }

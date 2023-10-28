@@ -178,6 +178,7 @@ trait CheckoutHandler
      * The receiver and the payer also will be the authenticated user
      * (since this does not mean a payment between users, just a transaction from the checkout).
      * The only exception for the payer is when the checkout handler administrates a transaction payed by someone else.
+     * We require a receipt here.
      *
      * @param Request $request
      * @return RedirectResponse
@@ -191,7 +192,8 @@ trait CheckoutHandler
         $validator = Validator::make($request->all(), [
             'comment' => 'required|string',
             'amount' => 'required|integer|min:0',
-            'payer' => 'exists:users,id'
+            'payer' => 'exists:users,id',
+            'receipt' => 'required|mimes:pdf,jpg,jpeg,png,gif,svg',
         ]);
         $validator->validate();
 
@@ -208,6 +210,9 @@ trait CheckoutHandler
             'comment'           => $request->comment,
             'paid_at'           => $paid ? Carbon::now() : null,
         ]);
+
+        $path = $request->file('receipt')->store('receipts');
+        $transaction->receipt()->create(['path' => $path, 'name' => 'receipt']);
 
         Mail::to($user)->queue(
             new Transactions(
