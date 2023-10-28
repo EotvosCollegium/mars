@@ -255,7 +255,7 @@ trait CheckoutHandler
             Mail::to($transaction->receiver)->queue(new Transactions($transaction->receiver->name, [$transaction], "Tranzakció törölve", "A tranzakciók törlésre kerültek."));
         }
 
-        if ($transaction->receipt!=null) {
+        if ($transaction->receipt != null) {
             Storage::delete($transaction->receipt->path);
             $transaction->receipt()->delete();
         }
