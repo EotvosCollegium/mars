@@ -15,6 +15,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -252,6 +253,11 @@ trait CheckoutHandler
         }
         if ($transaction->receiver && $transaction->receiver->id != $transaction->payer?->id) {
             Mail::to($transaction->receiver)->queue(new Transactions($transaction->receiver->name, [$transaction], "Tranzakció törölve", "A tranzakciók törlésre kerültek."));
+        }
+
+        if ($transaction->receipt!=null) {
+            Storage::delete($transaction->receipt->path);
+            $transaction->receipt()->delete();
         }
 
         $transaction->delete();
