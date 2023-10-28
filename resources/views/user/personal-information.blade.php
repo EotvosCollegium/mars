@@ -16,7 +16,7 @@
             @endif
             <div class="card-action valign-right">
                 <x-input.file s="12" xl="8" id="picture" style="margin-top:auto" accept=".jpg,.png,.jpeg"
-                                text="Böngészés"/>
+                                text="general.browse"/>
                 <x-input.button only_input class="right" style="margin-top: 20px" text="general.upload"/>
             </div>
         </div>

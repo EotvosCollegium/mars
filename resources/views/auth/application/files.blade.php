@@ -21,7 +21,7 @@
                 @csrf
                 <div class="card-action valign-center">
                     <x-input.file s="12" xl="8" id="picture" style="margin-top:auto" accept=".jpg,.png,.jpeg"
-                                  text="Böngészés" required/>
+                                  text="general.browse" required/>
                     <x-input.button only_input class="right" style="margin-top: 20px" text="general.upload"/>
                 </div>
             </form>
@@ -40,7 +40,7 @@
                           enctype="multipart/form-data">
                         @csrf
                         <x-input.file s="12" xl="8" id="picture" style="margin-top:auto" accept=".jpg,.png,.jpeg"
-                                      text="Böngészés" required/>
+                                      text="general.browse" required/>
                         <x-input.button only_input class="right" style="margin-top: 20px" text="general.upload"/>
                     </form>
                 </div>
@@ -103,7 +103,7 @@
             <div class="card-content">
                 <div class="card-title">Feltöltés</div>
                 <div class="row">
-                    <x-input.file s=12 m=6 id="file" size="2000000" accept=".pdf,.jpg,.png,.jpeg" text="Böngészés" required/>
+                    <x-input.file s=12 m=6 id="file" size="2000000" accept=".pdf,.jpg,.png,.jpeg" text="general.browse" required/>
                     <x-input.text s=12 m=6 id="name" text="Fájl megnevezése" required/>
                 </div>
                 <x-input.button only_input class="right" text="general.upload"/>
