@@ -31,6 +31,8 @@ i.material-icons {
     font-family: 'Material Icons', 'Open Sans', 'sans-serif';
     font-style: normal;
     font-size: x-large;
+    //this fixed the payment buttons on checkout pages
+    text-transform: none;
 }
 
 /* overwrite some materialize classes */
