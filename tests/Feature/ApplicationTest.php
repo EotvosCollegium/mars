@@ -242,8 +242,7 @@ class ApplicationTest extends TestCase
 
         //profile picture
         $this->assertContains('Profilkép', $user->application->missingData());
-        $response = $this->post('/application', [
-            'page' => 'files.profile',
+        $response = $this->post('/users/'.$user->id.'/profile_picture', [
             'picture' => UploadedFile::fake()->image('image.png', 100)
         ]);
         $response->assertStatus(302);
