@@ -165,7 +165,7 @@ class ApplicationController extends Controller
     {
         $this->authorize('viewSomeApplication', User::class);
         $application = ApplicationForm::findOrFail($request->input('application'));
-        $newStatus=$request->input('status_'.$application->user->id);
+        $newStatus = $request->input('status_'.$application->user->id);
         if ($request->has('note')) {
             $application->update(['note' => $request->input('note')]);
         } elseif ($newStatus) {
@@ -202,7 +202,7 @@ class ApplicationController extends Controller
             $usersToDelete = User::query()->withoutGlobalScope('verified')
                 ->where('verified', 0)->whereHas('application');
             foreach ($usersToDelete->get() as $user) {
-                if ($user->profilePicture!=null) {
+                if ($user->profilePicture != null) {
                     Storage::delete($user->profilePicture->path);
                     $user->profilePicture()->delete();
                 }
