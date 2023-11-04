@@ -21,7 +21,8 @@ class UserTest extends TestCase
     /**
      * Create a test user.
      */
-    public function createUser(): User {
+    public function createUser(): User
+    {
         $user = User::factory()->create(['verified' => false]);
         $user->roles()->attach(Role::collegist()->id);
         $user->application()->create();
