@@ -13,11 +13,11 @@ return new class () extends Migration {
      */
     public function up()
     {
-        DB::unprepared('DROP TRIGGER trigger_create_print_account_for_user');
-        DB::unprepared('DROP TRIGGER trigger_create_internet_access_for_user');
-        DB::unprepared('DROP TRIGGER trigger_print_account_history_balance');
-        DB::unprepared('DROP TRIGGER trigger_insert_print_account_history_free_pages');
-        DB::unprepared('DROP TRIGGER trigger_update_print_account_history_free_pages');
+        // DB::unprepared('DROP TRIGGER trigger_create_print_account_for_user');
+        // DB::unprepared('DROP TRIGGER trigger_create_internet_access_for_user');
+        // DB::unprepared('DROP TRIGGER trigger_print_account_history_balance');
+        // DB::unprepared('DROP TRIGGER trigger_insert_print_account_history_free_pages');
+        // DB::unprepared('DROP TRIGGER trigger_update_print_account_history_free_pages');
     }
 
     /**
