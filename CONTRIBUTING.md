@@ -74,10 +74,37 @@ Most of the above setup is a one-time thing to do. However, whenever you start w
 
 You can log in to our seeded admin user with email `MAIL_TEST_ADMIN` (`example@eotvos.elte.hu` by default - you can find this in your .env file) and with password `asdasdasd`. See `database/seeds/UsersTableSeeder.php` for more predefined users.
 
+## Alternative: running Docker from terminal with Sail
+
+This method is known to work under Linux (Ubuntu 20.04, to be precise). Maybe it also works with WSL2.
+
+The steps:
+1. Follow the points under "Universal" until step 3 ([here are Docker installation instructions](https://docs.docker.com/engine/install/ubuntu/)).
+2. Add your user to the `docker` group: `sudo groupadd docker && sudo usermod -aG docker $USER`. This will ensure you can manage Docker without `sudo` later. (Note: this might be a bit unsafe. But this is the way it worked for me.)
+3. In `.env`, update `APP_URL` to `http://localhost:8080`.
+4. Add these lines:
+
+```
+APP_PORT=8080
+FORWARD_DB_PORT=33066
+```
+
+5. Still in `.env`, rewrite `DB_HOST` from the given IP to `mysql`.
+6. Run `./vendor/bin/sail up`.
+7. Open another terminal. Before seeding, add the correct privilege to the user `collegiumnostrum` in MySQL:
+    - Run `docker exec -it collegiumnostrum-mysql-1 bash`. This way, you'll log into the container as root.
+    - Run `mysql --password` with the password given in `.env`.
+    - Say `SET GLOBAL log_bin_trust_function_creators = 1;`.
+    - Exit.
+8. Run `./vendor/bin/sail artisan migrate:fresh --seed`. (Other Artisan commands need to be executed similarly.)
+9. Now you can test the site at `http://localhost:8080`.
+10. Instead of SSH, you can use `docker exec -it mars-laravel.test-1 bash`.
+11. And to access MySQL, run `docker exec -it mars-mysql-1 mysql --user=mars --password mars` (change the container name, the username and the database name if needed; the latter two are in .env) and log in with the password (also found in .env).
+
 ## Keep it minimal
 
 The main problem with Urán 1.1 was its _reinventing the wheel_ strategy. Laravel provides everything we need. Use it.
-The other problem was the unnecessary features came before the most important ones. Therefore the now defined issues are minial, only
+The other problem was the unnecessary features came before the most important ones. Therefore the now defined issues are minimal, only
 contain the necessary parts of the system. After these are done, we can change the world. But first, build it.
 
 ## Commiting
