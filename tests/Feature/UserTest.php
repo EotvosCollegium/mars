@@ -4,7 +4,9 @@ namespace Tests\Feature;
 
 use App\Models\Role;
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 /**
@@ -17,17 +19,25 @@ class UserTest extends TestCase
     use RefreshDatabase;
 
     /**
+     * Create a test user.
+     */
+    public function createUser(): User {
+        $user = User::factory()->create(['verified' => false]);
+        $user->roles()->attach(Role::collegist()->id);
+        $user->application()->create();
+        $this->actingAs($user);
+
+        return $user;
+    }
+
+    /**
      * Test Collegist registration.
      *
      * @return void
      */
     public function test_store_personal_info()
     {
-        $user = User::factory()->create(['verified' => false]);
-        $user->roles()->attach(Role::collegist()->id);
-        $user->application()->create();
-
-        $this->actingAs($user);
+        $user = $this->createUser();
 
         $response = $this->post('/users/'.$user->id.'/personal_information', [
             'email' => 'test@email.com',
@@ -60,5 +70,34 @@ class UserTest extends TestCase
         $this->assertEquals('Budapest', $user->personalInformation->city);
         $this->assertEquals('Test street 1.', $user->personalInformation->street_and_number);
         $this->assertEquals('Test relative', $user->personalInformation->relatives_contact_data);
+    }
+
+    /**
+     * Test uploading and deleting a profile picture.
+     *
+     * @return void
+     */
+    public function test_store_picture()
+    {
+        Storage::fake('avatars');
+
+        $user = $this->createUser();
+
+        $response = $this->get('/users/'.$user->id);
+        $response = $this->post('/users/'.$user->id.'/profile_picture', [
+            'picture' => UploadedFile::fake()->image('image.png', 100)
+        ]);
+        $response->assertStatus(302);
+        $response->assertRedirect('/users/'.$user->id);
+        $response->assertSessionHas('message', __('general.successful_modification'));
+        $user = User::find($user->id); //does this reload the user?
+        $this->assertNotNull($user->profilePicture);
+
+        $response = $this->delete('/users/'.$user->id.'/profile_picture', []);
+        $response->assertStatus(302);
+        $response->assertRedirect('/users/'.$user->id);
+        $response->assertSessionHas('message', __('general.successful_modification'));
+        $user = User::find($user->id);
+        $this->assertNull($user->profilePicture);
     }
 }
