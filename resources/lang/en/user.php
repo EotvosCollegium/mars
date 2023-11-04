@@ -22,6 +22,7 @@ return [
     'county' => 'County',
     'date_and_place_of_birth' => 'Date and place of birth',
     'date_of_birth' => 'Date of birth',
+    'delete_picture' => 'Delete picture',
     'educational-email' => 'Educational email',
     'educational_email' => 'Educational e-mail',
     'educational_information' => 'Educational information',

@@ -6,48 +6,8 @@
 
 @section('form')
 
-    {{-- desktop profile pic --}}
-    <div class="card horizontal hide-on-small-only">
-        <div class="card-image">
-            <img src="{{ url($user->profilePicture ? $user->profilePicture->path : '/img/avatar.png') }}"
-                 style="max-width:300px">
-        </div>
-        <div class="card-stacked">
-            <div class="card-content">
-                <div class="card-title">Profilkép</div>
-            </div>
-            <form action="{{ route('application.store', ['page' => 'files.profile']) }}" method="POST"
-                  enctype="multipart/form-data">
-                @csrf
-                <div class="card-action valign-center">
-                    <x-input.file s="12" xl="8" id="picture" style="margin-top:auto" accept=".jpg,.png,.jpeg"
-                                  text="general.browse" required/>
-                    <x-input.button only_input class="right" style="margin-top: 20px" text="general.upload"/>
-                </div>
-            </form>
-        </div>
-    </div>
-    {{-- mobile profile pic --}}
-    <div class="card hide-on-med-and-up">
-        <div class="card-image">
-            <img src="{{ url('/img/avatar.png') }}">
-        </div>
-        <div class="card-stacked">
-            <div class="card-content">
-                <div class="card-title">Profilkép</div>
-                <div class="row">
-                    <form action="{{ route('application.store', ['page' => 'files.profile']) }}" method="POST"
-                          enctype="multipart/form-data">
-                        @csrf
-                        <x-input.file s="12" xl="8" id="picture" style="margin-top:auto" accept=".jpg,.png,.jpeg"
-                                      text="general.browse" required/>
-                        <x-input.button only_input class="right" style="margin-top: 20px" text="general.upload"/>
-                    </form>
-                </div>
+    @include('utils.user.profile-picture', ['user' => $user, 'isCollapsible' => false])
 
-            </div>
-        </div>
-    </div>
     {{-- uploaded files --}}
     <div class="card">
         <div class="card-content">

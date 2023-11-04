@@ -2,6 +2,11 @@
     <blockquote class="error">{{ $error }}</blockquote>
 @endforeach
 @can('view', $user)
+    {{-- Profile picture --}}
+    @if(!($only_tenant_until ?? false))
+    @include('utils.user.profile-picture', ['user' => $user, 'isCollapsible' => true])
+    @endif
+
     {{-- Personal information --}}
     <ul class="collapsible">
         <li @if(session()->get('section') == "personal_information") class="active" @endif>

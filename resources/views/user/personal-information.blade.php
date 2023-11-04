@@ -8,18 +8,6 @@
         @if($only_tenant_until ?? false)
         <div style="display:none">
         @endif
-        <div class="col s12 xl4">
-            @if ($user->profilePicture)
-                <img src="{{ url($user->profilePicture->path) }}" style="max-width:100%;">
-            @else
-                <span style="font-style:italic;color:red">hiányzó profilkép</span>
-            @endif
-            <div class="card-action valign-right">
-                <x-input.file s="12" xl="8" id="picture" style="margin-top:auto" accept=".jpg,.png,.jpeg"
-                                text="general.browse"/>
-                <x-input.button only_input class="right" style="margin-top: 20px" text="general.upload"/>
-            </div>
-        </div>
         <x-input.text
             id="name"
             text="user.name"

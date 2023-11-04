@@ -43,10 +43,13 @@ class UserController extends Controller
      * Stores a new profile picture.
      * @param Request $request
      * @param User $user
-     * @return void
+     * @return RedirectResponse
      */
-    public function storeProfilePicture(Request $request, User $user): void
+    public function storeProfilePicture(Request $request, User $user): RedirectResponse
     {
+        $this->authorize('view', $user);
+        session()->put('section', 'profile_picture');
+
         $request->validate([
             'picture' => 'required|mimes:jpg,jpeg,png,gif,svg',
         ]);
@@ -58,23 +61,27 @@ class UserController extends Controller
         } else {
             $user->profilePicture()->create(['path' => $path, 'name' => 'profile_picture']);
         }
+        return redirect()->back()->with('message', __('general.successful_modification'));
     }
 
     /**
      * Deletes the profile picture.
      * @param Request $request
      * @param User $user
-     * @return void
+     * @return RedirectResponse
      */
-    public function deleteProfilePicture(Request $request, User $user): void
+    public function deleteProfilePicture(Request $request, User $user): RedirectResponse
     {
+        $this->authorize('view', $user);
+        session()->put('section', 'profile_picture');
+
         $profile = $user->profilePicture;
         if ($profile) {
             Storage::delete($profile->path);
-            $profile->update(['path' => $path]);
+            $profile->delete();
         }
+        return redirect()->back()->with('message', __('general.successful_modification'));
     }
-
 
     public function updatePersonalInformation(Request $request, User $user): RedirectResponse
     {
@@ -82,11 +89,6 @@ class UserController extends Controller
         session()->put('section', 'personal_information');
 
         $isCollegist = $user->isCollegist();
-
-        // For updating the profile picture:
-        if ($request->hasFile('picture')) {
-            $this->storeProfilePicture($request, $user);
-        }
 
         $data = $request->validate([
             'email' => ['required', 'email', 'max:225', new SameOrUnique($user)],

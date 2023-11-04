@@ -22,6 +22,7 @@ return [
     'county' => 'Megye',
     'date_and_place_of_birth' => 'Születés helye és ideje',
     'date_of_birth' => 'Születés ideje',
+    'delete_picture' => 'Kép törlése',
     'educational-email' => 'Egyetemi e-mail',
     'educational_email' => 'Egyetemi e-mail',
     'educational_information' => 'Tanulmányi adatok',
