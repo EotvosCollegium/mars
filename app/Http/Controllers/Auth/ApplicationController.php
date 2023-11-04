@@ -93,9 +93,6 @@ class ApplicationController extends Controller
             case self::DELETE_FILE_ROUTE:
                 $this->deleteFile($request, $user);
                 break;
-            case self::ADD_PROFILE_PIC_ROUTE:
-                $this->storeProfilePicture($request, $user);
-                break;
             case self::SUBMIT_ROUTE:
                 return $this->submitApplication($user);
             default:
@@ -305,26 +302,6 @@ class ApplicationController extends Controller
 
         Storage::delete($file->path);
         $file->delete();
-    }
-
-    /**
-     * @param Request $request
-     * @param $user
-     * @return void
-     */
-    public function storeProfilePicture(Request $request, $user): void
-    {
-        $request->validate([
-            'picture' => 'required|mimes:jpg,jpeg,png,gif,svg',
-        ]);
-        $path = $request->file('picture')->store('avatars');
-        $old_profile = $user->profilePicture;
-        if ($old_profile) {
-            Storage::delete($old_profile->path);
-            $old_profile->update(['path' => $path]);
-        } else {
-            $user->profilePicture()->create(['path' => $path, 'name' => 'profile_picture']);
-        }
     }
 
     /**
