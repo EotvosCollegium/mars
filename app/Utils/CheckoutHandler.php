@@ -14,6 +14,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -201,19 +202,26 @@ trait CheckoutHandler
         $user = $request->has('payer') ? User::find($request->input('payer')) : user();
         $paid = $request->has('paid');
 
-        $transaction = Transaction::create([
-            'checkout_id'       => $this->checkout()->id,
-            'receiver_id'       => $user->id,
-            'payer_id'          => $user->id,
-            'semester_id'       => Semester::current()->id,
-            'amount'            => (-1) * $request->amount,
-            'payment_type_id'   => PaymentType::expense()->id,
-            'comment'           => $request->comment,
-            'paid_at'           => $paid ? Carbon::now() : null,
-        ]);
+        // an output variable
+        $transaction = null;
 
-        $path = $request->file('receipt')->store('receipts');
-        $transaction->receipt()->create(['path' => $path, 'name' => 'receipt']);
+        // wrapping into one transaction so that if one of them fails,
+        // the whole is reverted
+        DB::transaction(function() use ($user, $request, $paid, &$transaction) {
+            $transaction = Transaction::create([
+                'checkout_id'       => $this->checkout()->id,
+                'receiver_id'       => $user->id,
+                'payer_id'          => $user->id,
+                'semester_id'       => Semester::current()->id,
+                'amount'            => (-1) * $request->amount,
+                'payment_type_id'   => PaymentType::expense()->id,
+                'comment'           => $request->comment,
+                'paid_at'           => $paid ? Carbon::now() : null,
+            ]);
+    
+            $path = $request->file('receipt')->store('receipts');
+            $transaction->receipt()->create(['path' => $path, 'name' => 'receipt']);
+        });
 
         Mail::to($user)->queue(
             new Transactions(
@@ -248,19 +256,21 @@ trait CheckoutHandler
     {
         $this->authorize('delete', $transaction);
 
+        DB::transaction(function() use ($transaction) {
+            if ($transaction->receipt != null) {
+                Storage::delete($transaction->receipt->path);
+                $transaction->receipt()->delete();
+            }
+
+            $transaction->delete();
+        });
+
         if ($transaction->payer) {
             Mail::to($transaction->payer)->queue(new Transactions($transaction->payer->name, [$transaction], "Tranzakció törölve", "A tranzakciók törlésre kerültek."));
         }
         if ($transaction->receiver && $transaction->receiver->id != $transaction->payer?->id) {
             Mail::to($transaction->receiver)->queue(new Transactions($transaction->receiver->name, [$transaction], "Tranzakció törölve", "A tranzakciók törlésre kerültek."));
         }
-
-        if ($transaction->receipt != null) {
-            Storage::delete($transaction->receipt->path);
-            $transaction->receipt()->delete();
-        }
-
-        $transaction->delete();
 
         return redirect()->back()->with('message', __('general.successfully_deleted'));
     }

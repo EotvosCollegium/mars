@@ -33,7 +33,7 @@
                 <x-input.select m=6 l=6 id="payer" text="Fizető" :elements="\App\Models\User::collegists()" default="{{user()->id}}" :formatter="function($user) { return $user->uniqueName; }" />
                 <x-input.checkbox m=6 l=6 id="paid" checked text="A tartozás kifizetésre került"/>
                 @endcan
-                <x-input.file s="12" xl="8" id="receipt" style="margin-top:auto" accept=".pdf,.jpg,.png,.jpeg,.gif"
+                <x-input.file s="12" id="receipt" style="margin-top:auto" accept=".pdf,.jpg,.png,.jpeg,.gif"
                                   text="checkout.receipt" required/>
             </div>
             <x-input.button floating class="btn-large right" icon="payments" />
