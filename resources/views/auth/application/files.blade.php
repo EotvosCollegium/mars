@@ -6,7 +6,7 @@
 
 @section('form')
 
-    @include('utils.user.profile-picture', ['user' => $user, 'isCollapsible' => false])
+    @include('utils.user.profile-picture', ['user' => $user])
 
     {{-- uploaded files --}}
     <div class="card">
