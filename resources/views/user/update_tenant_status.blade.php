@@ -13,7 +13,6 @@
                 <form method="POST" action="{{ route('users.update.tenant_until', ['user' => user()]) }}">
                     @csrf
                     <div class="row">
-                        <input type="hidden" name="only_tenant_until" value="true"/>
                         <x-input.datepicker
                                 id='tenant_until'
                                 required

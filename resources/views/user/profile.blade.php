@@ -3,9 +3,7 @@
 @endforeach
 @can('view', $user)
     {{-- Profile picture --}}
-    @if(!($only_tenant_until ?? false))
-    @include('utils.user.profile-picture', ['user' => $user, 'isCollapsible' => true])
-    @endif
+    @include('utils.user.profile-picture', ['user' => $user])
 
     {{-- Personal information --}}
     <ul class="collapsible">
