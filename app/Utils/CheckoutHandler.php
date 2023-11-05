@@ -207,7 +207,7 @@ trait CheckoutHandler
 
         // wrapping into one transaction so that if one of them fails,
         // the whole is reverted
-        DB::transaction(function() use ($user, $request, $paid, &$transaction) {
+        DB::transaction(function () use ($user, $request, $paid, &$transaction) {
             $transaction = Transaction::create([
                 'checkout_id'       => $this->checkout()->id,
                 'receiver_id'       => $user->id,
@@ -218,7 +218,7 @@ trait CheckoutHandler
                 'comment'           => $request->comment,
                 'paid_at'           => $paid ? Carbon::now() : null,
             ]);
-    
+
             $path = $request->file('receipt')->store('receipts');
             $transaction->receipt()->create(['path' => $path, 'name' => 'receipt']);
         });
@@ -256,7 +256,7 @@ trait CheckoutHandler
     {
         $this->authorize('delete', $transaction);
 
-        DB::transaction(function() use ($transaction) {
+        DB::transaction(function () use ($transaction) {
             if ($transaction->receipt != null) {
                 Storage::delete($transaction->receipt->path);
                 $transaction->receipt()->delete();
