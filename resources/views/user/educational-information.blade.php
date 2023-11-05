@@ -65,6 +65,8 @@
         @include('user.study-line-selector', ['index' => $loop->index, 'value' => $studyLine])
     @endforeach
     <x-input.button type="button" id="addStudyLine" floating icon="add" onclick="insertEmptyStudyLine()" />
+    {{-- hiding these fields from applications; they are not relevant there --}}
+    @if(\Route::current()->getName() != 'application')
     <x-input.textarea
             id='research_topics'
             text='user.research_topics'
@@ -73,6 +75,7 @@
         id='extra_information'
         text='user.extra_information'
         :value="$user->educationalInformation?->extra_information" />
+    @endif
     <div class="row" style="margin: 0">
             <x-input.button class="right" text="general.save" />
     </div>
