@@ -104,8 +104,6 @@ class UserController extends Controller
             'street_and_number' => [Rule::requiredIf($isCollegist), 'string', 'max:255'],
             'tenant_until' => [Rule::requiredIf($user->isTenant()), 'date', 'after:today'],
             'relatives_contact_data' => ['nullable', 'string', 'max:255'],
-            'research_topics' => ['nullable', 'string', 'max:1000'],
-            'extra_information' => ['nullable', 'string', 'max:1500'],
         ]);
 
         $user->update(['email' => $request->email, 'name' => $request->name]);
@@ -145,7 +143,9 @@ class UserController extends Controller
             'study_lines.*.level' => ['required', Rule::in(array_keys(StudyLine::TYPES))],
             'study_lines.*.minor' => 'nullable|string|max:255',
             'study_lines.*.start' => 'required',
-            'email' => ['required', 'string', 'email', 'max:255', new SameOrUnique($user, EducationalInformation::class)]
+            'email' => ['required', 'string', 'email', 'max:255', new SameOrUnique($user, EducationalInformation::class)],
+            'research_topics' => ['nullable', 'string', 'max:1000'],
+            'extra_information' => ['nullable', 'string', 'max:1500'],
         ]);
 
         $educational_data = $request->only([
@@ -153,7 +153,9 @@ class UserController extends Controller
             'year_of_acceptance',
             'high_school',
             'neptun',
-            'email'
+            'email',
+            'research_topics',
+            'extra_information'
         ]);
         DB::transaction(function () use ($user, $request, $educational_data) {
             if (!$user->hasEducationalInformation()) {
