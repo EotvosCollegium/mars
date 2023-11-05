@@ -7,7 +7,7 @@
                     @if ($user->profilePicture)
                         <img src="{{ url($user->profilePicture->path) }}" style="max-width:100%">
                     @else
-                        <span style="font-style:italic;color:red">hiányzó profilkép</span>
+                        <span style="font-style:italic;color:red">Nincs profilkép.</span>
                     @endif
                 </div>
                 <div class="col s12 xl8">

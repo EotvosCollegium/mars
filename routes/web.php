@@ -51,6 +51,8 @@ Route::middleware(['auth', 'log', 'only_hungarian'])->group(function () {
 Route::middleware(['auth', 'log'])->group(function () {
     /** Routes that needs to be accessed during the application process */
     Route::post('/application', [ApplicationController::class, 'storeApplicationForm'])->name('application.store');
+    Route::post('/users/{user}/profile_picture', [UserController::class, 'storeProfilePicture'])->name('users.update.profile-picture');
+    Route::delete('/users/{user}/profile_picture', [UserController::class, 'deleteProfilePicture'])->name('users.delete.profile-picture');
     Route::post('/users/{user}/personal_information', [UserController::class, 'updatePersonalInformation'])->name('users.update.personal');
     Route::post('/users/{user}/educational_information', [UserController::class, 'updateEducationalInformation'])->name('users.update.educational');
     Route::post('/users/{user}/alfonso', [UserController::class, 'updateAlfonsoStatus'])->name('users.update.alfonso');

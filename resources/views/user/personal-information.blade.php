@@ -2,12 +2,9 @@
     $countries = require base_path('countries.php');
 @endphp
 
-<form method="POST" action="{{ route('users.update.personal', ['user' => $user]) }}">
+<form method="POST" action="{{ route('users.update.personal', ['user' => $user]) }}" enctype="multipart/form-data">
     @csrf
     <div class="row">
-        @if($only_tenant_until ?? false)
-        <div style="display:none">
-        @endif
         <x-input.text
             id="name"
             text="user.name"
@@ -82,9 +79,6 @@
             text='user.relatives_contact_data'
             :helper="__('user.relatives_contact_data_desc')"
             :value="$user->personalInformation?->relatives_contact_data" />
-        @endif
-        @if($only_tenant_until ?? false)
-        </div>
         @endif
         @if ($user->isTenant() && !isset($application))
             <x-input.datepicker

@@ -160,30 +160,6 @@ class ApplicationTest extends TestCase
     }
 
     /**
-     * Test uploading a profile picture.
-     *
-     * @return void
-     */
-    public function test_store_picture()
-    {
-        Storage::fake('avatars');
-
-        $user = $this->createApplicant();
-
-        $response = $this->get('/application');
-        $response = $this->post('/application', [
-            'page' => 'files.profile',
-            'picture' => UploadedFile::fake()->image('image.png', 100)
-        ]);
-        $response->assertStatus(302);
-        $response->assertRedirect('/application');
-        $response->assertSessionHas('message', __('general.successful_modification'));
-
-        $user = User::find($user->id);
-        $this->assertNotNull($user->profilePicture);
-    }
-
-    /**
      * Test the full process with minimal required information.
      *
      * @return void
@@ -266,8 +242,7 @@ class ApplicationTest extends TestCase
 
         //profile picture
         $this->assertContains('Profilkép', $user->application->missingData());
-        $response = $this->post('/application', [
-            'page' => 'files.profile',
+        $response = $this->post('/users/'.$user->id.'/profile_picture', [
             'picture' => UploadedFile::fake()->image('image.png', 100)
         ]);
         $response->assertStatus(302);

@@ -16,6 +16,7 @@ use App\Rules\SameOrUnique;
 use Arr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
@@ -36,6 +37,50 @@ class UserController extends Controller
             'faculties' => Faculty::all(),
             'workshops' => Workshop::all()
         ]);
+    }
+
+    /**
+     * Stores a new profile picture.
+     * @param Request $request
+     * @param User $user
+     * @return RedirectResponse
+     */
+    public function storeProfilePicture(Request $request, User $user): RedirectResponse
+    {
+        $this->authorize('view', $user);
+        session()->put('section', 'profile_picture');
+
+        $request->validate([
+            'picture' => 'required|mimes:jpg,jpeg,png,gif,svg',
+        ]);
+        $path = $request->file('picture')->store('avatars');
+        $old_profile = $user->profilePicture;
+        if ($old_profile) {
+            Storage::delete($old_profile->path);
+            $old_profile->update(['path' => $path]);
+        } else {
+            $user->profilePicture()->create(['path' => $path, 'name' => 'profile_picture']);
+        }
+        return redirect()->back()->with('message', __('general.successful_modification'));
+    }
+
+    /**
+     * Deletes the profile picture.
+     * @param Request $request
+     * @param User $user
+     * @return RedirectResponse
+     */
+    public function deleteProfilePicture(Request $request, User $user): RedirectResponse
+    {
+        $this->authorize('view', $user);
+        session()->put('section', 'profile_picture');
+
+        $profile = $user->profilePicture;
+        if ($profile) {
+            Storage::delete($profile->path);
+            $profile->delete();
+        }
+        return redirect()->back()->with('message', __('general.successful_modification'));
     }
 
     public function updatePersonalInformation(Request $request, User $user): RedirectResponse
@@ -98,7 +143,9 @@ class UserController extends Controller
             'study_lines.*.level' => ['required', Rule::in(array_keys(StudyLine::TYPES))],
             'study_lines.*.minor' => 'nullable|string|max:255',
             'study_lines.*.start' => 'required',
-            'email' => ['required', 'string', 'email', 'max:255', new SameOrUnique($user, EducationalInformation::class)]
+            'email' => ['required', 'string', 'email', 'max:255', new SameOrUnique($user, EducationalInformation::class)],
+            'research_topics' => ['nullable', 'string', 'max:1000'],
+            'extra_information' => ['nullable', 'string', 'max:1500'],
         ]);
 
         $educational_data = $request->only([
@@ -106,7 +153,9 @@ class UserController extends Controller
             'year_of_acceptance',
             'high_school',
             'neptun',
-            'email'
+            'email',
+            'research_topics',
+            'extra_information'
         ]);
         DB::transaction(function () use ($user, $request, $educational_data) {
             if (!$user->hasEducationalInformation()) {

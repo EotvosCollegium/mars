@@ -5,6 +5,7 @@ return [
     'add' => 'Hozzáad',
     'add_new' => 'Új hozzáadása',
     'admin' => 'Rendszergazda',
+    'browse' => 'Böngészés',
     'cancel' => 'Mégse',
     'change_email' => 'Email megváltoztatása',
     'change_password' => 'Jelszó megváltoztatása',

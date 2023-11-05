@@ -13,7 +13,7 @@ class PersonalInformationFactory extends Factory
     {
         return [
             'place_of_birth' => $this->faker->city,
-            'date_of_birth' =>$this->faker->date($format = 'Y-m-d', $max = 'now'),
+            'date_of_birth' => $this->faker->date($format = 'Y-m-d', $max = 'now'),
             'mothers_name' => $this->faker->name($gender = 'female'),
             'phone_number' => $this->faker->numerify('+36 (##) ###-####'),
             'country' => $this->faker->country,

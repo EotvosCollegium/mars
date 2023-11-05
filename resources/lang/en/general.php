@@ -5,6 +5,7 @@ return [
     'add' => 'Add',
     'add_new' => 'Add new',
     'admin' => 'Admin',
+    'browse' => 'Browse',
     'cancel' => 'Cancel',
     'change_email' => 'Change email',
     'change_password' => 'Change password',
