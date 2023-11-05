@@ -234,19 +234,6 @@ body.dark a.btn {
   color: #fff; /*this for buttons*/
 }
 
-// for cards within collapsibles
-// (that means the profile picture card on the profile page)
-ul.collapsible li .card.collapsible-body {
-    display: none;
-    padding: 0;
-    margin: 0;
-    box-shadow: none;
-}
-ul.collapsible li.active .card.collapsible-body,
-ul.collapsible li .card.collapsible-body[overflow] {
-    display: flex !important;
-}
-
 //other, custom classes
 .noselect {
     -webkit-touch-callout: none; /* iOS Safari */
