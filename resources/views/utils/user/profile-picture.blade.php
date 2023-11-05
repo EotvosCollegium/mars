@@ -51,8 +51,8 @@
                 @if ($user->profilePicture)
                 <form method="POST" action="{{ route('users.delete.profile-picture', ['user' => $user]) }}">
                     @csrf
+                    @method('delete')
                     <div class="right">
-                        <input type="hidden" name="_method" value="delete">  {{-- this way, it will send a DELETE request --}}
                         <x-input.button only_input style="margin-top: 20px; margin-right: 0;" text="user.delete_picture"/>
                     </div>
                 </form>
