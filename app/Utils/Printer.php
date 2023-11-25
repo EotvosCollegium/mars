@@ -113,9 +113,9 @@ class Printer
         $printer_name = config('print.printer_name');
         $state = PrintJob::QUEUED;
         try {
-            $command = "lp -d " . $printer_name
+            $command = "lp " . env('PRINTER_ADDITIONAL_ARGS') . " -d " . $printer_name
                     . ($this->is_two_sided ? " -o sides=two-sided-long-edge " : " ")
-                    . "-n " . $this->number_of_copies . " " . env('PRINTER_ADDITIONAL_ARGS') . " "
+                    . "-n " . $this->number_of_copies . " "
                     . $this->path . " 2>&1";
             $result = Commands::print($command);
             if (!preg_match("/^request id is ([^\s]*) \\([0-9]* file\\(s\\)\\)$/", $result, $job)) {
