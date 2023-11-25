@@ -13,7 +13,7 @@ class PrintAccountPolicy
 
     public function before(User $user, $ability)
     {
-        return false;
+        return $user->isAdmin();
         if ($user->isAdmin()) {
             return true;
         }
@@ -27,7 +27,7 @@ class PrintAccountPolicy
      */
     public function use(User $user)
     {
-        return false;
+        return $user->isAdmin();
         return true;
     }
 
