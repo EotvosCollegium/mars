@@ -12,6 +12,6 @@ return [
 
     'printer_name' => env('PRINTER_NAME', 'ujbela'),
 
-    'stat_additional_args' => env('PRINTER_STAT_ADDITIONAL_ARGS'),
-    'additional_args' => env('PRINTER_ADDITIONAL_ARGS'),
+    'stat_additional_args' => env('PRINTER_STAT_ADDITIONAL_ARGS', ''),
+    'additional_args' => env('PRINTER_ADDITIONAL_ARGS', ''),
 ];
