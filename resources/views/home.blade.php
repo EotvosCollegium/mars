@@ -66,12 +66,12 @@
                 <!-- Student Council -->
                 @if(isset($contacts[\App\Models\Role::STUDENT_COUNCIL]))
                 <h5>Választmány</h5>
-                <i><a href="mailto:{{ env('MAIL_VALASZTMANY') }}">{{env('MAIL_VALASZTMANY')}}</a></i><br>
+                <i><a href="mailto:{{ config('contacts.mail_valasztmany') }}">{{config('contacts.mail_valasztmany')}}</a></i><br>
                 @foreach($contacts[\App\Models\Role::STUDENT_COUNCIL] as $roleuser)
                 <b>@lang('role.'.$roleuser->object->name)</b>:
                     <i>{{$roleuser->user?->name}}</i>
                     @if($roleuser->object->name == \App\Models\Role::PRESIDENT)
-                    <a href="mailto:{{ env('MAIL_ELNOK') }}">{{env('MAIL_ELNOK')}}</a>
+                    <a href="mailto:{{ config('contacts.mail_elnok') }}">{{config('contacts.mail_elnok')}}</a>
                     <a href="mailto:{{ $roleuser->user?->email }}">{{ $roleuser->user?->email }}</a>
                     {{ $roleuser->user?->personalInformation?->phone_number }}
                     @endif
@@ -116,7 +116,7 @@
                 <!-- Admins -->
                 @if(isset($contacts['admins']))
                 <h5>@lang('role.sys-admins')</h5>
-                <i><a href="mailto:{{ env('DEVELOPER_EMAIL') }}">{{env('DEVELOPER_EMAIL')}}</a></i><br>
+                <i><a href="mailto:{{ config('contacts.developer_email') }}">{{config('contacts.developer_email')}}</a></i><br>
                 @foreach($contacts['admins'] as $admin)
                     @if(!$loop->first)|@endif
                     <i>{{$admin->name}}</i>

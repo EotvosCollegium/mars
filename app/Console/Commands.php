@@ -17,7 +17,7 @@ class Commands
 
     public static function getCompletedPrintingJobs()
     {
-        $command = "lpstat " . env('PRINTER_STAT_ADDITIONAL_ARGS') . " -W completed -o " . config('print.printer_name') . " | awk '{print $1}'";
+        $command = "lpstat " . config('printer.stat_additional_args') . " -W completed -o " . config('print.printer_name') . " | awk '{print $1}'";
         if (self::isDebugMode()) {
             $result = [0];
         } else {

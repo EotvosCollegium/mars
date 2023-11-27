@@ -130,9 +130,9 @@ class HomeController extends Controller
         $username = user()->name;
 
         //personal auth token from your github.com account - see CONTRIBUTING.md
-        $token = env('GITHUB_AUTH_TOKEN');
+        $token = config('github.auth_token');
 
-        $url = "https://api.github.com/repos/" . env('GITHUB_REPO') . "/issues";
+        $url = "https://api.github.com/repos/" . config('github.repo') . "/issues";
 
         //request details, removing slashes and sanitize content
         $title = htmlspecialchars(stripslashes('Reported bug'), ENT_QUOTES);
@@ -195,11 +195,11 @@ class HomeController extends Controller
                 'phone_number' => $staff?->personalInformation?->phone_number
             ],
             'reception' => [
-                'phone_number' => env('PORTA_PHONE')
+                'phone_number' => config('contacts.porta_phone')
             ],
             'doctor' => [
-                'name' => env('DOCTOR_NAME'),
-                'link' => env('DOCTOR_LINK')
+                'name' => config('contacts.doctor_name'),
+                'link' => config('contacts.doctor_link')
             ]
         ];
 

@@ -174,7 +174,7 @@ class SemesterEvaluationController extends Controller
      */
     public static function sendEvaluationAvailableMail()
     {
-        Mail::to(env('MAIL_MEMBRA'))->queue(new \App\Mail\EvaluationFormAvailable());
+        Mail::to(config('contacts.mail_membra'))->queue(new \App\Mail\EvaluationFormAvailable());
     }
 
     /**
