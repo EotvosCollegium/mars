@@ -113,7 +113,7 @@ class Printer
         $printer_name = config('print.printer_name');
         $state = PrintJob::QUEUED;
         try {
-            $command = "lp " . config('print.additional_args') . " -d " . $printer_name
+            $command = "lp " . config('print.additional_args')  . " -d " . $printer_name
                     . ($this->is_two_sided ? " -o sides=two-sided-long-edge " : " ")
                     . "-n " . $this->number_of_copies . " "
                     . $this->path . " 2>&1";
