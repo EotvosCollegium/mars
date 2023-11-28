@@ -86,6 +86,7 @@ class Commands
             $command = "pdflatex " . "-interaction=nonstopmode -output-dir " . $outputDir . " " . $path . " 2>&1";
             Log::info($command);
             $result = exec($command);
+            Log::info($command);
         }
         return $result;
     }
