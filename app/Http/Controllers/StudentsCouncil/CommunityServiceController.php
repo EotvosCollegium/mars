@@ -54,7 +54,7 @@ class CommunityServiceController extends Controller
             'description' => 'required|string',
         ]);
 
-        $communityService=CommunityService::create([
+        $communityService = CommunityService::create([
             'requester_id' => user()->id,
             'approver_id' => $request->approver,
             'semester_id' => Semester::current()->id,

@@ -224,11 +224,11 @@ class ApplicationForm extends Model
 
         $missingData = [];
 
-        if (! isset($personalInformation)) {
+        if (!isset($personalInformation)) {
             $missingData[] = 'Személyes adatok';
         }
 
-        if (! isset($educationalInformation)) {
+        if (!isset($educationalInformation)) {
             $missingData[] = 'Tanulmányi adatok';
         }
 
@@ -236,12 +236,12 @@ class ApplicationForm extends Model
             $missingData[] =  'Megjelölt szak';
         }
 
-        if (! isset($educationalInformation?->alfonso_language)) {
+        if (!isset($educationalInformation?->alfonso_language)) {
             $missingData[] =  'Megjelölt ALFONSÓ nyelv';
             //level is required when updating language
         }
 
-        if (! isset($user->profilePicture)) {
+        if (!isset($user->profilePicture)) {
             $missingData[] =  'Profilkép';
         }
         if (count($this->files) < 2) {
@@ -260,16 +260,16 @@ class ApplicationForm extends Model
             $missingData[] =  'Megjelölt collegista státusz';
         }
 
-        if (! isset($this->graduation_average)) {
+        if (!isset($this->graduation_average)) {
             $missingData[] =  'Érettségi átlaga';
         }
-        if (! isset($this->question_1) || $this->question_1 == []) {
+        if (!isset($this->question_1) || $this->question_1 == []) {
             $missingData[] =  '"Honnan hallott a Collegiumról?" kérdés';
         }
-        if (! isset($this->question_2)) {
+        if (!isset($this->question_2)) {
             $missingData[] =  '"Miért kíván a Collegium tagja lenni?" kérdés';
         }
-        if (! isset($this->question_3)) {
+        if (!isset($this->question_3)) {
             $missingData[] =  '"Tervez-e tovább tanulni a diplomája megszerzése után? Milyen tervei vannak az egyetem után?" kérdés';
         }
 

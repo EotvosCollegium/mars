@@ -16,7 +16,7 @@ class MacAddressPolicy
         if ($user->isAdmin()) {
             return true;
         }
-        if (! $user->hasRole(Role::INTERNET_USER)) {
+        if (!$user->hasRole(Role::INTERNET_USER)) {
             return false;
         }
     }

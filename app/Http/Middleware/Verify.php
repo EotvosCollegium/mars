@@ -16,8 +16,8 @@ class Verify
      */
     public function handle($request, Closure $next)
     {
-        if (! $request->user() ||
-            ($request->user() && ! $request->user()->verified)) {
+        if (!$request->user() ||
+            ($request->user() && !$request->user()->verified)) {
             if ($request->user()->isCollegist()) {
                 return Redirect::route('application');
             } else {

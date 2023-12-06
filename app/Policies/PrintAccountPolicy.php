@@ -16,7 +16,7 @@ class PrintAccountPolicy
         if ($user->isAdmin()) {
             return true;
         }
-        if (! $user->hasRole(Role::PRINTER)) {
+        if (!$user->hasRole(Role::PRINTER)) {
             return false;
         }
     }

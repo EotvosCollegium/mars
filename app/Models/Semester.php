@@ -218,7 +218,7 @@ class Semester extends Model
     public static function current(): Semester
     {
         $today = Carbon::today()->format('Ymd');
-        if (! Cache::get('semester.current.'.$today)) {
+        if (!Cache::get('semester.current.'.$today)) {
             $now = Carbon::now();
             if ($now->month >= self::START_OF_SPRING_SEMESTER && $now->month <= self::END_OF_SPRING_SEMESTER) {
                 $part = "2";
@@ -301,7 +301,7 @@ class Semester extends Model
      */
     public static function getOrCreate($year, $part): Semester
     {
-        if (! in_array($part, [1, 2])) {
+        if (!in_array($part, [1, 2])) {
             throw new InvalidArgumentException("The semester's part is not 1 or 2.");
         }
         $semester = Semester::firstOrCreate([

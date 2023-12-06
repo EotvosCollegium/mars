@@ -73,7 +73,7 @@ class RegisterController extends Controller
         switch ($data['user_type']) {
             case Role::TENANT:
                 return Validator::make($data, [
-                    'tenant_until'=>'required|date|after:today',
+                    'tenant_until' => 'required|date|after:today',
                     'name' => 'required|string|max:255',
                     'phone_number' => 'required|string|min:8|max:18',
                     'email' => 'required|string|email|max:255|unique:users',
@@ -117,7 +117,7 @@ class RegisterController extends Controller
                 // Send confirmation mail.
                 Mail::to($user)->queue(new \App\Mail\Confirmation($user->name));
                 // Send notification about new tenant to the staff and network admins.
-                if (! $user->isCollegist()) {
+                if (!$user->isCollegist()) {
                     $users_to_notify = User::whereHas('roles', function ($q) {
                         $q->whereIn('role_id', [
                             Role::firstWhere('name', Role::SYS_ADMIN)->id
