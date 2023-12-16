@@ -10,6 +10,39 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Mail;
 
+/**
+ * App\Models\Internet\Router
+ *
+ * @property string $ip
+ * @property int $room
+ * @property int $failed_for
+ * @property string|null $port
+ * @property string|null $type
+ * @property string|null $serial_number
+ * @property string|null $mac_5G
+ * @property string|null $mac_2G_LAN
+ * @property string|null $mac_WAN
+ * @property string|null $comment
+ * @property string|null $date_of_acquisition
+ * @property string|null $date_of_deployment
+ * @method static \Database\Factories\Internet\RouterFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|Router newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Router newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Router query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Router whereComment($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Router whereDateOfAcquisition($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Router whereDateOfDeployment($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Router whereFailedFor($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Router whereIp($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Router whereMac2GLAN($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Router whereMac5G($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Router whereMacWAN($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Router wherePort($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Router whereRoom($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Router whereSerialNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Router whereType($value)
+ * @mixin \Eloquent
+ */
 class Router extends Model
 {
     use NotificationCounter;

@@ -5,8 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
+ * App\Models\Workshop
+ *
  * @property integer $id
  * @property string $name
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $users
+ * @property-read int|null $users_count
+ * @method static \Illuminate\Database\Eloquent\Builder|Workshop newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Workshop newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Workshop query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Workshop whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Workshop whereName($value)
+ * @mixin \Eloquent
  */
 class Workshop extends Model
 {

@@ -8,6 +8,32 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
+/**
+ * App\Models\GeneralAssemblies\PresenceCheck
+ *
+ * @property int $id
+ * @property int $general_assembly_id
+ * @property string|null $opened_at
+ * @property string|null $closed_at
+ * @property string|null $note
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\GeneralAssemblies\GeneralAssembly $generalAssembly
+ * @property-read string $title
+ * @property-read \Illuminate\Database\Eloquent\Collection|User[] $users
+ * @property-read int|null $users_count
+ * @method static \Illuminate\Database\Eloquent\Builder|PresenceCheck newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PresenceCheck newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PresenceCheck query()
+ * @method static \Illuminate\Database\Eloquent\Builder|PresenceCheck whereClosedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PresenceCheck whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PresenceCheck whereGeneralAssemblyId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PresenceCheck whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PresenceCheck whereNote($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PresenceCheck whereOpenedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PresenceCheck whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class PresenceCheck extends Model
 {
     use HasFactory;

@@ -4,6 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\Room
+ *
+ * @property string $name
+ * @property int $capacity
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $users
+ * @property-read int|null $users_count
+ * @method static \Illuminate\Database\Eloquent\Builder|Room newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Room newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Room query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Room whereCapacity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Room whereName($value)
+ * @mixin \Eloquent
+ */
 class Room extends Model
 {
     protected $primaryKey = 'name';

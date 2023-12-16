@@ -14,6 +14,32 @@ use App\Models\GeneralAssemblies\QuestionUser;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
+/**
+ * App\Models\GeneralAssemblies\Question
+ *
+ * @property int $id
+ * @property int $general_assembly_id
+ * @property string $title
+ * @property int $max_options
+ * @property string|null $opened_at
+ * @property string|null $closed_at
+ * @property-read GeneralAssembly $generalAssembly
+ * @property-read \Illuminate\Database\Eloquent\Collection|QuestionOption[] $options
+ * @property-read int|null $options_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|User[] $users
+ * @property-read int|null $users_count
+ * @method static \Database\Factories\GeneralAssemblies\QuestionFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|Question newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Question newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Question query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Question whereClosedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Question whereGeneralAssemblyId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Question whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Question whereMaxOptions($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Question whereOpenedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Question whereTitle($value)
+ * @mixin \Eloquent
+ */
 class Question extends Model
 {
     use HasFactory;

@@ -9,14 +9,38 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 use InvalidArgumentException;
 
-/** A semester is identified by a year and by it's either autumn or spring.
+/**
+ * A semester is identified by a year and by it's either autumn or spring.
+ * 
  * ie. a spring semester starting in february 2020 will be (2019, 2) since we write 2019/20/2.
  * The autumn semester starting in september 2020 is (2020, 1) since we write 2020/21/1.
- *
+ * 
  * The status can be verified or not (by default it is not). Users with permission has to
  * confirm that the user can have the given status.
  *
  * @property mixed $id
+ * @property int $year
+ * @property mixed $part
+ * @property int $verified
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CommunityService[] $communityServices
+ * @property-read int|null $community_services_count
+ * @property-read string $name
+ * @property-read string $tag
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Transaction[] $transactions
+ * @property-read int|null $transactions_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $users
+ * @property-read int|null $users_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\WorkshopBalance[] $workshopBalances
+ * @property-read int|null $workshop_balances_count
+ * @method static \Database\Factories\SemesterFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|Semester newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Semester newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Semester query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Semester whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Semester wherePart($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Semester whereVerified($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Semester whereYear($value)
+ * @mixin \Eloquent
  */
 class Semester extends Model
 {

@@ -4,6 +4,32 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\WorkshopBalance
+ *
+ * @property int $id
+ * @property int $semester_id
+ * @property int $workshop_id
+ * @property int $allocated_balance
+ * @property int $used_balance
+ * @property int $resident
+ * @property int $extern
+ * @property int $not_yet_paid
+ * @property-read \App\Models\Semester $semester
+ * @property-read \App\Models\Workshop $workshop
+ * @method static \Illuminate\Database\Eloquent\Builder|WorkshopBalance newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|WorkshopBalance newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|WorkshopBalance query()
+ * @method static \Illuminate\Database\Eloquent\Builder|WorkshopBalance whereAllocatedBalance($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WorkshopBalance whereExtern($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WorkshopBalance whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WorkshopBalance whereNotYetPaid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WorkshopBalance whereResident($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WorkshopBalance whereSemesterId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WorkshopBalance whereUsedBalance($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WorkshopBalance whereWorkshopId($value)
+ * @mixin \Eloquent
+ */
 class WorkshopBalance extends Model
 {
     public $timestamps = false;

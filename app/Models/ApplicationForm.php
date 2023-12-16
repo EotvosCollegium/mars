@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 /**
+ * App\Models\ApplicationForm
+ *
  * @property User $user
  * @property Collection $files
  * @property string $status
@@ -26,6 +28,34 @@ use Illuminate\Support\Collection;
  * @property boolean $accommodation
  * @property string $present
  * @property string $note
+ * @property int $id
+ * @property int $user_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read int|null $files_count
+ * @property-read string $question1_custom
+ * @method static \Illuminate\Database\Eloquent\Builder|ApplicationForm newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ApplicationForm newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ApplicationForm query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ApplicationForm whereAccommodation($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ApplicationForm whereCompetition($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ApplicationForm whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ApplicationForm whereForeignStudies($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ApplicationForm whereGraduationAverage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ApplicationForm whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ApplicationForm whereLanguageExam($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ApplicationForm whereNote($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ApplicationForm wherePresent($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ApplicationForm wherePublication($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ApplicationForm whereQuestion1($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ApplicationForm whereQuestion2($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ApplicationForm whereQuestion3($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ApplicationForm whereQuestion4($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ApplicationForm whereSemesterAverage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ApplicationForm whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ApplicationForm whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ApplicationForm whereUserId($value)
+ * @mixin \Eloquent
  */
 class ApplicationForm extends Model
 {

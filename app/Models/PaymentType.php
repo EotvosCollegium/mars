@@ -6,7 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 
 /**
+ * App\Models\PaymentType
+ *
  * @property mixed $name
+ * @property int $id
+ * @method static \Illuminate\Database\Eloquent\Builder|PaymentType newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PaymentType newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PaymentType query()
+ * @method static \Illuminate\Database\Eloquent\Builder|PaymentType whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PaymentType whereName($value)
+ * @mixin \Eloquent
  */
 class PaymentType extends Model
 {

@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 /**
+ * App\Models\Internet\WifiConnection
+ *
  * @property string $ip
  * @property string $mac_address
  * @property string $wifi_username
@@ -20,6 +22,24 @@ use Illuminate\Database\Eloquent\Relations\HasOneThrough;
  * @property InternetAccess $internetAccess
  * @property User $user
  * @method getColor
+ * @property int $id
+ * @property string|null $created_at
+ * @property string|null $updated_at
+ * @method static \Database\Factories\Internet\WifiConnectionFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|WifiConnection newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|WifiConnection newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|WifiConnection query()
+ * @method static \Illuminate\Database\Eloquent\Builder|WifiConnection whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WifiConnection whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WifiConnection whereIp($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WifiConnection whereLeaseEnd($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WifiConnection whereLeaseStart($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WifiConnection whereMacAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WifiConnection whereNote($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WifiConnection whereRadiusTimestamp($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WifiConnection whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WifiConnection whereWifiUsername($value)
+ * @mixin \Eloquent
  */
 class WifiConnection extends Model
 {

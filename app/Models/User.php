@@ -27,6 +27,8 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 
 /**
+ * App\Models\User
+ *
  * @property int $id
  * @property string $name
  * @property string $unique_name
@@ -64,6 +66,50 @@ use Illuminate\Support\Facades\Mail;
  * @method currentTenant()
  * @method hasToPayKKTNetregInSemester(int $semester_id)
  * @method semestersWhere(string $status)
+ * @property string $email
+ * @property \Illuminate\Support\Carbon|null $email_verified_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read int|null $community_service_approvals_count
+ * @property-read int|null $community_service_requests_count
+ * @property-read int|null $faculties_count
+ * @property-read int|null $free_pages_count
+ * @property-read int|null $import_items_count
+ * @property-read int|null $mac_addresses_count
+ * @property-read int|null $mr_and_miss_votes_given_count
+ * @property-read int|null $mr_and_miss_votes_got_count
+ * @property-read Collection|PresenceCheck[] $presenceChecks
+ * @property-read int|null $presence_checks_count
+ * @property-read int|null $print_history_count
+ * @property-read int|null $print_jobs_count
+ * @property-read int|null $roles_count
+ * @property-read Collection|\App\Models\SemesterEvaluation[] $semesterEvaluations
+ * @property-read int|null $semester_evaluations_count
+ * @property-read int|null $semester_statuses_count
+ * @property-read int|null $transactions_paid_count
+ * @property-read int|null $transactions_received_count
+ * @property-read int|null $wifi_connections_count
+ * @property-read int|null $workshops_count
+ * @method static Builder|User canView()
+ * @method static \Database\Factories\UserFactory factory(...$parameters)
+ * @method static Builder|User hasToPayKKTNetreg()
+ * @method static Builder|User hasToPayKKTNetregInSemester(int $semester_id)
+ * @method static Builder|User newModelQuery()
+ * @method static Builder|User newQuery()
+ * @method static Builder|User query()
+ * @method static Builder|User verified()
+ * @method static Builder|User whereCreatedAt($value)
+ * @method static Builder|User whereEmail($value)
+ * @method static Builder|User whereEmailVerifiedAt($value)
+ * @method static Builder|User whereId($value)
+ * @method static Builder|User whereName($value)
+ * @method static Builder|User wherePassword($value)
+ * @method static Builder|User whereRememberToken($value)
+ * @method static Builder|User whereRoom($value)
+ * @method static Builder|User whereUpdatedAt($value)
+ * @method static Builder|User whereVerified($value)
+ * @method static Builder|User withRole(\App\Models\Role|string $role, \App\Models\Workshop|\App\Models\RoleObject|string|null $object = null)
+ * @mixin \Eloquent
  */
 class User extends Authenticatable implements HasLocalePreference
 {

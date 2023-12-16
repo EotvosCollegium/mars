@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
 /**
+ * App\Models\Internet\InternetAccess
+ *
  * @property mixed $user_id
  * @property string $wifi_username
  * @property Carbon $has_internet_until
@@ -19,6 +21,20 @@ use Illuminate\Support\Str;
  * @method $isActive
  * @method $setWifiCredentials
  * @method $resetPassword
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read int|null $wifi_connections_count
+ * @method static \Illuminate\Database\Eloquent\Builder|InternetAccess newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|InternetAccess newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|InternetAccess query()
+ * @method static \Illuminate\Database\Eloquent\Builder|InternetAccess whereAutoApprovedMacSlots($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InternetAccess whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InternetAccess whereHasInternetUntil($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InternetAccess whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InternetAccess whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InternetAccess whereWifiPassword($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InternetAccess whereWifiUsername($value)
+ * @mixin \Eloquent
  */
 class InternetAccess extends Model
 {

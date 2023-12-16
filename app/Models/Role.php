@@ -11,10 +11,24 @@ use Illuminate\Support\Facades\Cache;
 use InvalidArgumentException;
 
 /**
+ * App\Models\Role
+ *
  * @property string $name
  * @property boolean $has_objects
  * @property boolean $has_workshops
  * @property integer $id
+ * @property-read Collection|\App\Models\RoleObject[] $objects
+ * @property-read int|null $objects_count
+ * @property-read Collection|\App\Models\User[] $users
+ * @property-read int|null $users_count
+ * @method static \Illuminate\Database\Eloquent\Builder|Role newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Role newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Role query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Role whereHasObjects($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Role whereHasWorkshops($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Role whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Role whereName($value)
+ * @mixin \Eloquent
  */
 class Role extends Model
 {
