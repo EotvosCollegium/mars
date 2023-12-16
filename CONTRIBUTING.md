@@ -25,6 +25,7 @@ thanks to Laravel.
  6. Open the project in VS code. Copy the `.env.example` file to `.env` and run `php artisan key:generate`. Set `DB_HOST` to `mysql` in `.env` file.
  8. VS code should notice that the project is configured to use dev containers and will promt you if you want to use it. Click yes, and you're all done!
 
+Note: to regenerate the docker configuration, use `php artisan sail:install --devcontainer`
 
 ### OS X
 For OS X, [Valet](https://laravel.com/docs/6.x/valet) gives a pretty smooth experience. Easy to download, easy to configure.
