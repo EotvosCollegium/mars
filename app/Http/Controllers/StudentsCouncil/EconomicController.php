@@ -85,7 +85,9 @@ class EconomicController extends Controller
         $validator->validate();
 
         $payer = User::findOrFail($request->user_id);
-        $payer->payKKTNetreg($request->kkt, $request->netreg);
+        $return_values = $payer->payKKTNetreg($request->kkt, $request->netreg);
+        $kkt = $return_values[0]; $netreg = $return_values[1];
+        $new_internet_expire_date = $return_values[2];
 
         $internet_expiration_message = null;
         if ($new_internet_expire_date !== null) {
@@ -94,7 +96,7 @@ class EconomicController extends Controller
             ]);
         }
 
-        Mail::to($payer)->queue(new \App\Mail\Transactions($payer->name, [$request->kkt, $request->netreg],
+        Mail::to($payer)->queue(new \App\Mail\Transactions($payer->name, [$kkt, $netreg],
                  "Tranzakció létrehozva", $internet_expiration_message));
 
         return redirect()->back()->with('message', __('general.successfully_added'));

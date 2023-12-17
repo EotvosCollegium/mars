@@ -681,13 +681,10 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function isResident(): bool
     {
-        if($this->verified == false) {
-            return $this->roles()
-            ->where('role_id', Role::collegist()->id)
-            ->where('object_id', RoleObject::firstWhere('name', Role::RESIDENT)->id)
-            ->exists();
-        }
-        return $this->hasRole([Role::COLLEGIST => Role::RESIDENT]);
+        return $this->roles()
+        ->where('role_id', Role::collegist()->id)
+        ->where('object_id', RoleObject::firstWhere('name', Role::RESIDENT)->id)
+        ->exists();
     }
 
     /**
@@ -706,13 +703,10 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function isExtern(): bool
     {
-        if($this->verified == false) {
-            return $this->roles()
-            ->where('role_id', Role::collegist()->id)
-            ->where('object_id', RoleObject::firstWhere('name', Role::EXTERN)->id)
-            ->exists();
-        }
-        return $this->hasRole([Role::COLLEGIST => Role::EXTERN]);
+        return $this->roles()
+        ->where('role_id', Role::collegist()->id)
+        ->where('object_id', RoleObject::firstWhere('name', Role::EXTERN)->id)
+        ->exists();
     }
 
 
@@ -872,15 +866,17 @@ class User extends Authenticatable implements HasLocalePreference
      * Pay kkt and netreg.
      * Also updates workshop balances
      * and the internet access expiry date.
+     * Returns an array with the two transaction objects
+     * and the new expiry date.
      */
-    public function payKKTNetreg(int $kkt, int $netreg) {
+    public function payKKTNetreg(int $kkt_amount, int $netreg_amount) {
         // Creating transactions
         $kkt = Transaction::create([
             'checkout_id' => Checkout::studentsCouncil()->id,
             'receiver_id' => Checkout::studentsCouncil()->handler_id,
             'payer_id' => $this->id,
             'semester_id' => Semester::current()->id,
-            'amount' => $kkt,
+            'amount' => $kkt_amount,
             'payment_type_id' => PaymentType::kkt()->id,
             'comment' => null,
             'moved_to_checkout' => null,
@@ -891,7 +887,7 @@ class User extends Authenticatable implements HasLocalePreference
             'receiver_id' => Checkout::studentsCouncil()->handler_id, // beware; the student council collects this, too!
             'payer_id' => $this->id,
             'semester_id' => Semester::current()->id,
-            'amount' => $netreg,
+            'amount' => $netreg_amount,
             'payment_type_id' => PaymentType::netreg()->id,
             'comment' => null,
             'moved_to_checkout' => null,
@@ -899,7 +895,9 @@ class User extends Authenticatable implements HasLocalePreference
 
         WorkshopBalance::generateBalances(Semester::current()->id);
 
-        $new_internet_expire_date = \App\Http\Controllers\Network\InternetController::extendUsersInternetAccess($this);
+        $new_expiry_date = \App\Http\Controllers\Network\InternetController::extendUsersInternetAccess($this);
+
+        return [$kkt, $netreg, $new_expiry_date];
     }
 
     /**
