@@ -4,6 +4,14 @@ namespace Tests\Unit;
 
 use Tests\TestCase;
 
+use \App\Models\User;
+use \App\Models\Transaction;
+use \App\Models\PaymentType;
+use \App\Models\Semester;
+use \App\Models\SemesterStatus;
+use \App\Models\Workshop;
+use \App\Models\WorkshopBalance;
+
 class EconomicTest extends TestCase
 {
     /**
@@ -44,5 +52,50 @@ class EconomicTest extends TestCase
         $diff1 = config('custom.workshop_balance_resident') * $skkt - $sum;
         $diff2 = config('custom.workshop_balance_extern') * $skkt - $sum;
         $this->assertTrue($diff1 * $diff2 <= 0);
+    }
+
+    /**
+     * Tests how workshop balances change
+     * when a user pays kkt.
+     * Does it both for externs and residents.
+     */
+    public function testPayment()
+    {
+        foreach ([true, false] as $is_extern)
+        {
+            $workshop_id = rand(1, count(Workshop::ALL));
+            $workshop = Workshop::findOrFail($workshop_id);
+            $user = User::factory()->create();
+
+            if ($is_extern) $user->setExtern();
+            else $user->setCollegist(\App\Models\Role::RESIDENT);
+
+            $user->setStatusFor(Semester::current(), SemesterStatus::ACTIVE);  // important!
+
+            $user->workshops()->attach($workshop_id);
+
+            $with_same_status =
+                $is_extern ? $workshop->externs() : $workshop->residents();
+            $this->assertTrue(
+                $with_same_status->filter(function (User $u) use ($user) {return $u->id == $user->id;})->count()
+                  == 1
+            );
+            $this->assertTrue(is_null($user->payedKKT()));
+
+            WorkshopBalance::generateBalances(Semester::current()->id);
+            $balance = $workshop->balance();
+
+            $old = $balance->allocated_balance;
+            $user->payKKTNetreg(config('custom.kkt'), config('custom.netreg'));
+            $balance->refresh();
+            $new = $balance->allocated_balance;
+
+            $this->assertTrue($user->payedKKT() == config('custom.kkt'));
+
+            $this->assertTrue($new - $old == round(
+                                               ($is_extern ? config('custom.workshop_balance_extern')
+                                                           : config('custom.workshop_balance_resident'))
+                                               * config('custom.kkt')));
+        }
     }
 }

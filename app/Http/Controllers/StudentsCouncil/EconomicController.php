@@ -85,33 +85,8 @@ class EconomicController extends Controller
         $validator->validate();
 
         $payer = User::findOrFail($request->user_id);
+        $payer->payKKTNetreg($request->kkt, $request->netreg);
 
-        // Creating transactions
-        $kkt = Transaction::create([
-            'checkout_id' => Checkout::studentsCouncil()->id,
-            'receiver_id' => user()->id,
-            'payer_id' => $payer->id,
-            'semester_id' => Semester::current()->id,
-            'amount' => $request->kkt,
-            'payment_type_id' => PaymentType::kkt()->id,
-            'comment' => null,
-            'moved_to_checkout' => null,
-        ]);
-
-        $netreg = Transaction::create([
-            'checkout_id' => Checkout::admin()->id,
-            'receiver_id' => user()->id,
-            'payer_id' => $payer->id,
-            'semester_id' => Semester::current()->id,
-            'amount' => $request->netreg,
-            'payment_type_id' => PaymentType::netreg()->id,
-            'comment' => null,
-            'moved_to_checkout' => null,
-        ]);
-
-        WorkshopBalance::generateBalances(Semester::current()->id);
-
-        $new_internet_expire_date = InternetController::extendUsersInternetAccess($payer);
         $internet_expiration_message = null;
         if ($new_internet_expire_date !== null) {
             $internet_expiration_message = __('internet.expiration_extended', [
@@ -119,7 +94,8 @@ class EconomicController extends Controller
             ]);
         }
 
-        Mail::to($payer)->queue(new \App\Mail\Transactions($payer->name, [$kkt, $netreg], "Tranzakció létrehozva", $internet_expiration_message));
+        Mail::to($payer)->queue(new \App\Mail\Transactions($payer->name, [$request->kkt, $request->netreg],
+                 "Tranzakció létrehozva", $internet_expiration_message));
 
         return redirect()->back()->with('message', __('general.successfully_added'));
     }
