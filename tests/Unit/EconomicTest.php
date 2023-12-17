@@ -4,13 +4,13 @@ namespace Tests\Unit;
 
 use Tests\TestCase;
 
-use \App\Models\User;
-use \App\Models\Transaction;
-use \App\Models\PaymentType;
-use \App\Models\Semester;
-use \App\Models\SemesterStatus;
-use \App\Models\Workshop;
-use \App\Models\WorkshopBalance;
+use App\Models\User;
+use App\Models\Transaction;
+use App\Models\PaymentType;
+use App\Models\Semester;
+use App\Models\SemesterStatus;
+use App\Models\Workshop;
+use App\Models\WorkshopBalance;
 
 class EconomicTest extends TestCase
 {
@@ -61,14 +61,16 @@ class EconomicTest extends TestCase
      */
     public function testPayment()
     {
-        foreach ([true, false] as $is_extern)
-        {
+        foreach ([true, false] as $is_extern) {
             $workshop_id = rand(1, count(Workshop::ALL));
             $workshop = Workshop::findOrFail($workshop_id);
             $user = User::factory()->create();
 
-            if ($is_extern) $user->setExtern();
-            else $user->setCollegist(\App\Models\Role::RESIDENT);
+            if ($is_extern) {
+                $user->setExtern();
+            } else {
+                $user->setCollegist(\App\Models\Role::RESIDENT);
+            }
 
             $user->setStatusFor(Semester::current(), SemesterStatus::ACTIVE);  // important!
 
@@ -93,9 +95,10 @@ class EconomicTest extends TestCase
             $this->assertTrue($user->payedKKT() == config('custom.kkt'));
 
             $this->assertTrue($new - $old == round(
-                                               ($is_extern ? config('custom.workshop_balance_extern')
+                ($is_extern ? config('custom.workshop_balance_extern')
                                                            : config('custom.workshop_balance_resident'))
-                                               * config('custom.kkt')));
+                                               * config('custom.kkt')
+            ));
         }
     }
 }

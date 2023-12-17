@@ -869,7 +869,8 @@ class User extends Authenticatable implements HasLocalePreference
      * Returns an array with the two transaction objects
      * and the new expiry date.
      */
-    public function payKKTNetreg(int $kkt_amount, int $netreg_amount) {
+    public function payKKTNetreg(int $kkt_amount, int $netreg_amount)
+    {
         // Creating transactions
         $kkt = Transaction::create([
             'checkout_id' => Checkout::studentsCouncil()->id,
