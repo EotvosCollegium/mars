@@ -65,7 +65,7 @@ class CommunityService extends Model
     {
         if ($this->approved === null) {
             return 'orange';
-        } elseif ($this->approved==1) {
+        } elseif ($this->approved == 1) {
             return 'green';
         } else {
             return 'red';

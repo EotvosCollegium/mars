@@ -40,7 +40,7 @@ class LocaleController extends Controller
     {
         $this->authorize('viewAny', LocalizationContribution::class);
 
-        return view('localizations.manage', ['contributions'=> LocalizationContribution::where('approved', false)->get()]);
+        return view('localizations.manage', ['contributions' => LocalizationContribution::where('approved', false)->get()]);
     }
 
     public function add(Request $request)

@@ -3,7 +3,7 @@
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
-if (! function_exists('user')) {
+if (!function_exists('user')) {
 
     /**
      * Returns the currently authenticated (logged in) user.
