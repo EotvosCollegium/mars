@@ -671,7 +671,7 @@ class User extends Authenticatable implements HasLocalePreference
         $this->addRole($role, $object);
 
         Cache::forget('collegists');
-        WorkshopBalance::generateBalances(Semester::current()->id);
+        WorkshopBalance::generateBalances(Semester::current());
     }
 
     /**
@@ -863,18 +863,18 @@ class User extends Authenticatable implements HasLocalePreference
     /* Transaction related */
 
     /**
-     * Pay kkt and netreg.
+     * Pay kkt and netreg to the receiver given.
      * Also updates workshop balances
      * and the internet access expiry date.
      * Returns an array with the two transaction objects
      * and the new expiry date.
      */
-    public function payKKTNetreg(int $kkt_amount, int $netreg_amount)
+    public function payKKTNetreg(int $receiver_id, int $kkt_amount, int $netreg_amount)
     {
         // Creating transactions
         $kkt = Transaction::create([
             'checkout_id' => Checkout::studentsCouncil()->id,
-            'receiver_id' => Checkout::studentsCouncil()->handler_id,
+            'receiver_id' => $receiver_id,
             'payer_id' => $this->id,
             'semester_id' => Semester::current()->id,
             'amount' => $kkt_amount,
@@ -885,7 +885,7 @@ class User extends Authenticatable implements HasLocalePreference
 
         $netreg = Transaction::create([
             'checkout_id' => Checkout::admin()->id,
-            'receiver_id' => Checkout::studentsCouncil()->handler_id, // beware; the student council collects this, too!
+            'receiver_id' => $receiver_id,
             'payer_id' => $this->id,
             'semester_id' => Semester::current()->id,
             'amount' => $netreg_amount,
@@ -894,7 +894,7 @@ class User extends Authenticatable implements HasLocalePreference
             'moved_to_checkout' => null,
         ]);
 
-        WorkshopBalance::generateBalances(Semester::current()->id);
+        WorkshopBalance::generateBalances(Semester::current());
 
         $new_expiry_date = \App\Http\Controllers\Network\InternetController::extendUsersInternetAccess($this);
 

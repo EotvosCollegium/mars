@@ -38,15 +38,15 @@ class WorkshopBalance extends Model
      *                              : config('custom.workshop_balance_extern))
      *                / member's workshops' count
      */
-    public static function generateBalances($semester_id)
+    public static function generateBalances(Semester $semester)
     {
         $workshops = Workshop::with('users:id')->get();
 
-        if (!self::where('semester_id', $semester_id)->count()) {
+        if (!self::where('semester_id', $semester->id)->count()) {
             $balances = [];
             foreach ($workshops as $workshop) {
                 $balances[] = [
-                    'semester_id' => $semester_id,
+                    'semester_id' => $semester->id,
                     'workshop_id' => $workshop->id
                 ];
             }
@@ -54,7 +54,7 @@ class WorkshopBalance extends Model
             self::insert($balances);
         }
 
-        $active_users = User::active($semester_id)->with(['roles' => function ($q) {
+        $active_users = User::active($semester->id)->with(['roles' => function ($q) {
             $q->where('name', Role::COLLEGIST);
         }, 'workshops:id'])->get()->keyBy('id')->all();
 
@@ -65,7 +65,7 @@ class WorkshopBalance extends Model
             $not_yet_paid = 0;
             foreach ($workshop->users as $member) {
                 if (isset($active_users[$member->id])) {
-                    if (!is_null($member->payedKKTInSemester(Semester::find($semester_id)))) {
+                    if (!is_null($member->payedKKTInSemester($semester))) {
                         $user = $active_users[$member->id];
                         $amount = config('custom.kkt');
                         if ($user->isResident()) {
@@ -81,7 +81,7 @@ class WorkshopBalance extends Model
                     }
                 }
             }
-            self::where(['semester_id' => $semester_id, 'workshop_id' => $workshop->id])
+            self::where(['semester_id' => $semester->id, 'workshop_id' => $workshop->id])
                 ->update([
                     'allocated_balance' => $balance,
                     'extern' => $extern,

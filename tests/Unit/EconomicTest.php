@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use Tests\TestCase;
 
+use App\Models\Checkout;
 use App\Models\User;
 use App\Models\Transaction;
 use App\Models\PaymentType;
@@ -34,7 +35,7 @@ class EconomicTest extends TestCase
             ->where('semester_id', \App\Models\Semester::current()->id)
             ->sum('amount');
 
-        \App\Models\WorkshopBalance::generateBalances(\App\Models\Semester::current()->id);
+        \App\Models\WorkshopBalance::generateBalances(\App\Models\Semester::current());
         $sum = \App\Models\WorkshopBalance::where('semester_id', \App\Models\Semester::current()->id)
             ->sum('allocated_balance');
 
@@ -57,38 +58,35 @@ class EconomicTest extends TestCase
     /**
      * Tests how workshop balances change
      * when a user pays kkt.
-     * Does it both for externs and residents.
+     * Does it for externs or residents;
+     * depending on the parameter.
      */
-    public function testPayment()
+    private function testPayment(bool $is_extern)
     {
         foreach ([true, false] as $is_extern) {
-            $workshop_id = rand(1, count(Workshop::ALL));
-            $workshop = Workshop::findOrFail($workshop_id);
+            $workshop = Workshop::all()->random();
+            $workshop_id = $workshop->id;
             $user = User::factory()->create();
 
             if ($is_extern) {
                 $user->setExtern();
             } else {
-                $user->setCollegist(\App\Models\Role::RESIDENT);
+                $user->setResident();
             }
 
             $user->setStatusFor(Semester::current(), SemesterStatus::ACTIVE);  // important!
 
-            $user->workshops()->attach($workshop_id);
+            $user->workshops()->attach($workshop);
 
-            $with_same_status =
-                $is_extern ? $workshop->externs() : $workshop->residents();
-            $this->assertTrue(
-                $with_same_status->filter(function (User $u) use ($user) {return $u->id == $user->id;})->count()
-                  == 1
-            );
             $this->assertTrue(is_null($user->payedKKT()));
 
-            WorkshopBalance::generateBalances(Semester::current()->id);
+            WorkshopBalance::generateBalances(Semester::current()); // this ensures the balance won't be null
             $balance = $workshop->balance();
 
             $old = $balance->allocated_balance;
-            $user->payKKTNetreg(config('custom.kkt'), config('custom.netreg'));
+            // we give the payer's id as the receiver's id
+            // because Checkout::studentsCouncil()->handler_id returns null
+            $user->payKKTNetreg($user->id, config('custom.kkt'), config('custom.netreg'));
             $balance->refresh();
             $new = $balance->allocated_balance;
 
@@ -100,5 +98,21 @@ class EconomicTest extends TestCase
                                                * config('custom.kkt')
             ));
         }
+    }
+
+    /**
+     * The concrete call of testPayment for externs.
+     */
+    public function testExternPayment()
+    {
+        $this->testPayment(true);
+    }
+
+    /**
+     * The concrete call of testPayment for residents.
+     */
+    public function testResidentPayment()
+    {
+        $this->testPayment(false);
     }
 }

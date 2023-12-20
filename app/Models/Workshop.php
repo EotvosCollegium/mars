@@ -82,9 +82,9 @@ class Workshop extends Model
      * Returns the balance for a given semester
      * (by default the current one).
      */
-    public function balance(int $semester = null): WorkshopBalance
+    public function balance(int $semester = null): ?WorkshopBalance
     {
-        return $this->balances()->where('semester_id', $semester ?? Semester::current()->id)->firstOrFail();
+        return $this->balances()->firstWhere('semester_id', $semester ?? Semester::current()->id);
     }
 
     public function color()

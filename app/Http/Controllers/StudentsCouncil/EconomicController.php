@@ -85,10 +85,8 @@ class EconomicController extends Controller
         $validator->validate();
 
         $payer = User::findOrFail($request->user_id);
-        $return_values = $payer->payKKTNetreg($request->kkt, $request->netreg);
-        $kkt = $return_values[0];
-        $netreg = $return_values[1];
-        $new_internet_expire_date = $return_values[2];
+        // the current user will be the receiver
+        [$kkt, $netreg, $new_internet_expire_date] = $payer->payKKTNetreg(Auth::user()->id, $request->kkt, $request->netreg);
 
         $internet_expiration_message = null;
         if ($new_internet_expire_date !== null) {
@@ -112,7 +110,7 @@ class EconomicController extends Controller
      */
     public function calculateWorkshopBalance()
     {
-        WorkshopBalance::generateBalances(Semester::current()->id);
+        WorkshopBalance::generateBalances(Semester::current());
 
         return redirect()->back()->with('message', __('general.successful_modification'));
     }
