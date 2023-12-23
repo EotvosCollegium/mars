@@ -12,12 +12,12 @@
         }
 
         var table = new Tabulator("#wifi-connections-table", {
-            paginationSize: 10,
+            paginationSize: 20,
             pagination: "remote",
-            ajaxURL: "{{ route('internet.admin.wifi_connections.all') }}",
+            ajaxURL: "{{ route('internet.wifi_connections.index') }}",
             ajaxSorting: true,
             ajaxFiltering: true,
-            layout:"fitColumns",
+            layout: "fitColumns",
             placeholder: "No Data Set",
             columns: [
                 {

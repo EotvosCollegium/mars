@@ -2,10 +2,14 @@
 
 namespace App\Models\Internet;
 
+use App\Mail\RouterWarning;
+use App\Mail\RouterWarningResident;
 use App\Models\Room;
 use App\Models\User;
 use App\Utils\NotificationCounter;
-use Carbon\Carbon;
+use Database\Factories\Internet\RouterFactory;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Mail;
@@ -25,23 +29,23 @@ use Illuminate\Support\Facades\Mail;
  * @property string|null $comment
  * @property string|null $date_of_acquisition
  * @property string|null $date_of_deployment
- * @method static \Database\Factories\Internet\RouterFactory factory(...$parameters)
- * @method static \Illuminate\Database\Eloquent\Builder|Router newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Router newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Router query()
- * @method static \Illuminate\Database\Eloquent\Builder|Router whereComment($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Router whereDateOfAcquisition($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Router whereDateOfDeployment($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Router whereFailedFor($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Router whereIp($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Router whereMac2GLAN($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Router whereMac5G($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Router whereMacWAN($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Router wherePort($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Router whereRoom($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Router whereSerialNumber($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Router whereType($value)
- * @mixin \Eloquent
+ * @method static RouterFactory factory(...$parameters)
+ * @method static Builder|Router newModelQuery()
+ * @method static Builder|Router newQuery()
+ * @method static Builder|Router query()
+ * @method static Builder|Router whereComment($value)
+ * @method static Builder|Router whereDateOfAcquisition($value)
+ * @method static Builder|Router whereDateOfDeployment($value)
+ * @method static Builder|Router whereFailedFor($value)
+ * @method static Builder|Router whereIp($value)
+ * @method static Builder|Router whereMac2GLAN($value)
+ * @method static Builder|Router whereMac5G($value)
+ * @method static Builder|Router whereMacWAN($value)
+ * @method static Builder|Router wherePort($value)
+ * @method static Builder|Router whereRoom($value)
+ * @method static Builder|Router whereSerialNumber($value)
+ * @method static Builder|Router whereType($value)
+ * @mixin Eloquent
  */
 class Router extends Model
 {
@@ -66,37 +70,30 @@ class Router extends Model
         'failed_for' => 0, //default value
     ];
 
-    public function isDown()
-    {
-        return $this->failed_for > 0;
-    }
-
-    public function isUp()
-    {
-        return $this->failed_for == 0;
-    }
-
-    public function getFailStartDate()
-    {
-        return Carbon::now()->subMinutes($this->failed_for * 5)->roundMinute(5)->format('Y-m-d H:i');
-    }
-
-    public function sendWarning()
+    /**
+     * Email the sysadmins and the residents if the router has failed for the second time.
+     * @return void
+     */
+    public function sendWarning(): void
     {
         if ($this->failed_for == self::WARNING_THRESHOLD) {
             foreach (User::admins() as $admin) {
-                Mail::to($admin)->queue(new \App\Mail\RouterWarning($admin, $this));
+                Mail::to($admin)->queue(new RouterWarning($admin, $this));
             }
             $room = Room::firstWhere('name', $this->room);
-            if ($room!=null) {
+            if ($room != null) {
                 foreach ($room->users as $resident) {
-                    Mail::to($resident)->queue(new \App\Mail\RouterWarningResident($resident, $this));
+                    Mail::to($resident)->queue(new RouterWarningResident($resident, $this));
                 }
             }
         }
     }
 
-    public static function notifications()
+    /**
+     * Return the number of routers that have failed.
+     * @return int
+     */
+    public static function notifications(): int
     {
         return self::where('failed_for', '>', 0)->count();
     }

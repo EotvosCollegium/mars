@@ -15,8 +15,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $type
  * @property Semester $startSemester
  * @property Semester $endSemester
- * @method getName()
- * @method getNameWithYear()
  * @property int $id
  * @property int $educational_information_id
  * @property \Illuminate\Support\Carbon|null $created_at

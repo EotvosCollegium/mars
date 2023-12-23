@@ -11,10 +11,10 @@ use InvalidArgumentException;
 
 /**
  * A semester is identified by a year and by it's either autumn or spring.
- * 
+ *
  * ie. a spring semester starting in february 2020 will be (2019, 2) since we write 2019/20/2.
  * The autumn semester starting in september 2020 is (2020, 1) since we write 2020/21/1.
- * 
+ *
  * The status can be verified or not (by default it is not). Users with permission has to
  * confirm that the user can have the given status.
  *
@@ -85,7 +85,7 @@ class Semester extends Model
     public function tag(): Attribute
     {
         return Attribute::make(
-            get: fn (): string => $this->year.self::SEPARATOR.($this->year + 1).self::SEPARATOR.$this->part
+            get: fn(): string => $this->year . self::SEPARATOR . ($this->year + 1) . self::SEPARATOR . $this->part
         );
     }
 
@@ -114,7 +114,7 @@ class Semester extends Model
      */
     public function datesToText(): string
     {
-        return $this->getStartDate()->format('Y.m.d').'-'.$this->getEndDate()->format('Y.m.d');
+        return $this->getStartDate()->format('Y.m.d') . '-' . $this->getEndDate()->format('Y.m.d');
     }
 
     public function isAutumn(): bool
@@ -181,8 +181,8 @@ class Semester extends Model
     /**
      * Decides if the given user with the given status exists in the semester.
      *
-     * @param  int  $user  user id
-     * @param  string  $status
+     * @param int $user user id
+     * @param string $status
      * @return true if the given user exists
      * @return false if the given user has another status or not attached to the semester
      */
@@ -194,8 +194,8 @@ class Semester extends Model
     /**
      * Decides if the given user is active in the semester.
      *
-     * @param  int  $user  user id
-     * @param  string  $status
+     * @param int $user user id
+     * @param string $status
      * @return true if the given user is active
      * @return false if the given user is not active or not attached to the semester
      */
@@ -220,7 +220,7 @@ class Semester extends Model
     /**
      * Returns the transactions belonging to the checkout in the semester.
      *
-     * @param  Checkout  $checkout
+     * @param Checkout $checkout
      */
     public function transactionsInCheckout(Checkout $checkout)
     {
@@ -238,11 +238,12 @@ class Semester extends Model
     /**
      * Returns the current semester from cache.
      * There is always a "current" semester. If there is not in the database, this function creates it.
+     * In case the current time is in between two semesters, it is still undefined as we follow the months and not the getEndDate/getStartDate.
      */
     public static function current(): Semester
     {
         $today = Carbon::today()->format('Ymd');
-        if (! Cache::get('semester.current.'.$today)) {
+        if (!Cache::get('semester.current.' . $today)) {
             $now = Carbon::now();
             if ($now->month >= self::START_OF_SPRING_SEMESTER && $now->month <= self::END_OF_SPRING_SEMESTER) {
                 $part = "2";
@@ -254,10 +255,10 @@ class Semester extends Model
             }
             $current = Semester::getOrCreate($year, $part);
 
-            Cache::put('semester.current.'.$today, $current, Carbon::tomorrow());
+            Cache::put('semester.current.' . $today, $current, Carbon::tomorrow());
         }
 
-        return Cache::get('semester.current.'.$today);
+        return Cache::get('semester.current.' . $today);
     }
 
     /**
@@ -325,12 +326,12 @@ class Semester extends Model
      */
     public static function getOrCreate($year, $part): Semester
     {
-        if (! in_array($part, [1, 2])) {
+        if (!in_array($part, [1, 2])) {
             throw new InvalidArgumentException("The semester's part is not 1 or 2.");
         }
         $semester = Semester::firstOrCreate([
             'year' => $year,
-            'part' => (string) $part,
+            'part' => (string)$part,
         ]);
 
         return $semester;
