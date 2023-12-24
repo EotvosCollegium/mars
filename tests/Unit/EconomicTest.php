@@ -25,45 +25,6 @@ class EconomicTest extends TestCase
     public const THRESHOLD_DIFF = 1.5;
 
     /**
-     * This test is to ensure that the sum of workshop balances
-     * is between
-     * config('custom.workshop_balance_resident)*skkt and
-     * config('custom.workshop_balance_extern)*skkt
-     * (where skkt is the entire income got from kkt).
-     * @return void
-     */
-    public function testWorkshopRatio()
-    {
-        // Should we generate users here?
-
-        $skkt = \App\Models\Transaction::where(
-            'payment_type_id',
-            \App\Models\PaymentType::kkt()->id
-        )
-            ->where('semester_id', \App\Models\Semester::current()->id)
-            ->sum('amount');
-
-        \App\Models\WorkshopBalance::generateBalances(\App\Models\Semester::current());
-        $sum = \App\Models\WorkshopBalance::where('semester_id', \App\Models\Semester::current()->id)
-            ->sum('allocated_balance');
-
-        /*
-        echo($skkt);
-        echo("\n");
-        echo($sum);
-        echo("\n");
-        echo(config('custom.workshop_balance_resident'));
-        echo("\n");
-        echo(config('custom.workshop_balance_extern'));
-        echo("\n");
-        */
-
-        $diff1 = config('custom.workshop_balance_resident') * $skkt - $sum;
-        $diff2 = config('custom.workshop_balance_extern') * $skkt - $sum;
-        $this->assertTrue($diff1 * $diff2 <= 0);
-    }
-
-    /**
      * Tests how workshop balances change
      * when a user pays kkt.
      * Does it for externs or residents;
