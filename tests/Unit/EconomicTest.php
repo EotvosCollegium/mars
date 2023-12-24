@@ -47,7 +47,9 @@ class EconomicTest extends TestCase
         }
 
         $user->setStatusFor(Semester::current(), SemesterStatus::ACTIVE);  // important!
-        foreach($workshops as $workshop) $user->workshops()->attach($workshop);
+        foreach($workshops as $workshop) {
+            $user->workshops()->attach($workshop);
+        }
 
         $this->assertTrue(is_null($user->payedKKT()));
         WorkshopBalance::generateBalances(Semester::current()); // this also ensures the balance won't be null
@@ -74,7 +76,7 @@ class EconomicTest extends TestCase
             $this->assertTrue(abs(
                 $number_of_workshops * ($news[$i] - $olds[$i])
                                 - $amount_for_workshops
-                ) < self::THRESHOLD_DIFF);
+            ) < self::THRESHOLD_DIFF);
         }
     }
 
