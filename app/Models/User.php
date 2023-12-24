@@ -681,10 +681,13 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function isResident(): bool
     {
-        return $this->roles()
-        ->where('role_id', Role::collegist()->id)
-        ->where('object_id', RoleObject::firstWhere('name', Role::RESIDENT)->id)
-        ->exists();
+        if($this->verified == false) {
+            return $this->roles()
+            ->where('role_id', Role::collegist()->id)
+            ->where('object_id', RoleObject::firstWhere('name', Role::RESIDENT)->id)
+            ->exists();
+        }
+        return $this->hasRole([Role::COLLEGIST => Role::RESIDENT]);
     }
 
     /**
@@ -703,10 +706,13 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function isExtern(): bool
     {
-        return $this->roles()
-        ->where('role_id', Role::collegist()->id)
-        ->where('object_id', RoleObject::firstWhere('name', Role::EXTERN)->id)
-        ->exists();
+        if($this->verified == false) {
+            return $this->roles()
+            ->where('role_id', Role::collegist()->id)
+            ->where('object_id', RoleObject::firstWhere('name', Role::EXTERN)->id)
+            ->exists();
+        }
+        return $this->hasRole([Role::COLLEGIST => Role::EXTERN]);
     }
 
 
