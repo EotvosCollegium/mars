@@ -112,7 +112,9 @@
                 @endforeach
 
                 <!-- Workshop secretaries -->
-                <h5><button type="button" id="workshop-administrator-collapsible">@lang('role.workshop_functionaries')</button></h5>
+                <h5><a id="workshop-administrator-collapsible" href="javascript:void(0)" onclick="toggleCollContent()">
+                    @lang('role.workshop-functionaries')
+                </a></h5>
                 <div id="workshop-administrator-content" style="display: none">
                     <ul>
                         @foreach(\App\Models\Workshop::all() as $workshop)
@@ -209,15 +211,13 @@ $(document).ready(function(){
   });
 
 // for the dropdown of workshop secretaries
-var collButton = document.getElementById("workshop-administrator-collapsible");
 var collContent = document.getElementById("workshop-administrator-content");
-collButton.addEventListener("click", function() {
-    this.classList.toggle("active");
+function toggleCollContent() {
     if (collContent.style.display === "block") {
         collContent.style.display = "none";
     } else {
         collContent.style.display = "block";
     }
-});
+}
 </script>
 @endpush
