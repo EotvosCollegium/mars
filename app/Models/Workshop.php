@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Role;
 
 /**
  * @property integer $id
@@ -66,6 +67,34 @@ class Workshop extends Model
     {
         return $this->users->filter(function ($user, $key) {
             return $user->isExtern();
+        });
+    }
+
+    /**
+     * Returns a collection with all functionaries of the workshop in it.
+     */
+    public function functionaries()
+    {
+        return $this->belongsToMany(User::class, 'role_users');
+    }
+
+    /**
+     * Filters functionaries to only include workshop administrators.
+     */
+    public function administrators()
+    {
+        return $this->functionaries->filter(function ($user, $key) {
+            return $user->hasRole(Role::WORKSHOP_ADMINISTRATOR);
+        });
+    }
+
+    /**
+     * Filters functionaries to only include workshop leaders.
+     */
+    public function leaders()
+    {
+        return $this->functionaries->filter(function ($user, $key) {
+            return $user->hasRole(Role::WORKSHOP_LEADER);
         });
     }
 

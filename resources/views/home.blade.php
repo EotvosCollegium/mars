@@ -111,6 +111,45 @@
                     @endif
                 @endforeach
 
+                <!-- Workshop secretaries -->
+                <h5><button type="button" id="workshop-administrator-collapsible">@lang('role.workshop_functionaries')</button></h5>
+                <div id="workshop-administrator-content" style="display: none">
+                    <ul>
+                        @foreach(\App\Models\Workshop::all() as $workshop)
+                        <li>
+                            <b>{{$workshop->name}}</b>
+                            <ul>
+                                <li>@lang('role.'.\App\Models\Role::WORKSHOP_LEADER):
+                                    <i>
+                                        {{
+                                            implode(
+                                                ', ',
+                                                array_map(
+                                                    function ($admin) {return $admin->name;},
+                                                    $workshop->leaders()->all()
+                                                )
+                                            )
+                                        }}
+                                    </i>
+                                </li>
+                                <li>@lang('role.'.\App\Models\Role::WORKSHOP_ADMINISTRATOR):
+                                    <i>
+                                        {{
+                                            implode(
+                                                ', ',
+                                                array_map(
+                                                    function ($admin) {return $admin->name;},
+                                                    $workshop->administrators()->all()
+                                                )
+                                            )
+                                        }}
+                                    </i>
+                                </li>
+                            </ul>
+                        </li>
+                        @endforeach
+                    </ul>
+                </div>
 
                 @endif
                 <!-- Admins -->
@@ -168,5 +207,17 @@ function standby(id) {
 $(document).ready(function(){
     $('.materialboxed').materialbox();
   });
+
+// for the dropdown of workshop secretaries
+var collButton = document.getElementById("workshop-administrator-collapsible");
+var collContent = document.getElementById("workshop-administrator-content");
+collButton.addEventListener("click", function() {
+    this.classList.toggle("active");
+    if (collContent.style.display === "block") {
+        collContent.style.display = "none";
+    } else {
+        collContent.style.display = "block";
+    }
+});
 </script>
 @endpush
