@@ -65,17 +65,16 @@ class WorkshopBalance extends Model
             $not_yet_paid = 0;
             foreach ($workshop->users as $member) {
                 if (isset($active_users[$member->id])) {
-                    if (!is_null($member->payedKKTInSemester($semester))) {
-                        $user = $active_users[$member->id];
-                        $amount = config('custom.kkt');
-                        if ($user->isResident()) {
+                    $amount = $member->payedKKTInSemester($semester);
+                    if (!is_null($amount)) {
+                        if ($member->isResident()) {
                             $amount *= config('custom.workshop_balance_resident');
                             $resident++;
                         } else {
                             $amount *= config('custom.workshop_balance_extern');
                             $extern++;
                         }
-                        $balance += $amount / $user->workshops->count();
+                        $balance += $amount / $member->workshops->count();
                     } else {
                         $not_yet_paid++;
                     }

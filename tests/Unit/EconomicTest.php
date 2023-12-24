@@ -13,8 +13,15 @@ use App\Models\SemesterStatus;
 use App\Models\Workshop;
 use App\Models\WorkshopBalance;
 
+/**
+ * Tests for the function tracking kkt payments and workshop balances.
+ */
 class EconomicTest extends TestCase
 {
+    // We use constants for now as kkt and netreg values.
+    public const TEST_KKT = 2500;
+    public const TEST_NETREG = 500;
+
     /**
      * This test is to ensure that the sum of workshop balances
      * is between
@@ -86,16 +93,16 @@ class EconomicTest extends TestCase
             $old = $balance->allocated_balance;
             // we give the payer's id as the receiver's id
             // because Checkout::studentsCouncil()->handler_id returns null
-            $user->payKKTNetreg($user->id, config('custom.kkt'), config('custom.netreg'));
+            $user->payKKTNetreg($user->id, self::TEST_KKT, self::TEST_NETREG);
             $balance->refresh();
             $new = $balance->allocated_balance;
 
-            $this->assertTrue($user->payedKKT() == config('custom.kkt'));
+            $this->assertTrue($user->payedKKT() == self::TEST_KKT);
 
             $this->assertTrue($new - $old == round(
                 ($is_extern ? config('custom.workshop_balance_extern')
-                                                           : config('custom.workshop_balance_resident'))
-                                               * config('custom.kkt')
+                            : config('custom.workshop_balance_resident'))
+                    * self::TEST_KKT
             ));
         }
     }
