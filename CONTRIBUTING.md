@@ -92,7 +92,7 @@ FORWARD_DB_PORT=33066
 
 5. Still in `.env`, rewrite `DB_HOST` from the given IP to `mysql`.
 6. Run `./vendor/bin/sail up`.
-7. Open another terminal. Before seeding, add the correct privilege to the user `collegiumnostrum` in MySQL by running:
+7. Open another terminal. Before seeding, add the correct privilege to Laravel's user in MySQL by running:
 
 ```sh
 docker exec -it mars-mysql-1 mysql --password -e "SET GLOBAL log_bin_trust_function_creators = 1;"
