@@ -70,7 +70,6 @@
                     },
                     success: function (response) {
                         M.toast({html: "{{ __('general.successful_modification') }}"});
-                        console.log(response);
                         cell.getRow().getCell('has_internet_until').setValue(response, true)
                         cell.setValue(response, true);
 

@@ -31,7 +31,10 @@ class MacAddressController extends Controller
         $this->authorize('handleAny', InternetAccess::class);
 
         return TabulatorPaginator::from(
-            MacAddress::query()->with('user'))
+            MacAddress::query()
+                ->join('users as user', 'user.id', '=', 'user_id')
+                ->select('mac_addresses.*')
+                ->with('user'))
             ->sortable(['mac_address', 'comment', 'state', 'user.name', 'created_at'])
             ->filterable(['mac_address', 'comment', 'user.name', 'state', 'created_at'])
             ->paginate();

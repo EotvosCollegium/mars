@@ -6,57 +6,67 @@
 <script type="text/javascript" src="{{ mix('js/moment.min.js') }}"></script>
 <script type="application/javascript">
     $(document).ready(function () {
+        const updateMacAddress = function (cell, data, state) {
+            $.ajax({
+                type: "PUT",
+                url: "{{ route('internet.mac_addresses.update', [':id']) }}".replace(':id', data.id),
+                data: {
+                    'state': state
+                },
+                success: function (response) {
+                    response = {...data, ...response};
+                    cell.getTable().updateData([response]);
+                    cell.getRow().reformat();
+                    M.toast({html: "{{ __('general.successful_modification') }}"});
+                },
+                error: function (error) {
+                    ajaxError(error);
+                }
+            });
+        };
+        const deleteMacAddress = function (cell, data) {
+            $.ajax({
+                type: "DELETE",
+                url: "{{ route('internet.mac_addresses.destroy', [':id']) }}".replace(':id', data.id),
+                success: function (response) {
+                    cell.getRow().delete();
+                    M.toast({html: "{{ __('general.successfully_deleted') }}"});
+                },
+                error: function (error) {
+                    ajaxError(error);
+                }
+            });
+        };
         var actions = function (cell, formatterParams, onRendered) {
-            var data = cell.getRow().getData();
-            var changeState = function (state) {
-                $.ajax({
-                    type: "PUT",
-                    url: "{{ route('internet.mac_addresses.update', [':id']) }}".replace(':id', data.id),
-                    data: {
-                        'state': state
-                    },
-                    success: function (response) {
-                        response = {...data, ...response};
-                        cell.getTable().updateData([response]);
-                        cell.getRow().reformat();
-                    },
-                    error: function (error) {
-                        ajaxError('Hiba', 'Ajax hiba', 'ok', error);
-                    }
-                });
-            };
+            const data = cell.getRow().getData();
 
-            return $("<button type=\"button\" style=\"margin: 2px;\" class=\"btn waves-effect red\">Elutasít</button></br>")
+            return $(`<button class="btn-floating green" style="margin-right: 10px">
+                            <i class="material-icons">check</i></button>
+                        `)
                 .click(function () {
-                    changeState('rejected');
-                }).toggle(data._state === '{{ \App\Models\Internet\MacAddress::REQUESTED }}')
-                .add($("<button type=\"button\" style=\"margin: 2px;\" class=\"btn waves-effect green\">Elfogad</button></br>")
+                    updateMacAddress(cell, data, "{{\App\Models\Internet\MacAddress::APPROVED }}");
+                }).toggle(data.state !== '{{ \App\Models\Internet\MacAddress::APPROVED }}')
+                .add($(`<button class="btn-floating" style="margin-right: 10px">
+                            <i class="material-icons">block</i></button>
+                        `)
                     .click(function () {
-                        changeState('approved');
-                    }).toggle(data._state === '{{ \App\Models\Internet\MacAddress::REQUESTED }}'))
-                .add($("<button type=\"button\" style=\"margin: 2px;\" class=\"btn waves-effect\">Visszavon</button></br>")
-                    .click(function () {
-                        changeState('requested');
-                    }).toggle(data._state !== '{{ \App\Models\Internet\MacAddress::REQUESTED }}')).wrapAll('<div></div>').parent()[0];
+                        updateMacAddress(cell, data, "{{\App\Models\Internet\MacAddress::REJECTED }}");
+                    }).toggle(data.state !== '{{ \App\Models\Internet\MacAddress::REJECTED }}'))
+                .wrapAll('<div></div>').parent()[0];
+
         };
 
-        var deleteButton = function (cell, formatterParams, onRendered) {
-            return $("<button type=\"button\" class=\"btn waves-effect btn-fixed-height coli blue\">Törlés</button>").click(function () {
-                var data = cell.getRow().getData();
-                $.ajax({
-                    type: "POST",
-                    url: "{{ route('internet.mac_addresses.destroy', [':id']) }}".replace(':id', data.id),
-                    success: function () {
-                        cell.getTable().setPage(cell.getTable().getPage());
-                    },
-                    error: function (error) {
-                        ajaxError('Hiba', 'Ajax hiba', 'ok', error);
-                    }
-                });
-            })[0];
+        var deleteAction = function (cell, formatterParams, onRendered) {
+            return $(`<button class="btn-floating red" style="margin-right: 10px">
+                            <i class="material-icons">delete_forever</i></button>
+                        `)
+                .click(function () {
+                    deleteMacAddress(cell, cell.getRow().getData());
+                })[0];
         };
+
         var dateFormatter = function (cell, formatterParams) {
-            var value = cell.getValue();
+            let value = cell.getValue();
             if (value) {
                 value = moment(value).format("YYYY. MM. DD. HH:mm");
             }
@@ -71,6 +81,9 @@
             ajaxFiltering: true,
             layout: "fitColumns",
             placeholder: "No Data Set",
+            initialFilter: [
+                {field: "state", value: "requested"}
+            ],
             columns: [
                 {
                     title: "Felhasználó",
@@ -89,7 +102,10 @@
                 {title: "Megjegyzés", field: "comment", sorter: "string", headerFilter: 'input', minWidth: 150},
 
                 {
-                    title: "Státusz", field: "state", sorter: "string", headerFilter: 'select',
+                    title: "Státusz",
+                    field: "state",
+                    sorter: "string",
+                    headerFilter: 'select',
                     headerFilterParams: {
                         "rejected": "Elutasított",
                         "approved": "Jóváhagyott",
@@ -106,7 +122,7 @@
                     minWidth: 170,
                 },
                 {title: "", field: "state", width: "130", headerSort: false, formatter: actions, minWidth: 140},
-                {title: "", field: "id", headerSort: false, formatter: deleteButton, minWidth: 140},
+                {title: "", field: "id", width: "130", headerSort: false, formatter: deleteAction, minWidth: 140},
             ],
         });
     });

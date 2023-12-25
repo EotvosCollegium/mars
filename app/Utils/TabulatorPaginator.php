@@ -47,14 +47,19 @@ class TabulatorPaginator
             if (array_search($sorter['field'], $this->sortables) !== false) {
                 $result = $result->orderBy($sorter['field'], $sorter['dir']);
             } else {
-                throw new \InvalidArgumentException('Sorting on '.$sorter['field'].' is not allowed.');
+                throw new \InvalidArgumentException('Sorting on ' . $sorter['field'] . ' is not allowed.');
             }
         }
         foreach (request('filters') ?? [] as $filter) {
+            \Log::error($filter);
             if (array_search($filter['field'], $this->filterables) !== false) {
-                $result = $result->where($filter['field'], $filter['type'], '%'.$filter['value'].'%');
+                if (is_array($filter['value'])) {
+                    $result = $result->whereIn($filter['field'], $filter['value']);
+                } else {
+                    $result = $result->where($filter['field'], $filter['type'], '%' . $filter['value'] . '%');
+                }
             } else {
-                throw new \InvalidArgumentException('Filtering on '.$filter['field'].' is not allowed.');
+                throw new \InvalidArgumentException('Filtering on ' . $filter['field'] . ' is not allowed.');
             }
         }
 

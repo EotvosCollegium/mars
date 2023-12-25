@@ -41,10 +41,15 @@ class AdminInternetController extends Controller
     {
         $this->authorize('handleAny', InternetAccess::class);
 
-        return TabulatorPaginator::from(InternetAccess::query()->with('user'))
-            ->sortable(['has_internet_until', 'user.name'])
-            ->filterable(['has_internet_until', 'user.name'])
+        return TabulatorPaginator::from(
+            InternetAccess::query()
+                ->join('users as user', 'user.id', '=', 'user_id')
+                ->select('internet_accesses.*')
+                ->with('user'))
+            ->sortable(['auto_approved_mac_slots', 'has_internet_until', 'user.name'])
+            ->filterable(['auto_approved_mac_slots', 'has_internet_until', 'user.name'])
             ->paginate();
+
     }
 
     /**

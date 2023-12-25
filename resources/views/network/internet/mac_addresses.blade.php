@@ -30,7 +30,7 @@
                                 M.toast({html: "{{__('general.successfully_deleted')}}"});
                             },
                             error: function (error) {
-                                ajaxError('@lang('internet.error')', '@lang('internet.ajax_error')', '@lang('internet.ok')', error);
+                                ajaxError(error);
                             }
                         });
                     })[0];
