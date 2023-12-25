@@ -1,5 +1,7 @@
 <span class="card-title">@lang('internet.wifi_connections')</span>
-<blockquote>A táblázat éjjelente frissül.</blockquote>
+<blockquote>Itt látható, hogy egy felhasználó egy adott MAC címmel milyen IP címet kapott milyen időtartamban (lease),
+    és azzal hányszor csatlakozott fel a hálózatra. A táblázat éjjelente frissül.
+</blockquote>
 <div id="wifi-connections-table"></div>
 <script type="application/javascript">
     $(document).ready(function () {

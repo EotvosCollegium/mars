@@ -75,10 +75,11 @@ class MacAddressController extends Controller
         $this->authorize('updateState', $macAddress);
 
         $request->validate([
-            'state' => 'required|in:' . implode(',', MacAddress::STATES)
+            'comment' => 'nullable|string|max:255',
+            'state' => 'nullable|in:' . implode(',', MacAddress::STATES)
         ]);
 
-        $macAddress->update(['state' => $request->get('state')]);
+        $macAddress->update($request->only(['state', 'comment']));
 
         return $macAddress->refresh();
     }

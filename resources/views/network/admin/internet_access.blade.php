@@ -16,21 +16,29 @@
     $(document).ready(function () {
             var activation_date = new Date("{{ $activation_date }}");
             var now = new Date();
-            var actions = function (cell, formatterParams, onRendered) {
+            var extendAction = function (cell, formatterParams, onRendered) {
                 var data = cell.getRow().getData();
-                var active = (new Date(data.has_internet_until));
-                return $(`<button class="btn-floating" style="margin-right: 10px">
+                var active = (new Date(data.has_internet_until))
+                onRendered(function () {
+                    $('.tooltipped').tooltip();
+                });
+                return $(`<button class="btn-floating tooltipped" style="margin-right: 10px" data-position="top" data-tooltip="Meghosszabbít: {{$activation_date}}">
                             <i class="material-icons">update</i></button>
                         `)
                     .click(function () {
                         sendExtendRequest(cell, data.user_id, "{{ $activation_date }}");
-                    }).toggle(data.has_internet_until == null || active < activation_date)
-                    .add($(`<button class="btn-floating red" style="margin-right: 10px">
+                    }).toggle(data.has_internet_until == null || active < activation_date)[0];
+            };
+
+            var revokeAction = function (cell, formatterParams, onRendered) {
+                var data = cell.getRow().getData();
+                var active = (new Date(data.has_internet_until));
+                return $(`<button class="btn-floating red tooltipped" style="margin-right: 10px" data-position="top" data-tooltip="Hozzáférés megvonása">
                             <i class="material-icons">block</i></button>
                         `)
-                        .click(function () {
-                            sendRevokeRequest(cell, data.user_id);
-                        }).toggle(data.has_internet_until != null && active >= now)).wrapAll('<div></div>').parent()[0];
+                    .click(function () {
+                        sendRevokeRequest(cell, data.user_id);
+                    }).toggle(data.has_internet_until != null && active >= now)[0]
             };
 
             var dateFormatter = function (cell, formatterParams, onRendered) {
@@ -107,7 +115,21 @@
                         field: "user.name",
                         sorter: "string",
                         headerFilter: 'input',
-                        minWidth: 200,
+                        minWidth: 150,
+                    },
+                    {
+                        title: "WiFi username",
+                        field: "wifi_username",
+                        sorter: "string",
+                        headerFilter: 'input',
+                        minWidth: 150,
+                    },
+                    {
+                        title: "WiFi Password",
+                        field: "wifi_password",
+                        sorter: "string",
+                        headerFilter: 'input',
+                        minWidth: 150,
                     },
                     {
                         title: "Internetelérés",
@@ -116,7 +138,8 @@
                         formatter: dateFormatter,
                         minWidth: 50,
                     },
-                    {title: "", field: "state", headerSort: false, formatter: actions, minWidth: 150},
+                    {title: "", field: "state", headerSort: false, formatter: extendAction, width: 80},
+                    {title: "", field: "state", headerSort: false, formatter: revokeAction, width: 80},
                 ],
                 ajaxResponse: function (url, params, response) {
                     response.data = response.data.map(record => {

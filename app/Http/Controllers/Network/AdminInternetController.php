@@ -75,9 +75,11 @@ class AdminInternetController extends Controller
 
 
     /**
+     * Extends the internet access of a user until the given date or until the general internet access deadline.
      * @throws AuthorizationException
+     *
      */
-    public function extend(Request $request, InternetAccess $internetAccess)
+    public function extend(Request $request, InternetAccess $internetAccess): Carbon
     {
         $this->authorize('extend', $internetAccess);
 
@@ -95,6 +97,7 @@ class AdminInternetController extends Controller
     }
 
     /**
+     * Revokes the internet access of a user.
      * @throws AuthorizationException
      */
     public function revoke(Request $request, InternetAccess $internetAccess): Response
