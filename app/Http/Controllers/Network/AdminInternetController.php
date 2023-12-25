@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
@@ -26,8 +27,7 @@ class AdminInternetController extends Controller
         $this->authorize('handleAny', InternetAccess::class);
 
         return view('network.admin.app', [
-            'activation_date' => InternetAccess::getInternetDeadline(),
-            'users' => InternetAccess::query()->with('user')->get()
+            'activation_date' => InternetAccess::getInternetDeadline()->format('Y-m-d H:i'),
         ]);
     }
 
@@ -72,13 +72,32 @@ class AdminInternetController extends Controller
     /**
      * @throws AuthorizationException
      */
-    public function extend(InternetAccess $internetAccess, Carbon $newDate = null): ?Carbon
+    public function extend(Request $request, InternetAccess $internetAccess)
     {
         $this->authorize('extend', $internetAccess);
 
-        $newDate = $newDate ?? InternetAccess::getInternetDeadline();
+        $request->validate([
+            'has_internet_until' => 'nullable|date',
+        ]);
+
+        if ($request->get('has_internet_until') != null) {
+            $newDate = $request->get('has_internet_until');
+        } else {
+            $newDate = InternetAccess::getInternetDeadline();
+        }
         $internetAccess->update(['has_internet_until' => $newDate]);
-        return $newDate;
+        return Carbon::parse($newDate);
+    }
+
+    /**
+     * @throws AuthorizationException
+     */
+    public function revoke(Request $request, InternetAccess $internetAccess): Response
+    {
+        $this->authorize('extend', $internetAccess);
+
+        $internetAccess->update(['has_internet_until' => null]);
+        return response()->noContent();
     }
 
 }

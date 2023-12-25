@@ -38,6 +38,7 @@ return [
     'secretariat' => 'Secretariat',
     'semester' => 'Semester',
     'send' => 'Send',
+    'server_error' => 'Server error',
     'settings' => 'Settings',
     'show' => 'Show',
     'success' => 'Success!',

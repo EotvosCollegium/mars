@@ -38,6 +38,7 @@ return [
     'secretariat' => 'Titkárság',
     'semester' => 'Szemeszter',
     'send' => 'Küldés',
+    'server_error' => 'Szerverhiba. Próbáld újra később.',
     'settings' => 'Beállítások',
     'show' => 'Mutasd',
     'success' => 'Siker!',

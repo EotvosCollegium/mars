@@ -140,6 +140,7 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
         Route::get('/admin/wifi_connections', [AdminInternetController::class, 'indexWifi'])->name('wifi_connections.index');
         Route::get('/admin/internet_accesses', [AdminInternetController::class, 'indexInternetAccesses'])->name('internet_accesses.index');
         Route::post('/admin/{internet_access}/extend', [AdminInternetController::class, 'extend'])->name('internet_accesses.extend');
+        Route::post('/admin/{internet_access}/revoke', [AdminInternetController::class, 'revoke'])->name('internet_accesses.revoke');
     });
 
     /** Admin Checkout **/
