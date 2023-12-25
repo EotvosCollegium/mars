@@ -101,7 +101,6 @@ class Role extends Model
 
     // Module-related roles
     public const PRINTER = 'printer';
-    public const INTERNET_USER = 'internet-user';
 
     //collegist related roles
     public const RESIDENT = 'resident';
@@ -120,7 +119,6 @@ class Role extends Model
         self::DIRECTOR,
         self::STAFF,
         self::PRINTER,
-        self::INTERNET_USER,
         self::LOCALE_ADMIN,
         self::STUDENT_COUNCIL,
         self::STUDENT_COUNCIL_SECRETARY,
@@ -159,7 +157,7 @@ class Role extends Model
         if ($role instanceof Role) {
             return $role;
         }
-        return Cache::remember('role_'.$role, 86400, function () use ($role) {
+        return Cache::remember('role_' . $role, 86400, function () use ($role) {
             if (is_numeric($role)) {
                 $role = Role::find((int)$role);
             } else {
@@ -188,7 +186,7 @@ class Role extends Model
         if ($object instanceof RoleObject) {
             return $object;
         }
-        return Cache::remember('role_'.$this->id.'_object_'.$object, 86400, function () use ($object) {
+        return Cache::remember('role_' . $this->id . '_object_' . $object, 86400, function () use ($object) {
             /* @var RoleObject|Workshop|null $object */
             if ($this->has_objects && is_numeric($object)) {
                 $object = $this->objects()->find((int)$object);
@@ -202,11 +200,12 @@ class Role extends Model
                 $object = null;
             }
             if (!$this->isValid($object)) {
-                throw new InvalidArgumentException("Role object/workshop '".$object."' does not exist for the " . $this->name . " role.");
+                throw new InvalidArgumentException("Role object/workshop '" . $object . "' does not exist for the " . $this->name . " role.");
             }
             return $object;
         });
     }
+
     /**
      * Checks if a role-object pair is valid.
      * @param RoleObject|Workshop|null $object
@@ -247,8 +246,8 @@ class Role extends Model
     }
 
     /**
-    * Returns the role for the students council.
-    */
+     * Returns the role for the students council.
+     */
     public static function studentsCouncil(): Role
     {
         return self::where('name', self::STUDENT_COUNCIL)->first();
@@ -286,7 +285,7 @@ class Role extends Model
     public function translatedName(): Attribute
     {
         return Attribute::make(
-            get: fn () => __('role.'.$this->name)
+            get: fn() => __('role.' . $this->name)
         );
     }
 
@@ -307,7 +306,7 @@ class Role extends Model
             self::LOCALE_ADMIN => 'amber',
             self::STUDENT_COUNCIL => 'green darken-4',
             self::APPLICATION_COMMITTEE_MEMBER => 'light-blue darken-4',
-            self::AGGREGATED_APPLICATION_COMMITTEE_MEMBER =>  'yellow darken-4',
+            self::AGGREGATED_APPLICATION_COMMITTEE_MEMBER => 'yellow darken-4',
             self::STUDENT_COUNCIL_SECRETARY => 'pink lighten-3',
             self::BOARD_OF_TRUSTEES_MEMBER => 'deep-orange darken-1',
             self::ETHICS_COMMISSIONER => 'green lighten-2',
