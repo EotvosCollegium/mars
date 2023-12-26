@@ -33,13 +33,28 @@ class WorkshopBalance extends Model
 
     /**
      * Generates all the workshops' allocated balance in the current semester.
-     * For all active members in a workshop who payed kkt:
-     *      payed kkt * (isResident ? config('custom.workshop_balance_resident)
-     *                              : config('custom.workshop_balance_extern))
+     * For all active members in a workshop who paid kkt:
+     *      paid kkt * (isResident ? $workshop_balance_resident
+     *                              : $workshop_balance_extern)
      *                / member's workshops' count
+     * Uses the config values for the ratios if they are null.
+     * 
+     * @param Semester $semester
+     * @param ?float $workshop_balance_resident
+     * @param ?float $workshop_balance_extern
+     * @return void
      */
-    public static function generateBalances(Semester $semester)
+    public static function generateBalances(Semester $semester,
+                                            ?float $workshop_balance_resident = null,
+                                            ?float $workshop_balance_extern = null): void
     {
+        if (is_null($workshop_balance_resident)) {
+            $workshop_balance_resident = config("custom.workshop_balance_resident");
+        }
+        if (is_null($workshop_balance_extern)) {
+            $workshop_balance_extern = config("custom.workshop_balance_extern");
+        }
+
         $workshops = Workshop::with('users:id')->get();
 
         if (!self::where('semester_id', $semester->id)->count()) {
@@ -65,13 +80,13 @@ class WorkshopBalance extends Model
             $not_yet_paid = 0;
             foreach ($workshop->users as $member) {
                 if (isset($active_users[$member->id])) {
-                    $amount = $member->payedKKTInSemester($semester);
+                    $amount = $member->paidKKTInSemester($semester);
                     if (!is_null($amount)) {
                         if ($member->isResident()) {
-                            $amount *= config('custom.workshop_balance_resident');
+                            $amount *= $workshop_balance_resident;
                             $resident++;
                         } else {
-                            $amount *= config('custom.workshop_balance_extern');
+                            $amount *= $workshop_balance_extern;
                             $extern++;
                         }
                         $balance += $amount / $member->workshops->count();

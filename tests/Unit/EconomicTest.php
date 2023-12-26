@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use Tests\TestCase;
 
 use App\Models\Checkout;
+use App\Models\Role;
 use App\Models\User;
 use App\Models\Transaction;
 use App\Models\PaymentType;
@@ -18,66 +19,56 @@ use App\Models\WorkshopBalance;
  */
 class EconomicTest extends TestCase
 {
-    // We use constants for now as kkt and netreg values.
+    // We use constants for now as kkt and netreg values and ratios.
     public const TEST_KKT = 2500;
     public const TEST_NETREG = 500;
-    // The threshold difference under which we accept the equality.
-    public const THRESHOLD_DIFF = 1.5;
+    public const TEST_RATIO_RESIDENT = 0.5;
+    public const TEST_RATIO_EXTERN = 0.6;
 
     /**
      * Tests how workshop balances change
      * when a user pays kkt.
-     * Does it for externs or residents;
-     * depending on the parameter.
-     * The generated test user can also be a member of more than one workshops.
+     * Does it for a user with an active status,
+     * who can be a resident or an extern
+     * and can have one or multiple workshops.
+     * 
+     * In the test cases,
+     * we provide users with
+     * these parameters varied.
      *
-     * @param bool $is_extern
-     * @param int $number_of_workshops
+     * @param User $user
      * @return void
      */
-    private function testPayment(bool $is_extern, int $number_of_workshops = 1): void
+    private function testPayment(User $user): void
     {
-        $workshops = Workshop::all()->random($number_of_workshops)->all();
-        $user = User::factory()->create();
+        $workshops = $user->workshops;
 
-        if ($is_extern) {
-            $user->setExtern();
-        } else {
-            $user->setResident();
-        }
+        // this also ensures the balance won't be null
+        WorkshopBalance::generateBalances(Semester::current(),
+                                          self::TEST_RATIO_RESIDENT,
+                                          self::TEST_RATIO_EXTERN);
 
-        $user->setStatusFor(Semester::current(), SemesterStatus::ACTIVE);  // important!
-        foreach($workshops as $workshop) {
-            $user->workshops()->attach($workshop);
-        }
-
-        $this->assertTrue(is_null($user->payedKKT()));
-        WorkshopBalance::generateBalances(Semester::current()); // this also ensures the balance won't be null
-
-        $balances = array_map(function ($workshop) {return $workshop->balance();}, $workshops);
         // the old allocated balances
-        $olds = array_map(function ($balance) {return $balance->allocated_balance;}, $balances);
+        $old_balances = $workshops->map(fn ($workshop) => $workshop->balance()->allocated_balance);
 
         // we give the payer's id as the receiver's id
         // because Checkout::studentsCouncil()->handler_id returns null
         $user->payKKTNetreg($user->id, self::TEST_KKT, self::TEST_NETREG);
+        // since this uses the config values to generate balances,
+        // we have to redo it:
+        WorkshopBalance::generateBalances(Semester::current(),
+                                          self::TEST_RATIO_RESIDENT,
+                                          self::TEST_RATIO_EXTERN);
 
-        $this->assertTrue($user->payedKKT() == self::TEST_KKT);
+        $this->assertEquals($user->paidKKT(), self::TEST_KKT);
 
-        $news = array_map(function ($balance) {return $balance->fresh()->allocated_balance;}, $balances);
+        $new_balances = $workshops->map(fn ($workshop) => $workshop->balance()->allocated_balance);
+        $diffs = $new_balances->zip($old_balances)->map(fn ($pair) => $pair[0] - $pair[1]);
 
-        $amount_for_workshops =
-            ($is_extern ? config('custom.workshop_balance_extern')
-                        : config('custom.workshop_balance_resident'))
-                * self::TEST_KKT;
-        for ($i = 0; $i < $number_of_workshops; ++$i) {
-            // to avoid floating point equality checking
-            // and to allow some error from rounding:
-            $this->assertTrue(abs(
-                $number_of_workshops * ($news[$i] - $olds[$i])
-                                - $amount_for_workshops
-            ) < self::THRESHOLD_DIFF);
-        }
+        $amount_for_workshops = intval(self::TEST_KKT
+                                       * ($user->isExtern() ? self::TEST_RATIO_EXTERN
+                                                            : self::TEST_RATIO_RESIDENT));
+        $this->assertEquals($diffs->sum(), $amount_for_workshops);
     }
 
     /**
@@ -85,7 +76,13 @@ class EconomicTest extends TestCase
      */
     public function testExternPaymentWithOneWorkshop()
     {
-        $this->testPayment(true);
+        $user = User::factory()->create();
+        $user->setStatus(SemesterStatus::ACTIVE);  // important!
+
+        $user->setCollegist(Role::EXTERN);
+        $user->workshops()->sync(Workshop::all()->random(1));
+
+        $this->testPayment($user);
     }
 
     /**
@@ -93,7 +90,13 @@ class EconomicTest extends TestCase
      */
     public function testResidentPaymentWithOneWorkshop()
     {
-        $this->testPayment(false);
+        $user = User::factory()->create();
+        $user->setStatus(SemesterStatus::ACTIVE);  // important!
+
+        $user->setCollegist(Role::RESIDENT);
+        $user->workshops()->sync(Workshop::all()->random(1));
+
+        $this->testPayment($user);
     }
 
     /**
@@ -101,7 +104,13 @@ class EconomicTest extends TestCase
      */
     public function testExternPaymentWithTwoWorkshops()
     {
-        $this->testPayment(true, 2);
+        $user = User::factory()->create();
+        $user->setStatus(SemesterStatus::ACTIVE);  // important!
+
+        $user->setCollegist(Role::EXTERN);
+        $user->workshops()->sync(Workshop::all()->random(2));
+
+        $this->testPayment($user);
     }
 
     /**
@@ -109,6 +118,12 @@ class EconomicTest extends TestCase
      */
     public function testResidentPaymentWithTwoWorkshops()
     {
-        $this->testPayment(false, 2);
+        $user = User::factory()->create();
+        $user->setStatus(SemesterStatus::ACTIVE);  // important!
+
+        $user->setCollegist(Role::RESIDENT);
+        $user->workshops()->sync(Workshop::all()->random(2));
+
+        $this->testPayment($user);
     }
 }

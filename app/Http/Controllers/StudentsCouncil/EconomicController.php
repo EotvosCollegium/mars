@@ -50,7 +50,7 @@ class EconomicController extends Controller
         return view(
             'student-council.economic-committee.app',
             array_merge($this->getData($this->checkout()), [
-                'users_not_payed' => User::hasToPayKKTNetreg()->get()
+                'users_not_paid' => User::hasToPayKKTNetreg()->get()
             ])
         );
     }
@@ -63,7 +63,7 @@ class EconomicController extends Controller
         $this->authorize('addKKTNetreg', Checkout::class);
 
         return view('student-council.economic-committee.kktnetreg', [
-            'users_not_payed' => User::hasToPayKKTNetreg()->get(),
+            'users_not_paid' => User::hasToPayKKTNetreg()->get(),
             'transactions' => Transaction::whereIn('payment_type_id', [PaymentType::kkt()->id, PaymentType::netreg()->id])
                     ->where('semester_id', Semester::current()->id)
                     ->get()

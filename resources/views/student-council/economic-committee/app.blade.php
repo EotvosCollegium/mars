@@ -31,7 +31,7 @@
                                     @can('administrate', $checkout)
                                     <blockquote>A gazdasági alelnök, a kulturális bizottság tagjai és a rendszergazdák szedhetnek be KKT-t/Netreget. Ezeket a tranzakciókat a tartozások alatt találod.</blockquote>
                                     @endcan
-                                    <x-input.select l=4 :elements="$users_not_payed" id="user_id" text="general.user" :formatter="function($user) { return $user->uniqueName; }" />
+                                    <x-input.select l=4 :elements="$users_not_paid" id="user_id" text="general.user" :formatter="function($user) { return $user->uniqueName; }" />
                                     <x-input.text  m=6 l=4 id="kkt" text="KKT" type="number" required min="0" :value="config('custom.kkt')" />
                                     <x-input.text  m=6 l=4 id="netreg" text="NetReg" type="number" required min="0" :value="config('custom.netreg')" />
                                 </div>
