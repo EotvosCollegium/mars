@@ -3,7 +3,6 @@
 return [
     'ajax_error' => 'Server error! Please refresh the site!',
     'approved' => 'Approved',
-    'auto_approved_mac_slots_long' => 'Automatically approved devices: :count pcs',
     'cancel' => 'Cancel',
     'copied' => 'Copied to clipboard',
     'created_at' => 'Created',

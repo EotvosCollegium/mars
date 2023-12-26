@@ -13,7 +13,9 @@ return new class extends Migration {
      */
     public function up()
     {
-        DB::table('roles')->delete(Role::where('name', 'internet-user')->first()->id);
+        if (Role::where('name', 'internet-user')->first() !== null) {
+            DB::table('roles')->delete(Role::where('name', 'internet-user')->first()->id);
+        }
     }
 
     /**
