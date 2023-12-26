@@ -285,7 +285,7 @@ class Role extends Model
     public function translatedName(): Attribute
     {
         return Attribute::make(
-            get: fn() => __('role.' . $this->name)
+            get: fn () => __('role.' . $this->name)
         );
     }
 

@@ -34,7 +34,8 @@ class MacAddressController extends Controller
             MacAddress::query()
                 ->join('users as user', 'user.id', '=', 'user_id')
                 ->select('mac_addresses.*')
-                ->with('user'))
+                ->with('user')
+        )
             ->sortable(['mac_address', 'comment', 'state', 'user.name', 'created_at'])
             ->filterable(['mac_address', 'comment', 'user.name', 'state', 'created_at'])
             ->paginate();

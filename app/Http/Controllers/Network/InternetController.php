@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Mail;
 
 class InternetController extends Controller
 {
-
     /**
      * Show the internet access page.
      * @return View
