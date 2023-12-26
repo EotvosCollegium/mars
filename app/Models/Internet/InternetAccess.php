@@ -15,7 +15,7 @@ use Illuminate\Support\Str;
 
 /**
  * App\Models\Internet\InternetAccess
- *
+ * 
  * The InternetAccess model connects the user to the internet related models.
  * For Wi-Fi connections,
  *
@@ -41,9 +41,9 @@ use Illuminate\Support\Str;
  * @method static Builder|InternetAccess whereUserId($value)
  * @method static Builder|InternetAccess whereWifiPassword($value)
  * @method static Builder|InternetAccess whereWifiUsername($value)
- * @mixin Eloquent
  * @property-read Collection|MacAddress[] $macAddresses
  * @property-read int|null $mac_addresses_count
+ * @mixin Eloquent
  */
 class InternetAccess extends Model
 {

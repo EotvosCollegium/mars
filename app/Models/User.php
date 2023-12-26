@@ -109,11 +109,11 @@ use Illuminate\Support\Facades\Mail;
  * @method static Builder|User whereUpdatedAt($value)
  * @method static Builder|User whereVerified($value)
  * @method static Builder|User withRole(Role|string $role, Workshop|RoleObject|string|null $object = null)
- * @mixin Eloquent
  * @property-read Collection|\App\Models\Workshop[] $applicationCommitteWorkshops
  * @property-read int|null $application_committe_workshops_count
  * @property-read Collection|\App\Models\Workshop[] $roleWorkshops
  * @property-read int|null $role_workshops_count
+ * @mixin Eloquent
  */
 class User extends Authenticatable implements HasLocalePreference
 {
