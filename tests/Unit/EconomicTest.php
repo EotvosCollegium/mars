@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use Tests\TestCase;
 
+use App\Http\Controllers\StudentsCouncil\EconomicController;
 use App\Models\Checkout;
 use App\Models\Role;
 use App\Models\User;
@@ -51,9 +52,9 @@ class EconomicTest extends TestCase
         // the old allocated balances
         $old_balances = $workshops->map(fn ($workshop) => $workshop->balance()->allocated_balance);
 
-        // we give the payer's id as the receiver's id
+        // we give the payer as the receiver too
         // because Checkout::studentsCouncil()->handler_id returns null
-        $user->payKKTNetreg($user->id, self::TEST_KKT, self::TEST_NETREG);
+        EconomicController::payKKTNetregLogic($user, $user, self::TEST_KKT, self::TEST_NETREG);
         // since this uses the config values to generate balances,
         // we have to redo it:
         WorkshopBalance::generateBalances(Semester::current(),

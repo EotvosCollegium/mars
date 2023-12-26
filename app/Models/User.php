@@ -869,45 +869,6 @@ class User extends Authenticatable implements HasLocalePreference
     /* Transaction related */
 
     /**
-     * Pay kkt and netreg to the receiver given.
-     * Also updates workshop balances
-     * and the internet access expiry date.
-     * Returns an array with the two transaction objects
-     * and the new expiry date.
-     */
-    public function payKKTNetreg(int $receiver_id, int $kkt_amount, int $netreg_amount)
-    {
-        // Creating transactions
-        $kkt = Transaction::create([
-            'checkout_id' => Checkout::studentsCouncil()->id,
-            'receiver_id' => $receiver_id,
-            'payer_id' => $this->id,
-            'semester_id' => Semester::current()->id,
-            'amount' => $kkt_amount,
-            'payment_type_id' => PaymentType::kkt()->id,
-            'comment' => null,
-            'moved_to_checkout' => null,
-        ]);
-
-        $netreg = Transaction::create([
-            'checkout_id' => Checkout::admin()->id,
-            'receiver_id' => $receiver_id,
-            'payer_id' => $this->id,
-            'semester_id' => Semester::current()->id,
-            'amount' => $netreg_amount,
-            'payment_type_id' => PaymentType::netreg()->id,
-            'comment' => null,
-            'moved_to_checkout' => null,
-        ]);
-
-        WorkshopBalance::generateBalances(Semester::current());
-
-        $new_expiry_date = \App\Http\Controllers\Network\InternetController::extendUsersInternetAccess($this);
-
-        return [$kkt, $netreg, $new_expiry_date];
-    }
-
-    /**
      * Returns the paid kkt amount in the semester; or null if the user has not paid kkt.
      * @param Semester $semester
      * @return ?int

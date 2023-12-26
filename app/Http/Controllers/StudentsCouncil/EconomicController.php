@@ -70,6 +70,47 @@ class EconomicController extends Controller
         ]);
     }
 
+  /**
+    * Pay kkt and netreg to the receiver given.
+    * Also updates workshop balances
+    * and the internet access expiry date.
+    * Returns an array with the two transaction objects
+    * and the new expiry date.
+    *
+    * Used here and in the tests.
+    */
+   public static function payKKTNetregLogic(User $payer, User $receiver, int $kkt_amount, int $netreg_amount): array
+   {
+       // Creating transactions
+       $kkt = Transaction::create([
+           'checkout_id' => Checkout::studentsCouncil()->id,
+           'receiver_id' => $receiver->id,
+           'payer_id' => $payer->id,
+           'semester_id' => Semester::current()->id,
+           'amount' => $kkt_amount,
+           'payment_type_id' => PaymentType::kkt()->id,
+           'comment' => null,
+           'moved_to_checkout' => null,
+       ]);
+
+       $netreg = Transaction::create([
+           'checkout_id' => Checkout::admin()->id,
+           'receiver_id' => $receiver->id,
+           'payer_id' => $payer->id,
+           'semester_id' => Semester::current()->id,
+           'amount' => $netreg_amount,
+           'payment_type_id' => PaymentType::netreg()->id,
+           'comment' => null,
+           'moved_to_checkout' => null,
+       ]);
+
+       WorkshopBalance::generateBalances(Semester::current());
+
+       $new_expiry_date = \App\Http\Controllers\Network\InternetController::extendUsersInternetAccess($payer);
+
+       return [$kkt, $netreg, $new_expiry_date];
+   }
+
     /**
      * Pay kkt / netreg.
      */
@@ -86,7 +127,8 @@ class EconomicController extends Controller
 
         $payer = User::findOrFail($request->user_id);
         // the current user will be the receiver
-        [$kkt, $netreg, $new_internet_expire_date] = $payer->payKKTNetreg(Auth::user()->id, $request->kkt, $request->netreg);
+        [$kkt, $netreg, $new_internet_expire_date]
+            = self::payKKTNetregLogic($payer, Auth::user(), $request->kkt, $request->netreg);
 
         $internet_expiration_message = null;
         if ($new_internet_expire_date !== null) {
