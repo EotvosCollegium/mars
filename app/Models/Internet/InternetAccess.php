@@ -15,7 +15,7 @@ use Illuminate\Support\Str;
 
 /**
  * App\Models\Internet\InternetAccess
- * 
+ *
  * The InternetAccess model connects the user to the internet related models.
  * For Wi-Fi connections,
  *

@@ -96,7 +96,9 @@ class InternetPageTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)->delete(route(
-            'internet.mac_addresses.destroy', ['mac_address' => $mac->id]));
+            'internet.mac_addresses.destroy',
+            ['mac_address' => $mac->id]
+        ));
 
         $response->assertStatus(204);
 
@@ -119,7 +121,9 @@ class InternetPageTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)->delete(route(
-            'internet.mac_addresses.destroy', ['mac_address' => $mac->id]));
+            'internet.mac_addresses.destroy',
+            ['mac_address' => $mac->id]
+        ));
 
         $response->assertStatus(403);
     }
