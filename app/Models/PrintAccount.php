@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Model to keep track of the users' print balance.
- * 
+ *
  * Changes are logged in print_account_history table. See PrintAccountObserver.
  *
  * @property mixed $user_id
@@ -69,7 +69,7 @@ class PrintAccount extends Model
 
     public static function getCost($pages, $is_two_sided, $number_of_copies)
     {
-        if (! $is_two_sided) {
+        if (!$is_two_sided) {
             return $pages * self::$COST['one_sided'] * $number_of_copies;
         }
 

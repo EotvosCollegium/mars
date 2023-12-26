@@ -71,7 +71,7 @@ class MacAddress extends Model
     public function translatedState(): Attribute
     {
         return Attribute::make(
-            get: fn() => __('internet.' . strtolower($this->state))
+            get: fn () => __('internet.' . strtolower($this->state))
         );
     }
 
@@ -109,7 +109,7 @@ class MacAddress extends Model
     public function macAddress(): Attribute
     {
         return Attribute::make(
-            set: fn($value) => str_replace('-', ':', strtoupper($value)),
+            set: fn ($value) => str_replace('-', ':', strtoupper($value)),
         );
     }
 

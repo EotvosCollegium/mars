@@ -17,12 +17,12 @@ class CreateTrigger extends Migration
                ON users.id = print_accounts.user_id
             WHERE
                print_accounts.user_id IS NULL;');
-//        DB::unprepared('
-//        CREATE TRIGGER trigger_create_print_account_for_user
-//            AFTER INSERT ON users
-//            FOR EACH ROW
-//            INSERT INTO print_accounts(user_id) VALUES (NEW.id);
-//        ');
+        //        DB::unprepared('
+        //        CREATE TRIGGER trigger_create_print_account_for_user
+        //            AFTER INSERT ON users
+        //            FOR EACH ROW
+        //            INSERT INTO print_accounts(user_id) VALUES (NEW.id);
+        //        ');
 
         DB::unprepared('INSERT INTO internet_accesses(user_id)
             SELECT
@@ -33,12 +33,12 @@ class CreateTrigger extends Migration
                ON users.id = internet_accesses.user_id
             WHERE
                internet_accesses.user_id IS NULL;');
-//        DB::unprepared('
-//        CREATE TRIGGER trigger_create_internet_access_for_user
-//            AFTER INSERT ON users
-//            FOR EACH ROW
-//            INSERT INTO internet_accesses(user_id) VALUES (NEW.id);
-//        ');
+        //        DB::unprepared('
+        //        CREATE TRIGGER trigger_create_internet_access_for_user
+        //            AFTER INSERT ON users
+        //            FOR EACH ROW
+        //            INSERT INTO internet_accesses(user_id) VALUES (NEW.id);
+        //        ');
 
         Schema::table('mac_addresses', function ($table) {
             $table->dropForeign('mac_addresses_user_id_foreign');

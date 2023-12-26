@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Log;
 /**
  * This class implements the logic of triggering certain (recurring) events (eg. automatic status changes)
  * when we reach a given datetime. The triggers will fire a signal that we handle accordingly.
- * 
+ *
  * Members of this models should not get created through the site. It is stored in the database
  * so the dates can be changed on the run, everything else should be static.
  * The handlers of each signal will do the following:

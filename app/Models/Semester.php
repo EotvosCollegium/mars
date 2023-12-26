@@ -85,7 +85,7 @@ class Semester extends Model
     public function tag(): Attribute
     {
         return Attribute::make(
-            get: fn(): string => $this->year . self::SEPARATOR . ($this->year + 1) . self::SEPARATOR . $this->part
+            get: fn (): string => $this->year . self::SEPARATOR . ($this->year + 1) . self::SEPARATOR . $this->part
         );
     }
 

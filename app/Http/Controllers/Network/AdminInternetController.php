@@ -16,7 +16,6 @@ use Illuminate\Support\Facades\DB;
 
 class AdminInternetController extends Controller
 {
-
     /**
      * Show the admin internet access page.
      *
@@ -45,7 +44,8 @@ class AdminInternetController extends Controller
             InternetAccess::query()
                 ->join('users as user', 'user.id', '=', 'user_id')
                 ->select('internet_accesses.*')
-                ->with('user'))
+                ->with('user')
+        )
             ->sortable(['auto_approved_mac_slots', 'has_internet_until', 'user.name'])
             ->filterable(['auto_approved_mac_slots', 'has_internet_until', 'user.name'])
             ->paginate();
