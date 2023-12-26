@@ -10,6 +10,13 @@
     <td></td><td></td><td></td>
     @endif
     <td class="center-align"><nobr>{{ $transaction->created_at->format('Y. m. d.') }}</nobr></td>
+    <td class="center-align">
+        @if($transaction->receipt)
+        <a class="waves-effect waves-light btn-small btn-floating" href="{{ url($transaction->receipt->path) }}">
+            <i class="material-icons">file_download</i>
+        </a>
+        @endif
+    </td>
     <td class="right-align">
         {{ number_format($transaction->amount, 0, '.', ' ') }} Ft
     </td>

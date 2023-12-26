@@ -51,7 +51,7 @@ class CommunityServicePolicy
      */
     public function approve(User $user, CommunityService $communityService)
     {
-        if ($communityService->approved!==null || !$communityService->semester->isCurrent()) {
+        if ($communityService->approved !== null || !$communityService->semester->isCurrent()) {
             return false;
         }
 

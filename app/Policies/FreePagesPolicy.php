@@ -17,7 +17,7 @@ class FreePagesPolicy
             return true;
         }
 
-        if (! $user->hasRole(Role::PRINTER)) {
+        if (!$user->hasRole(Role::PRINTER)) {
             return false;
         }
     }

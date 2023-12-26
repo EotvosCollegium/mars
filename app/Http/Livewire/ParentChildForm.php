@@ -28,7 +28,7 @@ class ParentChildForm extends Component
 
     public function show()
     {
-        $this->hidden = ! $this->hidden;
+        $this->hidden = !$this->hidden;
     }
 
     public function addItem()

@@ -70,16 +70,16 @@ class AddExpression extends Command
                 $expressions[$expression_key] = stripslashes($expression_value);
             }
 
-            if (! (ksort($expressions))) {
+            if (!(ksort($expressions))) {
                 $this->error('Sorting '.$file.' failed.');
 
                 return 1;
             }
-            if (! is_dir(base_path('/resources/lang/'.$language))) {
+            if (!is_dir(base_path('/resources/lang/'.$language))) {
                 mkdir(base_path('/resources/lang/'.$language), 0755, true); // create folders if needed
             }
             $file_write = fopen(base_path($path), 'w');
-            if (! (generate_file($file_write, $expressions))) {
+            if (!(generate_file($file_write, $expressions))) {
                 $this->error('Writing to '.$file.' failed.');
 
                 return 1;
@@ -98,8 +98,8 @@ class AddExpression extends Command
 
             foreach (['en', 'hu'] as $language) {
                 $path = '/resources/lang/'.$language.'/'.$file.'.php';
-                if (! file_exists(base_path($path))) {
-                    if (! $this->confirm('Do you want to create a new '.($language == 'en' ? 'english' : 'hungarian').' file named '.$file.'.php?')) {
+                if (!file_exists(base_path($path))) {
+                    if (!$this->confirm('Do you want to create a new '.($language == 'en' ? 'english' : 'hungarian').' file named '.$file.'.php?')) {
                         $this->info('Action cancelled.');
 
                         return 1;
@@ -108,7 +108,7 @@ class AddExpression extends Command
                 $expressions = file_exists(base_path($path)) ? require base_path($path) : [];
                 if ($file == 'validation') {
                     if (isset($expressions['attributes'][$expression_key])) {
-                        if (! $this->confirm('Do you want to override the old '.($language == 'en' ? 'english' : 'hungarian').' translation ('.$expressions['attributes'][$expression_key].')?')) {
+                        if (!$this->confirm('Do you want to override the old '.($language == 'en' ? 'english' : 'hungarian').' translation ('.$expressions['attributes'][$expression_key].')?')) {
                             $this->info('Action cancelled.');
 
                             return 1;
@@ -116,7 +116,7 @@ class AddExpression extends Command
                     }
                 } else {
                     if (isset($expressions[$expression_key])) {
-                        if (! $this->confirm('Do you want to override the old '.($language == 'en' ? 'english' : 'hungarian').' translation ('.$expressions[$expression_key].')?')) {
+                        if (!$this->confirm('Do you want to override the old '.($language == 'en' ? 'english' : 'hungarian').' translation ('.$expressions[$expression_key].')?')) {
                             $this->info('Action cancelled.');
 
                             return 1;
@@ -131,13 +131,13 @@ class AddExpression extends Command
                 } else {
                     $expressions[$expression_key] = stripslashes($expression_value);
                 }
-                if (! (ksort($expressions))) {
+                if (!(ksort($expressions))) {
                     $this->error('Sorting the '.($language == 'en' ? 'english' : 'hungarian').' '.$file.' failed.');
 
                     return 1;
                 }
                 $file_write = fopen(base_path($path), 'w');
-                if (! (generate_file($file_write, $expressions))) {
+                if (!(generate_file($file_write, $expressions))) {
                     $this->error('Writing to the '.($language == 'en' ? 'english' : 'hungarian').' '.$file.' failed.');
 
                     return 1;

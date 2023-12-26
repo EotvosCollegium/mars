@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateEthicsCommissionerRole extends Migration
-{
+return new class () extends Migration {
     /**
      * Run the migrations.
      *
@@ -13,10 +12,9 @@ class CreateEthicsCommissionerRole extends Migration
      */
     public function up()
     {
-        DB::table('roles')->updateOrInsert(
-            ['name' => 'ethics-commissioner'],
-            ['has_workshops' => 0, 'has_objects' => 0]
-        );
+        Schema::table('transactions', function (Blueprint $table) {
+            $table->foreignId('receipt_id')->nullable()->constrained('files');
+        });
     }
 
     /**
@@ -26,5 +24,8 @@ class CreateEthicsCommissionerRole extends Migration
      */
     public function down()
     {
+        Schema::table('transactions', function (Blueprint $table) {
+            $table->dropColumn('receipt_id');
+        });
     }
-}
+};

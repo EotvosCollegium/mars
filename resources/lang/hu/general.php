@@ -15,6 +15,7 @@ return [
     'contacts' => 'Elérhetőségek',
     'debug_descr' => 'Az oldal karbantartás alatt van. Néhány funkció (pl. nyomtatás) nem működik megfelelően. Látogass vissza később.',
     'description' => 'Leírás',
+    'download' => 'Letöltés',
     'failed' => 'Hiba történt. Kérlek, írj a rendszergazdáknak!',
     'filter' => 'Szűrés',
     'home' => 'Kezdőlap',

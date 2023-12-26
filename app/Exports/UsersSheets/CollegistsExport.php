@@ -65,7 +65,7 @@ class CollegistsExport implements FromCollection, WithTitle, WithMapping, WithHe
     {
 
         return [
-            '=HYPERLINK("'.route('users.show', ['user'=> $user->id]).'", "'.$user->name.'")',
+            '=HYPERLINK("'.route('users.show', ['user' => $user->id]).'", "'.$user->name.'")',
             $user->educationalInformation?->neptun,
             $user->isResident() ? 'Bentlakó' : ($user->isExtern() ? 'Bejáró' : ($user->isAlumni() ? "Alumni" : ($user->isTenant() ? "Vendég" : ""))),
             $user->getStatus($this->semester)?->translatedStatus(),
