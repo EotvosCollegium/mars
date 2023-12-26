@@ -15,11 +15,17 @@ class WorkshopBalance extends Model
         'used_balance',
     ];
 
+    /**
+     * Returns the workshop the balance belongs to.
+     */
     public function workshop()
     {
         return $this->belongsTo('App\Models\Workshop');
     }
 
+    /**
+     * Returns the semester the balance has been calculated for.
+     */
     public function semester()
     {
         return $this->belongsTo('App\Models\Semester');
@@ -27,18 +33,36 @@ class WorkshopBalance extends Model
 
     /**
      * Generates all the workshops' allocated balance in the current semester.
-     * For all active members in a workshop who payed kkt:
-     *      payed kkt * (isResident ? 0.6 : 0.45) / member's workshops' count
+     * For all active members in a workshop who paid kkt:
+     *      paid kkt * (isResident ? $workshop_balance_resident
+     *                              : $workshop_balance_extern)
+     *                / member's workshops' count
+     * Uses the config values for the ratios if they are null.
+     *
+     * @param Semester $semester
+     * @param ?float $workshop_balance_resident
+     * @param ?float $workshop_balance_extern
+     * @return void
      */
-    public static function generateBalances($semester_id)
-    {
+    public static function generateBalances(
+        Semester $semester,
+        ?float $workshop_balance_resident = null,
+        ?float $workshop_balance_extern = null
+    ): void {
+        if (is_null($workshop_balance_resident)) {
+            $workshop_balance_resident = config("custom.workshop_balance_resident");
+        }
+        if (is_null($workshop_balance_extern)) {
+            $workshop_balance_extern = config("custom.workshop_balance_extern");
+        }
+
         $workshops = Workshop::with('users:id')->get();
 
-        if (!self::where('semester_id', $semester_id)->count()) {
+        if (!self::where('semester_id', $semester->id)->count()) {
             $balances = [];
             foreach ($workshops as $workshop) {
                 $balances[] = [
-                    'semester_id' => $semester_id,
+                    'semester_id' => $semester->id,
                     'workshop_id' => $workshop->id
                 ];
             }
@@ -46,8 +70,7 @@ class WorkshopBalance extends Model
             self::insert($balances);
         }
 
-        $users_has_to_pay_kktnetreg = User::hasToPayKKTNetregInSemester($semester_id)->pluck('id', 'id')->toArray();
-        $active_users = User::active($semester_id)->with(['roles' => function ($q) {
+        $active_users = User::active($semester->id)->with(['roles' => function ($q) {
             $q->where('name', Role::COLLEGIST);
         }, 'workshops:id'])->get()->keyBy('id')->all();
 
@@ -58,23 +81,22 @@ class WorkshopBalance extends Model
             $not_yet_paid = 0;
             foreach ($workshop->users as $member) {
                 if (isset($active_users[$member->id])) {
-                    if (!isset($users_has_to_pay_kktnetreg[$member->id])) {
-                        $user = $active_users[$member->id];
-                        $amount = config('custom.kkt');
-                        if ($user->isResident()) {
-                            $amount *= config('custom.workshop_balance_resident');
+                    $amount = $member->paidKKTInSemester($semester);
+                    if (!is_null($amount)) {
+                        if ($member->isResident()) {
+                            $amount *= $workshop_balance_resident;
                             $resident++;
                         } else {
-                            $amount *= config('custom.workshop_balance_extern');
+                            $amount *= $workshop_balance_extern;
                             $extern++;
                         }
-                        $balance += $amount / $user->workshops->count();
+                        $balance += $amount / $member->workshops->count();
                     } else {
                         $not_yet_paid++;
                     }
                 }
             }
-            self::where(['semester_id' => $semester_id, 'workshop_id' => $workshop->id])
+            self::where(['semester_id' => $semester->id, 'workshop_id' => $workshop->id])
                 ->update([
                     'allocated_balance' => $balance,
                     'extern' => $extern,

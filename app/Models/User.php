@@ -671,7 +671,7 @@ class User extends Authenticatable implements HasLocalePreference
         $this->addRole($role, $object);
 
         Cache::forget('collegists');
-        WorkshopBalance::generateBalances(Semester::current()->id);
+        WorkshopBalance::generateBalances(Semester::current());
     }
 
     /**
@@ -869,27 +869,27 @@ class User extends Authenticatable implements HasLocalePreference
     /* Transaction related */
 
     /**
-     * Returns the payed kkt amount in the semester. 0 if has not payed kkt.
+     * Returns the paid kkt amount in the semester; or null if the user has not paid kkt.
      * @param Semester $semester
-     * @return int
+     * @return ?int
      */
-    public function payedKKTInSemester(Semester $semester): int
+    public function paidKKTInSemester(Semester $semester): ?int
     {
         $transaction = $this->transactionsPaid()
             ->where('payment_type_id', PaymentType::kkt()->id)
             ->where('semester_id', $semester->id)
-            ->get();
+            ->first();
 
-        return $transaction ? $transaction->amount : 0;
+        return $transaction ? $transaction->amount : null;
     }
 
     /**
-     * Returns the payed kkt amount in the current semester. 0 if has not payed kkt.
-     * @return int
+     * Returns the paid kkt amount in the current semester; or null if the user has not paid kkt.
+     * @return ?int
      */
-    public function payedKKT(): int
+    public function paidKKT(): ?int
     {
-        return $this->payedKKTInSemester(Semester::current());
+        return $this->paidKKTInSemester(Semester::current());
     }
 
     /*
