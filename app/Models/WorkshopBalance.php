@@ -38,16 +38,17 @@ class WorkshopBalance extends Model
      *                              : $workshop_balance_extern)
      *                / member's workshops' count
      * Uses the config values for the ratios if they are null.
-     * 
+     *
      * @param Semester $semester
      * @param ?float $workshop_balance_resident
      * @param ?float $workshop_balance_extern
      * @return void
      */
-    public static function generateBalances(Semester $semester,
-                                            ?float $workshop_balance_resident = null,
-                                            ?float $workshop_balance_extern = null): void
-    {
+    public static function generateBalances(
+        Semester $semester,
+        ?float $workshop_balance_resident = null,
+        ?float $workshop_balance_extern = null
+    ): void {
         if (is_null($workshop_balance_resident)) {
             $workshop_balance_resident = config("custom.workshop_balance_resident");
         }

@@ -32,7 +32,7 @@ class EconomicTest extends TestCase
      * Does it for a user with an active status,
      * who can be a resident or an extern
      * and can have one or multiple workshops.
-     * 
+     *
      * In the test cases,
      * we provide users with
      * these parameters varied.
@@ -45,9 +45,11 @@ class EconomicTest extends TestCase
         $workshops = $user->workshops;
 
         // this also ensures the balance won't be null
-        WorkshopBalance::generateBalances(Semester::current(),
-                                          self::TEST_RATIO_RESIDENT,
-                                          self::TEST_RATIO_EXTERN);
+        WorkshopBalance::generateBalances(
+            Semester::current(),
+            self::TEST_RATIO_RESIDENT,
+            self::TEST_RATIO_EXTERN
+        );
 
         // the old allocated balances
         $old_balances = $workshops->map(fn ($workshop) => $workshop->balance()->allocated_balance);
@@ -57,9 +59,11 @@ class EconomicTest extends TestCase
         EconomicController::payKKTNetregLogic($user, $user, self::TEST_KKT, self::TEST_NETREG);
         // since this uses the config values to generate balances,
         // we have to redo it:
-        WorkshopBalance::generateBalances(Semester::current(),
-                                          self::TEST_RATIO_RESIDENT,
-                                          self::TEST_RATIO_EXTERN);
+        WorkshopBalance::generateBalances(
+            Semester::current(),
+            self::TEST_RATIO_RESIDENT,
+            self::TEST_RATIO_EXTERN
+        );
 
         $this->assertEquals($user->paidKKT(), self::TEST_KKT);
 
