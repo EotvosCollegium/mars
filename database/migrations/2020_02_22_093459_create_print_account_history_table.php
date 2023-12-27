@@ -14,7 +14,7 @@ class CreatePrintAccountHistoryTable extends Migration
     public function up()
     {
         Schema::table('print_accounts', function (Blueprint $table) {
-            $table->unsignedBigInteger('last_modified_by')->nullable(); //TODO remove nullable
+            $table->unsignedBigInteger('last_modified_by')->nullable();
             $table->timestamp('modified_at')->nullable();
         });
         Schema::create('print_account_history', function (Blueprint $table) {

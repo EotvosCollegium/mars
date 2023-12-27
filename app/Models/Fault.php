@@ -54,7 +54,10 @@ class Fault extends Model
         return strtoupper($value);
     }
 
-    public static function notificationCount()
+    /**
+     * @return int The number of unseen faults.
+     */
+    public static function notificationCount(): int
     {
         return self::where('status', self::UNSEEN)->count();
     }
