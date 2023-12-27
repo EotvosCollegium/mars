@@ -16,6 +16,11 @@ abstract class TestCase extends BaseTestCase
     protected User $user;
     protected User $admin;
 
+    /**
+     * Set up the test.
+     * This runs before every test case.
+     * @return void
+     */
     protected function setUp(): void
     {
         parent::setUp();

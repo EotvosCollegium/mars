@@ -21,7 +21,7 @@ class MailGate
      * If returns false, the event will not be propagated further.
      *
      * @param object $event
-     * @return bool
+     * @return void|bool
      */
     public function handle($event)
     {
