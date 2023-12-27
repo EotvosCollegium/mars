@@ -168,7 +168,7 @@ class UserController extends Controller
 
             if($request->has('workshop')) {
                 $user->workshops()->sync($request->input('workshop'));
-                WorkshopBalance::generateBalances(Semester::current()->id);
+                WorkshopBalance::generateBalances(Semester::current());
             }
 
             if($request->has('faculty')) {

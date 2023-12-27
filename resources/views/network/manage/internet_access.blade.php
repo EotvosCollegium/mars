@@ -12,7 +12,7 @@
             return $("<button class=\"btn waves-effect\" title=\"{{ $activation_date }}\">Frissítés</button>")
                 .click(function () {
                     saveData(cell, {...data, has_internet_until: "{{ $activation_date }}"});
-                }).toggle(data.has_internet_until == null || activation_date > active)
+                }).toggle(data.has_internet_until == null || active < now)
                 .add($("<button class=\"btn waves-effect\">Deaktivál</button>")
                     .click(function () {
                         saveData(cell, {...data, has_internet_until: null});

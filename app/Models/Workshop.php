@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Role;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property integer $id
@@ -96,6 +97,23 @@ class Workshop extends Model
         return $this->functionaries->filter(function ($user, $key) {
             return $user->hasRole(Role::WORKSHOP_LEADER);
         });
+    }
+
+    /**
+     * Returns all the balances the workshop has had in different semesters.
+     */
+    public function balances(): HasMany
+    {
+        return $this->hasMany(WorkshopBalance::class);
+    }
+
+    /**
+     * Returns the balance for a given semester
+     * (by default the current one).
+     */
+    public function balance(int $semester = null): ?WorkshopBalance
+    {
+        return $this->balances()->firstWhere('semester_id', $semester ?? Semester::current()->id);
     }
 
     public function color()
