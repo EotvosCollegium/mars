@@ -25,7 +25,7 @@ class MacAddressPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can('handle', $user->internetAccess);
+        return true;
     }
 
     /**
@@ -34,7 +34,7 @@ class MacAddressPolicy
      * @param User $user
      * @return mixed
      */
-    public function updateState(User $user): bool
+    public function update(User $user, MacAddress $macAddress): bool
     {
         return false;
     }

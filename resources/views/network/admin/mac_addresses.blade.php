@@ -4,8 +4,8 @@
 </span>
 <blockquote class="error">
     A MAC címek jóváhagyása előtt ellenőrizd, hány címe van már a felhasználónak, és hogy nem routerről van-e szó
-    (<a href="https://mac-address.alldatafeeds.com/mac-address-lookup" target="_blank">ellenőrizd pl. itt</a>).
-    Módosítsd a megjegyzést, ha szükséges.
+    (<a href="https://mac-address.alldatafeeds.com/mac-address-lookup" target="_blank">ellenőrizd pl. itt</a>). Szűrd a
+    gyanús címeket (pl. 'ff:ff:ff:ff:ff'). Módosítsd a megjegyzést, ha szükséges.
 </blockquote>
 <div id="mac-addresses-table"></div>
 <script type="text/javascript" src="{{ mix('js/moment.min.js') }}"></script>

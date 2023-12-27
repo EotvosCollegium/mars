@@ -58,11 +58,28 @@ class InternetController extends Controller
     {
         $request->validate([
             'report' => 'required|string',
+            'error_message' => 'nullable|string',
+            'when' => 'required|string',
+            'tries' => 'nullable|string',
             'user_os' => 'required|string',
+            'room' => 'nullable|string',
+            'availability' => 'nullable|string',
+            'can_enter' => 'in:on',
         ]);
 
         foreach (User::admins() as $admin) {
-            Mail::to($admin)->queue(new InternetFault($admin->name, user()->name, $request->get('report'), $request->get('user_os')));
+            Mail::to($admin)->queue(new InternetFault(
+                $admin->name,
+                user()->name,
+                $request->get('report'),
+                $request->get('error_message'),
+                $request->get('when'),
+                $request->get('tries'),
+                $request->get('user_os'),
+                $request->get('room'),
+                $request->get('availability'),
+                $request->get('can_enter')
+            ));
         }
         return redirect()->back()->with('message', __('mail.email_sent'));
     }

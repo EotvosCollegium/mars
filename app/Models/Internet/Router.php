@@ -93,7 +93,7 @@ class Router extends Model
      * Return the number of routers that have failed.
      * @return int
      */
-    public static function notifications(): int
+    public static function notificationCount(): int
     {
         return self::where('failed_for', '>', 0)->count();
     }

@@ -34,6 +34,7 @@ return [
     'register_collegist' => 'Application for college students',
     'register_guest' => 'Register for tenants',
     'report_bug' => 'Report a bug',
+    'room' => 'Room number',
     'save' => 'Save',
     'search' => 'Search...',
     'secretariat' => 'Secretariat',

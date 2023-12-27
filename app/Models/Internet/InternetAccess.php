@@ -47,7 +47,6 @@ use Illuminate\Support\Str;
  */
 class InternetAccess extends Model
 {
-    protected $table = 'internet_accesses';
     protected $primaryKey = 'user_id';
 
     protected $fillable = ['user_id', 'wifi_username', 'has_internet_until', 'wifi_password'];
@@ -137,7 +136,7 @@ class InternetAccess extends Model
      */
     private static function generateWifiPassword(): string
     {
-        $disabled_chars = ['/', '+', '=', 'o', '0', 'z', 'y', 'l', '1', 'i', 'I'];
+        $disabled_chars = ['/', '+', '=', 'o', '0', 'z', 'Z', 'y', 'Y', 'l', '1', 'i', 'I'];
 
         $string = '';
 

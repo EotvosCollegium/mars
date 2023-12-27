@@ -285,7 +285,7 @@ class Role extends Model
     public function translatedName(): Attribute
     {
         return Attribute::make(
-            get: fn () => __('role.' . $this->name)
+            get: fn() => __('role.' . $this->name)
         );
     }
 
@@ -302,7 +302,6 @@ class Role extends Model
             self::DIRECTOR => 'blue',
             self::STAFF => 'cyan',
             self::PRINTER => 'teal',
-            self::INTERNET_USER => 'light-green',
             self::LOCALE_ADMIN => 'amber',
             self::STUDENT_COUNCIL => 'green darken-4',
             self::APPLICATION_COMMITTEE_MEMBER => 'light-blue darken-4',

@@ -73,7 +73,7 @@ class MacAddressController extends Controller
      */
     public function update(Request $request, MacAddress $macAddress): MacAddress
     {
-        $this->authorize('updateState', $macAddress);
+        $this->authorize('update', $macAddress);
 
         $request->validate([
             'comment' => 'nullable|string|max:255',
@@ -82,7 +82,7 @@ class MacAddressController extends Controller
 
         $macAddress->update($request->only(['state', 'comment']));
 
-        return $macAddress->refresh();
+        return $macAddress;
     }
 
     /**

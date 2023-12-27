@@ -54,7 +54,7 @@ class Fault extends Model
         return strtoupper($value);
     }
 
-    public static function notifications()
+    public static function notificationCount()
     {
         return self::where('status', self::UNSEEN)->count();
     }

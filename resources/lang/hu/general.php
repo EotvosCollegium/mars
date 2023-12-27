@@ -34,6 +34,7 @@ return [
     'register_collegist' => 'Jelentkezés collegistának',
     'register_guest' => 'Regisztráció vendégeknek',
     'report_bug' => 'Hiba bejelentése',
+    'room' => 'Szobaszám',
     'save' => 'Mentés',
     'search' => 'Keresés...',
     'secretariat' => 'Titkárság',

@@ -671,16 +671,16 @@ class User extends Authenticatable implements HasLocalePreference
         }
 
         return in_array(
-            $this->id,
-            Cache::remember('collegists', 60, function () {
-                return Role::collegist()->getUsers()->pluck('id')->toArray();
-            })
-        ) || ($alumni === true && in_array(
-            $this->id,
-            Cache::remember('alumni', 60, function () {
-                return Role::alumni()->getUsers()->pluck('id')->toArray();
-            })
-        ));
+                $this->id,
+                Cache::remember('collegists', 60, function () {
+                    return Role::collegist()->getUsers()->pluck('id')->toArray();
+                })
+            ) || ($alumni === true && in_array(
+                    $this->id,
+                    Cache::remember('alumni', 60, function () {
+                        return Role::alumni()->getUsers()->pluck('id')->toArray();
+                    })
+                ));
     }
 
     /**
@@ -1032,7 +1032,7 @@ class User extends Authenticatable implements HasLocalePreference
      * Used by the NotificationCounter trait.
      * @return int
      */
-    public static function notifications(): int
+    public static function notificationCount(): int
     {
         return self::withoutGlobalScope('verified')->where('verified', false)->count();
     }
