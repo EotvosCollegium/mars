@@ -56,8 +56,9 @@ class MacAddressController extends Controller
 
         MacAddress::create([
             'user_id' => user()->id,
-            'comment' => $request->input('comment'),
-            'mac_address' => $request->input('mac_address')
+            'comment' => $request->input('comment') ?? '',
+            'mac_address' => $request->input('mac_address'),
+            'state' => user()->isAdmin() ? MacAddress::APPROVED : MacAddress::REQUESTED
         ]);
 
         foreach (User::admins() as $admin) {
@@ -75,12 +76,12 @@ class MacAddressController extends Controller
     {
         $this->authorize('update', $macAddress);
 
-        $request->validate([
+        $data = $request->validate([
             'comment' => 'nullable|string|max:255',
             'state' => 'nullable|in:' . implode(',', MacAddress::STATES)
         ]);
 
-        $macAddress->update($request->only(['state', 'comment']));
+        $macAddress->update($data);
 
         return $macAddress;
     }
