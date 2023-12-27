@@ -13,7 +13,7 @@ use Tests\TestCase;
  *
  * @return void
  */
-class InternetPageTest extends TestCase
+class InternetControllerTest extends TestCase
 {
 
     /**
@@ -59,71 +59,12 @@ class InternetPageTest extends TestCase
         $response->assertDontSeeText('AB:CD:EF:01:23:45');
     }
 
-    /**
-     * Test that the user can add new mac addresses.
-     */
-    public function test_add_mac_address(): void
-    {
-        $response = $this->actingAs($this->user)->post(route('internet.mac_addresses.store'), [
-            'comment' => 'My mac address',
-            'mac_address' => '01:23:45:67:89:AB'
-        ]);
-        $response->assertStatus(302);
-
-        $this->assertDatabaseHas('mac_addresses', [
-            'user_id' => $this->user->id,
-            'mac_address' => '01:23:45:67:89:AB',
-            'comment' => 'My mac address',
-            'state' => MacAddress::REQUESTED
-        ]);
-    }
-
-    /**
-     * Test that the user can delete its own mac address.
-     */
-    public function test_delete_mac_address(): void
-    {
-        $mac = MacAddress::factory()->create([
-            'user_id' => $this->user->id,
-            'mac_address' => '01:23:45:67:89:AB',
-        ]);
-
-        $response = $this->actingAs($this->user)->delete(route(
-            'internet.mac_addresses.destroy',
-            ['mac_address' => $mac->id]
-        ));
-
-        $response->assertStatus(204);
-
-        $this->assertDatabaseMissing('mac_addresses', [
-            'user_id' => $this->user->id,
-            'mac_address' => '01:23:45:67:89:AB',
-        ]);
-    }
-
-    /**
-     * Test that the user can not delete other's mac address.
-     */
-    public function test_cannot_delete_other_mac_address(): void
-    {
-        $mac = MacAddress::factory()->create([
-            'user_id' => User::factory()->create()->id,
-            'mac_address' => '01:23:45:67:89:AB'
-        ]);
-
-        $response = $this->actingAs($this->user)->delete(route(
-            'internet.mac_addresses.destroy',
-            ['mac_address' => $mac->id]
-        ));
-
-        $response->assertStatus(403);
-    }
 
     /**
      * Test that the user can send the internet fault form with null values as possible.
      * @throws \JsonException
      */
-    public function test_sent_internet_fault_form(): void
+    public function test_send_internet_fault_form(): void
     {
         $response = $this->actingAs($this->user)->post(route(
             'internet.report_fault',

@@ -49,8 +49,6 @@ use Illuminate\Support\Facades\Mail;
  * @property PrintAccountHistory[]|Collection $printHistory
  * @property PrintJob[]|Collection $printJobs
  * @property InternetAccess|null $internetAccess
- * @property MacAddress[]|Collection $macAddresses
- * @property WifiConnection[]|Collection $wifiConnections
  * @property Semester[]|Collection $semesterStatuses
  * @property Transaction[]|Collection $transactionsPaid
  * @property Transaction[]|Collection $transactionsReceived
@@ -671,16 +669,16 @@ class User extends Authenticatable implements HasLocalePreference
         }
 
         return in_array(
-            $this->id,
-            Cache::remember('collegists', 60, function () {
-                return Role::collegist()->getUsers()->pluck('id')->toArray();
-            })
-        ) || ($alumni === true && in_array(
-            $this->id,
-            Cache::remember('alumni', 60, function () {
-                return Role::alumni()->getUsers()->pluck('id')->toArray();
-            })
-        ));
+                $this->id,
+                Cache::remember('collegists', 60, function () {
+                    return Role::collegist()->getUsers()->pluck('id')->toArray();
+                })
+            ) || ($alumni === true && in_array(
+                    $this->id,
+                    Cache::remember('alumni', 60, function () {
+                        return Role::alumni()->getUsers()->pluck('id')->toArray();
+                    })
+                ));
     }
 
     /**
