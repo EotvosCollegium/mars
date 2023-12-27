@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Validator;
 
 class RouterController extends Controller
 {
-
     public function index()
     {
         $this->authorize('viewAny', Router::class);
