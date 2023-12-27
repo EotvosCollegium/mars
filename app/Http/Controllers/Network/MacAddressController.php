@@ -49,7 +49,7 @@ class MacAddressController extends Controller
     {
         $this->authorize('create', MacAddress::class);
 
-        Validator::validate($request->all(), [
+        $request->validate([
             'comment' => 'required|max:255',
             'mac_address' => ['required', 'regex:/((([a-fA-F0-9]{2}[-:]){5}([a-fA-F0-9]{2}))|(([a-fA-F0-9]{2}:){5}([a-fA-F0-9]{2})))/i'],
         ]);
