@@ -669,16 +669,16 @@ class User extends Authenticatable implements HasLocalePreference
         }
 
         return in_array(
-                $this->id,
-                Cache::remember('collegists', 60, function () {
-                    return Role::collegist()->getUsers()->pluck('id')->toArray();
-                })
-            ) || ($alumni === true && in_array(
-                    $this->id,
-                    Cache::remember('alumni', 60, function () {
-                        return Role::alumni()->getUsers()->pluck('id')->toArray();
-                    })
-                ));
+            $this->id,
+            Cache::remember('collegists', 60, function () {
+                return Role::collegist()->getUsers()->pluck('id')->toArray();
+            })
+        ) || ($alumni === true && in_array(
+            $this->id,
+            Cache::remember('alumni', 60, function () {
+                return Role::alumni()->getUsers()->pluck('id')->toArray();
+            })
+        ));
     }
 
     /**

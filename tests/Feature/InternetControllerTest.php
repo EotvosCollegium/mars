@@ -15,7 +15,6 @@ use Tests\TestCase;
  */
 class InternetControllerTest extends TestCase
 {
-
     /**
      * Test that the user does not see the details on the internet page if it has no internet access.
      */
