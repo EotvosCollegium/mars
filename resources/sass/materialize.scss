@@ -68,6 +68,16 @@ span.badge.tag {
     float: none;
 }
 
+// for the list of workshop functionaries on the home page
+a#workshop-administrator-collapsible {
+    color: inherit; text-decoration: inherit;
+}
+.dropdown-triangle {
+    display: inline-block; font-size: 0.6em; transform: translateY(-0.4em);
+}
+#workshop-administrator-content ul li ul {
+    margin: 0 0 10px 20px;
+}
 
 //enable multiline buttons if the text does not fit in
 .btn,

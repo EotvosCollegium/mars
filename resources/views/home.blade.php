@@ -113,6 +113,7 @@
 
                 <!-- Workshop secretaries -->
                 <h5><a id="workshop-administrator-collapsible" href="javascript:void(0)" onclick="toggleCollContent()">
+                    <span class="dropdown-triangle">▶</span>
                     @lang('role.workshop-functionaries')
                 </a></h5>
                 <div id="workshop-administrator-content" style="display: none">
@@ -212,11 +213,14 @@ $(document).ready(function(){
 
 // for the dropdown of workshop secretaries
 var collContent = document.getElementById("workshop-administrator-content");
+var triangleSpan = document.getElementById("workshop-administrator-collapsible").firstElementChild;
 function toggleCollContent() {
     if (collContent.style.display === "block") {
         collContent.style.display = "none";
+        triangleSpan.textContent = "▶";
     } else {
         collContent.style.display = "block";
+        triangleSpan.textContent = "▼";
     }
 }
 </script>
