@@ -4,7 +4,7 @@
         <blockquote>
             @lang('internet.report_fault_desc')
         </blockquote>
-        @if(user()->room && user()->room()->first()->routers()->first()->isDown())
+        @if(user()->room && user()->room()->first()?->routers()?->first()?->isDown())
             <blockquote class="error">
                 @lang('internet.report_fault_router_unavailable', ['room' => user()->room])
             </blockquote>
