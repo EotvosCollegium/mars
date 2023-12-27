@@ -4,6 +4,11 @@
         <blockquote>
             @lang('internet.report_fault_desc')
         </blockquote>
+        @if(user()->room && user()->room()->first()->routers()->first()->isDown())
+            <blockquote class="error">
+                @lang('internet.report_fault_router_unavailable', ['room' => user()->room])
+            </blockquote>
+        @endif
         <form action="{{ route('internet.report_fault') }}" method="post">
             <div class="form-row align-items-center">
                 @csrf
@@ -16,7 +21,7 @@
                                   placeholder="pl. Windows 11 / Android 12 / MacOS / Ubuntu"/>
                     <x-input.text id="room" text="general.room" value="{{user()->room}}"/>
                     <x-input.text l=6 id="availability" text="internet.report_fault_availability"/>
-                    <x-input.checkbox l=6 id="can_enter" text="internet.report_fault_can_enter_room"/>
+                    <x-input.checkbox l=6 id="can_enter" checked text="internet.report_fault_can_enter_room"/>
                     <x-input.button class="right" text="general.send"/>
                 </div>
             </div>

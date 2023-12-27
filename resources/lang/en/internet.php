@@ -32,6 +32,7 @@ return [
     'report_fault_availability' => 'When are you available in your room?',
     'report_fault_can_enter_room' => 'I give permission for the system administrators to enter my room in spite of my absence, if necessary, to fix the error.',
     'report_fault_desc' => 'If you have any problem with the internet, please report it here. To make troubleshooting the problem as smooth as possible, describe the error as precisely as possible.',
+    'report_fault_router_unavailable' => 'We can see that the router in room :room is not available. The system administrators should know this already, but if the problem persists, please  <a href="mailto:root@eotvos.elte.hu"> contact them here</a>.',
     'request' => 'Undo',
     'requested' => 'Requested',
     'router_descr' => 'If the router is not available in your room, unplug it and plug it back in. If that doesn\'t solve the problem, <a href="mailto:root@eotvos.elte.hu">reach out to the system administrators</a>!',

@@ -7,6 +7,7 @@ use App\Mail\RouterWarningResident;
 use App\Models\Room;
 use App\Models\User;
 use App\Utils\NotificationCounter;
+use Carbon\Carbon;
 use Database\Factories\Internet\RouterFactory;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
@@ -69,6 +70,29 @@ class Router extends Model
     protected $attributes = [
         'failed_for' => 0, //default value
     ];
+
+    /**
+     * Check if the router is not reachable.
+     * @return Router
+     */
+    public function isDown()
+    {
+        return $this->failed_for > 0;
+    }
+
+    /**
+     * Check if the router is reachable.
+     * @return Router
+     */
+    public function isUp()
+    {
+        return $this->failed_for == 0;
+    }
+
+    public function getFailStartDate()
+    {
+        return Carbon::now()->subMinutes($this->failed_for * 5)->roundMinute(5)->format('Y-m-d H:i');
+    }
 
     /**
      * Email the sysadmins and the residents if the router has failed for the second time.

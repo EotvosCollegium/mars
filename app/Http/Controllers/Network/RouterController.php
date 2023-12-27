@@ -9,10 +9,6 @@ use Illuminate\Support\Facades\Validator;
 
 class RouterController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('can:possess,App\Models\Internet\InternetAccess');
-    }
 
     public function index()
     {
