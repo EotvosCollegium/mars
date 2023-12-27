@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * App\Models\Workshop
@@ -77,6 +78,23 @@ class Workshop extends Model
         return $this->users->filter(function ($user, $key) {
             return $user->isExtern();
         });
+    }
+
+    /**
+     * Returns all the balances the workshop has had in different semesters.
+     */
+    public function balances(): HasMany
+    {
+        return $this->hasMany(WorkshopBalance::class);
+    }
+
+    /**
+     * Returns the balance for a given semester
+     * (by default the current one).
+     */
+    public function balance(int $semester = null): ?WorkshopBalance
+    {
+        return $this->balances()->firstWhere('semester_id', $semester ?? Semester::current()->id);
     }
 
     public function color()

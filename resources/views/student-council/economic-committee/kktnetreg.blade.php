@@ -15,7 +15,7 @@
             <div class="card-content">
                 <span class="card-title">Még nem fizettek ({{ \App\Models\Semester::current()->tag }}) </span>
                 <table><tbody>
-                    @foreach($users_not_payed as $user)
+                    @foreach($users_not_paid as $user)
                       <tr><td>{{ $user->uniqueName }}</td></tr>
                     @endforeach
                 </tbody></table>
