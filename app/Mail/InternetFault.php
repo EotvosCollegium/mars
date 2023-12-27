@@ -38,8 +38,7 @@ class InternetFault extends Mailable
         ?string $room,
         ?string $availability,
         ?bool   $can_enter
-    )
-    {
+    ) {
         $this->recipient = $recipient;
         $this->reporter = $reporter;
         $this->report = $report;
