@@ -87,13 +87,7 @@ class AdminInternetController extends Controller
             'has_internet_until' => 'nullable|date',
         ]);
 
-        if ($request->get('has_internet_until') != null) {
-            $newDate = Carbon::parse($request->get('has_internet_until'));
-        } else {
-            $newDate = InternetAccess::getInternetDeadline();
-        }
-        $internetAccess->update(['has_internet_until' => $newDate]);
-        return $newDate;
+        return $internetAccess->extendInternetAccess($request->get('has_internet_until'));
     }
 
     /**

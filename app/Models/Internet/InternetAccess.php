@@ -122,7 +122,26 @@ class InternetAccess extends Model
         $this->update(['wifi_password' => self::generateWifiPassword()]);
     }
 
+    /**
+     * @param string|Carbon|null $newDate
+     * @return Carbon
+     */
+    public function extendInternetAccess(Carbon|string $newDate = null): Carbon
+    {
+        if ($newDate != null) {
+            $newDate = Carbon::parse($newDate);
+        } else {
+            $newDate = InternetAccess::getInternetDeadline();
+        }
+        $this->update(['has_internet_until' => $newDate]);
 
+        return $newDate;
+    }
+
+    /**
+     * Get the current date until the internet accesses should be set.
+     * @return \Carbon\Carbon
+     */
     public static function getInternetDeadline(): \Carbon\Carbon
     {
         return Semester::next()->getStartDate()->addMonth();
