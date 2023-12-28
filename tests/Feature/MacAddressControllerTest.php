@@ -3,6 +3,8 @@
 namespace Tests\Feature;
 
 use App\Mail\InternetFault;
+use App\Mail\MacNeedsApproval;
+use App\Mail\MacStatusChanged;
 use App\Models\Internet\MacAddress;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
@@ -62,6 +64,8 @@ class MacAddressControllerTest extends TestCase
             'comment' => 'My mac address',
             'state' => MacAddress::REQUESTED
         ]);
+
+        Mail::assertQueued(MacNeedsApproval::class);
     }
 
     /**
@@ -99,8 +103,8 @@ class MacAddressControllerTest extends TestCase
             'state' => MacAddress::APPROVED
         ]);
         $response->assertStatus(200);
-        echo $response->content();
         $response->assertJsonFragment(['state' => MacAddress::APPROVED]);
+        Mail::assertQueued(MacStatusChanged::class);
 
         $response = $this->actingAs($this->admin)->put(route('internet.mac_addresses.update', ['mac_address' => $mac->id]), [
             'comment' => 'My new comment'
@@ -114,6 +118,7 @@ class MacAddressControllerTest extends TestCase
             'state' => MacAddress::APPROVED,
             'comment' => 'My new comment'
         ]);
+
     }
 
 

@@ -20,6 +20,7 @@ use Illuminate\Support\Carbon;
  * @property string $mac_address
  * @property string $comment
  * @property string $state
+ * @property-read string $translated_state
  * @property string $ip
  * @property User $user
  * @property int $id
@@ -66,7 +67,7 @@ class MacAddress extends Model
     public function translatedState(): Attribute
     {
         return Attribute::make(
-            get: fn () => __('internet.' . strtolower($this->state))
+            get: fn() => __('internet.' . strtolower($this->state))
         );
     }
 
@@ -104,7 +105,7 @@ class MacAddress extends Model
     public function macAddress(): Attribute
     {
         return Attribute::make(
-            set: fn ($value) => str_replace('-', ':', strtoupper($value)),
+            set: fn($value) => str_replace('-', ':', strtoupper($value)),
         );
     }
 

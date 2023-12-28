@@ -6,6 +6,8 @@
     <p>Vendégek esetén belépéskor meg kell adniuk a kiköltözés dátumát, amihez szinkronizáljuk az internet
         hozzáférésüket. Ha egy volt colis kér netet, csak adj neki vendég jogosultságot, és első belépéskor be tudja
         állítani már a netet magának.</p>
+    <p>Itt manuálisan lehet meghosszabbítani a fenti dátumig, vagy az internetelérés oszlopra kattintva egyedi
+        értékre.</p>
 </blockquote>
 
 <blockquote class="error">Az internet hozzáférést manuálisan csak kivételes esetekben hosszabbítsd!</blockquote>

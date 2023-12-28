@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Network;
 
 use App\Http\Controllers\Controller;
 use App\Mail\MacNeedsApproval;
+use App\Mail\MacStatusChanged;
 use App\Models\Internet\InternetAccess;
 use App\Models\Internet\MacAddress;
 use App\Models\User;
@@ -14,7 +15,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class MacAddressController extends Controller
@@ -62,7 +62,7 @@ class MacAddressController extends Controller
         ]);
 
         foreach (User::admins() as $admin) {
-            Mail::to($admin)->send(new MacNeedsApproval($admin->name, user()->name));
+            Mail::to($admin)->queue(new MacNeedsApproval($admin->name, user()->name));
         }
 
         return redirect()->back()->with('message', __('general.successfully_added'));
@@ -82,6 +82,10 @@ class MacAddressController extends Controller
         ]);
 
         $macAddress->update($data);
+        if ($request->has('state')) {
+            $user = $macAddress->internetAccess->user;
+            Mail::to($user)->queue(new MacStatusChanged($user->name, $macAddress));
+        }
 
         return $macAddress;
     }
