@@ -6,6 +6,56 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\EpistolaNews
+ *
+ * @property int $id
+ * @property int|null $uploader_id
+ * @property string $title
+ * @property string|null $subtitle
+ * @property string|null $description
+ * @property \Illuminate\Support\Carbon|null $date
+ * @property \Illuminate\Support\Carbon|null $time
+ * @property \Illuminate\Support\Carbon|null $end_date
+ * @property string|null $picture_path
+ * @property int $sent
+ * @property string|null $details_name_1
+ * @property string|null $details_url_1
+ * @property string|null $details_name_2
+ * @property string|null $details_url_2
+ * @property string|null $deadline_name
+ * @property \Illuminate\Support\Carbon|null $deadline_date
+ * @property \Illuminate\Support\Carbon|null $date_for_sorting
+ * @property string|null $category
+ * @property-read string $bg_color
+ * @property-read string $color
+ * @property-read string|null $date_time
+ * @property-read \App\Models\User|null $uploader
+ * @property-read string|null $valid_until
+ * @method static \Database\Factories\EpistolaNewsFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|EpistolaNews newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|EpistolaNews newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|EpistolaNews query()
+ * @method static \Illuminate\Database\Eloquent\Builder|EpistolaNews whereCategory($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|EpistolaNews whereDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|EpistolaNews whereDateForSorting($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|EpistolaNews whereDeadlineDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|EpistolaNews whereDeadlineName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|EpistolaNews whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|EpistolaNews whereDetailsName1($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|EpistolaNews whereDetailsName2($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|EpistolaNews whereDetailsUrl1($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|EpistolaNews whereDetailsUrl2($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|EpistolaNews whereEndDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|EpistolaNews whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|EpistolaNews wherePicturePath($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|EpistolaNews whereSent($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|EpistolaNews whereSubtitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|EpistolaNews whereTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|EpistolaNews whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|EpistolaNews whereUploaderId($value)
+ * @mixin \Eloquent
+ */
 class EpistolaNews extends Model
 {
     use HasFactory;
