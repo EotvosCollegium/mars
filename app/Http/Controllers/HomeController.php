@@ -8,6 +8,7 @@ use App\Models\Role;
 use App\Models\RoleObject;
 use App\Models\RoleUser;
 use App\Models\User;
+use App\Models\Workshop;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
@@ -218,7 +219,16 @@ class HomeController extends Controller
                 Role::BOARD_OF_TRUSTEES_MEMBER => User::boardOfTrusteesMembers(),
                 Role::ETHICS_COMMISSIONER => User::ethicsCommissioners(),
             ]);
+
+            $workshops = Workshop::all();
+            $contacts['workshops'] = array_combine(
+                $workshops->pluck('name')->all(),
+                $workshops->map(fn ($workshop) => ['leaders' => $workshop->leaders->pluck('name')->implode(', '),
+                                                   'administrators' => $workshop->administrators->pluck('name')->implode(', ')])
+                          ->all()
+            );
         }
+
         return $contacts;
     }
 }

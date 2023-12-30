@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Role;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
@@ -74,7 +75,7 @@ class Workshop extends Model
     /**
      * Returns a collection with all functionaries of the workshop in it.
      */
-    public function functionaries()
+    public function functionaries(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'role_users');
     }
@@ -82,21 +83,17 @@ class Workshop extends Model
     /**
      * Filters functionaries to only include workshop administrators.
      */
-    public function administrators()
+    public function administrators(): BelongsToMany
     {
-        return $this->functionaries->filter(function ($user, $key) {
-            return $user->hasRole(Role::WORKSHOP_ADMINISTRATOR);
-        });
+        return $this->functionaries()->wherePivot('role_id', Role::get(Role::WORKSHOP_ADMINISTRATOR)->id);
     }
 
     /**
      * Filters functionaries to only include workshop leaders.
      */
-    public function leaders()
+    public function leaders(): BelongsToMany
     {
-        return $this->functionaries->filter(function ($user, $key) {
-            return $user->hasRole(Role::WORKSHOP_LEADER);
-        });
+        return $this->functionaries()->wherePivot('role_id', Role::get(Role::WORKSHOP_LEADER)->id);
     }
 
     /**

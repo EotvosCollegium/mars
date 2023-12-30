@@ -111,47 +111,28 @@
                     @endif
                 @endforeach
 
-                <!-- Workshop secretaries -->
-                <h5><a id="workshop-administrator-collapsible" href="javascript:void(0)" onclick="toggleCollContent()">
-                    <span class="dropdown-triangle">▶</span>
-                    @lang('role.workshop-functionaries')
-                </a></h5>
-                <div id="workshop-administrator-content" style="display: none">
-                    <ul>
-                        @foreach(\App\Models\Workshop::all() as $workshop)
-                        <li>
-                            <b>{{$workshop->name}}</b>
-                            <ul>
-                                <li>@lang('role.'.\App\Models\Role::WORKSHOP_LEADER):
-                                    <i>
-                                        {{
-                                            implode(
-                                                ', ',
-                                                array_map(
-                                                    function ($admin) {return $admin->name;},
-                                                    $workshop->leaders()->all()
-                                                )
-                                            )
-                                        }}
-                                    </i>
-                                </li>
-                                <li>@lang('role.'.\App\Models\Role::WORKSHOP_ADMINISTRATOR):
-                                    <i>
-                                        {{
-                                            implode(
-                                                ', ',
-                                                array_map(
-                                                    function ($admin) {return $admin->name;},
-                                                    $workshop->administrators()->all()
-                                                )
-                                            )
-                                        }}
-                                    </i>
-                                </li>
-                            </ul>
-                        </li>
-                        @endforeach
-                    </ul>
+                <!-- Workshop functionaries -->
+                <div class="arrow-dropdown">
+                    <h5 class="arrow-dropdown-title" class="closed"><a>
+                        @lang('role.workshop-functionaries')
+                    </a></h5>
+                    <div class="arrow-dropdown-content">
+                        <ul>
+                            @foreach($contacts['workshops'] as $name => $functionaries)
+                            <li>
+                                <b>{{$name}}</b>
+                                <ul>
+                                    <li>@lang('role.'.\App\Models\Role::WORKSHOP_LEADER):
+                                        <i>{{$functionaries['leaders']}}</i>
+                                    </li>
+                                    <li>@lang('role.'.\App\Models\Role::WORKSHOP_ADMINISTRATOR):
+                                        <i>{{$functionaries['administrators']}}</i>
+                                    </li>
+                                </ul>
+                            </li>
+                            @endforeach
+                        </ul>
+                    </div>
                 </div>
 
                 @endif
@@ -209,19 +190,6 @@ function standby(id) {
 }
 $(document).ready(function(){
     $('.materialboxed').materialbox();
-  });
-
-// for the dropdown of workshop secretaries
-var collContent = document.getElementById("workshop-administrator-content");
-var triangleSpan = document.getElementById("workshop-administrator-collapsible").firstElementChild;
-function toggleCollContent() {
-    if (collContent.style.display === "block") {
-        collContent.style.display = "none";
-        triangleSpan.textContent = "▶";
-    } else {
-        collContent.style.display = "block";
-        triangleSpan.textContent = "▼";
-    }
-}
+});
 </script>
 @endpush

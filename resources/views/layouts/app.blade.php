@@ -103,6 +103,27 @@
                 url: "{{ route('set-color-mode', [':mode']) }}".replace(':mode', mode),
             });
         }
+
+        // for our custom arrow dropdowns
+        // (e.g. the dropdown of workshop secretaries)
+        function toggleCollContent(title) {
+            return function() {
+                if (title.is(".closed")) {
+                    title.removeClass("closed");
+                    title.addClass("open");
+                    // the rest is done by CSS rules
+                } else {
+                    title.removeClass("open");
+                    title.addClass("closed");
+                }
+            }
+        }
+
+        $(".arrow-dropdown .arrow-dropdown-title").each(function () {
+            $(this).on('click', toggleCollContent($(this)));
+            // initialize it as closed:
+            $(this).addClass('closed');
+        });
         </script>
     @endpush
 
