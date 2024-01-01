@@ -2,8 +2,24 @@
 
 namespace App\Models;
 
+use App\Models\Internet\Router;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * App\Models\Room
+ *
+ * @property string $name
+ * @property int $capacity
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $users
+ * @property-read int|null $users_count
+ * @method static \Illuminate\Database\Eloquent\Builder|Room newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Room newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Room query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Room whereCapacity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Room whereName($value)
+ * @mixin \Eloquent
+ */
 class Room extends Model
 {
     protected $primaryKey = 'name';
@@ -30,15 +46,24 @@ class Room extends Model
     /**
      * Returns the users assigned to this room
      */
-    public function users()
+    public function users(): HasMany
     {
         return $this->hasMany(User::class, 'room', 'name');
     }
 
     /**
+     * Returns the router(s) in the room
+     */
+    public function routers(): HasMany
+    {
+        return $this->hasMany(Router::class, 'room', 'name');
+    }
+
+
+    /**
      * Returns the number of users that are assigned to this room
      */
-    public function residentNumber()
+    public function residentNumber(): int
     {
         //check if count already eager loaded
         return $this->users_count ?? $this->users()->count();

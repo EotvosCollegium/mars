@@ -3,7 +3,7 @@
     <p>
         {{ $reporter }} új vezetékes eszközt regisztrált, mely jóváhagyásra vár.
     </p>
-    @component('mail::button', ['url' => route('internet.admin')])
-    Részletek
+    @component('mail::button', ['url' => route('internet.admin.index')])
+        Részletek
     @endcomponent
 @endcomponent

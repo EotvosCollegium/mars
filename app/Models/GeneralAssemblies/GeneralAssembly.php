@@ -13,6 +13,30 @@ use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
 
+/**
+ * App\Models\GeneralAssemblies\GeneralAssembly
+ *
+ * @property int $id
+ * @property string $title
+ * @property \Illuminate\Support\Carbon|null $opened_at
+ * @property \Illuminate\Support\Carbon|null $closed_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|User[] $excusedUsers
+ * @property-read int|null $excused_users_count
+ * @property-read int $presence_checks_needed
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\GeneralAssemblies\PresenceCheck[] $presenceChecks
+ * @property-read int|null $presence_checks_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|Question[] $questions
+ * @property-read int|null $questions_count
+ * @method static \Database\Factories\GeneralAssemblies\GeneralAssemblyFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|GeneralAssembly newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|GeneralAssembly newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|GeneralAssembly query()
+ * @method static \Illuminate\Database\Eloquent\Builder|GeneralAssembly whereClosedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|GeneralAssembly whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|GeneralAssembly whereOpenedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|GeneralAssembly whereTitle($value)
+ * @mixin \Eloquent
+ */
 class GeneralAssembly extends Model
 {
     use HasFactory;

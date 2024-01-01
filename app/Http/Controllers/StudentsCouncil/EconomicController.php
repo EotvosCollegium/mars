@@ -65,20 +65,20 @@ class EconomicController extends Controller
         return view('student-council.economic-committee.kktnetreg', [
             'users_not_paid' => User::hasToPayKKTNetreg()->get(),
             'transactions' => Transaction::whereIn('payment_type_id', [PaymentType::kkt()->id, PaymentType::netreg()->id])
-                    ->where('semester_id', Semester::current()->id)
-                    ->get()
+                ->where('semester_id', Semester::current()->id)
+                ->get()
         ]);
     }
 
     /**
-      * Pay kkt and netreg to the receiver given.
-      * Also updates workshop balances
-      * and the internet access expiry date.
-      * Returns an array with the two transaction objects
-      * and the new expiry date.
-      *
-      * Used here and in the tests.
-      */
+     * Pay kkt and netreg to the receiver given.
+     * Also updates workshop balances
+     * and the internet access expiry date.
+     * Returns an array with the two transaction objects
+     * and the new expiry date.
+     *
+     * Used here and in the tests.
+     */
     public static function payKKTNetregLogic(User $payer, User $receiver, int $kkt_amount, int $netreg_amount): array
     {
         // Creating transactions
@@ -106,7 +106,7 @@ class EconomicController extends Controller
 
         WorkshopBalance::generateBalances(Semester::current());
 
-        $new_expiry_date = \App\Http\Controllers\Network\InternetController::extendUsersInternetAccess($payer);
+        $new_expiry_date = $payer->internetAccess->extendInternetAccess();
 
         return [$kkt, $netreg, $new_expiry_date];
     }
