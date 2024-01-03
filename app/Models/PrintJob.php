@@ -89,7 +89,7 @@ class PrintJob extends Model
             'id', // Local key on users
         );
     }
-    
+
     /**
      * Attribute for the translated cost.
      */
