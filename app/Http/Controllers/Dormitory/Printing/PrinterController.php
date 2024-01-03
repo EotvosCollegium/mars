@@ -47,9 +47,8 @@ class PrinterController extends Controller
             if ($printer->paper_out_at === null || now()->diffInMinutes($printer->paper_out_at) > 5) {
                 Mail::to(User::withRole(Role::SYS_ADMIN)->get())->queue(new NoPaper(user()->name));
             }
-            $printer->update([
-                "paper_out_at" => now(),
-            ]);
+            $printer->paper_out_at = now();
+            $printer->save();
             return redirect()->back()->with('message', __('mail.email_sent'));
         } else {
             $this->authorize('handleAny', PrintAccount::class);

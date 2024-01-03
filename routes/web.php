@@ -115,7 +115,7 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
 
     /** Printing */
     Route::get('/printer/{page?}', [PrinterController::class, 'index'])->name('printer.index'); // also print.manage, print
-    Route::put('/printer/{id}', [PrinterController::class, 'update'])->name('printer.update'); // print.added_paper, print.no_paper
+    Route::put('/printer/{printer}', [PrinterController::class, 'update'])->name('printer.update'); // print.added_paper, print.no_paper
 
     Route::get('/print-job/{filter?}', [PrintJobController::class, 'indexPrintJobs'])->name('print-job.index'); // print.print_jobs.list, print.print_jobs.list.all
     Route::post('print-job', [PrintJobController::class, 'store'])->name('print-job.store'); // print.print

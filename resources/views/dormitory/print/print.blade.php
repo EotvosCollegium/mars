@@ -23,13 +23,14 @@
         <form class="form-horizontal" role="form" method="POST" action="{{ route('print-job.store') }}"
             enctype="multipart/form-data">
             @csrf
-            @method('PUT')
             <div class="row">
                 <x-input.file l=8 xl=10 id="file" accept=".pdf" required text="print.select_document"/>
                 <x-input.text l=4 xl=2  id="copies" type="number" min="1" value="1" required text="print.number_of_copies"/>
                 <x-input.checkbox s=8 xl=4 name="two_sided" checked text="print.twosided"/>
                 @if($printAccount->available_free_pages->sum('amount') > 0) {{-- only show when user have active free pages --}}
-                    <x-input.checkbox s=8 xl=4 name="use_free_pages" text="print.use_free_pages"/>
+                    <x-input.checkbox s=8 xl=4 name="use_free_pages" text="print.use_free_pages" 
+                        checked="{{ session()->get('use_free_pages') ? 'checked' : '' }}"
+                    />
                     <x-input.button s=4 class="right" text="print.print"/>
                 @else
                     <x-input.button s=4 xl=8 class="right" text="print.print"/>
@@ -47,18 +48,19 @@
                 </blockquote>
             </div>
             @if($printer->paper_out_at != null && $user->can('handleAny', \App\Models\PrintAccount::class))
-                <form method="POST" action="{{ route('printer.update', ['id' => $printer->id]) }}">
+                <form method="POST" action="{{ route('printer.update', ['printer' => $printer->id]) }}">
                     @method('PUT')
                     @csrf
                     <x-input.button l=3 class="right coli blue" text="Papír újratöltve"/>
-                    <input name="no_paper" value="true" type="hidden" />
+                    {{-- value set to "1" instead of true so that laravel has no problem with validation --}}
+                    <input name="no_paper" value="0" type="hidden" />
                 </form>
             @else
-                <form method="POST" action="{{ route('printer.update', ['id' => $printer->id]) }}">
+                <form method="POST" action="{{ route('printer.update', ['printer' => $printer->id]) }}">
                     @method('PUT')
                     @csrf
                     <x-input.button l=3 class="right coli blue" text="print.no_paper" />
-                    <input name="no_paper" value="false" type="hidden" />
+                    <input name="no_paper" value="1" type="hidden" />
                 </form>
             @endif
         </div>

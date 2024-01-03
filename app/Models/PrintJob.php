@@ -49,7 +49,8 @@ class PrintJob extends Model
         'job_id',
         'cost',
         'printer_id',
-        'used_free_pages'
+        'used_free_pages',
+        'filename',
     ];
 
     protected $casts = [
@@ -94,7 +95,7 @@ class PrintJob extends Model
      */
     public function getTranslatedCostAttribute()
     {
-        return "$this->cost HUF";
+        return $this->used_free_pages ? "$this->cost ingyenes oldal" : "$this->cost HUF";
     }
 
     /**

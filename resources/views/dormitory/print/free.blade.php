@@ -54,6 +54,7 @@
                     title: "@lang('print.deadline')",
                     field: "deadline",
                     sorter: "datetime",
+                    formatter:dateFormatter,
                     @can('viewAny', App\Models\FreePages::class) headerFilter: 'input' @endif
                 },
                 {

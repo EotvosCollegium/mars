@@ -41,7 +41,6 @@ class Printer extends Model {
      */
     public function cancelPrintJob(PrintJob $printJob) {
         $process = new Process(['cancel', $printJob->job_id, '-h', "$this->ip:$this->port"]);
-        $command = "cancel $printJob->job_id -h $this->ip:$this->port";
         if (config('app.debug')) {
             // cancel(1) exits with status code 0 if it succeeds
             $result = ['output' => '', 'exit_code' => 0];

@@ -70,21 +70,24 @@ class PrintJobController extends Controller
      */
     public function store(Request $request)
     {
+        xdebug_break();
+        Log::info($request->all());
         $request->validate([
             'file' => 'required|file',
             'copies' => 'required|integer|min:1',
-            'two_sided' => 'boolean',
-            'printer_id' => 'nullable|exists:printers,id',
-            'use_free_pages' => 'nullable|boolean',
+            'two_sided' => 'in:on,off',
+            'printer_id' => 'exists:printers,id',
+            'use_free_pages' => 'in:on,off',
         ]);
+        Log::info("Printjob cost 2");
 
         $useFreePages = $request->boolean('use_free_pages');
-        $copyNumber = $request->get('copies');
-        $twoSided = $request->get('two_sided');
+        $copyNumber = $request->input('copies');
+        $twoSided = $request->boolean('two_sided');
         $file = $request->file('file');
 
         /** @var Printer */
-        $printer = $request->printer_id ? Printer::find($request->get("printer_id")) : Printer::firstWhere('name', config('print.printer_name'));
+        $printer = $request->has('printer_id') ? Printer::find($request->input("printer_id")) : Printer::firstWhere('name', config('print.printer_name'));
 
         $path = $file->store('print-documents');
         $pageNumber = Printer::getDocumentPageNumber($path);
@@ -92,8 +95,8 @@ class PrintJobController extends Controller
         /** @var PrintAccount */
         $printAccount = user()->printAccount;
 
-        if (($useFreePages && $printAccount->hasEnoughFreePages($pageNumber, $copyNumber, $twoSided)) ||
-            (!$useFreePages && $printAccount->hasEnoughBalance($pageNumber, $copyNumber, $twoSided))
+        if (!(($useFreePages && $printAccount->hasEnoughFreePages($pageNumber, $copyNumber, $twoSided)) ||
+            (!$useFreePages && $printAccount->hasEnoughBalance($pageNumber, $copyNumber, $twoSided)))
         ) {
             return back()->with('error', __('print.no_balance'));
         }
@@ -110,6 +113,8 @@ class PrintJobController extends Controller
         $cost = $useFreePages ?
             PrintAccount::getFreePagesNeeeded($pageNumber, $copyNumber, $twoSided) :
             PrintAccount::getBalanceNeeded($pageNumber, $copyNumber, $twoSided);
+
+        Log::info("Printjob cost: $cost");
 
         user()->printJobs()->create([
             'state' => PrintJobStatus::QUEUED,
@@ -140,8 +145,13 @@ class PrintJobController extends Controller
                     break;
                 }
             }
+            // Set value in the session so that free page checkbox stays checked
+            session()->put('use_free_pages', true);
         } else {
             $printAccount->balance -= $cost;
+
+            // Remove value regarding the free page checkbox from the session
+            session()->remove('use_free_pages');
         }
 
         $printAccount->save();
