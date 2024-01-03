@@ -200,11 +200,11 @@ class PrintJobController extends Controller
 
     /**
      * Returns a paginated list of `PrintJob`s.
-     * @param Builder $printJobs 
-     * @param array $columns 
-     * @return LengthAwarePaginator 
-     * @throws BindingResolutionException 
-     * @throws InvalidArgumentException 
+     * @param Builder $printJobs
+     * @param array $columns
+     * @return LengthAwarePaginator
+     * @throws BindingResolutionException
+     * @throws InvalidArgumentException
      */
     private function paginatorFrom(Builder $printJobs, array $columns)
     {

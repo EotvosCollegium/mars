@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class FreePagesController extends Controller
-{   
+{
     /**
      * Returns a paginated list of `FreePages`.
      * @param null|string $filter Decides wether all `FreePages` or just the user's `FreePages` should be listed.
@@ -60,7 +60,7 @@ class FreePagesController extends Controller
 
     /**
      * Adds new free pages to a user's account.
-     * @param Request $request 
+     * @param Request $request
      * @return RedirectResponse
      */
     public function store(Request $request)

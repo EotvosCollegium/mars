@@ -116,10 +116,10 @@ class PrintAccountController extends Controller
 
     /**
      * Private helper function to return a redirect with an error message if there is not enough balance.
-     * @return RedirectResponse 
-     * @throws BindingResolutionException 
-     * @throws NotFoundExceptionInterface 
-     * @throws ContainerExceptionInterface 
+     * @return RedirectResponse
+     * @throws BindingResolutionException
+     * @throws NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
      */
     private function returnNoBalance()
     {

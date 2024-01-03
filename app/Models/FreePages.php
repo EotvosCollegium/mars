@@ -58,7 +58,7 @@ class FreePages extends Model
 
     /**
      * The user this free pages entry belongs to.
-     * @return BelongsTo 
+     * @return BelongsTo
      */
     public function user(): BelongsTo
     {
@@ -67,7 +67,7 @@ class FreePages extends Model
 
     /**
      * The print account this free pages entry belongs to.
-     * @return BelongsTo 
+     * @return BelongsTo
      */
     public function printAccount()
     {
@@ -85,7 +85,7 @@ class FreePages extends Model
 
     /**
      * The user who last modified this free pages entry.
-     * @return BelongsTo 
+     * @return BelongsTo
      */
     public function modifier(): BelongsTo
     {
