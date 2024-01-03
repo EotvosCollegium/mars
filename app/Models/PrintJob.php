@@ -88,12 +88,18 @@ class PrintJob extends Model
             'id', // Local key on users
         );
     }
-
+    
+    /**
+     * Attribute for the translated cost.
+     */
     public function getTranslatedCostAttribute()
     {
         return "$this->cost HUF";
     }
 
+    /**
+     * Attribute for the translated state.
+     */
     public function getTranslatedStateAttribute()
     {
         return __("print." . strtoupper($this->state->value));
