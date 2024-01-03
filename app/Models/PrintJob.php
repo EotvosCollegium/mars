@@ -64,7 +64,7 @@ class PrintJob extends Model
 
     /**
      * `Printer` which this `PrintJob` was sent to.
-     * @return BelongsTo 
+     * @return BelongsTo
      */
     public function printer()
     {
