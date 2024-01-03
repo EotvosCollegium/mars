@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Role;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
@@ -61,11 +63,38 @@ class Workshop extends Model
         self::TORTENESZ,
     ];
 
-    public function users()
+    public const COLORS = [
+        self::ANGOL => 'deep-purple lighten-3',
+        self::BIOLOGIA => 'green lighten-2',
+        self::BOLLOK => 'teal lighten-2',
+        self::FILOZOFIA => 'teal accent-4',
+        self::AURELION => 'lime darken-2',
+        self::GAZDALKODASTUDOMANYI => 'brown lighten-2',
+        self::GERMANISZTIKA => 'blue-grey lighten-2',
+        self::INFORMATIKA => 'light-blue darken-4',
+        self::MAGYAR => 'red lighten-2',
+        self::MATEMATIKA => 'blue darken-2',
+        self::MENDOL => 'cyan darken-2',
+        self::OLASZ => 'red accent-3',
+        self::ORIENTALISZTIKA => 'amber lighten-1',
+        self::SKANDINAVISZTIKA => 'deep-orange lighten-3',
+        self::SPANYOL => 'deep-purple darken-2',
+        self::SZLAVISZTIKA => 'light-blue lighten-2',
+        self::TARSADALOMTUDOMANYI => 'purple lighten-1',
+        self::TORTENESZ => 'teal darken-4',
+    ];
+
+    /**
+     * Defines the BelongsToMany connection to users.
+     */
+    public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'workshop_users');
     }
 
+    /**
+     * Returns a collection containing the residents in the workshop.
+     */
     public function residents()
     {
         return $this->users->filter(function ($user, $key) {
@@ -73,11 +102,38 @@ class Workshop extends Model
         });
     }
 
+    /**
+     * Returns a collection containing the externs in the workshop.
+     */
     public function externs()
     {
         return $this->users->filter(function ($user, $key) {
             return $user->isExtern();
         });
+    }
+
+    /**
+     * Returns a collection with all functionaries of the workshop in it.
+     */
+    public function functionaries(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'role_users');
+    }
+
+    /**
+     * Filters functionaries to only include workshop administrators.
+     */
+    public function administrators(): BelongsToMany
+    {
+        return $this->functionaries()->wherePivot('role_id', Role::get(Role::WORKSHOP_ADMINISTRATOR)->id);
+    }
+
+    /**
+     * Filters functionaries to only include workshop leaders.
+     */
+    public function leaders(): BelongsToMany
+    {
+        return $this->functionaries()->wherePivot('role_id', Role::get(Role::WORKSHOP_LEADER)->id);
     }
 
     /**
@@ -97,47 +153,11 @@ class Workshop extends Model
         return $this->balances()->firstWhere('semester_id', $semester ?? Semester::current()->id);
     }
 
-    public function color()
+    /**
+     * Associates each workshop with a fixed color.
+     */
+    public function color(): string
     {
-        switch ($this->name) {
-            case self::ANGOL:
-                return 'deep-purple lighten-3';
-            case self::BIOLOGIA:
-                return 'green lighten-2';
-            case self::BOLLOK:
-                return 'teal lighten-2';
-            case self::FILOZOFIA:
-                return 'teal accent-4';
-            case self::AURELION:
-                return 'lime darken-2';
-            case self::GAZDALKODASTUDOMANYI:
-                return 'brown lighten-2';
-            case self::GERMANISZTIKA:
-                return 'blue-grey lighten-2';
-            case self::INFORMATIKA:
-                return 'light-blue darken-4';
-            case self::MAGYAR:
-                return 'red lighten-2';
-            case self::MATEMATIKA:
-                return 'blue darken-2';
-            case self::MENDOL:
-                return 'cyan darken-2';
-            case self::OLASZ:
-                return 'red accent-3';
-            case self::ORIENTALISZTIKA:
-                return 'amber lighten-1';
-            case self::SKANDINAVISZTIKA:
-                return 'deep-orange lighten-3';
-            case self::SPANYOL:
-                return 'deep-purple darken-2';
-            case self::SZLAVISZTIKA:
-                return 'light-blue lighten-2';
-            case self::TARSADALOMTUDOMANYI:
-                return 'purple lighten-1';
-            case self::TORTENESZ:
-                return 'teal darken-4';
-            default:
-                return 'black';
-        }
+        return isset(self::COLORS[$this->name]) ? self::COLORS[$this->name] : 'black';
     }
 }
