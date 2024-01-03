@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use Illuminate\Support\Facades\Log;
+use Symfony\Component\Process\Process;
 
 /**
  * Collection of exec commands.
@@ -21,8 +22,9 @@ class Commands
             $result = rand(1, 10) > 9 ? "error" : '';
         } else {
             // This happens too often to log.
-            $command = "ping " . $router->ip . " -c 1 | grep 'error\|unreachable'";
-            $result = exec($command);
+            $process = new Process(['ping', $router->ip, '-c', '1', '|', 'grep', "'error\|unreachable'"]);
+            $process->run();
+            $result = $process->getOutput();
         }
         return $result;
     }
@@ -33,8 +35,9 @@ class Commands
             $result = "ok";
         } else {
             $command = "pdflatex " . "-interaction=nonstopmode -output-dir " . $outputDir . " " . $path . " 2>&1";
-            Log::info($command);
-            $result = exec($command);
+            $process = new Process(['pdflatex', '-interaction=nonstopmode', '-output-dir', $outputDir, $path]);
+            $process->run();
+            $result = $process->getOutput();
         }
         return $result;
     }

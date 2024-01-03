@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
+use Symfony\Component\Process\Process;
 
 class Printer extends Model {
     use HasFactory;
@@ -32,15 +33,16 @@ class Printer extends Model {
      * @return PrinterCancelResult
      */
     public function cancelPrintJob(PrintJob $printJob) {
+        $process = new Process(['cancel', $printJob->job_id, '-h', "$this->ip:$this->port"]);
         $command = "cancel $printJob->job_id -h $this->ip:$this->port";
         if (config('app.debug')) {
             // cancel(1) exits with status code 0 if it succeeds
             $result = ['output' => '', 'exit_code' => 0];
         } else {
-            $output = exec($command, $result, $exit_code);
-            $result = ['output' => $output, 'exit_code' => $exit_code];
+            $process->run();
+            $result = ['output' => $process->getOutput(), 'exit_code' => $process->getExitCode()];
         }
-        Log::info([$command, $result]);
+        Log::info([$process->getCommandLine(), $result]);
         if ($result['exit_code'] == 0) {
             return PrinterCancelResult::Success;
         }
@@ -67,12 +69,20 @@ class Printer extends Model {
         }
         $jobId = null;
         try {
-            $result = exec(
-                "lp -d $this->name"
-                    . "-h $this->ip:$this->port "
-                    . ($twoSided ? "-o sides=two-sided-long-edge " : " ")
-                    . "-n $copies $path 2>&1"
-            );
+            $process = new Process([
+                'lp', 
+                '-d', $this->name, 
+                '-h', "$this->ip:$this->port", 
+                ($twoSided ? '-o sides=two-sided-long-edge' : ''),
+                 '-n', $copies, 
+                 $path
+            ]);
+            $process->run();
+            if (!$process->isSuccessful()) {
+                Log::error("Printing error at line: " . __FILE__ . ":" . __LINE__ . " (in function " . __FUNCTION__ . "). " . $process->getErrorOutput());
+                throw new PrinterException($process->getErrorOutput());
+            }
+            $result = $process->getOutput();
             if (!preg_match("/^request id is ([^\s]*) \\([0-9]* file\\(s\\)\\)$/", $result, $matches)) {
                 Log::error("Printing error at line: " . __FILE__ . ":" . __LINE__ . " (in function " . __FUNCTION__ . "). result:"
                     . print_r($result, true));
@@ -93,27 +103,27 @@ class Printer extends Model {
      * @return int 
      */
     public static function getDocumentPageNumber(string $path): int {
-
-        $command = "pdfinfo " . $path . " | grep '^Pages' | awk '{print $2}' 2>&1";
+        $process = new Process(['pdfinfo', $path, '|', 'grep', "'^Pages'", '|', 'awk', "'{print $2}'"]);
         if (config('app.debug')) {
             $result = rand(1, 10);
         } else {
-            $result = exec($command);
+            $process->run();
+            $result = intval($process->getOutput());
         }
-        Log::info([$command, $result]);
+        Log::info([$process->getCommandLine(), $result]);
         return $result;
     }
 
     public function getCompletedPrintJobs() {
         try {
-            $command = "lpstat -W completed -o $this->name -h $this->ip:$this->port | awk '{print $1}'";
+            $process = new Process(['lpstat', '-W', 'completed', '-o', $this->name, '-h', "$this->ip:$this->port", '|', 'awk', "'{print $1}'"]);
             if (config('app.debug')) {
                 $result = [];
             } else {
-                $result = [];
-                exec($command, $result);
+                $process->run();
+                $result = $process->getOutput();
             }
-            Log::info([$command, $result]);
+            Log::info([$process->getCommandLine(), $result]);
         } catch (\Exception $e) {
             Log::error("Printing error at line: " . __FILE__ . ":" . __LINE__ . " (in function " . __FUNCTION__ . "). " . $e->getMessage());
         }
