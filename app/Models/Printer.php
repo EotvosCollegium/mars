@@ -61,7 +61,10 @@ class Printer extends Model {
      * @return int The `jobId` belonging to the printjob
      * @throws PrinterException If the printing fails
      */
-    public function print(bool $twoSided, int $copies, string $path) { // TODO: debug mode
+    public function print(bool $twoSided, int $copies, string $path) {
+        if (config('app.debug')) {
+            return -1;
+        }
         $jobId = null;
         try {
             $result = exec(
@@ -103,7 +106,7 @@ class Printer extends Model {
 
     public function getCompletedPrintJobs() {
         try {
-            $command = "lpstat -W completed -o $this->name -h $this->ip:$this->port" . " | awk '{print $1}'";
+            $command = "lpstat -W completed -o $this->name -h $this->ip:$this->port | awk '{print $1}'";
             if (config('app.debug')) {
                 $result = [];
             } else {

@@ -15,11 +15,7 @@ class PrintAccountHistoryController extends Controller
 
         $columns = ['user.name', 'balance_change', 'free_page_change', 'deadline_change', 'modifier.name', 'modified_at'];
         return TabulatorPaginator::from(
-            PrintAccountHistory::join('users as user', 'user.id', '=', 'user_id')
-                ->join('users as modifier', 'modifier.id', '=', 'modified_by')
-                ->select('print_account_history.*')
-                ->with('user') // TODO: check this
-                ->with('modifier')
+            PrintAccountHistory::with(['user', 'modifier'])->select('print_account_history.*')
         )->sortable($columns)
             ->filterable($columns)
             ->paginate();

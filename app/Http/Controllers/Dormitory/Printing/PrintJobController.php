@@ -34,7 +34,7 @@ class PrintJobController extends Controller
             return $this->paginatorFrom(
                 printJobs: PrintJob::query()
                     ->with('user')
-                    ->orderBy('print_jobs.created_at', 'desc'), // TODO: test if it works without join
+                    ->orderBy('print_jobs.created_at', 'desc'),
                 columns: [
                     'created_at',
                     'filename',
