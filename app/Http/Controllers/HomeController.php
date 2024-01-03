@@ -220,13 +220,12 @@ class HomeController extends Controller
                 Role::ETHICS_COMMISSIONER => User::ethicsCommissioners(),
             ]);
 
-            $workshops = Workshop::all();
-            $contacts['workshops'] = array_combine(
-                $workshops->pluck('name')->all(),
-                $workshops->map(fn ($workshop) => ['leaders' => $workshop->leaders->pluck('name')->implode(', '),
-                                                   'administrators' => $workshop->administrators->pluck('name')->implode(', ')])
-                          ->all()
-            );
+            $contacts['workshops'] = Workshop::all()->flatMap(fn ($workshop) => [
+                $workshop->name => [
+                    'leaders' => $workshop->leaders->pluck('name')->implode(', '),
+                    'administrators' => $workshop->administrators->pluck('name')->implode(', ')
+                ]
+            ]);
         }
 
         return $contacts;

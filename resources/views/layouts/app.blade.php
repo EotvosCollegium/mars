@@ -119,11 +119,10 @@
             }
         }
 
-        $(".arrow-dropdown .arrow-dropdown-title").each(function () {
-            $(this).on('click', toggleCollContent($(this)));
-            // initialize it as closed:
-            $(this).addClass('closed');
-        });
+        titles = $(".arrow-dropdown .arrow-dropdown-title");
+        titles.on('click', toggleCollContent(titles));
+        // initialize them as closed:
+        titles.addClass('closed');
         </script>
     @endpush
 
