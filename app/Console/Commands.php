@@ -34,7 +34,6 @@ class Commands
         if (self::isDebugMode()) {
             $result = "ok";
         } else {
-            $command = "pdflatex " . "-interaction=nonstopmode -output-dir " . $outputDir . " " . $path . " 2>&1";
             $process = new Process(['pdflatex', '-interaction=nonstopmode', '-output-dir', $outputDir, $path]);
             $process->run();
             $result = $process->getOutput();

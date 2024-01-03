@@ -10,10 +10,12 @@ use App\Models\Printer;
 use App\Models\PrinterCancelResult;
 use App\Models\PrintJob;
 use App\Utils\TabulatorPaginator;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use InvalidArgumentException;
 use Log;
 use Storage;
 
@@ -196,8 +198,14 @@ class PrintJobController extends Controller
         return back();
     }
 
-
-
+    /**
+     * Returns a paginated list of `PrintJob`s.
+     * @param Builder $printJobs 
+     * @param array $columns 
+     * @return LengthAwarePaginator 
+     * @throws BindingResolutionException 
+     * @throws InvalidArgumentException 
+     */
     private function paginatorFrom(Builder $printJobs, array $columns)
     {
         $paginator = TabulatorPaginator::from($printJobs)->sortable($columns)->filterable($columns)->paginate();

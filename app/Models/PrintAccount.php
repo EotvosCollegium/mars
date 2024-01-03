@@ -123,6 +123,13 @@ class PrintAccount extends Model
         ];
     }
 
+    /**
+     * Returns the number of free pages needed to print with given configuration.
+     * @param int $pages 
+     * @param mixed $copies 
+     * @param mixed $twoSided 
+     * @return int|float 
+     */
     public static function getFreePagesNeeeded(int $pages, $copies, $twoSided)
     {
         $pageTypesNeeded = self::getPageTypesNeeded($pages, $twoSided);
@@ -130,6 +137,16 @@ class PrintAccount extends Model
         return ($pageTypesNeeded['one_sided'] + $pageTypesNeeded['two_sided']) * $copies;
     }
 
+    /**
+     * Returns the amount of money needed to print with given configuration.
+     * @param int $pages 
+     * @param int $copies 
+     * @param bool $twoSided 
+     * @return mixed 
+     * @throws BindingResolutionException 
+     * @throws NotFoundExceptionInterface 
+     * @throws ContainerExceptionInterface 
+     */
     public static function getBalanceNeeded(int $pages, int $copies, bool $twoSided)
     {
         $pageTypesNeeded = self::getPageTypesNeeded($pages, $twoSided);

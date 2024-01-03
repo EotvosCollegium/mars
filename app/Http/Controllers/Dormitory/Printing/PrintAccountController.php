@@ -9,8 +9,12 @@ use App\Models\PaymentType;
 use App\Models\Semester;
 use App\Models\Transaction;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Psr\Container\NotFoundExceptionInterface;
+use Psr\Container\ContainerExceptionInterface;
 
 class PrintAccountController extends Controller
 {
@@ -110,6 +114,13 @@ class PrintAccountController extends Controller
         }
     }
 
+    /**
+     * Private helper function to return a redirect with an error message if there is not enough balance.
+     * @return RedirectResponse 
+     * @throws BindingResolutionException 
+     * @throws NotFoundExceptionInterface 
+     * @throws ContainerExceptionInterface 
+     */
     private function returnNoBalance()
     {
         return back()->withInput()->with('error', __('print.no_balance'));

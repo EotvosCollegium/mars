@@ -6,10 +6,17 @@ use App\Http\Controllers\Controller;
 use App\Models\FreePages;
 use App\Utils\TabulatorPaginator;
 use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class FreePagesController extends Controller
-{
+{   
+    /**
+     * Returns a paginated list of `FreePages`.
+     * @param null|string $filter Decides wether all `FreePages` or just the user's `FreePages` should be listed.
+     * @return LengthAwarePaginator
+     */
     public function indexFreePages(?string $filter = null)
     {
         if ($filter === "all") {
@@ -40,7 +47,9 @@ class FreePagesController extends Controller
             ]
         );
     }
-
+    /**
+     * Private helper function to create a paginator for `FreePages`.
+     */
     private function freePagesPaginator(Builder $freePages, array $columns)
     {
         $paginator = TabulatorPaginator::from(
@@ -49,6 +58,11 @@ class FreePagesController extends Controller
         return $paginator;
     }
 
+    /**
+     * Adds new free pages to a user's account.
+     * @param Request $request 
+     * @return RedirectResponse
+     */
     public function store(Request $request)
     {
         $data = $request->validate([

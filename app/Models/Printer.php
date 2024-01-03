@@ -4,7 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Log;
+use Psr\Container\NotFoundExceptionInterface;
+use Psr\Container\ContainerExceptionInterface;
 use Symfony\Component\Process\Process;
 
 class Printer extends Model {
@@ -23,6 +26,10 @@ class Printer extends Model {
         'paper_out_at' => 'datetime',
     ];
 
+    /**
+     * Returns the `PrintJob`s that were executed by this printer.
+     * @return HasMany 
+     */
     public function printJobs() {
         return $this->hasMany(PrintJob::class);
     }
@@ -114,6 +121,12 @@ class Printer extends Model {
         return $result;
     }
 
+    /**
+     * Returns the completed printjobs for this printer.
+     * @return void 
+     * @throws NotFoundExceptionInterface 
+     * @throws ContainerExceptionInterface 
+     */
     public function getCompletedPrintJobs() {
         try {
             $process = new Process(['lpstat', '-W', 'completed', '-o', $this->name, '-h', "$this->ip:$this->port", '|', 'awk', "'{print $1}'"]);

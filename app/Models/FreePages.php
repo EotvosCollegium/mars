@@ -56,21 +56,37 @@ class FreePages extends Model
         'deadline' => 'date',
     ];
 
+    /**
+     * The user this free pages entry belongs to.
+     * @return BelongsTo 
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * The print account this free pages entry belongs to.
+     * @return BelongsTo 
+     */
     public function printAccount()
     {
         return $this->belongsTo(PrintAccount::class, 'user_id', 'user_id');
     }
 
+    /**
+     * Wether the free pages are still available.
+     * @return bool
+     */
     protected function getAvailableAttribute()
     {
         return now()->isBefore($this->deadline);
     }
 
+    /**
+     * The user who last modified this free pages entry.
+     * @return BelongsTo 
+     */
     public function modifier(): BelongsTo
     {
         return $this->belongsTo(User::class, 'last_modified_by');
