@@ -15,10 +15,10 @@ class PrintAccountHistoryController extends Controller
 {
     /**
      * Returns a paginated list of `PrintAccountHistory` entries.
-     * @return LengthAwarePaginator 
-     * @throws AuthorizationException 
-     * @throws BindingResolutionException 
-     * @throws InvalidArgumentException 
+     * @return LengthAwarePaginator
+     * @throws AuthorizationException
+     * @throws BindingResolutionException
+     * @throws InvalidArgumentException
      */
     public function indexPrintAccountHistory()
     {
