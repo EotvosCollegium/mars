@@ -51,7 +51,9 @@ class PrintJobController extends Controller
 
         PrintJob::checkAndUpdateStatuses();
         return $this->paginatorFrom(
-            printJobs: user()->printJobs()->orderBy('created_at', 'desc'),
+            printJobs: user()
+                ->printJobs()
+                ->orderBy('created_at', 'desc'),
             columns: [
                 'created_at',
                 'filename',
@@ -154,9 +156,7 @@ class PrintJobController extends Controller
      */
     public function update(PrintJob $job)
     {
-        Log::info('asd');
         $this->authorize('update', $job);
-        Log::info($job->state->value);
 
         if ($job->state === PrintJobStatus::QUEUED) {
             $result = ($job->printer ?? Printer::firstWhere('name', config('print.printer_name')))->cancelPrintJob($job);
@@ -211,11 +211,10 @@ class PrintJobController extends Controller
         $paginator = TabulatorPaginator::from($printJobs)->sortable($columns)->filterable($columns)->paginate();
 
         // Process the data before showing it in a table.
-        $paginator->getCollection()->transform(function (PrintJob $printJob) {
-            $printJob->translatedState = __("print." . strtoupper($printJob->state->value));
-            $printJob->cost = "$printJob->cost HUF";
-            return $printJob;
-        });
+        $paginator->getCollection()->append([
+            'translated_cost',
+            'translated_state',
+        ]);
 
         return $paginator;
     }

@@ -75,13 +75,13 @@
                     },
                     {
                         title: "@lang('print.cost')",
-                        field: "cost",
+                        field: "translated_cost",
                         sorter: "string",
                         @can('viewAny', App\Models\PrintJob::class)  headerFilter: 'input' @endcan
                     },
                     {
                         title: "@lang('print.state')",
-                        field: "translatedState",
+                        field: "translated_state",
                         sorter: "string",
                         @can('viewAny', App\Models\PrintJob::class)
                         headerFilterParams: {

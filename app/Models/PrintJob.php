@@ -89,6 +89,16 @@ class PrintJob extends Model
         );
     }
 
+    public function getTranslatedCostAttribute()
+    {
+        return "$this->cost HUF";
+    }
+
+    public function getTranslatedStateAttribute()
+    {
+        return __("print." . strtoupper($this->state->value));
+    }
+
     /**
      * Gets the printjob-status with every printer, updates the status of the completed printjobs.
      */
