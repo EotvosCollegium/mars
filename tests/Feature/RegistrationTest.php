@@ -56,7 +56,7 @@ class RegistrationTest extends TestCase
             'user_id' => $user->id,
             'status' => ApplicationForm::STATUS_IN_PROGRESS
         ]);
-        
+
         $this->assertTrue($user->hasRole(Role::COLLEGIST));
     }
 
