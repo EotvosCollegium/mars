@@ -34,7 +34,7 @@ class PrintAccountPolicy
     public function view(User $user, PrintAccount $printAccount): bool
     {
         return $user->id === $printAccount->user_id;
-    }   
+    }
 
     public function modify(User $user): bool
     {

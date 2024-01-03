@@ -17,14 +17,15 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Log;
 use Storage;
 
-class PrintJobController extends Controller {
-
+class PrintJobController extends Controller
+{
     /**
      * Returns a paginated list of `PrintJob`s.
      * @param null|string $filter Decides wether all `PrintJob`s or just the user's `PrintJob`s should be listed.
      * @return LengthAwarePaginator
      */
-    public function indexPrintJobs(?string $filter = null) {
+    public function indexPrintJobs(?string $filter = null)
+    {
         if ($filter === "all") {
             $this->authorize('viewAny', PrintJob::class);
 
@@ -60,10 +61,11 @@ class PrintJobController extends Controller {
 
     /**
      * Prints a document, then stores the corresponding `PrintJob`.
-     * @param Request $request 
-     * @return RedirectResponse 
+     * @param Request $request
+     * @return RedirectResponse
      */
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         $request->validate([
             'file' => 'required|file',
             'copies' => 'required|integer|min:1',
@@ -101,7 +103,7 @@ class PrintJobController extends Controller {
             Storage::delete($path);
         }
 
-        $cost = $useFreePages ? 
+        $cost = $useFreePages ?
             PrintAccount::getFreePagesNeeeded($pageNumber, $copyNumber, $twoSided) :
             PrintAccount::getBalanceNeeded($pageNumber, $copyNumber, $twoSided);
 
@@ -145,15 +147,16 @@ class PrintJobController extends Controller {
 
     /**
      * Cancels a `PrintJob`
-     * @param PrintJob $job 
-     * @return RedirectResponse 
+     * @param PrintJob $job
+     * @return RedirectResponse
      */
-    public function update(PrintJob $job) {
+    public function update(PrintJob $job)
+    {
         Log::info('asd');
         $this->authorize('update', $job);
         Log::info($job->state->value);
 
-        if ($job->state === PrintJobStatus::QUEUED ) {
+        if ($job->state === PrintJobStatus::QUEUED) {
             $result = ($job->printer ?? Printer::firstWhere('name', config('print.printer_name')))->cancelPrintJob($job);
             switch ($result) {
                 case PrinterCancelResult::Success:
@@ -186,14 +189,15 @@ class PrintJobController extends Controller {
                     ]);
                     break;
             }
-            
+
             return back()->with('error', __("print.$result->value"));
         }
     }
 
 
 
-    private function paginatorFrom(Builder $printJobs, array $columns) {
+    private function paginatorFrom(Builder $printJobs, array $columns)
+    {
         $paginator = TabulatorPaginator::from($printJobs)->sortable($columns)->filterable($columns)->paginate();
 
         // Process the data before showing it in a table.
