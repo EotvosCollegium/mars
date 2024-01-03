@@ -54,6 +54,9 @@ class AuthServiceProvider extends ServiceProvider
         });
     }
 
+    /**
+     * Register policies for documents.
+     */
     public function registerDocumentPolicies()
     {
         Gate::define('document.status-certificate.viewAny', function ($user) {
@@ -81,6 +84,9 @@ class AuthServiceProvider extends ServiceProvider
         });
     }
 
+    /**
+     * Register policies for verification.
+     */
     public function registerVerificationPolicies()
     {
         Gate::define('registration.handle', function ($user) {

@@ -40,7 +40,12 @@ class PrintAccountPolicy
     {
         return false;
     }
-
+    /**
+     * Determine whether the user can transfer balance from the print account.
+     * @param User $user 
+     * @param PrintAccount $printAccount 
+     * @return bool 
+     */
     public function transferBalance(User $user, PrintAccount $printAccount): bool
     {
         return $user->id == $printAccount->user_id;
