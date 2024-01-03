@@ -192,7 +192,7 @@ class PrintJobController extends Controller
 
             return back()->with('error', __("print.$result->value"));
         }
-        
+
         return back();
     }
 
