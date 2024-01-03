@@ -27,6 +27,7 @@
             ajaxURL: "{{ $route }}", //set url for ajax request
             placeholder: "@lang('print.no_free_pages')",
             columns: [
+                @if($admin)
                 @can('viewAny', App\Models\FreePages::class)
                 {
                     title: "@lang('internet.created_at')",
@@ -41,6 +42,7 @@
                     sorter: "string",
                     headerFilter: 'input'
                 },
+                @endif
                 @endcan
                 {
                     title: "@lang('print.free')",
@@ -56,7 +58,7 @@
                 },
                 {
                     title: "@lang('print.last_modified_by')",
-                    field: "modifier",
+                    field: "modifier.name",
                     sorter: "string",
                     @can('viewAny', App\Models\FreePages::class) headerFilter: 'input' @endif
                 },

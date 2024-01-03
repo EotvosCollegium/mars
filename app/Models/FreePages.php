@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Model to keep track of the users' free pages.
@@ -27,23 +28,27 @@ class FreePages extends Model
         'comment',
     ];
 
-    public function user()
+    protected $casts = [
+        'deadline' => 'date',
+    ];
+
+    public function user(): BelongsTo
     {
-        return $this->belongsTo('App\Models\User');
+        return $this->belongsTo(User::class);
     }
 
     public function printAccount()
     {
-        return $this->belongsTo('App\Models\PrintAccount', 'user_id', 'user_id');
+        return $this->belongsTo(PrintAccount::class, 'user_id', 'user_id');
     }
 
-    public function available()
+    protected function getAvailableAttribute()
     {
-        return $this->deadline > date('Y-m-d');
+        return now()->isBefore($this->deadline);
     }
 
-    public function lastModifiedBy()
+    public function modifier(): BelongsTo
     {
-        return User::find($this->last_modified_by);
+        return $this->belongsTo(User::class, 'last_modified_by');
     }
 }

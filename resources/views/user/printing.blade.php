@@ -11,14 +11,14 @@
                     @foreach($user->freePages->sortBy('deadline') as $page)
                         <li>
                         <span class="new badge
-                            @if($page->available())
+                            @if($page->available)
                                 green
                             @else
                                 red
                             @endif" data-badge-caption="({{ $page->deadline }})">
                             {{ $page->amount }}
                             </span>
-                            <small>{{ $page->lastModifiedBy()?->name }}: <i>{{ $page->comment }} </i></small>
+                            <small>{{ $page->modifier?->name }}: <i>{{ $page->comment }} </i></small>
                         </li>
                     @endforeach
                 </ul>

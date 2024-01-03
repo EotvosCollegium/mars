@@ -16,9 +16,6 @@ class PrintAccountPolicy
         if ($user->isAdmin()) {
             return true;
         }
-        if (!$user->hasRole(Role::PRINTER)) {
-            return false;
-        }
     }
 
     /**
@@ -37,10 +34,15 @@ class PrintAccountPolicy
     public function view(User $user, PrintAccount $printAccount): bool
     {
         return $user->id === $printAccount->user_id;
-    }
+    }   
 
     public function modify(User $user): bool
     {
         return false;
+    }
+
+    public function transferBalance(User $user, PrintAccount $printAccount): bool
+    {
+        return $user->id == $printAccount->user_id;
     }
 }

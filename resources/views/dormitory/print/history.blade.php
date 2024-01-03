@@ -7,13 +7,13 @@
         $(document).ready(function() {
             var deleteButton = function(cell, formatterParams, onRendered) {
                 var data = cell.getRow().getData();
-                if(data.state == '@lang('print.'.App\Models\PrintJob::QUEUED)'){
+                if(data.state == "QUEUED"){
                     return $(
                     "<button type=\"button\" class=\"btn waves-effect btn-fixed-height  coli blue\">@lang('print.cancel_job')</button>"
                     ).click(function() {
                         $.ajax({
-                            type: "POST",
-                            url: "{{ route('print.print_jobs.cancel', [':id']) }}".replace(':id', data.id),
+                            type: "PUT",
+                            url: "{{ route('print-job.update', [':job']) }}".replace(':job', data.id),
                             success: function() {
                                 cell.getTable().setPage(cell.getTable().getPage());
                             },
@@ -49,22 +49,24 @@
                 placeholder: "@lang('internet.nothing_to_show')",
                 headerSort: false,
                 columnMinWidth:200,
-                columns: [{
+                columns: [
+                    {
                         title: "@lang('internet.created_at')",
                         field: "created_at",
                         sorter: "datetime",
                         formatter:dateFormatter,
                         @can('viewAny', App\Models\PrintJob::class) headerFilter: 'input' @endcan
                     },
+                    @if ($admin)
                     @can('viewAny', App\Models\PrintJob::class)
                     {
-                        //TODO empty when not in admin view
                         title: "@lang('print.user')",
                         field: "user.name",
                         sorter: "string",
                         headerFilter: 'input'
                     },
                     @endcan
+                    @endif
                     {
                         title: "@lang('print.document')",
                         field: "filename",
@@ -79,12 +81,12 @@
                     },
                     {
                         title: "@lang('print.state')",
-                        field: "state",
+                        field: "translatedState",
                         sorter: "string",
                         @can('viewAny', App\Models\PrintJob::class)
                         headerFilterParams: {
-                            @foreach(\App\Models\PrintJob::STATES as $key => $state)
-                            "{{ $state }}": "@lang('print.' . $state)",
+                            @foreach(\App\Enums\PrintJobStatus::cases() as $state)
+                            "{{ $state }}": "@lang('print.' . $state->value)",
                             @endforeach
                         }
                         @endcan
