@@ -105,7 +105,6 @@ class UsersTableSeeder extends Seeder
         );
         $user->educationalInformation()->save(EducationalInformation::factory()->make(['user_id' => $user->id]));
         StudyLine::factory()->count(rand(1, 2))->create(['educational_information_id' => $user->educationalInformation->id]);
-        $user->roles()->attach(Role::get(Role::PRINTER)->id);
         $user->roles()->attach(Role::get(Role::INTERNET_USER)->id);
         $wifi_username = $user->internetAccess->setWifiCredentials();
         WifiConnection::factory($user->id % 5)->create(['wifi_username' => $wifi_username]);

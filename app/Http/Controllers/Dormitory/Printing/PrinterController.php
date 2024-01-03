@@ -27,7 +27,7 @@ class PrinterController extends Controller
         }
 
         return view('dormitory.print.app', [
-            "users" => User::printers(),
+            "users" => User::all(),
             "user" => user(),
             "printer" => Printer::firstWhere('name', config('print.printer_name')),
         ]);
