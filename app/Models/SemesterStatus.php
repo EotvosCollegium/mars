@@ -5,10 +5,24 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 /**
+ * App\Models\SemesterStatus
+ *
  * @property User $user
  * @property Semester $semester
  * @property string $status
  * @property string $comment
+ * @property int $user_id
+ * @property int $semester_id
+ * @property int $verified
+ * @method static \Illuminate\Database\Eloquent\Builder|SemesterStatus newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|SemesterStatus newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|SemesterStatus query()
+ * @method static \Illuminate\Database\Eloquent\Builder|SemesterStatus whereComment($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SemesterStatus whereSemesterId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SemesterStatus whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SemesterStatus whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SemesterStatus whereVerified($value)
+ * @mixin \Eloquent
  */
 class SemesterStatus extends Pivot
 {

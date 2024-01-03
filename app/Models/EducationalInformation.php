@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
+ * App\Models\EducationalInformation
+ *
  * @property StudyLine[]|Collection $studyLines
  * @property LanguageExam[]|Collection $languageExams
  * @property LanguageExam[]|Collection $languageExamsBeforeAcceptance
@@ -20,6 +22,34 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $email
  * @property string $alfonso_language
  * @property string $alfonso_desired_level
+ * @property int $id
+ * @property int $user_id
+ * @property string|null $created_at
+ * @property string|null $updated_at
+ * @property string|null $alfonso_passed_by
+ * @property string|null $research_topics
+ * @property string|null $extra_information
+ * @property-read int|null $language_exams_count
+ * @property-read int|null $study_lines_count
+ * @method static \Database\Factories\EducationalInformationFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|EducationalInformation newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|EducationalInformation newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|EducationalInformation query()
+ * @method static \Illuminate\Database\Eloquent\Builder|EducationalInformation whereAlfonsoDesiredLevel($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|EducationalInformation whereAlfonsoLanguage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|EducationalInformation whereAlfonsoPassedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|EducationalInformation whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|EducationalInformation whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|EducationalInformation whereExtraInformation($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|EducationalInformation whereHighSchool($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|EducationalInformation whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|EducationalInformation whereNeptun($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|EducationalInformation whereResearchTopics($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|EducationalInformation whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|EducationalInformation whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|EducationalInformation whereYearOfAcceptance($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|EducationalInformation whereYearOfGraduation($value)
+ * @mixin \Eloquent
  */
 class EducationalInformation extends Model
 {

@@ -50,7 +50,7 @@ class EconomicController extends Controller
         return view(
             'student-council.economic-committee.app',
             array_merge($this->getData($this->checkout()), [
-                'users_not_payed' => User::hasToPayKKTNetreg()->get()
+                'users_not_paid' => User::hasToPayKKTNetreg()->get()
             ])
         );
     }
@@ -63,11 +63,52 @@ class EconomicController extends Controller
         $this->authorize('addKKTNetreg', Checkout::class);
 
         return view('student-council.economic-committee.kktnetreg', [
-            'users_not_payed' => User::hasToPayKKTNetreg()->get(),
+            'users_not_paid' => User::hasToPayKKTNetreg()->get(),
             'transactions' => Transaction::whereIn('payment_type_id', [PaymentType::kkt()->id, PaymentType::netreg()->id])
-                    ->where('semester_id', Semester::current()->id)
-                    ->get()
+                ->where('semester_id', Semester::current()->id)
+                ->get()
         ]);
+    }
+
+    /**
+     * Pay kkt and netreg to the receiver given.
+     * Also updates workshop balances
+     * and the internet access expiry date.
+     * Returns an array with the two transaction objects
+     * and the new expiry date.
+     *
+     * Used here and in the tests.
+     */
+    public static function payKKTNetregLogic(User $payer, User $receiver, int $kkt_amount, int $netreg_amount): array
+    {
+        // Creating transactions
+        $kkt = Transaction::create([
+            'checkout_id' => Checkout::studentsCouncil()->id,
+            'receiver_id' => $receiver->id,
+            'payer_id' => $payer->id,
+            'semester_id' => Semester::current()->id,
+            'amount' => $kkt_amount,
+            'payment_type_id' => PaymentType::kkt()->id,
+            'comment' => null,
+            'moved_to_checkout' => null,
+        ]);
+
+        $netreg = Transaction::create([
+            'checkout_id' => Checkout::admin()->id,
+            'receiver_id' => $receiver->id,
+            'payer_id' => $payer->id,
+            'semester_id' => Semester::current()->id,
+            'amount' => $netreg_amount,
+            'payment_type_id' => PaymentType::netreg()->id,
+            'comment' => null,
+            'moved_to_checkout' => null,
+        ]);
+
+        WorkshopBalance::generateBalances(Semester::current());
+
+        $new_expiry_date = $payer->internetAccess->extendInternetAccess();
+
+        return [$kkt, $netreg, $new_expiry_date];
     }
 
     /**
@@ -85,33 +126,10 @@ class EconomicController extends Controller
         $validator->validate();
 
         $payer = User::findOrFail($request->user_id);
+        // the current user will be the receiver
+        [$kkt, $netreg, $new_internet_expire_date]
+            = self::payKKTNetregLogic($payer, Auth::user(), $request->kkt, $request->netreg);
 
-        // Creating transactions
-        $kkt = Transaction::create([
-            'checkout_id' => Checkout::studentsCouncil()->id,
-            'receiver_id' => user()->id,
-            'payer_id' => $payer->id,
-            'semester_id' => Semester::current()->id,
-            'amount' => $request->kkt,
-            'payment_type_id' => PaymentType::kkt()->id,
-            'comment' => null,
-            'moved_to_checkout' => null,
-        ]);
-
-        $netreg = Transaction::create([
-            'checkout_id' => Checkout::admin()->id,
-            'receiver_id' => user()->id,
-            'payer_id' => $payer->id,
-            'semester_id' => Semester::current()->id,
-            'amount' => $request->netreg,
-            'payment_type_id' => PaymentType::netreg()->id,
-            'comment' => null,
-            'moved_to_checkout' => null,
-        ]);
-
-        WorkshopBalance::generateBalances(Semester::current()->id);
-
-        $new_internet_expire_date = InternetController::extendUsersInternetAccess($payer);
         $internet_expiration_message = null;
         if ($new_internet_expire_date !== null) {
             $internet_expiration_message = __('internet.expiration_extended', [
@@ -119,7 +137,12 @@ class EconomicController extends Controller
             ]);
         }
 
-        Mail::to($payer)->queue(new \App\Mail\Transactions($payer->name, [$kkt, $netreg], "Tranzakció létrehozva", $internet_expiration_message));
+        Mail::to($payer)->queue(new \App\Mail\Transactions(
+            $payer->name,
+            [$kkt, $netreg],
+            "Tranzakció létrehozva",
+            $internet_expiration_message
+        ));
 
         return redirect()->back()->with('message', __('general.successfully_added'));
     }
@@ -129,7 +152,7 @@ class EconomicController extends Controller
      */
     public function calculateWorkshopBalance()
     {
-        WorkshopBalance::generateBalances(Semester::current()->id);
+        WorkshopBalance::generateBalances(Semester::current());
 
         return redirect()->back()->with('message', __('general.successful_modification'));
     }

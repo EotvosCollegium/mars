@@ -179,7 +179,7 @@ trait CheckoutHandler
      * Create a basic expense transaction in the checkout.
      * The receiver and the payer also will be the authenticated user
      * (since this does not mean a payment between users, just a transaction from the checkout).
-     * The only exception for the payer is when the checkout handler administrates a transaction payed by someone else.
+     * The only exception for the payer is when the checkout handler administrates a transaction paid by someone else.
      * We require a receipt here.
      *
      * @param Request $request

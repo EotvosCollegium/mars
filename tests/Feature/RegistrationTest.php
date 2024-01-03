@@ -32,9 +32,9 @@ class RegistrationTest extends TestCase
         $user_data = User::factory()->make()->only(['name', 'email']);
         $controller->create(array_merge(
             [
-            'password' => 'secret',
-            'password_confirmation' => 'secret',
-            'user_type' => 'collegist'],
+                'password' => 'secret',
+                'password_confirmation' => 'secret',
+                'user_type' => 'collegist'],
             $user_data,
         ));
 
@@ -56,8 +56,7 @@ class RegistrationTest extends TestCase
             'user_id' => $user->id,
             'status' => ApplicationForm::STATUS_IN_PROGRESS
         ]);
-
-        $this->assertTrue($user->hasRole(Role::INTERNET_USER));
+        
         $this->assertTrue($user->hasRole(Role::COLLEGIST));
     }
 
@@ -77,9 +76,9 @@ class RegistrationTest extends TestCase
         $personal_info_data = PersonalInformation::factory()->make()->only(['phone_number', 'tenant_until']);
         $controller->create(array_merge(
             [
-            'password' => 'secret',
-            'password_confirmation' => 'secret',
-            'user_type' => 'tenant'],
+                'password' => 'secret',
+                'password_confirmation' => 'secret',
+                'user_type' => 'tenant'],
             $user_data,
             $personal_info_data
         ));
@@ -102,8 +101,6 @@ class RegistrationTest extends TestCase
             'user_id' => $user->id,
             'balance' => 0
         ]);
-
-        $this->assertTrue($user->hasRole(Role::INTERNET_USER));
         $this->assertTrue($user->hasRole(Role::TENANT));
     }
 }

@@ -11,9 +11,25 @@ use Psr\Container\ContainerExceptionInterface;
 
 /**
  * Model to keep track of the users' print balance.
+ *
  * Changes are logged in print_account_history table. See PrintAccountObserver.
  *
  * @property mixed $user_id
+ * @property int $balance
+ * @property int|null $last_modified_by
+ * @property string|null $modified_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\FreePages[] $freePages
+ * @property-read int|null $free_pages_count
+ * @property-read \App\Models\User $user
+ * @method static \Database\Factories\PrintAccountFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|PrintAccount newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PrintAccount newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PrintAccount query()
+ * @method static \Illuminate\Database\Eloquent\Builder|PrintAccount whereBalance($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PrintAccount whereLastModifiedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PrintAccount whereModifiedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PrintAccount whereUserId($value)
+ * @mixin \Eloquent
  */
 class PrintAccount extends Model {
     use HasFactory;

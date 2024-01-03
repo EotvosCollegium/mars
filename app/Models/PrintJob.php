@@ -9,7 +9,32 @@ use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Log;
 
 /**
+ * App\Models\PrintJob
+ *
  * @property mixed $user_id
+ * @property int $id
+ * @property string $filename
+ * @property string $filepath
+ * @property mixed $state
+ * @property int $cost
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string $job_id
+ * @property-read \App\Models\User|null $user
+ * @method static \Database\Factories\PrintJobFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|PrintJob newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PrintJob newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PrintJob query()
+ * @method static \Illuminate\Database\Eloquent\Builder|PrintJob whereCost($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PrintJob whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PrintJob whereFilename($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PrintJob whereFilepath($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PrintJob whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PrintJob whereJobId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PrintJob whereState($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PrintJob whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PrintJob whereUserId($value)
+ * @mixin \Eloquent
  */
 class PrintJob extends Model {
     use HasFactory;

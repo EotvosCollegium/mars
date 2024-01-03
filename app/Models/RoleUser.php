@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Cache;
 
 /**
  * RoleUser pivot model. Represents a role assigned to a user with a roleObject or Workshop in the pivot.
+ *
  * @property Role $role
  * @property RoleObject $object
  * @property Workshop $workshop
@@ -16,6 +17,17 @@ use Illuminate\Support\Facades\Cache;
  * @property string $translatedName of the roleObject or workshop
  * @property integer|null $object_id
  * @property integer|null $workshop_id
+ * @property int $user_id
+ * @property int $role_id
+ * @property-read string $translated_name
+ * @method static \Illuminate\Database\Eloquent\Builder|RoleUser newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|RoleUser newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|RoleUser query()
+ * @method static \Illuminate\Database\Eloquent\Builder|RoleUser whereObjectId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|RoleUser whereRoleId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|RoleUser whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|RoleUser whereWorkshopId($value)
+ * @mixin \Eloquent
  */
 class RoleUser extends Pivot
 {

@@ -62,10 +62,11 @@ trait HasRoles
      * hasRole([Role::COLLEGIST => 4, Role::get(Role::WORKSHOP_LEADER)])
      * hasRole([Role::STUDENT_COUNCIL => [Role::PRESIDENT, Role::SCIENCE_VICE_PRESIDENT]]])
      *
-     * @param $roles Role|name|id|[Role|name|id|[Role|name => RoleObject|Workshop|name|id]]
+     *
+     * @param $roles array|int|string|Role|[Role|name|id|[Role|name => RoleObject|Workshop|name|id]]
      * @return bool
      */
-    public function hasRole($roles): bool
+    public function hasRole(array|int|string|Role $roles): bool
     {
         if (!is_array($roles)) {
             $roles = [$roles];
@@ -155,14 +156,13 @@ trait HasRoles
             $this->roles()->detach($role->id);
         }
 
-        if($role->name == Role::COLLEGIST) {
+        if ($role->name == Role::COLLEGIST) {
             Cache::forget('collegists');
         }
-        if($role->name == Role::SYS_ADMIN) {
+        if ($role->name == Role::SYS_ADMIN) {
             Cache::forget('sys-admins');
         }
     }
-
 
 
 }

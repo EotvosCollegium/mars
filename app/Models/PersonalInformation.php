@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
+ * App\Models\PersonalInformation
+ *
  * @property User $user
  * @property string $place_of_birth
  * @property string $date_of_birth
@@ -22,6 +24,27 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $relatives_contact_data
  * @method getAddress()
  * @method getPlaceAndDateOfBirth()
+ * @property int $id
+ * @property int $user_id
+ * @method static \Database\Factories\PersonalInformationFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|PersonalInformation newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PersonalInformation newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PersonalInformation query()
+ * @method static \Illuminate\Database\Eloquent\Builder|PersonalInformation whereCity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PersonalInformation whereCountry($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PersonalInformation whereCounty($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PersonalInformation whereDateOfBirth($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PersonalInformation whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PersonalInformation whereMothersName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PersonalInformation wherePhoneNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PersonalInformation wherePlaceOfBirth($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PersonalInformation whereProfilePictureId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PersonalInformation whereRelativesContactData($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PersonalInformation whereStreetAndNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PersonalInformation whereTenantUntil($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PersonalInformation whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PersonalInformation whereZipCode($value)
+ * @mixin \Eloquent
  */
 class PersonalInformation extends Model
 {

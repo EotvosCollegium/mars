@@ -105,7 +105,6 @@ class UsersTableSeeder extends Seeder
         );
         $user->educationalInformation()->save(EducationalInformation::factory()->make(['user_id' => $user->id]));
         StudyLine::factory()->count(rand(1, 2))->create(['educational_information_id' => $user->educationalInformation->id]);
-        $user->roles()->attach(Role::get(Role::INTERNET_USER)->id);
         $wifi_username = $user->internetAccess->setWifiCredentials();
         WifiConnection::factory($user->id % 5)->create(['wifi_username' => $wifi_username]);
         for ($x = 0; $x < rand(1, 3); $x++) {
@@ -125,7 +124,6 @@ class UsersTableSeeder extends Seeder
     private function createTenant($user)
     {
         $user->roles()->attach(Role::get(Role::TENANT)->id);
-        $user->roles()->attach(Role::get(Role::INTERNET_USER)->id);
         $wifi_username = $user->internetAccess->setWifiCredentials();
         WifiConnection::factory($user->id % 5)->create(['wifi_username' => $wifi_username]);
         MacAddress::factory()->count($user->id % 5)->create(['user_id' => $user->id]);
