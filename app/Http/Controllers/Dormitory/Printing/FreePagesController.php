@@ -8,9 +8,10 @@ use App\Utils\TabulatorPaginator;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
-class FreePagesController extends Controller {
-
-    public  function indexFreePages(?string $filter = null) {
+class FreePagesController extends Controller
+{
+    public function indexFreePages(?string $filter = null)
+    {
         if ($filter === "all") {
             $this->authorize('viewAny', FreePages::class);
 
@@ -40,14 +41,16 @@ class FreePagesController extends Controller {
         );
     }
 
-    private function freePagesPaginator(Builder $freePages, array $columns) {
+    private function freePagesPaginator(Builder $freePages, array $columns)
+    {
         $paginator = TabulatorPaginator::from(
             $freePages->with('modifier')
         )->sortable($columns)->filterable($columns)->paginate();
         return $paginator;
     }
 
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         $data = $request->validate([
             "user_id" => "required|exists:users,id",
             "amount" => "required|integer|min:1",

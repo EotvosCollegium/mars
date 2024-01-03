@@ -12,13 +12,15 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
-class PrintAccountController extends Controller {
+class PrintAccountController extends Controller
+{
     /**
-     * Updates balance of a `PrintAccount`. 
+     * Updates balance of a `PrintAccount`.
      * This can be done in two ways: either by topping up the account by giving money to an admin
      * or by transfering money from one account to the other.
      */
-    public function update(Request $request) {
+    public function update(Request $request)
+    {
         $request->validate([
             'amount' => 'required|integer',
             'user' => 'required|exists:users,id', // Normally this would be a path parameter for the PrintAccount, but we can't do that because of the limitations of blade templates
@@ -80,7 +82,7 @@ class PrintAccountController extends Controller {
             }
 
             $amount = $request->get('amount');
-            
+
             if ($amount < 0 && $printAccount->balance < $amount) {
                 $this->returnNoBalance();
             }

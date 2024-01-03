@@ -53,7 +53,7 @@ class AuthServiceProvider extends ServiceProvider
             return $user->isAdmin();
         });
     }
-    
+
     public function registerDocumentPolicies()
     {
         Gate::define('document.status-certificate.viewAny', function ($user) {

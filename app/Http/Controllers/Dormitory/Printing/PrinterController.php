@@ -19,7 +19,8 @@ class PrinterController extends Controller
      * @param null|string $page Determines wether we are on the admin or the normal printing page.
      * @return View
      */
-    public function index(?string $page = null) {
+    public function index(?string $page = null)
+    {
         if ($page === "admin") {
             $this->authorize('handleAny', PrintAccount::class);
 
@@ -36,7 +37,8 @@ class PrinterController extends Controller
     /**
      * Sets the given printer's out of paper sign.
      */
-    public function update(Request $request, Printer $printer) {
+    public function update(Request $request, Printer $printer)
+    {
         $request->validate([
             "no_paper" => "boolean",
         ]);
