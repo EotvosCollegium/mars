@@ -12,7 +12,15 @@ class TrustProxies extends Middleware
      *
      * @var array|string
      */
-    protected $proxies = ['172.16.9.200'];
+    protected $proxies;
+
+    /**
+     * Initiates the object with a configured proxy
+     */
+    public function __construct()
+    {
+        $this->proxies = config('app.trust_proxies');
+    }
 
     /**
      * The headers that should be used to detect proxies.
