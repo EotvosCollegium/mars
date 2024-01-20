@@ -283,4 +283,10 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
     ],
+
+    /*
+    Trust proxies
+    */
+
+    'trust_proxies' => explode(',', env('TRUST_PROXIES', '')),
 ];
