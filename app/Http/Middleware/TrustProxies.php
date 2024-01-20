@@ -14,7 +14,8 @@ class TrustProxies extends Middleware
      */
     protected $proxies;
 
-    function TrustProxies() {
+    public function TrustProxies()
+    {
         $proxies = config('app.trust_proxies');
     }
 
