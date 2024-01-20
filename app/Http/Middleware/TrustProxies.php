@@ -14,8 +14,11 @@ class TrustProxies extends Middleware
      */
     protected $proxies;
 
+    /**
+     * Initiates the object with a configured proxy
+     */
     function TrustProxies() {
-        $proxies = config('app.trust_proxies');
+        $this->proxies = config('app.trust_proxies');
     }
 
     /**
