@@ -137,7 +137,7 @@ class EpistolaController extends Controller
     {
         $this->authorize('send', EpistolaNews::class);
 
-        Mail::to(env('MAIL_KOMMBIZ'))->send(new EpistolaCollegii(self::getActiveNews()));
+        Mail::to(config('contacts.mail_kommbiz'))->send(new EpistolaCollegii(self::getActiveNews()));
 
         EpistolaNews::where('sent', false)->update(['sent' => true]);
 

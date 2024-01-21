@@ -132,8 +132,8 @@ width: 100% !important;
                         <a href="https://eotvos.elte.hu" target="_blank" rel="noopener">Eötvös József Collegium</a><br>
                         <img src="{{ asset('img/valasztmany_logo.png') }}" width="120" alt=""><br>
                         <p>
-                        <a href="mailto:{{env('MAIL_VALASZTMANY')}}">{{env('MAIL_VALASZTMANY')}}</a><br>
-                        <a href="mailto:{{env('MAIL_KOMMBIZ')}}">{{env('MAIL_KOMMBIZ')}}</a>
+                        <a href="mailto:{{config('contacts.mail_valasztmany')}}">{{config('contacts.mail_valasztmany')}}</a><br>
+                        <a href="mailto:{{config('contacts.mail_kommbiz')}}">{{config('contacts.mail_kommbiz')}}</a>
                         </p>
                         <div class="subcopy">
                             <p>
