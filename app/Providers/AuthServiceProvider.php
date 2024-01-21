@@ -54,13 +54,9 @@ class AuthServiceProvider extends ServiceProvider
         });
     }
 
-    public function registerPrintingPermissionHandlingPolicies()
-    {
-        Gate::define('print.print', function ($user) {
-            return $user->hasRole(Role::PRINTER);
-        });
-    }
-
+    /**
+     * Register policies for documents.
+     */
     public function registerDocumentPolicies()
     {
         Gate::define('document.status-certificate.viewAny', function ($user) {
@@ -88,6 +84,9 @@ class AuthServiceProvider extends ServiceProvider
         });
     }
 
+    /**
+     * Register policies for verification.
+     */
     public function registerVerificationPolicies()
     {
         Gate::define('registration.handle', function ($user) {

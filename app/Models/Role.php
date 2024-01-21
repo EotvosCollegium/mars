@@ -99,9 +99,6 @@ class Role extends Model
         self::ETHICS_COMMISSIONER
     ];
 
-    // Module-related roles
-    public const PRINTER = 'printer';
-
     //collegist related roles
     public const RESIDENT = 'resident';
     public const EXTERN = 'extern';
@@ -118,7 +115,6 @@ class Role extends Model
         self::SECRETARY,
         self::DIRECTOR,
         self::STAFF,
-        self::PRINTER,
         self::LOCALE_ADMIN,
         self::STUDENT_COUNCIL,
         self::STUDENT_COUNCIL_SECRETARY,
@@ -301,7 +297,6 @@ class Role extends Model
             self::SECRETARY => 'indigo',
             self::DIRECTOR => 'blue',
             self::STAFF => 'cyan',
-            self::PRINTER => 'teal',
             self::LOCALE_ADMIN => 'amber',
             self::STUDENT_COUNCIL => 'green darken-4',
             self::APPLICATION_COMMITTEE_MEMBER => 'light-blue darken-4',

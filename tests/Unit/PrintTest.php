@@ -18,7 +18,6 @@ class PrintTest extends TestCase
     public function testPrintAccount()
     {
         $user = User::factory()->create();
-        //$user->roles()->attach(Role::getId(Role::PRINTER));
 
         $this->assertNotNull($user->printAccount);
         $this->assertEquals($user->printAccount, PrintAccount::find($user->id));

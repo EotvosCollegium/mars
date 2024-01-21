@@ -57,7 +57,6 @@ class RegistrationTest extends TestCase
             'status' => ApplicationForm::STATUS_IN_PROGRESS
         ]);
 
-        $this->assertTrue($user->hasRole(Role::PRINTER));
         $this->assertTrue($user->hasRole(Role::COLLEGIST));
     }
 
@@ -102,8 +101,6 @@ class RegistrationTest extends TestCase
             'user_id' => $user->id,
             'balance' => 0
         ]);
-
-        $this->assertTrue($user->hasRole(Role::PRINTER));
         $this->assertTrue($user->hasRole(Role::TENANT));
     }
 }

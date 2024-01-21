@@ -11,7 +11,6 @@ class NoPaper extends Mailable
     use Queueable;
     use SerializesModels;
 
-    public string $recipient;
     public string $reporter;
 
     /**
@@ -19,9 +18,8 @@ class NoPaper extends Mailable
      *
      * @param  string  $userName
      */
-    public function __construct(string $recipient, string $reporter)
+    public function __construct(string $reporter)
     {
-        $this->recipient = $recipient;
         $this->reporter = $reporter;
     }
 
