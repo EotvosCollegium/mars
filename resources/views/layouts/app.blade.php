@@ -103,6 +103,26 @@
                 url: "{{ route('set-color-mode', [':mode']) }}".replace(':mode', mode),
             });
         }
+
+        // for our custom arrow dropdowns
+        // (e.g. the dropdown of workshop secretaries)
+        function toggleCollContent(title) {
+            return function() {
+                if (title.is(".closed")) {
+                    title.removeClass("closed");
+                    title.addClass("open");
+                    // the rest is done by CSS rules
+                } else {
+                    title.removeClass("open");
+                    title.addClass("closed");
+                }
+            }
+        }
+
+        titles = $(".arrow-dropdown .arrow-dropdown-title");
+        titles.on('click', toggleCollContent(titles));
+        // initialize them as closed:
+        titles.addClass('closed');
         </script>
     @endpush
 

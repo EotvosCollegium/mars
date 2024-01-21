@@ -1,12 +1,7 @@
-# Contributing guideline
 
-## The basics
+## Development environment
 
-We use the [Laravel framework](https://laravel.com/), to learn more about it, read the basics section of its documentation.
-It's also good to check out the previous commits, to see how to implement that part or that. Might seem a lot first, but it's really easy,
-thanks to Laravel.
-
-## Development
+There are several ways to set up your development server and environment. Basically, you only need a running php server that uses the /public folder and an sql database connected to it. There are some tips how to achieve that (and even more) below.
 
 ### Developing on the cloud with gitpod (for starters or for slow machines)
 
@@ -25,6 +20,7 @@ thanks to Laravel.
  6. Open the project in VS code. Copy the `.env.example` file to `.env` and run `php artisan key:generate`. Set `DB_HOST` to `mysql` in `.env` file.
  8. VS code should notice that the project is configured to use dev containers and will promt you if you want to use it. Click yes, and you're all done!
 
+Note: to regenerate the docker configuration, use `php artisan sail:install --devcontainer`
 
 ### OS X
 For OS X, [Valet](https://laravel.com/docs/6.x/valet) gives a pretty smooth experience. Easy to download, easy to configure.
@@ -91,49 +87,13 @@ FORWARD_DB_PORT=33066
 
 5. Still in `.env`, rewrite `DB_HOST` from the given IP to `mysql`.
 6. Run `./vendor/bin/sail up`.
-7. Open another terminal. Before seeding, add the correct privilege to the user `collegiumnostrum` in MySQL:
-    - Run `docker exec -it collegiumnostrum-mysql-1 bash`. This way, you'll log into the container as root.
-    - Run `mysql --password` with the password given in `.env`.
-    - Say `SET GLOBAL log_bin_trust_function_creators = 1;`.
-    - Exit.
+7. Open another terminal. Before seeding, add the correct privilege to Laravel's user in MySQL by running:
+
+```sh
+docker exec -it mars-mysql-1 mysql --password -e "SET GLOBAL log_bin_trust_function_creators = 1;"
+```
+
 8. Run `./vendor/bin/sail artisan migrate:fresh --seed`. (Other Artisan commands need to be executed similarly.)
 9. Now you can test the site at `http://localhost:8080`.
 10. Instead of SSH, you can use `docker exec -it mars-laravel.test-1 bash`.
 11. And to access MySQL, run `docker exec -it mars-mysql-1 mysql --user=mars --password mars` (change the container name, the username and the database name if needed; the latter two are in .env) and log in with the password (also found in .env).
-
-## Keep it minimal
-
-The main problem with Urán 1.1 was its _reinventing the wheel_ strategy. Laravel provides everything we need. Use it.
-The other problem was the unnecessary features came before the most important ones. Therefore the now defined issues are minimal, only
-contain the necessary parts of the system. After these are done, we can change the world. But first, build it.
-
-## Commiting
-
-When you would like to make some change, assign an issue to yourself, only after that start working on it.
-If there's no issue, create one, but remember the paragraph above. Keep it minimal. If something's not clear, ask your questions under the issue.
-Feel free to create your own branch (if you are a contributor), or fork the repo.
-When you are done with your changes, the commit message should be the Issue's title and it should be sent through a
-Pull Request. Also, feel free to review already sent in changes. E.g.
-
-```bash
-# when you start working
-git checkout masteryour_feature_branch
-git pull
-git checkout -b your_feature_branch
-
-# add your changes
-
-# when you are done
-git add --all  # or only your changes
-git commit # an editor comes up, the first line should look like: Issue #x: changed this and that
-# add more information if needed
-git fetch origin
-git rebase origin/master # resolve conflicts if something comes up
-git push origin your_feature_branch
-
-# open repo in your browser and you should see a Create PR option.
-```
-
-## Got any questions?
-
-Find me, or write a mail to root at eotvos dot elte dot uh. (Last two letteres reversed.)

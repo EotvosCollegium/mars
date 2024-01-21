@@ -36,7 +36,7 @@ class AlfonsoTest extends TestCase
         $this->assertTrue($user->educationalInformation->alfonsoCompleted());
     }
 
-        /**
+    /**
      * @return void
      */
     public function test_entry_with_one_exam()
@@ -86,7 +86,7 @@ class AlfonsoTest extends TestCase
         $this->assertFalse($user->educationalInformation->alfonsoCompleted());
     }
 
-        /**
+    /**
      * @return void
      */
     public function test_entry_with_multiple_exams()

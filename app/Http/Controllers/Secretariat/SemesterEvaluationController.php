@@ -184,7 +184,7 @@ class SemesterEvaluationController extends Controller
     public static function finalizeStatements()
     {
         foreach (User::withRole(Role::COLLEGIST)->verified()->get() as $user) {
-            if (! $user->getStatus(Semester::next())?->status) {
+            if (!$user->getStatus(Semester::next())?->status) {
                 self::deactivateCollegist($user);
             }
         }

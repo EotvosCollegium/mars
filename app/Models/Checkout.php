@@ -9,9 +9,21 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Cache;
 
 /**
+ * App\Models\Checkout
+ *
  * @property mixed $name
  * @property mixed $id
  * @property User $handler
+ * @property int|null $handler_id
+ * @property-read Collection|\App\Models\Transaction[] $transactions
+ * @property-read int|null $transactions_count
+ * @method static \Illuminate\Database\Eloquent\Builder|Checkout newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Checkout newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Checkout query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Checkout whereHandlerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Checkout whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Checkout whereName($value)
+ * @mixin \Eloquent
  */
 class Checkout extends Model
 {

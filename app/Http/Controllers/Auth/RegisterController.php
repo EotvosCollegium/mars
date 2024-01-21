@@ -65,7 +65,7 @@ class RegisterController extends Controller
     /**
      * Get a validator for an incoming registration request.
      *
-     * @param  array  $data
+     * @param array $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
     protected function validator(array $data)
@@ -73,7 +73,7 @@ class RegisterController extends Controller
         switch ($data['user_type']) {
             case Role::TENANT:
                 return Validator::make($data, [
-                    'tenant_until'=>'required|date|after:today',
+                    'tenant_until' => 'required|date|after:today',
                     'name' => 'required|string|max:255',
                     'phone_number' => 'required|string|min:8|max:18',
                     'email' => 'required|string|email|max:255|unique:users',
@@ -93,7 +93,7 @@ class RegisterController extends Controller
     /**
      * Create a new user instance after a valid registration.
      *
-     * @param  array  $data
+     * @param array $data
      * @return \App\Models\User
      */
     public function create(array $data)
@@ -106,7 +106,6 @@ class RegisterController extends Controller
             ]);
 
             $user->roles()->attach(Role::firstWhere('name', Role::PRINTER)->id);
-            $user->roles()->attach(Role::firstWhere('name', Role::INTERNET_USER)->id);
             $user->roles()->attach(Role::firstWhere('name', $data['user_type'])->id);
 
             if ($data['user_type'] == Role::TENANT) {
@@ -117,7 +116,7 @@ class RegisterController extends Controller
                 // Send confirmation mail.
                 Mail::to($user)->queue(new \App\Mail\Confirmation($user->name));
                 // Send notification about new tenant to the staff and network admins.
-                if (! $user->isCollegist()) {
+                if (!$user->isCollegist()) {
                     $users_to_notify = User::whereHas('roles', function ($q) {
                         $q->whereIn('role_id', [
                             Role::firstWhere('name', Role::SYS_ADMIN)->id

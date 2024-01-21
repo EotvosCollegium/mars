@@ -9,13 +9,35 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
-* @property string $path
-* @property string $language
-* @property string $level
-* @property string $type
-* @property Carbon $date
-* @property bool $wasBeforeEnrollment
-*/
+ * App\Models\LanguageExam
+ *
+ * @property string $path
+ * @property string $language
+ * @property string $level
+ * @property string $type
+ * @property Carbon $date
+ * @property bool $wasBeforeEnrollment
+ * @property int $id
+ * @property int $educational_information_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\EducationalInformation|null $educationalInformation
+ * @property-read bool $was_before_enrollment
+ * @method static \Database\Factories\LanguageExamFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|LanguageExam newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|LanguageExam newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|LanguageExam query()
+ * @method static \Illuminate\Database\Eloquent\Builder|LanguageExam whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|LanguageExam whereDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|LanguageExam whereEducationalInformationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|LanguageExam whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|LanguageExam whereLanguage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|LanguageExam whereLevel($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|LanguageExam wherePath($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|LanguageExam whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|LanguageExam whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class LanguageExam extends Model
 {
     use HasFactory;

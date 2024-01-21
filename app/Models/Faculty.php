@@ -4,6 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\Faculty
+ *
+ * @property int $id
+ * @property string $name
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $users
+ * @property-read int|null $users_count
+ * @method static \Illuminate\Database\Eloquent\Builder|Faculty newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Faculty newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Faculty query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Faculty whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Faculty whereName($value)
+ * @mixin \Eloquent
+ */
 class Faculty extends Model
 {
     public const AJK = 'Állam- és Jogtudományi Kar';

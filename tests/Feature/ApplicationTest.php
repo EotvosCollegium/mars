@@ -64,6 +64,7 @@ class ApplicationTest extends TestCase
      * Test filling out the questions page.
      *
      * @return void
+     * @throws \JsonException
      */
     public function test_store_questions()
     {

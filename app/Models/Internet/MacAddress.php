@@ -4,18 +4,41 @@ namespace App\Models\Internet;
 
 use App\Models\User;
 use App\Utils\NotificationCounter;
+use Database\Factories\Internet\MacAddressFactory;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
+ * App\Models\Internet\MacAddress
+ *
  * @property string $user_id
  * @property string $mac_address
  * @property string $comment
  * @property string $state
+ * @property-read string $translated_state
  * @property string $ip
  * @property User $user
+ * @property int $id
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read InternetAccess $internetAccess
+ * @method static MacAddressFactory factory(...$parameters)
+ * @method static Builder|MacAddress newModelQuery()
+ * @method static Builder|MacAddress newQuery()
+ * @method static Builder|MacAddress query()
+ * @method static Builder|MacAddress whereComment($value)
+ * @method static Builder|MacAddress whereCreatedAt($value)
+ * @method static Builder|MacAddress whereId($value)
+ * @method static Builder|MacAddress whereMacAddress($value)
+ * @method static Builder|MacAddress whereState($value)
+ * @method static Builder|MacAddress whereUpdatedAt($value)
+ * @method static Builder|MacAddress whereUserId($value)
+ * @mixin Eloquent
  */
 class MacAddress extends Model
 {
@@ -33,15 +56,44 @@ class MacAddress extends Model
         'user_id', 'mac_address', 'comment', 'state', 'ip',
     ];
 
-    protected $attributes = [
-        'comment' => '',
-        'state' => self::REQUESTED,
-    ];
+    // Return translated state every time the model is retrieved.
+    protected $appends = ['translated_state'];
 
-
-    public function user(): BelongsTo
+    /**
+     * Get the translated_state attribute.
+     *
+     * @return Attribute
+     */
+    public function translatedState(): Attribute
     {
-        return $this->belongsTo(User::class);
+        return Attribute::make(
+            get: fn () => __('internet.' . strtolower($this->state))
+        );
+    }
+
+    /**
+     * The user's internet access model.
+     *
+     * @return BelongsTo
+     */
+    public function internetAccess(): BelongsTo
+    {
+        return $this->belongsTo(InternetAccess::class, 'user_id', 'user_id');
+    }
+
+    /**
+     * The user that this mac address belongs to.
+     */
+    public function user(): \Illuminate\Database\Eloquent\Relations\HasOneThrough
+    {
+        return $this->hasOneThrough(
+            User::class,
+            InternetAccess::class,
+            'user_id', // Foreign key on InternetAccess table...
+            'id', // Foreign key on Users table...
+            'user_id', // Local key on MacAddresses table...
+            'user_id' // Local key on InternetAccess table...
+        );
     }
 
 
@@ -57,7 +109,11 @@ class MacAddress extends Model
         );
     }
 
-    public static function notifications()
+    /**
+     * The number of mac addresses waiting for approval.
+     * @return int
+     */
+    public static function notificationCount(): int
     {
         return self::where('state', self::REQUESTED)->count();
     }

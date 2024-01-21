@@ -16,5 +16,5 @@ trait NotificationCounter
     /**
      * Returns a number, based on the objects the user should be notified about.
      */
-    abstract public static function notifications();
+    abstract public static function notificationCount();
 }

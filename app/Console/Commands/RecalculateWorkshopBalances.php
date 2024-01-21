@@ -42,7 +42,7 @@ class RecalculateWorkshopBalances extends Command
         $semesters = Semester::all()
             ->where('tag', '<=', Semester::current()->tag);
         foreach ($semesters as $semester) {
-            WorkshopBalance::generateBalances($semester->id);
+            WorkshopBalance::generateBalances($semester);
         }
     }
 }

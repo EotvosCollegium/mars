@@ -7,8 +7,32 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
+ * App\Models\CommunityService
+ *
  * @property boolean|null $approved
  * @property string $status
+ * @property int $id
+ * @property int $requester_id
+ * @property int $approver_id
+ * @property string $description
+ * @property int $semester_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\User $approver
+ * @property-read \App\Models\User $requester
+ * @property-read \App\Models\Semester $semester
+ * @method static \Illuminate\Database\Eloquent\Builder|CommunityService newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|CommunityService newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|CommunityService query()
+ * @method static \Illuminate\Database\Eloquent\Builder|CommunityService whereApproved($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CommunityService whereApproverId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CommunityService whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CommunityService whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CommunityService whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CommunityService whereRequesterId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CommunityService whereSemesterId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CommunityService whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class CommunityService extends Model
 {
@@ -65,7 +89,7 @@ class CommunityService extends Model
     {
         if ($this->approved === null) {
             return 'orange';
-        } elseif ($this->approved==1) {
+        } elseif ($this->approved == 1) {
             return 'green';
         } else {
             return 'red';
