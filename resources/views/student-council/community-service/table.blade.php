@@ -7,7 +7,7 @@
                     <table style="width:100%">
                         <thead>
                             <tr>
-                                <th>Leírás</th>
+                                <th>Leírés</th>
                                 <th>Dátum</th>
                                 <th>Kérvényező</th>
                                 <th>Jóváhagyó</th>

@@ -1,7 +1,5 @@
 <span class="card-title">@lang('internet.wifi_connections')</span>
-<blockquote>Itt látható, hogy egy felhasználó egy adott MAC címmel milyen IP címet kapott milyen időtartamban (lease),
-    és azzal hányszor csatlakozott fel a hálózatra. A táblázat éjjelente frissül.
-</blockquote>
+<blockquote>A táblázat éjjelente frissül.</blockquote>
 <div id="wifi-connections-table"></div>
 <script type="application/javascript">
     $(document).ready(function () {
@@ -14,12 +12,12 @@
         }
 
         var table = new Tabulator("#wifi-connections-table", {
-            paginationSize: 20,
+            paginationSize: 10,
             pagination: "remote",
-            ajaxURL: "{{ route('internet.wifi_connections.index') }}",
+            ajaxURL: "{{ route('internet.admin.wifi_connections.all') }}",
             ajaxSorting: true,
             ajaxFiltering: true,
-            layout: "fitColumns",
+            layout:"fitColumns",
             placeholder: "No Data Set",
             columns: [
                 {

@@ -56,5 +56,4 @@ return [
     'tenant' => 'Vendég',
     'workshop-administrator' => 'Műhelytitkár',
     'workshop-leader' => 'Műhelyvezető',
-    'workshop-functionaries' => 'A műhelyek tisztségviselői',
 ];

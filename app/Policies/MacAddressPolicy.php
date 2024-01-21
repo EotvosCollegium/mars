@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Models\Internet\MacAddress;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -15,13 +16,39 @@ class MacAddressPolicy
         if ($user->isAdmin()) {
             return true;
         }
+        if (! $user->hasRole(Role::INTERNET_USER)) {
+            return false;
+        }
     }
 
     /**
-     * Determine whether the user can create mac address instances.
+     * Determine whether the user can view any mac addresses (in general).
      *
      * @param User $user
-     * @return bool
+     * @return mixed
+     */
+    public function viewAny(User $user): bool
+    {
+        return false;
+    }
+
+    /**
+     * Determine whether the user can view the mac address.
+     *
+     * @param User $user
+     * @param MacAddress $macAddress
+     * @return mixed
+     */
+    public function view(User $user, MacAddress $macAddress): bool
+    {
+        return $user->id === $macAddress->user_id;
+    }
+
+    /**
+     * Determine whether the user can create mac addresses.
+     *
+     * @param User $user
+     * @return mixed
      */
     public function create(User $user): bool
     {
@@ -29,16 +56,16 @@ class MacAddressPolicy
     }
 
     /**
-     * Determine whether the user can approve a mac address.
+     * Determine whether the user can update the mac address.
      *
      * @param User $user
+     * @param MacAddress $macAddress
      * @return mixed
      */
     public function update(User $user, MacAddress $macAddress): bool
     {
-        return false;
+        return $user->id === $macAddress->user_id;
     }
-
 
     /**
      * Determine whether the user can delete the mac address.
@@ -49,6 +76,17 @@ class MacAddressPolicy
      */
     public function delete(User $user, MacAddress $macAddress): bool
     {
-        return $user->can('handle', $macAddress->internetAccess);
+        return $user->id === $macAddress->user_id;
+    }
+
+    /**
+     * Determine whether the user can accept the mac address request.
+     *
+     * @param User $user
+     * @return mixed
+     */
+    public function accept(User $user): bool
+    {
+        return false;
     }
 }

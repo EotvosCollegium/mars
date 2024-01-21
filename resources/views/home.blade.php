@@ -111,29 +111,6 @@
                     @endif
                 @endforeach
 
-                <!-- Workshop functionaries -->
-                <div class="arrow-dropdown">
-                    <h5 class="arrow-dropdown-title" class="closed"><a>
-                        @lang('role.workshop-functionaries')
-                    </a></h5>
-                    <div class="arrow-dropdown-content">
-                        <ul>
-                            @foreach($contacts['workshops'] as $name => $functionaries)
-                            <li>
-                                <b>{{$name}}</b>
-                                <ul>
-                                    <li>@lang('role.'.\App\Models\Role::WORKSHOP_LEADER):
-                                        <i>{{$functionaries['leaders']}}</i>
-                                    </li>
-                                    <li>@lang('role.'.\App\Models\Role::WORKSHOP_ADMINISTRATOR):
-                                        <i>{{$functionaries['administrators']}}</i>
-                                    </li>
-                                </ul>
-                            </li>
-                            @endforeach
-                        </ul>
-                    </div>
-                </div>
 
                 @endif
                 <!-- Admins -->
@@ -190,6 +167,6 @@ function standby(id) {
 }
 $(document).ready(function(){
     $('.materialboxed').materialbox();
-});
+  });
 </script>
 @endpush

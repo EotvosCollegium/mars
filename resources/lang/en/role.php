@@ -56,5 +56,4 @@ return [
     'tenant' => 'Tenant',
     'workshop-administrator' => 'Workshop administrator',
     'workshop-leader' => 'Workshop leader',
-    'workshop-functionaries' => 'Workshop functionaries',
 ];
