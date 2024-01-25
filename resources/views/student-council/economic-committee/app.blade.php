@@ -90,10 +90,6 @@
                                     <th>Tagok @if($semester->isCurrent())*@endif </th>
                                     <th>
                                         Kiosztott egyenleg
-                                        @if($semester->isCurrent())
-                                        <br>
-                                            <x-input.button :href="route('economic_committee.workshop_balance')" floating class="btn-small grey" icon="refresh" />
-                                        @endif
                                     </th>
                                     <th>Felhasznált egyenleg @if($semester->isCurrent())@can('administrate', $checkout) ** @endcan @endif</th>
                                     <th>Fennmaradó összeg</th>
@@ -126,6 +122,14 @@
                             Azok közül, akik fizettek, minden bentlakó után a műhely {{config('custom.kkt')}} * {{config('custom.workshop_balance_resident')}}, minden bejáró után {{config('custom.kkt')}} * {{config('custom.workshop_balance_extern')}} forintot kap.
                             (Ha egy collegistának több műhelye is van, a műhelyei megosztoznak az összegen.)
                         </blockquote>
+                        @can('calculateWorkshopBalance', \App\Models\Checkout::class)
+                        <blockquote>
+                            A félévben az adott műhelynek szánt összeg számolását a gazdasági alelnök (illetve a rendszergazdák) tudják elindítani. <br>
+                            Ez növelheti, és csökkentheti is az érintett műhelynek kiosztott összeget.
+                            Célszerű a KKT-k befizetését és adminisztrálását követően lefuttatni, és utána többször nem elindítani, mivel az egyes műhelyekből távozók és érkezők befolyásolnák ezt a számot. <br>
+                            <x-input.button :href="route('economic_committee.workshop_balance')" class="btn-small red" text="Műhelyeknek járó összeg számolása" />
+                        </blockquote>
+                        @endcan
                         @can('administrate', $checkout)
                         <blockquote>
                             **A beviteli mezőbe pozitív összeggel írd be a kiadást, negatívval az előző félévről megmaradt egyenleget.
