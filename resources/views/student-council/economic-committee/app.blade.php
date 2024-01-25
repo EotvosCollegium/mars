@@ -122,7 +122,7 @@
                             Azok közül, akik fizettek, minden bentlakó után a műhely {{config('custom.kkt')}} * {{config('custom.workshop_balance_resident')}}, minden bejáró után {{config('custom.kkt')}} * {{config('custom.workshop_balance_extern')}} forintot kap.
                             (Ha egy collegistának több műhelye is van, a műhelyei megosztoznak az összegen.)
                         </blockquote>
-                        @can('calculateWorkshopBalance', \App\Models\Checkout::studentsCouncil())
+                        @can('calculateWorkshopBalance', \App\Models\Checkout::class)
                         <blockquote>
                             A félévben az adott műhelynek szánt összeg számolását a gazdasági alelnök (illetve a rendszergazdák) tudják elindítani. <br>
                             Ez növelheti, és csökkentheti is az érintett műhelynek kiosztott összeget.
