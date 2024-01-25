@@ -55,7 +55,7 @@ class CheckoutPolicy
     /**
      * Determine whether the user can calculate the workshop balance.
      */
-    public function calculateWorkshopBalance(User $user) : bool
+    public function calculateWorkshopBalance(User $user): bool
     {
         return $user->hasRole([
             Role::SYS_ADMIN,
