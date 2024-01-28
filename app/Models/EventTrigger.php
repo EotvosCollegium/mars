@@ -65,7 +65,7 @@ class EventTrigger extends Model
         foreach (EventTrigger::all() as $event) {
             if (Carbon::parse($event->date)->isPast()) {
                 $event->handleSignal();
-            } else if ($event->getTrigger()->remindBeforeDays()) {
+            } elseif ($event->getTrigger()->remindBeforeDays()) {
                 //Send reminder (daily - see schedule in Kernel) after remindBeforeDays.
                 echo Carbon::parse($event->date);
                 $reminderDate = Carbon::parse($event->date)->subDays($event->getTrigger()->remindBeforeDays())->startOfDay();

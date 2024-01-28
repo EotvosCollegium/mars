@@ -66,12 +66,12 @@
                 <!-- Student Council -->
                 @if(isset($contacts[\App\Models\Role::STUDENT_COUNCIL]))
                 <h5>Választmány</h5>
-                <i><a href="mailto:{{ env('MAIL_VALASZTMANY') }}">{{env('MAIL_VALASZTMANY')}}</a></i><br>
+                <i><a href="mailto:{{ config('contacts.mail_valasztmany') }}">{{config('contacts.mail_valasztmany')}}</a></i><br>
                 @foreach($contacts[\App\Models\Role::STUDENT_COUNCIL] as $roleuser)
                 <b>@lang('role.'.$roleuser->object->name)</b>:
                     <i>{{$roleuser->user?->name}}</i>
                     @if($roleuser->object->name == \App\Models\Role::PRESIDENT)
-                    <a href="mailto:{{ env('MAIL_ELNOK') }}">{{env('MAIL_ELNOK')}}</a>
+                    <a href="mailto:{{ config('contacts.mail_elnok') }}">{{config('contacts.mail_elnok')}}</a>
                     <a href="mailto:{{ $roleuser->user?->email }}">{{ $roleuser->user?->email }}</a>
                     {{ $roleuser->user?->personalInformation?->phone_number }}
                     @endif
@@ -111,12 +111,35 @@
                     @endif
                 @endforeach
 
+                <!-- Workshop functionaries -->
+                <div class="arrow-dropdown">
+                    <h5 class="arrow-dropdown-title" class="closed"><a>
+                        @lang('role.workshop-functionaries')
+                    </a></h5>
+                    <div class="arrow-dropdown-content">
+                        <ul>
+                            @foreach($contacts['workshops'] as $name => $functionaries)
+                            <li>
+                                <b>{{$name}}</b>
+                                <ul>
+                                    <li>@lang('role.'.\App\Models\Role::WORKSHOP_LEADER):
+                                        <i>{{$functionaries['leaders']}}</i>
+                                    </li>
+                                    <li>@lang('role.'.\App\Models\Role::WORKSHOP_ADMINISTRATOR):
+                                        <i>{{$functionaries['administrators']}}</i>
+                                    </li>
+                                </ul>
+                            </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
 
                 @endif
                 <!-- Admins -->
                 @if(isset($contacts['admins']))
                 <h5>@lang('role.sys-admins')</h5>
-                <i><a href="mailto:{{ env('DEVELOPER_EMAIL') }}">{{env('DEVELOPER_EMAIL')}}</a></i><br>
+                <i><a href="mailto:{{ config('contacts.developer_email') }}">{{config('contacts.developer_email')}}</a></i><br>
                 @foreach($contacts['admins'] as $admin)
                     @if(!$loop->first)|@endif
                     <i>{{$admin->name}}</i>
@@ -167,6 +190,6 @@ function standby(id) {
 }
 $(document).ready(function(){
     $('.materialboxed').materialbox();
-  });
+});
 </script>
 @endpush

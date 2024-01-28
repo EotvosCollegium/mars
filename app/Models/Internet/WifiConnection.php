@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 /**
  * App\Models\Internet\WifiConnection
- * 
+ *
  * This model collects the wifi connections of users over time.
  * It updates through App\Jobs\ProcessWifiConnections.
  *
