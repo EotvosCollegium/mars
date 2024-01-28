@@ -18,6 +18,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder|Room query()
  * @method static \Illuminate\Database\Eloquent\Builder|Room whereCapacity($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Room whereName($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Router> $routers
+ * @property-read int|null $routers_count
  * @mixin \Eloquent
  */
 class Room extends Model

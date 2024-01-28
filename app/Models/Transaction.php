@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $amount
  * @property int $payment_type_id
  * @property string $comment
+ * @property int|null $receipt_id
  * @property \Illuminate\Support\Carbon|null $moved_to_checkout
  * @property \Illuminate\Support\Carbon|null $paid_at
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -49,6 +50,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|Transaction withTrashed()
  * @method static \Illuminate\Database\Query\Builder|Transaction withoutTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereReceiptId($value)
  * @mixin \Eloquent
  */
 class Transaction extends Model
@@ -103,7 +105,7 @@ class Transaction extends Model
         if (in_array($this->type->name, [PaymentType::INCOME, PaymentType::EXPENSE])) {
             return $value;
         }
-        return __('checkout.'.$this->type->name);
+        return __('checkout.' . $this->type->name);
     }
 
     /**
