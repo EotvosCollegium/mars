@@ -8,6 +8,7 @@ use App\Models\Role;
 use App\Models\RoleObject;
 use App\Models\RoleUser;
 use App\Models\User;
+use App\Models\Workshop;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
@@ -130,9 +131,9 @@ class HomeController extends Controller
         $username = user()->name;
 
         //personal auth token from your github.com account - see CONTRIBUTING.md
-        $token = env('GITHUB_AUTH_TOKEN');
+        $token = config('github.auth_token');
 
-        $url = "https://api.github.com/repos/" . env('GITHUB_REPO') . "/issues";
+        $url = "https://api.github.com/repos/" . config('github.repo') . "/issues";
 
         //request details, removing slashes and sanitize content
         $title = htmlspecialchars(stripslashes('Reported bug'), ENT_QUOTES);
@@ -195,11 +196,11 @@ class HomeController extends Controller
                 'phone_number' => $staff?->personalInformation?->phone_number
             ],
             'reception' => [
-                'phone_number' => env('PORTA_PHONE')
+                'phone_number' => config('contacts.porta_phone')
             ],
             'doctor' => [
-                'name' => env('DOCTOR_NAME'),
-                'link' => env('DOCTOR_LINK')
+                'name' => config('contacts.doctor_name'),
+                'link' => config('contacts.doctor_link')
             ]
         ];
 
@@ -218,7 +219,15 @@ class HomeController extends Controller
                 Role::BOARD_OF_TRUSTEES_MEMBER => User::boardOfTrusteesMembers(),
                 Role::ETHICS_COMMISSIONER => User::ethicsCommissioners(),
             ]);
+
+            $contacts['workshops'] = Workshop::all()->flatMap(fn ($workshop) => [
+                $workshop->name => [
+                    'leaders' => $workshop->leaders->pluck('name')->implode(', '),
+                    'administrators' => $workshop->administrators->pluck('name')->implode(', ')
+                ]
+            ]);
         }
+
         return $contacts;
     }
 }

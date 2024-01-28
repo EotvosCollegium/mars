@@ -182,7 +182,7 @@ class SemesterEvaluationController extends Controller
      */
     public static function sendEvaluationAvailableMail()
     {
-        Mail::to(config('mail.membra_mail'))->queue(new \App\Mail\EvaluationFormAvailable());
+        Mail::to(config('contacts.mail_membra'))->queue(new \App\Mail\EvaluationFormAvailable());
         if (User::secretary()) {
             Mail::to(User::secretary())->queue(new \App\Mail\EvaluationFormAvailableDetails());
         }
@@ -198,7 +198,7 @@ class SemesterEvaluationController extends Controller
     {
         $userCount = self::usersHaventFilledOutTheForm()->count();
 
-        Mail::to(config('mail.membra_mail'))->queue(new \App\Mail\EvaluationFormReminder($userCount));
+        Mail::to(config('contacts.mail_membra'))->queue(new \App\Mail\EvaluationFormReminder($userCount));
     }
 
     /**
