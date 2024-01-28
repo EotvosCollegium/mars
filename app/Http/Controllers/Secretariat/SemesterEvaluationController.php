@@ -183,8 +183,12 @@ class SemesterEvaluationController extends Controller
     public static function sendEvaluationAvailableMail()
     {
         Mail::to(config('mail.membra_mail'))->queue(new \App\Mail\EvaluationFormAvailable());
-        if (User::secretary()) Mail::to(User::secretary())->queue(new \App\Mail\EvaluationFormAvailableDetails());
-        if (User::president()) Mail::to(User::president())->queue(new \App\Mail\EvaluationFormAvailableDetails());
+        if (User::secretary()) {
+            Mail::to(User::secretary())->queue(new \App\Mail\EvaluationFormAvailableDetails());
+        }
+        if (User::president()) {
+            Mail::to(User::president())->queue(new \App\Mail\EvaluationFormAvailableDetails());
+        }
     }
 
     /**
@@ -215,9 +219,15 @@ class SemesterEvaluationController extends Controller
     {
         $users = self::usersHaventFilledOutTheForm();
 
-        if (User::secretary()) Mail::to(User::secretary())->queue(new EvaluationFormClosed(User::secretary()->name, $users->pluck('name')->toArray()));
-        if (User::president()) Mail::to(User::president())->queue(new EvaluationFormClosed(User::president()->name, $users->pluck('name')->toArray()));
-        if (User::director()) Mail::to(User::director())->queue(new EvaluationFormClosed(User::director()->name, $users->pluck('name')->toArray()));
+        if (User::secretary()) {
+            Mail::to(User::secretary())->queue(new EvaluationFormClosed(User::secretary()->name, $users->pluck('name')->toArray()));
+        }
+        if (User::president()) {
+            Mail::to(User::president())->queue(new EvaluationFormClosed(User::president()->name, $users->pluck('name')->toArray()));
+        }
+        if (User::director()) {
+            Mail::to(User::director())->queue(new EvaluationFormClosed(User::director()->name, $users->pluck('name')->toArray()));
+        }
         foreach (User::workshopLeaders() as $user) {
             Mail::to($user)->queue(new EvaluationFormClosed($user->name));
         }

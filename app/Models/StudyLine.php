@@ -113,7 +113,8 @@ class StudyLine extends Model
         $query->orderByRaw(
             "CASE WHEN type = 'bachelor' THEN 2
                       WHEN type = 'phd' THEN 0
-                      ELSE 1 END");
+                      ELSE 1 END"
+        );
     }
 
 }
