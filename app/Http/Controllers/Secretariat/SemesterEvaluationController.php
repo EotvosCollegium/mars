@@ -202,7 +202,7 @@ class SemesterEvaluationController extends Controller
     }
 
     /**
-     * @return \App\Models\Builder[]|User[]|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection
+     * @return User[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection
      */
     public static function usersHaventFilledOutTheForm()
     {

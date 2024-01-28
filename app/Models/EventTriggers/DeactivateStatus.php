@@ -30,11 +30,17 @@ class DeactivateStatus implements EventTriggerInterface
         SemesterEvaluationController::finalizeStatements();
     }
 
+    /**
+     * Send email reminders after 3 days before the end of the semester.
+     */
     public function remindBeforeDays(): ?int
     {
         return 3;
     }
 
+    /**
+     * Send email reminder.
+     */
     public function handleReminder(): void
     {
         SemesterEvaluationController::sendEvaluationReminder();

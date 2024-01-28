@@ -30,11 +30,17 @@ class SemesterEvaluationAvailable implements EventTriggerInterface
         SemesterEvaluationController::sendEvaluationAvailableMail();
     }
 
+    /**
+     * No reminder.
+     */
     public function remindBeforeDays(): ?int
     {
         return null;
     }
 
+    /**
+     * No reminder.
+     */
     public function handleReminder(): void
     {
         //skip
