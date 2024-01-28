@@ -37,6 +37,6 @@ class SemesterEvaluationAvailable implements EventTriggerInterface
 
     public function handleReminder(): void
     {
-        return;
+        //skip
     }
 }
