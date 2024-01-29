@@ -17,6 +17,7 @@ class EducationalInformationFactory extends Factory
     public function definition()
     {
         return [
+            'user_id' => \App\Models\User::factory()->create()->id,
             'year_of_graduation' => $this->faker->numberBetween($min = 2015, $max = date('Y')),
             'high_school' => $this->faker->company,
             'neptun' => $this->faker->regexify('[A-Z0-9]{6}'),

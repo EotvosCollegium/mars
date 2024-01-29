@@ -10,6 +10,7 @@ return [
 
     'sys_admin_mail' => env('MAIL_SYSADMIN'),
     'secretary_mail' => env('MAIL_SECRETARY'),
+    'membra_mail' => env('MAIL_MEMBRA'),
 
     /*
     |--------------------------------------------------------------------------
