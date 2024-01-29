@@ -21,14 +21,14 @@ class StudyLineTest extends TestCase
      */
     public function test_sorting_by_level()
     {
-        StudyLine::factory()->create(['type' => 'phd']),
-        StudyLine::factory()->create(['type' => 'bachelor']),
-        StudyLine::factory()->create(['type' => 'master']),
-        StudyLine::factory()->create(['type' => 'ot']),
-        StudyLine::factory()->create(['type' => 'other']),
-        StudyLine::factory()->create(['type' => 'master']),
-        StudyLine::factory()->create(['type' => 'phd']),
-        StudyLine::factory()->create(['type' => 'bachelor']),
+        StudyLine::factory()->create(['type' => 'phd']);
+        StudyLine::factory()->create(['type' => 'bachelor']);
+        StudyLine::factory()->create(['type' => 'master']);
+        StudyLine::factory()->create(['type' => 'ot']);
+        StudyLine::factory()->create(['type' => 'other']);
+        StudyLine::factory()->create(['type' => 'master']);
+        StudyLine::factory()->create(['type' => 'phd']);
+        StudyLine::factory()->create(['type' => 'bachelor']);
 
         $sorted = StudyLine::orderByLevel()->pluck('type')->toArray();
         // check first values
@@ -42,10 +42,10 @@ class StudyLineTest extends TestCase
      */
     public function test_currently_enrolled_scope()
     {
-        StudyLine::factory()->create(['end' => Semester::current()->id]),
-        StudyLine::factory()->create(['end' => Semester::previous()->id]),
-        StudyLine::factory()->create(['end' => Semester::next()->id]),
-        StudyLine::factory()->create(['end' => null]),
+        StudyLine::factory()->create(['end' => Semester::current()->id]);
+        StudyLine::factory()->create(['end' => Semester::previous()->id]);
+        StudyLine::factory()->create(['end' => Semester::next()->id]);
+        StudyLine::factory()->create(['end' => null]);
 
         $filtered = StudyLine::currentlyEnrolled()->pluck('end')->toArray();
 

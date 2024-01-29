@@ -1,5 +1,5 @@
 @component('mail::message')
-    <h1>@lang('mail.dear') Titkárság/Elnök!</h1>
+    <h1>@lang('mail.dear') {{ $recipient }}!</h1>
     <p>
         A szemeszter végi értékelő form elérhetővé vált a collegisták számára.
     </p>

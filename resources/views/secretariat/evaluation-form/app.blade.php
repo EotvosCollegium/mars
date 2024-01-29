@@ -28,15 +28,15 @@
             </blockquote>
             @if($phd)
                 <blockquote class="error">
-                    Doktori képzésben résztvevő hallgatók számára a (rövidített) kérdőív kitöltése szintén kötelező, a
-                    seniori beszámoló mellett.
-                    A senori beszámoló határidejével kapcsolatban a titkárság ad tájékoztatást.
+                    Doktori képzésben résztvevő hallgatók számára a (rövidített) kérdőív kitöltése szintén kötelező, <i>a
+                        seniori beszámoló mellett</i>.<br/>
+                    A seniori beszámolóval kapcsolatban a titkárság ad tájékoztatást.
                 </blockquote>
             @endif
             @if(user()->isAdmin())
                 <blockquote class="error">
                     Megjegyzés rendszergazdáknak: a határidő állítható a .env fájlban. Ha nem lett frissítve előző
-                    szemeszterről, akkor az alapértelmezett értéke a deactivate status signal EventTrigger dátima. Az
+                    szemeszterről, akkor az alapértelmezett értéke a deactivate status signal EventTrigger dátuma. Az
                     EventTrigger aktiválásakor alumnivá állítja a rendszer azokat, akik nem töltötték ki a következő
                     félévre a státuszukat, ezért mindenképp győzödj meg róla, hogy ez később történik, mint a form
                     határideje.

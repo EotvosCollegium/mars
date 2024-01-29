@@ -13,15 +13,17 @@ class EvaluationFormAvailableDetails extends Mailable
     use SerializesModels;
 
     public $deadline;
+    public $recipient;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(string $recipient)
     {
         $this->deadline = SemesterEvaluationController::deadline()->format('Y-m-d');
+        $this->recipient = $recipient;
     }
 
     /**

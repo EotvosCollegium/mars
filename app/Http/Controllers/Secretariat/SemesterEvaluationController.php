@@ -184,10 +184,10 @@ class SemesterEvaluationController extends Controller
     {
         Mail::to(config('contacts.mail_membra'))->queue(new \App\Mail\EvaluationFormAvailable());
         if (User::secretary()) {
-            Mail::to(User::secretary())->queue(new \App\Mail\EvaluationFormAvailableDetails());
+            Mail::to(User::secretary())->queue(new \App\Mail\EvaluationFormAvailableDetails(User::secretary()->name));
         }
         if (User::president()) {
-            Mail::to(User::president())->queue(new \App\Mail\EvaluationFormAvailableDetails());
+            Mail::to(User::president())->queue(new \App\Mail\EvaluationFormAvailableDetails(User::president()->name));
         }
     }
 
@@ -218,15 +218,16 @@ class SemesterEvaluationController extends Controller
     public static function finalizeStatements()
     {
         $users = self::usersHaventFilledOutTheForm();
+        $users_names = $users->pluck('name')->toArray();
 
         if (User::secretary()) {
-            Mail::to(User::secretary())->queue(new EvaluationFormClosed(User::secretary()->name, $users->pluck('name')->toArray()));
+            Mail::to(User::secretary())->queue(new EvaluationFormClosed(User::secretary()->name, $users_names));
         }
         if (User::president()) {
-            Mail::to(User::president())->queue(new EvaluationFormClosed(User::president()->name, $users->pluck('name')->toArray()));
+            Mail::to(User::president())->queue(new EvaluationFormClosed(User::president()->name, $users_names));
         }
         if (User::director()) {
-            Mail::to(User::director())->queue(new EvaluationFormClosed(User::director()->name, $users->pluck('name')->toArray()));
+            Mail::to(User::director())->queue(new EvaluationFormClosed(User::director()->name, $users_names));
         }
         foreach (User::workshopLeaders() as $user) {
             Mail::to($user)->queue(new EvaluationFormClosed($user->name));
