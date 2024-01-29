@@ -24,6 +24,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|File wherePath($value)
  * @method static \Illuminate\Database\Eloquent\Builder|File whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|File whereUserId($value)
+ * @property int|null $transaction_id
+ * @method static \Illuminate\Database\Eloquent\Builder|File whereTransactionId($value)
  * @mixin \Eloquent
  */
 class File extends Model

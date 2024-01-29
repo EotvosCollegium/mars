@@ -19,6 +19,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder|Workshop query()
  * @method static \Illuminate\Database\Eloquent\Builder|Workshop whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Workshop whereName($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\WorkshopBalance> $balances
+ * @property-read int|null $balances_count
  * @mixin \Eloquent
  */
 class Workshop extends Model
