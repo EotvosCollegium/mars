@@ -244,8 +244,8 @@ class Semester extends Model
     {
         $today = Carbon::today()->format('Ymd');
         if (!Cache::get('semester.current.' . $today)) {
-            /*
             $now = Carbon::now();
+            /*
             if ($now->month >= self::START_OF_SPRING_SEMESTER && $now->month <= self::END_OF_SPRING_SEMESTER) {
                 $part = "2";
                 $year = $now->year - 1;
