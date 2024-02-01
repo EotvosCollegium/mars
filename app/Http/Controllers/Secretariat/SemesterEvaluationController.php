@@ -30,10 +30,12 @@ class SemesterEvaluationController extends Controller
      */
     public static function isEvaluationAvailable(): bool
     {
-        $available = EventTrigger::find(EventTrigger::SEMESTER_EVALUATION_AVAILABLE)->date;
-        $deadline = self::deadline();
+        // $available = EventTrigger::find(EventTrigger::SEMESTER_EVALUATION_AVAILABLE)->date;
+        // $deadline = self::deadline();
 
-        return now() <= $deadline && $available >= Semester::next()->getStartDate();
+        // return now() <= $deadline && $available >= Semester::next()->getStartDate();
+        // as a temporary bugfix:
+        return true;
     }
 
     public static function deadline(): Carbon
