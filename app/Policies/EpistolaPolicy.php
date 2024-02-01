@@ -38,7 +38,7 @@ class EpistolaPolicy
     public function edit(User $user): bool
     {
         return $user->hasRole([Role::STUDENT_COUNCIL => Role::COMMUNICATION_LEADER])
-            || $user->hasRole([Role::STUDENT_COUNCIL => Role::COMMUNICATION_MEMBER]);
+            || $user->hasRole([Role::STUDENT_COUNCIL => Role::COMMUNICATION_REFERENT]);
     }
 
     /**
@@ -49,6 +49,6 @@ class EpistolaPolicy
     public function send(User $user): bool
     {
         return $user->hasRole([Role::STUDENT_COUNCIL => Role::COMMUNICATION_LEADER])
-            || $user->hasRole([Role::STUDENT_COUNCIL => Role::COMMUNICATION_MEMBER]);
+            || $user->hasRole([Role::STUDENT_COUNCIL => Role::COMMUNICATION_REFERENT]);
     }
 }
