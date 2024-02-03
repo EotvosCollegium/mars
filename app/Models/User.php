@@ -111,6 +111,8 @@ use Illuminate\Support\Facades\Mail;
  * @property-read int|null $application_committe_workshops_count
  * @property-read Collection|\App\Models\Workshop[] $roleWorkshops
  * @property-read int|null $role_workshops_count
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
+ * @property-read int|null $notifications_count
  * @mixin Eloquent
  */
 class User extends Authenticatable implements HasLocalePreference
@@ -994,11 +996,19 @@ class User extends Authenticatable implements HasLocalePreference
     }
 
     /**
-     * @return User|null the president
+     * @return User|null the secretary
      */
     public static function secretary(): ?User
     {
         return self::withRole(Role::SECRETARY)->first();
+    }
+
+    /**
+     * @return array|User[]|Collection workshop leaders
+     */
+    public static function workshopLeaders(): Collection|array
+    {
+        return self::withRole(Role::WORKSHOP_LEADER)->get();
     }
 
     /**

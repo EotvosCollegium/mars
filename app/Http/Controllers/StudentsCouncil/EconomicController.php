@@ -38,6 +38,7 @@ class EconomicController extends Controller
     public static function checkout(): Checkout
     {
         return Checkout::studentsCouncil();
+
     }
 
     /**

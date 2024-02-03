@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 class StudyLineFactory extends Factory
 {
     protected $model = StudyLine::class;
+
     /**
      * Define the model's default state.
      *
@@ -20,6 +21,7 @@ class StudyLineFactory extends Factory
     public function definition()
     {
         return [
+            'educational_information_id' => \App\Models\EducationalInformation::factory()->create()->id,
             'name' => $this->faker->jobTitle,
             'type' => $this->faker->randomElement(array_keys(\App\Models\StudyLine::TYPES)),
             'start' => Semester::current()->id,

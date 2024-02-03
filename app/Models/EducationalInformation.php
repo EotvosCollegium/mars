@@ -82,6 +82,7 @@ class EducationalInformation extends Model
         return $this->hasMany(StudyLine::class);
     }
 
+
     /**
      * The uploaded language exams that belong to the educational information.
      */
@@ -112,21 +113,21 @@ class EducationalInformation extends Model
 
         $requirements = [];
         # default requirements without any language exams
-        foreach(array_keys(config('app.alfonso_languages')) as $language) {
+        foreach (array_keys(config('app.alfonso_languages')) as $language) {
             $requirements[$language] = "B2";
         }
 
         if ($entryLevel->count() >= 2) {
-            foreach($entryLevel as $exam) {
-                if(!in_array($exam->level, ["C1", "C2"])) {
+            foreach ($entryLevel as $exam) {
+                if (!in_array($exam->level, ["C1", "C2"])) {
                     $requirements[$exam->language] = "C1";
                 } else {
                     unset($requirements[$exam->language]);
                 }
             }
         }
-        if($entryLevel->count() == 1) {
-            foreach($entryLevel as $exam) {
+        if ($entryLevel->count() == 1) {
+            foreach ($entryLevel as $exam) {
                 unset($requirements[$exam->language]);
             }
         }
@@ -139,7 +140,7 @@ class EducationalInformation extends Model
     public function alfonsoCompleted(): bool
     {
         foreach ($this->alfonsoRequirements() as $language => $level) {
-            if($this->checkIfPassed($language, $level)) {
+            if ($this->checkIfPassed($language, $level)) {
                 return true;
             }
         }
@@ -147,8 +148,8 @@ class EducationalInformation extends Model
     }
 
     /**
-    * @return bool true if the collegist can complete the requirements in the future
-    */
+     * @return bool true if the collegist can complete the requirements in the future
+     */
     public function alfonsoCanBeCompleted(): bool
     {
         //a B2 language exam can always be passed in 3 years
@@ -160,7 +161,7 @@ class EducationalInformation extends Model
      */
     private function checkIfPassed($language, $level): bool
     {
-        if($level == "B2") {
+        if ($level == "B2") {
             $deadline = Carbon::createFromDate($this->year_of_acceptance + 3, 9, 1);
             $levels = ["B2", "C1", "C2"];
         } else {
@@ -168,9 +169,9 @@ class EducationalInformation extends Model
             $levels = ["C1", "C2"];
         }
         return $this->languageExamsAfterAcceptance()
-                ->where('language', $language)
-                ->whereIn('level', $levels)
-                ->where('date', '<=', $deadline)
-                ->exists();
+            ->where('language', $language)
+            ->whereIn('level', $levels)
+            ->where('date', '<=', $deadline)
+            ->exists();
     }
 }
