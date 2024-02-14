@@ -37,6 +37,7 @@ However, the installation itself is a bit more complicated.
         - It's enough to install it only for your account when asked.
     - [NVM](https://github.com/coreybutler/nvm-windows/releases) (choose `nvm-setup.exe`) – this downloads Node.js and the NPM package manager, which will again download other things:D
     - [Git](https://gitforwindows.org/) – the version manager.
+        - For the text editor, the simplest is to choose Windows' Notepad (or VS Code, if you have it). Otherwise, you can stick to the defaults.
 2. Open `C:\xampp\php\php.ini`. This is PHP's configuration file. We need to enable two extensions here for things to work.
     - To do this, search for the lines `;extension=zip` and `;extension=gd`, and delete the semicolon (`;`) before them. (If there are more than one copies of them, it's enough to enable only one instance.)
 3. Open a command prompt (open Start menu and type `cmd`).
