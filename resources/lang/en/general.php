@@ -34,6 +34,7 @@ return [
     'register_collegist' => 'Application for college students',
     'register_guest' => 'Register for tenants',
     'report_bug' => 'Report a bug',
+    'report_bug_long_description' => 'Here you can report bugs that are problems with the codebase of ' . config('app.name') . '. If you are experiencing configuration errors, or there are problems with your personal information, please report it to the system administrators via e-mail using <a href="mailto:' . config('contacts.mail_sysadmin') . '">their e-mail address</a>. Bugs reported on the form below will be automatically published on the <a href="https://github.com/' . config('github.repo') . '">github repo for this software</a>.',
     'room' => 'Room number',
     'save' => 'Save',
     'search' => 'Search...',
