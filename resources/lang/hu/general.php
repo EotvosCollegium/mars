@@ -34,7 +34,7 @@ return [
     'register_collegist' => 'Jelentkezés collegistának',
     'register_guest' => 'Regisztráció vendégeknek',
     'report_bug' => 'Hiba bejelentése',
-    'report_bug_long_description' => 'Olyan hibákat jelents itt, amelyek az ' . config('app.name') . ' kódját érintik. Amennyiben konfigurációs probléma van vagy személyes adataid hibásak, keresd a rendszergazdákat <a href="mailto:' . config('contacts.mail_sysadmin') . '">e-mail címükön</a>. Az alábbi formon bejelentett hibák a <a href="https://github.com/' . config('github.repo') . '">szoftver publikus github repojában</a> emberi beavatkozás nélkül a bejelentést követően azonnal nyilvánosságra vannak hozva.',
+    'report_bug_long_description' => 'Olyan hibákat jelents itt, amelyek az ' . config('app.name') . ' kódját érintik. Amennyiben konfigurációs probléma van vagy személyes adataid hibásak, keresd a rendszergazdákat <a href="mailto:' . config('contacts.mail_sysadmin') . '">e-mail címükön</a>. Az alábbi formon bejelentett hibák automatikusan rögzítődnek az ' . config('app.name') . ' <b>nyilvánosan elérhető</b> <a href="https://github.com/' . config('github.repo') . '/issues">fejlesztői hibakövetőjében</a>.',
     'room' => 'Szobaszám',
     'save' => 'Mentés',
     'search' => 'Keresés...',
