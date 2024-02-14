@@ -10,6 +10,7 @@
         <div class="card">
             <div class="card-content">
                 <span class="card-title">@lang('general.report_bug')</span>
+                <p>@lang('general.report_bug_long_description')</p>
                 <form method="POST" action="{{ route('reportbug') }}">
                     <div class="row">
                         @csrf
