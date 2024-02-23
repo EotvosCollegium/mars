@@ -2,7 +2,7 @@
 
 @section('title')
 <a href="#!" class="breadcrumb">@lang('general.admin')</a>
-<a href="#!" class="breadcrumb">Felhasználók</a>
+<a href="#!" class="breadcrumb">@lang("general.users")</a>
 @endsection
 @section('secretariat_module') active @endsection
 
