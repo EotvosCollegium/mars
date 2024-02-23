@@ -62,14 +62,21 @@ class EventTrigger extends Model
      */
     public static function listen()
     {
-        $now = Carbon::now();
-        $events = EventTrigger::where('date', '<=', $now)
-                              ->get();
-        foreach ($events as $event) {
-            $event->handleSignal();
-        }
+        foreach (EventTrigger::all() as $event) {
+            if (Carbon::parse($event->date)->isPast()) {
+                $event->handleSignal();
+            } elseif ($event->getTrigger()->remindBeforeDays()) {
+                //Send reminder (daily - see schedule in Kernel) after remindBeforeDays.
+                echo Carbon::parse($event->date);
+                $reminderDate = Carbon::parse($event->date)->subDays($event->getTrigger()->remindBeforeDays())->startOfDay();
+                echo $reminderDate;
+                if ($reminderDate->isPast()) {
+                    echo "reminding\n";
 
-        return $events;
+                    $event->getTrigger()->handleReminder();
+                }
+            }
+        }
     }
 
     /**
