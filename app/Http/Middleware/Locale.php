@@ -16,7 +16,8 @@ class Locale
      */
     public function handle($request, Closure $next)
     {
-        App::setLocale($request->cookie('locale', config('app.locale')));
+        $locales = array_keys(config('app.locales'));
+        App::setLocale($request->cookie('locale', $request->getPreferredLanguage($locales)));
         return $next($request);
     }
 }
