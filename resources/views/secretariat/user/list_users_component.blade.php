@@ -65,7 +65,7 @@
             {{-- List --}}
             <div class="row">
                 <div class="col s12 xl7">
-                    <span class="card-title">Felhasználók</span>
+                    <span class="card-title">@lang("general.users")</span>
                 </div>
             </div>
 

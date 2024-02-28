@@ -166,7 +166,7 @@
                         <a class="waves-effect" href="{{ route('users.index') }}">
                             <i class="material-icons left">supervisor_account</i>
                             @if(user()->hasRole([\App\Models\Role::SYS_ADMIN, \App\Models\Role::STAFF]))
-                                Felhasználók
+                                @lang("general.users")
                             @else
                                 Collegisták
                             @endif
