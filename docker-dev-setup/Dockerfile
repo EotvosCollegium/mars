@@ -12,7 +12,7 @@ RUN apt-get update \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install Node.js
-RUN wget -O node.tar.xz https://nodejs.org/dist/v20.9.0/node-v20.9.0-linux-x64.tar.xz && \
+RUN wget -nv -O node.tar.xz https://nodejs.org/dist/v20.9.0/node-v20.9.0-linux-x64.tar.xz && \
     tar -xf node.tar.xz && \
     rm node.tar.xz
 ENV PATH=$PATH:/workspace/node-v20.9.0-linux-x64/bin

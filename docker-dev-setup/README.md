@@ -7,8 +7,9 @@ or if you already have a different (incompatible) version of PHP installed.
 
 ## Requirements
 
-- [Docker](https://docs.docker.com/engine/)
-- [Docker Compose](https://docs.docker.com/compose/)
+- [Docker version 25.0.1 or newer](https://docs.docker.com/):
+  - [Docker Build](https://docs.docker.com/engine/)
+  - [Docker Compose](https://docs.docker.com/compose/)
 - [git](https://git-scm.com/)
 
 You can check whether these requirements are fulfilled by running the following commands:
