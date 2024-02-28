@@ -89,9 +89,10 @@ You can use an IDE or text editor of your choice. Here are some recommended IDEs
 
 - For just basic text editing and syntax highlighting you don't need any special setup
   - If you are on Windows, make sure to use the WSL plugin and follow its instructions
-- There might be some Docker integration you can use
-- Or you can use the VSC Remote Development extension to run the VSC backend in the Docker container throug an SSH connection
+- I am personally not familiar with VSC's Docker/PHP support, but...
+  - There might be some Docker integration you can use
+  - Or you can use the VSC Remote Development extension to run the VSC backend in the Docker container through an SSH connection
 
-### Extras
+## Extras
 
 Please check out the *Optional steps* and *For everyday use* sections of the [_SETUP_DEV_ENVIRONMENT.md](../_SETUP_DEV_ENVIRONMENT.md) file.

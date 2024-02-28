@@ -9,6 +9,15 @@ There are several ways to set up your development server and environment. Basica
 3. You will see three terminals. One for the server, one for npm, and one for the database. You can close the last two once the scripts are finished, but you still need to run `php artisan migrate:fresh --seed` to get the DB seeded. The site is served at `http://localhost:8000` (or check the first few lines server logs). 
 4. Use with care, we have 50 hours of free usage per month. 
 
+## Universal (using Docker - recommended)
+
+This setup uses Docker to run the app and the database,
+therefore it is very easy to set up on any platform that supports Docker (Linux, Windows via WSL2, etc.).
+This setup is also recommended if you don't want to install PHP and other dependencies on your host machine,
+or if you already have a different (incompatible) version of PHP installed.
+
+The instructions can be found in the [docker-dev-setup/README.md file](docker-dev-setup/README.md).
+
 ## Universal (using VS Code dev containers  - recommended)
 
  1. Clone Mars: `git clone git@github.com:EotvosCollegium/mars.git`.
@@ -96,12 +105,3 @@ docker exec -it mars-mysql-1 mysql --password -e "SET GLOBAL log_bin_trust_funct
 9. Now you can test the site at `http://localhost:8080`.
 10. Instead of SSH, you can use `docker exec -it mars-laravel.test-1 bash`.
 11. And to access MySQL, run `docker exec -it mars-mysql-1 mysql --user=mars --password mars` (change the container name, the username and the database name if needed; the latter two are in .env) and log in with the password (also found in .env).
-
-## Alternative: pure Docker setup
-
-This setup uses Docker to run the app and the database,
-therefore it is very easy to set up on any platform that supports Docker (Linux, Windows via WSL2, etc.).
-This setup is also recommended if you don't want to install PHP and other dependencies on your host machine,
-or if you already have a different (incompatible) version of PHP installed.
-
-The setup steps can be found in the [docker-dev-setup/README.md file](docker-dev-setup/README.md).
