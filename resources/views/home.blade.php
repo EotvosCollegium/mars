@@ -26,7 +26,7 @@
     <div class="col s12">
         <div class="card">
             <div class="card-content">
-                <span class="card-title">Információk</span>
+                <span class="card-title">Kiáltvány</span>
                 <div id="info_text">
                     @markdown($information_general)
                     @markdown($information_collegist)
