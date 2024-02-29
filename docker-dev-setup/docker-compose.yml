@@ -23,7 +23,7 @@ services:
     depends_on:
       - mars_mysql
     volumes:
-      - "..:/workspace/mnt"
+      - "..:/workspace/mars"
     ports:
       - '127.0.0.1:8000:8000'
 
