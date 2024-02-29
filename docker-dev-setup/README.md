@@ -85,6 +85,10 @@ You can use an IDE or text editor of your choice. Here are some recommended IDEs
 
 - Set up a [remote PHP interpreter](https://www.jetbrains.com/help/phpstorm/configuring-remote-interpreters.html) using Docker Compose
   - Select the `docker-dev-setup/docker-compose.yml` configuration file and the `mars_dev` service
+- Add support for Laravel Eloquent:
+  - Generate IDE helper files: `docker exec mars_dev bash -c "php artisan clear-compiled && php artisan ide-helper:refresh"`
+  - In PHPStorm click on: `File / Invalidate caches / Invalidate and Restart`
+  - Now `self::where(...)`, `@mixin \Eloquent`, etc. shouldn't get marked as errors
 
 #### Visual Studio Code (vsc, vscode)
 

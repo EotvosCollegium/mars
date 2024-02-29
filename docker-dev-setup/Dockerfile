@@ -17,6 +17,6 @@ RUN wget -nv -O node.tar.xz https://nodejs.org/dist/v20.9.0/node-v20.9.0-linux-x
     rm node.tar.xz
 ENV PATH=$PATH:/workspace/node-v20.9.0-linux-x64/bin
 
-WORKDIR /workspace/mnt
+WORKDIR /workspace/mars
 
 CMD ["/usr/bin/sleep", "infinity"]
