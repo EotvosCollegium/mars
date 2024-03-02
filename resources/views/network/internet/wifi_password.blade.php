@@ -1,3 +1,4 @@
+@if (\App\Models\Feature::isFeatureEnabled("internet.wireless"))
 <div class="card">
     <div class="card-content">
         <span class="card-title">@lang('internet.wifi_password')</span>
@@ -58,3 +59,5 @@
         });
     </script>
 @endpush
+
+@endif

@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\CommunityService;
+use App\Models\Feature;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -20,7 +21,7 @@ class CommunityServicePolicy
      */
     public function view(User $user)
     {
-        return $user->isCollegist();
+        return $user->isCollegist() && Feature::isFeatureEnabled("community_service");
     }
 
     /**
@@ -30,7 +31,7 @@ class CommunityServicePolicy
      */
     public function create(User $user)
     {
-        return $user->isCollegist();
+        return $user->isCollegist() && Feature::isFeatureEnabled("community_service");
     }
 
     /**
@@ -40,7 +41,7 @@ class CommunityServicePolicy
      */
     public function approveAny(User $user)
     {
-        return $user->hasRole([Role::STUDENT_COUNCIL]);
+        return $user->hasRole([Role::STUDENT_COUNCIL]) && Feature::isFeatureEnabled("community_service");
     }
 
     /**
@@ -55,6 +56,6 @@ class CommunityServicePolicy
             return false;
         }
 
-        return $communityService->approver->id === $user->id;
+        return $communityService->approver->id === $user->id && Feature::isFeatureEnabled("community_service");
     }
 }

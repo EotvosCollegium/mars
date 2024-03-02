@@ -31,6 +31,7 @@ class AuthServiceProvider extends ServiceProvider
         \App\Models\GeneralAssemblies\GeneralAssembly::class => \App\Policies\GeneralAssemblyPolicy::class,
         \App\Models\GeneralAssemblies\Question::class => \App\Policies\QuestionPolicy::class,
         \App\Models\GeneralAssemblies\PresenceCheck::class => \App\Policies\PresenceCheckPolicy::class,
+        \App\Models\Feature::class => \App\Policies\FeaturePolicy::class,
     ];
 
     /**

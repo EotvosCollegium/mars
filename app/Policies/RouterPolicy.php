@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\Role;
 use App\Models\Internet\Router;
 use App\Models\User;
+use App\Models\Feature;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class RouterPolicy
@@ -13,6 +14,7 @@ class RouterPolicy
 
     public function before(User $user, $ability)
     {
+        if(! Feature::isFeatureEnabled("internet.wireless.routers")) return false;
         if ($user->isAdmin()) {
             return true;
         }
@@ -26,6 +28,7 @@ class RouterPolicy
      */
     public function viewAny(User $user)
     {
+        if(! Feature::isFeatureEnabled("internet.wireless.routers")) return false;
         return $user->isCollegist();
     }
 
@@ -38,6 +41,7 @@ class RouterPolicy
      */
     public function view(User $user, Router $router)
     {
+        if(! Feature::isFeatureEnabled("internet.wireless.routers")) return false;
         return $user->isCollegist();
     }
 
@@ -49,6 +53,7 @@ class RouterPolicy
      */
     public function create(User $user)
     {
+        if(! Feature::isFeatureEnabled("internet.wireless.routers")) return false;
         return $user->isAdmin();
     }
 
@@ -61,6 +66,7 @@ class RouterPolicy
      */
     public function update(User $user, Router $router)
     {
+        if(! Feature::isFeatureEnabled("internet.wireless.routers")) return false;
         return $user->isAdmin();
     }
 
@@ -73,6 +79,7 @@ class RouterPolicy
      */
     public function delete(User $user, Router $router)
     {
+        if(! Feature::isFeatureEnabled("internet.wireless.routers")) return false;
         return $user->isAdmin();
     }
 }

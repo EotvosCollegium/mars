@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\Fault;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Feature;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class FaultPolicy
@@ -19,6 +20,7 @@ class FaultPolicy
      */
     public function create(User $user): bool
     {
+        if(! Feature::isFeatureEnabled("faults")) return false;
         return $user->hasRole([Role::STAFF, Role::COLLEGIST, Role::TENANT]);
     }
 
@@ -30,6 +32,7 @@ class FaultPolicy
      */
     public function view(User $user): bool
     {
+        if(! Feature::isFeatureEnabled("faults")) return false;
         return $this->create($user);
     }
 
@@ -41,6 +44,7 @@ class FaultPolicy
      */
     public function update(User $user)
     {
+        if(! Feature::isFeatureEnabled("faults")) return false;
         return $user->hasRole(Role::STAFF);
     }
 }

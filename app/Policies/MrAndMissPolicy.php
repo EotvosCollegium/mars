@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\User;
 use App\Models\Role;
+use App\Models\Feature;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
 
@@ -22,6 +23,7 @@ class MrAndMissPolicy
      */
     public function vote(User $user)
     {
+        if(! Feature::isFeatureEnabled("mr_and_miss")) return false;
         if (!($user->isCollegist())) {
             return Response::deny('Csak Collegisták szavazhatnak');
         }
@@ -36,6 +38,7 @@ class MrAndMissPolicy
      */
     public function manage(User $user): bool
     {
+        if(! Feature::isFeatureEnabled("mr_and_miss")) return false;
         return $user->hasRole([Role::STUDENT_COUNCIL => Role::COMMUNITY_LEADER]);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\Internet\MacAddress;
 use App\Models\User;
+use App\Models\Feature;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class MacAddressPolicy
@@ -12,6 +13,7 @@ class MacAddressPolicy
 
     public function before(User $user)
     {
+        if(! Feature::isFeatureEnabled("internet.wired")) return false;
         if ($user->isAdmin()) {
             return true;
         }
@@ -25,6 +27,7 @@ class MacAddressPolicy
      */
     public function create(User $user): bool
     {
+        if(! Feature::isFeatureEnabled("internet.wired")) return false;
         return true;
     }
 
@@ -36,6 +39,7 @@ class MacAddressPolicy
      */
     public function update(User $user, MacAddress $macAddress): bool
     {
+        if(! Feature::isFeatureEnabled("internet.wired")) return false;
         return false;
     }
 
@@ -49,6 +53,7 @@ class MacAddressPolicy
      */
     public function delete(User $user, MacAddress $macAddress): bool
     {
+        if(! Feature::isFeatureEnabled("internet.wired")) return false;
         return $user->can('handle', $macAddress->internetAccess);
     }
 }

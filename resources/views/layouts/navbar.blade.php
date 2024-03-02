@@ -41,8 +41,10 @@
                         class="material-icons left">local_printshop</i>@lang('print.print')</a></li>
         @endif
         <!-- internet page -->
+        @can('viewSome', \App\Models\Internet\InternetAccess::class)
         <li><a class="waves-effect" href="{{ route('internet.index') }}"><i
                     class="material-icons left">wifi</i>@lang('internet.internet')</a></li>
+        @endif
         <!-- faults page -->
         @can('view', \App\Models\Fault::class)
             <li><a class="waves-effect" href="{{ route('faults') }}"><i
@@ -81,36 +83,46 @@
                         </a>
                         <div class="collapsible-body">
                             <ul>
-                                <!-- economic committee -->
-                                <li>
-                                    <a class="waves-effect" href="{{ route('economic_committee') }}">
-                                        <i class="material-icons left">attach_money</i> Választmányi kassza
-                                    </a>
-                                </li>
-                                <!-- communication committee -->
-                                <li>
-                                    <a class="waves-effect" href="{{ route('epistola') }}">
-                                        <i class="material-icons left">campaign</i> Epistola Collegii
-                                    </a>
-                                </li>
-                                <!-- community committee -->
-                                <li>
-                                    <a class="waves-effect" href="{{ route('mr_and_miss.vote') }}">
-                                        <i class="material-icons left">how_to_vote</i> Mr. és Miss Eötvös
-                                    </a>
-                                </li>
+                                @can('view', \App\Models\Checkout::studentsCouncil())
+                                    <!-- economic committee -->
+                                    <li>
+                                        <a class="waves-effect" href="{{ route('economic_committee') }}">
+                                            <i class="material-icons left">attach_money</i> Választmányi kassza
+                                        </a>
+                                    </li>
+                                @endcan
+                                @can('view', \App\Models\EpistolaNews::class)
+                                    <!-- communication committee -->
+                                    <li>
+                                        <a class="waves-effect" href="{{ route('epistola') }}">
+                                            <i class="material-icons left">campaign</i> Epistola Collegii
+                                        </a>
+                                    </li>
+                                @endcan
+                                @can('vote', \App\Models\MrAndMiss::class)
+                                    <!-- community committee -->
+                                    <li>
+                                        <a class="waves-effect" href="{{ route('mr_and_miss.vote') }}">
+                                            <i class="material-icons left">how_to_vote</i> Mr. és Miss Eötvös
+                                        </a>
+                                    </li>
+                                @endcan
                                 <!-- community service-->
-                                <li>
-                                    <a class="waves-effect" href="{{ route('community_service') }}">
-                                        <i class="material-icons left">business_center</i> Közösségi tevékenység
-                                    </a>
-                                </li>
-                                <!-- general assemblies -->
-                                <li>
-                                    <a class="waves-effect" href="{{ route('general_assemblies.index') }}">
-                                        <i class="material-icons left">thumbs_up_down</i> @lang('voting.assembly')
-                                    </a>
-                                </li>
+                                @can('view', \App\Models\CommunityService::class)
+                                    <li>
+                                        <a class="waves-effect" href="{{ route('community_service') }}">
+                                            <i class="material-icons left">business_center</i> Közösségi tevékenység
+                                        </a>
+                                    </li>
+                                @endcan
+                                @can('view', \App\Models\GeneralAssemblies\GeneralAssembly::class)
+                                    <!-- general assemblies -->
+                                    <li>
+                                        <a class="waves-effect" href="{{ route('general_assemblies.index') }}">
+                                            <i class="material-icons left">thumbs_up_down</i> @lang('voting.assembly')
+                                        </a>
+                                    </li>
+                                @endcan
                             </ul>
                         </div>
                     </li>
@@ -125,6 +137,15 @@
                         </a>
                         <div class="collapsible-body">
                             <ul>
+
+                                @if(Auth::user()->isAdmin())
+                                    <li>
+                                        <a class="waves-effect" href="{{ route('feature.index') }}">
+                                            <i class="material-icons left">settings</i>@lang("general.feature_configuration")
+                                        </a>
+                                    </li>
+                                @endif
+
                                 <!-- print admin -->
                                 @can('handleAny', \App\Models\PrintAccount::class)
                                     <li>
@@ -143,12 +164,14 @@
                                         </a>
                                     </li>
                                 @endcan
-                                <li>
-                                    <a class="waves-effect" href="{{ route('routers') }}">
-                                        <i class="material-icons left">router</i>Routerek
-                                        @notification(\App\Models\Internet\Router::class)
-                                    </a>
-                                </li>
+                                @can('viewAny', \App\Models\Internet\Router::class)
+                                    <li>
+                                        <a class="waves-effect" href="{{ route('routers') }}">
+                                            <i class="material-icons left">router</i>Routerek
+                                            @notification(\App\Models\Internet\Router::class)
+                                        </a>
+                                    </li>
+                                @endcan
                                 @can('view', \App\Models\Checkout::admin())
                                     <li>
                                         <a class="waves-effect" href="{{ route('admin.checkout') }}">

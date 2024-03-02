@@ -17,6 +17,7 @@ return [
     'description' => 'Leírás',
     'download' => 'Letöltés',
     'failed' => 'Hiba történt. Kérlek, írj a rendszergazdáknak!',
+    'feature_configuration' => 'Modulok állítása',
     'filter' => 'Szűrés',
     'home' => 'Kezdőlap',
     'i_understand' => 'Értem',

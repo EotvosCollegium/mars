@@ -1,3 +1,4 @@
+@if (\App\Models\Feature::isFeatureEnabled("internet.wired"))
 <span
     class="card-title">Regisztrált vezetékes eszközök kezelése
     @notification(\App\Models\Internet\MacAddress::class)
@@ -148,3 +149,4 @@
         });
     });
 </script>
+@endif

@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\Checkout;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Feature;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class CheckoutPolicy
@@ -16,6 +17,12 @@ class CheckoutPolicy
      */
     public function view(User $user, Checkout $checkout): bool
     {
+        if($checkout->name === Checkout::STUDENTS_COUNCIL){
+            return $user->isCollegist() && Feature::isFeatureEnabled("economic_treasury");
+        }
+        if($checkout->name === Checkout::ADMIN){
+            return $user->isCollegist() && Feature::isFeatureEnabled("administrator_treasury");
+        }
         return $user->isCollegist();
     }
 
@@ -28,10 +35,10 @@ class CheckoutPolicy
         if ($checkout->name === Checkout::STUDENTS_COUNCIL) {
             //everyone can create transactions that is not in checkout
             //the checkout administrator can handle these later
-            return $user->isCollegist();
+            return $user->isCollegist() && Feature::isFeatureEnabled("economic_treasury");
         }
         if ($checkout->name === Checkout::ADMIN) {
-            return $user->isAdmin();
+            return $user->isAdmin() && Feature::isFeatureEnabled("administrator_treasury");
         }
 
         return false;
@@ -49,7 +56,7 @@ class CheckoutPolicy
                 Role::CULTURAL_LEADER,
                 Role::CULTURAL_MEMBER
             ]
-        ]);
+        ]) && Feature::isFeatureEnabled("economic_treasury");
     }
 
     /**
@@ -62,7 +69,7 @@ class CheckoutPolicy
             Role::STUDENT_COUNCIL => [
                 Role::ECONOMIC_VICE_PRESIDENT,
             ]
-        ]);
+        ]) && Feature::isFeatureEnabled("economic_treasury");
     }
 
     /**
@@ -70,6 +77,11 @@ class CheckoutPolicy
      */
     public function administrate(User $user, Checkout $checkout): bool
     {
-        return $checkout->handler?->id == $user->id;
+        if($checkout->name === Checkout::STUDENTS_COUNCIL){
+            return $checkout->handler?->id == $user->id && Feature::isFeatureEnabled("economic_treasury");
+        }
+        if($checkout->name === Checkout::ADMIN){
+            return $checkout->handler?->id == $user->id && Feature::isFeatureEnabled("administrator_treasury");
+        }
     }
 }

@@ -6,6 +6,7 @@ use App\Models\Room;
 use App\Models\User;
 use App\Models\Role;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use App\Models\Feature;
 
 class RoomPolicy
 {
@@ -19,6 +20,7 @@ class RoomPolicy
      */
     public function viewAny(User $user)
     {
+        if(! Feature::isFeatureEnabled("rooms")) return false;
         return $user->hasRole([
             Role::DIRECTOR,
             Role::SECRETARY,
@@ -37,6 +39,7 @@ class RoomPolicy
      */
     public function updateAny(User $user)
     {
+        if(! Feature::isFeatureEnabled("rooms")) return false;
         return $user->hasRole([
             Role::SECRETARY,
             Role::STAFF,

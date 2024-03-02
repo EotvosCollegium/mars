@@ -29,11 +29,15 @@
                     <div class="row">
                         <ul class="right">
                             @auth
-                            <li><a href="{{ url('/home') }}">@lang('general.home')</a></li>
-                            @else
-                            <li><a href="{{ route('login') }}">@lang('general.login')</a></li>
-                            <li><a href="{{ route('register') }}">@lang('general.register_collegist')</a></li>
-                            <li><a href="{{ route('register.guest') }}">@lang('general.register_guest')</a></li>
+                                <li><a href="{{ url('/home') }}">@lang('general.home')</a></li>
+                                @else
+                                <li><a href="{{ route('login') }}">@lang('general.login')</a></li>
+                                @if(\App\Models\Feature::isFeatureEnabled("application"))
+                                    <li><a href="{{ route('register') }}">@lang('general.register_collegist')</a></li>
+                                @endif
+                                @if(\App\Models\Feature::isFeatureEnabled("guests"))
+                                        <li><a href="{{ route('register.guest') }}">@lang('general.register_guest')</a></li>
+                                @endif
                             @endauth
                         </ul>
                     </div>

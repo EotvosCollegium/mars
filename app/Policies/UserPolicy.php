@@ -7,19 +7,13 @@ use App\Models\Role;
 use App\Models\RoleObject;
 use App\Models\User;
 use App\Models\Workshop;
+use App\Models\Feature;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Support\Facades\Cache;
 
 class UserPolicy
 {
     use HandlesAuthorization;
-
-    public function before(User $user)
-    {
-        if ($user->isAdmin()) {
-            return true;
-        }
-    }
 
 
     /**
@@ -28,6 +22,9 @@ class UserPolicy
      */
     public function viewAll(User $user): bool
     {
+        if ($user->isAdmin()) {
+            return true;
+        }
         return $user->hasRole([
             Role::STAFF,
             Role::SECRETARY,
@@ -43,6 +40,9 @@ class UserPolicy
      */
     public function viewSome(User $user): bool
     {
+        if ($user->isAdmin()) {
+            return true;
+        }
         return $this->viewAll($user)
             || $user->hasRole([
                 Role::WORKSHOP_ADMINISTRATOR,
@@ -58,6 +58,9 @@ class UserPolicy
      */
     public function viewAny(User $user): bool
     {
+        if ($user->isAdmin()) {
+            return true;
+        }
         return
             $user->hasRole([
                 Role::STAFF,
@@ -76,6 +79,9 @@ class UserPolicy
      */
     public function viewSemesterEvaluation(User $user): bool
     {
+        if ($user->isAdmin()) {
+            return true;
+        }
         return $user->hasRole([
             Role::SECRETARY,
             Role::DIRECTOR,
@@ -92,6 +98,9 @@ class UserPolicy
      */
     public function view(User $user, User $target): bool
     {
+        if ($user->isAdmin()) {
+            return true;
+        }
         if ($user->id == $target->id) {
             return true;
         }
@@ -121,6 +130,10 @@ class UserPolicy
      */
     public function viewApplication(User $user, User $target): bool
     {
+        if(! Feature::isFeatureEnabled("application")) return false;
+        if ($user->isAdmin()) {
+            return true;
+        }
         if ($user->id == $target->id) {
             return true;
         }
@@ -142,6 +155,10 @@ class UserPolicy
      */
     public function viewSomeApplication(User $user): bool
     {
+        if(! Feature::isFeatureEnabled("application")) return false;
+        if ($user->isAdmin()) {
+            return true;
+        }
         return $user->hasRole([
             Role::SECRETARY,
             Role::DIRECTOR,
@@ -159,6 +176,10 @@ class UserPolicy
      */
     public function editApplicationStatus(User $user): bool
     {
+        if(! Feature::isFeatureEnabled("application")) return false;
+        if ($user->isAdmin()) {
+            return true;
+        }
         return $user->hasRole([
             Role::SECRETARY,
             Role::DIRECTOR,
@@ -173,6 +194,10 @@ class UserPolicy
      */
     public function viewAllApplications(User $user): bool
     {
+        if(! Feature::isFeatureEnabled("application")) return false;
+        if ($user->isAdmin()) {
+            return true;
+        }
         return $user->hasRole([
             Role::SECRETARY,
             Role::DIRECTOR,
@@ -187,6 +212,10 @@ class UserPolicy
      */
     public function viewUnfinishedApplications(User $user): bool
     {
+        if(! Feature::isFeatureEnabled("application")) return false;
+        if ($user->isAdmin()) {
+            return true;
+        }
         return $user->hasRole([
             Role::SECRETARY,
             Role::DIRECTOR,
@@ -201,6 +230,7 @@ class UserPolicy
      */
     public function finalizeApplicationProcess(User $user): bool
     {
+        if(! Feature::isFeatureEnabled("application")) return false;
         return $user->hasRole([Role::SYS_ADMIN, Role::SECRETARY]);
     }
 
@@ -214,6 +244,9 @@ class UserPolicy
      */
     public function updateAnyPermission(User $user, User $target, Role $role = null): bool
     {
+        if ($user->isAdmin()) {
+            return true;
+        }
         if (!isset($role)) {
             return $user->hasRole([
                 Role::SECRETARY,
@@ -283,6 +316,9 @@ class UserPolicy
      */
     public function updatePermission(User $user, User $target, Role $role, Workshop|RoleObject $object = null): bool
     {
+        if ($user->isAdmin()) {
+            return true;
+        }
         if ($role->name == Role::TENANT) {
             return $user->hasRole([Role::STAFF, Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS]);
         }
@@ -350,6 +386,9 @@ class UserPolicy
      */
     public function updateStatus(User $user, User $target): bool
     {
+        if ($user->isAdmin()) {
+            return true;
+        }
         if (!$target->isCollegist()) {
             return false;
         }
@@ -367,6 +406,9 @@ class UserPolicy
      */
     public function updateWorkshop(User $user, User $target, Workshop $workshop): bool
     {
+        if ($user->isAdmin()) {
+            return true;
+        }
         if ($user->hasRole(Role::SECRETARY)) {
             return true;
         }

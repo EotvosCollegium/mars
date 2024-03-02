@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\PrintJob;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Feature;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class PrintJobPolicy
@@ -13,6 +14,7 @@ class PrintJobPolicy
 
     public function before(User $user)
     {
+        if(! Feature::isFeatureEnabled("printing")) return false;
         if ($user->isAdmin()) {
             return true;
         }
@@ -29,6 +31,7 @@ class PrintJobPolicy
      */
     public function viewAny(User $user)
     {
+        if(! Feature::isFeatureEnabled("printing")) return false;
         return false;
     }
 
@@ -41,6 +44,7 @@ class PrintJobPolicy
      */
     public function viewSelf(User $user)
     {
+        if(! Feature::isFeatureEnabled("printing")) return false;
         return true;
     }
 
@@ -53,6 +57,7 @@ class PrintJobPolicy
      */
     public function update(User $user, PrintJob $printJob): bool
     {
+        if(! Feature::isFeatureEnabled("printing")) return false;
         return $printJob->user_id === $user->id;
     }
 }

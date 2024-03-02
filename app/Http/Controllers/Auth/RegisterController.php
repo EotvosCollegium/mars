@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\NewRegistration;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Feature;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
@@ -46,8 +47,10 @@ class RegisterController extends Controller
         $this->middleware('guest');
     }
 
+
     public function showRegistrationForm()
     {
+        if(! Feature::isFeatureEnabled("application")) return abort(403);
         return view('auth.register', [
             'user_type' => Role::COLLEGIST,
             'application_open' => ApplicationController::getApplicationDeadline() > now(),
@@ -57,6 +60,7 @@ class RegisterController extends Controller
 
     public function showTenantRegistrationForm()
     {
+        if(! Feature::isFeatureEnabled("guests")) return abort(403);
         return view('auth.register', [
             'user_type' => Role::TENANT
         ]);
@@ -72,6 +76,7 @@ class RegisterController extends Controller
     {
         switch ($data['user_type']) {
             case Role::TENANT:
+                if(! Feature::isFeatureEnabled("guests")) return abort(403);
                 return Validator::make($data, [
                     'tenant_until' => 'required|date|after:today',
                     'name' => 'required|string|max:255',
@@ -80,6 +85,7 @@ class RegisterController extends Controller
                     'password' => 'required|string|min:8|confirmed',
                 ]);
             case Role::COLLEGIST:
+                if(! Feature::isFeatureEnabled("application")) return abort(403);
                 return Validator::make($data, [
                     'name' => 'required|string|max:255',
                     'email' => 'required|string|email|max:255|unique:users',

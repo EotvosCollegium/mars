@@ -11,6 +11,7 @@ use App\Models\Workshop;
 use App\Models\RoleUser;
 use App\Models\File;
 use App\Models\Role;
+use App\Models\Feature;
 use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\RedirectResponse;
@@ -29,6 +30,16 @@ class ApplicationController extends Controller
     private const DELETE_FILE_ROUTE = 'files.delete';
     private const ADD_PROFILE_PIC_ROUTE = 'files.profile';
     private const SUBMIT_ROUTE = 'submit';
+
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        if(! Feature::isFeatureEnabled("application")) return abort(403);
+    }
 
     /**
      * Return the view based on the request's page parameter.

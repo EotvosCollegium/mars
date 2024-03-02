@@ -1,3 +1,4 @@
+@can("create", \App\Models\Internet\MacAddress::class)
 <div class="card">
     <div class="card-content">
         <span class="card-title">@lang('internet.your_registered_devices')</span>
@@ -53,3 +54,4 @@
         </script>
     </div>
 </div>
+@endcan

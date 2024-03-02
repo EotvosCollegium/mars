@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Models\User;
+use App\Models\Feature;
 use App\Models\GeneralAssemblies\Question;
 use App\Models\GeneralAssemblies\GeneralAssembly;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -18,6 +19,7 @@ class QuestionPolicy
     */
     public function vote(User $user, Question $question): bool
     {
+        if(! Feature::isFeatureEnabled("general_assembly")) return false;
         return $question->isOpen() && $user->isCollegist(false) && $user->isActive() && !$question->hasVoted($user);
     }
 
@@ -27,6 +29,7 @@ class QuestionPolicy
     */
     public function viewResults(User $user, Question $question): bool
     {
+        if(! Feature::isFeatureEnabled("general_assembly")) return false;
         if ($question->isClosed()) {
             return $user->can('viewAny', GeneralAssembly::class);
         } else {

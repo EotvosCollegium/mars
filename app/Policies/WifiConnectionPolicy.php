@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Feature;
 use App\Models\Internet\WifiConnection;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -19,6 +20,7 @@ class WifiConnectionPolicy
      */
     public function viewAny(User $user)
     {
+        if(! Feature::isFeatureEnabled("internet.wireless.connections")) return false;
         return $user->isAdmin();
     }
 
@@ -31,12 +33,14 @@ class WifiConnectionPolicy
      */
     public function view(User $user, WifiConnection $wifiConnection)
     {
+        if(! Feature::isFeatureEnabled("internet.wireless.connections")) return false;
         return $user->isAdmin()
             || $user->wifiConnections->contains($wifiConnection);
     }
 
     public function approveAny(User $user): bool
     {
+        if(! Feature::isFeatureEnabled("internet.wireless.connections")) return false;
         return $user->isAdmin();
     }
 }

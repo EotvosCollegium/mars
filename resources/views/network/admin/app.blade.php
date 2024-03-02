@@ -18,6 +18,7 @@
             </div>
         </div>
     </div>
+    @if (\App\Models\Feature::isFeatureEnabled("internet.wired"))
     <div class="row">
         <div class="col s12">
             <div class="card">
@@ -27,6 +28,8 @@
             </div>
         </div>
     </div>
+    @endif
+    @if (\App\Models\Feature::isFeatureEnabled("internet.wireless.connections"))
     <div class="row">
         <div class="col s12">
             <div class="card">
@@ -36,4 +39,5 @@
             </div>
         </div>
     </div>
+    @endif
 @endsection

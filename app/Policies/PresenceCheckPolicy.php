@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\GeneralAssemblies\PresenceCheck;
 use App\Models\User;
+use App\Models\Feature;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class PresenceCheckPolicy
@@ -17,6 +18,7 @@ class PresenceCheckPolicy
     */
     public function signPresence(User $user, PresenceCheck $presence): bool
     {
+        if(! Feature::isFeatureEnabled("general_assembly")) return false;
         return $presence->isOpen() && $user->isCollegist(alumni: false) && $user->isActive() && !$presence->signedPresence($user);
     }
 
@@ -26,6 +28,7 @@ class PresenceCheckPolicy
     */
     public function viewResults(User $user, PresenceCheck $presence): bool
     {
+        if(! Feature::isFeatureEnabled("general_assembly")) return false;
         if ($presence->isClosed()) {
             return $user->can('viewAny', GeneralAssembly::class);
         } else {

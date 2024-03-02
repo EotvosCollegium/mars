@@ -17,6 +17,7 @@ return [
     'description' => 'Description',
     'download' => 'Download',
     'failed' => 'An error occurred. Please contact system administrators!',
+    'feature_configuration' => 'Enable features',
     'filter' => 'Filter',
     'home' => 'Home',
     'i_understand' => 'I understand',

@@ -13,7 +13,7 @@
                 <span class="card-title">@lang('general.register')</span>
             </div>
             <div class="card-content">
-                @if($user_type == \App\Models\Role::COLLEGIST)
+                @if($user_type == \App\Models\Role::COLLEGIST && \App\Models\Feature::isFeatureEnabled("guests"))
                 <blockquote><a href="{{route('register.guest')}}" style="text-decoration: underline">@lang('registration.information_tenant')</a></blockquote>
                 @endif
                 @if($user_type == \App\Models\Role::TENANT || $application_open ?? false)

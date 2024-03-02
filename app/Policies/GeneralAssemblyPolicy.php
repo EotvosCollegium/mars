@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\User;
 use App\Models\Role;
+use App\Models\Feature;
 
 class GeneralAssemblyPolicy
 {
@@ -15,6 +16,7 @@ class GeneralAssemblyPolicy
      */
     public function viewAny(User $user): bool
     {
+        if(! Feature::isFeatureEnabled("general_assembly")) return false;
         return $user->isCollegist(false) || $user->isAdmin();
     }
 
@@ -23,6 +25,7 @@ class GeneralAssemblyPolicy
      */
     public function administer(User $user)
     {
+        if(! Feature::isFeatureEnabled("general_assembly")) return false;
         return $user->hasRole([Role::SYS_ADMIN, Role::STUDENT_COUNCIL => Role::PRESIDENT, Role::STUDENT_COUNCIL_SECRETARY]);
     }
 }

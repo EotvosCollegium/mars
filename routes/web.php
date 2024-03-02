@@ -18,6 +18,7 @@ use App\Http\Controllers\Dormitory\PrintController;
 use App\Http\Controllers\Dormitory\RoomController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LocaleController;
+use App\Http\Controllers\ModuleConfigurationController;
 use App\Http\Controllers\Network\AdminCheckoutController;
 use App\Http\Controllers\Network\AdminInternetController;
 use App\Http\Controllers\Network\AdminMacAddressController;
@@ -81,6 +82,9 @@ Route::middleware(['auth', 'log'])->group(function () {
 });
 
 Route::middleware(['auth', 'log', 'verified'])->group(function () {
+
+    Route::resource('feature', FeatureController::class);
+
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::post('/home/edit', [HomeController::class, 'editNews'])->name('home.edit');
     Route::post('/color/{mode}', [HomeController::class, 'colorMode'])->name('set-color-mode');

@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\Internet\InternetAccess;
 use App\Models\User;
+use App\Models\Feature;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class InternetAccessPolicy
@@ -12,6 +13,7 @@ class InternetAccessPolicy
 
     public function before(User $user, $ability)
     {
+        if(! Feature::isFeatureEnabled("internet")) return false;
         if ($user->isAdmin()) {
             return true;
         }
@@ -25,6 +27,7 @@ class InternetAccessPolicy
      */
     public function handleAny(User $user): bool
     {
+        if(! Feature::isFeatureEnabled("internet")) return false;
         return false;
     }
 
@@ -37,7 +40,17 @@ class InternetAccessPolicy
      */
     public function handle(User $user, InternetAccess $internetAccess): bool
     {
+        if(! Feature::isFeatureEnabled("internet")) return false;
         return $user->id === $internetAccess->user_id;
+    }
+
+    /**
+     * Check if they can view some features about the internet
+     */
+    public function viewSome(User $user): bool
+    {
+        if(! Feature::isFeatureEnabled("internet")) return false;
+        return true;
     }
 
     /**
@@ -49,6 +62,7 @@ class InternetAccessPolicy
      */
     public function extend(User $user, InternetAccess $internetAccess): bool
     {
+        if(! Feature::isFeatureEnabled("internet")) return false;
         return false;
     }
 }

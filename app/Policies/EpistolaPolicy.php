@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Feature;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class EpistolaPolicy
@@ -17,7 +18,7 @@ class EpistolaPolicy
      */
     public function view(User $user): bool
     {
-        return $user->isCollegist();
+        return $user->isCollegist() && Feature::isFeatureEnabled("epistola");
     }
 
     /**
@@ -27,7 +28,7 @@ class EpistolaPolicy
      */
     public function create(User $user): bool
     {
-        return $user->isCollegist();
+        return $user->isCollegist() && Feature::isFeatureEnabled("epistola");
     }
 
     /**
@@ -37,8 +38,9 @@ class EpistolaPolicy
      */
     public function edit(User $user): bool
     {
-        return $user->hasRole([Role::STUDENT_COUNCIL => Role::COMMUNICATION_LEADER])
-            || $user->hasRole([Role::STUDENT_COUNCIL => Role::COMMUNICATION_MEMBER]);
+        return ($user->hasRole([Role::STUDENT_COUNCIL => Role::COMMUNICATION_LEADER])
+            || $user->hasRole([Role::STUDENT_COUNCIL => Role::COMMUNICATION_MEMBER]))
+            && Feature::isFeatureEnabled("epistola");
     }
 
     /**
@@ -48,7 +50,8 @@ class EpistolaPolicy
      */
     public function send(User $user): bool
     {
-        return $user->hasRole([Role::STUDENT_COUNCIL => Role::COMMUNICATION_LEADER])
-            || $user->hasRole([Role::STUDENT_COUNCIL => Role::COMMUNICATION_MEMBER]);
+        return ($user->hasRole([Role::STUDENT_COUNCIL => Role::COMMUNICATION_LEADER])
+            || $user->hasRole([Role::STUDENT_COUNCIL => Role::COMMUNICATION_MEMBER]))
+            && Feature::isFeatureEnabled("epistola");
     }
 }
