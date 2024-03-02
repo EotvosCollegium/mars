@@ -136,6 +136,8 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
             'index', 'store', 'update', 'destroy'
         ]);
 
+        Route::get('/help_windows11', [InternetController::class, 'helpWindows11'])->name('help_windows11');
+
         Route::get('/admin', [AdminInternetController::class, 'index'])->name('admin.index');
         Route::get('/admin/wifi_connections', [AdminInternetController::class, 'indexWifi'])->name('wifi_connections.index');
         Route::get('/admin/internet_accesses', [AdminInternetController::class, 'indexInternetAccesses'])->name('internet_accesses.index');

@@ -29,6 +29,17 @@ class InternetController extends Controller
         return view('network.internet.app', ['internet_access' => $internetAccess]);
     }
 
+    /**
+     * Show a page for Windows 11.
+     */
+    public function helpWindows11(): View
+    {
+        $internetAccess = user()->internetAccess()->with('macAddresses')->first();
+
+        $this->authorize('handle', $internetAccess);
+
+        return view('network.internet.help_windows11', ['internet_access' => $internetAccess]);
+    }
 
     /**
      * Resets the Wi-Fi password.
