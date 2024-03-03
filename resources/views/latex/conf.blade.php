@@ -34,14 +34,14 @@
 
 \newcommand\Footer{
 
-	{\footnotesize 
+	{\footnotesize
 	\begin{minipage}[t]{0.4\textwidth}
 		\begin{flushright}
 		\textsc{
-            {\color{darkblue} 
+            {\color{darkblue}
 			ELTE EÖTVÖS JÓZSEF\\
 			COLLEGIUM}\\
-		    {\scriptsize 
+		    {\scriptsize
 		    Dr. Horváth László\\
 			igazgató\\
 %			Rémai Martin\\
@@ -57,7 +57,7 @@
 			Tel.: +36 1 460 4481 • Fax.: +36 1 209 2044\\
 			E-mail:	titkarsag@eotvos.elte.hu • horvathl@eotvos.elte.hu
 		%	valasztmany@eotvos.elte.hu • elnok@eotvos.elte.hu\\
-			Honlap: http://www.eotvos.elte.hu/ }
+			Honlap: https://eotvos.elte.hu/ }
 		\end{flushleft}
 	\end{minipage}
 	}
