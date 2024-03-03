@@ -7,7 +7,7 @@
     @csrf
     <div class="row">
         <input type="hidden" name="section" value="feedback"/>
-        <x-input.textarea id="feedback" :value="$evaluation?->feedback" text="Visszajelzés..." style="height:100px" />
+        <x-input.textarea id="feedback" text="Visszajelzés..." style="height:100px" >{{$evaluation?->feedback}}</x-input.textarea>
         <x-input.checkbox id="anonymous_feedback" s=10 text="Névtelen visszajelzés" />
         <x-input.button s=2 class="right" text="Küldés" />
     </div>

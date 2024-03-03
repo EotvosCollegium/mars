@@ -17,22 +17,22 @@
                 <div class="card-content">
                     <span class="card-title">Új router</span>
                     <div class="row">
-                        <x-input.text s="6" type="text" text="router.ip" id="ip" maxlength="15" required/>
+                        <x-input.textarea s="6" type="text" text="router.ip" id="ip" maxlength="15" required/>
                         <x-input.text s="6" type="number" text="router.room" id="room" min="1" max="500" required/>
                     </div>
                     <div class="row">
-                        <x-input.text s="4" type="text" text="router.port" id="port"/>
-                        <x-input.text s="4" type="text" text="router.type" id="type"/>
-                        <x-input.text s="4" type="text" text="router.serial_number" id="serial_number"/>
+                        <x-input.textarea s="4" type="text" text="router.port" id="port"/>
+                        <x-input.textarea s="4" type="text" text="router.type" id="type"/>
+                        <x-input.textarea s="4" type="text" text="router.serial_number" id="serial_number"/>
                     </div>
                     <div><p>MAC cím</p></div>
                     <div class="row">
-                        <x-input.text s="4" type="text" text="WAN" id="mac_wan"/>
-                        <x-input.text s="4" type="text" text="2G/LAN" id="mac_2g_lan"/>
-                        <x-input.text s="4" type="text" text="5G" id="mac_5g"/>
+                        <x-input.textarea s="4" type="text" text="WAN" id="mac_wan"/>
+                        <x-input.textarea s="4" type="text" text="2G/LAN" id="mac_2g_lan"/>
+                        <x-input.textarea s="4" type="text" text="5G" id="mac_5g"/>
                     </div>
                     <div class="row">
-                        <x-input.text type="text" id="comment" text="general.comment" maxlength="255"/>
+                        <x-input.textarea type="text" id="comment" text="general.comment" maxlength="255"/>
                     </div>
                     <div class="row">
                         <x-input.text s="6" type="date" id="date_of_acquisition" text="router.date_of_acquisition"/>

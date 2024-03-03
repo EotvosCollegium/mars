@@ -1,22 +1,21 @@
 <div class="study_line" id="study_line_{{$index}}">
     <div class="row" style="margin:0">
-        <x-input.text id="study_lines[{{ $index }}][name]"
+        <x-input.textarea id="study_lines[{{ $index }}][name]"
                         xl=6
                         text="user.study_line"
-                        :value="$value?->name"
-                        required />
+                        required>{{ $value?->name }}</x-input.textarea>
         <x-input.select id="study_lines[{{ $index }}][level]"
                         xl=2 s=6
                         text="user.study_line_level"
                         :value="$value?->type"
                         :elements="App\View\Components\Input\Select::convertArray(\App\Models\StudyLine::TYPES)"
                         required />
-        <x-input.text id="study_lines[{{ $index }}][minor]"
+        <x-input.textarea id="study_lines[{{ $index }}][minor]"
                     xl=4 s=6
                     text="user.study_line_minor"
                     :value="$value?->minor"
 		    helper="Nem kötelező"
-                    />
+                    >{{ $value?->minor }}</x-input.textarea>
         <x-input.select id="study_lines[{{ $index }}][start]"
                     xl=6 s=6
                     text="user.study_line_start"

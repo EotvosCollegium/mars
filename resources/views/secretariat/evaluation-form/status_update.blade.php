@@ -33,10 +33,9 @@
                     :value="$evaluation?->next_status"
                     :formatter="function($o) { return __('user.'.$o); }"
                     placeholder="Tagsági státusz"/>
-                <x-input.text xl=6 id="next_status_note"
-                    :value="$evaluation?->next_status_note"
+                <x-input.textarea xl=6 id="next_status_note"
                     placeholder="Rövid megjegyzés: BB/Erasmus/két képzés között/stb."
-                    maxlength="20"/>
+                    maxlength="20">{{ $evaluation?->next_status_note }}</x-input.textarea>
                 <x-input.checkbox s=12 id="will_write_request"
                     :checked="$evaluation?->will_write_request ?? false"
                     text="Írok kérvényt." />

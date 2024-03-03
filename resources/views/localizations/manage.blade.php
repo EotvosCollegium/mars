@@ -40,7 +40,7 @@
                                 @can('approve', $contribution);
                                 <form method="POST" action="{{ route('localizations.delete') }}">
                                     @csrf
-                                    <x-input.text type="number" id="id" :value="$contribution->id" hidden/>
+                                    <x-input.text type="number" id="id" :value="$contribution->id" hidden />
                                     <x-input.button floating class="red" icon="clear" />
                                 </form>
                                 @endcan

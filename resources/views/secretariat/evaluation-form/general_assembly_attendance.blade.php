@@ -36,8 +36,8 @@
     @csrf
     <div class="row">
         <input type="hidden" name="section" value="general_assembly"/>
-        <x-input.text l=10 id="general_assembly_note" :value="$evaluation?->general_assembly_note"
-                      text="Megjegyzés, helyesbítés, igazolt hiányzás"/>
+        <x-input.textarea l=10 id="general_assembly_note"
+                      text="Megjegyzés, helyesbítés, igazolt hiányzás">{{ $evaluation?->general_assembly_note }}</x-input.textarea>
         <x-input.button l=2 class="right" text="general.save"/>
     </div>
 </form>
