@@ -7,6 +7,7 @@ tasks:
       cp .env.example .env &&
       sed -i "s#APP_URL=http://localhost#APP_URL=$(gp url 8000)#g" .env
       sed -i "s#GITPOD_VITE_URL=#GITPOD_VITE_URL=$(gp url 5173)#g" .env
+      sed -i "s#DB_HOST=.*\$#DB_HOST=127.0.0.1#g" .env
       composer install --ignore-platform-reqs
       php artisan key:generate
       php artisan storage:link

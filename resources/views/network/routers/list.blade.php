@@ -58,7 +58,7 @@
                             </td>
                             @can('view', $router)
                                 <td>
-                                    <a href="{{ route('routers.view', $router->ip) }}" class="btn-floating waves-effect waves-light right">
+                                    <a href="{{ route('routers.view', $router) }}" class="btn-floating waves-effect waves-light right">
                                         <i class="material-icons">remove_red_eye</i>
                                     </a>
                                 </td>
