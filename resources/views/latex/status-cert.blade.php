@@ -45,7 +45,7 @@
             }
         \textsc{
 		    {\scriptsize
-                Dr. Horváth László\\
+                {{ \App\Models\User::director()->name }}\\
                 igazgató\\
                 }
             }
@@ -56,7 +56,7 @@
 		\begin{flushleft}
 			{\scriptsize H-1118 Budapest, Ménesi út 11-13\\
 			Tel.: +36 1 460 4481 • Fax.: +36 1 209 2044 \\
-			E-mail:	titkarsag@eotvos.elte.hu • horvathl@eotvos.elte.hu
+			E-mail:	{{config("mail.secretary_mail")}} • {{\App\Models\User::director()->email }}
 		%	valasztmany@eotvos.elte.hu • elnok@eotvos.elte.hu\\
 			Honlap: https://eotvos.elte.hu/ }
 		\end{flushleft}
@@ -79,7 +79,7 @@
 \begin{document}
 \maketitle
 
-Alulírott Horváth László, az ELTE Eötvös József Collegium igazgatója, hivatalosan igazolom, hogy {{ $name }} (Neptun-kód: {{ $neptun }}) az ELTE Eötvös József Collegium tagja {{ $from }}. szeptemberétől.
+Alulírott {{ \App\Models\User::director()->name }}, az ELTE Eötvös József Collegium igazgatója, hivatalosan igazolom, hogy {{ $name }} (Neptun-kód: {{ $neptun }}) az ELTE Eötvös József Collegium tagja {{ $from }}. szeptemberétől.
 
 A tagság érvényességének befejezése: {{ $until }}
 
@@ -96,17 +96,17 @@ Személyes adatai:
 Kelt: Budapest, \today
 \vspace{5em}
 
-% \begin{flushright}
-% 	\begin{minipage}[t]{0.4\textwidth}
-% 		\signiture{Kocsis Ábel}{elnök}{Eötvös József Collegium Választmány}
-% 	\end{minipage}
-% \end{flushright}
+\begin{flushright}
+	\begin{minipage}[t]{0.4\textwidth}
+		\signature{ {{ \App\Models\User::president()->name }} }{elnök}{Eötvös József Collegium Választmány}
+	\end{minipage}
+\end{flushright}
 
 % \vspace{5em}
 
 \begin{flushright}
 \begin{minipage}[t]{0.4\textwidth}
-	\signature{Dr. Horváth László}{igazgató}{Eötvös József Collegium}
+	\signature{ {{ \App\Models\User::director()->name }} }{igazgató}{Eötvös József Collegium}
 \end{minipage}
 \end{flushright}
 
