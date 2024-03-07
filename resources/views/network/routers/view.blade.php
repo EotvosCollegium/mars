@@ -15,10 +15,10 @@
             <div class="card-content">
                 <span class="card-title">@lang('router.router')
                     @can('update', $router)
-                        <x-input.button :href="route('routers.edit', $router->ip)" floating class="right" icon="edit" />
+                        <x-input.button :href="route('routers.edit', $router)" floating class="right" icon="edit" />
                     @endcan
                     @can('delete', $router)
-                        <form action="{{ route('routers.delete', $router->ip) }}" method="POST" class="right" style="margin-right:10px">
+                        <form action="{{ route('routers.delete', $router) }}" method="POST" class="right" style="margin-right:10px">
                             @csrf
                             <x-input.button floating icon="delete" class="red" />
                         </form>

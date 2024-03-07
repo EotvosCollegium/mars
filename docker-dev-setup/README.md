@@ -44,7 +44,7 @@ docker exec -it mars_dev bash -c \
   && npm install \
   && npm run prod \
   && php artisan key:generate \
-  && php artisan migrate --seed"
+  && php artisan migrate:fresh --seed"
 docker compose stop
 ```
 
