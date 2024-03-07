@@ -17,22 +17,22 @@
                 <div class="card-content">
                     <span class="card-title">@lang('router.new')</span>
                     <div class="row">
-                        <x-input.textarea s="6" type="text" text="router.ip" id="ip" maxlength="15" required/>
-                        <x-input.textarea s="6" type="text" text="router.room" id="room" min="1" max="500" required/>
+                        <x-input.textarea s="6" text="router.ip" id="ip" maxlength="15" required/>
+                        <x-input.textarea s="6" text="router.room" id="room" maxlength="5" required/>
                     </div>
                     <div class="row">
-                        <x-input.textarea s="4" type="text" text="router.port" id="port"/>
-                        <x-input.textarea s="4" type="text" text="router.type" id="type"/>
-                        <x-input.textarea s="4" type="text" text="router.serial_number" id="serial_number"/>
+                        <x-input.textarea s="4" text="router.port" id="port"/>
+                        <x-input.textarea s="4" text="router.type" id="type"/>
+                        <x-input.textarea s="4" text="router.serial_number" id="serial_number"/>
                     </div>
                     <div><p>@lang('internet.mac_address')</p></div>
                     <div class="row">
-                        <x-input.textarea s="4" type="text" text="WAN" id="mac_WAN"/>
-                        <x-input.textarea s="4" type="text" text="2G/LAN" id="mac_2G_LAN"/>
-                        <x-input.textarea s="4" type="text" text="5G" id="mac_5G"/>
+                        <x-input.textarea s="4" text="WAN" id="mac_WAN"/>
+                        <x-input.textarea s="4" text="2G/LAN" id="mac_2G_LAN"/>
+                        <x-input.textarea s="4" text="5G" id="mac_5G"/>
                     </div>
                     <div class="row">
-                        <x-input.textarea type="text" id="comment" text="general.comment" maxlength="255"/>
+                        <x-input.textarea id="comment" text="general.comment" maxlength="255"/>
                     </div>
                     <div class="row">
                         <x-input.text s="6" type="date" id="date_of_acquisition" text="router.date_of_acquisition"/>

@@ -13,8 +13,7 @@
         <x-input.textarea id="study_lines[{{ $index }}][minor]"
                     xl=4 s=6
                     text="user.study_line_minor"
-                    :value="$value?->minor"
-		    helper="Nem kötelező"
+		            helper="Nem kötelező"
                     >{{ $value?->minor }}</x-input.textarea>
         <x-input.select id="study_lines[{{ $index }}][start]"
                     xl=6 s=6
