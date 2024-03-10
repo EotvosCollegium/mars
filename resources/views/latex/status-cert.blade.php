@@ -45,7 +45,7 @@
             }
         \textsc{
 		    {\scriptsize
-                {{ \App\Models\User::director()->name }}\\
+                {{ \App\Models\User::director()?->name }}\\
                 igazgató\\
                 }
             }
