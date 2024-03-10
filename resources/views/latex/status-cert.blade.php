@@ -56,7 +56,7 @@
 		\begin{flushleft}
 			{\scriptsize H-1118 Budapest, Ménesi út 11-13\\
 			Tel.: +36 1 460 4481 • Fax.: +36 1 209 2044 \\
-			E-mail:	{{config("mail.secretary_mail")}} • {{\App\Models\User::director()->email }}
+			E-mail:	{{config("mail.secretary_mail")}} • {{\App\Models\User::director()?->email }}
 		%	valasztmany@eotvos.elte.hu • elnok@eotvos.elte.hu\\
 			Honlap: https://eotvos.elte.hu/ }
 		\end{flushleft}
