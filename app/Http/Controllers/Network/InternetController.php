@@ -29,7 +29,6 @@ class InternetController extends Controller
         return view('network.internet.app', ['internet_access' => $internetAccess]);
     }
 
-
     /**
      * Resets the Wi-Fi password.
      * @return RedirectResponse
