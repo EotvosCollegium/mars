@@ -30,18 +30,6 @@ class InternetController extends Controller
     }
 
     /**
-     * Show a page for Windows 11.
-     */
-    public function helpWindows11(): View
-    {
-        $internetAccess = user()->internetAccess()->with('macAddresses')->first();
-
-        $this->authorize('handle', $internetAccess);
-
-        return view('network.internet.help_windows11', ['internet_access' => $internetAccess]);
-    }
-
-    /**
      * Resets the Wi-Fi password.
      * @return RedirectResponse
      * @throws AuthorizationException
