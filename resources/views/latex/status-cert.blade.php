@@ -106,7 +106,7 @@ Kelt: Budapest, \today
 
 \begin{flushright}
 \begin{minipage}[t]{0.4\textwidth}
-	\signature{ {{ \App\Models\User::director()->name }} }{igazgató}{Eötvös József Collegium}
+	\signature{ {{ \App\Models\User::director()?->name }} }{igazgató}{Eötvös József Collegium}
 \end{minipage}
 \end{flushright}
 
