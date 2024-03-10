@@ -98,7 +98,7 @@ Kelt: Budapest, \today
 
 \begin{flushright}
 	\begin{minipage}[t]{0.4\textwidth}
-		\signature{ {{ \App\Models\User::president()->name }} }{elnök}{Eötvös József Collegium Választmány}
+		\signature{ {{ \App\Models\User::president()?->name }} }{elnök}{Eötvös József Collegium Választmány}
 	\end{minipage}
 \end{flushright}
 
