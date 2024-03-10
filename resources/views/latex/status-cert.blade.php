@@ -79,7 +79,7 @@
 \begin{document}
 \maketitle
 
-Alulírott {{ \App\Models\User::director()->name }}, az ELTE Eötvös József Collegium igazgatója, hivatalosan igazolom, hogy {{ $name }} (Neptun-kód: {{ $neptun }}) az ELTE Eötvös József Collegium tagja {{ $from }}. szeptemberétől.
+Alulírott {{ \App\Models\User::director()?->name }}, az ELTE Eötvös József Collegium igazgatója, hivatalosan igazolom, hogy {{ $name }} (Neptun-kód: {{ $neptun }}) az ELTE Eötvös József Collegium tagja {{ $from }}. szeptemberétől.
 
 A tagság érvényességének befejezése: {{ $until }}
 
