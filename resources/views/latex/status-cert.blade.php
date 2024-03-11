@@ -97,14 +97,6 @@ Kelt: Budapest, \today
 \vspace{5em}
 
 \begin{flushright}
-	\begin{minipage}[t]{0.4\textwidth}
-		\signature{ {{ \App\Models\User::president()?->name }} }{elnök}{Eötvös József Collegium Választmány}
-	\end{minipage}
-\end{flushright}
-
-% \vspace{5em}
-
-\begin{flushright}
 \begin{minipage}[t]{0.4\textwidth}
 	\signature{ {{ \App\Models\User::director()?->name }} }{igazgató}{Eötvös József Collegium}
 \end{minipage}
