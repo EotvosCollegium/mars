@@ -14,7 +14,7 @@
         A Collegiumból elbocsátható, aki a Collegiumban felvett óráját nem teljesítette.
     </blockquote>
     <div class="row">
-        <x-input.text l=10 id="courses_note" :value="$evaluation?->courses_note" text="Megjegyzés, helyesbítés"/>
+        <x-input.textarea l=10 id="courses_note" text="Megjegyzés, helyesbítés">{{ $evaluation?->courses_note }}</x-input.textarea>
         <x-input.button l=2 class="right" text="general.save" />
     </div>
 </form>

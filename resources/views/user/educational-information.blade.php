@@ -1,9 +1,8 @@
 <form method="POST" action="{{ route('users.update.educational', ['user' => $user]) }}">
     @csrf
     <div class="row">
-        <x-input.text id="high_school" text="user.high_school"
-                      :value="$user->educationalInformation?->high_school"
-                      required/>
+        <x-input.textarea id="high_school" text="user.high_school"
+                      required>{{ $user->educationalInformation?->high_school }}</x-input.textarea>
         <x-input.text s=12 m=6 id="year_of_graduation" text="user.year_of_graduation" type='number' min="1895"
                       :max="date('Y')"
                       :value="$user->educationalInformation?->year_of_graduation"
@@ -15,15 +14,13 @@
                           required/>
         @else
             <x-input.text s=12 m=6 id='year_of_acceptance' text='Collegiumi felvételi éve' type='number'
-                          :value="date('Y')" disabled/>
+                :value="date('Y')" disabled/>
             <input type="hidden" name="year_of_acceptance" value="{{date('Y')}}"/>
         @endif
-        <x-input.text s=6 id="neptun" text="user.neptun"
-                      :value="$user->educationalInformation?->neptun"
-                      required/>
-        <x-input.text s=6 id='educational-email' text='user.educational-email' name="email"
-                      :value="$user->educationalInformation?->email"
-                      required helper="lehetőleg @student.elte.hu-s"/>
+        <x-input.textarea s=6 id="neptun" text="user.neptun"
+                      required>{{ $user->educationalInformation?->neptun }}</x-input.textarea>
+        <x-input.textarea s=6 id='educational-email' text='user.educational-email' name="email"
+                      required helper="lehetőleg @student.elte.hu-s">{{ $user->educationalInformation?->email }}</x-input.textarea>
 
         <div class="input-field col s12 m6">
             <p style="margin-bottom:10px"><label style="font-size: 1em">@lang('user.faculty')</label></p>
@@ -69,12 +66,10 @@
     @if(\Route::current()->getName() != 'application')
     <x-input.textarea
             id='research_topics'
-            text='user.research_topics'
-            :value="$user->educationalInformation?->research_topics" />
+            text='user.research_topics'>{{ $user->educationalInformation?->research_topics }}</x-input.textarea>
     <x-input.textarea
         id='extra_information'
-        text='user.extra_information'
-        :value="$user->educationalInformation?->extra_information" />
+        text='user.extra_information'>{{$user->educationalInformation?->extra_information}}</x-input.textarea>
     @endif
     <div class="row" style="margin: 0">
             <x-input.button class="right" text="general.save" />

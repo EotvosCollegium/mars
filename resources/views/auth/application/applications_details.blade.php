@@ -16,7 +16,7 @@
                     <x-input.textarea id="note"
                                       text="Megjegyzés"
                                       helper="A megjegyzéseket a felvételiző nem látja, de azok láthatóak a többi felvételiztető számára (akár más műhelyekből is)."
-                                      :value="$user->application->note"/>
+                                      >{{ $user->application->note }}</x-input.textarea>
                 </div>
                 <x-input.button floating class="right" icon="save"/>
             </div>

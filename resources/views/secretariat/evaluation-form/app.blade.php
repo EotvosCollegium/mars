@@ -82,8 +82,8 @@
                             @csrf
                             <div class="row">
                                 <input type="hidden" name="section" value="alfonso"/>
-                                <x-input.text l=10 id="alfonso_note" :value="$evaluation?->alfonso_note"
-                                              text="Megjegyzés, helyesbítés, egyéni elbírálás"/>
+                                <x-input.textarea l=10 id="alfonso_note"
+                                              text="Megjegyzés, helyesbítés, egyéni elbírálás">{{ $evaluation?->alfonso_note }}</x-input.textarea>
                                 <x-input.button l=2 class="right" text="general.save"/>
                             </div>
                         </form>

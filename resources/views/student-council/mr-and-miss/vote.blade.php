@@ -22,7 +22,7 @@
                     </p>
                     @endcan
                     <p>
-                        Külön tudtok szavazni a Mr, a Miss, illetve az egyéni kategóriákban. Lehetőleg a keresők segítségével válasszátok ki a jelölteteket, azonban ha nem találjátok az illetőt a rendszerben, a sor végén található gombbal tudtok szabad kezes bevitelre váltani. 
+                        Külön tudtok szavazni a Mr, a Miss, illetve az egyéni kategóriákban. Lehetőleg a keresők segítségével válasszátok ki a jelölteteket, azonban ha nem találjátok az illetőt a rendszerben, a sor végén található gombbal tudtok szabad kezes bevitelre váltani.
                         A határidőig bárhányszor módosíthatjátok a szavazatokat.
                     </p>
                     <blockquote>
