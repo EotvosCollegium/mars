@@ -3,6 +3,8 @@
 namespace App\Models\GeneralAssemblies;
 
 use App\Enums\PresenceType;
+use App\Models\Semester;
+use App\Models\SemesterStatus;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -217,5 +219,24 @@ class GeneralAssembly extends Model
     {
         return $value == self::getTemporaryPasscode()
             || $value == self::getTemporaryPasscode('-1 minute');
+    }
+
+    /**
+     * The "booting" method of the model.
+     * Initializes the excused users with the current semester's passive users.
+     *
+     * @return void
+     */
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        static::created(function ($general_assembly) {
+            // Excuse passive students. They are excused at the creation of the general assembly (as opposed to when it
+            // is opened) because the list of excused students is displayed as soon as the general assembly is created.
+            foreach (Semester::current()->usersWithStatus(SemesterStatus::PASSIVE)->get() as $user) {
+                $general_assembly->excusedUsers()->attach($user);
+            }
+        });
     }
 }
