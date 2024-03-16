@@ -47,4 +47,5 @@ return [
     'presence_note' => 'Note',
     'new_presence_check' => 'New presence check',
     'excused_users' => 'Excused users',
+    'automatically_excused_user_comment' => 'Automatically excused: passive status',
 ];

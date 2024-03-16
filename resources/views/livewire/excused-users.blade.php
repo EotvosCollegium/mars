@@ -7,9 +7,9 @@
                     <div class="row">
                         <div class="col s12 m8 l9">
                             <div wire:ignore>
-                                <x-input.select 
+                                <x-input.select
                                     id="user"
-                                    text="Collegisták"
+                                    text="general.members"
                                     wire:model="user"
                                     :elements="\App\Models\User::collegists()"
                                     :formatter="fn($user) => $user->uniqueName"
@@ -18,14 +18,15 @@
                             </div>
                         </div>
                         <div class="col s12 m4 l3">
-                            <x-input.button text="Hozzáadás" />
+                            <x-input.button text="general.add" />
                         </div>
                     </div>
                 </form>
                 <table>
                     <thead>
                     <tr>
-                        <th>Név</th>
+                        <th>@lang('voting.name')</th>
+                        <th>@lang('general.comment')</th>
                         <th></th>
                     </tr>
                     </thead>
@@ -33,11 +34,12 @@
                     @foreach ($general_assembly->excusedUsers()->get() as $excusedUser)
                     <tr>
                         <td>{{$excusedUser->uniqueName}}</td>
+                        <td>{{$excusedUser->pivot->comment}}</td>
                         <td>
                             <x-input.button
-                                type="button" 
+                                type="button"
                                 wire:click.prevent="removeUser({{$excusedUser->id}})"
-                                floating 
+                                floating
                                 class="right red"
                                 icon="remove"
                             />
