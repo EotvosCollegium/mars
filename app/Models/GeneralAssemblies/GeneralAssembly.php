@@ -76,7 +76,7 @@ class GeneralAssembly extends Model
      */
     public function excusedUsers(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'general_assembly_user');
+        return $this->belongsToMany(User::class, 'general_assembly_excused_users');
     }
 
     /**
