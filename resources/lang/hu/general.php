@@ -28,6 +28,7 @@ return [
     'members' => 'Tagok',
     'note' => 'Megjegyzés',
     'nothing_to_show' => 'Nincs adat',
+    'optional_field' => 'Nem kötelező',
     'other' => 'Egyéb',
     'others' => 'Egyebek',
     'register' => 'Regisztráció',

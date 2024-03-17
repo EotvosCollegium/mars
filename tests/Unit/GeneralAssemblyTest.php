@@ -161,5 +161,6 @@ class GeneralAssemblyTest extends TestCase
         $excused = $generalAssembly->excusedUsers()->get();
         $this->assertEquals(2, $excused->count());
         $this->assertTrue($excused->contains($userPassive1) && $excused->contains($userPassive2));
+        $this->assertNotNull($excused->first()->pivot->comment); // Check if excuse reason is set
     }
 }

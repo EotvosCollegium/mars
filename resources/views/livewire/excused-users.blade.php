@@ -5,7 +5,7 @@
                 <span class="card-title">@lang('voting.excused_users')</span>
                 <form wire:submit.prevent="addUser">
                     <div class="row">
-                        <div class="col s12 m8 l9">
+                        <div class="col s12 m6">
                             <div wire:ignore>
                                 <x-input.select
                                     id="user"
@@ -17,7 +17,15 @@
                                 />
                             </div>
                         </div>
-                        <div class="col s12 m4 l3">
+                        <div class="col s12 m3">
+                            <x-input.text
+                                id="comment"
+                                text="general.comment"
+                                wire:model="comment"
+                                :helper="__('general.optional_field')"
+                            />
+                        </div>
+                        <div class="col s12 m3">
                             <x-input.button text="general.add" />
                         </div>
                     </div>
