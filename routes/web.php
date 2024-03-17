@@ -83,7 +83,6 @@ Route::middleware(['auth', 'log'])->group(function () {
 Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::post('/home/edit', [HomeController::class, 'editNews'])->name('home.edit');
-    Route::post('/color/{mode}', [HomeController::class, 'colorMode'])->name('set-color-mode');
 
     Route::post('/report_bug', [HomeController::class, 'reportBug'])->name('reportbug');
     Route::get('/report_bug', [HomeController::class, 'indexReportBug'])->name('index_reportbug');
