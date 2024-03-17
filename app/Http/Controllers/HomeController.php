@@ -120,55 +120,6 @@ class HomeController extends Controller
         return $response;
     }
 
-    /* Report bug */
-    public function indexReportBug()
-    {
-        return view('report_bug');
-    }
-
-    public function reportBug(Request $request)
-    {
-        $username = user()->name;
-
-        //personal auth token from your github.com account - see CONTRIBUTING.md
-        $token = config('github.auth_token');
-
-        $url = "https://api.github.com/repos/" . config('github.repo') . "/issues";
-
-        //request details, removing slashes and sanitize content
-        $title = htmlspecialchars(stripslashes('Reported bug'), ENT_QUOTES);
-        $body = htmlspecialchars(stripslashes($request->description), ENT_QUOTES);
-        $body .= '\n\n> This bug is reported by ' . $username . ' and generated automatically.';
-
-        //build json post
-        $post = '{"title": "' . $title . '","body": "' . $body . '","labels": ["bug"] }';
-
-        //set file_get_contents header info
-        $opts = [
-            'http' => [
-                'method' => 'POST',
-                'header' => [
-                    'User-Agent: request',
-                    'Content-type: application/x-www-form-urlencoded',
-                    'Accept: application/vnd.github.v3+json',
-                    'Authorization: token ' . $token,
-                ],
-                'content' => $post
-            ]
-        ];
-
-        //initiate file_get_contents
-        $context = stream_context_create($opts);
-
-        //make request
-        $content = file_get_contents($url, false, $context);
-
-        //decode response to array
-        $response_array = json_decode($content, true);
-
-        return view('report_bug', ['url' => $response_array['html_url']]);
-    }
-
     /**
      * Get the contacts for the home page.
      */
