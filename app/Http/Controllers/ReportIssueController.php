@@ -44,7 +44,7 @@ class ReportIssueController extends Controller
         $title = htmlspecialchars(stripslashes($title), ENT_QUOTES);
         $username = htmlspecialchars(stripslashes(user()->name), ENT_QUOTES);
         $body = htmlspecialchars(stripslashes($request->input('description')), ENT_QUOTES);
-        $body .= '\n\n> This bug is reported by ' . $username . ' and generated automatically.';
+        $body .= '\n\n> This issue was reported by ' . $username . ' and generated automatically.';
         $label = ['issue.type_bug' => 'bug', 'issue.type_feature' => 'enhancement'][$request->input('type')];
 
         //build json post
