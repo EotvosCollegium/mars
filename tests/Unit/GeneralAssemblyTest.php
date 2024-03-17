@@ -144,7 +144,10 @@ class GeneralAssemblyTest extends TestCase
         $question->vote($user, [$question->options->first(), $question->options->get(1), $question->options->get(2)]);
     }
 
-    public function test_passive_users_get_excused_automatically()
+    /**
+     * @return void
+     */
+    public function test_passive_users_get_excused_automatically(): void
     {
         /** @var User $userActive */
         /** @var User $userPassive1 */
