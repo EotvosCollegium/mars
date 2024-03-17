@@ -54,7 +54,7 @@ class ReportIssueController extends Controller
 
         // Send the report to GitHub if an auth token is set. Otherwise, log an error.
         if (config('github.auth_token')) {
-            $created_report_url = $this->post_github($post_content);
+            $created_report_url = $this->postGithub($post_content);
             return view('report_issue', ['url' => $created_report_url]);
         } else {
             Log::error('GitHub auth token not set. Bug report cannot be created.',
@@ -69,7 +69,7 @@ class ReportIssueController extends Controller
      * @param string $post_content the content of the HTTP POST request
      * @return string the html_url from the JSON response
      */
-    private function post_github(string $post_content): string
+    private function postGithub(string $post_content): string
     {
         //set file_get_contents header info
         $opts = [
