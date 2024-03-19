@@ -24,7 +24,7 @@ use App\Http\Controllers\Network\AdminMacAddressController;
 use App\Http\Controllers\Network\InternetController;
 use App\Http\Controllers\Network\MacAddressController;
 use App\Http\Controllers\Network\RouterController;
-use App\Http\Controllers\ReportIssueController;
+use App\Http\Controllers\IssuesController;
 use App\Http\Controllers\Secretariat\DocumentController;
 use App\Http\Controllers\Secretariat\RegistrationsController;
 use App\Http\Controllers\Secretariat\SemesterEvaluationController;
@@ -87,8 +87,8 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::post('/color/{mode}', [HomeController::class, 'colorMode'])->name('set-color-mode');
 
     /** Issue reporting */
-    Route::get('/issues', [ReportIssueController::class, 'index'])->name('issues.index');
-    Route::post('/issues/create', [ReportIssueController::class, 'store'])->name('issues.store');
+    Route::get('/issues', [IssuesController::class, 'create'])->name('issues.create');
+    Route::post('/issues/create', [IssuesController::class, 'store'])->name('issues.store');
 
     /** User related routes */
     Route::get('/profile', [UserController::class, 'profile'])->name('profile');

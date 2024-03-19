@@ -11,12 +11,12 @@ use Illuminate\View\View;
 /**
  * Software bug reporting.
  */
-class ReportIssueController extends Controller
+class IssuesController extends Controller
 {
     /**
      * Show the bug reporting page.
      */
-    public function index(): View
+    public function create(): View
     {
         return view('issues');
     }
@@ -51,7 +51,7 @@ class ReportIssueController extends Controller
             $created_report_url = $this->postGithub($post_content);
             return view('issues', ['url' => $created_report_url]);
         } else {
-            Log::error('GitHub auth token not set. Bug report cannot be created.',
+            Log::error('GitHub auth token not set. Issue cannot be created.',
                 ['post_content' => $post_content]);
             return redirect()->back()->with('error', __('general.failed'));
         }
