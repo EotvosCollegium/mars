@@ -11,7 +11,7 @@
             <div class="card-content">
                 <span class="card-title">@lang('issue.report')</span>
                 <p>@lang('issue.report_long_description')</p>
-                <form method="POST" action="{{ route('report_issue.report') }}">
+                <form method="POST" action="{{ route('issues.store') }}">
                     @csrf
                     <div class="row">
                         <x-input.text id="title" required text="general.title" s=12 m=6 />

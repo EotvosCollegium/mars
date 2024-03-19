@@ -6,8 +6,6 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 /**
@@ -20,30 +18,26 @@ class ReportIssueController extends Controller
      */
     public function index(): View
     {
-        return view('report_issue');
+        return view('issues');
     }
 
     /**
      * Create a new bug report or feature request. A GitHub issue is automatically created from the provided data.
      * The returned view contains the URL of the created issue.
-     * @throws ValidationException
      * @throws AuthenticationException
      */
-    public function report(Request $request): View|RedirectResponse
+    public function store(Request $request): View|RedirectResponse
     {
-        //validate input
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'title' => 'required|string',
             'type' => 'required|in:issue.type_bug,issue.type_feature',
             'description' => 'required|string',
         ]);
-        $validator->validate();
 
         //request details, removing slashes and sanitize content
-        $title = __($request->input('type'), [], 'en') . ': ' . $request->input('title');
-        $title = htmlspecialchars(stripslashes($title), ENT_QUOTES);
-        $username = htmlspecialchars(stripslashes(user()->name), ENT_QUOTES);
-        $body = htmlspecialchars(stripslashes($request->input('description')), ENT_QUOTES);
+        $title = $this->sanitize(__($request->input('type'), [], 'en') . ': ' . $request->input('title'));
+        $username = $this->sanitize(user()->name);
+        $body = $this->sanitize($request->input('description'));
         $body .= '\n\n> This issue was reported by ' . $username . ' and generated automatically.';
         $label = ['issue.type_bug' => 'bug', 'issue.type_feature' => 'enhancement'][$request->input('type')];
 
@@ -55,7 +49,7 @@ class ReportIssueController extends Controller
         // Send the report to GitHub if an auth token is set. Otherwise, log an error.
         if (config('github.auth_token')) {
             $created_report_url = $this->postGithub($post_content);
-            return view('report_issue', ['url' => $created_report_url]);
+            return view('issues', ['url' => $created_report_url]);
         } else {
             Log::error('GitHub auth token not set. Bug report cannot be created.',
                 ['post_content' => $post_content]);
@@ -97,5 +91,16 @@ class ReportIssueController extends Controller
         Log::info('GitHub issue creation response', ['json' => var_export($response_array, true)]);
 
         return $response_array['html_url'];
+    }
+
+    /**
+     * Sanitizes the input, converting special characters to HTML entities and handling slashes, quotes.
+     *
+     * @param string $input the value to sanitize
+     * @return string the sanitized value
+     */
+    private function sanitize(string $input): string
+    {
+        return htmlspecialchars(stripslashes($input), ENT_QUOTES);
     }
 }

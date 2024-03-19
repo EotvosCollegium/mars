@@ -87,8 +87,8 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::post('/color/{mode}', [HomeController::class, 'colorMode'])->name('set-color-mode');
 
     /** Issue reporting */
-    Route::get('/report_issue', [ReportIssueController::class, 'index'])->name('report_issue.index');
-    Route::post('/report_issue', [ReportIssueController::class, 'report'])->name('report_issue.report');
+    Route::get('/issues', [ReportIssueController::class, 'index'])->name('issues.index');
+    Route::post('/issues/create', [ReportIssueController::class, 'store'])->name('issues.store');
 
     /** User related routes */
     Route::get('/profile', [UserController::class, 'profile'])->name('profile');
