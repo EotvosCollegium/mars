@@ -468,7 +468,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function scopeVerified(Builder $query): Builder
     {
-        return $query->where('verified', 1);
+        return $query->where('users.verified', 1);
     }
 
     /**
