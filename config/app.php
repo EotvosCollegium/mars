@@ -2,12 +2,6 @@
 
 return [
 
-    'colormode' => [
-        'light',
-        'dark',
-    ],
-    'colormode_cookie_lifespan' => 960000,
-
     /*
     |--------------------------------------------------------------------------
     | Application Name

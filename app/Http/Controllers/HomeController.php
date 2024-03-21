@@ -44,11 +44,6 @@ class HomeController extends Controller
         ]);
     }
 
-    public function colorMode($mode)
-    {
-        return response('ok')->cookie('theme', $mode, config('app.colormode_cookie_lifespan'));
-    }
-
     public function welcome()
     {
         if (Auth::user()) {

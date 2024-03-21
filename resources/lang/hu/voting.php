@@ -46,5 +46,6 @@ return [
     'close_presence_check' => 'Jelenlét-ellenőrzés lezárása',
     'presence_note' => 'Megjegyzés',
     'new_presence_check' => 'Új jelenlét-ellenőrzés',
-    'excused_users' => 'Igazolt hiányzók'
+    'excused_users' => 'Igazolt hiányzók',
+    'automatically_excused_user_comment' => 'Automatikusan igazolt: passzív státusz',
 ];

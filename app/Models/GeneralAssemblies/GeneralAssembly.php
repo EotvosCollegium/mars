@@ -72,11 +72,12 @@ class GeneralAssembly extends Model
     }
 
     /**
-     * * @return BelongsToMany The users who are missing with an excuse.
+     * * @return BelongsToMany The users who are missing with an excuse. Pivot data is included: comment.
      */
     public function excusedUsers(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'general_assembly_user');
+        return $this->belongsToMany(User::class, 'general_assembly_excused_users')
+            ->withPivot('comment');
     }
 
     /**
