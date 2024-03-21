@@ -20,7 +20,8 @@
     @endif
 </head>
 
-<body class="{{ Cookie::get('theme') }}">
+<body>
+    <script>document.body.classList.add(localStorage.getItem('themeMode') || 'light');</script>
     @if (Route::has('login'))
     <header>
         <div class="navbar-fixed">
