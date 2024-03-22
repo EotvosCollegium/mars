@@ -4,10 +4,12 @@ namespace App\Providers;
 
 use App\Listeners\MailGate;
 use App\Models\FreePages;
+use App\Models\GeneralAssemblies\GeneralAssembly;
 use App\Models\PrintAccount;
 use App\Models\RoleUser;
 use App\Models\SemesterStatus;
 use App\Observers\FreePagesObserver;
+use App\Observers\GeneralAssemblyObserver;
 use App\Observers\PrintAccountObserver;
 use App\Observers\RoleUserObserver;
 use App\Observers\StatusObserver;
@@ -45,5 +47,6 @@ class EventServiceProvider extends ServiceProvider
         FreePages::observe(FreePagesObserver::class);
         PrintAccount::observe(PrintAccountObserver::class);
         RoleUser::observe(RoleUserObserver::class);
+        GeneralAssembly::observe(GeneralAssemblyObserver::class);
     }
 }

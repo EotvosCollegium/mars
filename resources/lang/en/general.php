@@ -28,6 +28,7 @@ return [
     'members' => 'Members',
     'note' => 'Note',
     'nothing_to_show' => 'Nothing to show',
+    'optional_field' => 'Not required',
     'other' => 'Other',
     'others' => 'Others',
     'register' => 'Register',
