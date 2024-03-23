@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Utils\UserFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\View\View;
+use Illuminate\Database\Eloquent\Collection;
 use Livewire\Component;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -39,8 +40,10 @@ class ListUsers extends Component
 
     /**
      * Return the `users` property.
+     *
+     * @return array|User[]|Collection the users that match the specified filters, so the users that should be listed
      */
-    public function getUsersProperty()
+    public function getUsersProperty(): array|Collection
     {
         return $this->createFilteredQuery()
             ->with(['roles', 'workshops', 'educationalInformation', 'semesterStatuses'])
