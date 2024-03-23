@@ -2,11 +2,13 @@
 
 namespace App\Livewire;
 
-use App\Models\Semester;
+use App\Exports\UsersExport;
 use App\Models\User;
+use App\Utils\UserFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\View\View;
 use Livewire\Component;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ListUsers extends Component
 {
@@ -18,47 +20,29 @@ class ListUsers extends Component
     public $filter_name = '';
 
     /**
+     * @return User|Builder the query with all filters (the properties of this class) applied
+     */
+    private function createFilteredQuery(): User|Builder
+    {
+        $filter = new UserFilter(User::canView());
+        $filter->roleIdsAll($this->roles)
+            ->workshopIdsAll($this->workshops)
+            ->statusesAny($this->statuses);
+        if (isset($this->year_of_acceptance) && $this->year_of_acceptance !== '') {
+            $filter->yearOfAcceptance($this->year_of_acceptance);
+        }
+        if (isset($this->filter_name)) {
+            $filter->nameLike($this->filter_name);
+        }
+        return $filter->getQuery();
+    }
+
+    /**
      * Return the `users` property.
      */
     public function getUsersProperty()
     {
-        $query = User::canView();
-
-        $query->where(function (Builder $query) {
-            foreach ($this->roles as $role) {
-                $query->whereHas('roles', function (Builder $query) use ($role) {
-                    $query->where('id', $role);
-                });
-            }
-
-            foreach ($this->workshops as $workshop) {
-                $query->whereHas('workshops', function (Builder $query) use ($workshop) {
-                    $query->where('id', $workshop);
-                });
-            }
-
-            if (isset($this->year_of_acceptance)) {
-                $query->whereHas('educationalInformation', function (Builder $query) {
-                    $query->where('year_of_acceptance', $this->year_of_acceptance);
-                });
-            }
-
-            if (isset($this->filter_name)) {
-                $query->where('name', 'like', '%' . $this->filter_name . '%');
-            }
-        });
-
-        //'or' between statuses
-        $query->where(function ($query) {
-            foreach ($this->statuses as $status) {
-                $query->orWhereHas('semesterStatuses', function (Builder $query) use ($status) {
-                    $query->where('status', $status);
-                    $query->where('id', Semester::current()->id);
-                });
-            }
-        });
-
-        return $query
+        return $this->createFilteredQuery()
             ->with(['roles', 'workshops', 'educationalInformation', 'semesterStatuses'])
             ->orderBy('name')->get();
     }
@@ -86,21 +70,21 @@ class ListUsers extends Component
     /**
      * Add a status to filter on.
      *
-     * @param int $status_id
+     * @param string $status
      */
-    public function addStatus($status_id)
+    public function addStatus($status)
     {
-        $this->statuses[] = $status_id;
+        $this->statuses[] = $status;
     }
 
     /**
      * Delete a status from the list of statuses to filter on.
      *
-     * @param int $status_id
+     * @param string $status
      */
-    public function deleteStatus($status_id)
+    public function deleteStatus($status)
     {
-        $this->statuses = \array_diff($this->statuses, [$status_id]);
+        $this->statuses = \array_diff($this->statuses, [$status]);
     }
 
     /**
@@ -121,6 +105,14 @@ class ListUsers extends Component
     public function deleteWorkshop($workshop_id)
     {
         $this->workshops = \array_diff($this->workshops, [$workshop_id]);
+    }
+
+    /**
+     * Export listed users to excel
+     */
+    public function export()
+    {
+        return Excel::download(new UsersExport($this->createFilteredQuery()), 'uran_export.xlsx');
     }
 
     /**
