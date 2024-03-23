@@ -123,4 +123,11 @@
             </div>
         </div>
     </div>
+
+    {{-- Export --}}
+    <div class="fixed-action-btn tooltipped" data-position="left" data-tooltip="Exportálás">
+        <span wire:click="export()" class="btn-floating btn-large">
+            <i class="large material-icons">file_download</i>
+        </span>
+    </div>
 </div>
