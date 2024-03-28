@@ -24,6 +24,7 @@ use App\Http\Controllers\Network\AdminMacAddressController;
 use App\Http\Controllers\Network\InternetController;
 use App\Http\Controllers\Network\MacAddressController;
 use App\Http\Controllers\Network\RouterController;
+use App\Http\Controllers\IssuesController;
 use App\Http\Controllers\Secretariat\DocumentController;
 use App\Http\Controllers\Secretariat\RegistrationsController;
 use App\Http\Controllers\Secretariat\SemesterEvaluationController;
@@ -84,8 +85,9 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::post('/home/edit', [HomeController::class, 'editNews'])->name('home.edit');
 
-    Route::post('/report_bug', [HomeController::class, 'reportBug'])->name('reportbug');
-    Route::get('/report_bug', [HomeController::class, 'indexReportBug'])->name('index_reportbug');
+    /** Issue reporting */
+    Route::get('/issues', [IssuesController::class, 'create'])->name('issues.create');
+    Route::post('/issues/create', [IssuesController::class, 'store'])->name('issues.store');
 
     /** User related routes */
     Route::get('/profile', [UserController::class, 'profile'])->name('profile');
