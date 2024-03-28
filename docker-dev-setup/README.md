@@ -62,6 +62,9 @@ docker exec -it mars_dev bash -c "php artisan serve --host=0.0.0.0"
 
 The app is now running at [http://localhost:8000](http://localhost:8000).
 
+You can log in as `example@eotvos.elte.hu` to gain access to a superuser account or as `collegist@eotvos.elte.hu` for a regular account.
+The password is `asdasdasd` in both cases.
+
 When you are finished and wish to stop the web server and the database:
 
 - Press `Ctrl+C` to stop the development server (started by `php artisan serve`)
@@ -77,6 +80,8 @@ docker exec -it mars_mysql mysql --user=mars --password=password
 
 Alternatively, you can access the database directly from you host machine (via an application of your choice) at this address: `127.0.0.1:3307`
 
+You can reset the database by running `docker exec -it mars_dev bash -c "php artisan migrate:fresh --seed"`.
+
 ### IDE integration
 
 You can use an IDE or text editor of your choice. Here are some recommended IDEs and some tips for setting them up:
@@ -89,6 +94,18 @@ You can use an IDE or text editor of your choice. Here are some recommended IDEs
   - Generate IDE helper files: `docker exec mars_dev bash -c "php artisan clear-compiled && php artisan ide-helper:refresh"`
   - In PHPStorm click on: `File / Invalidate caches / Invalidate and Restart`
   - Now `self::where(...)`, `@mixin \Eloquent`, etc. shouldn't get marked as errors
+- Add advanced support for Laravel:
+  - Install the 3rd party [Laravel Idea](https://plugins.jetbrains.com/plugin/13441-laravel-plugin) plugin
+    - This is a paid plugin, but [students can get a license for free](https://plugins.jetbrains.com/docs/marketplace/community-programs.html#how-to-apply)
+  - Now a *Laravel* option should appear in your menu bar, and you should have access to numerous other powerful features
+- Database integration:
+  - Add a new MySQL [data source](https://www.jetbrains.com/help/phpstorm/connecting-to-a-database.html) with the credentials specified above
+  - Install the 3rd party [Laravel Query](https://plugins.jetbrains.com/plugin/16309-laravel-query) plugin
+  - Now auto-completion and validation will be available for model columns in queries among other features
+- Excluding libraries and automatically generated files/folders from indexing and search:
+  - Open a .gitignore file and agree to exclude the files/folders that are excluded from version control
+  - Manually exclude the following folders: `storage/debugbar`, `storage/framework`, `storage/logs`
+  - Now you should see less irrelevant search results and warnings
 
 #### Visual Studio Code (vsc, vscode)
 
