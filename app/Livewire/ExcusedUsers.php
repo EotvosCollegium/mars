@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire;
+namespace App\Livewire;
 
 use App\Models\GeneralAssemblies\GeneralAssembly;
 use Illuminate\Support\Facades\Log;
