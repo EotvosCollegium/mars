@@ -204,10 +204,10 @@ class HomeController extends Controller
                 ->orWhereIn('name', Role::COMMITTEE_LEADERS)
                 ->get()->pluck('id')->toArray();
             $student_council = RoleUser::where('role_id', Role::studentsCouncil()->id)
-                        ->whereIn('object_id', $student_council_objects)
-                        ->with('user')
-                        ->orderBy('object_id')
-                        ->get();
+                ->whereIn('object_id', $student_council_objects)
+                ->with('user')
+                ->orderBy('object_id')
+                ->get();
             $contacts = array_merge($contacts, [
                 Role::STUDENT_COUNCIL => $student_council,
                 Role::STUDENT_COUNCIL_SECRETARY => User::studentCouncilSecretary(),
@@ -215,7 +215,7 @@ class HomeController extends Controller
                 Role::ETHICS_COMMISSIONER => User::ethicsCommissioners(),
             ]);
 
-            $contacts['workshops'] = Workshop::all()->flatMap(fn ($workshop) => [
+            $contacts['workshops'] = Workshop::all()->flatMap(fn($workshop) => [
                 $workshop->name => [
                     'leaders' => $workshop->leaders->pluck('name')->implode(', '),
                     'administrators' => $workshop->administrators->pluck('name')->implode(', ')

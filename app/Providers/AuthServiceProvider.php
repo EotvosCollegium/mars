@@ -9,31 +9,6 @@ use Illuminate\Support\Facades\Gate;
 class AuthServiceProvider extends ServiceProvider
 {
     /**
-     * The policy mappings for the application.
-     *
-     * @var array
-     */
-    protected $policies = [
-        \App\Models\Internet\MacAddress::class => \App\Policies\MacAddressPolicy::class,
-        \App\Models\Internet\InternetAccess::class => \App\Policies\InternetAccessPolicy::class,
-        \App\Models\PrintJob::class => \App\Policies\PrintJobPolicy::class,
-        \App\Models\PrintAccount::class => \App\Policies\PrintAccountPolicy::class,
-        \App\Models\FreePages::class => \App\Policies\FreePagesPolicy::class,
-        \App\Models\LocalizationContribution::class => \App\Policies\LocalePolicy::class,
-        \App\Models\User::class => \App\Policies\UserPolicy::class,
-        \App\Models\Checkout::class => \App\Policies\CheckoutPolicy::class,
-        \App\Models\Transaction::class => \App\Policies\TransactionPolicy::class,
-        \App\Models\Fault::class => \App\Policies\FaultPolicy::class,
-        \App\Models\EpistolaNews::class => \App\Policies\EpistolaPolicy::class,
-        \App\Models\Internet\Router::class => \App\Policies\RouterPolicy::class,
-        \App\Models\MrAndMissVote::class => \App\Policies\MrAndMissPolicy::class,
-        \App\Models\CommunityService::class => \App\Policies\CommunityServicePolicy::class,
-        \App\Models\GeneralAssemblies\GeneralAssembly::class => \App\Policies\GeneralAssemblyPolicy::class,
-        \App\Models\GeneralAssemblies\Question::class => \App\Policies\QuestionPolicy::class,
-        \App\Models\GeneralAssemblies\PresenceCheck::class => \App\Policies\PresenceCheckPolicy::class,
-    ];
-
-    /**
      * Register any authentication / authorization services.
      *
      * @return void
@@ -54,15 +29,9 @@ class AuthServiceProvider extends ServiceProvider
         });
     }
 
-    public function registerPrintingPermissionHandlingPolicies()
-    {
-        Gate::define('print.print', function ($user) {
-            return $user->hasRole(Role::PRINTER);
-        });
-    }
-
     public function registerDocumentPolicies()
     {
+        // TODO use policy instead. See issue #300
         Gate::define('document.status-certificate.viewAny', function ($user) {
             return $user->hasRole(Role::SECRETARY);
         });
@@ -90,6 +59,7 @@ class AuthServiceProvider extends ServiceProvider
 
     public function registerVerificationPolicies()
     {
+        // TODO move to UserPolicy
         Gate::define('registration.handle', function ($user) {
             return $user->hasRole([Role::SYS_ADMIN, Role::STAFF]);
         });
