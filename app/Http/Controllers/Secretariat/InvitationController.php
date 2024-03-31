@@ -14,6 +14,13 @@ use Illuminate\Support\Str;
 
 class InvitationController extends Controller
 {
+    /**
+     * Create and send a new invitation
+     *
+     * @param Request $request
+     * @return RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
     public function store(Request $request): RedirectResponse
     {
         $this->authorize('invite', User::class);
