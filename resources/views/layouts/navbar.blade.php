@@ -173,7 +173,7 @@
                         </a>
                     </li>
                 @endcan
-                @can('registration.handle')
+                @can('handleGuests', \App\Models\User::class)
                     <li>
                         <a class="waves-effect" href="{{ route('secretariat.registrations') }}">
                             <i class="material-icons left">how_to_reg</i> Regisztrációk

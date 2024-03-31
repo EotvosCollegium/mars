@@ -15,15 +15,11 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
-class RegistrationsController extends Controller
+class GuestsController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('can:registration.handle');
-    }
-
     public function index()
     {
+        $this->authorize('handleGuests', User::class);
         $users = User::withoutGlobalScope('verified')
             ->where('verified', false)
             ->whereHas('roles', function (Builder $query) {
@@ -37,6 +33,8 @@ class RegistrationsController extends Controller
 
     public function accept(Request $request)
     {
+        $this->authorize('handleGuests', User::class);
+
         $user = User::withoutGlobalScope('verified')->findOrFail($request->id);
         if ($user->verified) {
             return redirect()->route('secretariat.registrations');
@@ -59,6 +57,8 @@ class RegistrationsController extends Controller
 
     public function reject(Request $request)
     {
+        $this->authorize('handleGuests', User::class);
+        
         $user = User::withoutGlobalScope('verified')->findOrFail($request->id);
         if ($user->verified) {
             return redirect()->route('secretariat.registrations');
@@ -71,25 +71,4 @@ class RegistrationsController extends Controller
         return redirect()->route('secretariat.registrations')->with('message', __('general.successful_modification'));
     }
 
-    public function invite(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'email' => ['required', 'unique:users,email'],
-        ]);
-        $validator->validate();
-
-        $user = User::firstWhere('email', $request->email);
-        if (!$user) {
-            $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => \Hash::make(\Str::random(32)),
-                'verified' => true,
-            ]);
-        }
-
-        \Invytr::invite($user);
-        return redirect()->route('users.show', ['user' => $user->id])->with('message', __('registration.set_permissions'));
-    }
 }

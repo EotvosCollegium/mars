@@ -44,7 +44,6 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
         // General policies without models
         $this->registerDocumentPolicies();
-        $this->registerVerificationPolicies();
 
         Gate::define('is-collegist', function ($user) {
             return $user->isCollegist();
@@ -85,13 +84,6 @@ class AuthServiceProvider extends ServiceProvider
                 'document.register-statement',
                 'document.import-license',
             ]);
-        });
-    }
-
-    public function registerVerificationPolicies()
-    {
-        Gate::define('registration.handle', function ($user) {
-            return $user->hasRole([Role::SYS_ADMIN, Role::STAFF]);
         });
     }
 }
