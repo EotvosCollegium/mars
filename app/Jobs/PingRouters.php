@@ -10,23 +10,20 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class PingRouter implements ShouldQueue
+class PingRouters implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
     use Queueable;
     use SerializesModels;
 
-    protected $router;
-
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(Router $router)
+    public function __construct()
     {
-        $this->router = $router;
     }
 
     /**
@@ -36,14 +33,16 @@ class PingRouter implements ShouldQueue
      */
     public function handle()
     {
-        $result = Commands::pingRouter($this->router);
-        if ($result == '') {
-            $this->router->update([
-                'failed_for' => 0,
-            ]);
-        } elseif (config('app.debug') == false) {
-            $this->router->increment('failed_for');
-            $this->router->sendWarning();
+        foreach (Router::all() as $router) {
+            $result = Commands::pingRouter($router);
+            if ($result == '') {
+                $router->update([
+                    'failed_for' => 0,
+                ]);
+            } elseif (config('app.debug') == false) {
+                $this->router->increment('failed_for');
+                $this->router->sendWarning();
+            }
         }
     }
 }

@@ -41,9 +41,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $schedule->call(function () {
             \App\Models\EventTrigger::listen();
         })->daily()->at('13:00');
-        foreach (\App\Models\Internet\Router::all() as $router) {
-            $schedule->job(new \App\Jobs\PingRouter($router))->everyFiveMinutes();
-        }
+        $schedule->job(new \App\Jobs\PingRouters())->everyFiveMinutes();
         $schedule->job(new \App\Jobs\ProcessWifiConnections())->dailyAt('01:00');
 
         $schedule->command('backup:clean')->daily()->at('01:00');
