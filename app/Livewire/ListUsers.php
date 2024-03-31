@@ -4,7 +4,6 @@ namespace App\Livewire;
 
 use App\Exports\UsersExport;
 use App\Models\User;
-use App\Utils\UserFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\View\View;
 use Illuminate\Database\Eloquent\Collection;
@@ -25,17 +24,17 @@ class ListUsers extends Component
      */
     private function createFilteredQuery(): User|Builder
     {
-        $filter = new UserFilter(User::canView());
-        $filter->roleIdsAll($this->roles)
-            ->workshopIdsAll($this->workshops)
-            ->statusesAny($this->statuses);
+        $query = User::canView()
+            ->hasAllRoleIds($this->roles)
+            ->inAllWorkshopIds($this->workshops)
+            ->hasStatusAnyOf($this->statuses);
         if (isset($this->year_of_acceptance) && $this->year_of_acceptance !== '') {
-            $filter->yearOfAcceptance($this->year_of_acceptance);
+            $query->yearOfAcceptance($this->year_of_acceptance);
         }
         if (isset($this->filter_name)) {
-            $filter->nameLike($this->filter_name);
+            $query->nameLike($this->filter_name);
         }
-        return $filter->getQuery();
+        return $query;
     }
 
     /**
