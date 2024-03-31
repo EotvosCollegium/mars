@@ -12,6 +12,9 @@ class ExcusedUsers extends Component
     public $user;
     public $comment;
 
+    /**
+     * Add a user to the excused list.
+     */
     public function addUser()
     {
         $this->validate([
@@ -23,11 +26,21 @@ class ExcusedUsers extends Component
         $this->comment = null;
     }
 
+    /**
+     * Remove a user from the excused list.
+     *
+     * @param int $userId
+     */
     public function removeUser($userId)
     {
         $this->general_assembly->excusedUsers()->detach($userId);
     }
 
+    /**
+     * Render the component.
+     *
+     * @return \Illuminate\View\View
+     */
     public function render()
     {
         return view('livewire.excused-users');

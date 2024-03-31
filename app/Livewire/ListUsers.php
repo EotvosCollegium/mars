@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\Semester;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\View\View;
 use Livewire\Component;
 
 class ListUsers extends Component
@@ -16,6 +17,9 @@ class ListUsers extends Component
     public $year_of_acceptance = null;
     public $filter_name = '';
 
+    /**
+     * Return the `users` property.
+     */
     public function getUsersProperty()
     {
         $query = User::canView();
@@ -40,7 +44,7 @@ class ListUsers extends Component
             }
 
             if (isset($this->filter_name)) {
-                $query->where('name', 'like', '%'.$this->filter_name.'%');
+                $query->where('name', 'like', '%' . $this->filter_name . '%');
             }
         });
 
@@ -59,36 +63,71 @@ class ListUsers extends Component
             ->orderBy('name')->get();
     }
 
+    /**
+     * Add a role to the list of roles.
+     *
+     * @param int $role_id
+     */
     public function addRole($role_id)
     {
         $this->roles[] = $role_id;
     }
 
+    /**
+     * Delete a role from the list of roles.
+     *
+     * @param int $role_id
+     */
     public function deleteRole($role_id)
     {
         $this->roles = \array_diff($this->roles, [$role_id]);
     }
 
+    /**
+     * Add a status to filter on.
+     *
+     * @param int $status_id
+     */
     public function addStatus($status_id)
     {
         $this->statuses[] = $status_id;
     }
 
+    /**
+     * Delete a status from the list of statuses to filter on.
+     *
+     * @param int $status_id
+     */
     public function deleteStatus($status_id)
     {
         $this->statuses = \array_diff($this->statuses, [$status_id]);
     }
 
+    /**
+     * Add a workshop to filter on.
+     *
+     * @param int $workshop_id
+     */
     public function addWorkshop($workshop_id)
     {
         $this->workshops[] = $workshop_id;
     }
 
+    /**
+     * Delete a workshop from the list of workshops to filter on.
+     *
+     * @param int $workshop_id
+     */
     public function deleteWorkshop($workshop_id)
     {
         $this->workshops = \array_diff($this->workshops, [$workshop_id]);
     }
 
+    /**
+     * Render the component.
+     *
+     * @return View
+     */
     public function render()
     {
         return view('secretariat.user.list_users_component');

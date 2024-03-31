@@ -31,7 +31,6 @@ class AuthServiceProvider extends ServiceProvider
 
     public function registerDocumentPolicies()
     {
-        // TODO use policy instead. See issue #300
         Gate::define('document.status-certificate.viewAny', function ($user) {
             return $user->hasRole(Role::SECRETARY);
         });
@@ -59,7 +58,6 @@ class AuthServiceProvider extends ServiceProvider
 
     public function registerVerificationPolicies()
     {
-        // TODO move to UserPolicy
         Gate::define('registration.handle', function ($user) {
             return $user->hasRole([Role::SYS_ADMIN, Role::STAFF]);
         });
