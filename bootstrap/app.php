@@ -1,8 +1,9 @@
 <?php
 
 use App\Http\Middleware\LogRequests;
-use App\Http\Middleware\PossibleRedirects;
+use App\Http\Middleware\NotifyAboutEvaluation;
 use App\Http\Middleware\Locale;
+use App\Http\Middleware\RedirectTenantsToUpdate;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -31,7 +32,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             Locale::class,
             LogRequests::class,
-            PossibleRedirects::class,
+            NotifyAboutEvaluation::class,
+            RedirectTenantsToUpdate::class
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

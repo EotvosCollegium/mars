@@ -65,7 +65,7 @@ Route::get('/privacy_policy', [HomeController::class, 'privacyPolicy'])->name('p
 Route::get('/img/{filename}', [HomeController::class, 'getPicture']);
 Route::get('/setlocale/{locale}', [HomeController::class, 'setLocale'])->name('setlocale');
 
-Auth::routes();
+Auth::routes(); //check \Laravel\Ui\AuthRouteMethods
 
 Route::get('/register/guest', [RegisterController::class, 'showTenantRegistrationForm'])->name('register.guest');
 
@@ -101,7 +101,7 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
     Route::delete('/users/{user}/roles/{role}', [UserController::class, 'removeRole'])->name('users.roles.delete');
     Route::post('/users/update_password', [UserController::class, 'updatePassword'])->name('users.update.password')->withoutMiddleware('log');
     Route::get('/users/tenant_update/show', [UserController::class, 'showTenantUpdate'])->name('users.tenant-update.show');
-    Route::get('/users/tenant_update/applicant', [UserController::class, 'tenantToApplicant'])->name('users.tenant-update.to-applicant');
+    Route::post('/users/tenant_update/applicant', [UserController::class, 'tenantToApplicant'])->name('users.tenant-update.to-applicant');
 
     /** Localization */
     Route::get('/localizations', [LocaleController::class, 'index'])->name('localizations');
