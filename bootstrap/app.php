@@ -27,7 +27,7 @@ return Application::configure(basePath: dirname(__DIR__))
             Request::HEADER_X_FORWARDED_PORT |
             Request::HEADER_X_FORWARDED_PROTO |
             Request::HEADER_X_FORWARDED_AWS_ELB);
-        $middleware->append([
+        $middleware->web(append: [
             Locale::class,
             LogRequests::class,
             PossibleRedirects::class,
