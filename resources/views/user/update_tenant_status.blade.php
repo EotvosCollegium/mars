@@ -42,6 +42,7 @@
                         </blockquote>
                         <div class="row center">
                             <form method="post" action="{{route('users.tenant-update.to-applicant')}}">
+                                @csrf
                                 <x-input.button text="general.show"/>
                             </form>
                         </div>
