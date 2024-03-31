@@ -18,15 +18,18 @@ class RedirectTenantsToUpdate
     public function handle(Request $request, Closure $next)
     {
         // Ignore non-GET requests
-        if ($request->method() != 'GET')
+        if ($request->method() != 'GET') {
             return $next($request);
+        }
         // Ignore logout, language select routes, or if already updating tenant information
-        if ($request->routeIs('setlocale', 'logout', 'users.tenant-update.show'))
+        if ($request->routeIs('setlocale', 'logout', 'users.tenant-update.show')) {
             return $next($request);
+        }
         // Ignore non-verified users
         $user = $request->user();
-        if (!($user && $user->verified))
+        if (!($user && $user->verified)) {
             return $next($request);
+        }
         // Ignore if update is not necessary
         if (!$user->needsUpdateTenantUntil()) {
             return $next($request);
