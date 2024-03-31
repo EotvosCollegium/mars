@@ -8,31 +8,31 @@ use App\Exports\UsersSheets\StatusesExport;
 use App\Exports\UsersSheets\StudentsCouncilFeedback;
 use App\Models\Role;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Maatwebsite\Excel\Concerns\WithDefaultStyles;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use PhpOffice\PhpSpreadsheet\Style\Style;
 
 class UsersExport implements WithMultipleSheets, WithDefaultStyles
 {
-    private Builder|User $includedUsersQuery;
+    private Collection|User $includedUsers;
 
-    public function __construct(Builder|User $includedUsersQuery)
+    public function __construct(Collection|User $includedUsers)
     {
-        $this->includedUsersQuery = $includedUsersQuery;
+        $this->includedUsers = $includedUsers->sortBy('name');
     }
 
     public function sheets(): array
     {
         $sheets = [
-            new CollegistsExport($this->includedUsersQuery->clone()),
-            new StatusesExport($this->includedUsersQuery->clone()),
+            new CollegistsExport($this->includedUsers),
+            new StatusesExport($this->includedUsers),
         ];
 
         if(user()->can('viewSemesterEvaluation', User::class)) {
-            $sheets[] = new SemesterEvaluationExport($this->includedUsersQuery->clone());
+            $sheets[] = new SemesterEvaluationExport($this->includedUsers);
             if(user()->hasRole(Role::STUDENT_COUNCIL)) {
-                $sheets[] = new StudentsCouncilFeedback($this->includedUsersQuery->clone());
+                $sheets[] = new StudentsCouncilFeedback($this->includedUsers);
             }
         }
 

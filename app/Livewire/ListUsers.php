@@ -115,7 +115,7 @@ class ListUsers extends Component
      */
     public function export()
     {
-        return Excel::download(new UsersExport($this->createFilteredQuery()), 'uran_export.xlsx');
+        return Excel::download(new UsersExport($this->createFilteredQuery()->get()), 'uran_export.xlsx');
     }
 
     /**

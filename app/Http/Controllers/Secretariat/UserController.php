@@ -367,7 +367,7 @@ class UserController extends Controller
     {
         $this->authorize('viewAny', User::class);
 
-        return Excel::download(new UsersExport(User::canView()), 'uran_export.xlsx');
+        return Excel::download(new UsersExport(User::canView()->get()), 'uran_export.xlsx');
     }
 
     /**

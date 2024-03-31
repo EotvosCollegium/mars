@@ -4,7 +4,7 @@ namespace App\Exports\UsersSheets;
 
 use App\Models\SemesterEvaluation;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -15,13 +15,13 @@ class StudentsCouncilFeedback implements FromCollection, WithTitle, WithMapping,
 {
     protected $evaluations;
 
-    public function __construct(Builder|User $includedUsersQuery)
+    public function __construct(Collection|User $includedUsers)
     {
         $last_semester_id = SemesterEvaluation::query()->orderBy('created_at', 'desc')->first()?->semester_id;
         $this->evaluations = SemesterEvaluation::query()
             ->where('semester_id', $last_semester_id)
             ->whereNotNull('feedback')
-            ->whereIn('user_id', $includedUsersQuery->pluck('id'))
+            ->whereIn('user_id', $includedUsers->pluck('id'))
             ->get();
 
     }
