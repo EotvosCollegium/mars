@@ -51,8 +51,10 @@ class IssuesController extends Controller
             $created_report_url = $this->postGithub($post_content);
             return view('issues', ['url' => $created_report_url]);
         } else {
-            Log::error('GitHub auth token not set. Issue cannot be created.',
-                ['post_content' => $post_content]);
+            Log::error(
+                'GitHub auth token not set. Issue cannot be created.',
+                ['post_content' => $post_content]
+            );
             return redirect()->back()->with('error', __('general.failed'));
         }
     }
