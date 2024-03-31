@@ -1,4 +1,4 @@
-on: [push, pull_request]
+on: [ push, pull_request ]
 name: CI
 jobs:
   phpunit:
@@ -29,15 +29,17 @@ jobs:
         run: |
           npm install
           npm run dev
+          
+      - name: Set up database
+        run: |
+          php artisan migrate:fresh
 
       - name: Prepare Laravel Application
         run: |
           cp .env.ci .env
           php artisan key:generate
 
-      - name: Set up database
-        run: |
-          php artisan migrate:fresh
+
 
       - name: Run Testsuite
         run: vendor/bin/phpunit tests/
