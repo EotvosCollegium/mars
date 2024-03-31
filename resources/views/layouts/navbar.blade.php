@@ -223,8 +223,8 @@
                                 </a></li>
 
                             <!-- report a bug -->
-                            <li><a href="{{ route('index_reportbug') }}">
-                                    <i class="material-icons left">sentiment_very_dissatisfied</i>@lang('general.report_bug')
+                            <li><a href="{{ route('issues.create') }}">
+                                    <i class="material-icons left">sentiment_very_dissatisfied</i>@lang('issue.report')
                                 </a></li>
                         </ul>
                     </div>
