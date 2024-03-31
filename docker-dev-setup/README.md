@@ -48,6 +48,14 @@ docker exec -it mars_dev bash -c \
 docker compose stop
 ```
 
+### Optional setup steps
+
+These steps are not necessary for a basic setup, but might be required for some features or might be helpful in some situations.
+
+Please check out the ["Optional steps" section of the _SETUP_DEV_ENVIRONMENT.md](../_SETUP_DEV_ENVIRONMENT.md#optional-steps) file.
+You may need to change your working directory to the root (`mars`) folder, and you may need to run some commands in the `mars_dev` container.
+You can achieve the latter by running `docker exec -it mars_dev bash` and then running the commands in the container shell.
+
 ## Usage
 
 ### Starting the development environment
@@ -61,9 +69,6 @@ docker exec -it mars_dev bash -c "php artisan serve --host=0.0.0.0"
 ```
 
 The app is now running at [http://localhost:8000](http://localhost:8000).
-
-You can log in as `example@eotvos.elte.hu` to gain access to a superuser account or as `collegist@eotvos.elte.hu` for a regular account.
-The password is `asdasdasd` in both cases.
 
 When you are finished and wish to stop the web server and the database:
 
@@ -80,7 +85,11 @@ docker exec -it mars_mysql mysql --user=mars --password=password
 
 Alternatively, you can access the database directly from you host machine (via an application of your choice) at this address: `127.0.0.1:3307`
 
-You can reset the database by running `docker exec -it mars_dev bash -c "php artisan migrate:fresh --seed"`.
+### Other useful commands, tips
+
+Please check out the ["For everyday use" section of the _SETUP_DEV_ENVIRONMENT.md](../_SETUP_DEV_ENVIRONMENT.md#for-everyday-use) file.
+The section contains information about how to reset your database, how to log in, etc.
+You may need to run some commands in the `mars_dev` container's shell instead of on the host machine.
 
 ### IDE integration
 
@@ -90,31 +99,22 @@ You can use an IDE or text editor of your choice. Here are some recommended IDEs
 
 - Set up a [remote PHP interpreter](https://www.jetbrains.com/help/phpstorm/configuring-remote-interpreters.html) using Docker Compose
   - Select the `docker-dev-setup/docker-compose.yml` configuration file and the `mars_dev` service
-- Add support for Laravel Eloquent:
-  - Generate IDE helper files: `docker exec mars_dev bash -c "php artisan clear-compiled && php artisan ide-helper:refresh"`
-  - In PHPStorm click on: `File / Invalidate caches / Invalidate and Restart`
-  - Now `self::where(...)`, `@mixin \Eloquent`, etc. shouldn't get marked as errors
-- Add advanced support for Laravel:
-  - Install the 3rd party [Laravel Idea](https://plugins.jetbrains.com/plugin/13441-laravel-plugin) plugin
-    - This is a paid plugin, but [students can get a license for free](https://plugins.jetbrains.com/docs/marketplace/community-programs.html#how-to-apply)
-  - Now a *Laravel* option should appear in your menu bar, and you should have access to numerous other powerful features
-- Database integration:
-  - Add a new MySQL [data source](https://www.jetbrains.com/help/phpstorm/connecting-to-a-database.html) with the credentials specified above
-  - Install the 3rd party [Laravel Query](https://plugins.jetbrains.com/plugin/16309-laravel-query) plugin
-  - Now auto-completion and validation will be available for model columns in queries among other features
-- Excluding libraries and automatically generated files/folders from indexing and search:
-  - Open a .gitignore file and agree to exclude the files/folders that are excluded from version control
-  - Manually exclude the following folders: `storage/debugbar`, `storage/framework`, `storage/logs`
-  - Now you should see less irrelevant search results and warnings
+- As an alternative to running `docker exec -it bash mars_dev bash` you can open a "container shell" in PHPStorm:
+  - Open the "Services" tool window and navigate to Docker / Docker / Docker-compose: docker-dev-setup / mars_dev / mars_dev
+    - These entries should already exist if you have set up the remote PHP interpreter
+  - You can open a terminal by right-clicking on the container and selecting "Create Terminal"
+  - In this terminal you can run `php`, `php artisan` and other commands directly (without `docker exec ...`)
+  - You can also start and stop the containers in the context (right click) menu of "Docker-compose: docker-dev-setup"
+    - This is an alternative to running `docker compose up -d` and `docker compose stop`
+- Please check out the ["IDE integration / PHPStorm" section of the _SETUP_DEV_ENVIRONMENT.md](../_SETUP_DEV_ENVIRONMENT.md#phpstorm) file for more tips.
+  - You may need to adapt some commands to run in the `mars_dev` container's shell instead of on the host machine.
+    You can do that by entering `docker exec -it mars_dev bash -c "<cmd>"` instead of just `<cmd>`.
 
 #### Visual Studio Code (vsc, vscode)
 
-- For just basic text editing and syntax highlighting you don't need any special setup
-  - If you are on Windows, make sure to use the WSL plugin and follow its instructions
 - I am personally not familiar with VSC's Docker/PHP support, but...
   - There might be some Docker integration you can use
   - Or you can use the VSC Remote Development extension to run the VSC backend in the Docker container through an SSH connection
-
-## Extras
-
-Please check out the *Optional steps* and *For everyday use* sections of the [_SETUP_DEV_ENVIRONMENT.md](../_SETUP_DEV_ENVIRONMENT.md) file.
+- Please check out the ["IDE integration / VSC" section of the _SETUP_DEV_ENVIRONMENT.md](../_SETUP_DEV_ENVIRONMENT.md#visual-studio-code-vsc-vscode) file for more tips.
+  - You may need to adapt some commands to run in the `mars_dev` container's shell instead of on the host machine.
+    You can do that by entering `docker exec -it mars_dev bash -c "<cmd>"` instead of just `<cmd>`.
