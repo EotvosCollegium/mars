@@ -166,18 +166,18 @@ class UserController extends Controller
 
             $user->load('educationalInformation');
 
-            if($request->has('workshop')) {
+            if ($request->has('workshop')) {
                 $user->workshops()->sync($request->input('workshop'));
                 WorkshopBalance::generateBalances(Semester::current());
             }
 
-            if($request->has('faculty')) {
+            if ($request->has('faculty')) {
                 $user->faculties()->sync($request->input('faculty'));
             }
 
-            if($request->has('study_lines')) {
+            if ($request->has('study_lines')) {
                 $user->educationalInformation->studyLines()->delete();
-                foreach($request->input('study_lines') as $studyLine) {
+                foreach ($request->input('study_lines') as $studyLine) {
                     $user->educationalInformation->studyLines()->create([
                         'name' => $studyLine["name"],
                         'type' => $studyLine["level"],
@@ -222,7 +222,7 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2000',
             'language' => ['required', Rule::in(array_merge(array_keys(config('app.alfonso_languages')), ['other']))],
-            'level' => ['nullable', Rule::in(['A1', 'A2', 'B1', 'B2','C1', 'C2'])],
+            'level' => ['nullable', Rule::in(['A1', 'A2', 'B1', 'B2', 'C1', 'C2'])],
             'type' => 'required|string|max:255',
             'date' => 'required|date|before:today',
         ]);
@@ -357,7 +357,7 @@ class UserController extends Controller
      */
     public function tenantToApplicant()
     {
-        if (!user()->isTenant() || user()->isCollegist(false)) {
+        if (!user()->isTenant() || user()->isCollegist(alumni: false)) {
             return abort(403);
         }
         $user = user();
