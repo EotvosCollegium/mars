@@ -58,7 +58,7 @@ class GuestsController extends Controller
     public function reject(Request $request)
     {
         $this->authorize('handleGuests', User::class);
-        
+
         $user = User::withoutGlobalScope('verified')->findOrFail($request->id);
         if ($user->verified) {
             return redirect()->route('secretariat.registrations');
