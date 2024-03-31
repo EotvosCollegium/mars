@@ -29,7 +29,11 @@ class AuthServiceProvider extends ServiceProvider
         });
     }
 
-    public function registerDocumentPolicies()
+    /**
+     * Helper function to register document-related policies.
+     * @return void
+     */
+    private function registerDocumentPolicies()
     {
         Gate::define('document.status-certificate.viewAny', function ($user) {
             return $user->hasRole(Role::SECRETARY);
@@ -56,7 +60,11 @@ class AuthServiceProvider extends ServiceProvider
         });
     }
 
-    public function registerVerificationPolicies()
+    /**
+     * Helper function to register verification-related policies.
+     * @return void
+     */
+    private function registerVerificationPolicies()
     {
         Gate::define('registration.handle', function ($user) {
             return $user->hasRole([Role::SYS_ADMIN, Role::STAFF]);
