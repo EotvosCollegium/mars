@@ -215,7 +215,7 @@ class HomeController extends Controller
                 Role::ETHICS_COMMISSIONER => User::ethicsCommissioners(),
             ]);
 
-            $contacts['workshops'] = Workshop::all()->flatMap(fn($workshop) => [
+            $contacts['workshops'] = Workshop::all()->flatMap(fn ($workshop) => [
                 $workshop->name => [
                     'leaders' => $workshop->leaders->pluck('name')->implode(', '),
                     'administrators' => $workshop->administrators->pluck('name')->implode(', ')

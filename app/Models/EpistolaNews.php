@@ -153,7 +153,7 @@ class EpistolaNews extends Model
     public function bgColor(): Attribute
     {
         return Attribute::make(
-            get: fn(): string => substr(dechex(crc32($this->category)), 0, 6)
+            get: fn (): string => substr(dechex(crc32($this->category)), 0, 6)
         );
     }
 
