@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire;
+namespace App\Livewire;
 
 use App\Models\Semester;
 use App\Models\User;
@@ -39,7 +39,7 @@ class EditStatus extends Component
     public function save()
     {
         $this->user->setStatusFor($this->semester, $this->status, $this->comment);
-        $this->emit('$refresh');
+        $this->dispatch('$refresh');
     }
 
     /**

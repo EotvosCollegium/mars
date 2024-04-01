@@ -10,7 +10,7 @@ use Illuminate\Auth\Access\Response;
 /**
  * Policy for MrAndMissVote Model.
  */
-class MrAndMissPolicy
+class MrAndMissVotePolicy
 {
     use HandlesAuthorization;
 
