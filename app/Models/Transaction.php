@@ -70,7 +70,10 @@ class Transaction extends Model
         'paid_at',
     ];
 
-    protected $dates = ['moved_to_checkout', 'paid_at'];
+    protected $casts = [
+        'moved_to_checkout' => 'datetime',
+        'paid_at' => 'datetime',
+    ];
 
     public function receiver()
     {

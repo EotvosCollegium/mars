@@ -51,8 +51,8 @@ class InternetAccess extends Model
 
     protected $fillable = ['user_id', 'wifi_username', 'has_internet_until', 'wifi_password'];
 
-    protected $dates = [
-        'has_internet_until',
+    protected $casts = [
+        'has_internet_until' => 'datetime',
     ];
 
     protected const PASSWORD_LENGTH = 8;

@@ -36,6 +36,10 @@ use App\Http\Controllers\StudentsCouncil\GeneralAssemblyController;
 use App\Http\Controllers\StudentsCouncil\GeneralAssemblyPresenceCheckController;
 use App\Http\Controllers\StudentsCouncil\GeneralAssemblyQuestionController;
 use App\Http\Controllers\StudentsCouncil\MrAndMissController;
+use App\Http\Middleware\LogRequests;
+use App\Http\Middleware\OnlyHungarian;
+use App\Http\Middleware\EnsureVerified;
+use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -62,14 +66,14 @@ Route::get('/privacy_policy', [HomeController::class, 'privacyPolicy'])->name('p
 Route::get('/img/{filename}', [HomeController::class, 'getPicture']);
 Route::get('/setlocale/{locale}', [HomeController::class, 'setLocale'])->name('setlocale');
 
-Auth::routes();
+Auth::routes(); //check \Laravel\Ui\AuthRouteMethods
 
 Route::get('/register/guest', [RegisterController::class, 'showTenantRegistrationForm'])->name('register.guest');
 
-Route::middleware(['auth', 'log', 'only_hungarian'])->group(function () {
+Route::middleware([Authenticate::class, LogRequests::class, OnlyHungarian::class])->group(function () {
     Route::get('/application', [ApplicationController::class, 'showApplicationForm'])->name('application');
 });
-Route::middleware(['auth', 'log'])->group(function () {
+Route::middleware([Authenticate::class, LogRequests::class])->group(function () {
     /** Routes that needs to be accessed during the application process */
     Route::post('/application', [ApplicationController::class, 'storeApplicationForm'])->name('application.store');
     Route::post('/users/{user}/profile_picture', [UserController::class, 'storeProfilePicture'])->name('users.update.profile-picture');
@@ -81,7 +85,7 @@ Route::middleware(['auth', 'log'])->group(function () {
     Route::post('/application/finalize', [ApplicationController::class, 'finalizeApplicationProcess'])->name('application.finalize');
 });
 
-Route::middleware(['auth', 'log', 'verified'])->group(function () {
+Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::class])->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::post('/home/edit', [HomeController::class, 'editNews'])->name('home.edit');
 
@@ -97,9 +101,9 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::post('/users/{user}/tenant_until', [UserController::class, 'updateTenantUntil'])->name('users.update.tenant_until');
     Route::post('/users/{user}/roles/{role}', [UserController::class, 'addRole'])->name('users.roles.add');
     Route::delete('/users/{user}/roles/{role}', [UserController::class, 'removeRole'])->name('users.roles.delete');
-    Route::post('/users/update_password', [UserController::class, 'updatePassword'])->name('users.update.password')->withoutMiddleware('log');
+    Route::post('/users/update_password', [UserController::class, 'updatePassword'])->name('users.update.password')->withoutMiddleware(LogRequests::class);
     Route::get('/users/tenant_update/show', [UserController::class, 'showTenantUpdate'])->name('users.tenant-update.show');
-    Route::get('/users/tenant_update/applicant', [UserController::class, 'tenantToApplicant'])->name('users.tenant-update.to-applicant');
+    Route::post('/users/tenant_update/applicant', [UserController::class, 'tenantToApplicant'])->name('users.tenant-update.to-applicant');
 
     /** Localization */
     Route::get('/localizations', [LocaleController::class, 'index'])->name('localizations');
@@ -254,11 +258,11 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::get('/general_assemblies/{general_assembly}/questions/{question}', [GeneralAssemblyQuestionController::class, 'show'])->name('general_assemblies.questions.show');
     Route::post('/general_assemblies/{general_assembly}/questions/{question}/open', [GeneralAssemblyQuestionController::class, 'openQuestion'])->name('general_assemblies.questions.open');
     Route::post('/general_assemblies/{general_assembly}/questions/{question}/close', [GeneralAssemblyQuestionController::class, 'closeQuestion'])->name('general_assemblies.questions.close');
-    Route::post('/general_assemblies/{general_assembly}/questions/{question}/votes', [GeneralAssemblyQuestionController::class, 'saveVote'])->name('general_assemblies.questions.votes.store')->withoutMiddleware('log');
+    Route::post('/general_assemblies/{general_assembly}/questions/{question}/votes', [GeneralAssemblyQuestionController::class, 'saveVote'])->name('general_assemblies.questions.votes.store')->withoutMiddleware(LogRequests::class);
 
     Route::get('/general_assemblies/{general_assembly}/presence_checks/create', [GeneralAssemblyPresenceCheckController::class, 'create'])->name('general_assemblies.presence_checks.create');
     Route::post('/general_assemblies/{general_assembly}/presence_checks', [GeneralAssemblyPresenceCheckController::class, 'store'])->name('general_assemblies.presence_checks.store');
     Route::get('/general_assemblies/{general_assembly}/presence_checks/{presence_check}', [GeneralAssemblyPresenceCheckController::class, 'show'])->name('general_assemblies.presence_checks.show');
     Route::post('/general_assemblies/{general_assembly}/presence_checks/{presence_check}/close', [GeneralAssemblyPresenceCheckController::class, 'closePresenceCheck'])->name('general_assemblies.presence_checks.close');
-    Route::post('/general_assemblies/{general_assembly}/presence_checks/{presence_check}/sign_presence', [GeneralAssemblyPresenceCheckController::class, 'signPresence'])->name('general_assemblies.presence_checks.presence.store')->withoutMiddleware('log');
+    Route::post('/general_assemblies/{general_assembly}/presence_checks/{presence_check}/sign_presence', [GeneralAssemblyPresenceCheckController::class, 'signPresence'])->name('general_assemblies.presence_checks.presence.store')->withoutMiddleware(LogRequests::class);
 });

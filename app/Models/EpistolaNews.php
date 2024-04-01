@@ -83,7 +83,15 @@ class EpistolaNews extends Model
         'category',
         'sent',
     ];
-    protected $dates = ['date', 'time', 'end_date', 'date_for_sorting', 'valid_until', 'deadline_date'];
+
+    protected $casts = [
+        'date' => 'datetime',
+        'time' => 'datetime',
+        'end_date' => 'datetime',
+        'date_for_sorting' => 'datetime',
+        'valid_until' => 'datetime',
+        'deadline_date' => 'datetime',
+    ];
 
     /**
      * Get the valid_until attribute. Notifications should be sent before this date
@@ -94,7 +102,7 @@ class EpistolaNews extends Model
     {
         return Attribute::make(
             get: function (): string|null {
-                $date = ($this->deadline_date ?? $this->date);
+                $date = $this->deadline_date ?? $this->date;
                 return $date?->format('Y.m.d');
             }
         );
