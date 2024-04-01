@@ -1,9 +1,9 @@
 @component('mail::message')
     <h1>@lang('mail.dear') {{ $recipient }}!</h1>
     <p>
-        A szemeszter végi értékelő form eredményei <a href="{{ route('users.export') }}">letölthetőek</a> a Collegisták
-        menüpont alatt. A
-        táblázatban az "értékelés" fül alatt találhatóak az értékek.
+        A szemeszter végi értékelő form eredményei letölthetőek a
+        <a href="{{ route('users.index') }}">@lang("general.users")</a> menüpont alatt.
+        A táblázatban az "értékelés" fül alatt találhatóak az értékek.
     </p>
     @if($deactivated)
         <p>

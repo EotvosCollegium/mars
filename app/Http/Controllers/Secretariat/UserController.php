@@ -359,18 +359,6 @@ class UserController extends Controller
     }
 
     /**
-     * Exports the list of users to an Excel file.
-     * @return BinaryFileResponse
-     * @throws AuthorizationException
-     */
-    public function export()
-    {
-        $this->authorize('viewAny', User::class);
-
-        return Excel::download(new UsersExport(User::canView()->get()), 'uran_export.xlsx');
-    }
-
-    /**
      * Adds a role to the user.
      * @param Request $request
      * @param User $user
