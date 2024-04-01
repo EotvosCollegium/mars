@@ -105,7 +105,7 @@ class UserPolicy
                 ]);
             })) || $target->workshops
                     ->intersect($user->roleWorkshops)
-                    ->count()>0;
+                    ->count() > 0;
         } elseif ($target->hasRole(Role::TENANT)) {
             return $user->hasRole([Role::STAFF, Role::STUDENT_COUNCIL => Role::PRESIDENT]);
         }
@@ -130,10 +130,10 @@ class UserPolicy
 
         return $target->workshops
                 ->intersect($user->applicationCommitteWorkshops)
-                ->count()>0
+                ->count() > 0
             || $target->workshops
                 ->intersect($user->roleWorkshops)
-                ->count()>0;
+                ->count() > 0;
     }
 
     /**
@@ -163,6 +163,7 @@ class UserPolicy
             Role::SECRETARY,
             Role::DIRECTOR,
             Role::WORKSHOP_LEADER,
+        Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS
         ]);
     }
 
@@ -200,7 +201,7 @@ class UserPolicy
      */
     public function finalizeApplicationProcess(User $user): bool
     {
-        return $user->hasRole([Role::SYS_ADMIN, Role::SECRETARY]) && ApplicationController::getApplicationDeadline()->addWeeks(2) < now();
+        return $user->hasRole([Role::SYS_ADMIN, Role::SECRETARY]);
     }
 
     /** Permission related policies */

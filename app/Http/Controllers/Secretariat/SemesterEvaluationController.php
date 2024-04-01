@@ -3,16 +3,21 @@
 namespace App\Http\Controllers\Secretariat;
 
 use App\Http\Controllers\Controller;
+use App\Mail\EvaluationFormClosed;
+use App\Mail\StatusDeactivated;
 use App\Models\EventTrigger;
 use App\Models\Faculty;
 use App\Models\GeneralAssemblies\GeneralAssembly;
 use App\Models\Role;
+use App\Models\RoleUser;
 use App\Models\Semester;
 use App\Models\SemesterEvaluation;
 use App\Models\SemesterStatus;
 use App\Models\User;
 use App\Models\Workshop;
 use Carbon\Carbon;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
@@ -23,7 +28,7 @@ class SemesterEvaluationController extends Controller
     /**
      * Check if the evaluation is available.
      */
-    public static function isEvaluationAvailable()
+    public static function isEvaluationAvailable(): bool
     {
         $available = EventTrigger::find(EventTrigger::SEMESTER_EVALUATION_AVAILABLE)->date;
         $deadline = self::deadline();
@@ -35,12 +40,12 @@ class SemesterEvaluationController extends Controller
     {
         $custom_deadline = config('custom.semester_evaluation_deadline');
         $system_deadline = EventTrigger::find(EventTrigger::DEACTIVATE_STATUS_SIGNAL)->date;
-        if(!isset($custom_deadline)) {
+        if (!isset($custom_deadline)) {
             return $system_deadline;
         } else {
             $custom_deadline = Carbon::parse($custom_deadline);
             //if the deadline has not been updated, use the system_deadline
-            if($custom_deadline < Semester::current()->getStartDate()) {
+            if ($custom_deadline < Semester::current()->getStartDate()) {
                 return $system_deadline;
             } else {
                 return $custom_deadline;
@@ -50,6 +55,7 @@ class SemesterEvaluationController extends Controller
 
     /**
      * Show the evaluation form.
+     * @throws AuthenticationException|AuthorizationException
      */
     public function show()
     {
@@ -57,7 +63,9 @@ class SemesterEvaluationController extends Controller
         if (!self::isEvaluationAvailable()) {
             return redirect('home')->with('error', 'Lejárt a határidő a kérdőív kitöltésére. Keresd fel a titkárságot.');
         }
+
         return view('secretariat.evaluation-form.app', [
+            'phd' => user()->educationalInformation->studyLines()->currentlyEnrolled()->where('type', 'phd')->exists(),
             'user' => user(),
             'faculties' => Faculty::all(),
             'workshops' => Workshop::all(),
@@ -132,7 +140,7 @@ class SemesterEvaluationController extends Controller
                 ));
                 break;
             case 'feedback':
-                if($request->has('anonymous_feedback')) {
+                if ($request->has('anonymous_feedback')) {
                     Mail::to(User::president())
                         ->queue(new \App\Mail\AnonymousFeedback(User::president()->name, $request->feedback));
                     Mail::to(User::studentCouncilSecretary())
@@ -153,7 +161,7 @@ class SemesterEvaluationController extends Controller
                     self::deactivateCollegist($user);
                     return redirect()->route('home')->with('message', __('general.successful_modification'));
                 } else {
-                    if(!isset($request->next_status)) {
+                    if (!isset($request->next_status)) {
                         return back()->with('error', "A státusz megadása kötelező!")->with('section', $request->section);
                     }
                     $user->setStatusFor(Semester::next(), $request->next_status, $request->next_status_note);
@@ -174,7 +182,33 @@ class SemesterEvaluationController extends Controller
      */
     public static function sendEvaluationAvailableMail()
     {
-        Mail::to(env('MAIL_MEMBRA'))->queue(new \App\Mail\EvaluationFormAvailable());
+        Mail::to(config('contacts.mail_membra'))->queue(new \App\Mail\EvaluationFormAvailable());
+        if (User::secretary()) {
+            Mail::to(User::secretary())->queue(new \App\Mail\EvaluationFormAvailableDetails(User::secretary()->name));
+        }
+        if (User::president()) {
+            Mail::to(User::president())->queue(new \App\Mail\EvaluationFormAvailableDetails(User::president()->name));
+        }
+    }
+
+    /**
+     * Send out a reminder.
+     */
+    public static function sendEvaluationReminder()
+    {
+        $userCount = self::usersHaventFilledOutTheForm()->count();
+
+        Mail::to(config('contacts.mail_membra'))->queue(new \App\Mail\EvaluationFormReminder($userCount));
+    }
+
+    /**
+     * @return User[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection
+     */
+    public static function usersHaventFilledOutTheForm()
+    {
+        return User::withRole(Role::COLLEGIST)->verified()->whereDoesntHave('semesterStatuses', function ($query) {
+            $query->where('semester_id', Semester::next()->id);
+        })->get();
     }
 
     /**
@@ -183,10 +217,28 @@ class SemesterEvaluationController extends Controller
      */
     public static function finalizeStatements()
     {
-        foreach (User::collegists() as $user) {
-            if (! $user->getStatus(Semester::next())?->status) {
+        $users = self::usersHaventFilledOutTheForm();
+        $users_names = $users->pluck('name')->toArray();
+
+        if (User::secretary()) {
+            Mail::to(User::secretary())->queue(new EvaluationFormClosed(User::secretary()->name, $users_names));
+        }
+        if (User::president()) {
+            Mail::to(User::president())->queue(new EvaluationFormClosed(User::president()->name, $users_names));
+        }
+        if (User::director()) {
+            Mail::to(User::director())->queue(new EvaluationFormClosed(User::director()->name, $users_names));
+        }
+        foreach (User::workshopLeaders() as $user) {
+            Mail::to($user)->queue(new EvaluationFormClosed($user->name));
+        }
+
+        foreach ($users as $user) {
+            Mail::to($user)->queue(new StatusDeactivated($user->name));
+            RoleUser::withoutEvents(function () use ($user) {
                 self::deactivateCollegist($user);
-            }
+            });
+
         }
     }
 

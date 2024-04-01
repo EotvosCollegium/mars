@@ -4,8 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 /**
+ * App\Models\StudyLine
+ *
  * @property int $start
  * @property int $end
  * @property string $name
@@ -13,8 +16,26 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $type
  * @property Semester $startSemester
  * @property Semester $endSemester
- * @method getName()
- * @method getNameWithYear()
+ * @property int $id
+ * @property int $educational_information_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Database\Factories\StudyLineFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|StudyLine newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|StudyLine newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|StudyLine query()
+ * @method static \Illuminate\Database\Eloquent\Builder|StudyLine whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|StudyLine whereEducationalInformationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|StudyLine whereEnd($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|StudyLine whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|StudyLine whereMinor($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|StudyLine whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|StudyLine whereStart($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|StudyLine whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|StudyLine whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|StudyLine currentlyEnrolled()
+ * @method static \Illuminate\Database\Eloquent\Builder|StudyLine highestLevel()
+ * @mixin \Eloquent
  */
 class StudyLine extends Model
 {
@@ -50,22 +71,50 @@ class StudyLine extends Model
     public function getName(): string
     {
         $name = $this->name;
-        if(isset($this->type) && $this->type != 'other') {
-            $name .= ' '.self::TYPES[$this->type];
+        if (isset($this->type) && $this->type != 'other') {
+            $name .= ' ' . self::TYPES[$this->type];
 
         }
-        if(isset($this->minor)) {
-            $name .= ' - minor: '.$this->minor;
+        if (isset($this->minor)) {
+            $name .= ' - minor: ' . $this->minor;
         }
         return $name;
     }
+
     public function getNameWithYear(): string
     {
         $name = $this->getName();
-        if($this->start) {
-            $name .= ' ('.$this->startSemester->tag.' - '.$this->endSemester?->tag.')';
+        if ($this->start) {
+            $name .= ' (' . $this->startSemester->tag . ' - ' . $this->endSemester?->tag . ')';
         }
         return $name;
+    }
+
+    /**
+     * Filter study lines to only include the ones that are not finished.
+     * Finishing in the current semester is NOT considered finished.
+     * NOTE: we do not yet filter on start date as this is rarely an issue.
+     */
+    public function scopeCurrentlyEnrolled(Builder $query): void
+    {
+        $oldSemesters = Semester::allUntilCurrent()->filter(function ($semester) {
+            return $semester->id != Semester::current()->id;
+        });
+        $query->whereNull('end')->orWhereNotIn('end', $oldSemesters->pluck('id'));
+    }
+
+    /**
+     * Order study lines by level with phd in front and bachelor at the end.
+     * @param Builder $query
+     * @return void
+     */
+    public function scopeOrderByLevel(Builder $query): void
+    {
+        $query->orderByRaw(
+            "CASE WHEN type = 'bachelor' THEN 2
+                      WHEN type = 'phd' THEN 0
+                      ELSE 1 END"
+        );
     }
 
 }

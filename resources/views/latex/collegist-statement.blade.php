@@ -32,10 +32,10 @@
 \vspace*{2em}
 
 \noindent{}Név: --name-- \\
-Neptun: --neptun-- \\ 
+Neptun: --neptun-- \\
 Állandó lakcím: --address-- \\
-Telefonszám: -- \\ 
-E-mail: --email-- \\ 
+Telefonszám: -- \\
+E-mail: --email-- \\
 Születési hely és idő: --placeandtimeofbirth-- \\
 Anyja neve: --mothersname-- \\
 Középiskola neve: \\

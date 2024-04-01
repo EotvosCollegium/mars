@@ -2,6 +2,9 @@
     <blockquote class="error">{{ $error }}</blockquote>
 @endforeach
 @can('view', $user)
+    {{-- Profile picture --}}
+    @include('utils.user.profile-picture', ['user' => $user])
+
     {{-- Personal information --}}
     <ul class="collapsible">
         <li @if(session()->get('section') == "personal_information") class="active" @endif>

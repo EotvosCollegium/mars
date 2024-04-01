@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Secretariat;
 
 use App\Exports\UsersExport;
 use App\Http\Controllers\Controller;
+use App\Models\EducationalInformation;
 use App\Models\Faculty;
 use App\Models\Role;
 use App\Models\Semester;
@@ -11,17 +12,29 @@ use App\Models\StudyLine;
 use App\Models\User;
 use App\Models\Workshop;
 use App\Models\WorkshopBalance;
+use App\Rules\SameOrUnique;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class UserController extends Controller
 {
+    /**
+     * Shows profile page of the authenticated user.
+     * @return \Illuminate\Contracts\View\View
+     * @throws \Illuminate\Auth\AuthenticationException
+     */
     public function profile()
     {
         $user = user();
@@ -34,15 +47,67 @@ class UserController extends Controller
         ]);
     }
 
-    public function updatePersonalInformation(Request $request, User $user): \Illuminate\Http\RedirectResponse
+    /**
+     * Stores a new profile picture.
+     * @param Request $request
+     * @param User $user
+     * @return RedirectResponse
+     * @throws AuthorizationException
+     */
+    public function storeProfilePicture(Request $request, User $user): RedirectResponse
+    {
+        $this->authorize('view', $user);
+        session()->put('section', 'profile_picture');
+
+        $request->validate([
+            'picture' => 'required|mimes:jpg,jpeg,png,gif,svg',
+        ]);
+        $path = $request->file('picture')->store('avatars');
+        $old_profile = $user->profilePicture;
+        if ($old_profile) {
+            Storage::delete($old_profile->path);
+            $old_profile->update(['path' => $path]);
+        } else {
+            $user->profilePicture()->create(['path' => $path, 'name' => 'profile_picture']);
+        }
+        return redirect()->back()->with('message', __('general.successful_modification'));
+    }
+
+    /**
+     * Deletes the profile picture.
+     * @param Request $request
+     * @param User $user
+     * @return RedirectResponse
+     */
+    public function deleteProfilePicture(Request $request, User $user): RedirectResponse
+    {
+        $this->authorize('view', $user);
+        session()->put('section', 'profile_picture');
+
+        $profile = $user->profilePicture;
+        if ($profile) {
+            Storage::delete($profile->path);
+            $profile->delete();
+        }
+        return redirect()->back()->with('message', __('general.successful_modification'));
+    }
+
+    /**
+     * Updates the personal information of a user.
+     * @param Request $request
+     * @param User $user
+     * @return RedirectResponse
+     * @throws AuthorizationException
+     */
+    public function updatePersonalInformation(Request $request, User $user): RedirectResponse
     {
         $this->authorize('view', $user);
         session()->put('section', 'personal_information');
 
         $isCollegist = $user->isCollegist();
 
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email|max:225',
+        $data = $request->validate([
+            'email' => ['required', 'email', 'max:225', new SameOrUnique($user)],
             'name' => 'required|string|max:255',
             'phone_number' => 'required|string|min:8|max:18',
             'mothers_name' => [Rule::requiredIf($isCollegist), 'max:225'],
@@ -53,53 +118,41 @@ class UserController extends Controller
             'zip_code' => [Rule::requiredIf($isCollegist), 'string', 'max:31'],
             'city' => [Rule::requiredIf($isCollegist), 'string', 'max:255'],
             'street_and_number' => [Rule::requiredIf($isCollegist), 'string', 'max:255'],
-            'tenant_until'=> [Rule::requiredIf($user->isTenant()), 'date', 'after:today'],
+            'tenant_until' => [Rule::requiredIf($user->isTenant()), 'date', 'after:today'],
             'relatives_contact_data' => ['nullable', 'string', 'max:255'],
         ]);
-        if ($user->email != $request->email) {
-            if (User::where('email', $request->email)->exists()) {
-                $validator->after(function ($validator) {
-                    $validator->errors()->add('email', __('validation.unique', ['attribute' => 'e-mail']));
-                });
-            }
-        }
-
-        $validator->validate();
 
         $user->update(['email' => $request->email, 'name' => $request->name]);
-        $personal_data = $request->only([
-            'phone_number',
-            'mothers_name',
-            'place_of_birth',
-            'date_of_birth',
-            'country',
-            'county',
-            'zip_code',
-            'city',
-            'street_and_number',
-            'relatives_contact_data',
-            'tenant_until'
-        ]);
+        $personal_data = Arr::except($data, ['name', 'email', 'tenant_until']);
+
         if (!$user->hasPersonalInformation()) {
             $user->personalInformation()->create($personal_data);
         } else {
-            $user->personalInformation->update($personal_data);
+            $user->personalInformation()->update($personal_data);
         }
+
         if ($request->has('tenant_until')) {
-            $date=min(Carbon::parse($request->tenant_until), Carbon::now()->addMonths(6));
-            $user->personalInformation->update(['tenant_until'=>$date]);
-            $user->internetAccess()->update(['has_internet_until'=>$date]);
+            $date = min(Carbon::parse($request->tenant_until), Carbon::now()->addMonths(6));
+            $user->personalInformation()->update(['tenant_until' => $date]);
+            $user->internetAccess()->update(['has_internet_until' => $date]);
         }
 
         return redirect()->back()->with('message', __('general.successful_modification'));
     }
 
-    public function updateEducationalInformation(Request $request, User $user): \Illuminate\Http\RedirectResponse
+    /**
+     * Updates the educational information of a user.
+     * @param Request $request
+     * @param User $user
+     * @return RedirectResponse
+     * @throws AuthorizationException
+     */
+    public function updateEducationalInformation(Request $request, User $user): RedirectResponse
     {
         $this->authorize('view', $user);
         session()->put('section', 'educational_information');
 
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'year_of_graduation' => 'required|integer|between:1895,' . date('Y'),
             'year_of_acceptance' => 'required|integer|between:1895,' . date('Y'),
             'high_school' => 'required|string|max:255',
@@ -113,39 +166,41 @@ class UserController extends Controller
             'study_lines.*.level' => ['required', Rule::in(array_keys(StudyLine::TYPES))],
             'study_lines.*.minor' => 'nullable|string|max:255',
             'study_lines.*.start' => 'required',
-            'email' => 'required|string|email|max:255',
+            'email' => ['required', 'string', 'email', 'max:255', new SameOrUnique($user, EducationalInformation::class)],
+            'research_topics' => ['nullable', 'string', 'max:1000'],
+            'extra_information' => ['nullable', 'string', 'max:1500'],
         ]);
-
-        $validator->validate();
 
         $educational_data = $request->only([
             'year_of_graduation',
             'year_of_acceptance',
             'high_school',
             'neptun',
-            'email'
+            'email',
+            'research_topics',
+            'extra_information'
         ]);
         DB::transaction(function () use ($user, $request, $educational_data) {
             if (!$user->hasEducationalInformation()) {
                 $user->educationalInformation()->create($educational_data);
             } else {
-                $user->educationalInformation->update($educational_data);
+                $user->educationalInformation()->update($educational_data);
             }
 
             $user->load('educationalInformation');
 
-            if($request->has('workshop')) {
+            if ($request->has('workshop')) {
                 $user->workshops()->sync($request->input('workshop'));
-                WorkshopBalance::generateBalances(Semester::current()->id);
+                WorkshopBalance::generateBalances(Semester::current());
             }
 
-            if($request->has('faculty')) {
+            if ($request->has('faculty')) {
                 $user->faculties()->sync($request->input('faculty'));
             }
 
-            if($request->has('study_lines')) {
+            if ($request->has('study_lines')) {
                 $user->educationalInformation->studyLines()->delete();
-                foreach($request->input('study_lines') as $studyLine) {
+                foreach ($request->input('study_lines') as $studyLine) {
                     $user->educationalInformation->studyLines()->create([
                         'name' => $studyLine["name"],
                         'type' => $studyLine["level"],
@@ -158,10 +213,17 @@ class UserController extends Controller
 
         });
 
-
         return redirect()->back()->with('message', __('general.successful_modification'));
     }
 
+    /**
+     * Updates the alfonso status of a user.
+     * @param Request $request
+     * @param User $user
+     * @return RedirectResponse
+     * @throws AuthorizationException
+     * @throws ValidationException
+     */
     public function updateAlfonsoStatus(Request $request, User $user)
     {
         $this->authorize('view', $user);
@@ -182,6 +244,14 @@ class UserController extends Controller
         return redirect()->back()->with('message', __('general.successful_modification'));
     }
 
+    /**
+     * Upload a language exam for a user.
+     * @param Request $request
+     * @param User $user
+     * @return RedirectResponse
+     * @throws AuthorizationException
+     * @throws ValidationException
+     */
     public function uploadLanguageExam(Request $request, User $user)
     {
         $this->authorize('view', $user);
@@ -190,7 +260,7 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2000',
             'language' => ['required', Rule::in(array_merge(array_keys(config('app.alfonso_languages')), ['other']))],
-            'level' => ['nullable', Rule::in(['A1', 'A2', 'B1', 'B2','C1', 'C2'])],
+            'level' => ['nullable', Rule::in(['A1', 'A2', 'B1', 'B2', 'C1', 'C2'])],
             'type' => 'required|string|max:255',
             'date' => 'required|date|before:today',
         ]);
@@ -209,23 +279,38 @@ class UserController extends Controller
         return redirect()->back()->with('message', __('general.successful_modification'));
     }
 
+    /**
+     * Updates tenant until date of a user.
+     * @param Request $request
+     * @param User $user
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Foundation\Application|RedirectResponse|\Illuminate\Routing\Redirector
+     * @throws AuthorizationException
+     * @throws ValidationException
+     */
     public function updateTenantUntil(Request $request, User $user)
     {
         $this->authorize('view', $user);
 
         $validator = Validator::make($request->all(), [
-            'tenant_until'=> 'required|date|after:today',
+            'tenant_until' => 'required|date|after:today',
         ]);
         $validator->validate();
 
         $date = min(Carbon::parse($request->tenant_until), Carbon::now()->addMonths(6));
-        $user->personalInformation->update(['tenant_until'=>$date]);
-        $user->internetAccess()->update(['has_internet_until'=>$date]);
+        $user->personalInformation->update(['tenant_until' => $date]);
+        $user->internetAccess()->update(['has_internet_until' => $date]);
 
         return redirect(route('home'))->with('message', __('general.successful_modification'));
     }
 
-    public function updatePassword(Request $request): \Illuminate\Http\RedirectResponse
+    /**
+     * Updates the password of the authenticated user.
+     * @param Request $request
+     * @return RedirectResponse
+     * @throws ValidationException
+     * @throws \Illuminate\Auth\AuthenticationException
+     */
+    public function updatePassword(Request $request): RedirectResponse
     {
         $user = user();
         session()->put('section', 'change_password');
@@ -244,6 +329,10 @@ class UserController extends Controller
         return redirect()->back()->with('message', __('general.successful_modification'));
     }
 
+    /**
+     * Shows a list of users.
+     * @return \Illuminate\Contracts\View\View
+     */
     public function index()
     {
         $this->authorize('viewAny', User::class);
@@ -251,6 +340,12 @@ class UserController extends Controller
         return view('secretariat.user.list');
     }
 
+    /**
+     * Show the profile of a user.
+     * @param User $user
+     * @return \Illuminate\Contracts\View\View
+     * @throws AuthorizationException
+     */
     public function show(User $user)
     {
         $this->authorize('view', $user);
@@ -264,7 +359,9 @@ class UserController extends Controller
     }
 
     /**
-     * Export users to excel
+     * Exports the list of users to an Excel file.
+     * @return BinaryFileResponse
+     * @throws AuthorizationException
      */
     public function export()
     {
@@ -273,6 +370,13 @@ class UserController extends Controller
         return Excel::download(new UsersExport(), 'uran_export.xlsx');
     }
 
+    /**
+     * Adds a role to the user.
+     * @param Request $request
+     * @param User $user
+     * @param Role $role
+     * @return RedirectResponse
+     */
     public function addRole(Request $request, User $user, Role $role)
     {
         session()->put('section', 'roles');
@@ -290,6 +394,13 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * Removes the given role from the user.
+     * @param Request $request
+     * @param User $user
+     * @param Role $role
+     * @return RedirectResponse
+     */
     public function removeRole(Request $request, User $user, Role $role)
     {
         session()->put('section', 'roles');
@@ -322,7 +433,7 @@ class UserController extends Controller
      */
     public function tenantToApplicant()
     {
-        if (!user()->isTenant() || user()->isCollegist()) {
+        if (!user()->isTenant() || user()->isCollegist(alumni: false)) {
             return abort(403);
         }
         $user = user();

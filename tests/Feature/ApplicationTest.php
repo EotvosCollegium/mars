@@ -54,7 +54,8 @@ class ApplicationTest extends TestCase
         $response->assertRedirect('/application');
 
         $response = $this->get('/print');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
+        $response->assertRedirect('/application');
 
         $response = $this->get('/application');
         $response->assertStatus(200);
@@ -64,6 +65,7 @@ class ApplicationTest extends TestCase
      * Test filling out the questions page.
      *
      * @return void
+     * @throws \JsonException
      */
     public function test_store_questions()
     {
@@ -160,30 +162,6 @@ class ApplicationTest extends TestCase
     }
 
     /**
-     * Test uploading a profile picture.
-     *
-     * @return void
-     */
-    public function test_store_picture()
-    {
-        Storage::fake('avatars');
-
-        $user = $this->createApplicant();
-
-        $response = $this->get('/application');
-        $response = $this->post('/application', [
-            'page' => 'files.profile',
-            'picture' => UploadedFile::fake()->image('image.png', 100)
-        ]);
-        $response->assertStatus(302);
-        $response->assertRedirect('/application');
-        $response->assertSessionHas('message', __('general.successful_modification'));
-
-        $user = User::find($user->id);
-        $this->assertNotNull($user->profilePicture);
-    }
-
-    /**
      * Test the full process with minimal required information.
      *
      * @return void
@@ -209,7 +187,7 @@ class ApplicationTest extends TestCase
 
         //personal data
         $this->assertContains('Személyes adatok', $user->application->missingData());
-        $response = $this->post('/users/'.$user->id.'/personal_information', [
+        $response = $this->post('/users/' . $user->id . '/personal_information', [
             'email' => 'example@test.com',
             'name' => 'John Doe',
             'phone_number' => '123456789',
@@ -232,7 +210,7 @@ class ApplicationTest extends TestCase
         $this->assertContains('Megjelölt szak', $user->application->missingData());
         $this->assertContains('Megjelölt kar', $user->application->missingData());
         $this->assertContains('Megjelölt műhely', $user->application->missingData());
-        $response = $this->post('/users/'.$user->id.'/educational_information', [
+        $response = $this->post('/users/' . $user->id . '/educational_information', [
             'year_of_graduation' => '2018',
             'year_of_acceptance' => '2018',
             'high_school' => 'Test high school',
@@ -255,7 +233,7 @@ class ApplicationTest extends TestCase
 
         //alfonso
         $this->assertContains('Megjelölt ALFONSÓ nyelv', $user->application->missingData());
-        $response = $this->post('/users/'.$user->id.'/alfonso', [
+        $response = $this->post('/users/' . $user->id . '/alfonso', [
             'alfonso_language' => 'en',
             'alfonso_desired_level' => 'C1',
         ]);
@@ -266,8 +244,7 @@ class ApplicationTest extends TestCase
 
         //profile picture
         $this->assertContains('Profilkép', $user->application->missingData());
-        $response = $this->post('/application', [
-            'page' => 'files.profile',
+        $response = $this->post('/users/' . $user->id . '/profile_picture', [
             'picture' => UploadedFile::fake()->image('image.png', 100)
         ]);
         $response->assertStatus(302);

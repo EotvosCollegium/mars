@@ -1,14 +1,14 @@
-on: push
+on: [ push, pull_request ]
 name: CI
 jobs:
   phpunit:
     runs-on: ubuntu-latest
     container:
-      image: kirschbaumdevelopment/laravel-test-runner:8.1
+      image: kirschbaumdevelopment/laravel-test-runner:8.2
 
     services:
       mysql:
-        image: mysql:5.7
+        image: mysql:8.3
         env:
           MYSQL_ROOT_PASSWORD: password
           MYSQL_DATABASE: test
@@ -17,27 +17,27 @@ jobs:
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
-    - uses: actions/checkout@v1
-      with:
-        fetch-depth: 1
+      - uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
 
-    - name: Install composer dependencies
-      run: |
-        composer install --no-scripts
+      - name: Install composer dependencies
+        run: |
+          composer install --no-scripts
 
-    - name: Install front-end dependencies
-      run: |
-        npm install
-        npm run dev
+      - name: Install front-end dependencies
+        run: |
+          npm install
+          npm run dev
 
-    - name: Prepare Laravel Application
-      run: |
-        cp .env.ci .env
-        php artisan key:generate
+      - name: Prepare Laravel Application
+        run: |
+          cp .env.ci .env
+          php artisan key:generate
 
-    - name: Set up database
-      run: |
-        php artisan migrate:fresh
+      - name: Set up database
+        run: |
+          php artisan migrate:fresh
 
-    - name: Run Testsuite
-      run: vendor/bin/phpunit tests/
+      - name: Run Testsuite
+        run: vendor/bin/phpunit tests/

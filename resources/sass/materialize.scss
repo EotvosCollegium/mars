@@ -26,6 +26,15 @@ $link-color: color("coli", "orange");
 //(will include the previous ones also, but it won't overwrite those)
 @import "~@materializecss/materialize/sass/materialize.scss";
 
+//for the Material Icons font hosted locally
+i.material-icons {
+    font-family: 'Material Icons', 'Open Sans', 'sans-serif';
+    font-style: normal;
+    font-size: x-large;
+    //this fixed the payment buttons on checkout pages
+    text-transform: none;
+}
+
 /* overwrite some materialize classes */
 .card a {
     text-decoration: underline;
@@ -59,6 +68,34 @@ span.badge.tag {
     float: none;
 }
 
+// for our custom arrow dropdowns
+// (e.g. for the workshop functionaries on the home page)
+.arrow-dropdown .arrow-dropdown-title a {
+    color: inherit;
+    text-decoration: inherit;
+    cursor: pointer;
+}
+.arrow-dropdown .arrow-dropdown-title.closed::after {
+    content: '▶';
+    display: inline-block;
+    font-size: 0.6em;
+    transform: translateY(-0.4em);
+}
+.arrow-dropdown .arrow-dropdown-title.open::after {
+    content: '▼';
+    display: inline-block;
+    font-size: 0.6em;
+    transform: translateY(-0.3em);
+}
+.arrow-dropdown .arrow-dropdown-content ul li ul {
+    margin: 0 0 10px 20px;
+}
+.arrow-dropdown > .arrow-dropdown-title.closed + .arrow-dropdown-content ul {
+    display: none;
+}
+.arrow-dropdown > .arrow-dropdown-title.open + .arrow-dropdown-content ul {
+    display: block;
+}
 
 //enable multiline buttons if the text does not fit in
 .btn,

@@ -23,6 +23,11 @@ width: 100% !important;
 }
 </style>
 
+<div style="display:none;font-size:1px;color:#333333;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;">
+    <!-- Text that displays only as a preview -->
+    {{ Illuminate\Mail\Markdown::parse($slot) }}
+</div>
+
 <table class="wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation">
 <tr>
 <td align="center">
@@ -37,7 +42,7 @@ width: 100% !important;
 <tr>
 <td class="content-cell">
 {{ Illuminate\Mail\Markdown::parse($slot) }}
-
+@lang('mail.administrators')
 {{ $subcopy ?? '' }}
 </td>
 </tr>

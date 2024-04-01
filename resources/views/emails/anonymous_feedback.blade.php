@@ -6,5 +6,4 @@ Egy névtelen felhasználó visszajelzést küldött a Választmány felé. A vi
 <p>A visszajelzés szövege:<br>
 {{ $feedback }}
 </p>
-<p>@lang('mail.administrators')</p>
 @endcomponent

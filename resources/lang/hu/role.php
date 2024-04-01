@@ -38,6 +38,8 @@ return [
     'printer' => 'Nyomtató',
     'reception' => 'Porta',
     'resident' => 'Bentlakó',
+    'role_attached' => 'Új jogosultság: :role',
+    'role_detached' => 'Eltávolított jogosultság: :role',
     'roles' => 'Jogosultságok',
     'science-vice-president' => 'Szakmai alelnök',
     'secretary' => 'Titkárság',
@@ -54,4 +56,5 @@ return [
     'tenant' => 'Vendég',
     'workshop-administrator' => 'Műhelytitkár',
     'workshop-leader' => 'Műhelyvezető',
+    'workshop-functionaries' => 'A műhelyek tisztségviselői',
 ];

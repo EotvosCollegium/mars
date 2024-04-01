@@ -82,7 +82,7 @@ class SemesterEvaluationExport implements FromCollection, WithTitle, WithMapping
         $user = $evaluation->user;
 
         return [
-            '=HYPERLINK("'.route('users.show', ['user'=> $user->id]).'", "'.$user->name.'")',
+            '=HYPERLINK("'.route('users.show', ['user' => $user->id]).'", "'.$user->name.'")',
             $user->educationalInformation?->neptun,
             implode(" \n", $user->faculties->pluck('name')->toArray()),
             implode(" \n", $user->workshops->pluck('name')->toArray()),

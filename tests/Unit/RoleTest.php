@@ -1,12 +1,10 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Unit;
 
 use App\Models\Role;
-use App\Models\RoleObject;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 class RoleTest extends TestCase
@@ -17,6 +15,8 @@ class RoleTest extends TestCase
      */
     public function test_set_collegist()
     {
+        Mail::fake();
+
         $user = User::factory()->create();
 
         $user->setExtern();
@@ -30,6 +30,8 @@ class RoleTest extends TestCase
         $this->assertTrue($user->isResident());
         $this->assertTrue($user->hasRole(Role::get(Role::COLLEGIST)));
         $this->assertTrue($user->hasRole([Role::COLLEGIST => Role::RESIDENT]));
+
+
     }
 
     /**
@@ -38,6 +40,8 @@ class RoleTest extends TestCase
      */
     public function test_add_base_role()
     {
+        Mail::fake();
+
         $user = User::factory()->create();
 
         $user->addRole(Role::get(Role::TENANT));
@@ -53,6 +57,8 @@ class RoleTest extends TestCase
      */
     public function test_roles_with_object()
     {
+        Mail::fake();
+
         $user = User::factory()->create();
 
         $role = Role::get(Role::STUDENT_COUNCIL);
@@ -70,6 +76,8 @@ class RoleTest extends TestCase
      */
     public function test_invalid_objects()
     {
+        Mail::fake();
+
         $user = User::factory()->create();
         $role1 = Role::get(Role::STUDENT_COUNCIL);
         $role2 = Role::get(Role::COLLEGIST);

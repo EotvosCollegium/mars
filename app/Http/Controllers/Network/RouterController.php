@@ -9,11 +9,6 @@ use Illuminate\Support\Facades\Validator;
 
 class RouterController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('can:possess,App\Models\Internet\InternetAccess');
-    }
-
     public function index()
     {
         $this->authorize('viewAny', Router::class);
@@ -23,11 +18,11 @@ class RouterController extends Controller
         return view('network.routers.list', ['routers' => $routers]);
     }
 
-    public function view(Router $ip)
+    public function view(Router $router)
     {
-        $this->authorize('view', $ip);
+        $this->authorize('view', $router);
 
-        return view('network.routers.view', ['router' => $ip]);
+        return view('network.routers.view', ['router' => $router]);
     }
 
     public function create()
@@ -43,7 +38,7 @@ class RouterController extends Controller
 
         Validator::make($request->all(), [
             'ip' => 'required|max:15|ip|unique:routers,ip',
-            'room' => 'required|integer',
+            'room' => 'required|max:5',
             'mac_WAN' => ['nullable', 'regex:/^(([a-f0-9]{2}[-:]){5}([a-f0-9]{2}))$/i'],
             'mac_2G_LAN' => ['nullable', 'regex:/^(([a-f0-9]{2}[-:]){5}([a-f0-9]{2}))$/i'],
             'mac_5G' => ['nullable', 'regex:/^(([a-f0-9]{2}[-:]){5}([a-f0-9]{2}))$/i'],
@@ -55,36 +50,36 @@ class RouterController extends Controller
         return redirect(route('routers'));
     }
 
-    public function edit(Router $ip)
+    public function edit(Router $router)
     {
         $this->authorize('update', Router::class);
 
-        return view('network.routers.edit', ['router' => $ip]);
+        return view('network.routers.edit', ['router' => $router]);
     }
 
-    public function update(Request $request, Router $ip)
+    public function update(Request $request, Router $router)
     {
         $this->authorize('update', Router::class);
 
         Validator::make($request->all(), [
-            'ip' => 'required|max:15|ip|unique:routers,ip',
-            'room' => 'required|integer',
+            'ip' => ['required', 'max:15', 'ip', \Illuminate\Validation\Rule::unique('routers')->ignore($router)],
+            'room' => 'required|max:5',
             'mac_WAN' => ['nullable', 'regex:/^(([a-f0-9]{2}[-:]){5}([a-f0-9]{2}))$/i'],
             'mac_2G_LAN' => ['nullable', 'regex:/^(([a-f0-9]{2}[-:]){5}([a-f0-9]{2}))$/i'],
             'mac_5G' => ['nullable', 'regex:/^(([a-f0-9]{2}[-:]){5}([a-f0-9]{2}))$/i'],
             'comment' => 'max:255',
         ])->validate();
 
-        $ip->update($request->all());
+        $router->update($request->all());
 
-        return view('network.routers.view', ['router' => $ip]);
+        return redirect(route('routers.view', $router));
     }
 
-    public function delete(Router $ip)
+    public function delete(Router $router)
     {
         $this->authorize('delete', Router::class);
 
-        $ip->delete();
+        $router->delete();
 
         return redirect(route('routers'));
     }

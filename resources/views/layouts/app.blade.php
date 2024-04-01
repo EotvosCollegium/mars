@@ -14,14 +14,6 @@
 
     <title>{{ config('app.name', 'Urán') }}</title>
 
-    <!-- Fonts -->
-    <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;1,300;1,400;1,600&display=swap" rel="stylesheet">
-
-
     <!-- Styles -->
     <link type="text/css" rel="stylesheet" href="{{ mix('css/materialize.css') }}" media="screen,projection" />
     <link type="text/css" rel="stylesheet" href="{{ mix('css/app.css') }}" media="screen,projection" >
@@ -45,6 +37,11 @@
                 $('.sidenav').sidenav();
                 $('.collapsible').collapsible();
                 $(".preloader").fadeOut();
+                // Attach a submit event handler to all forms
+                $('form').submit(function() {
+                    // Disable the submit button of the current form
+                    $(this).find(':submit').prop('disabled', true);
+                });
             }
         );
     </script>
@@ -65,7 +62,8 @@
 </head>
 
 <div class="preloader"></div>
-<body class="{{ Cookie::get('theme') }}">
+<body>
+    <script>document.body.classList.add(localStorage.getItem('themeMode') || 'light');</script>
     <header>
         @include('layouts.navbar')
     </header>
@@ -92,20 +90,32 @@
             $('select').formSelect();
         });
         function toggleColorMode() {
-            var mode = (localStorage.getItem('mode') || 'dark') === 'dark' ? 'light' : 'dark';
-            localStorage.setItem('mode', mode);
-            if(localStorage.getItem('mode') === 'dark') {
-                document.querySelector('body').classList.add('dark');
-            } else {
-                document.querySelector('body').classList.remove('dark');
-            }
-
-            // Save as cookie
-            $.ajax({
-                type: "POST",
-                url: "{{ route('set-color-mode', [':mode']) }}".replace(':mode', mode),
-            });
+            const oldThemeMode = localStorage.getItem('themeMode') || 'light'; // default is light mode
+            const newThemeMode = oldThemeMode === 'dark' ? 'light' : 'dark';
+            localStorage.setItem('themeMode', newThemeMode);
+            document.body.classList.remove(oldThemeMode);
+            document.body.classList.add(newThemeMode);
         }
+
+        // for our custom arrow dropdowns
+        // (e.g. the dropdown of workshop secretaries)
+        function toggleCollContent(title) {
+            return function() {
+                if (title.is(".closed")) {
+                    title.removeClass("closed");
+                    title.addClass("open");
+                    // the rest is done by CSS rules
+                } else {
+                    title.removeClass("open");
+                    title.addClass("closed");
+                }
+            }
+        }
+
+        titles = $(".arrow-dropdown .arrow-dropdown-title");
+        titles.on('click', toggleCollContent(titles));
+        // initialize them as closed:
+        titles.addClass('closed');
         </script>
     @endpush
 

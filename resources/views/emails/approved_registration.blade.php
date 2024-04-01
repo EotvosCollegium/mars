@@ -6,5 +6,4 @@
 @component('mail::button', ['url' => config('app.url')])
 @lang('general.login')
 @endcomponent
-<p>@lang('mail.administrators')</p>
 @endcomponent

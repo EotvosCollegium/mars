@@ -26,8 +26,7 @@ class EvaluationFormTest extends TestCase
      */
     private function createUser(): User
     {
-        $user = User::factory()->create();
-        $user->setVerified();
+        $user = User::factory()->create(['verified' => true]);
         $user->personalInformation()->save(PersonalInformation::factory()->make());
         $user->educationalInformation()->save(EducationalInformation::factory()->make());
         $user->setResident();

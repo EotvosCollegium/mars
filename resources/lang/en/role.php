@@ -38,6 +38,8 @@ return [
     'printer' => 'Printer',
     'reception' => 'Reception desk',
     'resident' => 'Resident',
+    'role_attached' => 'New role: :role',
+    'role_detached' => 'Role detached: :role',
     'roles' => 'Roles',
     'science-vice-president' => 'Scientific vice president',
     'secretary' => 'Secretary',
@@ -54,4 +56,5 @@ return [
     'tenant' => 'Tenant',
     'workshop-administrator' => 'Workshop administrator',
     'workshop-leader' => 'Workshop leader',
+    'workshop-functionaries' => 'Workshop functionaries',
 ];

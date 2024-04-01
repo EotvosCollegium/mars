@@ -4,11 +4,13 @@ namespace App\Exports;
 
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithDefaultStyles;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithTitle;
+use PhpOffice\PhpSpreadsheet\Style\Style;
 
-class ApplicantsExport implements FromCollection, WithTitle, WithMapping, WithHeadings, ShouldAutoSize
+class ApplicantsExport implements FromCollection, WithTitle, WithMapping, WithHeadings, ShouldAutoSize, WithDefaultStyles
 {
     protected $applications;
 
@@ -22,6 +24,11 @@ class ApplicantsExport implements FromCollection, WithTitle, WithMapping, WithHe
         return $this->applications;
     }
 
+    public function defaultStyles(Style $defaultStyle)
+    {
+        return $defaultStyle->getAlignment()->setWrapText(true);
+    }
+
     public function title(): string
     {
         return "Felvételizők";
@@ -31,6 +38,7 @@ class ApplicantsExport implements FromCollection, WithTitle, WithMapping, WithHe
     {
         return [
             'Név',
+            'Jelentkezés státusza',
             'E-mail',
             'Születési hely',
             'Születési idő',
@@ -46,6 +54,7 @@ class ApplicantsExport implements FromCollection, WithTitle, WithMapping, WithHe
             'Megjelölt műhely',
             'Megjelölt státusz',
             'Alfonsó',
+            'Honnan hallott a Collegiumról?',
             'Felvételi alatt itt lesz?',
             'Igényel szállást?'
         ];
@@ -57,6 +66,7 @@ class ApplicantsExport implements FromCollection, WithTitle, WithMapping, WithHe
 
         return [
             $user->name,
+            $user->application->status,
             $user->email,
             $user->personalInformation?->place_of_birth,
             $user->personalInformation?->date_of_birth,
@@ -73,7 +83,8 @@ class ApplicantsExport implements FromCollection, WithTitle, WithMapping, WithHe
             implode(",", $user->faculties->pluck('name')->toArray()),
             implode(",", $user->workshops->pluck('name')->toArray()),
             $user->isResident() ? 'Bentlakó' : 'Bejáró',
-            $user->educationalInformation?->alfonso_language . " " . $user->educationalInformation?->alfonso_desired_level,
+            ($user->educationalInformation?->alfonso_language ? __('role.'.$user->educationalInformation?->alfonso_language) . " " . $user->educationalInformation?->alfonso_desired_level : ""),
+            implode(" \n", $application->question_1),
             $application->present ?? "Igen",
             $user->application->accommodation ? "Igen" : "Nem"
         ];

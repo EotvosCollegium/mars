@@ -31,7 +31,7 @@
                                     @can('administrate', $checkout)
                                     <blockquote>A gazdasági alelnök, a kulturális bizottság tagjai és a rendszergazdák szedhetnek be KKT-t/Netreget. Ezeket a tranzakciókat a tartozások alatt találod.</blockquote>
                                     @endcan
-                                    <x-input.select l=4 :elements="$users_not_payed" id="user_id" text="general.user" :formatter="function($user) { return $user->uniqueName; }" />
+                                    <x-input.select l=4 :elements="$users_not_paid" id="user_id" text="general.user" :formatter="function($user) { return $user->uniqueName; }" />
                                     <x-input.text  m=6 l=4 id="kkt" text="KKT" type="number" required min="0" :value="config('custom.kkt')" />
                                     <x-input.text  m=6 l=4 id="netreg" text="NetReg" type="number" required min="0" :value="config('custom.netreg')" />
                                 </div>
@@ -90,10 +90,6 @@
                                     <th>Tagok @if($semester->isCurrent())*@endif </th>
                                     <th>
                                         Kiosztott egyenleg
-                                        @if($semester->isCurrent())
-                                        <br>
-                                            <x-input.button :href="route('economic_committee.workshop_balance')" floating class="btn-small grey" icon="refresh" />
-                                        @endif
                                     </th>
                                     <th>Felhasznált egyenleg @if($semester->isCurrent())@can('administrate', $checkout) ** @endcan @endif</th>
                                     <th>Fennmaradó összeg</th>
@@ -126,6 +122,14 @@
                             Azok közül, akik fizettek, minden bentlakó után a műhely {{config('custom.kkt')}} * {{config('custom.workshop_balance_resident')}}, minden bejáró után {{config('custom.kkt')}} * {{config('custom.workshop_balance_extern')}} forintot kap.
                             (Ha egy collegistának több műhelye is van, a műhelyei megosztoznak az összegen.)
                         </blockquote>
+                        @can('calculateWorkshopBalance', \App\Models\Checkout::class)
+                        <blockquote>
+                            A félévben az adott műhelynek szánt összeg számolását a gazdasági alelnök (illetve a rendszergazdák) tudják elindítani. <br>
+                            Ez növelheti, és csökkentheti is az érintett műhelynek kiosztott összeget.
+                            Célszerű a KKT-k befizetését és adminisztrálását követően lefuttatni, és utána többször nem elindítani, mivel az egyes műhelyekből távozók és érkezők befolyásolnák ezt a számot. <br>
+                            <x-input.button :href="route('economic_committee.workshop_balance')" class="btn-small red" text="Műhelyeknek járó összeg számolása" />
+                        </blockquote>
+                        @endcan
                         @can('administrate', $checkout)
                         <blockquote>
                             **A beviteli mezőbe pozitív összeggel írd be a kiadást, negatívval az előző félévről megmaradt egyenleget.

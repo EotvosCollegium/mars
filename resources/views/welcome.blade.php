@@ -8,10 +8,8 @@
 
     <title>{{ config('app.name', 'Urán') }}</title>
 
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
-
     <!-- Styles -->
+    <link type="text/css" rel="stylesheet" href="{{ mix('css/app.css') }}"/>
     <link rel="stylesheet" href="{{ mix('css/welcome_page.css') }}">
     <link type="text/css" rel="stylesheet" href="{{ mix('css/materialize.css') }}" media="screen,projection" />
 
@@ -22,7 +20,8 @@
     @endif
 </head>
 
-<body class="{{ Cookie::get('theme') }}">
+<body>
+    <script>document.body.classList.add(localStorage.getItem('themeMode') || 'light');</script>
     @if (Route::has('login'))
     <header>
         <div class="navbar-fixed">
@@ -75,7 +74,7 @@
             @lang('main.essential')</a><br class="mobile-break" />
         <a href="#">
             @lang('main.modern')</a><br class="mobile-break" />
-        <a href="https://github.com/luksan47/mars">
+        <a href="https://github.com/EotvosCollegium/mars">
             @lang('main.open')</a><br class="mobile-break" />
     </div>
 

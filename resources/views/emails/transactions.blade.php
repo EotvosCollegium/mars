@@ -14,13 +14,11 @@
 {{ $transaction->comment }}: {{ abs($transaction->amount) }} Ft.
 @if($transaction->payer!=$transaction->receiver)
     Átvevő: {{ $transaction->receiver?->name ?? "N/A" }},
-    Fizető: {{ $transaction->payer?->name ?? "N/A" }})
+    Fizető: {{ $transaction->payer?->name ?? "N/A" }}
 @elseif($recipent != $transaction->payer?->name)
-    Fizető: {{ $transaction->payer?->name ?? "N/A" }})
+    Fizető: {{ $transaction->payer?->name ?? "N/A" }}
 @endif
 </li>
 @endforeach
 </ul>
-
-<p>@lang('mail.administrators')</p>
 @endcomponent

@@ -13,11 +13,25 @@ use Illuminate\Support\Facades\Log;
 /**
  * This class implements the logic of triggering certain (recurring) events (eg. automatic status changes)
  * when we reach a given datetime. The triggers will fire a signal that we handle accordingly.
+ *
  * Members of this models should not get created through the site. It is stored in the database
  * so the dates can be changed on the run, everything else should be static.
  * The handlers of each signal will do the following:
  *  - Runs the function/does the changes relvant to the event.
  *  - Updates the trigger date.
+ *
+ * @property string $name
+ * @property \Illuminate\Support\Carbon $date
+ * @property int $signal
+ * @property string|null $comment
+ * @method static \Illuminate\Database\Eloquent\Builder|EventTrigger newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|EventTrigger newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|EventTrigger query()
+ * @method static \Illuminate\Database\Eloquent\Builder|EventTrigger whereComment($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|EventTrigger whereDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|EventTrigger whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|EventTrigger whereSignal($value)
+ * @mixin \Eloquent
  */
 class EventTrigger extends Model
 {
@@ -48,14 +62,21 @@ class EventTrigger extends Model
      */
     public static function listen()
     {
-        $now = Carbon::now();
-        $events = EventTrigger::where('date', '<=', $now)
-                              ->get();
-        foreach ($events as $event) {
-            $event->handleSignal();
-        }
+        foreach (EventTrigger::all() as $event) {
+            if (Carbon::parse($event->date)->isPast()) {
+                $event->handleSignal();
+            } elseif ($event->getTrigger()->remindBeforeDays()) {
+                //Send reminder (daily - see schedule in Kernel) after remindBeforeDays.
+                echo Carbon::parse($event->date);
+                $reminderDate = Carbon::parse($event->date)->subDays($event->getTrigger()->remindBeforeDays())->startOfDay();
+                echo $reminderDate;
+                if ($reminderDate->isPast()) {
+                    echo "reminding\n";
 
-        return $events;
+                    $event->getTrigger()->handleReminder();
+                }
+            }
+        }
     }
 
     /**

@@ -3,5 +3,4 @@
 <p>
 A {{ $router->ip }} IP-címmel rendelkező router a {{ $router->room }} számú szobában nem elérhető.
 </p>
-<p>@lang('mail.administrators')</p>
 @endcomponent

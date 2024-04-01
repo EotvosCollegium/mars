@@ -16,11 +16,11 @@ class ChangeRolesToNewRegulations extends Migration
     public function up()
     {
         DB::table('roles')->updateOrInsert(
-            ['name'=>'student-council-secretary'],
+            ['name' => 'student-council-secretary'],
             ['has_workshops' => 0, 'has_objects' => 0]
         );
         DB::table('roles')->updateOrInsert(
-            ['name'=>'board-of-trustees-member'],
+            ['name' => 'board-of-trustees-member'],
             [ 'has_workshops' => 0, 'has_objects' => 0]
         );
         DB::table('role_objects')->where('name', 'vice-president')->delete();
@@ -28,12 +28,12 @@ class ChangeRolesToNewRegulations extends Migration
         DB::table('role_objects')->where('name', 'science-leader')->delete();
         DB::table('role_objects')->where('name', 'economic-member')->delete();
         DB::table('role_objects')->where('name', 'science-member')->delete();
-        DB::table('role_objects')->updateOrInsert(['role_id'=> Role::firstWhere('name', 'student-council')->id, 'name' => 'science-vice-president'], []);
-        DB::table('role_objects')->updateOrInsert(['role_id'=> Role::firstWhere('name', 'student-council')->id, 'name' => 'economic-vice-president'], []);
-        DB::table('role_objects')->updateOrInsert(['role_id'=> Role::firstWhere('name', 'student-council')->id, 'name' => 'cultural-referent'], []);
-        DB::table('role_objects')->updateOrInsert(['role_id'=> Role::firstWhere('name', 'student-council')->id, 'name' => 'community-referent'], []);
-        DB::table('role_objects')->updateOrInsert(['role_id'=> Role::firstWhere('name', 'student-council')->id, 'name' => 'communication-referent'], []);
-        DB::table('role_objects')->updateOrInsert(['role_id'=> Role::firstWhere('name', 'student-council')->id, 'name' => 'sport-referent'], []);
+        DB::table('role_objects')->updateOrInsert(['role_id' => Role::firstWhere('name', 'student-council')->id, 'name' => 'science-vice-president'], []);
+        DB::table('role_objects')->updateOrInsert(['role_id' => Role::firstWhere('name', 'student-council')->id, 'name' => 'economic-vice-president'], []);
+        DB::table('role_objects')->updateOrInsert(['role_id' => Role::firstWhere('name', 'student-council')->id, 'name' => 'cultural-referent'], []);
+        DB::table('role_objects')->updateOrInsert(['role_id' => Role::firstWhere('name', 'student-council')->id, 'name' => 'community-referent'], []);
+        DB::table('role_objects')->updateOrInsert(['role_id' => Role::firstWhere('name', 'student-council')->id, 'name' => 'communication-referent'], []);
+        DB::table('role_objects')->updateOrInsert(['role_id' => Role::firstWhere('name', 'student-council')->id, 'name' => 'sport-referent'], []);
     }
 
     /**

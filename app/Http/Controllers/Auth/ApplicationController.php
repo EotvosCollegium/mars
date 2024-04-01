@@ -93,9 +93,6 @@ class ApplicationController extends Controller
             case self::DELETE_FILE_ROUTE:
                 $this->deleteFile($request, $user);
                 break;
-            case self::ADD_PROFILE_PIC_ROUTE:
-                $this->storeProfilePicture($request, $user);
-                break;
             case self::SUBMIT_ROUTE:
                 return $this->submitApplication($user);
             default:
@@ -168,7 +165,7 @@ class ApplicationController extends Controller
     {
         $this->authorize('viewSomeApplication', User::class);
         $application = ApplicationForm::findOrFail($request->input('application'));
-        $newStatus=$request->input('status_'.$application->user->id);
+        $newStatus = $request->input('status_'.$application->user->id);
         if ($request->has('note')) {
             $application->update(['note' => $request->input('note')]);
         } elseif ($newStatus) {
@@ -205,7 +202,7 @@ class ApplicationController extends Controller
             $usersToDelete = User::query()->withoutGlobalScope('verified')
                 ->where('verified', 0)->whereHas('application');
             foreach ($usersToDelete->get() as $user) {
-                if ($user->profilePicture!=null) {
+                if ($user->profilePicture != null) {
                     Storage::delete($user->profilePicture->path);
                     $user->profilePicture()->delete();
                 }
@@ -305,26 +302,6 @@ class ApplicationController extends Controller
 
         Storage::delete($file->path);
         $file->delete();
-    }
-
-    /**
-     * @param Request $request
-     * @param $user
-     * @return void
-     */
-    public function storeProfilePicture(Request $request, $user): void
-    {
-        $request->validate([
-            'picture' => 'required|mimes:jpg,jpeg,png,gif,svg',
-        ]);
-        $path = $request->file('picture')->store('avatars');
-        $old_profile = $user->profilePicture;
-        if ($old_profile) {
-            Storage::delete($old_profile->path);
-            $old_profile->update(['path' => $path]);
-        } else {
-            $user->profilePicture()->create(['path' => $path, 'name' => 'profile_picture']);
-        }
     }
 
     /**

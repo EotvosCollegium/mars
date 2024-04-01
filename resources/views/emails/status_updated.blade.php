@@ -8,6 +8,4 @@
             Megjegyzés: {{$comment}}
         @endif
     </p>
-
-    @lang('mail.administrators')
 @endcomponent

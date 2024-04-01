@@ -60,7 +60,7 @@ class StatusesExport implements FromCollection, WithTitle, WithMapping, WithHead
         })->toArray();
 
         $data = [
-            '=HYPERLINK("'.route('users.show', ['user'=> $user->id]).'", "'.$user->name.'")',
+            '=HYPERLINK("'.route('users.show', ['user' => $user->id]).'", "'.$user->name.'")',
             $user->educationalInformation?->neptun,
             $user->educationalInformation?->year_of_acceptance,
         ];

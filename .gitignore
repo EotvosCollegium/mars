@@ -1,11 +1,13 @@
 /node_modules
 /public/css
+/public/fonts
 /public/hot
 /public/js
 /public/img/epistola
 /public/storage
 /public/uploads
 /public/avatars
+/public/receipts
 /public/mix-manifest.json
 /storage/*.key
 /resources/lang/de

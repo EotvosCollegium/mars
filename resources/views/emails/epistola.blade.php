@@ -3,9 +3,7 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="preconnect" href="https://fonts.gstatic.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;1,300;1,400;1,600&display=swap" rel="stylesheet">
+<link type="text/css" rel="stylesheet" href="{{ mix('css/app.css') }}">
 </head>
 <body>
 <style>
@@ -134,8 +132,8 @@ width: 100% !important;
                         <a href="https://eotvos.elte.hu" target="_blank" rel="noopener">Eötvös József Collegium</a><br>
                         <img src="{{ asset('img/valasztmany_logo.png') }}" width="120" alt=""><br>
                         <p>
-                        <a href="mailto:{{env('MAIL_VALASZTMANY')}}">{{env('MAIL_VALASZTMANY')}}</a><br>
-                        <a href="mailto:{{env('MAIL_KOMMBIZ')}}">{{env('MAIL_KOMMBIZ')}}</a>
+                        <a href="mailto:{{config('contacts.mail_valasztmany')}}">{{config('contacts.mail_valasztmany')}}</a><br>
+                        <a href="mailto:{{config('contacts.mail_kommbiz')}}">{{config('contacts.mail_kommbiz')}}</a>
                         </p>
                         <div class="subcopy">
                             <p>

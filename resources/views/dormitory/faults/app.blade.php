@@ -9,7 +9,7 @@
             <div class="card-content">
                 <span class="card-title">@lang('faults.add-fault')</span>
                 <blockquote>@lang('faults.fault_description')</blockquote>
-                <blockquote><a href="{{route('internet')}}">@lang('faults.fault_internet_description')</a></blockquote>
+                <blockquote><a href="{{route('internet.index')}}">@lang('faults.fault_internet_description')</a></blockquote>
                 <form id="send-fault" class="form-horizontal" method="POST" action=" {{ route('faults.add') }} ">
                     @csrf
                     <x-input.text id="location" text="faults.location" autofocus required/>

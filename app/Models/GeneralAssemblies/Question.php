@@ -2,6 +2,8 @@
 
 namespace App\Models\GeneralAssemblies;
 
+use Exception;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -13,7 +15,34 @@ use App\Models\GeneralAssemblies\QuestionOption;
 use App\Models\GeneralAssemblies\QuestionUser;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Throwable;
 
+/**
+ * App\Models\GeneralAssemblies\Question
+ *
+ * @property int $id
+ * @property int $general_assembly_id
+ * @property string $title
+ * @property int $max_options
+ * @property string|null $opened_at
+ * @property string|null $closed_at
+ * @property-read GeneralAssembly $generalAssembly
+ * @property-read Collection|QuestionOption[] $options
+ * @property-read int|null $options_count
+ * @property-read Collection|User[] $users
+ * @property-read int|null $users_count
+ * @method static \Database\Factories\GeneralAssemblies\QuestionFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|Question newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Question newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Question query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Question whereClosedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Question whereGeneralAssemblyId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Question whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Question whereMaxOptions($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Question whereOpenedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Question whereTitle($value)
+ * @mixin \Eloquent
+ */
 class Question extends Model
 {
     use HasFactory;
@@ -39,7 +68,7 @@ class Question extends Model
     }
 
     /**
-     * @return HasMany the users who voted on this question
+     * @return BelongsToMany the users who voted on this question
      */
     public function users(): BelongsToMany
     {
@@ -51,7 +80,7 @@ class Question extends Model
      */
     public function hasBeenOpened(): bool
     {
-        return $this->opened_at!=null && $this->opened_at<=now();
+        return $this->opened_at != null && $this->opened_at <= now();
     }
 
     /**
@@ -60,14 +89,15 @@ class Question extends Model
     public function isOpen(): bool
     {
         return $this->hasBeenOpened() &&
-                !$this->isClosed();
+            !$this->isClosed();
     }
+
     /**
      * @return bool Whether the question has been closed.
      */
     public function isClosed(): bool
     {
-        return $this->closed_at!=null && $this->closed_at<=now();
+        return $this->closed_at != null && $this->closed_at <= now();
     }
 
     /**
@@ -77,12 +107,12 @@ class Question extends Model
     public function open(): void
     {
         if (!$this->generalAssembly->isOpen()) {
-            throw new \Exception("tried to open question when general_assembly was not open");
+            throw new Exception("tried to open question when general_assembly was not open");
         }
         if ($this->isOpen() || $this->isClosed()) {
-            throw new \Exception("tried to open question when it has already been opened");
+            throw new Exception("tried to open question when it has already been opened");
         }
-        $this->update(['opened_at'=>now()]);
+        $this->update(['opened_at' => now()]);
     }
 
     /**
@@ -92,20 +122,20 @@ class Question extends Model
     public function close(): void
     {
         if ($this->isClosed()) {
-            throw new \Exception("tried to close general assembly when it has already been closed");
+            throw new Exception("tried to close question when it has already been closed");
         }
-        if (!$this->isOpen()) {
-            throw new \Exception("tried to close general assembly when it was not open");
+        if (!$this->hasBeenOpened()) {
+            throw new Exception("tried to close question when it has not been opened");
         }
-        $this->update(['closed_at'=>now()]);
+        $this->update(['closed_at' => now()]);
     }
 
     /**
-     * @return book Whether the question is a multiple-choice question (with checkboxes).
+     * @return bool Whether the question is a multiple-choice question (with checkboxes).
      */
     public function isMultipleChoice(): bool
     {
-        return $this->max_options>1;
+        return $this->max_options > 1;
     }
 
     /**
@@ -122,14 +152,15 @@ class Question extends Model
      * @param User $user
      * @param array $options QuestionOption array
      * @throws Exception if an option does not belong to the question or if too many options are selected.
+     * @throws Throwable
      */
     public function vote(User $user, array $options): void
     {
         if (!$this->isOpen()) {
-            throw new \Exception("question not open");
+            throw new Exception("question not open");
         }
         if ($this->max_options < count($options)) {
-            throw new \Exception("too many options given");
+            throw new Exception("too many options given");
         }
         DB::transaction(function () use ($user, $options) {
             QuestionUser::create([
@@ -138,7 +169,7 @@ class Question extends Model
             ]);
             foreach ($options as $option) {
                 if ($option->question_id != $this->id) {
-                    throw new \Exception("Received an option which does not belong to the question");
+                    throw new Exception("Received an option which does not belong to the question");
                 }
                 $option->increment('votes');
             }

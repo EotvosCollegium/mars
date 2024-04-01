@@ -7,7 +7,7 @@
                     @if ($user->profilePicture)
                         <img src="{{ url($user->profilePicture->path) }}" style="max-width:100%">
                     @else
-                        <span style="font-style:italic;color:red">hiányzó profilkép</span>
+                        <span style="font-style:italic;color:red">Nincs profilkép.</span>
                     @endif
                 </div>
                 <div class="col s12 xl8">
@@ -23,7 +23,7 @@
 
                     <div class="card-title">{{ $user->name }}</div>
                     <p style="margin-bottom: 5px"><a href="mailto:{{ $user->email }}">{{ $user->email }}</a></p>
-                    <p style="margin-bottom: 5px">{{ $user->personalInformation->phone_number }}</p>
+                    <p style="margin-bottom: 5px">{{ $user->personalInformation?->phone_number }}</p>
                     <p style="margin-bottom: 5px">
                         @forelse($user->educationalInformation?->studyLines ?? [] as $studyLine)
                             @if($studyLine->end == null)
@@ -67,32 +67,32 @@
                             <tr>
                                 <th scope="row">@lang('user.place_and_date_of_birth')</th>
                                 <td>
-                                    {{ $user->personalInformation->place_of_birth }}
-                                    {{ $user->personalInformation->date_of_birth }}
+                                    {{ $user->personalInformation?->place_of_birth }}
+                                    {{ $user->personalInformation?->date_of_birth }}
                                 </td>
                             </tr>
                             <tr>
                                 <th scope="row">@lang('user.mothers_name')</th>
                                 <td>
-                                    {{ $user->personalInformation->mothers_name }}
+                                    {{ $user->personalInformation?->mothers_name }}
                                 </td>
                             </tr>
                             <tr>
                                 <th scope="row">@lang('user.address')</th>
                                 <td>
-                                    {{ $user->personalInformation->country }},
-                                    {{ $user->personalInformation->county }}
+                                    {{ $user->personalInformation?->country }},
+                                    {{ $user->personalInformation?->county }}
                                     <br>
-                                    {{ $user->personalInformation->zip_code }} {{ $user->personalInformation->city }},
-                                    {{ $user->personalInformation->street_and_number }}
+                                    {{ $user->personalInformation?->zip_code }} {{ $user->personalInformation?->city }},
+                                    {{ $user->personalInformation?->street_and_number }}
                                 </td>
                             </tr>
                             @if($user->educationalInformation)
                                 <tr>
                                     <th scope="row">@lang('user.high_school')</th>
                                     <td>
-                                        {{ $user->educationalInformation->high_school }}<br>
-                                        @if(!$user->educationalInformation->high_school)
+                                        {{ $user->educationalInformation?->high_school }}<br>
+                                        @if(!$user->educationalInformation?->high_school)
                                             <span style="font-style:italic;color:red">hiányzó adat</span>
                                         @endif
                                     </td>
@@ -100,8 +100,8 @@
                                 <tr>
                                     <th scope="row">@lang('user.neptun')</th>
                                     <td>
-                                        {{ $user->educationalInformation->neptun }}
-                                        @if(!$user->educationalInformation->neptun)
+                                        {{ $user->educationalInformation?->neptun }}
+                                        @if(!$user->educationalInformation?->neptun)
                                             <span style="font-style:italic;color:red">hiányzó adat</span>
                                         @endif
                                     </td>
@@ -109,8 +109,8 @@
                                 <tr>
                                     <th scope="row">@lang('user.educational-email')</th>
                                     <td>
-                                        {{ $user->educationalInformation->email }}
-                                        @if(!$user->educationalInformation->email)
+                                        {{ $user->educationalInformation?->email }}
+                                        @if(!$user->educationalInformation?->email)
                                             <span style="font-style:italic;color:red">hiányzó adat</span>
                                         @endif
                                     </td>
@@ -172,8 +172,11 @@
                             <tr>
                                 <th scope="row">Nyelvvizsga</th>
                                 <td>
-                                    @forelse ($user->application->language_exam ?? [] as $item)
-                                        {{ $item }}<br>
+                                    @forelse ($user->educationalInformation?->languageExams?->sortBy('date') ?? [] as $exam)
+                                        <a href="/{{ $exam->path }}">
+                                            {{ __('role.'.$exam->language) }} - {{ $exam->level }}, {{ $exam->type }}, {{$exam->date->format('Y-m')}}
+                                        </a>
+                                        <br>
                                     @empty
                                         -
                                     @endforelse

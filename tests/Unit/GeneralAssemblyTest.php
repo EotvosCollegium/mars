@@ -143,4 +143,27 @@ class GeneralAssemblyTest extends TestCase
         $this->expectException(\Exception::class);
         $question->vote($user, [$question->options->first(), $question->options->get(1), $question->options->get(2)]);
     }
+
+    /**
+     * @return void
+     */
+    public function test_passive_users_get_excused_automatically(): void
+    {
+        /** @var User $userActive */
+        /** @var User $userPassive1 */
+        /** @var User $userPassive2 */
+        $userActive = User::factory()->create();
+        $userPassive1 = User::factory()->create();
+        $userPassive2 = User::factory()->create();
+        $userActive->setStatus(SemesterStatus::ACTIVE);
+        $userPassive1->setStatus(SemesterStatus::PASSIVE);
+        $userPassive2->setStatus(SemesterStatus::PASSIVE);
+
+        /** @var GeneralAssembly $generalAssembly */
+        $generalAssembly = GeneralAssembly::factory()->create();
+        $excused = $generalAssembly->excusedUsers()->get();
+        $this->assertEquals(2, $excused->count());
+        $this->assertTrue($excused->contains($userPassive1) && $excused->contains($userPassive2));
+        $this->assertNotNull($excused->first()->pivot->comment); // Check if excuse reason is set
+    }
 }

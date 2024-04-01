@@ -7,10 +7,20 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
+ * App\Models\RoleObject
+ *
  * @property integer $id
  * @property string $name
  * @property integer $role_id
  * @property string $translatedName
+ * @property-read \App\Models\Role $role
+ * @method static \Illuminate\Database\Eloquent\Builder|RoleObject newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|RoleObject newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|RoleObject query()
+ * @method static \Illuminate\Database\Eloquent\Builder|RoleObject whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|RoleObject whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|RoleObject whereRoleId($value)
+ * @mixin \Eloquent
  */
 class RoleObject extends Model
 {

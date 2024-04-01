@@ -19,9 +19,9 @@
     <tbody>
         <tr>
             <td>
-                <span style="display: block; margin-top: 3px; font-size: 13px; color:#242851">in 
+                <span style="display: block; margin-top: 3px; font-size: 13px; color:#242851">in
                     <span title="{{ $exception->getFile() ?? '' }}">
-                        <strong>{{ $exception->getFile() ?? '' }}</strong> 
+                        <strong>{{ $exception->getFile() ?? '' }}</strong>
                         line {{ $exception->getLine() ?? '' }}
                     </span>
                 </span>
@@ -37,7 +37,7 @@
                 </span>
                 <span style="padding: 0 2px">→</span>
                 <span style="font-weight: bold;font-family: Consolas;color:#b38f2f">{{ $value['function'] ?? '' }}()</span>
-                <span style="display: block; margin-top: 3px; font-size: 13px;" >in 
+                <span style="display: block; margin-top: 3px; font-size: 13px;" >in
                     <span>
                         <strong style="color:#242851">{{ $value['file'] ?? '!no file given!' }}</strong>
                         line {{ $value['line'] ?? '!no line given!' }}
@@ -48,5 +48,4 @@
         @endforeach
     </tbody>
 </table>
-<p>@lang('mail.administrators')</p>
 @endcomponent
