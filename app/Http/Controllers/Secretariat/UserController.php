@@ -13,8 +13,9 @@ use App\Models\User;
 use App\Models\Workshop;
 use App\Models\WorkshopBalance;
 use App\Rules\SameOrUnique;
-use Arr;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -23,10 +24,17 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class UserController extends Controller
 {
+    /**
+     * Shows profile page of the authenticated user.
+     * @return \Illuminate\Contracts\View\View
+     * @throws \Illuminate\Auth\AuthenticationException
+     */
     public function profile()
     {
         $user = user();
@@ -44,6 +52,7 @@ class UserController extends Controller
      * @param Request $request
      * @param User $user
      * @return RedirectResponse
+     * @throws AuthorizationException
      */
     public function storeProfilePicture(Request $request, User $user): RedirectResponse
     {
@@ -83,6 +92,13 @@ class UserController extends Controller
         return redirect()->back()->with('message', __('general.successful_modification'));
     }
 
+    /**
+     * Updates the personal information of a user.
+     * @param Request $request
+     * @param User $user
+     * @return RedirectResponse
+     * @throws AuthorizationException
+     */
     public function updatePersonalInformation(Request $request, User $user): RedirectResponse
     {
         $this->authorize('view', $user);
@@ -124,6 +140,13 @@ class UserController extends Controller
         return redirect()->back()->with('message', __('general.successful_modification'));
     }
 
+    /**
+     * Updates the educational information of a user.
+     * @param Request $request
+     * @param User $user
+     * @return RedirectResponse
+     * @throws AuthorizationException
+     */
     public function updateEducationalInformation(Request $request, User $user): RedirectResponse
     {
         $this->authorize('view', $user);
@@ -166,18 +189,18 @@ class UserController extends Controller
 
             $user->load('educationalInformation');
 
-            if($request->has('workshop')) {
+            if ($request->has('workshop')) {
                 $user->workshops()->sync($request->input('workshop'));
                 WorkshopBalance::generateBalances(Semester::current());
             }
 
-            if($request->has('faculty')) {
+            if ($request->has('faculty')) {
                 $user->faculties()->sync($request->input('faculty'));
             }
 
-            if($request->has('study_lines')) {
+            if ($request->has('study_lines')) {
                 $user->educationalInformation->studyLines()->delete();
-                foreach($request->input('study_lines') as $studyLine) {
+                foreach ($request->input('study_lines') as $studyLine) {
                     $user->educationalInformation->studyLines()->create([
                         'name' => $studyLine["name"],
                         'type' => $studyLine["level"],
@@ -190,10 +213,17 @@ class UserController extends Controller
 
         });
 
-
         return redirect()->back()->with('message', __('general.successful_modification'));
     }
 
+    /**
+     * Updates the alfonso status of a user.
+     * @param Request $request
+     * @param User $user
+     * @return RedirectResponse
+     * @throws AuthorizationException
+     * @throws ValidationException
+     */
     public function updateAlfonsoStatus(Request $request, User $user)
     {
         $this->authorize('view', $user);
@@ -214,6 +244,14 @@ class UserController extends Controller
         return redirect()->back()->with('message', __('general.successful_modification'));
     }
 
+    /**
+     * Upload a language exam for a user.
+     * @param Request $request
+     * @param User $user
+     * @return RedirectResponse
+     * @throws AuthorizationException
+     * @throws ValidationException
+     */
     public function uploadLanguageExam(Request $request, User $user)
     {
         $this->authorize('view', $user);
@@ -222,7 +260,7 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2000',
             'language' => ['required', Rule::in(array_merge(array_keys(config('app.alfonso_languages')), ['other']))],
-            'level' => ['nullable', Rule::in(['A1', 'A2', 'B1', 'B2','C1', 'C2'])],
+            'level' => ['nullable', Rule::in(['A1', 'A2', 'B1', 'B2', 'C1', 'C2'])],
             'type' => 'required|string|max:255',
             'date' => 'required|date|before:today',
         ]);
@@ -241,6 +279,14 @@ class UserController extends Controller
         return redirect()->back()->with('message', __('general.successful_modification'));
     }
 
+    /**
+     * Updates tenant until date of a user.
+     * @param Request $request
+     * @param User $user
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Foundation\Application|RedirectResponse|\Illuminate\Routing\Redirector
+     * @throws AuthorizationException
+     * @throws ValidationException
+     */
     public function updateTenantUntil(Request $request, User $user)
     {
         $this->authorize('view', $user);
@@ -257,6 +303,13 @@ class UserController extends Controller
         return redirect(route('home'))->with('message', __('general.successful_modification'));
     }
 
+    /**
+     * Updates the password of the authenticated user.
+     * @param Request $request
+     * @return RedirectResponse
+     * @throws ValidationException
+     * @throws \Illuminate\Auth\AuthenticationException
+     */
     public function updatePassword(Request $request): RedirectResponse
     {
         $user = user();
@@ -276,6 +329,10 @@ class UserController extends Controller
         return redirect()->back()->with('message', __('general.successful_modification'));
     }
 
+    /**
+     * Shows a list of users.
+     * @return \Illuminate\Contracts\View\View
+     */
     public function index()
     {
         $this->authorize('viewAny', User::class);
@@ -283,6 +340,12 @@ class UserController extends Controller
         return view('secretariat.user.list');
     }
 
+    /**
+     * Show the profile of a user.
+     * @param User $user
+     * @return \Illuminate\Contracts\View\View
+     * @throws AuthorizationException
+     */
     public function show(User $user)
     {
         $this->authorize('view', $user);
@@ -296,7 +359,9 @@ class UserController extends Controller
     }
 
     /**
-     * Export users to excel
+     * Exports the list of users to an Excel file.
+     * @return BinaryFileResponse
+     * @throws AuthorizationException
      */
     public function export()
     {
@@ -305,6 +370,13 @@ class UserController extends Controller
         return Excel::download(new UsersExport(), 'uran_export.xlsx');
     }
 
+    /**
+     * Adds a role to the user.
+     * @param Request $request
+     * @param User $user
+     * @param Role $role
+     * @return RedirectResponse
+     */
     public function addRole(Request $request, User $user, Role $role)
     {
         session()->put('section', 'roles');
@@ -324,6 +396,10 @@ class UserController extends Controller
 
     /**
      * Removes the given role from the user.
+     * @param Request $request
+     * @param User $user
+     * @param Role $role
+     * @return RedirectResponse
      */
     public function removeRole(Request $request, User $user, Role $role)
     {
@@ -357,7 +433,7 @@ class UserController extends Controller
      */
     public function tenantToApplicant()
     {
-        if (!user()->isTenant() || user()->isCollegist(false)) {
+        if (!user()->isTenant() || user()->isCollegist(alumni: false)) {
             return abort(403);
         }
         $user = user();

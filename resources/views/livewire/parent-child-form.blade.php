@@ -18,7 +18,7 @@
             @foreach ($items as $index => $item)
                 <div class="row" style="margin:0">
                     <div class="input-field col s11" style="margin:0">
-                        <input class="validate" name="{{ $name }}[]" wire:model="items.{{ $index }}">
+                        <input class="validate" name="{{ $name }}[]" wire:model.live="items.{{ $index }}">
                         @if($loop->last && $helper ?? null)
                             <span class="helper-text">{{ $helper }}</span>
                         @endif
