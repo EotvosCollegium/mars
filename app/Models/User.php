@@ -608,29 +608,14 @@ class User extends Authenticatable implements HasLocalePreference
     }
 
     /**
-     * Scope a query to only include users who have all the specified roles.
-     * The roles are specified by their IDs.
-     */
-    public function scopeHasAllRoleIds(Builder $query, array $roleIdsAll): void
-    {
-        foreach ($roleIdsAll as $roleId) {
-            $query->whereHas('roles', function (Builder $query) use ($roleId) {
-                $query->where('id', $roleId);
-            });
-        }
-    }
-
-    /**
      * Scope a query to only include users who are in all the specified workshops.
      * The workshops are specified by their IDs.
      */
-    public function scopeInAllWorkshopIds(Builder $query, array $workshopsIdsAll): void
+    public function scopeInAllWorkshopIds(Builder $query, array $workshopsIdsAll): Builder
     {
-        foreach ($workshopsIdsAll as $workshopId) {
-            $query->whereHas('workshops', function (Builder $query) use ($workshopId) {
-                $query->where('id', $workshopId);
-            });
-        }
+        return $query->whereHas('workshops', function (Builder $query) use ($workshopsIdsAll) {
+            $query->whereIn('id', $workshopsIdsAll);
+        }, '=', count($workshopsIdsAll));
     }
 
     /**

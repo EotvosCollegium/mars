@@ -25,7 +25,7 @@ class ListUsers extends Component
     private function createFilteredQuery(): User|Builder
     {
         $query = User::canView()
-            ->hasAllRoleIds($this->roles)
+            ->withAllRoles($this->roles)
             ->inAllWorkshopIds($this->workshops)
             ->hasStatusAnyOf($this->statuses);
         if (isset($this->year_of_acceptance) && $this->year_of_acceptance !== '') {
