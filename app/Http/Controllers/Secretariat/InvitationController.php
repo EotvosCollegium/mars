@@ -37,7 +37,7 @@ class InvitationController extends Controller
             'verified' => true,
         ]);
 
-        $token = app(PasswordBroker::class)->createToken($user);
+        $token = $user->generatePasswordResetToken();
         Mail::to($user)->send(new Invitation($user, $token));
 
         return redirect()->route('users.show', ['user' => $user->id])->with('message', __('registration.set_permissions'));
