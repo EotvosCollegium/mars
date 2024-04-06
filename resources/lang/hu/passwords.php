@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'reset' => 'A jelszavad vissza lett állítva!',
+    'reset' => 'Új jelszavad lett beállítva!',
     'resetpwd' => 'Új jelszó beállítása',
     'sent' => 'Elküldtük az e-mail címedre a jelszó visszaállítási linket!',
     'token' => 'A jelszó visszaállítási kulcsod érvénytelen.',

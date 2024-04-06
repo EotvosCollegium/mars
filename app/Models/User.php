@@ -10,6 +10,7 @@ use App\Utils\NotificationCounter;
 use Carbon\Carbon;
 use Database\Factories\UserFactory;
 use Eloquent;
+use Illuminate\Auth\Passwords\PasswordBroker;
 use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -195,6 +196,17 @@ class User extends Authenticatable implements HasLocalePreference
                 return $this->name;
             }
         );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Functions
+    |--------------------------------------------------------------------------
+    */
+
+    public function generatePasswordResetToken(): string
+    {
+        return app(PasswordBroker::class)->createToken($this);
     }
 
     /*
