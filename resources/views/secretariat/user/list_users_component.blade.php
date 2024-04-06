@@ -3,9 +3,9 @@
         <div class="card-content">
             <span class="card-title">Szűrés</span>
             <input type="text" class="input-field" id="filter_name" placeholder="@lang('user.name')"
-                   wire:model="filter_name"/>
+                   wire:model.live="filter_name"/>
             <input type="number" class="input-field" id="year_of_acceptance" placeholder="@lang('user.year_of_acceptance')"
-                   wire:model="year_of_acceptance"/>
+                   wire:model.live="year_of_acceptance"/>
             <h6>@lang('role.roles')</h6>
             @foreach (\App\Models\Role::all() as $r)
                 @if(in_array($r->id, $this->roles))

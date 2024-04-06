@@ -11,7 +11,7 @@
                 <p>Amennyiben bármilyen ok miatt nem lehet kitölteni a valós adatokat,
                     bármilyen helyesbítést, megjegyzést írj be a megfelelő mezőbe. A rendszerben a követelmények
                     teljesítésére kiszámolt adatok csak tájékoztató jellegűek.</p>
-                <p>Technikai probléma, észrevétel esetén mindenképp <a href="{{route('index_reportbug')}}">jelentsd a
+                <p>Technikai probléma, észrevétel esetén mindenképp <a href="{{route('issues.create')}}">jelentsd a
                         problémát</a>.
                     Ha technikai gond miatt nem tudod megfelelően beadni a kérdőívet, akkor <a
                         href="mailto:{{ config('mail.sys_admin_mail')}}">vedd fel a kapcsolatot a rendszergazdákkal</a>.

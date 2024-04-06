@@ -6,7 +6,7 @@ use App\Models\Role;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class EpistolaPolicy
+class EpistolaNewsPolicy
 {
     use HandlesAuthorization;
 

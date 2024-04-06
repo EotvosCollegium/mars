@@ -3,14 +3,14 @@
         <div class="card">
             <div class="card-content">
                 <span class="card-title">@lang('voting.excused_users')</span>
-                <form wire:submit.prevent="addUser">
+                <form wire:submit="addUser">
                     <div class="row">
                         <div class="col s12 m6">
                             <div wire:ignore>
                                 <x-input.select
                                     id="user"
                                     text="general.members"
-                                    wire:model="user"
+                                    wire:model.live="user"
                                     :elements="\App\Models\User::collegists()"
                                     :formatter="fn($user) => $user->uniqueName"
                                     :allowEmpty
@@ -21,7 +21,7 @@
                             <x-input.text
                                 id="comment"
                                 text="general.comment"
-                                wire:model="comment"
+                                wire:model.live="comment"
                                 :helper="__('general.optional_field')"
                             />
                         </div>
