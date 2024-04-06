@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
+use App\Models\PeriodicEvents\AbstractPeriodicEvent;
 use App\Utils\DataCompresser;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 /**
@@ -57,7 +57,7 @@ use Illuminate\Support\Collection;
  * @method static \Illuminate\Database\Eloquent\Builder|ApplicationForm whereUserId($value)
  * @mixin \Eloquent
  */
-class ApplicationForm extends Model
+class ApplicationForm extends AbstractPeriodicEvent
 {
     use HasFactory;
 

@@ -1,13 +1,14 @@
 <?php
 
+use App\Http\Middleware\Locale;
 use App\Http\Middleware\LogRequests;
 use App\Http\Middleware\NotifyAboutEvaluation;
-use App\Http\Middleware\Locale;
 use App\Http\Middleware\RedirectTenantsToUpdate;
+use App\Models\PeriodicEvents\PeriodicEvent;
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Http\Request;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -41,7 +42,7 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withSchedule(function (Schedule $schedule) {
         $schedule->call(function () {
-            \App\Models\EventTrigger::listen();
+            PeriodicEvent::listen();
         })->daily()->at('13:00');
         $schedule->job(new \App\Jobs\PingRouters())->everyFiveMinutes();
         $schedule->job(new \App\Jobs\ProcessWifiConnections())->dailyAt('01:00');
