@@ -17,7 +17,7 @@
 /resources/lang/la
 /resources/lang/sp
 /vendor
-/data
+data/
 .env
 .env.backup
 .phpunit.result.cache
