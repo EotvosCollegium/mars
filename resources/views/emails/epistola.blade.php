@@ -4,24 +4,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link type="text/css" rel="stylesheet" href="{{ mix('css/app.css') }}">
-</head>
-<body>
 <style>
-@media only screen and (max-width: 600px) {
-.inner-body {
-width: 100% !important;
+.content-cell {
+    hyphens: auto;
 }
-
-.footer {
-width: 100% !important;
-}
-}
-
-@media only screen and (max-width: 500px) {
-.button {
-width: 100% !important;
-}
-}
+</style>
+<style>
 @-ms-viewport{
     width: extend-to-zoom;
     zoom: 1.0;
@@ -30,16 +18,29 @@ width: 100% !important;
     zoom: 1.0;
     width: extend-to-zoom;
 }
-.content-cell {
-    hyphens: auto;
+</style>
+<style>
+@media only screen and (max-width: 600px) {
+    .inner-body {
+        width: 100% !important;
+    }
+    .footer {
+        width: 100% !important;
+    }
 }
-
-@media only screen and (max-width: 35em) {
+@media only screen and (max-width: 500px) {
+    .button {
+        width: 100% !important;
+    }
+}
+@media only screen and (max-width:1000px) {
     p {
         text-align: left !important;
     }
 }
 </style>
+</head>
+<body>
 <div style="max-width: 800px;">
 <!--[if (gte mso 9)|(IE)]>
     <table cellspacing="0" cellpadding="0" border="0" width="800"><tr><td>
