@@ -34,7 +34,7 @@ width: 100% !important;
     hyphens: auto;
 }
 
-@media only screen and (max-width: 700px) {
+@media only screen and (max-width: 35em) {
     p {
         text-align: left !important;
     }
