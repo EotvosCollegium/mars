@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link type="text/css" rel="stylesheet" href="{{ mix('css/app.css') }}">
 <style>
-.content-cell {
+.article {
     hyphens: auto;
 }
 </style>
@@ -108,7 +108,7 @@
             </table>
             <table class="inner-body" align="center" width="570" cellpadding="0" cellspacing="0" role="presentation">
                 <tr>
-                    <td class="content-cell">
+                    <td class="content-cell article">
                         @foreach ($news as $article)
                             <h2>{{ $loop->iteration }}.<span>{{$article->title }}</span></h2>
                             <h3>{{$article->date_time}}</h3>
