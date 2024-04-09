@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="hu">
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -29,6 +29,15 @@ width: 100% !important;
 @viewport{
     zoom: 1.0;
     width: extend-to-zoom;
+}
+.content-cell {
+    hyphens: auto;
+}
+
+@media only screen and (max-width: 700px) {
+    p {
+        text-align: left !important;
+    }
 }
 </style>
 <div style="max-width: 800px;">
