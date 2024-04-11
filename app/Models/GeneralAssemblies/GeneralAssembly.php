@@ -156,6 +156,9 @@ class GeneralAssembly extends Model
         return false;
     }
 
+    /**
+     * @return array The users who should have attended the general assembly but did not and were not excused.
+     */
     public function missing_users(): array {
         $missing = [];
         foreach($this->users_that_should_attend()->get() as $user) {
@@ -166,7 +169,9 @@ class GeneralAssembly extends Model
         return $missing;
     }
 
-
+    /**
+     * @return BelongsToMany The users who should attend the general assembly.
+     */
     public function users_that_should_attend(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'user_should_attend_general_assembly');
