@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('reservable_items', function (Blueprint $table) {
             $table->id();
-            $table->string('name', length: 50);
+            $table->string('name', length: 255);
             $table->enum('type', ['washing_machine', 'room']);
             // the default duration (in minutes) for which the item can be reserved
             // or should this be the slot size for the UI?
@@ -43,8 +43,12 @@ return new class extends Migration
             $table->timestamps();
             $table->string('note', length: 150)->nullable();
 
-            $table->foreign('reservable_item_id')->references('id')->on('reservable_items');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('reservable_item_id')->references('id')->on('reservable_items')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
 
             $table->index(['reservable_item_id', 'reserved_from']);
         });

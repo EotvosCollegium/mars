@@ -19,7 +19,7 @@ class ReservableItem extends Model
     protected $fillable = [
         'name',
         'type',
-        'default_reserve_duration',
+        'default_reservation_duration',
         'is_default_compulsory',
         'allowed_starting_minutes',
         'out_of_order_from',
