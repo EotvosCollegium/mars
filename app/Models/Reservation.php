@@ -35,4 +35,20 @@ class Reservation extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    /**
+     * @return bool Returns whether this reservation conflicts with the one given,
+     * if it is not itself.
+     */
+    public function conflictsWith(Reservation $that): bool
+    {
+        if ($this == $that
+                || $this->reservable_item_id != $that->reservable_item_id) {
+            return false;
+        } else if ($this->reserved_from < $that->reserved_from) {
+            return $this->reserved_until > $that->reserved_from;
+        } else {
+            return $this->reserved_from < $that->reserved_until;
+        }
+    }
 }

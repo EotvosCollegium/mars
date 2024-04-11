@@ -260,4 +260,10 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::get('/general_assemblies/{general_assembly}/presence_checks/{presence_check}', [GeneralAssemblyPresenceCheckController::class, 'show'])->name('general_assemblies.presence_checks.show');
     Route::post('/general_assemblies/{general_assembly}/presence_checks/{presence_check}/close', [GeneralAssemblyPresenceCheckController::class, 'closePresenceCheck'])->name('general_assemblies.presence_checks.close');
     Route::post('/general_assemblies/{general_assembly}/presence_checks/{presence_check}/sign_presence', [GeneralAssemblyPresenceCheckController::class, 'signPresence'])->name('general_assemblies.presence_checks.presence.store')->withoutMiddleware('log');
+
+    Route::prefix('reservations')->name('reservations.')->group(function () {
+        Route::resource('items', ReservableItemController::class)->only([
+            'index', 'create', 'store', 'show', 'delete'
+        ]);
+    });
 });

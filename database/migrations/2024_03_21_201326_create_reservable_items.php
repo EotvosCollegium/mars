@@ -30,6 +30,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('reservable_item_id');
             $table->unsignedBigInteger('user_id');
+            $table->boolean('verified')->default(true);
             $table->string('title')->nullable();
             $table->string('note')->nullable();
             $table->datetime('reserved_from');

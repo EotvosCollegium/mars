@@ -2,8 +2,13 @@
 
 namespace Database\Seeders;
 
+use Carbon\Carbon;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+
+use App\Models\ReservableItem;
+use App\Models\Reservation;
+use App\Models\User;
 
 class ReservationSeeder extends Seeder
 {
@@ -34,5 +39,63 @@ class ReservationSeeder extends Seeder
                 "allowed_starting_minutes" => "0"
             ]),
         ];
+
+        // creating the rooms
+        $rooms = ReservableItem::factory()->count(10)->create();
+
+        foreach($washing_machines as $machine) {
+            // for today and the next 14 days
+            for ($day=0; $day<14; ++$day) {
+                for ($hour=0; $hour<24; ++$hour) {
+                    if (!random_int(0,2)) {
+                        Reservation::create([
+                            'reservable_item_id' => $machine->id,
+                            'user_id' => User::all()->random()->id,
+                            'verified' => true,
+                            'reserved_from' => Carbon::today()->add($day, 'day')->add($hour, 'hour'),
+                            'reserved_until' => Carbon::today()->add($day, 'day')->add($hour+1, 'hour'),
+                        ]);
+                    }
+                }
+            }
+        }
+
+        foreach($rooms as $room) {
+            $reservations = [];
+            for ($i=0; $i<50; ++$i) {
+                $day = random_int(0,13);
+                $hour = random_int(0,23);
+                $minute = random_int(0,60);
+                $duration = random_int(0,180);
+                $reserved_from
+                    = Carbon::today()->add($day, 'day')
+                        ->add($hour, 'hour')
+                        ->add($minute, 'minute');
+                $reserved_until
+                    = Carbon::today()->add($day, 'day')
+                        ->add($hour, 'hour')
+                        ->add($minute+$duration, 'minute');
+                $new_one = Reservation::create([
+                    'reservable_item_id' => $room->id,
+                    'user_id' => User::all()->random()->id,
+                    'verified' => random_int(0,1),
+                    'reserved_from'
+                        => $reserved_from,
+                    'reserved_until'
+                        => $reserved_until
+                ]);
+
+                $wasDeleted = false;
+                foreach($reservations as $earlier) {
+                    if ($earlier->conflictsWith($new_one)) {
+                        $new_one->delete();
+                        $wasDeleted = true;
+                        break;
+                    }
+                }
+
+                if (!$wasDeleted) $reservations[] = $new_one;
+            }
+        }
     }
 }

@@ -19,5 +19,6 @@ class DatabaseSeeder extends Seeder
         $this->call(TransactionSeeder::class);
         $this->call(EpistolaSeeder::class);
         $this->call(GeneralAssemblySeeder::class);
+        $this->call(ReservationSeeder::class);
     }
 }
