@@ -156,7 +156,8 @@ class GeneralAssembly extends Model
         return false;
     }
 
-    public function missing_users(): array {
+    public function missing_users(): array
+    {
         $missing = [];
         foreach($this->users_that_should_attend()->get() as $user) {
             if (!$this->isAttended($user)) {
@@ -246,7 +247,8 @@ class GeneralAssembly extends Model
      * @param User $user The user to check.
      * @return bool Whether the user can vote in the general assembly.
      */
-    public function canVote(User $user){
+    public function canVote(User $user)
+    {
         return $user->isCollegist(alumni: false) && $user->isActive();
     }
 }
