@@ -159,15 +159,16 @@ class GeneralAssembly extends Model
     /**
      * @return array The users who should have attended the general assembly but did not.
      */
-    public function missing_users(): array {
+    public function missing_users(): array
+    {
         $missing = [];
-        if($this->isOpen()){
+        if($this->isOpen()) {
             $users_that_should_attend = $this->users_that_should_attend_open_assembly();
         } else {
             $users_that_should_attend = $this->users_that_should_attend()->get();
         }
         foreach($users_that_should_attend as $user) {
-            if (!$this->isAttended($user) && !$this->excusedUsers()->where('user_id', $user->id)->exists()){
+            if (!$this->isAttended($user) && !$this->excusedUsers()->where('user_id', $user->id)->exists()) {
                 $missing[] = $user;
             }
         }
@@ -185,7 +186,8 @@ class GeneralAssembly extends Model
     /**
      * @return array The users who should attend the currently open general assembly.
      */
-    public function users_that_should_attend_open_assembly(): array {
+    public function users_that_should_attend_open_assembly(): array
+    {
         $users = [];
         foreach(User::all() as $user) {
             if (!$this->excusedUsers()->where('user_id', $user->id)->exists() && $this->canVote($user)) {
@@ -270,7 +272,8 @@ class GeneralAssembly extends Model
      * @param User $user The user to check.
      * @return bool Whether the user can vote in the general assembly.
      */
-    public function canVote(User $user){
+    public function canVote(User $user)
+    {
         return $user->isCollegist(alumni: false) && $user->isActive();
     }
 }
