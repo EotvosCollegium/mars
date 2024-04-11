@@ -157,13 +157,17 @@ class GeneralAssembly extends Model
     }
 
     /**
-     * @return array The users who should have attended the general assembly but did not and were not excused.
+     * @return array The users who should have attended the general assembly but did not.
      */
-    public function missing_users(): array
-    {
+    public function missing_users(): array {
         $missing = [];
-        foreach($this->users_that_should_attend()->get() as $user) {
-            if (!$this->isAttended($user)) {
+        if($this->isOpen()){
+            $users_that_should_attend = $this->users_that_should_attend_open_assembly();
+        } else {
+            $users_that_should_attend = $this->users_that_should_attend()->get();
+        }
+        foreach($users_that_should_attend as $user) {
+            if (!$this->isAttended($user) && !$this->excusedUsers()->where('user_id', $user->id)->exists()){
                 $missing[] = $user;
             }
         }
@@ -171,11 +175,24 @@ class GeneralAssembly extends Model
     }
 
     /**
-     * @return BelongsToMany The users who should attend the general assembly.
+     * @return BelongsToMany The users who should have attended the general assembly.
      */
     public function users_that_should_attend(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'user_should_attend_general_assembly');
+    }
+
+    /**
+     * @return array The users who should attend the currently open general assembly.
+     */
+    public function users_that_should_attend_open_assembly(): array {
+        $users = [];
+        foreach(User::all() as $user) {
+            if (!$this->excusedUsers()->where('user_id', $user->id)->exists() && $this->canVote($user)) {
+                $users[] = $user;
+            }
+        }
+        return $users;
     }
 
     /**
@@ -188,16 +205,10 @@ class GeneralAssembly extends Model
             throw new \Exception("tried to open general assembly when it has already been opened");
         }
         $this->update(['opened_at' => now()]);
-
-        foreach(User::all() as $user) {
-            if ($this->canVote($user)) {
-                $this->users_that_should_attend()->attach($user);
-            }
-        }
     }
 
     /**
-     * Closes the question.
+     * Close the general assembly.
      * @throws Exception if it has already been closed or if it is not even open.
      */
     public function close(): void
@@ -219,6 +230,13 @@ class GeneralAssembly extends Model
             }
         }
         $this->update(['closed_at' => now()]);
+
+
+        foreach(User::all() as $user) {
+            if ($this->canVote($user)) {
+                $this->users_that_should_attend()->attach($user);
+            }
+        }
     }
 
     /**
@@ -252,8 +270,7 @@ class GeneralAssembly extends Model
      * @param User $user The user to check.
      * @return bool Whether the user can vote in the general assembly.
      */
-    public function canVote(User $user)
-    {
+    public function canVote(User $user){
         return $user->isCollegist(alumni: false) && $user->isActive();
     }
 }
