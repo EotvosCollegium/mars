@@ -46,10 +46,11 @@ class ReservableItem extends Model
      * Creates a reservation for the given user and parameters, and returns it.
      * @return Reservation The reservation created.
      */
-    public function reserve(User $user, ?string $title, ?string $note, Carbon $from, Carbon $until): Reservation
+    public function reserve(User $user, ?string $title, ?string $note, Carbon $from, Carbon $until, bool $verified = true): Reservation
     {
         return Reservation::create([
             "reservable_item_id" => $this->id,
+            "verified" => $verified,
             "user_id" => $user->id,
             "title" => $title,
             "note" => $note,

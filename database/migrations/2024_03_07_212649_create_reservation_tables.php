@@ -32,6 +32,10 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('reservable_item_id');
             $table->unsignedBigInteger('user_id');
+            // whether it is valid and verified
+            // for washing machines, it's always true;
+            // for rooms, it's true if the secretariat has verified the reservation
+            $table->boolean('verified')->default(true);
             // it can be null – e.g. for washing, it is not very useful
             $table->string('title', length: 50)->nullable();
             $table->datetime('reserved_from');

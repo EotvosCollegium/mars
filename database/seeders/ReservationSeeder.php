@@ -77,7 +77,8 @@ class ReservationSeeder extends Seeder
                         User::all()->random(),
                         $faker->realText(50),
                         $faker->realText(150),
-                        $from, $until
+                        $from, $until,
+                        $faker->boolean(50)
                     );
                     $was_deleted = false;
                     foreach($reservations as $other_reservation) {
