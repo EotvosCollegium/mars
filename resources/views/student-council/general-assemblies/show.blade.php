@@ -51,24 +51,8 @@
                                 @endcan
                             </td>
                         </tr>
-                        <tr>
-                            @php
-                                $attendees = $general_assembly->attendees();
-                            @endphp
-                            <th scope="row">@lang('voting.attendees') ({{$attendees->count()}} fő)*</th>
-                            <td>
-                                <ul>
-                                @foreach ($attendees->sortBy('name') as $attendee)
-                                    <li>{{ $attendee->uniqueName }}</li>
-                                @endforeach
-                                </ul>
-                            </td>
-                        </tr>
                     </tbody>
                 </table>
-                <blockquote>
-                    * Résztvevőnek számít az, aki legfeljebb 2 jelenlét-ellenőrzésen nem vett részt (amennyiben összesen legfeljebb 2 volt, úgy az összes jelenlét-ellenőrzésen részt vettek számítanak). Csak aktív státuszú collegisták szavazhatnak.
-                </blockquote>
                 @if(!Auth::user()->isActive())
                 <blockquote class="red-text">@lang('voting.not_active')</blockquote>
                 @endif
@@ -215,4 +199,51 @@
 @can('administer', $general_assembly)
     @livewire('excused-users', ['general_assembly' => $general_assembly])
 @endcan
+<div class="row">
+    <div class="col s12">
+        <div class="card">
+            <div class="card-content">
+                <table>
+                    <tbody>
+                        <tr>
+                            @php
+                                $attendees = $general_assembly->attendees();
+                            @endphp
+                            <th scope="row">@lang('voting.attendees') ({{$attendees->count()}} fő)*</th>
+                            <td>
+                                <ul>
+                                @foreach ($attendees->sortBy('name') as $attendee)
+                                    <li>{{ $attendee->uniqueName }}</li>
+                                @endforeach
+                                </ul>
+                            </td>
+                        </tr>
+                        @can('administer', $general_assembly)
+                        <tr>
+                            @php
+                                $missing_users = $general_assembly->missing_users();
+                            @endphp
+                            <th scope="row">Hiányzók: ({{count($missing_users)}} fő)*</th>
+                            <td>
+                                <ul>
+                                @foreach ($missing_users as $missing_user)
+                                    <li>{{ $missing_user->uniqueName }}</li>
+                                @endforeach
+                                </ul>
+                            </td>
+                        </tr>
+                        @endcan
+                    </tbody>
+                </table>
+                <blockquote>
+                    * Résztvevőnek számít az, aki legfeljebb 2 jelenlét-ellenőrzésen nem vett részt (amennyiben összesen legfeljebb 2 volt, úgy az összes jelenlét-ellenőrzésen részt vettek számítanak). Csak aktív státuszú collegisták szavazhatnak.
+                </blockquote>
+                @if(!Auth::user()->isActive())
+                <blockquote class="red-text">@lang('voting.not_active')</blockquote>
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
+

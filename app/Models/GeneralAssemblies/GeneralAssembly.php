@@ -156,6 +156,22 @@ class GeneralAssembly extends Model
         return false;
     }
 
+    public function missing_users(): array {
+        $missing = [];
+        foreach($this->users_that_should_attend()->get() as $user) {
+            if (!$this->isAttended($user)) {
+                $missing[] = $user;
+            }
+        }
+        return $missing;
+    }
+
+
+    public function users_that_should_attend(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'user_should_attend_general_assembly');
+    }
+
     /**
      * Opens the question.
      * @throws Exception if it has already been opened.
@@ -166,6 +182,12 @@ class GeneralAssembly extends Model
             throw new \Exception("tried to open general assembly when it has already been opened");
         }
         $this->update(['opened_at' => now()]);
+
+        foreach(User::all() as $user) {
+            if ($this->canVote($user)) {
+                $this->users_that_should_attend()->attach($user);
+            }
+        }
     }
 
     /**
@@ -218,5 +240,13 @@ class GeneralAssembly extends Model
     {
         return $value == self::getTemporaryPasscode()
             || $value == self::getTemporaryPasscode('-1 minute');
+    }
+
+    /**
+     * @param User $user The user to check.
+     * @return bool Whether the user can vote in the general assembly.
+     */
+    public function canVote(User $user){
+        return $user->isCollegist(alumni: false) && $user->isActive();
     }
 }
