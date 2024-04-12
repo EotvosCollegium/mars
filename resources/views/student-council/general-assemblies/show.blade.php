@@ -221,7 +221,7 @@
                         @can('administer', $general_assembly)
                         <tr>
                             @php
-                                $missing_users = $general_assembly->missing_users();
+                                $missing_users = $general_assembly->missingUsers();
                             @endphp
                             <th scope="row">Hiányzók: ({{count($missing_users)}} fő)*</th>
                             <td>
