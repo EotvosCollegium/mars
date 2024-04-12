@@ -45,6 +45,8 @@ class GeneralAssembly extends Model
 
     protected $fillable = ['title', 'opened_at', 'closed_at'];
 
+    protected $observables = ['closed'];
+
     /**
      * The attributes that should be cast to native types.
      *
@@ -190,7 +192,7 @@ class GeneralAssembly extends Model
     {
         $users = [];
         foreach(User::all() as $user) {
-            if (!$this->excusedUsers()->where('user_id', $user->id)->exists() && $this->canVote($user)) {
+            if (!$this->excusedUsers()->where('user_id', $user->id)->exists() && $this->shouldAttendByDefault($user)) {
                 $users[] = $user;
             }
         }
@@ -231,14 +233,8 @@ class GeneralAssembly extends Model
                 $presenceCheck->close();
             }
         }
+        $this->fireModelEvent('closed');
         $this->update(['closed_at' => now()]);
-
-
-        foreach(User::all() as $user) {
-            if ($this->canVote($user)) {
-                $this->usersThatShouldAttend()->attach($user);
-            }
-        }
     }
 
     /**
@@ -274,6 +270,15 @@ class GeneralAssembly extends Model
      */
     public function canVote(User $user)
     {
-        return $user->isCollegist(alumni: false) && $user->isActive();
+        return $this->shouldAttend($user) && $user->isActive();
+    }
+
+    /**
+     * @param User $user The user to check.
+     * @return bool Whether the user should attend the general assembly according to the rules of the College. Passives are required to attend but we automatically generate excuses to them
+     */
+    public function shouldAttendByDefault(User $user)
+    {
+        return $user->isCollegist(alumni: false);
     }
 }
