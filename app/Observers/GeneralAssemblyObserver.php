@@ -30,7 +30,7 @@ class GeneralAssemblyObserver
     {
         foreach(User::all() as $user) {
             if ($generalAssembly->shouldAttendByDefault($user)) {
-                $generalAssembly->usersThatShouldAttendedByDefault()->attach($user);
+                $generalAssembly->usersThatShouldHaveAttendedByDefault()->attach($user);
             }
         }
     }

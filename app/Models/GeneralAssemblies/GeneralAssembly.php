@@ -167,7 +167,7 @@ class GeneralAssembly extends Model
         if($this->isOpen()) {
             $users_that_should_attend = $this->usersThatShouldAttendByDefaultAnOpenAssembly();
         } else {
-            $users_that_should_attend = $this->usersThatShouldAttendedByDefault()->get();
+            $users_that_should_attend = $this->usersThatShouldHaveAttendedByDefault()->get();
         }
         foreach($users_that_should_attend as $user) {
             if (!$this->isAttended($user) && !$this->excusedUsers()->where('user_id', $user->id)->exists()) {
@@ -180,7 +180,7 @@ class GeneralAssembly extends Model
     /**
      * @return BelongsToMany The users who should have attended the general assembly.
      */
-    public function usersThatShouldAttendedByDefault(): BelongsToMany
+    public function usersThatShouldHaveAttendedByDefault(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'user_should_attend_general_assembly');
     }
