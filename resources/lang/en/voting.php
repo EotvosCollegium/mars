@@ -14,6 +14,7 @@ return [
     'incorrect_passcode' => 'Incorrect passcode',
     'is_open' => 'Is open?',
     'max_options' => 'At most how many options should be chosen?',
+    'missing' => 'Missing students',
     'name' => 'Title',
     'new_question' => 'New question',
     'new_sitting' => 'New general assembly',

@@ -14,6 +14,7 @@ return [
     'incorrect_passcode' => 'Érvénytelen kód',
     'is_open' => 'Nyitva?',
     'max_options' => 'Legfeljebb hány opció választható ki:',
+    'missing' => 'Hiányzók',
     'name' => 'Név',
     'new_question' => 'Új kérdés',
     'new_sitting' => 'Új ülés',

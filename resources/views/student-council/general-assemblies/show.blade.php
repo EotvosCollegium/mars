@@ -223,7 +223,7 @@
                             @php
                                 $missing_users = $general_assembly->missingUsers();
                             @endphp
-                            <th scope="row">Hiányzók: ({{count($missing_users)}} fő)*</th>
+                            <th scope="row">@lang('voting.missing'): ({{count($missing_users)}} fő)*</th>
                             <td>
                                 <ul>
                                 @foreach ($missing_users as $missing_user)

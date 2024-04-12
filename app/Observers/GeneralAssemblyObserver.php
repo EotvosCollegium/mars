@@ -24,13 +24,13 @@ class GeneralAssemblyObserver
     }
 
     /**
-     * Save who was required to attend the general assembly. Add excuse for passive students
+     * Save who was required to attend the general assembly
      */
     public function closed(GeneralAssembly $generalAssembly): void
     {
         foreach(User::all() as $user) {
             if ($generalAssembly->shouldAttendByDefault($user)) {
-                $generalAssembly->usersThatShouldAttend()->attach($user);
+                $generalAssembly->usersThatShouldAttendedByDefault()->attach($user);
             }
         }
     }

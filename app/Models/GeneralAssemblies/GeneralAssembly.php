@@ -165,9 +165,9 @@ class GeneralAssembly extends Model
     {
         $missing = [];
         if($this->isOpen()) {
-            $users_that_should_attend = $this->usersThatShouldAttendOpenAssembly();
+            $users_that_should_attend = $this->usersThatShouldAttendByDefaultAnOpenAssembly();
         } else {
-            $users_that_should_attend = $this->usersThatShouldAttend()->get();
+            $users_that_should_attend = $this->usersThatShouldAttendedByDefault()->get();
         }
         foreach($users_that_should_attend as $user) {
             if (!$this->isAttended($user) && !$this->excusedUsers()->where('user_id', $user->id)->exists()) {
@@ -180,7 +180,7 @@ class GeneralAssembly extends Model
     /**
      * @return BelongsToMany The users who should have attended the general assembly.
      */
-    public function usersThatShouldAttend(): BelongsToMany
+    public function usersThatShouldAttendedByDefault(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'user_should_attend_general_assembly');
     }
@@ -188,7 +188,7 @@ class GeneralAssembly extends Model
     /**
      * @return array The users who should attend the currently open general assembly.
      */
-    public function usersThatShouldAttendOpenAssembly(): array
+    public function usersThatShouldAttendByDefaultAnOpenAssembly(): array
     {
         $users = [];
         foreach(User::all() as $user) {
