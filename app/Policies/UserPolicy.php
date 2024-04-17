@@ -96,7 +96,7 @@ class UserPolicy
             return true;
         }
         if ($target->isCollegist()) {
-            return (Cache::remember($user->id.'_is_secretary/director/s_council', 60, function () use ($user) {
+            return (Cache::remember($user->id . '_is_secretary/director/s_council', 60, function () use ($user) {
                 return $user->hasRole([
                     Role::SECRETARY,
                     Role::DIRECTOR,
@@ -124,7 +124,7 @@ class UserPolicy
         if ($user->id == $target->id) {
             return true;
         }
-        if($user->can('viewAllApplications', User::class)) {
+        if ($user->can('viewAllApplications', User::class)) {
             return true;
         }
 
@@ -163,7 +163,7 @@ class UserPolicy
             Role::SECRETARY,
             Role::DIRECTOR,
             Role::WORKSHOP_LEADER,
-        Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS
+            Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS
         ]);
     }
 
@@ -371,5 +371,23 @@ class UserPolicy
             return true;
         }
         return $user->roleWorkshops->has($workshop->id);
+    }
+
+    /**
+     * @param User $user
+     * @return bool
+     */
+    public function handleGuests(User $user): bool
+    {
+        return $user->hasRole(Role::STAFF);
+    }
+
+    /**
+     * @param User $user
+     * @return bool
+     */
+    public function invite(User $user): bool
+    {
+        return $user->hasRole(Role::SECRETARY);
     }
 }

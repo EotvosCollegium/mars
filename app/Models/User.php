@@ -10,6 +10,7 @@ use App\Utils\NotificationCounter;
 use Carbon\Carbon;
 use Database\Factories\UserFactory;
 use Eloquent;
+use Illuminate\Auth\Passwords\PasswordBroker;
 use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -195,6 +196,17 @@ class User extends Authenticatable implements HasLocalePreference
                 return $this->name;
             }
         );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Functions
+    |--------------------------------------------------------------------------
+    */
+
+    public function generatePasswordResetToken(): string
+    {
+        return app(PasswordBroker::class)->createToken($this);
     }
 
     /*
@@ -587,6 +599,50 @@ class User extends Authenticatable implements HasLocalePreference
                 $query->where('semester_id', $semester_id);
                 $query->whereIn('payment_type_id', [PaymentType::kkt()->id, PaymentType::netreg()->id]);
             });
+    }
+
+    /**
+     * Scope a query to only include users who got accepted in the specified year.
+     */
+    public function scopeYearOfAcceptance(Builder $query, int $yearOfAcceptance): Builder
+    {
+        return $query->whereHas('educationalInformation', function (Builder $query) use ($yearOfAcceptance) {
+            $query->where('year_of_acceptance', $yearOfAcceptance);
+        });
+    }
+
+    /**
+     * Scope a query to only include users whose name contains the given string.
+     */
+    public function scopeNameLike(Builder $query, string $nameLike): Builder
+    {
+        return $query->where('name', 'like', '%' . $nameLike . '%');
+    }
+
+    /**
+     * Scope a query to only include users who are in all the specified workshops.
+     * The workshops are specified by their IDs.
+     */
+    public function scopeInAllWorkshopIds(Builder $query, array $workshopsIdsAll): Builder
+    {
+        return $query->whereHas('workshops', function (Builder $query) use ($workshopsIdsAll) {
+            $query->whereIn('id', $workshopsIdsAll);
+        }, '=', count($workshopsIdsAll));
+    }
+
+    /**
+     * Scope a query to only include users who have any of the specified roles.
+     */
+    public function scopeHasStatusAnyOf(Builder $query, array $statusesAny): Builder
+    {
+        return $query->where(function ($query) use ($statusesAny) {
+            foreach ($statusesAny as $status) {
+                $query->orWhereHas('semesterStatuses', function (Builder $query) use ($status) {
+                    $query->where('status', $status);
+                    $query->where('id', Semester::current()->id);
+                });
+            }
+        });
     }
 
     /*

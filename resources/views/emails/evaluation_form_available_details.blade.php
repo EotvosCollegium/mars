@@ -12,9 +12,9 @@
         beszámoló mellett.
     </p>
     <p>
-        A kérdőív eredményei <a href="{{ route('users.export') }}">letölthetőek</a> a Collegisták menüpont alatt. A
-        táblázatban az "értékelés" fül alatt találhatóak az eddigi kitöltések (A határidő lejáratáig még szabadon
-        módosíthatnak az értékeken.)<br/>
+        A kérdőív eredményei letölthetőek a <a href="{{ route('users.index') }}">@lang("general.users")</a> menüpont
+        alatt. A táblázatban az "értékelés" fül alatt találhatóak az eddigi kitöltések. (A határidő lejáratáig még
+        szabadon módosíthatnak az értékeken.)<br/>
         Az eredményekhez a műhelyvezetők is hozzáférnek.
     </p>
 @endcomponent

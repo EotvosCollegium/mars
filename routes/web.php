@@ -20,13 +20,13 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\Network\AdminCheckoutController;
 use App\Http\Controllers\Network\AdminInternetController;
-use App\Http\Controllers\Network\AdminMacAddressController;
 use App\Http\Controllers\Network\InternetController;
 use App\Http\Controllers\Network\MacAddressController;
 use App\Http\Controllers\Network\RouterController;
 use App\Http\Controllers\IssuesController;
 use App\Http\Controllers\Secretariat\DocumentController;
-use App\Http\Controllers\Secretariat\RegistrationsController;
+use App\Http\Controllers\Secretariat\GuestsController;
+use App\Http\Controllers\Secretariat\InvitationController;
 use App\Http\Controllers\Secretariat\SemesterEvaluationController;
 use App\Http\Controllers\Secretariat\UserController;
 use App\Http\Controllers\StudentsCouncil\CommunityServiceController;
@@ -96,7 +96,6 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
     /** User related routes */
     Route::get('/profile', [UserController::class, 'profile'])->name('profile');
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
-    Route::get('/users/export', [UserController::class, 'export'])->name('users.export');
     Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
     Route::post('/users/{user}/tenant_until', [UserController::class, 'updateTenantUntil'])->name('users.update.tenant_until');
     Route::post('/users/{user}/roles/{role}', [UserController::class, 'addRole'])->name('users.roles.add');
@@ -166,12 +165,11 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
     Route::post('/routers/{router}/delete', [RouterController::class, 'delete'])->name('routers.delete');
 
     /** Registration handling */
-    Route::middleware(['can:registration.handle'])->group(function () {
-        Route::get('/secretariat/registrations', [RegistrationsController::class, 'index'])->name('secretariat.registrations');
-        Route::get('/secretariat/registrations/accept/{id}', [RegistrationsController::class, 'accept'])->name('secretariat.registrations.accept');
-        Route::get('/secretariat/registrations/reject/{id}', [RegistrationsController::class, 'reject'])->name('secretariat.registrations.reject');
-        Route::post('/secretariat/registrations/invite', [RegistrationsController::class, 'invite'])->name('secretariat.registrations.invite');
-    });
+    Route::get('/secretariat/registrations', [GuestsController::class, 'index'])->name('secretariat.registrations');
+    Route::get('/secretariat/registrations/accept/{id}', [GuestsController::class, 'accept'])->name('secretariat.registrations.accept');
+    Route::get('/secretariat/registrations/reject/{id}', [GuestsController::class, 'reject'])->name('secretariat.registrations.reject');
+    Route::post('/secretariat/invite', [InvitationController::class, 'store'])->name('secretariat.invite');
+
     /** Application handling */
     Route::get('/applications', [ApplicationController::class, 'showApplications'])->name('applications');
     Route::post('/applications', [ApplicationController::class, 'editApplication'])->name('applications.edit');
