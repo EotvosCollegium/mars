@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Reservation extends Model
 {
@@ -15,7 +16,7 @@ class Reservation extends Model
      * @var array
      */
     protected $fillable = [
-        'reserved_item_id',
+        'reservable_item_id',
         'user_id',
         'title',
         'note',
@@ -47,10 +48,15 @@ class Reservation extends Model
      */
     public function conflictsWith(Reservation $that): bool
     {
+        // Beware: these are strings!
+        $from1 = strtotime($this->reserved_from);
+        $until1 = strtotime($this->reserved_until);
+        $from2 = strtotime($that->reserved_from);
+        $until2 = strtotime($that->reserved_until);
         return
             $this->id != $that-> id &&
             $this->reservable_item_id == $that->reservable_item_id &&
-            ($this->reserved_from <= $that->reserved_from && $this->reserved_until > $that->reserved_from ||
-             $this->reserved_from < $that->reserved_until && $this->reserved_from >= $that->reserved_from);
+            ($from1 <= $from2 && $until1 > $from2 ||
+              $from1 < $until2 && $from1 >= $from2);
     }
 }

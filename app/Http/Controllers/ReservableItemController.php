@@ -46,7 +46,7 @@ class ReservableItemController extends Controller
      */
     public function store(Request $request) {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|max:255',
+            'name' => 'required|string|max:255',
             'type' => Rule::in(["washing_machine", "room"]),
             'default_reservation_duration' => 'required|numeric|min:1|max:65535',
             'is_default_compulsory' => 'required|boolean',

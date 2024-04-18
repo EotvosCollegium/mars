@@ -37,11 +37,11 @@ return new class extends Migration
             // for rooms, it's true if the secretariat has verified the reservation
             $table->boolean('verified')->default(true);
             // it can be null – e.g. for washing, it is not very useful
-            $table->string('title', length: 50)->nullable();
+            $table->string('title', length: 255)->nullable();
             $table->datetime('reserved_from');
             $table->datetime('reserved_until');
             $table->timestamps();
-            $table->string('note', length: 150)->nullable();
+            $table->text('note', length: 2047)->nullable();
 
             $table->foreign('reservable_item_id')->references('id')->on('reservable_items')
                 ->onUpdate('cascade')
