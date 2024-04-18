@@ -16,14 +16,18 @@ class ReservableItemController extends Controller
     public function index(Request $request) {
         $type = $request->type;
         if ("washing_machine" == $type) {
-            return response()->json(ReservableItem::where("type", "washing_machine")->get());
+            $items = ReservableItem::where("type", "washing_machine")->get();
         } else if ("room" == $type) {
-            return response()->json(ReservableItem::where("type", "room")->get());
+            $items = ReservableItem::where("type", "room")->get();
         } else if (is_null($type)) {
-            return response()->json(ReservableItem::orderBy("type")->get());
+            $items = ReservableItem::orderBy("type")->get();
         } else {
             abort(400, "unknown reservable item type");
         }
+        return view('reservations.items.index',  [
+            'items' => $items,
+            'title' => is_null($type) ? 'reservations.all_items' : 'reservations.' . $type
+        ]);
     }
 
     /**

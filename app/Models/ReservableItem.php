@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 use Carbon\Carbon;
 
+use App\Models\Reservation;
+
 class ReservableItem extends Model
 {
     use HasFactory;
@@ -58,5 +60,41 @@ class ReservableItem extends Model
             "reserved_from" => $from,
             "reserved_until" => $until
         ]);
+    }
+
+    /**
+     * Whether the item is out of order.
+     * We assume $this->out_of_order_from and $this->out_of_order_until
+     * are valid time strings.
+     * @return bool
+     */
+    public function isOutOfOrder(): bool
+    {
+        if (is_null($this->out_of_order_from)) return false;
+        else {
+            $from = strtotime($this->out_of_order_from);
+            $now = time();
+            if ($now < $from) return false;
+            else if (is_null($this->out_of_order_until)) return true;
+            else return $now < strtotime($this->out_of_order_until);
+        }
+    }
+
+    /**
+     * Whether the item is free at the given time
+     * (given with a Carbon object).
+     * The default is Carbon::now().
+     * Returns false if out of order.
+     * @return bool
+     */
+    public function isFree(Carbon $time = null): bool {
+        if (is_null($time)) $time = Carbon::now();
+        if ($this->isOutOfOrder()) return false;
+        else {
+            return Reservation::where('reservable_item_id', $this->id)
+                                ->where('reserved_from', '<=', $time)
+                                ->where('reserved_until', '>', $time)
+                                ->doesntExist();
+        }
     }
 }
