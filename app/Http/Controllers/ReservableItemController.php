@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 use App\Models\ReservableItem;
 
@@ -11,14 +13,17 @@ class ReservableItemController extends Controller
     public function index(Request $request) {
         $type = $request->type;
         if (is_null($type)) {
-            return response()->json(ReservableItem::all()->get());
+            $items = ReservableItem::all();
         } else if ('washing_machine' == $type) {
-            return response()->json(ReservableItem::where('type', 'washing_machine')->get());
+            $items = ReservableItem::where('type', 'washing_machine')->get();
         } else if ('room' == $type) {
-            return response()->json(ReservableItem::where('type', 'room')->get());
+            $items = ReservableItem::where('type', 'room')->get();
         } else {
             abort(400, "Unknown reservable item type: $type");
         }
+        return view('reservations.items.index', [
+            'items' => $items
+        ]);
     }
 
     public function show(ReservableItem $item) {
@@ -26,12 +31,12 @@ class ReservableItemController extends Controller
     }
 
     public function create() {
-        return response()->json(["itt lesz a szép form"]);
+        abort(500, 'create not implemented yet');
     }
 
     public function store(Request $request) {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|max:255',
+            'name' => 'required|string|max:255',
             'type' => Rule::in(["washing_machine", "room"]),
             'default_reservation_duration' => 'required|numeric|min:1|max:65535',
             'is_default_compulsory' => 'required|boolean',
