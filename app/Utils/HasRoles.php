@@ -60,7 +60,9 @@ trait HasRoles
     public function scopeWithAllRoles(Builder $query, array $allRoles): Builder
     {
         // Empty array => nothing to filter, nothing to do
-        if (empty($allRoles)) return $query;
+        if (empty($allRoles)) {
+            return $query;
+        }
 
         // Input is an array of role names => filter based on names
         if (is_string($allRoles[0])) {
@@ -70,7 +72,9 @@ trait HasRoles
         }
 
         // Input is an array of role objects => convert objects to IDs
-        if ($allRoles[0] instanceof Role) $allRoles = array_map(fn($role) => $role->id, $allRoles);
+        if ($allRoles[0] instanceof Role) {
+            $allRoles = array_map(fn ($role) => $role->id, $allRoles);
+        }
 
         // Input is an array of role IDs => filter based on IDs
         return $query->whereHas('roles', function (Builder $query) use ($allRoles) {
