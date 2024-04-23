@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\Secretariat;
 
-use App\Http\Controllers\Controller;
 use App\Mail\EvaluationFormClosed;
 use App\Mail\StatusDeactivated;
-use App\Models\EventTrigger;
 use App\Models\Faculty;
 use App\Models\GeneralAssemblies\GeneralAssembly;
+use App\Models\PeriodicEvents\PeriodicEventController;
 use App\Models\Role;
 use App\Models\RoleUser;
 use App\Models\Semester;
@@ -15,7 +14,6 @@ use App\Models\SemesterEvaluation;
 use App\Models\SemesterStatus;
 use App\Models\User;
 use App\Models\Workshop;
-use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
@@ -23,35 +21,16 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
-class SemesterEvaluationController extends Controller
+class SemesterEvaluationController extends PeriodicEventController
 {
     /**
-     * Check if the evaluation is available.
+     * Handle PeriodicEvent start.
      */
-    public static function isEvaluationAvailable(): bool
+    public static function handleStart(): void
     {
-        $available = EventTrigger::find(EventTrigger::SEMESTER_EVALUATION_AVAILABLE)->date;
-        $deadline = self::deadline();
-
-        return now() <= $deadline && $available >= Semester::next()->getStartDate();
+        self::sendEvaluationAvailableMail();
     }
 
-    public static function deadline(): Carbon
-    {
-        $custom_deadline = config('custom.semester_evaluation_deadline');
-        $system_deadline = EventTrigger::find(EventTrigger::DEACTIVATE_STATUS_SIGNAL)->date;
-        if (!isset($custom_deadline)) {
-            return $system_deadline;
-        } else {
-            $custom_deadline = Carbon::parse($custom_deadline);
-            //if the deadline has not been updated, use the system_deadline
-            if ($custom_deadline < Semester::current()->getStartDate()) {
-                return $system_deadline;
-            } else {
-                return $custom_deadline;
-            }
-        }
-    }
 
     /**
      * Show the evaluation form.
@@ -60,7 +39,7 @@ class SemesterEvaluationController extends Controller
     public function show()
     {
         $this->authorize('is-collegist');
-        if (!self::isEvaluationAvailable()) {
+        if (!self::isActive()) {
             return redirect('home')->with('error', 'Lejárt a határidő a kérdőív kitöltésére. Keresd fel a titkárságot.');
         }
 
@@ -73,7 +52,7 @@ class SemesterEvaluationController extends Controller
             'general_assemblies' => GeneralAssembly::all()->sortByDesc('closed_at')->take(2),
             'community_services' => user()->communityServiceRequests()->where('semester_id', Semester::current()->id)->get(),
             'position_roles' => user()->roles()->whereIn('name', Role::STUDENT_POSTION_ROLES)->get(),
-            'deadline' => self::deadline(),
+            'deadline' => self::getDeadline()?->format('Y-m-d'),
         ]);
     }
 
@@ -83,7 +62,7 @@ class SemesterEvaluationController extends Controller
     public function store(Request $request)
     {
         $this->authorize('is-collegist');
-        if (!self::isEvaluationAvailable()) {
+        if (!SemesterEvaluation::isActive()) {
             return redirect('home')->with('error', 'Lejárt a határidő a kérdőív kitöltésére. Keresd fel a titkárságot.');
         }
 
@@ -196,6 +175,7 @@ class SemesterEvaluationController extends Controller
      */
     public static function sendEvaluationReminder()
     {
+        //TODO
         $userCount = self::usersHaventFilledOutTheForm()->count();
 
         Mail::to(config('contacts.mail_membra'))->queue(new \App\Mail\EvaluationFormReminder($userCount));

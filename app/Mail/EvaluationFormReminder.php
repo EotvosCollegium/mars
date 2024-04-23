@@ -23,7 +23,7 @@ class EvaluationFormReminder extends Mailable
     public function __construct(int $count)
     {
         $this->count = $count;
-        $this->deadline = SemesterEvaluationController::deadline()->format('Y-m-d');
+        $this->deadline = SemesterEvaluationController::getDeadline()?->format('Y-m-d');
 
     }
 

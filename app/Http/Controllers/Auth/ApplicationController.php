@@ -3,15 +3,14 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Exports\ApplicantsExport;
-use App\Http\Controllers\Controller;
 use App\Models\ApplicationForm;
 use App\Models\Faculty;
+use App\Models\PeriodicEvents\PeriodicEventController;
 use App\Models\User;
 use App\Models\Workshop;
 use App\Models\RoleUser;
 use App\Models\File;
 use App\Models\Role;
-use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -21,8 +20,11 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
-class ApplicationController extends Controller
+class ApplicationController extends PeriodicEventController
 {
+    protected const connectedToSemester = true;
+    protected const hasShowUntil = true;
+
     private const EDUCATIONAL_ROUTE = 'educational';
     private const QUESTIONS_ROUTE = 'questions';
     private const FILES_ROUTE = 'files';
@@ -48,8 +50,8 @@ class ApplicationController extends Controller
         $data = [
             'workshops' => Workshop::all(),
             'faculties' => Faculty::all(),
-            'deadline' => self::getApplicationDeadline(),
-            'deadline_extended' => self::isDeadlineExtended(),
+            'deadline' => self::getDeadline(),
+            'deadline_extended' => self::isExtended(),
             'user' => user(),
         ];
         switch ($request->input('page')) {
@@ -74,7 +76,7 @@ class ApplicationController extends Controller
     {
         $user = $request->user();
 
-        if (now() > self::getApplicationDeadline()) {
+        if (now() > self::getDeadline()) {
             return redirect()->route('application')->with('error', 'A jelentkezési határidő lejárt');
         }
 
@@ -150,7 +152,8 @@ class ApplicationController extends Controller
                 'workshop' => $request->input('workshop'), //filtered workshop
                 'workshops' => $workshops, //workshops that can be chosen to filter
                 'status' => $request->input('status'), //filtered status
-                'applicationDeadline' => self::getApplicationDeadline(),
+                'applicationDeadline' => self::getDeadline(),
+                'periodicEvent' => self::periodicEvent()
             ]);
         }
     }
@@ -221,22 +224,6 @@ class ApplicationController extends Controller
 
         Cache::clear();
         return back()->with('message', 'Sikeresen jóváhagyta az elfogadott jelentkezőket');
-    }
-
-    /**
-     * @return Carbon the application deadline set in .env
-     */
-    public static function getApplicationDeadline(): Carbon
-    {
-        return Carbon::parse(config('custom.application_deadline'));
-    }
-
-    /**
-     * @return bool if the deadline has been extended or not
-     */
-    public static function isDeadlineExtended(): bool
-    {
-        return config('custom.application_extended');
     }
 
 
@@ -314,7 +301,7 @@ class ApplicationController extends Controller
         if ($user->application->missingData() == []) {
             $user->application->update(['status' => ApplicationForm::STATUS_SUBMITTED]);
             $user->internetAccess->setWifiCredentials($user->educationalInformation->neptun);
-            $user->internetAccess()->update(['has_internet_until' => $this::getApplicationDeadline()->addMonth(1)]);
+            $user->internetAccess()->update(['has_internet_until' => $this::getDeadline()?->addMonth()]);
             return back()->with('message', 'Sikeresen véglegesítette a jelentkezését!');
         } else {
             return back()->with('error', 'Hiányzó adatok!');

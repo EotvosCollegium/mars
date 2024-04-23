@@ -21,7 +21,7 @@ class EvaluationFormAvailable extends Mailable
      */
     public function __construct()
     {
-        $this->deadline = SemesterEvaluationController::deadline()->format('Y-m-d');
+        $this->deadline = SemesterEvaluationController::getDeadline()?->format('Y-m-d');
     }
 
     /**

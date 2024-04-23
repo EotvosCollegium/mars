@@ -50,6 +50,7 @@ return [
         'date' => 'dátum',
         'time' => 'időpont',
         'end_date' => 'esemény vége',
+        'extended_end_date' => 'esemény meghosszabbított vége',
         'details_name_1' => 'további infó neve',
         'details_name_2' => 'további infó neve',
         'details_url_1' => 'további infó címe',
