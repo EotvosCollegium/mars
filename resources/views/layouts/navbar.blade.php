@@ -64,7 +64,7 @@
             </li>
         @endcan
         <!-- applications page -->
-        @can('viewSomeApplication', \App\Models\User::class)
+        @can('viewSome', \App\Models\ApplicationForm::class)
             <li><a class="waves-effect" href="{{ route('applications') }}"><i
                         class="material-icons left">person_search</i>Felvételi</a></li>
         @endcan

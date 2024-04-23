@@ -115,13 +115,13 @@ class ApplicationController extends PeriodicEventController
         if ($request->has('id')) { // return one application in detail
             $user = User::withoutGlobalScope('verified')
                 ->with('application')->findOrFail($request->input('id'));
-            $this->authorize('viewApplication', $user);
+            $this->authorize('view', $user->application);
             return view('auth.application.applications_details', [
                 'user' => $user,
             ]);
         } else { //return all applications that can be visible
-            $this->authorize('viewSomeApplication', User::class);
-            if($authUser->can('viewAllApplications', User::class)) {
+            $this->authorize('viewSome', ApplicationForm::class);
+            if($authUser->can('viewAll', ApplicationForm::class)) {
                 $workshops = Workshop::all();
             } else {
                 $workshops = $authUser->roleWorkshops->concat($authUser->applicationCommitteWorkshops);
@@ -166,7 +166,7 @@ class ApplicationController extends PeriodicEventController
      */
     public function editApplication(Request $request): RedirectResponse
     {
-        $this->authorize('viewSomeApplication', User::class);
+        $this->authorize('viewSome', ApplicationForm::class);
         $application = ApplicationForm::findOrFail($request->input('application'));
         $newStatus = $request->input('status_'.$application->user->id);
         if ($request->has('note')) {
@@ -184,7 +184,7 @@ class ApplicationController extends PeriodicEventController
      */
     public function finalizeApplicationProcess()
     {
-        $this->authorize('finalizeApplicationProcess', User::class);
+        $this->authorize('finalize', ApplicationForm::class);
         Cache::forget('collegists');
         $not_handled_applicants = User::query()->withoutGlobalScope('verified')
             ->where('verified', 0)
@@ -313,7 +313,7 @@ class ApplicationController extends PeriodicEventController
      */
     public function exportApplications()
     {
-        $this->authorize('viewAllApplications', User::class);
+        $this->authorize('viewAll', ApplicationForm::class);
 
         $applications = ApplicationForm::with('user')
                 ->where('status', ApplicationForm::STATUS_SUBMITTED)
