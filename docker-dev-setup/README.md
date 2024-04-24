@@ -80,7 +80,7 @@ When you are finished and wish to stop the web server and the database:
 While the app is running, you can access the database (in a second terminal) via the `mysql` command in the docker container:
 
 ```shell
-docker exec -it mars_mysql mysql --user=mars --password=password
+docker exec -it mars_mysql mysql --user=mars --password=password --database=mars
 ```
 
 Alternatively, you can access the database directly from you host machine (via an application of your choice) at this address: `127.0.0.1:3307`

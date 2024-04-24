@@ -271,6 +271,7 @@ class UserPolicy
                 Role::STUDENT_COUNCIL_SECRETARY
             ]);
         }
+
         return false;
     }
 
@@ -334,6 +335,9 @@ class UserPolicy
             }
             if ($user->hasRole([Role::STUDENT_COUNCIL => Role::PRESIDENT])) {
                 return true;
+            }
+            if ($object->name == Role::KKT_HANDLER) {
+                return $user->hasRole([Role::STUDENT_COUNCIL => Role::ECONOMIC_VICE_PRESIDENT]);
             }
             if (in_array($object->name, Role::COMMITTEE_MEMBERS) || in_array($object->name, Role::COMMITTEE_REFERENTS)) {
                 $committee = preg_split("~-~", $object->name)[0];
