@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\ReservableItem;
 use App\Models\Reservation;
 use App\Models\User;
+use Carbon\Carbon;
 
 class ReservationController extends Controller
 {
@@ -22,10 +23,10 @@ class ReservationController extends Controller
      * Returns the reservation table for the washing machines.
      */
     public function indexForWashingMachines() {
-        return response()->json(
-            ReservableItem::where("type", "washing_machine")->get()
-                      ->map(function (ReservableItem $machine) {return $machine->reservations;})
-        );
+        return view('reservations.timetable', [
+            'items' => ReservableItem::where("type", "washing_machine")->get(),
+            'firstDay' => Carbon::today()->startOfWeek() //for now
+        ]);
     }
 
     /**

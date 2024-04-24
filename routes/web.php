@@ -270,7 +270,7 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
         ]);
 
         Route::get('/for_item/{item}', [ReservationController::class, 'index'])->name('index');
-        Route::get('/for_item/washing_machines', [ReservationController::class, 'indexForWashingMachines'])->name('index_for_washing_machines');
+        Route::get('/washing_machines', [ReservationController::class, 'indexForWashingMachines'])->name('index_for_washing_machines');
         Route::get('/{reservation}', [ReservationController::class, 'show'])->name('show');
         Route::get('/create_for_item/{item}', [ReservationController::class, 'create'])->name('create');
         Route::post('/for_item/{item}', [ReservationController::class, 'store'])->name('store');

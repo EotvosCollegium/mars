@@ -41,7 +41,7 @@ return new class extends Migration
             $table->datetime('reserved_from');
             $table->datetime('reserved_until');
             $table->timestamps();
-            $table->text('note', length: 2047)->nullable();
+            $table->text('note')->nullable();
 
             $table->foreign('reservable_item_id')->references('id')->on('reservable_items')
                 ->onUpdate('cascade')

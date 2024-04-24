@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Builder;
 
 use Carbon\Carbon;
 
@@ -63,20 +64,19 @@ class ReservableItem extends Model
     }
 
     /**
-     * Whether the item is out of order.
-     * We assume $this->out_of_order_from and $this->out_of_order_until
-     * are valid time strings.
+     * Whether the item is out of order at the given time.
+     * (given with a Carbon object).
+     * The default is Carbon::now().
      * @return bool
      */
-    public function isOutOfOrder(): bool
+    public function isOutOfOrder(Carbon $time = null): bool
     {
+        if (is_null($time)) $time = Carbon::now();
         if (is_null($this->out_of_order_from)) return false;
         else {
-            $from = strtotime($this->out_of_order_from);
-            $now = time();
-            if ($now < $from) return false;
+            if ($time < $this->out_of_order_from) return false;
             else if (is_null($this->out_of_order_until)) return true;
-            else return $now < strtotime($this->out_of_order_until);
+            else return $time < $this->out_of_order_until;
         }
     }
 
@@ -96,5 +96,62 @@ class ReservableItem extends Model
                                 ->where('reserved_until', '>', $time)
                                 ->doesntExist();
         }
+    }
+
+    /**
+     * Returns which reservation belongs to a given slot, if any.
+     * If there are more than one reservations in the slot,
+     * this returns the one that has the largest intersection
+     * with the slot.
+     * @return Reservation|null
+     */
+    public function reservationForSlot(Carbon $from, Carbon $until): Reservation|null {
+        // first select the ones that do have an intersection
+        $reservations =
+          Reservation::where('reservable_item_id', $this->id)
+                     ->where(function (Builder $query) use ($from, $until) {
+                       $query->where(function (Builder $query) use ($from, $until) {
+                             $query->where('reserved_from', '>=', $from)
+                                   ->where('reserved_from', '<', $until);
+                       })->orWhere(function (Builder $query) use ($from) {
+                             $query->where('reserved_from', '<=', $from)
+                                   ->where('reserved_until', '>', $from);
+                     });})
+                     ->get();
+        $toReturn = null;
+        $maxIntersection = null;
+        foreach($reservations as $reservation) {
+            $intersection = $reservation->lengthOfIntersectionWith($from, $until);
+            if (is_null($toReturn)
+                  || $maxIntersection < $intersection) {
+                $toReturn = $reservation;
+                $maxIntersection = $intersection;
+            }
+        }
+        return $toReturn;
+    }
+
+    /** These are returned by statusOfSlot. */
+    // public const OCCUPIED = 'occupied';
+    public const FREE = 'free';
+    public const OUT_OF_ORDER = 'out_of_order';
+
+    /**
+     * Returns the "status" of a slot
+     * (occupied, free or out of order).
+     * This will determine the colour of the slot.
+     * If there is a reservation, this returns it.
+     * @return string|Reservation
+     */
+    public function statusOfSlot(Carbon $from, Carbon $until): string|Reservation {
+        $reservation = $this->reservationForSlot($from, $until);
+        if (!is_null($reservation)) return $reservation;
+        else if (is_null($this->out_of_order_from) || $until <= $this->out_of_order_from) {
+            return ReservableItem::FREE;
+        }
+        else if (is_null($this->out_of_order_until) || $this->out_of_order_until > $from) {
+            return ReservableItem::OUT_OF_ORDER;
+        }
+        else return ReservableItem::FREE;
     }
 }
