@@ -64,31 +64,32 @@ class ReservationSeeder extends Seeder
         // Let's try create five for each day at first;
         // but delete the ones conflicting with older ones.
         foreach($rooms as $room) {
+            echo $room->id . "\n";
             for($day = 0; $day < 14; ++$day) {
-                $reservations = [];
                 for($i = 0; $i < 5; ++$i) {
                     $hour = rand(0, 23);
                     $minute = Arr::random([0, 15, 30, 45]);
                     $length = Arr::random([30, 60, 90, 120, 150, 180]); // in minutes
                     $from = Carbon::today()->add($day, 'day')->add($hour, 'hour')->add($minute, 'minute');
-                    // for some reason, $from->add() did not work
-                    $until = Carbon::today()->add($day, 'day')->add($hour, 'hour')->add($minute + $length, 'minute');
-                    $reservation = $room->reserve(
-                        User::all()->random(),
-                        $faker->realText(50),
-                        $faker->realText(150),
-                        $from, $until,
-                        $faker->boolean(50)
-                    );
-                    $was_deleted = false;
-                    foreach($reservations as $other_reservation) {
-                        if ($reservation->conflictsWith($other_reservation)) {
-                            $reservation->delete();
-                            $was_deleted = true;
-                            break;
-                        }
+                    $until = $from->copy()->add($length, 'minute');
+
+                    // we don't save it yet!
+                    $reservation = new Reservation();
+                    $reservation->reservable_item_id = $room->id;
+                    $reservation->user_id = User::inRandomOrder()->first()->id;
+                    $reservation->title = $faker->realText(50);
+                    $reservation->note = $faker->realText(150);
+                    $reservation->reserved_from = $from;
+                    $reservation->reserved_until = $until;
+                    $reservation->verified = $faker->boolean(50);
+
+                    $status = $room->statusOfSlot($from, $until);
+                    if ($room->id == 3) {
+                        echo $from . ' ' . $until . ' ' . $status . "\n";
                     }
-                    if (!$was_deleted) $reservations[] = $reservation;
+                    if (ReservableItem::FREE == $status) {
+                        $reservation->save();
+                    }
                 }
             }
         }
