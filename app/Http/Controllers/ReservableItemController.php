@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
 
+use Carbon\Carbon;
+
 use App\Models\ReservableItem;
 
 class ReservableItemController extends Controller
@@ -34,7 +36,10 @@ class ReservableItemController extends Controller
      * Shows the details of a reservable item.
      */
     public function show(ReservableItem $item) {
-        return response()->json($item);
+        return view('reservations.items.show', [
+            'item' => $item,
+            'firstDay' => Carbon::today()->startOfWeek()
+        ]);
     }
 
     /**

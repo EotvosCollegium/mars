@@ -23,7 +23,7 @@ class ReservationController extends Controller
      * Returns the reservation table for the washing machines.
      */
     public function indexForWashingMachines() {
-        return view('reservations.timetable', [
+        return view('reservations.washing_machines', [
             'items' => ReservableItem::where("type", "washing_machine")->get(),
             'firstDay' => Carbon::today()->startOfWeek() //for now
         ]);
