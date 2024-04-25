@@ -96,7 +96,7 @@ class UserPolicy
             return true;
         }
         if ($target->isCollegist()) {
-            return (Cache::remember($user->id.'_is_secretary/director/s_council', 60, function () use ($user) {
+            return (Cache::remember($user->id . '_is_secretary/director/s_council', 60, function () use ($user) {
                 return $user->hasRole([
                     Role::SECRETARY,
                     Role::DIRECTOR,
@@ -124,7 +124,7 @@ class UserPolicy
         if ($user->id == $target->id) {
             return true;
         }
-        if($user->can('viewAllApplications', User::class)) {
+        if ($user->can('viewAllApplications', User::class)) {
             return true;
         }
 
@@ -163,7 +163,7 @@ class UserPolicy
             Role::SECRETARY,
             Role::DIRECTOR,
             Role::WORKSHOP_LEADER,
-        Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS
+            Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS
         ]);
     }
 
@@ -271,6 +271,7 @@ class UserPolicy
                 Role::STUDENT_COUNCIL_SECRETARY
             ]);
         }
+
         return false;
     }
 
@@ -335,6 +336,9 @@ class UserPolicy
             if ($user->hasRole([Role::STUDENT_COUNCIL => Role::PRESIDENT])) {
                 return true;
             }
+            if ($object->name == Role::KKT_HANDLER) {
+                return $user->hasRole([Role::STUDENT_COUNCIL => Role::ECONOMIC_VICE_PRESIDENT]);
+            }
             if (in_array($object->name, Role::COMMITTEE_MEMBERS) || in_array($object->name, Role::COMMITTEE_REFERENTS)) {
                 $committee = preg_split("~-~", $object->name)[0];
                 return $user->hasRole([Role::STUDENT_COUNCIL => $committee . "-leader"]);
@@ -371,5 +375,23 @@ class UserPolicy
             return true;
         }
         return $user->roleWorkshops->has($workshop->id);
+    }
+
+    /**
+     * @param User $user
+     * @return bool
+     */
+    public function handleGuests(User $user): bool
+    {
+        return $user->hasRole(Role::STAFF);
+    }
+
+    /**
+     * @param User $user
+     * @return bool
+     */
+    public function invite(User $user): bool
+    {
+        return $user->hasRole(Role::SECRETARY);
     }
 }

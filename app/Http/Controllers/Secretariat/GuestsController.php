@@ -3,27 +3,31 @@
 namespace App\Http\Controllers\Secretariat;
 
 use App\Http\Controllers\Controller;
+use App\Mail\ApprovedRegistration;
 use App\Models\Faculty;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Workshop;
 use Carbon\Carbon;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\View\View;
 
-class RegistrationsController extends Controller
+class GuestsController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('can:registration.handle');
-    }
-
+    /**
+     * Display the list of users waiting for approval.
+     * @return View
+     * @throws AuthorizationException
+     */
     public function index()
     {
+        $this->authorize('handleGuests', User::class);
         $users = User::withoutGlobalScope('verified')
             ->where('verified', false)
             ->whereHas('roles', function (Builder $query) {
@@ -35,8 +39,16 @@ class RegistrationsController extends Controller
         return view('secretariat.registrations.list', ['users' => $users]);
     }
 
+    /**
+     * Verify a new user.
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws AuthorizationException
+     */
     public function accept(Request $request)
     {
+        $this->authorize('handleGuests', User::class);
+
         $user = User::withoutGlobalScope('verified')->findOrFail($request->id);
         if ($user->verified) {
             return redirect()->route('secretariat.registrations');
@@ -51,14 +63,21 @@ class RegistrationsController extends Controller
 
         Cache::decrement('user');
 
-        // Send notification mail.
-        Mail::to($user)->queue(new \App\Mail\ApprovedRegistration($user->name));
+        Mail::to($user)->queue(new ApprovedRegistration($user->name));
 
         return redirect()->route('secretariat.registrations')->with('message', __('general.successful_modification'));
     }
 
+    /**
+     * Reject and delete a new user.
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws AuthorizationException
+     */
     public function reject(Request $request)
     {
+        $this->authorize('handleGuests', User::class);
+
         $user = User::withoutGlobalScope('verified')->findOrFail($request->id);
         if ($user->verified) {
             return redirect()->route('secretariat.registrations');
@@ -71,25 +90,4 @@ class RegistrationsController extends Controller
         return redirect()->route('secretariat.registrations')->with('message', __('general.successful_modification'));
     }
 
-    public function invite(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'email' => ['required', 'unique:users,email'],
-        ]);
-        $validator->validate();
-
-        $user = User::firstWhere('email', $request->email);
-        if (!$user) {
-            $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => \Hash::make(\Str::random(32)),
-                'verified' => true,
-            ]);
-        }
-
-        \Invytr::invite($user);
-        return redirect()->route('users.show', ['user' => $user->id])->with('message', __('registration.set_permissions'));
-    }
 }
