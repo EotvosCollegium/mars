@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Exports\ApplicantsExport;
+use App\Http\Controllers\Controller;
 use App\Models\ApplicationForm;
 use App\Models\Faculty;
-use App\Models\PeriodicEvents\PeriodicEventController;
+use App\Models\PeriodicEvents\HasPeriodicEvent;
 use App\Models\User;
 use App\Models\Workshop;
 use App\Models\RoleUser;
@@ -20,10 +21,15 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
-class ApplicationController extends PeriodicEventController
+class ApplicationController extends Controller
 {
-    protected const connectedToSemester = true;
-    protected const hasShowUntil = true;
+    use HasPeriodicEvent;
+
+    function __construct()
+    {
+        $this->hasShowUntil = true;
+        $this->connectedToSemester = true;
+    }
 
     private const EDUCATIONAL_ROUTE = 'educational';
     private const QUESTIONS_ROUTE = 'questions';
@@ -31,6 +37,15 @@ class ApplicationController extends PeriodicEventController
     private const DELETE_FILE_ROUTE = 'files.delete';
     private const ADD_PROFILE_PIC_ROUTE = 'files.profile';
     private const SUBMIT_ROUTE = 'submit';
+
+    /**
+     * @see PeriodicEventController::authorizeChangePeriodicEvent()
+     * @throws AuthorizationException
+     */
+    public function authorizeChangePeriodicEvent(): void
+    {
+        $this->authorize('finalize', ApplicationForm::class);
+    }
 
     /**
      * Return the view based on the request's page parameter.
@@ -301,7 +316,7 @@ class ApplicationController extends PeriodicEventController
         if ($user->application->missingData() == []) {
             $user->application->update(['status' => ApplicationForm::STATUS_SUBMITTED]);
             $user->internetAccess->setWifiCredentials($user->educationalInformation->neptun);
-            $user->internetAccess()->update(['has_internet_until' => $this::getDeadline()?->addMonth()]);
+            $user->internetAccess()->update(['has_internet_until' => $this->getDeadline()?->addMonth()]);
             return back()->with('message', 'Sikeresen véglegesítette a jelentkezését!');
         } else {
             return back()->with('error', 'Hiányzó adatok!');

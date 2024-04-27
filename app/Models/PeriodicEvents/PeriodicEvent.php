@@ -4,7 +4,6 @@ namespace App\Models\PeriodicEvents;
 
 use App\Models\Semester;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -27,18 +26,33 @@ class PeriodicEvent extends Model
         'extended_end_date' => 'datetime'
     ];
 
-    public function realEndDate(): Attribute
-    {
-        return Attribute::make(
-            get: function (): Carbon {
-                return Carbon::parse($this->extended_end_date ?? $this->end_date);
-            }
-        );
-    }
-
-    public function semester(): BelongsTo
+    public final function semester(): BelongsTo
     {
         return $this->belongsTo(Semester::class);
+    }
+
+    /**
+     * @return Carbon|null the start date of the current PeriodicEvent
+     */
+    public final function startDate(): ?Carbon
+    {
+        return Carbon::parse($this->start_date);
+    }
+
+    /**
+     * @return Carbon|null the end date of the current PeriodicEvent
+     */
+    public final function endDate(): ?Carbon
+    {
+        return Carbon::parse($this->extended_end_date ?? $this->end_date);
+    }
+
+    /**
+     * @return Carbon|null the end date of the current PeriodicEvent
+     */
+    public final function deadline(): ?Carbon
+    {
+        return $this->endDate();
     }
 
     /**
@@ -46,17 +60,17 @@ class PeriodicEvent extends Model
      * start date <= now <= (extended) end date
      * @return bool
      */
-    public function isActive(): bool
+    public final function isActive(): bool
     {
-        if(Carbon::parse($this->start_date)->isFuture()) return false;
-        if(Carbon::parse($this->real_end_date)->isPast()) return false;
+        if($this->startDate()->isFuture()) return false;
+        if($this->endDate()->isPast()) return false;
         return true;
     }
 
     /**
      * @return bool if the end date has been extended or not
      */
-    public function isExtended(): bool
+    public final function isExtended(): bool
     {
         return $this->extended_end_date != null;
     }
@@ -67,17 +81,16 @@ class PeriodicEvent extends Model
      */
     public static function listen(): void
     {
-        //TODO fire events
         foreach (PeriodicEvent::all() as $event) {
-            if (Carbon::parse($event->start_date)->isPast() && !$event->start_handled) {
-                app($event->event_model)::handleStart();
+            if ($event->startDate()->isPast() && !$event->start_handled) {
+                app($event->event_model)->handlePeriodicEventStart();
                 $event->start_handled = now();
                 $event->save(['timestamps' => false]);
             }
             //TODO reminders
 
-            if (Carbon::parse($event->real_end_date)->isPast() && !$event->end_handled) {
-                app($event->event_model)::handleEnd();
+            if ($event->endDate()->isPast() && !$event->end_handled) {
+                app($event->event_model)->handlePeriodicEventEnd();
                 $event->end_handled = now();
                 $event->save(['timestamps' => false]);
             }

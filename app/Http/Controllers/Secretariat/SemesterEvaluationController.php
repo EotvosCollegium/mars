@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Secretariat;
 
+use App\Http\Controllers\Controller;
 use App\Mail\EvaluationFormClosed;
 use App\Mail\StatusDeactivated;
 use App\Models\Faculty;
 use App\Models\GeneralAssemblies\GeneralAssembly;
-use App\Models\PeriodicEvents\PeriodicEventController;
+use App\Models\PeriodicEvents\HasPeriodicEvent;
 use App\Models\Role;
 use App\Models\RoleUser;
 use App\Models\Semester;
@@ -21,16 +22,20 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
-class SemesterEvaluationController extends PeriodicEventController
+class SemesterEvaluationController extends Controller
 {
-    /**
-     * Handle PeriodicEvent start.
-     */
-    public static function handleStart(): void
+    use HasPeriodicEvent;
+
+
+    public function authorizeChangePeriodicEvent(): void
+    {
+        // TODO
+    }
+
+    public function handlePeriodicEventStart(): void
     {
         self::sendEvaluationAvailableMail();
     }
-
 
     /**
      * Show the evaluation form.
@@ -58,11 +63,12 @@ class SemesterEvaluationController extends PeriodicEventController
 
     /**
      * Update form information.
+     * @throws \Exception
      */
     public function store(Request $request)
     {
         $this->authorize('is-collegist');
-        if (!SemesterEvaluation::isActive()) {
+        if (!self::isActive()) {
             return redirect('home')->with('error', 'Lejárt a határidő a kérdőív kitöltésére. Keresd fel a titkárságot.');
         }
 
@@ -95,9 +101,13 @@ class SemesterEvaluationController extends PeriodicEventController
         $validator->validate();
 
         $user = user();
-        $evaluation = $user->semesterEvaluations()->where('semester_id', Semester::current()->id)->first();
+        $semester = self::semester();
+        if(!$semester) {
+            throw new \Exception('No semester found for the event');
+        }
+        $evaluation = $user->semesterEvaluations()->where('semester_id', $semester->id)->first();
         if (!$evaluation) {
-            $evaluation = SemesterEvaluation::create(['semester_id' => Semester::current()->id, 'user_id' => $user->id]);
+            $evaluation = SemesterEvaluation::create(['semester_id' => $semester->id, 'user_id' => $user->id]);
         }
         switch ($request->section) {
             case 'alfonso':
@@ -159,7 +169,7 @@ class SemesterEvaluationController extends PeriodicEventController
     /**
      * Send out the request to fill out the form.
      */
-    public static function sendEvaluationAvailableMail()
+    public static function sendEvaluationAvailableMail(): void
     {
         Mail::to(config('contacts.mail_membra'))->queue(new \App\Mail\EvaluationFormAvailable());
         if (User::secretary()) {
@@ -173,7 +183,7 @@ class SemesterEvaluationController extends PeriodicEventController
     /**
      * Send out a reminder.
      */
-    public static function sendEvaluationReminder()
+    public static function sendEvaluationReminder(): void
     {
         //TODO
         $userCount = self::usersHaventFilledOutTheForm()->count();
