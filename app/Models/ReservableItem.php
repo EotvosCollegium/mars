@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 
 use Carbon\Carbon;
 
@@ -153,5 +154,24 @@ class ReservableItem extends Model
             return ReservableItem::OUT_OF_ORDER;
         }
         else return ReservableItem::FREE;
+    }
+
+    /**
+     * Returns an ordered collection of reservations in a given time interval
+     * (those that do not touch it only with their endpoints).
+     */
+    public function reservationsInSlot(Carbon $from, Carbon $until): Collection {
+        return Reservation::where('reservable_item_id', $this->id)
+                          ->where(function (Builder $query) use ($from, $until) {
+                            return $query->where(function (Builder $query) use ($from, $until) {
+                                           return $query->where('reserved_from', '>=', $from)
+                                                        ->where('reserved_from', '<', $until);
+                                         })
+                                         ->orWhere(function (Builder $query) use ($from) {
+                                            return $query->where('reserved_from', '<=', $from)
+                                                         ->where('reserved_until', '>', $from);
+                                         });
+                          })->orderBy('reserved_from')
+                          ->get();
     }
 }

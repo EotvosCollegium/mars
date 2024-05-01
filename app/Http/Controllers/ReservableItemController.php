@@ -33,12 +33,98 @@ class ReservableItemController extends Controller
     }
 
     /**
-     * Shows the details of a reservable item.
+     * Creates an ordered array of blocks to be displayed in a timetable
+     * for a given item and timespan.
+     * A block contains a "from" and "until" time (in Carbon instances)
+     * and a "reservation_id" if it belongs to a reservation
+     * (for a free span, it is null).
+     */
+    public static function listOfBlocks(ReservableItem $item, Carbon $from, Carbon $until): array {
+        $reservations = $item->reservationsInSlot($from, $until)->all();
+
+        $blocks = [];
+        // whether the currently created block is for a reservation or for a free span
+        $isForReservation = 0 < count($reservations) && $reservations[0]->reserved_from <= $from;
+        $currentStart = $from;
+        $i = 0;
+        while ($i < count($reservations)) {
+            $block = [];
+            $block["from"] = $currentStart;
+            if ($isForReservation) {
+                $block["until"] = $reservations[$i]->reserved_until;
+                $block["reservation_id"] = $reservations[$i]->id;
+                $blocks[] = $block;
+                $currentStart = $block["until"];
+                $isForReservation = false;
+                ++$i;
+            } else if ($currentStart == $reservations[$i]->reserved_from) {
+                // that means there is no free span until the next reservation
+                $isForReservation = true;
+            } else {
+                $block["until"] = $reservations[$i]->reserved_from;
+                $block["reservation_id"] = null;
+                $blocks[] = $block;
+                $currentStart = $block["until"];
+                $isForReservation = true;
+            }
+        }
+
+        if ($currentStart < $until) {
+            // in the end, if we still have a free span after the last reservation:
+            $block = [];
+            $block["from"] = $currentStart;
+            $block["until"] = $until;
+            $block["reservation_id"] = null;
+            $blocks[] = $block;
+        } else {
+            // we cut down the part that is after $until
+            $blocks[count($blocks)-1]["until"] = $until;
+        }
+
+        // and we have to split those that span through midnight:
+        $splitBlocks = [];
+        $i = 0;
+        while ($i<count($blocks)) {
+            $block=$blocks[$i];
+            $endOfThatDay = Carbon::make($block["from"])->copy();
+            $endOfThatDay->hour = 0; $endOfThatDay->minute = 0;
+            $endOfThatDay->addDays(1);
+            if ($block["until"] <= $endOfThatDay) {
+                $newBlock = [];
+                $newBlock["from"] = Carbon::make($block["from"]);
+                $newBlock["until"] = Carbon::make($block["until"]);
+                $newBlock["reservation_id"] = $block["reservation_id"];
+                $splitBlocks[]=$newBlock;
+                ++$i;
+            } else {
+                $newBlock = [];
+                $newBlock["from"] = Carbon::make($block["from"]);
+                $newBlock["until"] = $endOfThatDay;
+                $newBlock["reservation_id"] = $block["reservation_id"];
+                $splitBlocks[]=$newBlock;
+                // we can actually modify $blocks
+                // as we won't use it again
+                $blocks[$i]["from"]=$endOfThatDay;
+            }
+        }
+
+        return $splitBlocks;
+    }
+
+    /**
+     * Shows the details of a reservable item,
+     * with the blocks of the timetable
+     * in an array called "blocks".
      */
     public function show(ReservableItem $item) {
+        // for now:
+        $from = Carbon::today()->startOfWeek();
+        $until = $from->copy()->addDays(7);
         return view('reservations.items.show', [
             'item' => $item,
-            'firstDay' => Carbon::today()->startOfWeek()
+            'from' => $from,
+            'until' => $until,
+            'blocks' => ReservableItemController::listOfBlocks($item, $from, $until)
         ]);
     }
 

@@ -64,7 +64,6 @@ class ReservationSeeder extends Seeder
         // Let's try create five for each day at first;
         // but delete the ones conflicting with older ones.
         foreach($rooms as $room) {
-            echo $room->id . "\n";
             for($day = 0; $day < 14; ++$day) {
                 for($i = 0; $i < 5; ++$i) {
                     $hour = rand(0, 23);
@@ -84,9 +83,6 @@ class ReservationSeeder extends Seeder
                     $reservation->verified = $faker->boolean(50);
 
                     $status = $room->statusOfSlot($from, $until);
-                    if ($room->id == 3) {
-                        echo $from . ' ' . $until . ' ' . $status . "\n";
-                    }
                     if (ReservableItem::FREE == $status) {
                         $reservation->save();
                     }

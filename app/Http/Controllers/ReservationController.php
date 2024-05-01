@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
+use App\Http\Controllers\ReservableItemController;
 use App\Models\ReservableItem;
 use App\Models\Reservation;
 use App\Models\User;
@@ -23,9 +24,17 @@ class ReservationController extends Controller
      * Returns the reservation table for the washing machines.
      */
     public function indexForWashingMachines() {
+        $items = ReservableItem::where("type", "washing_machine")->get();
+        // for now:
+        $from = Carbon::today()->startOfWeek();
+        $until = $from->copy()->addDays(7);
         return view('reservations.washing_machines', [
-            'items' => ReservableItem::where("type", "washing_machine")->get(),
-            'firstDay' => Carbon::today()->startOfWeek() //for now
+            'items' => $items,
+            'from' => $from,
+            'until' => $until,
+            'blocks' => $items->map(function ($item) use ($from, $until)
+              {return ReservableItemController::listOfBlocks($item, $from, $until);
+            })
         ]);
     }
 
