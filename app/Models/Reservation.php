@@ -51,4 +51,20 @@ class Reservation extends Model
             return $this->reserved_from < $that->reserved_until;
         }
     }
+
+    /**
+     * A name to be displayed in a timetable.
+     */
+    public function displayName(): string
+    {
+        if ($reservation->reservableItem->type == 'washing_machine') {
+            if (!is_null($reservation->user)) {
+                return $reservation->user->name;
+            }
+        } else {
+            if (!is_null($reservation->title)) {
+                return $reservation->title;
+            }
+        }
+    }
 }

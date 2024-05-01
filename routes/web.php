@@ -35,6 +35,8 @@ use App\Http\Controllers\StudentsCouncil\GeneralAssemblyController;
 use App\Http\Controllers\StudentsCouncil\GeneralAssemblyPresenceCheckController;
 use App\Http\Controllers\StudentsCouncil\GeneralAssemblyQuestionController;
 use App\Http\Controllers\StudentsCouncil\MrAndMissController;
+use App\Http\Controllers\ReservableItemController;
+use App\Http\Controllers\ReservationController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -265,5 +267,12 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
         Route::resource('items', ReservableItemController::class)->only([
             'index', 'create', 'store', 'show', 'delete'
         ]);
+
+        Route::get('/for_item/{item}', [ReservationController::class, 'index'])->name('index');
+        Route::get('/washing_machines', [ReservationController::class, 'indexForWashingMachines'])->name('index_for_washing_machines');
+        Route::get('/{reservation}', [ReservationController::class, 'show'])->name('show');
+        Route::get('/create/for_item/{item}', [ReservationController::class, 'create'])->name('create');
+        Route::post('/for_item/{item}', [ReservationController::class, 'store'])->name('store');
+        Route::post('/{reservation}/delete', [ReservationController::class, 'delete'])->name('delete');
     });
 });

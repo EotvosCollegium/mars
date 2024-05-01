@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
+use Carbon\Carbon;
+
 use App\Models\ReservableItem;
 use App\Models\Reservation;
 
@@ -27,16 +29,10 @@ class ReservationController extends Controller
      */
     public function indexForWashingMachines()
     {
-        $machines = ReservableItem::where('type', 'washing_machine')
-                                    ->get()
-                                    ->map(function (ReservableItem $machine) {
-            return [
-                'reservable_item' => $machine,
-                'reservation' => Reservations::where('reservable_item_id', $machine->id)
-                                               ->orderBy('reserved_from')
-                                               ->get()
-            ];
-        });
+        return view('reservations.index_for_washing_machines', [
+            'items' => ReservableItem::where('type', 'washing_machine')->get(),
+            'firstDay' => Carbon::today()->startOfWeek()
+        ]);
     }
 
     /**
@@ -80,11 +76,21 @@ class ReservationController extends Controller
         $newReservation->reserved_from = $validatedData['reserved_from'];
         $newReservation->reserved_until = $validatedData['reserved_until'];
 
-        // TODO: check whether it conflicts with anything
+        if (!empty($item->reservationsInSlot($newReservation->reserved_from, $newReservation->reserved_until))) {
+            abort(409, 'Reservation already exists in the given interval');
+        }
 
         // and finally:
         $newReservation->save();
 
         return response()->json($newReservation);
+    }
+
+    /**
+     * Deletes a reservation.
+     */
+    public function delete(Reservation $reservation) {
+        $reservation->delete();
+        return redirect()->back()->with('message', __('general.successful_modification'));
     }
 }

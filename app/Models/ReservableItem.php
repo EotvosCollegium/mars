@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Builder;
 
 use Carbon\Carbon;
 
@@ -74,5 +75,24 @@ class ReservableItem extends Model
                          ->where('reserved_until', '>', $now)
                          ->doesntExist();
         }
+    }
+
+    /**
+     * Returns an array of reservations in a given time interval
+     * (those that do not only touch it with their endpoints).
+     */
+    public function reservationsInSlot(Carbon $from, Carbon $until) {
+        return Reservation::where('reservable_item_id', $this->id)
+                          ->where(function (Builder $query) use ($from, $until) {
+                            return $query->where(function (Builder $query) use ($from, $until) {
+                                           return $query->where('reserved_from', '>=', $from)
+                                                        ->where('reserved_from', '<', $until);
+                                         })
+                                         ->orWhere(function (Builder $query) use ($from) {
+                                            return $query->where('reserved_from', '<=', $from)
+                                                         ->where('reserved_until', '>', $from);
+                                         });
+                          })->orderBy('reserved_from')
+                          ->get();
     }
 }
