@@ -15,7 +15,7 @@ class KktNetreg extends Component
     public $workshops = [];
 
     /**
-     * Return the `users` property.
+     * Return all the users who have not paid their community tax in this semester.
      */
     public function getUnpaidUsersProperty()
     {
@@ -35,6 +35,9 @@ class KktNetreg extends Component
     }
 
 
+    /**
+     * Return all the completed payments in this semester.
+     */
     public function getPaymentsProperty()
     {
         $query = Transaction::whereIn('payment_type_id', [PaymentType::kkt()->id, PaymentType::netreg()->id])->where('semester_id', Semester::current()->id);
@@ -48,17 +51,11 @@ class KktNetreg extends Component
                 });
             }
         });
-        // $query->where('payer', function (Builder $query) {
-            //     $query->orderBy('name');
-            // });
 
         return $query
             ->with(['payer'])
             ->get();
-
-
     }
-
 
     /**
      * Add a workshop to filter on.
