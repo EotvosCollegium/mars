@@ -80,4 +80,19 @@ class Reservation extends Model
         $diff = $beginning->diffInMinutes($end);
         return ($diff >= 0) ? $diff : 0;
     }
+
+    /**
+     * The name to be displayed in the timetable.
+     * If the reservation has a name, than that;
+     * if not, then the name of the owner;
+     * if not even that, an empty string.
+     * @return string
+     */
+    public function displayName(): string
+    {
+        if (!is_null($this->name)) return $this->name;
+        else if (!is_null($this->user)) {
+            return $this->user->name;
+        } else return "";
+    }
 }

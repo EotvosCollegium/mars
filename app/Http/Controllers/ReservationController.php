@@ -42,7 +42,7 @@ class ReservationController extends Controller
      * Returns details about a reservation.
      */
     public function show(Reservation $reservation) {
-        return response()->json($reservation);
+        return view('reservations.show', ['reservation' => $reservation]);
     }
 
     /**
@@ -102,6 +102,6 @@ class ReservationController extends Controller
 
     public function delete(Reservation $reservation) {
         $reservation->delete();
-        return redirect(route('reservations.index', ['item' => $reservation->reservableItem]));
+        return redirect(route('reservations.items.show', ['item' => $reservation->reservableItem]));
     }
 }

@@ -12,7 +12,7 @@ $columnWidth = 100.0 / ($itemCount * 7.0);
 $rowHeight = 100.0 / 24.0; // for one hour
 @endphp
 
-<div style="position: relative; height: 500px;">
+<div style="position: relative; height: 2000px;">
     @for ($i=0; $i<$itemCount; ++$i)
         @php
         $item = $items[$i];
@@ -31,6 +31,9 @@ $rowHeight = 100.0 / 24.0; // for one hour
             $height = ($endHourFloat - $startHourFloat) * $rowHeight;
             @endphp
 
+            @if(!is_null($block["reservation_id"]))
+            <a href="{{ route('reservations.show', $block['reservation_id']) }}">
+            @endif
             <div style="position: absolute; left: {{$left}}%; top: {{$top}}%; width: {{$columnWidth}}%; height: {{$height}}%"
             @class([
                 'timetable-block',
@@ -38,7 +41,13 @@ $rowHeight = 100.0 / 24.0; // for one hour
                 'green' => is_null($block['reservation_id']),
                 'darken-4'
             ])>
+                @if(!is_null($block["reservation_id"]))
+                    {{ App\Models\Reservation::find($block["reservation_id"])->displayName() }}
+                @endif
             </div>
+            @if(!is_null($block["reservation_id"]))
+            </a>
+            @endif
         @endforeach
     @endfor
 </div>
