@@ -8,7 +8,7 @@ $itemCount = count($items);
 
 // Parameters for width, height etc.
 // These are percentages.
-$columnWidth = 100.0 / ($itemCount * 7.0);
+$columnWidth = 100.0 / ($itemCount * $from->diffInDays($until));
 $rowHeight = 100.0 / 24.0; // for one hour
 @endphp
 
