@@ -29,9 +29,16 @@ class ReservationController extends Controller
      */
     public function indexForWashingMachines()
     {
+        $items = ReservableItem::where('type', 'washing_machine')->get();
+        $from = Carbon::today()->startOfWeek();
+        $until = $from->copy()->addDays(7);
         return view('reservations.index_for_washing_machines', [
-            'items' => ReservableItem::where('type', 'washing_machine')->get(),
-            'firstDay' => Carbon::today()->startOfWeek()
+            'items' => $items->all(),
+            'from' => $from,
+            'until' => $until,
+            'blocks' => $items->map(function (ReservableItem $item) use ($from, $until) {
+                return ReservableItemController::listOfBlocks($item, $from, $until);
+            })
         ]);
     }
 
@@ -40,7 +47,9 @@ class ReservationController extends Controller
      */
     public function show(Reservation $reservation)
     {
-        return response()->json($reservation);
+        return view('reservations.show', [
+            'reservation' => $reservation
+        ]);
     }
 
     /**

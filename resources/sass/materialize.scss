@@ -1,3 +1,5 @@
+$isDebug: true;
+
 //custom color
 $coli: (
     "blue": if($isDebug == "true", #5e1a10, #242851),
@@ -275,6 +277,11 @@ body.dark a.btn {
 
 .hidden {
     display: none;
+}
+
+// for the colourful blocks in the timetable
+.timetable-block {
+    border: 3px solid white;
 }
 
 @mixin column-count($ct) {

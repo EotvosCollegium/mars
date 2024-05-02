@@ -57,14 +57,15 @@ class Reservation extends Model
      */
     public function displayName(): string
     {
-        if ($reservation->reservableItem->type == 'washing_machine') {
-            if (!is_null($reservation->user)) {
-                return $reservation->user->name;
+        if ($this->reservableItem->type == 'washing_machine') {
+            if (!is_null($this->user)) {
+                return $this->user->name;
             }
         } else {
-            if (!is_null($reservation->title)) {
-                return $reservation->title;
+            if (!is_null($this->title)) {
+                return $this->title;
             }
         }
+        return "";
     }
 }
