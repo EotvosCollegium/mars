@@ -102,7 +102,8 @@ class ReservationController extends Controller
     public static function abortIfConflicts(Reservation $reservation) {
         // there must not be any conflict with previous reservations
         $conflicts = $reservation->reservableItem
-            ->reservationsInSlot(Carbon::make($reservation->reserved_from), Carbon::make($reservation->reserved_until));
+            ->reservationsInSlot(Carbon::make($reservation->reserved_from), Carbon::make($reservation->reserved_until))
+            ->filter(function ($otherReservation) use ($reservation) {return $otherReservation->id != $reservation->id;});
         if (!$conflicts->isEmpty()) {
             // 409 Conflict
             abort(409, "reservation conflicts with a previous one: " .
