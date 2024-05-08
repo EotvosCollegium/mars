@@ -24,30 +24,7 @@ if(isset($reservation)) $item = $reservation->reservableItem;
                                                : route('reservations.store', ['item' => $item]) }}"
                 method="POST">
                 @csrf
-                {{--
-                <table>
-                    <tr>
-                        <th>@lang('reservations.item')</th>
-                        <td>{{$reservation->reservableItem->name}}</td>
-                    </tr>
-                    <tr>
-                        <th>@lang('general.user')</th>
-                        <td>{{is_null($reservation->user) ? "" : $reservation->user->name}}</td>
-                    </tr>
-                    <tr>
-                        <th>@lang('reservations.from')</th>
-                        <td>{{$reservation->reserved_from}}</td>
-                    </tr>
-                    <tr>
-                        <th>@lang('reservations.until')</th>
-                        <td>{{$reservation->reserved_until}}</td>
-                    </tr>
-                    <tr>
-                        <th>@lang('general.note')</th>
-                        <td>{{$reservation->note}}</td>
-                    </tr>
-                </table>
-                --}}
+
                 <div class="card-content">
                     <span class="card-title">@lang('reservations.item')</span>
                     <div class="row">

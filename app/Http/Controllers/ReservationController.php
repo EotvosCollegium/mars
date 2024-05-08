@@ -67,7 +67,7 @@ class ReservationController extends Controller
     public static function validateReservationRequest(Request $request): array {
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
-            'note'  => 'required|string|max:2047',
+            'note'  => 'nullable|string|max:2047',
             'reserved_from_date' => 'required|date_format:Y-m-d',
             'reserved_from_time' => 'required|date_format:H:i',
             'reserved_until_date' => 'required|date_format:Y-m-d',
@@ -77,17 +77,17 @@ class ReservationController extends Controller
         $validator->after(function ($validator) {
             $reserved_from = Carbon::make(
                 $validator->safe()->reserved_from_date
-                . ' ' . $validator->safe->reserved_from_time
+                . ' ' . $validator->safe()->reserved_from_time
             );
             $reserved_until = Carbon::make(
                 $validator->safe()->reserved_until_date
-                . ' ' . $validator->safe->reserved_until_time
+                . ' ' . $validator->safe()->reserved_until_time
             );
 
             if ($reserved_from > $reserved_until) {
                 $validator->errors()->add(
-                    // TODO: it does not find the field yet
-                    'reserved_until_date', 'A reservation cannot end before its start.'
+                    // TODO: it does not find the correct field yet
+                    'title', 'A reservation cannot end before its start.'
                 );
             }
         });
