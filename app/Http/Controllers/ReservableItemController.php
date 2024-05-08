@@ -16,6 +16,8 @@ class ReservableItemController extends Controller
      * Lists reservable items (by default, both types).
      */
     public function index(Request $request) {
+        $this->authorize('viewAny', ReservableItem::class);
+
         $type = $request->type;
         if ("washing_machine" == $type) {
             $items = ReservableItem::where("type", "washing_machine")->get();
@@ -117,6 +119,8 @@ class ReservableItemController extends Controller
      * in an array called "blocks".
      */
     public function show(ReservableItem $item) {
+        $this->authorize('viewAny', ReservableItem::class);
+
         // for now:
         $from = Carbon::today()->startOfWeek();
         $until = $from->copy()->addDays(7);
@@ -132,6 +136,8 @@ class ReservableItemController extends Controller
      * Shows a form for creating a new item.
      */
     public function create() {
+        $this->authorize('administer', ReservableItem::class);
+
         return response()->json(["itten lesz a szép űrlap"]);
     }
 
@@ -140,6 +146,8 @@ class ReservableItemController extends Controller
      * after validation.
      */
     public function store(Request $request) {
+        $this->authorize('administer', ReservableItem::class);
+
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'type' => Rule::in(["washing_machine", "room"]),
@@ -180,9 +188,9 @@ class ReservableItemController extends Controller
 
     public function delete(ReservableItem $item)
     {
-        //$this->authorize('delete', ReservableItem::class);
+        $this->authorize('administer', ReservableItem::class);
 
-        // notify people who have reserved it
+        // TODO: notify people who have reserved it
 
         $item->delete();
 

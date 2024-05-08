@@ -29,23 +29,25 @@ $rowHeight = 100.0 / 24.0; // for one hour
             : ($block["until"]->hour + $block["until"]->minute / 60.0);
             $top = $startHourFloat * $rowHeight;
             $height = ($endHourFloat - $startHourFloat) * $rowHeight;
+            $reservation = is_null($block['reservation_id']) ? null : App\Models\Reservation::find($block["reservation_id"]);
             @endphp
 
-            @if(!is_null($block["reservation_id"]))
+            @if(!is_null($reservation))
             <a href="{{ route('reservations.show', $block['reservation_id']) }}">
             @endif
             <div style="position: absolute; left: {{$left}}%; top: {{$top}}%; width: {{$columnWidth}}%; height: {{$height}}%"
             @class([
                 'timetable-block',
-                'red' => !is_null($block['reservation_id']),
-                'green' => is_null($block['reservation_id']),
-                'darken-4'
+                'red' => !is_null($reservation),
+                'green' => is_null($reservation),
+                'darken-4' => is_null($reservation) || $reservation->verified,
+                'lighten-4' => !is_null($reservation) && !$reservation->verified
             ])>
-                @if(!is_null($block["reservation_id"]))
-                    {{ App\Models\Reservation::find($block["reservation_id"])->displayName() }}
+                @if(!is_null($reservation))
+                    {{ $reservation->displayName() }}
                 @endif
             </div>
-            @if(!is_null($block["reservation_id"]))
+            @if(!is_null($reservation))
             </a>
             @endif
         @endforeach

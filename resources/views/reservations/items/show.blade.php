@@ -12,6 +12,11 @@
         <div class="card">
             <div class="card-content">
                 <span class="card-title">{{ $item->name }}</span>
+                @can('requestReservation', $item)
+                    <a href="{{ route('reservations.create', ['item' => $item]) }}" class="btn-floating waves-effect waves-light right">
+                        <i class="material-icons">add</i>
+                    </a>
+                @endcan
                 @include('reservations.timetable')
             </div>
         </div>

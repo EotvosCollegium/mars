@@ -37,12 +37,18 @@
                         <td>{{$reservation->note}}</td>
                     </tr>
                 </table>
-
+            </div>
+            @can('modify', $reservation)
+            <div class="card-action right-align">
+                <a href="{{ route('reservations.edit', $reservation) }}" class="btn waves-effect">
+                    @lang('general.edit')
+                </a>
                 <form action="{{ route('reservations.delete', $reservation->id) }}" method="POST">
                     @csrf
                     <x-input.button text="general.delete" class="red" />
                 </form>
             </div>
+            @endcan
         </div>
     </div>
 </div>
