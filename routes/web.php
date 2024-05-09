@@ -121,8 +121,9 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     Route::post('print-job', [PrintJobController::class, 'store'])->name('print-job.store'); // print.print
     Route::put('/print-job/{job}', [PrintJobController::class, 'update'])->name('print-job.update'); // print.print_jobs.cancel
 
-    Route::get('/free-pages/{filter?}', [FreePagesController::class, 'indexFreePages'])->name('free-pages.index'); // print.free_pages.list, print.free_pages.list.all
+    Route::get('/free-pages', [FreePagesController::class, 'index'])->name('free-pages.index'); // print.free_pages.list, print.free_pages.list.all
     Route::post('/free-pages', [FreePagesController::class, 'store'])->name('free-pages.store'); // print.free_pages
+    Route::get('/free-pages/admin', [FreePagesController::class, 'adminIndex'])->name('free-pages.index.admin'); // print.free_pages.manage
 
     Route::put('/print-account', [PrintAccountController::class, 'update'])->name('print-account.update'); // print.transfer-balance, print.modify
 

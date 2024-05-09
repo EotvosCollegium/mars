@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Enums\PrintJobStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Log;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Container\ContainerExceptionInterface;
-use Symfony\Component\Process\Process;
+use App\Utils\Process;
 
 class Printer extends Model {
     use HasFactory;
@@ -32,33 +33,6 @@ class Printer extends Model {
      */
     public function printJobs() {
         return $this->hasMany(PrintJob::class);
-    }
-
-    /**
-     * Attemts to cancel the given `PrintJob`. Returns wether it was successful.
-     * @param PrintJob $printJob 
-     * @return PrinterCancelResult
-     */
-    public function cancelPrintJob(PrintJob $printJob) {
-        $process = new Process(['cancel', $printJob->job_id, '-h', "$this->ip:$this->port"]);
-        if (config('app.debug')) {
-            // cancel(1) exits with status code 0 if it succeeds
-            $result = ['output' => '', 'exit_code' => 0];
-        } else {
-            $process->run();
-            $result = ['output' => $process->getOutput(), 'exit_code' => $process->getExitCode()];
-        }
-        Log::info([$process->getCommandLine(), $result]);
-        if ($result['exit_code'] == 0) {
-            return PrinterCancelResult::Success;
-        }
-        if (strpos($result['output'], "already canceled") !== false) {
-            return PrinterCancelResult::AlreadyCancelled;
-        }
-        if (strpos($result['output'], "already completed") !== false) {
-            return PrinterCancelResult::AlreadyCompleted;
-        }
-        return PrinterCancelResult::CannotCancel;
     }
 
     /**
@@ -104,41 +78,30 @@ class Printer extends Model {
     }
 
     /**
-     * Returns the number of pages in the PDF document at the given path.
-     * @param string $path 
-     * @return int 
-     */
-    public static function getDocumentPageNumber(string $path): int {
-        $process = new Process(['pdfinfo', $path, '|', 'grep', "'^Pages'", '|', 'awk', "'{print $2}'"]);
-        if (config('app.debug')) {
-            $result = rand(1, 10);
-        } else {
-            $process->run();
-            $result = intval($process->getOutput());
-        }
-        Log::info([$process->getCommandLine(), $result]);
-        return $result;
-    }
-
-    /**
      * Returns the completed printjobs for this printer.
-     * @return void 
+     * @return array 
      * @throws NotFoundExceptionInterface 
      * @throws ContainerExceptionInterface 
      */
     public function getCompletedPrintJobs() {
         try {
             $process = new Process(['lpstat', '-W', 'completed', '-o', $this->name, '-h', "$this->ip:$this->port", '|', 'awk', "'{print $1}'"]);
-            if (config('app.debug')) {
-                $result = [];
-            } else {
-                $process->run();
-                $result = $process->getOutput();
-            }
-            Log::info([$process->getCommandLine(), $result]);
+            $process->run();
+            $result = explode("\n", $process->getOutput());
+            return $result;
         } catch (\Exception $e) {
             Log::error("Printing error at line: " . __FILE__ . ":" . __LINE__ . " (in function " . __FUNCTION__ . "). " . $e->getMessage());
         }
+    }
+
+    /**
+     * Updates the state of the completed printjobs to `PrintJobStatus::SUCCESS`.
+     */
+    public function updateCompletedPrintJobs() {
+        PrintJob::whereIn(
+            'job_id', 
+            $this->getCompletedPrintJobs()
+        )->update(['state' => PrintJobStatus::SUCCESS]);
     }
 }
 

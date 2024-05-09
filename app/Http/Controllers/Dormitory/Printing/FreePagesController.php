@@ -13,28 +13,11 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class FreePagesController extends Controller
 {
     /**
-     * Returns a paginated list of `FreePages`.
-     * @param null|string $filter Decides wether all `FreePages` or just the user's `FreePages` should be listed.
+     * Returns a paginated list of the current user's `FreePages`.
      * @return LengthAwarePaginator
      */
-    public function indexFreePages(?string $filter = null)
+    public function index()
     {
-        if ($filter === "all") {
-            $this->authorize('viewAny', FreePages::class);
-
-            return $this->freePagesPaginator(
-                freePages: FreePages::with('user'),
-                columns: [
-                    'amount',
-                    'deadline',
-                    'modifier',
-                    'comment',
-                    'user.name',
-                    'created_at',
-                ]
-            );
-        }
-
         $this->authorize('viewSelf', FreePages::class);
 
         return $this->freePagesPaginator(
@@ -47,6 +30,28 @@ class FreePagesController extends Controller
             ]
         );
     }
+
+    /**
+     * Returns a paginated list of all `FreePages`.
+     * @return LengthAwarePaginator
+     */
+    public function adminIndex() {
+        $this->authorize('viewAny', FreePages::class);
+
+        return $this->freePagesPaginator(
+            freePages: FreePages::with('user'),
+            columns: [
+                'amount',
+                'deadline',
+                'modifier',
+                'comment',
+                'user.name',
+                'created_at',
+            ]
+        );
+    }
+
+
     /**
      * Private helper function to create a paginator for `FreePages`.
      */

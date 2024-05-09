@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\PrintJobStatus;
+use App\Utils\Process;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -107,13 +108,25 @@ class PrintJob extends Model
     }
 
     /**
-     * Gets the printjob-status with every printer, updates the status of the completed printjobs.
+     * Attemts to cancel the given `PrintJob`. Returns wether it was successful.
+     * @param PrintJob $this 
+     * @return PrinterCancelResult
      */
-    public static function checkAndUpdateStatuses()
-    {
-        foreach(PrintJob::query()->where('state', PrintJobStatus::QUEUED)->whereNotNull('printer_id')->pluck('printer_id')->unique() as $printer_id) {
-            $printJobs = Printer::find($printer_id)->getCompletedPrintJobs();
-            PrintJob::whereIn('job_id', $printJobs)->update(['state' => PrintJobStatus::SUCCESS]);
+    public function cancel() {
+        $printer = $this->printer ?? Printer::firstWhere('name', config('print.printer_name'));
+        $process = new Process(['cancel', $this->job_id, '-h', "$printer->ip:$printer->port"]);
+        $process->run();
+        $result = ['output' => $process->getOutput(), 'exit_code' => $process->getExitCode()];
+
+        if ($result['exit_code'] == 0) {
+            return PrinterCancelResult::Success;
         }
+        if (strpos($result['output'], "already canceled") !== false) {
+            return PrinterCancelResult::AlreadyCancelled;
+        }
+        if (strpos($result['output'], "already completed") !== false) {
+            return PrinterCancelResult::AlreadyCompleted;
+        }
+        return PrinterCancelResult::CannotCancel;
     }
 }

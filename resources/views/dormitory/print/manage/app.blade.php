@@ -30,7 +30,7 @@
         </div>
     </div>
     <div class="col s12">
-        @include("dormitory.print.free", ['route' => route('free-pages.index', ['filter' => 'all']), 'admin' => true])
+        @include("dormitory.print.free", ['route' => route('free-pages.index.admin'), 'admin' => true])
     </div>
     <div class="col s12">
         @include("dormitory.print.history", ['route' => route('print-job.index', ['filter' => 'all']), 'admin' => true])

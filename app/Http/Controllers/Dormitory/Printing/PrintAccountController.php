@@ -6,12 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Mail\ChangedPrintBalance;
 use App\Models\Checkout;
 use App\Models\PaymentType;
+use App\Models\PrintAccount;
 use App\Models\Semester;
 use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Container\ContainerExceptionInterface;
@@ -34,84 +36,103 @@ class PrintAccountController extends Controller
         $printAccount = User::find($request->get('user'))->printAccount;
 
         // If user can not even transfer balance, we can stop here
-        if (user()->cannot('transferBalance', $printAccount)) {
-            abort(403);
-        }
+        $this->authorize('transferBalance', $printAccount);
 
         $otherAccount = $request->other_user ? User::find($request->get('other_user'))->printAccount : null;
 
         // This is a transfer between accounts
         if ($otherAccount !== null) {
-            // Cannot transfer to yourself
-            if ($otherAccount->user_id === $printAccount->user_id) {
-                abort(400);
-            }
-
-            // Cannot transfer from other user's account (even if you are admin)
-            if ($printAccount->user_id !== user()->id) {
-                abort(403);
-            }
-
-            $amount = $request->get('amount');
-
-            // This would be effectively stealing printing money from the other account
-            if ($amount < 0) {
-                abort(400);
-            }
-
-            // Cannot transfer if there is not enough balance to be transfered
-            if ($printAccount->balance < $amount) {
-                return $this->returnNoBalance();
-            }
-
-            $printAccount->update([
-                'balance' => $printAccount->balance - $amount,
-                'last_modified_by' => user()->id,
-            ]);
-
-            $otherAccount->update([
-                'balance' => $otherAccount->balance + $amount,
-                'last_modified_by' => user()->id,
-            ]);
-
-            Mail::to($printAccount->user)->queue(new ChangedPrintBalance($printAccount->user, $request->get('amount'), user()->name));
-
-            return redirect()->back()->with('message', __('general.successful_transaction'));
+            return $this->transferBalance($printAccount, $otherAccount, $request->get('amount'));
         }
         // This is a modification of the current account
         else {
-            // Only admins can modify accounts
-            if (user()->cannot('modify', $printAccount)) {
-                abort(403);
-            }
-
-            $amount = $request->get('amount');
-
-            if ($amount < 0 && $printAccount->balance < $amount) {
-                $this->returnNoBalance();
-            }
-
-            $printAccount->update([
-                'balance' => $printAccount->balance + $amount,
-                'last_modified_by' => user()->id,
-            ]);
-
-            Mail::to($printAccount->user)->queue(new ChangedPrintBalance($printAccount->user, $request->get('amount'), user()->name));
-
-            $adminCheckout = Checkout::admin();
-            Transaction::create([
-                'checkout_id' => $adminCheckout->id,
-                'receiver_id' => user()->id,
-                'payer_id' => $printAccount->user->id,
-                'semester_id' => Semester::current()->id,
-                'amount' => $amount,
-                'payment_type_id' => PaymentType::print()->id,
-                'comment' => null,
-                'moved_to_checkout' => null,
-            ]);
-
-            return redirect()->back()->with('message', __('general.successful_modification'));
+            return $this->modifyBalance($printAccount, $request->get('amount'));
         }
+    }
+
+    /**
+     * Private helper function to transfer balance between two `PrintAccount`s.
+     * @param PrintAccount $printAccount The account from which the money is transfered.
+     * @param PrintAccount $otherAccount The account to which the money is transfered.
+     * @param int $amount The amount of money to be transfered.
+     * @return RedirectResponse
+     */
+    private function transferBalance(PrintAccount $printAccount, PrintAccount $otherAccount, int $amount) {
+        DB::beginTransaction();
+        // Cannot transfer to yourself
+        if ($otherAccount->user_id === $printAccount->user_id) {
+            abort(400);
+        }
+
+        // Cannot transfer from other user's account (even if you are admin)
+        if ($printAccount->user_id !== user()->id) {
+            abort(403);
+        }
+
+        // This would be effectively stealing printing money from the other account
+        if ($amount < 0) {
+            abort(400);
+        }
+
+        // Cannot transfer if there is not enough balance to be transfered
+        if ($printAccount->balance < $amount) {
+            return $this->returnNoBalance();
+        }
+
+        $printAccount->update([
+            'balance' => $printAccount->balance - $amount,
+            'last_modified_by' => user()->id,
+        ]);
+
+        $otherAccount->update([
+            'balance' => $otherAccount->balance + $amount,
+            'last_modified_by' => user()->id,
+        ]);
+
+        DB::commit();
+
+        Mail::to($printAccount->user)->queue(new ChangedPrintBalance($printAccount->user, $amount, user()->name));
+
+        return redirect()->back()->with('message', __('general.successful_transaction'));
+    }
+
+    /**
+     * Private helper function to modify the balance of a `PrintAccount`.
+     * @param PrintAccount $printAccount The account to be modified.
+     * @param int $amount The amount of money to be added or subtracted.
+     * @return RedirectResponse
+     */
+    private function modifyBalance(PrintAccount $printAccount, int $amount) {
+        DB::beginTransaction();
+        // Only admins can modify accounts
+        $this->authorize('modify', $printAccount);
+
+        if ($amount < 0 && $printAccount->balance < $amount) {
+            $this->returnNoBalance();
+        }
+
+        $printAccount->update([
+            'balance' => $printAccount->balance + $amount,
+            'last_modified_by' => user()->id,
+        ]);
+
+        Mail::to($printAccount->user)->queue(new ChangedPrintBalance($printAccount->user, $amount, user()->name));
+
+        $adminCheckout = Checkout::admin();
+        Transaction::create([
+            'checkout_id' => $adminCheckout->id,
+            'receiver_id' => user()->id,
+            'payer_id' => $printAccount->user->id,
+            'semester_id' => Semester::current()->id,
+            'amount' => $amount,
+            'payment_type_id' => PaymentType::print()->id,
+            'comment' => null,
+            'moved_to_checkout' => null,
+        ]);
+
+        DB::commit();
+
+        return redirect()->back()->with('message', __('general.successful_modification'));
     }
 
     /**

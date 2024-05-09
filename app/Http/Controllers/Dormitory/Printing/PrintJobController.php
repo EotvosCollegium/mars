@@ -8,6 +8,7 @@ use App\Models\FreePages;
 use App\Models\PrintAccount;
 use App\Models\Printer;
 use App\Models\PrinterCancelResult;
+use App\Models\PrinterHelper;
 use App\Models\PrintJob;
 use App\Utils\TabulatorPaginator;
 use Illuminate\Contracts\Container\BindingResolutionException;
@@ -15,9 +16,10 @@ use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use InvalidArgumentException;
-use Log;
-use Storage;
 
 class PrintJobController extends Controller
 {
@@ -31,7 +33,7 @@ class PrintJobController extends Controller
         if ($filter === "all") {
             $this->authorize('viewAny', PrintJob::class);
 
-            PrintJob::checkAndUpdateStatuses();
+            PrinterHelper::updateCompletedPrintJobs();
 
             return $this->paginatorFrom(
                 printJobs: PrintJob::query()
@@ -49,7 +51,7 @@ class PrintJobController extends Controller
 
         $this->authorize('viewSelf', PrintJob::class);
 
-        PrintJob::checkAndUpdateStatuses();
+        PrinterHelper::updateCompletedPrintJobs();
         return $this->paginatorFrom(
             printJobs: user()
                 ->printJobs()
@@ -70,8 +72,8 @@ class PrintJobController extends Controller
      */
     public function store(Request $request)
     {
-        xdebug_break();
-        Log::info($request->all());
+        DB::beginTransaction();
+
         $request->validate([
             'file' => 'required|file',
             'copies' => 'required|integer|min:1',
@@ -79,7 +81,6 @@ class PrintJobController extends Controller
             'printer_id' => 'exists:printers,id',
             'use_free_pages' => 'in:on,off',
         ]);
-        Log::info("Printjob cost 2");
 
         $useFreePages = $request->boolean('use_free_pages');
         $copyNumber = $request->input('copies');
@@ -90,7 +91,7 @@ class PrintJobController extends Controller
         $printer = $request->has('printer_id') ? Printer::find($request->input("printer_id")) : Printer::firstWhere('name', config('print.printer_name'));
 
         $path = $file->store('print-documents');
-        $pageNumber = Printer::getDocumentPageNumber($path);
+        $pageNumber = PrinterHelper::getDocumentPageNumber($path);
 
         /** @var PrintAccount */
         $printAccount = user()->printAccount;
@@ -103,7 +104,7 @@ class PrintJobController extends Controller
 
         $jobId = null;
         try {
-            $jobId = $printer->print($twoSided, $copyNumber, $path);
+            $jobId = $printer->print($twoSided, $copyNumber, $path, user());
         } catch (\Exception $e) {
             return back()->with('error', __('print.error_printing'));
         } finally {
@@ -111,8 +112,8 @@ class PrintJobController extends Controller
         }
 
         $cost = $useFreePages ?
-            PrintAccount::getFreePagesNeeeded($pageNumber, $copyNumber, $twoSided) :
-            PrintAccount::getBalanceNeeded($pageNumber, $copyNumber, $twoSided);
+            PrinterHelper::getFreePagesNeeeded($pageNumber, $copyNumber, $twoSided) :
+            PrinterHelper::getBalanceNeeded($pageNumber, $copyNumber, $twoSided);
 
         Log::info("Printjob cost: $cost");
 
@@ -156,6 +157,8 @@ class PrintJobController extends Controller
 
         $printAccount->save();
 
+        DB::commit();
+
         return back()->with('message', __('print.success'));
     }
 
@@ -169,7 +172,7 @@ class PrintJobController extends Controller
         $this->authorize('update', $job);
 
         if ($job->state === PrintJobStatus::QUEUED) {
-            $result = ($job->printer ?? Printer::firstWhere('name', config('print.printer_name')))->cancelPrintJob($job);
+            $result = $job->cancel();
             switch ($result) {
                 case PrinterCancelResult::Success:
                     $job->update([
