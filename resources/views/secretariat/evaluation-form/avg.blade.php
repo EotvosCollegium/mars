@@ -1,7 +1,7 @@
 <form method="POST" action="">
     @csrf
     <blockquote>
-        Ha még nem vagy lezárva minden tárgyból, ne írd be az átlagodat! (Ha lezárnak a beküldési határidő előtt, akkor be tudod majd írni akkor is.)
+        Ha még nem vagy lezárva minden tárgyból, ne írd be az átlagodat! (Ha a beküldési határidő után zárnának csak le, ne aggódj; be tudod majd írni akkor is.)
     </blockquote>
     <div class="row">
         <input type="hidden" name="section" value="avg"/>
