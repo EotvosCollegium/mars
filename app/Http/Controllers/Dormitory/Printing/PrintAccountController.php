@@ -57,7 +57,8 @@ class PrintAccountController extends Controller
      * @param int $amount The amount of money to be transfered.
      * @return RedirectResponse
      */
-    private function transferBalance(PrintAccount $printAccount, PrintAccount $otherAccount, int $amount) {
+    private function transferBalance(PrintAccount $printAccount, PrintAccount $otherAccount, int $amount)
+    {
         DB::beginTransaction();
         // Cannot transfer to yourself
         if ($otherAccount->user_id === $printAccount->user_id) {
@@ -102,7 +103,8 @@ class PrintAccountController extends Controller
      * @param int $amount The amount of money to be added or subtracted.
      * @return RedirectResponse
      */
-    private function modifyBalance(PrintAccount $printAccount, int $amount) {
+    private function modifyBalance(PrintAccount $printAccount, int $amount)
+    {
         DB::beginTransaction();
         // Only admins can modify accounts
         $this->authorize('modify', $printAccount);

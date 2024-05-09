@@ -109,10 +109,11 @@ class PrintJob extends Model
 
     /**
      * Attemts to cancel the given `PrintJob`. Returns wether it was successful.
-     * @param PrintJob $this 
+     * @param PrintJob $this
      * @return PrinterCancelResult
      */
-    public function cancel() {
+    public function cancel()
+    {
         $printer = $this->printer ?? Printer::firstWhere('name', config('print.printer_name'));
         $process = new Process(['cancel', $this->job_id, '-h', "$printer->ip:$printer->port"]);
         $process->run();

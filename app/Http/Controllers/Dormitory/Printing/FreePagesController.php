@@ -35,7 +35,8 @@ class FreePagesController extends Controller
      * Returns a paginated list of all `FreePages`.
      * @return LengthAwarePaginator
      */
-    public function adminIndex() {
+    public function adminIndex()
+    {
         $this->authorize('viewAny', FreePages::class);
 
         return $this->freePagesPaginator(

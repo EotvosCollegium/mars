@@ -100,5 +100,5 @@ class PrintAccount extends Model
         return $this->balance >= PrinterHelper::getBalanceNeeded($pages, $twoSided, $copies);
     }
 
-    
+
 }

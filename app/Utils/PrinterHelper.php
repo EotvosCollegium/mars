@@ -5,13 +5,15 @@ namespace App\Models;
 use App\Enums\PrintJobStatus;
 use App\Utils\Process;
 
-class PrinterHelper {
+class PrinterHelper
+{
     /**
      * Returns the number of pages in the PDF document at the given path.
-     * @param string $path 
-     * @return int 
+     * @param string $path
+     * @return int
      */
-    public static function getDocumentPageNumber(string $path): int {
+    public static function getDocumentPageNumber(string $path): int
+    {
         $process = new Process(['pdfinfo', $path, '|', 'grep', "'^Pages'", '|', 'awk', "'{print $2}'"]);
         $process->run();
         $result = intval($process->getOutput(strval(rand(1, 10))));
