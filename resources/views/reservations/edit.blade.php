@@ -41,22 +41,22 @@ if(isset($reservation)) $item = $reservation->reservableItem;
                         @endif
                     </div>
                     <div class="row">
-                        <x-input.datepicker s="12" l="3" id="reserved_from_date" text="{{ __('reservations.from') }}"
+                        <x-input.datepicker s="6" l="3" id="reserved_from_date" text="{{ __('reservations.from') }}"
                             value="{{ isset($reservation)
                                       ? \Carbon\Carbon::make($reservation->reserved_from)->toDateString()
                                       : '' }}"
                             day_range="{{ $item->type == 'washing_machine' ? 14 : 365 }}" required/>
-                        <x-input.timepicker s="12" l="3" id="reserved_from_time" text="{{ __('reservations.from') }}"
+                        <x-input.timepicker s="6" l="3" id="reserved_from_time" text="{{ __('reservations.from') }}"
                             value="{{ isset($reservation)
                                       ? \Carbon\Carbon::make($reservation->reserved_from)->format('H:i')
                                       : '' }}"
                             day_range="{{ $item->type == 'washing_machine' ? 14 : 365 }}" required/>
-                        <x-input.datepicker s="12" l="3" id="reserved_until_date" text="{{ __('reservations.until') }}"
+                        <x-input.datepicker s="6" l="3" id="reserved_until_date" text="{{ __('reservations.until') }}"
                             value="{{ isset($reservation)
                                       ? \Carbon\Carbon::make($reservation->reserved_until)->toDateString()
                                       : '' }}"
                             day_range="{{ $item->type == 'washing_machine' ? 14 : 365 }}" required/>
-                        <x-input.timepicker s="12" l="3" id="reserved_until_time" text="{{ __('reservations.until') }}"
+                        <x-input.timepicker s="6" l="3" id="reserved_until_time" text="{{ __('reservations.until') }}"
                             value="{{ isset($reservation)
                                       ? \Carbon\Carbon::make($reservation->reserved_until)->format('H:i')
                                       : '' }}"
