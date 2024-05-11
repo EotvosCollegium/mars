@@ -31,6 +31,7 @@ return [
     'hu' => 'Hungarian',
     'internet-user' => 'Internet user',
     'it' => 'Italian',
+    'kkt-handler' => 'Handler of Community & Culture Tax',
     'la' => 'Latin',
     'locale-admin' => 'Locale admin',
     'other' => 'Other',

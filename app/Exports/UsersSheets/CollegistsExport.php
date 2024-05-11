@@ -4,6 +4,7 @@ namespace App\Exports\UsersSheets;
 
 use App\Models\Semester;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithEvents;
@@ -17,9 +18,9 @@ class CollegistsExport implements FromCollection, WithTitle, WithMapping, WithHe
     protected $users;
     protected $semester;
 
-    public function __construct()
+    public function __construct(Collection|User $includedUsers)
     {
-        $this->users = User::canView()->orderBy('name')->get();
+        $this->users = $includedUsers;
         $this->semester = Semester::current();
     }
 

@@ -6,6 +6,7 @@ use App\Models\GeneralAssemblies\GeneralAssembly;
 use App\Models\Role;
 use App\Models\SemesterEvaluation;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithEvents;
@@ -18,12 +19,11 @@ class SemesterEvaluationExport implements FromCollection, WithTitle, WithMapping
 {
     protected $evaluations;
     protected $semester;
-    protected $show_feedback = false;
 
-    public function __construct()
+    public function __construct(Collection|User $includedUsers)
     {
         $this->semester = SemesterEvaluation::query()->orderBy('created_at', 'desc')->first()?->semester;
-        $users = User::query()->canView()->get(['id'])->pluck('id');
+        $users = $includedUsers->pluck('id');
         $this->evaluations = SemesterEvaluation::query()
             ->where('semester_id', $this->semester?->id)
             ->whereIn('user_id', $users)
