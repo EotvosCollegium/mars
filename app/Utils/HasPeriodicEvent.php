@@ -31,12 +31,13 @@ trait HasPeriodicEvent
      *
      * @return PeriodicEvent|null
      */
-    public final function periodicEvent(): ?PeriodicEvent {
+    final public function periodicEvent(): ?PeriodicEvent
+    {
         return PeriodicEvent::where('event_model', self::class)
-            ->where(function($query) {
+            ->where(function ($query) {
                 $query
                     ->orWhere('extended_end_date', '>=', now())
-                    ->orWhere(function($query) {
+                    ->orWhere(function ($query) {
                         $query
                             ->whereNull('extended_end_date')
                             ->where('end_date', '>=', now());
@@ -56,7 +57,7 @@ trait HasPeriodicEvent
      * @param array $data the PeriodicEvent's attributes.
      * @return PeriodicEvent
      */
-    public final function updatePeriodicEvent(array $data): PeriodicEvent
+    final public function updatePeriodicEvent(array $data): PeriodicEvent
     {
         $event = $this->periodicEvent();
         if($event) {
@@ -90,7 +91,7 @@ trait HasPeriodicEvent
      * start date <= now <= (extended) end date
      * @return bool
      */
-    public final function isActive(): bool
+    final public function isActive(): bool
     {
         return $this->periodicEvent()?->isActive() ?? false;
     }
@@ -98,7 +99,7 @@ trait HasPeriodicEvent
     /**
      * @return bool if the end date has been extended or not
      */
-    public final function isExtended(): bool
+    final public function isExtended(): bool
     {
         return $this->periodicEvent()?->isExtended() ?? false;
     }
@@ -106,7 +107,7 @@ trait HasPeriodicEvent
     /**
      * @return Carbon|null the start date of the current PeriodicEvent
      */
-    public final function getStartDate(): ?Carbon
+    final public function getStartDate(): ?Carbon
     {
         return $this->periodicEvent()?->startDate();
     }
@@ -114,7 +115,7 @@ trait HasPeriodicEvent
     /**
      * @return Carbon|null the end date of the current PeriodicEvent
      */
-    public final function getEndDate(): ?Carbon
+    final public function getEndDate(): ?Carbon
     {
         return $this->periodicEvent()?->endDate();
     }
@@ -122,7 +123,7 @@ trait HasPeriodicEvent
     /**
      * @return Carbon|null the end date of the current PeriodicEvent
      */
-    public final function getDeadline(): ?Carbon
+    final public function getDeadline(): ?Carbon
     {
         return $this->getEndDate();
     }
@@ -130,9 +131,8 @@ trait HasPeriodicEvent
     /**
      * @return Semester|BelongsTo|null the semester connected to the current PeriodicEvent
      */
-    public final function semester(): Semester|BelongsTo|null
+    final public function semester(): Semester|BelongsTo|null
     {
         return $this->periodicEvent()?->semester;
     }
 }
-

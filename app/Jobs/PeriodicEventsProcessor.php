@@ -11,7 +11,10 @@ use Illuminate\Queue\SerializesModels;
 
 class PeriodicEventsProcessor implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     /**
      * Execute the job.

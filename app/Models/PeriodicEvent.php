@@ -60,7 +60,7 @@ class PeriodicEvent extends Model
         'extended_end_date' => 'datetime'
     ];
 
-    public final function semester(): BelongsTo
+    final public function semester(): BelongsTo
     {
         return $this->belongsTo(Semester::class);
     }
@@ -68,7 +68,7 @@ class PeriodicEvent extends Model
     /**
      * @return Carbon|null the start date of the current PeriodicEvent
      */
-    public final function startDate(): ?Carbon
+    final public function startDate(): ?Carbon
     {
         return Carbon::parse($this->start_date);
     }
@@ -76,7 +76,7 @@ class PeriodicEvent extends Model
     /**
      * @return Carbon|null the end date of the current PeriodicEvent
      */
-    public final function endDate(): ?Carbon
+    final public function endDate(): ?Carbon
     {
         return Carbon::parse($this->extended_end_date ?? $this->end_date);
     }
@@ -84,7 +84,7 @@ class PeriodicEvent extends Model
     /**
      * @return Carbon|null the end date of the current PeriodicEvent
      */
-    public final function deadline(): ?Carbon
+    final public function deadline(): ?Carbon
     {
         return $this->endDate();
     }
@@ -94,17 +94,21 @@ class PeriodicEvent extends Model
      * start date <= now <= (extended) end date
      * @return bool
      */
-    public final function isActive(): bool
+    final public function isActive(): bool
     {
-        if($this->startDate()->isFuture()) return false;
-        if($this->endDate()->isPast()) return false;
+        if($this->startDate()->isFuture()) {
+            return false;
+        }
+        if($this->endDate()->isPast()) {
+            return false;
+        }
         return true;
     }
 
     /**
      * @return bool if the end date has been extended or not
      */
-    public final function isExtended(): bool
+    final public function isExtended(): bool
     {
         return $this->extended_end_date != null;
     }
