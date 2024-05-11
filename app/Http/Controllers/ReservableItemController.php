@@ -13,6 +13,8 @@ use App\Models\ReservableItem;
 class ReservableItemController extends Controller
 {
     public function index(Request $request) {
+        $this->authorize('viewAny', ReservableItem::class);
+
         $type = $request->type;
         if (is_null($type)) {
             $items = ReservableItem::all();
@@ -110,6 +112,8 @@ class ReservableItemController extends Controller
     }
 
     public function show(ReservableItem $item) {
+        $this->authorize('viewAny', ReservableItem::class);
+
         $from = Carbon::today()->startOfWeek();
         $until = $from->copy()->addDays(7);
         return view('reservations.items.show', [
@@ -121,10 +125,14 @@ class ReservableItemController extends Controller
     }
 
     public function create() {
+        $this->authorize('administer', ReservableItem::class);
+
         abort(500, 'create not implemented yet');
     }
 
     public function store(Request $request) {
+        $this->authorize('administer', ReservableItem::class);
+
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'type' => Rule::in(["washing_machine", "room"]),
@@ -153,6 +161,8 @@ class ReservableItemController extends Controller
     }
 
     public function delete(ReservableItem $item) {
+        $this->authorize('administer', ReservableItem::class);
+
         $item->delete();
         return redirect(route('reservations.items.index'));
     }
