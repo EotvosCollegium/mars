@@ -65,7 +65,8 @@ trait HasPeriodicEvent
             $event->refresh();
             //TODO reset _handled fields
         } else {
-            $event = PeriodicEvent::create(array_merge(['event_model' => self::class], $data));
+            $data = array_merge($data, ['start_date' => $data['start_date'] ?? now(), 'event_model' => self::class]);
+            $event = PeriodicEvent::create($data);
         }
         return $event;
     }
