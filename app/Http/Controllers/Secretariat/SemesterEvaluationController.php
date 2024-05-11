@@ -7,7 +7,6 @@ use App\Mail\EvaluationFormClosed;
 use App\Mail\StatusDeactivated;
 use App\Models\Faculty;
 use App\Models\GeneralAssemblies\GeneralAssembly;
-use App\Models\PeriodicEvents\HasPeriodicEvent;
 use App\Models\Role;
 use App\Models\RoleUser;
 use App\Models\Semester;
@@ -15,6 +14,8 @@ use App\Models\SemesterEvaluation;
 use App\Models\SemesterStatus;
 use App\Models\User;
 use App\Models\Workshop;
+use App\Utils\HasPeriodicEvent;
+use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
@@ -26,10 +27,24 @@ class SemesterEvaluationController extends Controller
 {
     use HasPeriodicEvent;
 
-
-    public function authorizeChangePeriodicEvent(): void
+    public function updateEvaluationPeriod(Request $request)
     {
-        // TODO
+        //TODO: add policy
+        //$this->authorize('finalize', ApplicationForm::class);
+
+        $request->validate([
+            'semester_id' => 'required|exists:semesters,id',
+            'end_date' => 'required|date|after:now|after:start_date',
+        ]);
+        $show_until = Carbon::parse($request->input('end_date'))->addMonth();
+
+        $this->updatePeriodicEvent(array_merge(
+            $request->only(['semester_id', 'end_date', 'extended_end_date']),
+            ['start_date' => now(), 'show_until' => $show_until]
+        ));
+
+        return back()->with('message', __('general.successful_modification'));
+
     }
 
     public function handlePeriodicEventStart(): void

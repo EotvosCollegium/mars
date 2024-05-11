@@ -4,7 +4,9 @@ use App\Http\Middleware\Locale;
 use App\Http\Middleware\LogRequests;
 use App\Http\Middleware\NotifyAboutEvaluation;
 use App\Http\Middleware\RedirectTenantsToUpdate;
-use App\Models\PeriodicEvents\PeriodicEvent;
+use App\Jobs\PeriodicEventsProcessor;
+use App\Jobs\PingRouters;
+use App\Jobs\ProcessWifiConnections;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -41,11 +43,9 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withSchedule(function (Schedule $schedule) {
-        $schedule->call(function () {
-            PeriodicEvent::listen();
-        })->daily()->at('13:00');
-        $schedule->job(new \App\Jobs\PingRouters())->everyFiveMinutes();
-        $schedule->job(new \App\Jobs\ProcessWifiConnections())->dailyAt('01:00');
+        $schedule->job(new PeriodicEventsProcessor())->daily()->at('13:00');
+        $schedule->job(new PingRouters())->everyFiveMinutes();
+        $schedule->job(new ProcessWifiConnections())->dailyAt('01:00');
 
         $schedule->command('backup:clean')->daily()->at('01:00');
         $schedule->command('backup:run --only-db')->daily()->at('01:30');

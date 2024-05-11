@@ -6,30 +6,25 @@ use App\Exports\ApplicantsExport;
 use App\Http\Controllers\Controller;
 use App\Models\ApplicationForm;
 use App\Models\Faculty;
-use App\Models\PeriodicEvents\HasPeriodicEvent;
-use App\Models\User;
-use App\Models\Workshop;
-use App\Models\RoleUser;
 use App\Models\File;
 use App\Models\Role;
+use App\Models\RoleUser;
+use App\Models\User;
+use App\Models\Workshop;
+use App\Utils\HasPeriodicEvent;
+use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ApplicationController extends Controller
 {
     use HasPeriodicEvent;
-
-    function __construct()
-    {
-        $this->hasShowUntil = true;
-        $this->connectedToSemester = true;
-    }
 
     private const EDUCATIONAL_ROUTE = 'educational';
     private const QUESTIONS_ROUTE = 'questions';
@@ -39,12 +34,27 @@ class ApplicationController extends Controller
     private const SUBMIT_ROUTE = 'submit';
 
     /**
-     * @see PeriodicEventController::authorizeChangePeriodicEvent()
+     * Update the PeriodicEvent connected to the applications.
      * @throws AuthorizationException
      */
-    public function authorizeChangePeriodicEvent(): void
+    public function updateApplicationPeriod(Request $request): RedirectResponse
     {
         $this->authorize('finalize', ApplicationForm::class);
+
+        $request->validate([
+            'semester_id' => 'required|exists:semesters,id',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after:now|after:start_date',
+            'extended_end_date' => 'nullable|date|after:end_date',
+        ]);
+        $show_until = Carbon::parse($request->input('end_date'))->addMonths(2);
+
+        $this->updatePeriodicEvent(array_merge(
+            $request->only(['semester_id', 'start_date', 'end_date', 'extended_end_date']),
+            ['show_until' => $show_until]
+        ));
+
+        return back()->with('message', __('general.successful_modification'));
     }
 
     /**

@@ -172,7 +172,7 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
     Route::post('/secretariat/invite', [InvitationController::class, 'store'])->name('secretariat.invite');
 
     /** Application handling */
-    Route::post('/applications/event', [ApplicationController::class, 'storeOrUpdatePeriodicEvent'])->name('applications.event');
+    Route::post('/applications/period/update', [ApplicationController::class, 'updateApplicationPeriod'])->name('applications.period.update');
     Route::get('/applications', [ApplicationController::class, 'showApplications'])->name('applications');
     Route::post('/applications', [ApplicationController::class, 'editApplication'])->name('applications.edit');
     Route::get('/applications/export', [ApplicationController::class, 'exportApplications'])->name('applications.export');

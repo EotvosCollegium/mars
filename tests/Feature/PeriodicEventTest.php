@@ -4,7 +4,7 @@ namespace Tests\Feature;
 
 use App\Http\Controllers\Auth\ApplicationController;
 use App\Http\Controllers\Secretariat\SemesterEvaluationController;
-use App\Models\PeriodicEvents\PeriodicEvent;
+use App\Models\PeriodicEvent;
 use App\Models\Semester;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;

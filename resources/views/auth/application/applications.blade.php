@@ -7,7 +7,7 @@
 @section('content')
     @can('finalize', \App\Models\ApplicationForm::class)
     <div class="card">
-        <form action="{{route('applications.event')}}" method="POST">
+        <form action="{{route('applications.period.update')}}" method="POST">
             @csrf
             <div class="card-content">
                 <div class="card-title">
@@ -15,12 +15,10 @@
                 </div>
                 <div class="row">
                     <!-- These are using html datetime-local attribute because we don't have datetime picker. The labels are not compatible with our components. -->
-                    <x-input.select m="3" id="semester_id" :elements="\App\Models\Semester::all()" :value="$periodicEvent?->semester_id" :default="\App\Models\Semester::current()->succ()->id" helper="Felvétel szemesztere"/>
-                    <x-input.text m="3" id="end_date" type="datetime-local" without-label helper="Határidő" :value="$periodicEvent?->end_date"/>
-                    <x-input.text m="3" id="extended_end_date"  type="datetime-local" helper="Meghosszabbított határidő (üres, ha nincs meghosszabítva)" without-label
+                    <x-input.select m="4" id="semester_id" :elements="\App\Models\Semester::all()" :value="$periodicEvent?->semester_id" :default="\App\Models\Semester::current()->succ()->id" helper="Felvétel szemesztere"/>
+                    <x-input.text m="4" id="end_date" type="datetime-local" without-label helper="Határidő" :value="$periodicEvent?->end_date"/>
+                    <x-input.text m="4" id="extended_end_date"  type="datetime-local" helper="Meghosszabbított határidő (üres, ha nincs meghosszabítva)" without-label
                                   :value="$periodicEvent?->extended_end_date"/>
-                    <x-input.text m="3" id="show_until" type="date" helper="Az adatok elérhetőek eddig" :value="$periodicEvent?->show_until" />
-
                 </div>
                 @if($periodicEvent)
                     <blockquote>@if($periodicEvent->isActive)TODO @endif</blockquote>

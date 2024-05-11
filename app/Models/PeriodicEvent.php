@@ -1,12 +1,46 @@
 <?php
 
-namespace App\Models\PeriodicEvents;
+namespace App\Models;
 
-use App\Models\Semester;
+use App\Utils\HasPeriodicEvent;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * A PeriodicEvent is connected to a feature that is active for a certain period of time.
+ * It is connected to the user of the HasPeriodicEvent trait with the `event_model` attribute.
+ * @see HasPeriodicEvent
+ *
+ * @property int $id
+ * @property string $event_model
+ * @property int|null $semester_id
+ * @property \Illuminate\Support\Carbon $start_date
+ * @property string|null $start_handled
+ * @property \Illuminate\Support\Carbon $end_date
+ * @property \Illuminate\Support\Carbon|null $extended_end_date
+ * @property string|null $end_handled
+ * @property string|null $show_until
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read Semester|null $semester
+ * @method static Builder|PeriodicEvent newModelQuery()
+ * @method static Builder|PeriodicEvent newQuery()
+ * @method static Builder|PeriodicEvent query()
+ * @method static Builder|PeriodicEvent whereCreatedAt($value)
+ * @method static Builder|PeriodicEvent whereEndDate($value)
+ * @method static Builder|PeriodicEvent whereEndHandled($value)
+ * @method static Builder|PeriodicEvent whereEventModel($value)
+ * @method static Builder|PeriodicEvent whereExtendedEndDate($value)
+ * @method static Builder|PeriodicEvent whereId($value)
+ * @method static Builder|PeriodicEvent whereSemesterId($value)
+ * @method static Builder|PeriodicEvent whereShowUntil($value)
+ * @method static Builder|PeriodicEvent whereStartDate($value)
+ * @method static Builder|PeriodicEvent whereStartHandled($value)
+ * @method static Builder|PeriodicEvent whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class PeriodicEvent extends Model
 {
     protected $fillable = [
@@ -73,27 +107,5 @@ class PeriodicEvent extends Model
     public final function isExtended(): bool
     {
         return $this->extended_end_date != null;
-    }
-
-
-    /**
-     * The function that listens for the different dates and handles them.
-     */
-    public static function listen(): void
-    {
-        foreach (PeriodicEvent::all() as $event) {
-            if ($event->startDate()->isPast() && !$event->start_handled) {
-                app($event->event_model)->handlePeriodicEventStart();
-                $event->start_handled = now();
-                $event->save(['timestamps' => false]);
-            }
-            //TODO reminders
-
-            if ($event->endDate()->isPast() && !$event->end_handled) {
-                app($event->event_model)->handlePeriodicEventEnd();
-                $event->end_handled = now();
-                $event->save(['timestamps' => false]);
-            }
-        }
     }
 }

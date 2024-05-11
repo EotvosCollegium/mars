@@ -2,15 +2,11 @@
 
 namespace Tests\Feature;
 
-use App\Http\Controllers\Secretariat\SemesterEvaluationController;
 use App\Models\EducationalInformation;
-use App\Models\PeriodicEvents\PeriodicEvent;
 use App\Models\PersonalInformation;
 use App\Models\Semester;
 use App\Models\SemesterEvaluation;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Config;
 use Tests\TestCase;
 
 /**
