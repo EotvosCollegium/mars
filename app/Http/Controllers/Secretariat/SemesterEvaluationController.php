@@ -29,19 +29,17 @@ class SemesterEvaluationController extends Controller
 
     public function updateEvaluationPeriod(Request $request)
     {
-        //TODO: add policy
-        //$this->authorize('finalize', ApplicationForm::class);
+        $this->authorize('manage', SemesterEvaluation::class);
 
         $request->validate([
             'semester_id' => 'required|exists:semesters,id',
-            'end_date' => 'required|date|after:now|after:start_date',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after:now',
         ]);
-        $show_until = Carbon::parse($request->input('end_date'))->addMonth();
 
-        $this->updatePeriodicEvent(array_merge(
-            $request->only(['semester_id', 'end_date', 'extended_end_date']),
-            ['start_date' => now(), 'show_until' => $show_until]
-        ));
+        $this->updatePeriodicEvent(
+            $request->only(['semester_id', 'start_date', 'end_date'])
+        );
 
         return back()->with('message', __('general.successful_modification'));
 
@@ -58,10 +56,7 @@ class SemesterEvaluationController extends Controller
      */
     public function show()
     {
-        $this->authorize('is-collegist');
-        if (!self::isActive()) {
-            return redirect('home')->with('error', 'Lejárt a határidő a kérdőív kitöltésére. Keresd fel a titkárságot.');
-        }
+        $this->authorize('fillOrManage', SemesterEvaluation::class);
 
         return view('secretariat.evaluation-form.app', [
             'phd' => user()->educationalInformation->studyLines()->currentlyEnrolled()->where('type', 'phd')->exists(),
@@ -72,7 +67,7 @@ class SemesterEvaluationController extends Controller
             'general_assemblies' => GeneralAssembly::all()->sortByDesc('closed_at')->take(2),
             'community_services' => user()->communityServiceRequests()->where('semester_id', Semester::current()->id)->get(),
             'position_roles' => user()->roles()->whereIn('name', Role::STUDENT_POSTION_ROLES)->get(),
-            'deadline' => self::getDeadline()?->format('Y-m-d'),
+            'periodicEvent' => self::periodicEvent(),
         ]);
     }
 
@@ -82,10 +77,7 @@ class SemesterEvaluationController extends Controller
      */
     public function store(Request $request)
     {
-        $this->authorize('is-collegist');
-        if (!self::isActive()) {
-            return redirect('home')->with('error', 'Lejárt a határidő a kérdőív kitöltésére. Keresd fel a titkárságot.');
-        }
+        $this->authorize('fill', SemesterEvaluation::class);
 
         $validator = Validator::make($request->all(), [
             'section' => 'required|in:alfonso,courses,avg,general_assembly,feedback,other,status',
@@ -168,7 +160,7 @@ class SemesterEvaluationController extends Controller
                     if (!isset($request->next_status)) {
                         return back()->with('error', "A státusz megadása kötelező!")->with('section', $request->section);
                     }
-                    $user->setStatusFor(Semester::next(), $request->next_status, $request->next_status_note);
+                    $user->setStatusFor(self::semester()->succ(), $request->next_status, $request->next_status_note);
                     if ($request->has('resign_residency') && $user->isResident()) {
                         $user->setExtern();
                     }

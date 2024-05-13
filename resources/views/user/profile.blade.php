@@ -99,7 +99,7 @@
             </div>
         </li>
     </ul>
-    @if($user->isCollegist() && (\App\Models\SemesterEvaluation::isActive()))
+    @can('fill', App\Models\SemesterEvaluation::class)
         <a href="{{ route('secretariat.evaluation.show') }}" class="btn left coli blue">Szemeszter értékelés</a>
     @endif
 

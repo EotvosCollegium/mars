@@ -192,6 +192,7 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
     /** Evaluation form */
     Route::get('/secretariat/evaluation', [SemesterEvaluationController::class, 'show'])->name('secretariat.evaluation.show');
     Route::post('/secretariat/evaluation', [SemesterEvaluationController::class, 'store'])->name('secretariat.evaluation.store');
+    Route::post('/secretariat/evaluation/period', [SemesterEvaluationController::class, 'updateEvaluationPeriod'])->name('secretariat.evaluation.period.update');
 
     /** Documents */
     Route::get('/documents', [DocumentController::class, 'index'])->name('documents');

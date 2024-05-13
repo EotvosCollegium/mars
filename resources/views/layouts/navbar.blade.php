@@ -63,6 +63,10 @@
             <li><a class="waves-effect" href="{{ route('rooms') }}"><i class="material-icons left">bed</i>Szobabeosztás</a>
             </li>
         @endcan
+        @can('fillOrManage', \App\Models\SemesterEvaluation::class)
+            <li><a class="waves-effect" href="{{ route('secretariat.evaluation.show') }}"><i class="material-icons left">rate_review</i>Szemeszter értékelés</a>
+            </li>
+        @endcan
         <!-- applications page -->
         @can('viewSome', \App\Models\ApplicationForm::class)
             <li><a class="waves-effect" href="{{ route('applications') }}"><i
