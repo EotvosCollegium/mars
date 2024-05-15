@@ -66,28 +66,17 @@ class ReservationController extends Controller
      */
     public static function validateReservationRequest(Request $request): array {
         $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:255',
+            'title' => 'nullable|string|max:255',
             'note'  => 'nullable|string|max:2047',
-            'reserved_from_date' => 'required|date_format:Y-m-d',
-            'reserved_from_time' => 'required|date_format:H:i',
-            'reserved_until_date' => 'required|date_format:Y-m-d',
-            'reserved_until_time' => 'required|date_format:H:i',
+            'reserved_from' => 'required|date',
+            'reserved_until' => 'required|date',
         ]);
-        // does not seem to do anything
-        $validator->after(function ($validator) {
-            $reserved_from = Carbon::make(
-                $validator->safe()->reserved_from_date
-                . ' ' . $validator->safe()->reserved_from_time
-            );
-            $reserved_until = Carbon::make(
-                $validator->safe()->reserved_until_date
-                . ' ' . $validator->safe()->reserved_until_time
-            );
-
-            if ($reserved_from > $reserved_until) {
+        $validator->after(function ($validator) use ($request) {
+            if (isset($request->reserved_from) && isset($request->reserved_until) &&
+                    Carbon::make($request->reserved_from) > Carbon::make($request->reserved_until)) {
+                echo "Ibolya";
                 $validator->errors()->add(
-                    // TODO: it does not find the correct field yet
-                    'title', 'A reservation cannot end before its start.'
+                    'reserved_until', __('reservation.end_before_start')
                 );
             }
         });
@@ -129,9 +118,9 @@ class ReservationController extends Controller
         $newReservation->title = $validatedData['title'];
         $newReservation->note = $validatedData['note'];
         $newReservation->reserved_from
-            = $validatedData['reserved_from_date'] . ' ' . $validatedData['reserved_from_time'];
+            = $validatedData['reserved_from'];
         $newReservation->reserved_until
-            = $validatedData['reserved_until_date'] . ' ' . $validatedData['reserved_until_time'];;
+            = $validatedData['reserved_until'];
 
         $newReservation->verified = Auth::user()->can('reserveImmediately', $item);
 
@@ -159,9 +148,9 @@ class ReservationController extends Controller
         $reservation->title = $validatedData['title'];
         $reservation->note = $validatedData['note'];
         $reservation->reserved_from
-            = $validatedData['reserved_from_date'] . ' ' . $validatedData['reserved_from_time'];
+            = $validatedData['reserved_from'];
         $reservation->reserved_until
-            = $validatedData['reserved_until_date'] . ' ' . $validatedData['reserved_until_time'];
+            = $validatedData['reserved_until'];
 
         $item = $reservation->reservableItem;
 

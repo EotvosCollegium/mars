@@ -33,34 +33,20 @@ if(isset($reservation)) $item = $reservation->reservableItem;
                                               ? $reservation->user->name
                                               : ''  }}</span>
                     </div>
+                    @if($item->type == 'room')
                     <div class="row">
-                        @if($item->type == 'room')
                         <x-input.text s="12" type="text" text="reservations.title"
-                            id="title" value="{{ isset($reservation) ? $reservation->title : '' }}"
+                            id="title" :value="isset($reservation) ? $reservation->title : ''"
                             maxlength="127"/>
-                        @endif
                     </div>
+                    @else
+                    <input type="hidden" id="title" name="title" value="" />
+                    @endif
                     <div class="row">
-                        <x-input.datepicker s="6" l="3" id="reserved_from_date" text="{{ __('reservations.from') }}"
-                            value="{{ isset($reservation)
-                                      ? \Carbon\Carbon::make($reservation->reserved_from)->toDateString()
-                                      : '' }}"
-                            day_range="{{ $item->type == 'washing_machine' ? 14 : 365 }}" required/>
-                        <x-input.timepicker s="6" l="3" id="reserved_from_time" text="{{ __('reservations.from') }}"
-                            value="{{ isset($reservation)
-                                      ? \Carbon\Carbon::make($reservation->reserved_from)->format('H:i')
-                                      : '' }}"
-                            day_range="{{ $item->type == 'washing_machine' ? 14 : 365 }}" required/>
-                        <x-input.datepicker s="6" l="3" id="reserved_until_date" text="{{ __('reservations.until') }}"
-                            value="{{ isset($reservation)
-                                      ? \Carbon\Carbon::make($reservation->reserved_until)->toDateString()
-                                      : '' }}"
-                            day_range="{{ $item->type == 'washing_machine' ? 14 : 365 }}" required/>
-                        <x-input.timepicker s="6" l="3" id="reserved_until_time" text="{{ __('reservations.until') }}"
-                            value="{{ isset($reservation)
-                                      ? \Carbon\Carbon::make($reservation->reserved_until)->format('H:i')
-                                      : '' }}"
-                            day_range="{{ $item->type == 'washing_machine' ? 14 : 365 }}" required/>
+                        <x-input.text  m="6" id="reserved_from" type="datetime-local" without-label :helper="__('reservations.from')"
+                                       :value="isset($reservation) ? $reservation->reserved_from : ''" required/>
+                        <x-input.text  m="6" id="reserved_until" type="datetime-local" without-label :helper="__('reservations.until')"
+                                       :value="isset($reservation) ? $reservation->reserved_until : ''" required/>
                     </div>
                     <div class="row">
                     <x-input.textarea s="12" id="note" text="{{ __('reservations.note') }}"
