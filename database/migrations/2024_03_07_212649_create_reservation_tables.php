@@ -24,8 +24,6 @@ return new class extends Migration
             $table->boolean('is_default_compulsory');
             // the possible starting dates' endings
             $table->set('allowed_starting_minutes', range(0,59));
-            $table->datetime('out_of_order_from')->nullable();
-            $table->datetime('out_of_order_until')->nullable();
             $table->timestamps();
         });
         Schema::create('reservations', function (Blueprint $table) {

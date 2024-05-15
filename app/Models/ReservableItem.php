@@ -26,9 +26,7 @@ class ReservableItem extends Model
         'type',
         'default_reservation_duration',
         'is_default_compulsory',
-        'allowed_starting_minutes',
-        'out_of_order_from',
-        'out_of_order_until'
+        'allowed_starting_minutes'
     ];
 
     /**

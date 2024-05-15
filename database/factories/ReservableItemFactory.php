@@ -22,13 +22,6 @@ class ReservableItemFactory extends Factory
      */
     public function definition()
     {
-        // We separately calculate the out_of_order times.
-        $out_of_order_from = $this->faker->boolean(50) ? Carbon::now()->add(-2, 'hour') : null;
-        // it might have just expired, expired an hour ago or only be to expire
-        $out_of_order_until = (is_null($out_of_order_from) || $this->faker->boolean(50))
-                            ? null
-                            : Carbon::now()->add(rand(-10, 10), 'minute');
-
         return [
             'name' => $this->faker->realText(10),
             'type' => 'room',
@@ -38,8 +31,6 @@ class ReservableItemFactory extends Factory
                 ],
             'is_default_compulsory' => false,
             'allowed_starting_minutes' => "0,15,30,45",
-            'out_of_order_from' => $out_of_order_from,
-            'out_of_order_until' => $out_of_order_until
         ];
     }
 }
