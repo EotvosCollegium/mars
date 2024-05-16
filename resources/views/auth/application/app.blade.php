@@ -15,13 +15,13 @@
             </h6>
 
             <h6>Jelentkezési határidő:
-                <i>{{ $deadline?->format('Y-m-d H:i') }}</i>
+                <i>{{ $deadline->format('Y-m-d H:i') }}</i>
                 @if ($deadline_extended)
                     <small class="coli-text text-orange">(Meghosszabbítva)</small>
                 @endif
             </h6>
             @if($user->application->status == App\Models\ApplicationForm::STATUS_IN_PROGRESS)
-            Hátra van: <i>{{ (int)\Carbon\Carbon::now()->diffInDays($deadline, false) }}</i> nap.
+            Hátra van: <i>{{ \Carbon\Carbon::now()->diffInDays($deadline, false) }}</i> nap.
             @endif
 
             <blockquote>

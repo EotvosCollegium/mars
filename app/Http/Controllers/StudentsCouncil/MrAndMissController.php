@@ -5,22 +5,21 @@ namespace App\Http\Controllers\StudentsCouncil;
 use App\Http\Controllers\Controller;
 use App\Models\MrAndMissCategory;
 use App\Models\MrAndMissVote;
+use App\Models\Semester;
 use App\Models\User;
-use App\Utils\HasPeriodicEvent;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class MrAndMissController extends Controller
 {
-    use HasPeriodicEvent;
-
     /**
      * Show the page for voting.
      * Accessible by collegists.
      */
-    public function index(Request $request)
+    public function indexVote(Request $request)
     {
-        $this->authorize('voteOrManage', MrAndMissVote::class);
+        $this->authorize('vote', MrAndMissVote::class);
 
         $categories = MrAndMissCategory::select(['mr_and_miss_categories.id', 'title', 'mr', 'custom', 'votee_id', 'votee_name as custom_name'])
             ->where('hidden', false)
@@ -28,55 +27,36 @@ class MrAndMissController extends Controller
                 $query->where('public', true)
                       ->orWhere('created_by', user()->id);
             })
-            //get user's votes
             ->leftJoin('mr_and_miss_votes', function ($join) {
                 $join->on('mr_and_miss_categories.id', '=', 'mr_and_miss_votes.category')
                      ->where('mr_and_miss_votes.voter', user()->id)
-                     ->where('semester', self::semester()?->id);
+                     ->where('semester', Semester::current()->id);
             })
             ->orderBy('mr_and_miss_categories.id')
             ->get();
 
 
         return view(
-            'student-council.mr-and-miss.index',
+            'student-council.mr-and-miss.vote',
             [
                 'categories' => $categories,
                 'users' => User::collegists(),
                 'miss_first' => rand(0, 1) == 0,
-                'deadline' => $this->getDeadline(),
+                'deadline' => config('custom.mr_and_miss_deadline'),
             ]
         );
     }
 
-    public function indexAdmin(Request $request)
+    /**
+     * Show the categories.
+     * Accessible by MrAndMiss managers.
+     */
+    public function indexCategories(Request $request)
     {
         $this->authorize('manage', MrAndMissVote::class);
 
-        return view('student-council.mr-and-miss.admin', [
-            'periodicEvent' => $this->periodicEvent(),
-            'categories' => MrAndMissCategory::where('custom', false)->get(),
-        ]);
+        return view('student-council.mr-and-miss.categories', ['categories' => MrAndMissCategory::where('custom', false)->get()]);
     }
-
-    public function updateVotePeriod(Request $request)
-    {
-        $this->authorize('manage', MrAndMissVote::class);
-
-        $request->validate([
-            'semester_id' => 'required|exists:semesters,id',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after:now|after:start_date',
-            'show_until' => 'required|date|after:end_date'
-        ]);
-
-        $this->updatePeriodicEvent(
-            $request->only(['semester_id', 'start_date', 'end_date', 'show_until'])
-        );
-
-        return back()->with('message', __('general.successful_modification'));
-    }
-
 
     /**
      * Edit the categories' hidden status.
@@ -134,11 +114,8 @@ class MrAndMissController extends Controller
     {
         $this->authorize('manage', MrAndMissVote::class);
 
-        if(!self::semester()) {
-            throw new \Exception('Nincs megjeleníthető eredmény.');
-        }
         $results = MrAndMissVote::select(DB::raw('count(*) as count, users.name, votee_name, title, mr, custom'))
-                ->where('semester', self::semester()?->id)
+                ->where('semester', Semester::current()->id)
                 ->join('mr_and_miss_categories', 'mr_and_miss_categories.id', '=', 'mr_and_miss_votes.category')
                 ->leftJoin('users', 'users.id', '=', 'mr_and_miss_votes.votee_id')
                 ->groupBy(['mr_and_miss_categories.id', 'title', 'users.name', 'votee_name', 'mr', 'custom'])
@@ -155,13 +132,17 @@ class MrAndMissController extends Controller
     {
         $this->authorize('vote', MrAndMissVote::class);
 
+        if (config('custom.mr_and_miss_deadline') < now()) {
+            abort(403, "A szavazás már lejárt.");
+        }
+
         $categories = MrAndMissCategory::where('hidden', false)->get();
         foreach ($categories as $category) {
             if ($request['raw-'.$category->id] !== null) {
                 MrAndMissVote::updateOrCreate([
                     'voter' => user()->id,
                     'category' => $category->id,
-                    'semester' => self::semester()->id,
+                    'semester' => Semester::current()->id,
                 ], [
                     'votee_id' => null,
                     'votee_name' => $request['raw-'.$category->id],
@@ -170,7 +151,7 @@ class MrAndMissController extends Controller
                 MrAndMissVote::updateOrCreate([
                     'voter' => user()->id,
                     'category' => $category->id,
-                    'semester' => self::semester()->id,
+                    'semester' => Semester::current()->id,
                 ], [
                     'votee_id' => $request['select-'.$category->id],
                     'votee_name' => null,
@@ -179,7 +160,7 @@ class MrAndMissController extends Controller
                 MrAndMissVote::where([
                     'voter' => user()->id,
                     'category' => $category->id,
-                    'semester' => self::semester()->id,
+                    'semester' => Semester::current()->id,
                 ])->delete();
             }
         }

@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Http\Controllers\Auth\ApplicationController;
 use App\Models\Role;
 use App\Models\RoleObject;
 use App\Models\User;
@@ -111,6 +112,97 @@ class UserPolicy
         return false;
     }
 
+    /** Application related policies */
+
+    /**
+     * @param User $user
+     * @param User $target
+     * @return bool
+     */
+    public function viewApplication(User $user, User $target): bool
+    {
+        if ($user->id == $target->id) {
+            return true;
+        }
+        if ($user->can('viewAllApplications', User::class)) {
+            return true;
+        }
+
+        return $target->workshops
+                ->intersect($user->applicationCommitteWorkshops)
+                ->count() > 0
+            || $target->workshops
+                ->intersect($user->roleWorkshops)
+                ->count() > 0;
+    }
+
+    /**
+     * @param User $user
+     * @return bool
+     */
+    public function viewSomeApplication(User $user): bool
+    {
+        return $user->hasRole([
+            Role::SECRETARY,
+            Role::DIRECTOR,
+            Role::WORKSHOP_ADMINISTRATOR,
+            Role::WORKSHOP_LEADER,
+            Role::APPLICATION_COMMITTEE_MEMBER,
+            Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS,
+            Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER
+        ]);
+    }
+
+    /**
+     * @param User $user
+     * @return bool
+     */
+    public function editApplicationStatus(User $user): bool
+    {
+        return $user->hasRole([
+            Role::SECRETARY,
+            Role::DIRECTOR,
+            Role::WORKSHOP_LEADER,
+            Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS
+        ]);
+    }
+
+    /**
+     * @param User $user
+     * @return bool
+     */
+    public function viewAllApplications(User $user): bool
+    {
+        return $user->hasRole([
+            Role::SECRETARY,
+            Role::DIRECTOR,
+            Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS,
+            Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER
+        ]);
+    }
+
+    /**
+     * @param User $user
+     * @return bool
+     */
+    public function viewUnfinishedApplications(User $user): bool
+    {
+        return $user->hasRole([
+            Role::SECRETARY,
+            Role::DIRECTOR,
+            Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS,
+        ]);
+    }
+
+    /**
+     * Returns true if the user can finalize the application process.
+     * @param User $user
+     * @return bool
+     */
+    public function finalizeApplicationProcess(User $user): bool
+    {
+        return $user->hasRole([Role::SYS_ADMIN, Role::SECRETARY]);
+    }
 
     /** Permission related policies */
 

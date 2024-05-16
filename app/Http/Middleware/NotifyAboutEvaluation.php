@@ -26,7 +26,7 @@ class NotifyAboutEvaluation
             && !$request->routeIs('secretariat.evaluation.*')
             && $user->isCollegist(alumni: false)
             && $user->getStatus(Semester::next()) == null
-            && SemesterEvaluationController::isActive()
+            && SemesterEvaluationController::isEvaluationAvailable()
         ) {
             $request->session()->flash('message', 'Töltsd ki a szemeszter végi kérdőívet a profilod alatt!');
         }
