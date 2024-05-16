@@ -49,6 +49,7 @@ return [
         'description' => 'leírás',
         'date' => 'dátum',
         'time' => 'időpont',
+        'now' => 'most',
         'start_date' => 'esemény eleje',
         'end_date' => 'esemény vége',
         'extended_end_date' => 'esemény meghosszabbított vége',
