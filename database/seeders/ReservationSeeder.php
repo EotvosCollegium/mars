@@ -32,8 +32,6 @@ class ReservationSeeder extends Seeder
                 'default_reservation_duration' => 60,
                 'is_default_compulsory' => true,
                 'allowed_starting_minutes' => "0",
-                'out_of_order_from' => null,
-                'out_of_order_until' => null
             ]);
         }
 
