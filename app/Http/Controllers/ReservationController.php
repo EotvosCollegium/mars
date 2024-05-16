@@ -174,6 +174,7 @@ class ReservationController extends Controller
         $reservation->save();
 
         Mail::to($reservation->user)->queue(new ReservationVerified(
+            $reservation->user->name,
             user()->name,
             $reservation
         ));

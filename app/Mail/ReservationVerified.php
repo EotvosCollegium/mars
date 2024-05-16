@@ -15,6 +15,8 @@ class ReservationVerified extends Mailable
 {
     use Queueable, SerializesModels;
 
+    /** The name of the recipient. */
+    public string $recipient;
     /** The name of the one who verified the request. */
     public string $approver;
     /** The reservation in question. */
@@ -25,8 +27,9 @@ class ReservationVerified extends Mailable
      *
      * @return void
      */
-    public function __construct(string $approver, Reservation $reservation)
+    public function __construct(string $recipient, string $approver, Reservation $reservation)
     {
+        $this->recipient = $recipient;
         $this->approver = $approver;
         $this->reservation = $reservation;
     }
