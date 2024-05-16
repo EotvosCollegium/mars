@@ -31,6 +31,7 @@ return [
     'hu' => 'Magyar',
     'internet-user' => 'Internethasználó',
     'it' => 'Olasz',
+    'kkt-handler' => 'KKT befizetőhely',
     'la' => 'Latin',
     'locale-admin' => 'Nyelvi adminisztrátor',
     'other' => 'Egyéb',
