@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Secretariat;
 
 use App\Http\Controllers\Controller;
+use App\Mail\EvaluationFormAvailable;
+use App\Mail\EvaluationFormAvailableDetails;
 use App\Mail\EvaluationFormClosed;
+use App\Mail\EvaluationFormReminder;
 use App\Mail\StatusDeactivated;
 use App\Models\Faculty;
 use App\Models\GeneralAssemblies\GeneralAssembly;
@@ -15,7 +18,6 @@ use App\Models\SemesterStatus;
 use App\Models\User;
 use App\Models\Workshop;
 use App\Utils\HasPeriodicEvent;
-use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
@@ -47,7 +49,21 @@ class SemesterEvaluationController extends Controller
 
     public function handlePeriodicEventStart(): void
     {
-        self::sendEvaluationAvailableMail();
+        Mail::to(config('contacts.mail_membra'))->queue(new EvaluationFormAvailable($this->getDeadline()));
+        if (User::secretary()) {
+            Mail::to(User::secretary())->queue(new EvaluationFormAvailableDetails(User::secretary()->name, $this->getDeadline()));
+        }
+        if (User::president()) {
+            Mail::to(User::president())->queue(new EvaluationFormAvailableDetails(User::president()->name, $this->getDeadline()));
+        }
+    }
+
+    public function handlePeriodicEventReminder(int $daysBeforeEnd): void
+    {
+        if($daysBeforeEnd < 3) {
+            $userCount = self::usersHaventFilledOutTheForm()->count();
+            Mail::to(config('contacts.mail_membra'))->queue(new EvaluationFormReminder($userCount, $this->getDeadline()));
+        }
     }
 
     /**
@@ -171,31 +187,6 @@ class SemesterEvaluationController extends Controller
         }
 
         return back()->with('message', __('general.successful_modification'))->with('section', $request->section);
-    }
-
-    /**
-     * Send out the request to fill out the form.
-     */
-    public static function sendEvaluationAvailableMail(): void
-    {
-        Mail::to(config('contacts.mail_membra'))->queue(new \App\Mail\EvaluationFormAvailable());
-        if (User::secretary()) {
-            Mail::to(User::secretary())->queue(new \App\Mail\EvaluationFormAvailableDetails(User::secretary()->name));
-        }
-        if (User::president()) {
-            Mail::to(User::president())->queue(new \App\Mail\EvaluationFormAvailableDetails(User::president()->name));
-        }
-    }
-
-    /**
-     * Send out a reminder.
-     */
-    public static function sendEvaluationReminder(): void
-    {
-        //TODO
-        $userCount = self::usersHaventFilledOutTheForm()->count();
-
-        Mail::to(config('contacts.mail_membra'))->queue(new \App\Mail\EvaluationFormReminder($userCount));
     }
 
     /**

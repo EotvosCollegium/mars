@@ -62,8 +62,8 @@ trait HasPeriodicEvent
         $event = $this->periodicEvent();
         if($event) {
             $event->update($data);
+            //Note: _handled fields are updated accordingly in the PeriodicEventObserver
             $event->refresh();
-            //TODO reset _handled fields
         } else {
             $data = array_merge($data, ['start_date' => $data['start_date'] ?? now(), 'event_model' => self::class]);
             $event = PeriodicEvent::create($data);
@@ -83,6 +83,15 @@ trait HasPeriodicEvent
      * Handle periodic event end event.
      */
     public function handlePeriodicEventEnd(): void
+    {
+        // Do nothing by default
+    }
+
+    /**
+     * Handle periodic event reminder. Runs daily until the end date.
+     * @param int $daysBeforeEnd the number of days left until the end date. The last day is 0.
+     */
+    public function handlePeriodicEventReminder(int $daysBeforeEnd): void
     {
         // Do nothing by default
     }
