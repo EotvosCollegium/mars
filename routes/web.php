@@ -266,7 +266,7 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
     /** reservations */
     Route::prefix('reservations')->name('reservations.')->group(function () {
         Route::resource('items', ReservableItemController::class)->only([
-            'index', 'show', 'create', 'store'
+            'index', 'show', 'create', 'store', 'destroy'
         ]);
 
         Route::get('/for_item/{item}', [ReservationController::class, 'index'])->name('index');
@@ -276,6 +276,7 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
         Route::post('/for_item/{item}', [ReservationController::class, 'store'])->name('store');
         Route::get('/{reservation}/edit', [ReservationController::class, 'edit'])->name('edit');
         Route::post('/{reservation}', [ReservationController::class, 'update'])->name('update');
+        Route::post('/verify/{reservation}', [ReservationController::class, 'verify'])->name('verify');
         Route::post('/delete/{reservation}', [ReservationController::class, 'delete'])->name('delete');
     });
 });
