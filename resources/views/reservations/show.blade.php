@@ -43,6 +43,12 @@
                 <a href="{{ route('reservations.edit', $reservation) }}" class="btn waves-effect">
                     @lang('general.edit')
                 </a>
+                @if (!$reservation->verified && user()->can('administer', App\Models\Reservation::class))
+                <form action="{{ route('reservations.verify', $reservation->id) }}" method="POST">
+                    @csrf
+                    <x-input.button text="reservations.verify" class="green" />
+                </form>
+                @endif
                 <form action="{{ route('reservations.delete', $reservation->id) }}" method="POST">
                     @csrf
                     <x-input.button text="general.delete" class="red" />

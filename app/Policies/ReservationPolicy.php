@@ -22,7 +22,7 @@ class ReservationPolicy
 
     public function view(User $user, Reservation $reservation): bool {
         return $this->administer($user)
-            || ($user->isCollegist() && $user->isActive())
+            || $user->isCollegist()
             || $user->hasRole(Role::WORKSHOP_LEADER)
             || $reservation->reservableItem->type == 'washing_machine';
     }

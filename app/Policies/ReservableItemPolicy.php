@@ -39,7 +39,7 @@ class ReservableItemPolicy
      */
     public function requestReservation(User $user, ReservableItem $item): bool {
         return $this->reserveImmediately($user, $item)
-            || ($user->isCollegist() && $user->isActive())
+            || $user->isCollegist()
             || $user->hasRole(Role::WORKSHOP_LEADER);
     }
 }

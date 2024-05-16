@@ -157,7 +157,7 @@ class ReservableItemController extends Controller
 
         $newItem = ReservableItem::create($validatedData);
 
-        return response()->json($newItem);
+        return redirect()->route('reservations.items.show', $newItem);
     }
 
     public function delete(ReservableItem $item) {
