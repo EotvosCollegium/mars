@@ -29,8 +29,7 @@ class PeriodicEventsProcessor implements ShouldQueue
                 $event->start_handled = now();
                 $event->save(['timestamps' => false]);
                 Log::info('Periodic event started: ' . $event->event_model);
-            }
-            else if ($event->isActive()) {
+            } elseif ($event->isActive()) {
                 $days_left = (int)$event->endDate()->diffInDays(now()) * (-1);
                 app($event->event_model)->handlePeriodicEventReminder($days_left);
                 Log::info('Periodic event reminder: ' . $event->event_model . ' with ' . $days_left . ' days left');
