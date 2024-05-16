@@ -17,8 +17,10 @@
 /resources/lang/la
 /resources/lang/sp
 /vendor
+/data
 .env
 .env.backup
+.phpunit.cache/
 .phpunit.result.cache
 Homestead.json
 Homestead.yaml
