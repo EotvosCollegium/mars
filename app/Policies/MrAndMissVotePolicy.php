@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Http\Controllers\StudentsCouncil\MrAndMissController;
 use App\Models\User;
 use App\Models\Role;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -22,8 +23,11 @@ class MrAndMissVotePolicy
      */
     public function vote(User $user)
     {
-        if (!($user->isCollegist())) {
-            return Response::deny('Csak Collegisták szavazhatnak');
+        if (!($user->isCollegist(alumni: false))) {
+            return Response::deny('Csak collegisták szavazhatnak.');
+        }
+        if(!app(MrAndMissController::class)->isActive()) {
+            return Response::deny('A szavazás jelenleg nem elérhető.');
         }
         return Response::allow();
     }
@@ -36,6 +40,13 @@ class MrAndMissVotePolicy
      */
     public function manage(User $user): bool
     {
+        return true;
         return $user->hasRole([Role::STUDENT_COUNCIL => Role::COMMUNITY_LEADER]);
+    }
+
+    public function voteOrManage(User $user)
+    {
+        // Note: vote might return a Response object, the order is important
+        return $this->manage($user) || $this->vote($user);
     }
 }

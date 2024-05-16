@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * A PeriodicEvent is connected to a feature that is active for a certain period of time.
  * It is connected to the user of the HasPeriodicEvent trait with the `event_model` attribute.
+ * @warning Do not attach other models to PeriodicEvents, use the connected Semester ids instead.
  * @see HasPeriodicEvent
  *
  * @property int $id
