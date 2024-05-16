@@ -14,7 +14,7 @@
         <div class="card">
             <div class="card-content">
                 <span class="card-title">{{ $reservation->displayName() }}</span>
-                
+
                 <table>
                     <tr>
                         <th>@lang('reservations.item')</th>
@@ -47,6 +47,12 @@
                     @csrf
                     <x-input.button text="general.delete" class="red" />
                 </form>
+                @if(!$reservation->verified && user()->can('administer', App\Models\Reservation::class))
+                <form action="{{ route('reservations.verify', $reservation->id) }}" method="POST">
+                    @csrf
+                    <x-input.button text="reservations.verify" class="green" />
+                </form>
+                @endif
             </div>
             @endcan
         </div>
