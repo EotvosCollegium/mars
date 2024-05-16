@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use Carbon\Carbon;
 
 use App\Http\Controllers\ReservableItemController;
 use App\Models\ReservableItem;
 use App\Models\Reservation;
 use App\Models\User;
-use Carbon\Carbon;
+use App\Mail\ReservationVerified;
 
 class ReservationController extends Controller
 {
@@ -74,7 +76,6 @@ class ReservationController extends Controller
         $validator->after(function ($validator) use ($request) {
             if (isset($request->reserved_from) && isset($request->reserved_until) &&
                     Carbon::make($request->reserved_from) > Carbon::make($request->reserved_until)) {
-                echo "Ibolya";
                 $validator->errors()->add(
                     'reserved_until', __('reservation.end_before_start')
                 );
@@ -159,6 +160,24 @@ class ReservationController extends Controller
         ReservationController::abortIfConflicts($reservation);
 
         $reservation->save();
+        return redirect(route('reservations.show', ['reservation' => $reservation]));
+    }
+
+    /**
+     * Lets an authorized user verify an unverified reservation.
+     * Also sends an email to the owner.
+     */
+    public function verify(Reservation $reservation) {
+        $this->authorize('administer', Reservation::class);
+
+        $reservation->verified = true;
+        $reservation->save();
+
+        Mail::to($reservation->user)->queue(new ReservationVerified(
+            user()->name,
+            $reservation
+        ));
+
         return redirect(route('reservations.show', ['reservation' => $reservation]));
     }
 

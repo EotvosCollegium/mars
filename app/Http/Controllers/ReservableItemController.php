@@ -163,9 +163,7 @@ class ReservableItemController extends Controller
                         }
                     }
                 },
-            ],
-            'out_of_order_from' => 'nullable|date',
-            'out_of_order_until' => 'nullable|date'
+            ]
         ]);
         /*
         $validator->after(function ($validator) {
@@ -176,17 +174,17 @@ class ReservableItemController extends Controller
             }
         });
         */
-        
+
         //return response()->json($request->all());
         $validatedData = $validator->validate();
         //return response()->json($validatedData);
 
         $newItem = ReservableItem::create($validatedData);
 
-        return response()->json($newItem);
+        return redirect(route('reservations.items.show', ['item' => $newItem]));
     }
 
-    public function delete(ReservableItem $item)
+    public function destroy(ReservableItem $item)
     {
         $this->authorize('administer', ReservableItem::class);
 
@@ -196,5 +194,4 @@ class ReservableItemController extends Controller
 
         return redirect(route('reservations.items.index'));
     }
-
 }
