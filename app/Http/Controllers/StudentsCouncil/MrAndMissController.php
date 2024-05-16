@@ -44,7 +44,7 @@ class MrAndMissController extends Controller
                 'categories' => $categories,
                 'users' => User::collegists(),
                 'miss_first' => rand(0, 1) == 0,
-                'deadline' => self::getDeadline(),
+                'deadline' => $this->getDeadline(),
             ]
         );
     }
@@ -54,7 +54,7 @@ class MrAndMissController extends Controller
         $this->authorize('manage', MrAndMissVote::class);
 
         return view('student-council.mr-and-miss.admin', [
-            'periodicEvent' => self::periodicEvent(),
+            'periodicEvent' => $this->periodicEvent(),
             'categories' => MrAndMissCategory::where('custom', false)->get(),
         ]);
     }

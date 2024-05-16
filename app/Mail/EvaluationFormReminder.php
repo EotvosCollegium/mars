@@ -2,7 +2,7 @@
 
 namespace App\Mail;
 
-use App\Http\Controllers\Secretariat\SemesterEvaluationController;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -20,10 +20,10 @@ class EvaluationFormReminder extends Mailable
      *
      * @return void
      */
-    public function __construct(int $count)
+    public function __construct(int $count, ?Carbon $deadline)
     {
         $this->count = $count;
-        $this->deadline = SemesterEvaluationController::getDeadline()?->format('Y-m-d');
+        $this->deadline = $deadline?->format('Y-m-d');
 
     }
 

@@ -76,8 +76,8 @@ class ApplicationController extends Controller
         $data = [
             'workshops' => Workshop::all(),
             'faculties' => Faculty::all(),
-            'deadline' => self::getDeadline(),
-            'deadline_extended' => self::isExtended(),
+            'deadline' => $this->getDeadline(),
+            'deadline_extended' => $this->isExtended(),
             'user' => user(),
         ];
         switch ($request->input('page')) {
@@ -102,7 +102,7 @@ class ApplicationController extends Controller
     {
         $user = $request->user();
 
-        if (now() > self::getDeadline()) {
+        if (now() > $this->getDeadline()) {
             return redirect()->route('application')->with('error', 'A jelentkezési határidő lejárt');
         }
 
@@ -178,8 +178,8 @@ class ApplicationController extends Controller
                 'workshop' => $request->input('workshop'), //filtered workshop
                 'workshops' => $workshops, //workshops that can be chosen to filter
                 'status' => $request->input('status'), //filtered status
-                'applicationDeadline' => self::getDeadline(),
-                'periodicEvent' => self::periodicEvent()
+                'applicationDeadline' => $this->getDeadline(),
+                'periodicEvent' => $this->periodicEvent()
             ]);
         }
     }

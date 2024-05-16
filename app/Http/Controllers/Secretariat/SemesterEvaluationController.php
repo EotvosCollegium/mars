@@ -67,7 +67,7 @@ class SemesterEvaluationController extends Controller
             'general_assemblies' => GeneralAssembly::all()->sortByDesc('closed_at')->take(2),
             'community_services' => user()->communityServiceRequests()->where('semester_id', Semester::current()->id)->get(),
             'position_roles' => user()->roles()->whereIn('name', Role::STUDENT_POSTION_ROLES)->get(),
-            'periodicEvent' => self::periodicEvent(),
+            'periodicEvent' => $this->periodicEvent(),
         ]);
     }
 
