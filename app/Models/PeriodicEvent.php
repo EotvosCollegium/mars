@@ -61,6 +61,9 @@ class PeriodicEvent extends Model
         'extended_end_date' => 'datetime'
     ];
 
+    /**
+     * @return BelongsTo the Semester that the PeriodicEvent is connected to
+     */
     final public function semester(): BelongsTo
     {
         return $this->belongsTo(Semester::class);
