@@ -22,14 +22,32 @@ return new class extends Migration
             $table->unsignedSmallInteger('default_reservation_duration');
             // if true, one can only reserve slots with the length of default_reservation_duration
             $table->boolean('is_default_compulsory');
-            // the possible starting dates' endings
-            $table->set('allowed_starting_minutes', range(0,59));
+            // The minute endings of the possible starting times for a reservation.
+            $table->set('allowed_starting_minutes', range(0, 59));
             $table->timestamps();
+        });
+        // for recurring reservations
+        Schema::create('reservation_groups', function (Blueprint $table) {
+            $table->id();
+            $table->integer('frequency'); // in days
+            $table->unsignedBigInteger('default_item');
+            $table->unsignedBigInteger('user_id');
+            $table->string('title')->nullable();
+            $table->time('default_from');
+            $table->time('default_until');
+            $table->text('default_note')->nullable();
+            $table->date('first_day');
+            $table->date('last_day')->nullable();
+
+            $table->foreign('default_item')->references('id')->on('reservable_items');
+            $table->foreign('user_id')->references('id')->on('users')
+                ->onDelete('cascade');
         });
         Schema::create('reservations', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('reservable_item_id');
             $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('group_id')->nullable();
             // whether it is valid and verified
             // for washing machines, it's always true;
             // for rooms, it's true if the secretariat has verified the reservation
@@ -45,6 +63,9 @@ return new class extends Migration
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+            $table->foreign('group_id')->references('id')->on('reservation_groups')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
 

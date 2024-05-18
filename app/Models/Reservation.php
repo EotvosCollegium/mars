@@ -27,7 +27,8 @@ class Reservation extends Model
     ];
 
     /**
-     * @return BelongsTo The item reserved.
+     * The item reserved.
+     * @return BelongsTo
      */
     public function reservableItem(): BelongsTo
     {
@@ -35,7 +36,8 @@ class Reservation extends Model
     }
 
     /**
-     * @return BelongsTo The user who has made the reservation.
+     * The user to whom the reservation belongs.
+     * @return BelongsTo
      */
     public function user(): BelongsTo
     {
@@ -51,6 +53,18 @@ class Reservation extends Model
                                        Carbon $from2, Carbon $until2): bool {
         return ($from1 <= $from2 && $from2 < $until1)
           || ($from2 <= $from1 && $from1 < $until2);
+    }
+    public function group(): BelongsTo
+    {
+        return $this->belongsTo(ReservationGroup::class, 'group_id');
+    }
+
+    /**
+     * Whether the reservation is part of a group of recurring reservations.
+     */
+    public function isRecurring(): bool
+    {
+        return is_null($this->group);
     }
 
     /**
