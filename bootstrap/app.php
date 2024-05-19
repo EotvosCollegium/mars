@@ -52,7 +52,8 @@ return Application::configure(basePath: dirname(__DIR__))
         });
         $schedule->job(new ProcessWifiConnections())->dailyAt('01:00')->onFailure(function () {
             Log::error('Error processing wifi connections.');
-        });;
+        });
+        ;
 
         $schedule->command('backup:clean')->daily()->at('01:00')->onFailure(function () {
             Log::error('Error cleaning the a backup.');
