@@ -53,7 +53,7 @@ trait HasPeriodicEvent
      * @param Carbon|null $extended_end_date
      * @return PeriodicEvent
      */
-    final public function updatePeriodicEvent(Semester $semester, Carbon $start_date, Carbon $end_date, ?Carbon $extended_end_date): PeriodicEvent
+    final public function updatePeriodicEvent(Semester $semester, Carbon $start_date, Carbon $end_date, Carbon $extended_end_date = null): PeriodicEvent
     {
         if($end_date < now()) {
             throw new \InvalidArgumentException('End date must be in the future.');

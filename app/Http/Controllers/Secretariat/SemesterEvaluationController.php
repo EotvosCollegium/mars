@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Secretariat;
 
 use App\Http\Controllers\Controller;
+use App\Mail\EvaluationFormAvailable;
+use App\Mail\EvaluationFormAvailableDetails;
 use App\Mail\EvaluationFormClosed;
+use App\Mail\EvaluationFormReminder;
 use App\Mail\StatusDeactivated;
-use App\Models\EventTrigger;
 use App\Models\Faculty;
 use App\Models\GeneralAssemblies\GeneralAssembly;
 use App\Models\Role;
@@ -15,6 +17,7 @@ use App\Models\SemesterEvaluation;
 use App\Models\SemesterStatus;
 use App\Models\User;
 use App\Models\Workshop;
+use App\Utils\HasPeriodicEvent;
 use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
@@ -25,31 +28,44 @@ use Illuminate\Validation\Rule;
 
 class SemesterEvaluationController extends Controller
 {
-    /**
-     * Check if the evaluation is available.
-     */
-    public static function isEvaluationAvailable(): bool
-    {
-        $available = EventTrigger::find(EventTrigger::SEMESTER_EVALUATION_AVAILABLE)->date;
-        $deadline = self::deadline();
+    use HasPeriodicEvent;
 
-        return now() <= $deadline && $available >= Semester::next()->getStartDate();
+    public function updateEvaluationPeriod(Request $request)
+    {
+        $this->authorize('manage', SemesterEvaluation::class);
+
+        $request->validate([
+            'semester_id' => 'required|exists:semesters,id',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after:now|after:start_date'
+        ]);
+
+        $this->updatePeriodicEvent(
+            Semester::find($request->semester_id),
+            Carbon::parse($request->start_date),
+            Carbon::parse($request->end_date),
+        );
+
+        return back()->with('message', __('general.successful_modification'));
+
     }
 
-    public static function deadline(): Carbon
+    public function handlePeriodicEventStart(): void
     {
-        $custom_deadline = config('custom.semester_evaluation_deadline');
-        $system_deadline = EventTrigger::find(EventTrigger::DEACTIVATE_STATUS_SIGNAL)->date;
-        if (!isset($custom_deadline)) {
-            return $system_deadline;
-        } else {
-            $custom_deadline = Carbon::parse($custom_deadline);
-            //if the deadline has not been updated, use the system_deadline
-            if ($custom_deadline < Semester::current()->getStartDate()) {
-                return $system_deadline;
-            } else {
-                return $custom_deadline;
-            }
+        Mail::to(config('contacts.mail_membra'))->queue(new EvaluationFormAvailable($this->getDeadline()));
+        if (User::secretary()) {
+            Mail::to(User::secretary())->queue(new EvaluationFormAvailableDetails(User::secretary()->name, $this->getDeadline()));
+        }
+        if (User::president()) {
+            Mail::to(User::president())->queue(new EvaluationFormAvailableDetails(User::president()->name, $this->getDeadline()));
+        }
+    }
+
+    public function handlePeriodicEventReminder(int $daysBeforeEnd): void
+    {
+        if($daysBeforeEnd < 3) {
+            $userCount = self::usersHaventFilledOutTheForm()->count();
+            Mail::to(config('contacts.mail_membra'))->queue(new EvaluationFormReminder($userCount, $this->getDeadline()));
         }
     }
 
@@ -59,10 +75,7 @@ class SemesterEvaluationController extends Controller
      */
     public function show()
     {
-        $this->authorize('is-collegist');
-        if (!self::isEvaluationAvailable()) {
-            return redirect('home')->with('error', 'Lejárt a határidő a kérdőív kitöltésére. Keresd fel a titkárságot.');
-        }
+        $this->authorize('fillOrManage', SemesterEvaluation::class);
 
         return view('secretariat.evaluation-form.app', [
             'phd' => user()->educationalInformation->studyLines()->currentlyEnrolled()->where('type', 'phd')->exists(),
@@ -73,19 +86,17 @@ class SemesterEvaluationController extends Controller
             'general_assemblies' => GeneralAssembly::all()->sortByDesc('closed_at')->take(2),
             'community_services' => user()->communityServiceRequests()->where('semester_id', Semester::current()->id)->get(),
             'position_roles' => user()->roles()->whereIn('name', Role::STUDENT_POSTION_ROLES)->get(),
-            'deadline' => self::deadline(),
+            'periodicEvent' => $this->periodicEvent(),
         ]);
     }
 
     /**
      * Update form information.
+     * @throws \Exception
      */
     public function store(Request $request)
     {
-        $this->authorize('is-collegist');
-        if (!self::isEvaluationAvailable()) {
-            return redirect('home')->with('error', 'Lejárt a határidő a kérdőív kitöltésére. Keresd fel a titkárságot.');
-        }
+        $this->authorize('fill', SemesterEvaluation::class);
 
         $validator = Validator::make($request->all(), [
             'section' => 'required|in:alfonso,courses,avg,general_assembly,feedback,other,status',
@@ -116,9 +127,13 @@ class SemesterEvaluationController extends Controller
         $validator->validate();
 
         $user = user();
-        $evaluation = $user->semesterEvaluations()->where('semester_id', Semester::current()->id)->first();
+        $semester = self::semester();
+        if(!$semester) {
+            throw new \Exception('No semester found for the event');
+        }
+        $evaluation = $user->semesterEvaluations()->where('semester_id', $semester->id)->first();
         if (!$evaluation) {
-            $evaluation = SemesterEvaluation::create(['semester_id' => Semester::current()->id, 'user_id' => $user->id]);
+            $evaluation = SemesterEvaluation::create(['semester_id' => $semester->id, 'user_id' => $user->id]);
         }
         switch ($request->section) {
             case 'alfonso':
@@ -164,7 +179,7 @@ class SemesterEvaluationController extends Controller
                     if (!isset($request->next_status)) {
                         return back()->with('error', "A státusz megadása kötelező!")->with('section', $request->section);
                     }
-                    $user->setStatusFor(Semester::next(), $request->next_status, $request->next_status_note);
+                    $user->setStatusFor(self::semester()->succ(), $request->next_status, $request->next_status_note);
                     if ($request->has('resign_residency') && $user->isResident()) {
                         $user->setExtern();
                     }
@@ -175,30 +190,6 @@ class SemesterEvaluationController extends Controller
         }
 
         return back()->with('message', __('general.successful_modification'))->with('section', $request->section);
-    }
-
-    /**
-     * Send out the request to fill out the form.
-     */
-    public static function sendEvaluationAvailableMail()
-    {
-        Mail::to(config('contacts.mail_membra'))->queue(new \App\Mail\EvaluationFormAvailable());
-        if (User::secretary()) {
-            Mail::to(User::secretary())->queue(new \App\Mail\EvaluationFormAvailableDetails(User::secretary()->name));
-        }
-        if (User::president()) {
-            Mail::to(User::president())->queue(new \App\Mail\EvaluationFormAvailableDetails(User::president()->name));
-        }
-    }
-
-    /**
-     * Send out a reminder.
-     */
-    public static function sendEvaluationReminder()
-    {
-        $userCount = self::usersHaventFilledOutTheForm()->count();
-
-        Mail::to(config('contacts.mail_membra'))->queue(new \App\Mail\EvaluationFormReminder($userCount));
     }
 
     /**

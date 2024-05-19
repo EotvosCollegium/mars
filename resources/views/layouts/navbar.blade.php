@@ -63,8 +63,12 @@
             <li><a class="waves-effect" href="{{ route('rooms') }}"><i class="material-icons left">bed</i>Szobabeosztás</a>
             </li>
         @endcan
+        @can('fillOrManage', \App\Models\SemesterEvaluation::class)
+            <li><a class="waves-effect" href="{{ route('secretariat.evaluation.show') }}"><i class="material-icons left">rate_review</i>Szemeszter értékelés</a>
+            </li>
+        @endcan
         <!-- applications page -->
-        @can('viewSomeApplication', \App\Models\User::class)
+        @can('viewSome', \App\Models\ApplicationForm::class)
             <li><a class="waves-effect" href="{{ route('applications') }}"><i
                         class="material-icons left">person_search</i>Felvételi</a></li>
         @endcan
@@ -94,11 +98,13 @@
                                     </a>
                                 </li>
                                 <!-- community committee -->
+                                @can('voteOrManage', \App\Models\MrAndMissVote::class)
                                 <li>
-                                    <a class="waves-effect" href="{{ route('mr_and_miss.vote') }}">
+                                    <a class="waves-effect" href="{{ route('mr_and_miss.index') }}">
                                         <i class="material-icons left">how_to_vote</i> Mr. és Miss Eötvös
                                     </a>
                                 </li>
+                                @endcan
                                 <!-- community service-->
                                 <li>
                                     <a class="waves-effect" href="{{ route('community_service') }}">
