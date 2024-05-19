@@ -127,7 +127,7 @@ class SemesterEvaluationController extends Controller
         $validator->validate();
 
         $user = user();
-        $semester = self::semester();
+        $semester = $this->semester();
         if(!$semester) {
             throw new \Exception('No semester found for the event');
         }
@@ -179,7 +179,7 @@ class SemesterEvaluationController extends Controller
                     if (!isset($request->next_status)) {
                         return back()->with('error', "A státusz megadása kötelező!")->with('section', $request->section);
                     }
-                    $user->setStatusFor(self::semester()->succ(), $request->next_status, $request->next_status_note);
+                    $user->setStatusFor($this->semester()->succ(), $request->next_status, $request->next_status_note);
                     if ($request->has('resign_residency') && $user->isResident()) {
                         $user->setExtern();
                     }

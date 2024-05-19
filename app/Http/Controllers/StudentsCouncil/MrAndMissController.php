@@ -34,7 +34,7 @@ class MrAndMissController extends Controller
             ->leftJoin('mr_and_miss_votes', function ($join) {
                 $join->on('mr_and_miss_categories.id', '=', 'mr_and_miss_votes.category')
                      ->where('mr_and_miss_votes.voter', user()->id)
-                     ->where('semester', self::semester()?->id);
+                     ->where('semester', $this->semester()?->id);
             })
             ->orderBy('mr_and_miss_categories.id')
             ->get();
@@ -137,11 +137,11 @@ class MrAndMissController extends Controller
     {
         $this->authorize('manage', MrAndMissVote::class);
 
-        if(!self::semester()) {
+        if(!$this->semester()) {
             throw new \Exception('Nincs megjeleníthető eredmény.');
         }
         $results = MrAndMissVote::select(DB::raw('count(*) as count, users.name, votee_name, title, mr, custom'))
-                ->where('semester', self::semester()?->id)
+                ->where('semester', $this->semester()?->id)
                 ->join('mr_and_miss_categories', 'mr_and_miss_categories.id', '=', 'mr_and_miss_votes.category')
                 ->leftJoin('users', 'users.id', '=', 'mr_and_miss_votes.votee_id')
                 ->groupBy(['mr_and_miss_categories.id', 'title', 'users.name', 'votee_name', 'mr', 'custom'])
@@ -164,7 +164,7 @@ class MrAndMissController extends Controller
                 MrAndMissVote::updateOrCreate([
                     'voter' => user()->id,
                     'category' => $category->id,
-                    'semester' => self::semester()->id,
+                    'semester' => $this->semester()->id,
                 ], [
                     'votee_id' => null,
                     'votee_name' => $request['raw-'.$category->id],
@@ -173,7 +173,7 @@ class MrAndMissController extends Controller
                 MrAndMissVote::updateOrCreate([
                     'voter' => user()->id,
                     'category' => $category->id,
-                    'semester' => self::semester()->id,
+                    'semester' => $this->semester()->id,
                 ], [
                     'votee_id' => $request['select-'.$category->id],
                     'votee_name' => null,
@@ -182,7 +182,7 @@ class MrAndMissController extends Controller
                 MrAndMissVote::where([
                     'voter' => user()->id,
                     'category' => $category->id,
-                    'semester' => self::semester()->id,
+                    'semester' => $this->semester()->id,
                 ])->delete();
             }
         }
