@@ -16,8 +16,6 @@
                     <x-input.select m="3" id="semester_id" :elements="\App\Models\Semester::all()" :value="$periodicEvent?->semester_id" :default="\App\Models\Semester::current()->succ()->id" helper="Szemeszter"/>
                     <x-input.text m="3" id="start_date" type="datetime-local" without-label helper="Megnyitás" :value="$periodicEvent?->start_date ?? now()->format('Y-m-d H:i')"/>
                     <x-input.text m="3" id="end_date" type="datetime-local" without-label helper="Határidő" :value="$periodicEvent?->end_date"/>
-                    <x-input.text m="3" id="show_until"  type="datetime-local" helper="Eredmények elérhetőek eddig" without-label
-                                  :value="$periodicEvent?->show_until"/>
                 </div>
 
                 <x-input.button floating class="right" icon="save"/>
