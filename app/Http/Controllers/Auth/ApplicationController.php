@@ -54,7 +54,7 @@ class ApplicationController extends Controller
             Semester::find($request->semester_id),
             Carbon::parse($request->start_date),
             Carbon::parse($request->end_date),
-            $request->has('extended_end_date') ? Carbon::parse($request->extended_end_date) : null
+            $request->extended_end_date ? Carbon::parse($request->extended_end_date) : null
         );
 
         return back()->with('message', __('general.successful_modification'));

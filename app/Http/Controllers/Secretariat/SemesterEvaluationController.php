@@ -22,6 +22,7 @@ use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -64,8 +65,42 @@ class SemesterEvaluationController extends Controller
     public function handlePeriodicEventReminder(int $daysBeforeEnd): void
     {
         if($daysBeforeEnd < 3) {
-            $userCount = self::usersHaventFilledOutTheForm()->count();
+            $userCount = $this->usersHaventFilledOutTheForm()->count();
             Mail::to(config('contacts.mail_membra'))->queue(new EvaluationFormReminder($userCount, $this->getDeadline()));
+        }
+    }
+
+    /**
+     * Those who did not make their statements by now will be deactivated
+     * next semester.
+     */
+    public function handlePeriodicEventEnd()
+    {
+        $users = $this->usersHaventFilledOutTheForm();
+        $users_names = $users->pluck('name')->toArray();
+
+        if (User::secretary()) {
+            Mail::to(User::secretary())->queue(new EvaluationFormClosed(User::secretary()->name, $users_names));
+        }
+        if (User::president()) {
+            Mail::to(User::president())->queue(new EvaluationFormClosed(User::president()->name, $users_names));
+        }
+        if (User::director()) {
+            Mail::to(User::director())->queue(new EvaluationFormClosed(User::director()->name, $users_names));
+        }
+        foreach (User::workshopLeaders() as $user) {
+            Mail::to($user)->queue(new EvaluationFormClosed($user->name));
+        }
+
+        foreach ($users as $user) {
+            try {
+                Mail::to($user)->queue(new StatusDeactivated($user->name));
+                RoleUser::withoutEvents(function () use ($user) {
+                    self::deactivateCollegist($user);
+                });
+            } catch (\Exception $e) {
+                Log::error('Error deactivating collegist: ' . $user->name . ' - ' . $e->getMessage());
+            }
         }
     }
 
@@ -87,6 +122,7 @@ class SemesterEvaluationController extends Controller
             'community_services' => user()->communityServiceRequests()->where('semester_id', Semester::current()->id)->get(),
             'position_roles' => user()->roles()->whereIn('name', Role::STUDENT_POSTION_ROLES)->get(),
             'periodicEvent' => $this->periodicEvent(),
+            'users_havent_filled_out' => user()->can('manage', SemesterEvaluation::class) ? $this->usersHaventFilledOutTheForm() : null,
         ]);
     }
 
@@ -195,42 +231,11 @@ class SemesterEvaluationController extends Controller
     /**
      * @return User[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection
      */
-    public static function usersHaventFilledOutTheForm()
+    public function usersHaventFilledOutTheForm()
     {
         return User::withRole(Role::COLLEGIST)->verified()->whereDoesntHave('semesterStatuses', function ($query) {
-            $query->where('semester_id', Semester::next()->id);
+            $query->where('semester_id', $this->semester()?->succ()?->id);
         })->get();
-    }
-
-    /**
-     * Those who did not make their statements by now will be deactivated
-     * next semester.
-     */
-    public static function finalizeStatements()
-    {
-        $users = self::usersHaventFilledOutTheForm();
-        $users_names = $users->pluck('name')->toArray();
-
-        if (User::secretary()) {
-            Mail::to(User::secretary())->queue(new EvaluationFormClosed(User::secretary()->name, $users_names));
-        }
-        if (User::president()) {
-            Mail::to(User::president())->queue(new EvaluationFormClosed(User::president()->name, $users_names));
-        }
-        if (User::director()) {
-            Mail::to(User::director())->queue(new EvaluationFormClosed(User::director()->name, $users_names));
-        }
-        foreach (User::workshopLeaders() as $user) {
-            Mail::to($user)->queue(new EvaluationFormClosed($user->name));
-        }
-
-        foreach ($users as $user) {
-            Mail::to($user)->queue(new StatusDeactivated($user->name));
-            RoleUser::withoutEvents(function () use ($user) {
-                self::deactivateCollegist($user);
-            });
-
-        }
     }
 
     /**

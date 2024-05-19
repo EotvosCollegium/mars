@@ -5,6 +5,7 @@
 
 @section('content')
     @include('secretariat.evaluation-form.period')
+    @include('secretariat.evaluation-form.users_havent_filled_out')
     @can('fill', \App\Models\SemesterEvaluation::class)
     <div class="row">
         <div class="col">

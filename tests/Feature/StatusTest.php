@@ -28,7 +28,7 @@ class StatusTest extends TestCase
         $user = User::factory()->create(['verified' => true]);
         $user->setCollegist(Role::RESIDENT);
 
-        SemesterEvaluationController::finalizeStatements();
+        app(SemesterEvaluationController::class)->handlePeriodicEventEnd();
 
         $this->assertFalse($user->hasRole(Role::COLLEGIST));
         $this->assertTrue($user->hasRole(Role::ALUMNI));
@@ -47,7 +47,7 @@ class StatusTest extends TestCase
         $user->setCollegist(Role::RESIDENT);
         $user->setStatusFor(Semester::next(), SemesterStatus::ACTIVE);
 
-        SemesterEvaluationController::finalizeStatements();
+        app(SemesterEvaluationController::class)->handlePeriodicEventEnd();
 
         $this->assertTrue($user->isActive(Semester::next()));
         $this->assertFalse($user->hasRole(Role::ALUMNI));
