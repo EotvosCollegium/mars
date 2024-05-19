@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Http\Controllers\Secretariat\SemesterEvaluationController;
+use App\Models\PeriodicEvent;
 use App\Models\Role;
 use App\Models\Semester;
 use App\Models\SemesterStatus;
@@ -15,6 +16,17 @@ use Tests\TestCase;
 class StatusTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        PeriodicEvent::create([
+            'event_model' => SemesterEvaluationController::class,
+            'start_date' => now(),
+            'end_date' => now()->addDays(1),
+            'semester_id' => Semester::current()->id,
+        ]);
+    }
 
     /**
      * Remove collegist role from collegists that have not filled their status.
