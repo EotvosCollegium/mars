@@ -12,6 +12,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withProviders()
@@ -43,11 +44,21 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withSchedule(function (Schedule $schedule) {
-        $schedule->job(new PeriodicEventsProcessor())->daily()->at('13:00');
-        $schedule->job(new PingRouters())->everyFiveMinutes();
-        $schedule->job(new ProcessWifiConnections())->dailyAt('01:00');
+        $schedule->job(new PeriodicEventsProcessor())->daily()->at('13:00')->onFailure(function () {
+            Log::error('Error processing periodic events.');
+        });
+        $schedule->job(new PingRouters())->everyFiveMinutes()->onFailure(function () {
+            Log::error('Error pinging routers');
+        });
+        $schedule->job(new ProcessWifiConnections())->dailyAt('01:00')->onFailure(function () {
+            Log::error('Error processing wifi connections.');
+        });;
 
-        $schedule->command('backup:clean')->daily()->at('01:00');
-        $schedule->command('backup:run --only-db')->daily()->at('01:30');
+        $schedule->command('backup:clean')->daily()->at('01:00')->onFailure(function () {
+            Log::error('Error cleaning the a backup.');
+        });
+        $schedule->command('backup:run --only-db')->daily()->at('01:30')->onFailure(function () {
+            Log::error('Error creating a backup.');
+        });
     })
     ->create();

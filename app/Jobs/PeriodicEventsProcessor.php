@@ -24,16 +24,20 @@ class PeriodicEventsProcessor implements ShouldQueue
     public function handle(): void
     {
         foreach (PeriodicEvent::all() as $event) {
-            if ($event->startDate()->isPast() && !$event->start_handled) {
-                $event->handleStart();
-                Log::info('Periodic event started: ' . $event->event_model);
-            } elseif ($event->isActive()) {
-                $event->handleReminder();
-                Log::info('Periodic event reminder: ' . $event->event_model . ' with ' . $days_left . ' days left');
-            }
-            if ($event->endDate()->isPast() && !$event->end_handled) {
-                $event->handleEnd();
-                Log::info('Periodic event ended: ' . $event->event_model);
+            try {
+                if ($event->startDate()->isPast() && !$event->start_handled) {
+                    $event->handleStart();
+                    Log::info('Periodic event started: ' . $event->event_model);
+                } elseif ($event->isActive()) {
+                    $event->handleReminder();
+                    Log::info('Periodic event reminder: ' . $event->event_model);
+                }
+                if ($event->endDate()->isPast() && !$event->end_handled) {
+                    $event->handleEnd();
+                    Log::info('Periodic event ended: ' . $event->event_model);
+                }
+            } catch (\Exception $e) {
+                Log::error('Error processing periodic event: ' . $event->event_model . ' - ' . $e->getMessage());
             }
         }
     }
