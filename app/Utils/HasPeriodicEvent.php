@@ -7,13 +7,20 @@ use App\Models\PeriodicEvent;
 use App\Models\Semester;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Add this trait to controllers that is connected to periodic events.
  * Status changes and events are handled automatically.
  *
+ * The idea behind this is that the controller will have a periodicEvent attached to it.
+ * Through that, we can check if the event is active or not, get the deadline, etc.
+ * We can set up actions that will be executed when the event starts or ends.
+ * The PeriodicEvent is also attached to a semester. The controller should use that semester
+ * (through the periodicEvent) to avoid conflicts when semesters change.
+ *
  * Usage:
- * Use the periodicEvent() method or the other getters to get the current PeriodicEvent's data.
+ * Use the periodicEvent() method or the other getters to get the PeriodicEvent's data.
  * Use the updatePeriodicEvent() method to create or update the current PeriodicEvent.
  * Overwrite handlePeriodicEventStart() and handlePeriodicEventEnd() methods to attach actions for these events.
  *
@@ -22,53 +29,59 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 trait HasPeriodicEvent
 {
+    protected $underlyingControllerName = self::class; // the controller that uses the trait
+
     /**
-     * Get the current PeriodicEvent connected to the model.
-     * It returns the most recent event that is still visible.
-     * Visibility means that it has its `show_until` or some deadline in the future.
-     *
-     * Note: a future event may be returned, if exists.
+     * Get the PeriodicEvent connected to the controller.
      *
      * @return PeriodicEvent|null
      */
     final public function periodicEvent(): ?PeriodicEvent
     {
-        return PeriodicEvent::where('event_model', self::class)
-            ->where(function ($query) {
-                $query
-                    ->orWhere('extended_end_date', '>=', now())
-                    ->orWhere(function ($query) {
-                        $query
-                            ->whereNull('extended_end_date')
-                            ->where('end_date', '>=', now());
-                    })
-                    ->orWhere('show_until', '>=', now());
-            })
+        return PeriodicEvent::where('event_model', $this->underlyingControllerName)
+            //ensure we only get one event
             ->orderBy('start_date', 'desc')
             ->first();
     }
 
     /**
      * Create or update the current PeriodicEvent connected to the model.
-     *
-     * Note: current event is overwritten, if exists.
-     * To add a new event, wait until the previous one becomes obsolete.
-     *
-     * @param array $data the PeriodicEvent's attributes.
+     * Make sure the $data is properly validated:
+     * @param Semester $semester
+     * @param Carbon $start_date
+     * @param Carbon $end_date
+     * @param Carbon|null $extended_end_date
      * @return PeriodicEvent
      */
-    final public function updatePeriodicEvent(array $data): PeriodicEvent
+    final public function updatePeriodicEvent(Semester $semester, Carbon $start_date, Carbon $end_date, ?Carbon $extended_end_date): PeriodicEvent
     {
-        $event = $this->periodicEvent();
-        if($event) {
-            $event->update($data);
-            //Note: _handled fields are updated accordingly in the PeriodicEventObserver
-            $event->refresh();
-        } else {
-            $data = array_merge($data, ['start_date' => $data['start_date'] ?? now(), 'event_model' => self::class]);
-            $event = PeriodicEvent::create($data);
+        if($end_date < now()) {
+            throw new \InvalidArgumentException('End date must be in the future.');
         }
-        return $event;
+        if($end_date < $start_date) {
+            throw new \InvalidArgumentException('End date must be after the start date.');
+        }
+        if($extended_end_date && $extended_end_date < $end_date) {
+            throw new \InvalidArgumentException('Extended end date must be after the end date.');
+        }
+
+        return DB::transaction(function () use ($semester, $start_date, $end_date, $extended_end_date) {
+            $event = $this->periodicEvent() ?? new PeriodicEvent(['event_model' => $this->underlyingControllerName]);
+            $event->semester_id = $semester->id;
+            $event->start_date = $start_date;
+            $event->end_date = $end_date;
+            $event->extended_end_date = $extended_end_date;
+            if($start_date->isFuture()) {
+                $event->start_handled = null;
+            }
+            if($end_date->isFuture()) {
+                $event->end_handled = null;
+            }
+            $event->save();
+            $event->refresh();
+            return $event;
+        });
+
     }
 
     /**

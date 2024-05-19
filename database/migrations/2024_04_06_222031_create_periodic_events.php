@@ -21,7 +21,6 @@ return new class () extends Migration {
             $table->dateTime('end_date');
             $table->datetime('extended_end_date')->nullable();
             $table->dateTime('end_handled')->nullable();
-            $table->dateTime('show_until')->nullable();
             $table->timestamps();
         });
     }

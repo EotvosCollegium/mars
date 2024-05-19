@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Jobs\PeriodicEventsProcessor;
 use App\Utils\HasPeriodicEvent;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -11,8 +12,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * A PeriodicEvent is connected to a feature that is active for a certain period of time.
  * It is connected to the user of the HasPeriodicEvent trait with the `event_model` attribute.
+ * @warning PeriodicEvents should only be modified by the HasPeriodicEvent trait.
  * @warning Do not attach other models to PeriodicEvents, use the connected Semester ids instead.
  * @see HasPeriodicEvent
+ * @see PeriodicEventsProcessor
  *
  * @property int $id
  * @property string $event_model
@@ -22,7 +25,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \Illuminate\Support\Carbon $end_date
  * @property \Illuminate\Support\Carbon|null $extended_end_date
  * @property string|null $end_handled
- * @property string|null $show_until
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read Semester|null $semester
@@ -51,7 +53,6 @@ class PeriodicEvent extends Model
         'end_date',
         'extended_end_date',
         'end_handled',
-        'show_until',
         'semester_id'
     ];
 
@@ -64,7 +65,7 @@ class PeriodicEvent extends Model
     /**
      * @return BelongsTo the Semester that the PeriodicEvent is connected to
      */
-    final public function semester(): BelongsTo
+    public function semester(): BelongsTo
     {
         return $this->belongsTo(Semester::class);
     }
@@ -72,7 +73,7 @@ class PeriodicEvent extends Model
     /**
      * @return Carbon|null the start date of the current PeriodicEvent
      */
-    final public function startDate(): ?Carbon
+    public function startDate(): ?Carbon
     {
         return Carbon::parse($this->start_date);
     }
@@ -80,7 +81,7 @@ class PeriodicEvent extends Model
     /**
      * @return Carbon|null the end date of the current PeriodicEvent
      */
-    final public function endDate(): ?Carbon
+    public function endDate(): ?Carbon
     {
         return Carbon::parse($this->extended_end_date ?? $this->end_date);
     }
@@ -88,7 +89,7 @@ class PeriodicEvent extends Model
     /**
      * @return Carbon|null the end date of the current PeriodicEvent
      */
-    final public function deadline(): ?Carbon
+    public function deadline(): ?Carbon
     {
         return $this->endDate();
     }
@@ -98,12 +99,12 @@ class PeriodicEvent extends Model
      * start date <= now <= (extended) end date
      * @return bool
      */
-    final public function isActive(): bool
+    public function isActive(): bool
     {
-        if($this->startDate()->isFuture()) {
+        if ($this->startDate()->isFuture()) {
             return false;
         }
-        if($this->endDate()->isPast()) {
+        if ($this->endDate()->isPast()) {
             return false;
         }
         return true;
@@ -112,8 +113,45 @@ class PeriodicEvent extends Model
     /**
      * @return bool if the end date has been extended or not
      */
-    final public function isExtended(): bool
+    public function isExtended(): bool
     {
         return $this->extended_end_date != null;
     }
+
+    /**
+     * Handle the start of the PeriodicEvent.
+     */
+    public function handleStart(): void
+    {
+        //Get the corresponding controller and call its start method
+        app($this->event_model)->handlePeriodicEventStart();
+
+        $this->start_handled = now();
+        $this->save(['timestamps' => false]); // save without updating timestamps
+    }
+
+    /**
+     * Handle the end of the PeriodicEvent.
+     */
+    public function handleEnd(): void
+    {
+        //Get the corresponding controller and call its start method
+        app($this->event_model)->handlePeriodicEventEnd();
+
+        $this->end_handled = now();
+        $this->save(['timestamps' => false]); // save without updating timestamps
+    }
+
+    /**
+     * Handle the end of the PeriodicEvent.
+     */
+    public function handleReminder(): void
+    {
+        $days_left = (int)$this->endDate()->diffInDays(now()) * (-1);
+
+        //Get the corresponding controller and call its start method
+        app($this->event_model)->handlePeriodicEventReminder($days_left);
+    }
+
+
 }

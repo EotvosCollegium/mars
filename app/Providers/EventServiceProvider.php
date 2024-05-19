@@ -11,7 +11,6 @@ use App\Models\RoleUser;
 use App\Models\SemesterStatus;
 use App\Observers\FreePagesObserver;
 use App\Observers\GeneralAssemblyObserver;
-use App\Observers\PeriodicEventObserver;
 use App\Observers\PrintAccountObserver;
 use App\Observers\RoleUserObserver;
 use App\Observers\StatusObserver;
@@ -50,6 +49,5 @@ class EventServiceProvider extends ServiceProvider
         PrintAccount::observe(PrintAccountObserver::class);
         RoleUser::observe(RoleUserObserver::class);
         GeneralAssembly::observe(GeneralAssemblyObserver::class);
-        PeriodicEvent::observe(PeriodicEventObserver::class);
     }
 }
