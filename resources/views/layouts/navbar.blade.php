@@ -72,7 +72,7 @@
         <li class="no-padding">
             <ul class="collapsible collapsible-accordion">
                 <!-- students' council module -->
-                @can('is-collegist')
+                @if(user()->can('is-collegist') || user()->hasRole(\App\Models\Role::SECRETARY))
                     <li class="@yield('student_council_module')">
                         <a class="collapsible-header waves-effect" style="padding-left:32px">
                             <i class="material-icons left">groups</i> <!-- star icon? -->
@@ -81,6 +81,7 @@
                         </a>
                         <div class="collapsible-body">
                             <ul>
+                                @can('is-collegist')
                                 <!-- economic committee -->
                                 <li>
                                     <a class="waves-effect" href="{{ route('economic_committee') }}">
@@ -105,16 +106,20 @@
                                         <i class="material-icons left">business_center</i> Közösségi tevékenység
                                     </a>
                                 </li>
+                                @endcan
+                                {{-- the secretariat can only see general assemblies --}}
+                                @can('viewAny', \App\Models\GeneralAssembly::class)
                                 <!-- general assemblies -->
                                 <li>
                                     <a class="waves-effect" href="{{ route('general_assemblies.index') }}">
                                         <i class="material-icons left">thumbs_up_down</i> @lang('voting.assembly')
                                     </a>
                                 </li>
+                                @endcan
                             </ul>
                         </div>
                     </li>
-                @endcan
+                @endif
                 @if(Auth::user()->isAdmin() || Auth::user()->isCollegist())
                     {{-- Sysadmin module --}}
                     <li class="@yield('admin_module')">
