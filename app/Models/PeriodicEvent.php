@@ -101,13 +101,7 @@ class PeriodicEvent extends Model
      */
     public function isActive(): bool
     {
-        if ($this->startDate()->isFuture()) {
-            return false;
-        }
-        if ($this->endDate()->isPast()) {
-            return false;
-        }
-        return true;
+        return !$this->startDate()->isFuture() && !$this->endDate()->isPast();
     }
 
     /**
