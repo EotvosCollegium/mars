@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Secretariat;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\PeriodicEventsProcessor;
 use App\Mail\EvaluationFormAvailable;
 use App\Mail\EvaluationFormAvailableDetails;
 use App\Mail\EvaluationFormClosed;
@@ -21,6 +22,7 @@ use App\Utils\HasPeriodicEvent;
 use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -31,7 +33,14 @@ class SemesterEvaluationController extends Controller
 {
     use HasPeriodicEvent;
 
-    public function updateEvaluationPeriod(Request $request)
+    /**
+     * Update the PeriodicEvent for the evaluation form.
+     *
+     * @param Request $request
+     * @return RedirectResponse
+     * @throws AuthorizationException
+     */
+    public function updateEvaluationPeriod(Request $request): RedirectResponse
     {
         $this->authorize('manage', SemesterEvaluation::class);
 
@@ -51,6 +60,10 @@ class SemesterEvaluationController extends Controller
 
     }
 
+    /**
+     * Send email that the form is available.
+     * @return void
+     */
     public function handlePeriodicEventStart(): void
     {
         Mail::to(config('contacts.mail_membra'))->queue(new EvaluationFormAvailable($this->getDeadline()));
@@ -62,6 +75,11 @@ class SemesterEvaluationController extends Controller
         }
     }
 
+    /**
+     * Send reminder that the form is available.
+     * @param int $daysBeforeEnd
+     * @return void
+     */
     public function handlePeriodicEventReminder(int $daysBeforeEnd): void
     {
         if($daysBeforeEnd < 3) {
@@ -71,8 +89,7 @@ class SemesterEvaluationController extends Controller
     }
 
     /**
-     * Those who did not make their statements by now will be deactivated
-     * next semester.
+     * Send email about results and deactivate collegists who did not fill out the form.
      */
     public function handlePeriodicEventEnd()
     {

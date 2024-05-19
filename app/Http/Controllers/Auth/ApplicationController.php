@@ -25,7 +25,6 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class ApplicationController extends Controller
 {
-    //TODO attach application forms to semesters (from the periodicEvent)
     use HasPeriodicEvent;
 
     private const EDUCATIONAL_ROUTE = 'educational';

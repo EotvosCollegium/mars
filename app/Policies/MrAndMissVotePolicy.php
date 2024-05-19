@@ -43,6 +43,13 @@ class MrAndMissVotePolicy
         return $user->hasRole([Role::STUDENT_COUNCIL => Role::COMMUNITY_LEADER]);
     }
 
+
+    /**
+     * Determine whether the user can vote or manage the categories and see the results.
+     *
+     * @param User $user
+     * @return bool|Response
+     */
     public function voteOrManage(User $user)
     {
         // Note: vote might return a Response object, the order is important

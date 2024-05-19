@@ -9,6 +9,8 @@ use App\Models\Semester;
 use App\Models\User;
 use App\Utils\HasPeriodicEvent;
 use Carbon\Carbon;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -51,6 +53,9 @@ class MrAndMissController extends Controller
         );
     }
 
+    /**
+     * Show the admin page with the categories and the voting period.
+     */
     public function indexAdmin(Request $request)
     {
         $this->authorize('manage', MrAndMissVote::class);
@@ -61,7 +66,14 @@ class MrAndMissController extends Controller
         ]);
     }
 
-    public function updateVotePeriod(Request $request)
+    /**
+     * Update the periodicEvent for voting.
+     *
+     * @param Request $request
+     * @return RedirectResponse
+     * @throws AuthorizationException
+     */
+    public function updateVotePeriod(Request $request): RedirectResponse
     {
         $this->authorize('manage', MrAndMissVote::class);
 
