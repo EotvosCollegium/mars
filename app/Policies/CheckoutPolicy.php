@@ -46,9 +46,8 @@ class CheckoutPolicy
             Role::SYS_ADMIN,
             Role::STUDENT_COUNCIL => [
                 Role::ECONOMIC_VICE_PRESIDENT,
-                Role::CULTURAL_LEADER,
-                Role::CULTURAL_MEMBER
-            ]
+                Role::KKT_HANDLER,
+            ],
         ]);
     }
 

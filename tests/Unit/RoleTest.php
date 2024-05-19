@@ -97,4 +97,60 @@ class RoleTest extends TestCase
         $this->assertFalse($user->addRole(Role::get(Role::STUDENT_COUNCIL)));
         $this->assertFalse($user->hasRole([Role::STUDENT_COUNCIL]));
     }
+
+    /**
+     * Chaining of {@see HasRoles::scopeWithRole()} results in them being combined with logical AND.
+     */
+    public function test_scopeWithRole_chained(): void
+    {
+        $userRoleA = User::factory()->create();
+        $userRoleA->addRole(Role::get(Role::TENANT));
+        $userRoleB = User::factory()->create();
+        $userRoleB->addRole(Role::get(Role::DIRECTOR));
+        $userRolesAB = User::factory()->create();
+        $userRolesAB->addRole(Role::get(Role::TENANT));
+        $userRolesAB->addRole(Role::get(Role::DIRECTOR));
+
+        $result = User::withRole(Role::get(Role::TENANT))->withRole(Role::get(Role::DIRECTOR))->get();
+        $this->assertCount(1, $result);
+        $this->assertEquals($userRolesAB->id, $result->first()->id);
+
+        $result = User::withRole(Role::TENANT)->withRole(Role::DIRECTOR)->get();
+        $this->assertCount(1, $result);
+        $this->assertEquals($userRolesAB->id, $result->first()->id);
+
+        $result = User::withRole(Role::get(Role::TENANT)->id)->withRole(Role::get(Role::DIRECTOR)->id)->get();
+        $this->assertCount(1, $result);
+        $this->assertEquals($userRolesAB->id, $result->first()->id);
+    }
+
+    /**
+     * {@see HasRoles::scopeWithAllRoles()} combines the roles with logical AND.
+     */
+    public function test_scopeWithAllRoles(): void
+    {
+        $userRoleA = User::factory()->create();
+        $userRoleA->addRole(Role::get(Role::TENANT));
+        $userRoleB = User::factory()->create();
+        $userRoleB->addRole(Role::get(Role::DIRECTOR));
+        $userRolesAB = User::factory()->create();
+        $userRolesAB->addRole(Role::get(Role::TENANT));
+        $userRolesAB->addRole(Role::get(Role::DIRECTOR));
+
+        $result = User::withAllRoles([Role::TENANT, Role::DIRECTOR])->get();
+        $this->assertCount(1, $result);
+        $this->assertEquals($userRolesAB->id, $result->first()->id);
+
+        $result = User::withAllRoles([Role::get(Role::TENANT), Role::get(Role::DIRECTOR)])->get();
+        $this->assertCount(1, $result);
+        $this->assertEquals($userRolesAB->id, $result->first()->id);
+
+        $result = User::withAllRoles([Role::TENANT, Role::DIRECTOR])->get();
+        $this->assertCount(1, $result);
+        $this->assertEquals($userRolesAB->id, $result->first()->id);
+
+        $result = User::withAllRoles([Role::get(Role::TENANT)->id, Role::get(Role::DIRECTOR)->id])->get();
+        $this->assertCount(1, $result);
+        $this->assertEquals($userRolesAB->id, $result->first()->id);
+    }
 }

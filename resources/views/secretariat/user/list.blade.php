@@ -10,10 +10,4 @@
 
 @livewire('list-users')
 
-{{-- Export --}}
-<div class="fixed-action-btn tooltipped" data-position="left" data-tooltip="Exportálás">
-    <a href="{{ route('users.export') }}" class="btn-floating btn-large">
-        <i class="large material-icons">file_download</i>
-    </a>
-</div>
 @endsection

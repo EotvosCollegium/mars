@@ -96,7 +96,6 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
     /** User related routes */
     Route::get('/profile', [UserController::class, 'profile'])->name('profile');
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
-    Route::get('/users/export', [UserController::class, 'export'])->name('users.export');
     Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
     Route::post('/users/{user}/tenant_until', [UserController::class, 'updateTenantUntil'])->name('users.update.tenant_until');
     Route::post('/users/{user}/roles/{role}', [UserController::class, 'addRole'])->name('users.roles.add');
