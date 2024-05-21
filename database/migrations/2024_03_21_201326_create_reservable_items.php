@@ -26,19 +26,42 @@ return new class extends Migration
             $table->datetime('out_of_order_until')->nullable();
             $table->timestamps();
         });
+        Schema::create('reservation_groups', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedSmallInteger('frequency'); // in days
+            $table->date('last_day');
+            $table->boolean('verified');
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('default_item');
+            $table->time('default_from');
+            $table->time('default_until');
+            $table->string('default_title')->nullable();
+            $table->text('default_note')->nullable();
+            $table->timestamps();
+
+            $table->foreign('default_item')->references('id')->on('reservable_items')
+                ->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('user_id')->references('id')->on('users')
+                ->onDelete('cascade')->onUpdate('cascade');
+        });
         Schema::create('reservations', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('reservable_item_id');
             $table->unsignedBigInteger('user_id');
-            $table->boolean('verified')->default(true);
+            $table->unsignedBigInteger('group_id')->nullable();
+            $table->boolean('verified');
             $table->string('title')->nullable();
             $table->text('note')->nullable();
             $table->datetime('reserved_from');
             $table->datetime('reserved_until');
             $table->timestamps();
 
-            $table->foreign('reservable_item_id')->references('id')->on('reservable_items');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('reservable_item_id')->references('id')->on('reservable_items')
+                ->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('user_id')->references('id')->on('users')
+                ->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('user_id')->references('id')->on('users')
+                ->onDelete('cascade')->onUpdate('cascade');
 
             $table->index(['reservable_item_id', 'reserved_from']);
         });
@@ -51,7 +74,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('reservable_items');
         Schema::dropIfExists('reservations');
+        Schema::dropIfExists('reservation_groups');
+        Schema::dropIfExists('reservable_items');
     }
 };

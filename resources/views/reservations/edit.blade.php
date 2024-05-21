@@ -24,7 +24,7 @@ if (isset($reservation)) {
     <div class="col s12">
         <div class="card">
             <div class="card-content">
-            <form action="{{ 
+            <form action="{{
                 isset($reservation)
                 ? route('reservations.update', $reservation)
                 : route('reservations.store', $item)
@@ -36,6 +36,34 @@ if (isset($reservation)) {
                         <div s="6">{{ $item->name }}</div>
                         <div s="6">{{ (isset($reservation) && !is_null($reservation->user)) ? $reservation->user->name : '' }}
                     </div>
+
+                    @if(!isset($reservation))
+                    <div class="row">
+                        <x-input.checkbox s=12 name="recurring" :text="__('reservations.recurring')"
+                            onchange="
+                                document.getElementById('frequency').disabled = !this.checked;
+                                document.getElementById('last_day').disabled = !this.checked;
+                            "/>
+                    </div>
+                    <div class="row">
+                        <x-input.text disabled s=6 id='frequency' type="number" :text="__('reservations.frequency')" />
+                        <x-input.datepicker disabled s=6 id='last_day' :text="__('reservations.last_day')" />
+                    </div>
+                    @elseif($reservation->isRecurring())
+
+                    <x-input.radio name="for_what" value="this_only" :text="__('reservations.this_only')"
+                        onchange="document.getElementById('last_day').disabled = (this.value == 'this_only');" />
+                    <x-input.radio name="for_what" value="all_after" :text="__('reservations.all_after')"
+                        onchange="document.getElementById('last_day').disabled = (this.value == 'this_only');" />
+                    <x-input.radio name="for_what" value="all" :text="__('reservations.all')"
+                        onchange="document.getElementById('last_day').disabled = (this.value == 'this_only');" />
+
+                    <div class="row">
+                        <x-input.datepicker disabled s=12 id='last_day' :text="__('reservations.last_day')"
+                            :value="$reservation->group->last_day" />
+                    </div>
+                    @endif
+
                     <div class="row">
                         <x-input.text s="12" type="text" text="reservations.title" id="title"
                                         :value="isset($reservation) ? $reservation->title : ''" maxlength="127"/>

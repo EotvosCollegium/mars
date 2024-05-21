@@ -38,7 +38,8 @@ $columnWidth = 100.0 / (7.0 * $itemCount);
                         'timetable-block',
                         'red' => $isReservation,
                         'green' => !$isReservation,
-                        'darken-4'
+                        'darken-4' => !$isReservation || App\Models\Reservation::find($block['reservation_id'])->verified,
+                        'lighten-4' => $isReservation && !App\Models\Reservation::find($block['reservation_id'])->verified
                 ])>
                     @if(!is_null($block['reservation_id']))
                     {{App\Models\Reservation::find($block['reservation_id'])->displayName()}}

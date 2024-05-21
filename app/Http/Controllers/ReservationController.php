@@ -6,10 +6,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\Rule;
 
 use Carbon\Carbon;
 
 use App\Models\ReservableItem;
+use App\Models\ReservationGroup;
 use App\Models\Reservation;
 use App\Mail\ReservationVerified;
 
@@ -91,29 +93,6 @@ class ReservationController extends Controller
     }
 
     /**
-     * The common validation process
-     * of store and update.
-     */
-    public static function validateReservation(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'title' => 'nullable|string|max:255',
-            'note' => 'nullable|string|max:2047',
-            'reserved_from' => 'required|date',
-            'reserved_until' => 'required|date'
-        ]);
-
-        $validator->after(function ($validator) use ($request) {
-            if ($request->reserved_from > $request->reserved_until) {
-                $validator->errors()->add('reserved_until',
-                    'The reservation cannot end before it starts.');
-            }
-        });
-
-        return $validator->validate();
-    }
-
-    /**
      * Stores a reservation based on
      * a ReservableItem provided separately
      * and the data in the request.
@@ -122,23 +101,73 @@ class ReservationController extends Controller
     {
         $this->authorize('requestReservation', $item);
 
-        $validatedData = self::validateReservation($request);
+        $validator = Validator::make($request->all(), [
+            'title' => 'nullable|string|max:255',
+            'note' => 'nullable|string|max:2047',
+            'reserved_from' => 'required|date',
+            'reserved_until' => 'required|date',
+            'recurring' => 'in:on',
+            'last_day' => 'exclude_unless:recurring,on|required|date',
+            'frequency' => 'exclude_unless:recurring,on|required|numeric|min:1|max:65535'
+        ]);
 
-        // we do not save it yet!
-        $newReservation = new Reservation();
-        $newReservation->reservable_item_id = $item->id;
-        $newReservation->user_id = user()->id;
-        $newReservation->title = $validatedData['title'];
-        $newReservation->note = $validatedData['note'];
-        $newReservation->reserved_from = Carbon::make($validatedData['reserved_from']);
-        $newReservation->reserved_until = Carbon::make($validatedData['reserved_until']);
+        $validator->after(function ($validator) use ($request, $item) {
+            if ($request->reserved_from > $request->reserved_until) {
+                $validator->errors()->add('reserved_until',
+                    'The reservation cannot end before it starts.');
+            } else if (isset($request->recurring)
+                       && Carbon::make($request->reserved_from)
+                         > Carbon::make($request->last_day)) {
+                $validator->errors()->add('last_day',
+                    'The last day cannot be before the first.');
+            } else if (isset($request->recurring) && 'washing_machine' == $item->type) {
+                $validator->errors()->add('recurring',
+                    'Recurring reservations are not supported for washing machines');
+            }
+        });
 
-        $newReservation->verified = Auth::user()->can('reserveImmediately', $item);
+        $validatedData = $validator->validate();
 
-        ReservationController::abortConflictingReservation($newReservation);
+        if (isset($request->recurring)) {
+            $newGroup = ReservationGroup::create([
+                'default_item' => $item->id,
+                'user_id' => user()->id,
+                'frequency' => $validatedData['frequency'],
+                'default_title' => $validatedData['title'],
+                'default_from' => Carbon::make($validatedData['reserved_from']),
+                'default_until' => Carbon::make($validatedData['reserved_until']),
+                'default_note' => $validatedData['note'],
+                'last_day' => Carbon::make($validatedData['last_day']),
+                'verified' => Auth::user()->can('reserveImmediately', $item)
+            ]);
 
-        // and finally:
-        $newReservation->save();
+            try {
+                $newGroup->initializeFrom($request->reserved_from);
+            } catch (ConflictException $e) {
+                $newGroup->delete();
+                abort(409, $e->getMessage());
+            }
+
+            return redirect()->route('reservations.show',
+                $newGroup->firstReservation()
+            );
+        } else {
+            // we do not save it yet!
+            $newReservation = new Reservation();
+            $newReservation->reservable_item_id = $item->id;
+            $newReservation->user_id = user()->id;
+            $newReservation->title = $validatedData['title'];
+            $newReservation->note = $validatedData['note'];
+            $newReservation->reserved_from = Carbon::make($validatedData['reserved_from']);
+            $newReservation->reserved_until = Carbon::make($validatedData['reserved_until']);
+
+            $newReservation->verified = Auth::user()->can('reserveImmediately', $item);
+
+            ReservationController::abortConflictingReservation($newReservation);
+
+            // and finally:
+            $newReservation->save();
+        }
 
         return redirect()->route('reservations.show', $newReservation);
     }
@@ -155,6 +184,10 @@ class ReservationController extends Controller
         ]);
     }
 
+    public const THIS_ONLY = 'this_only';
+    public const ALL_AFTER = 'all_after';
+    public const ALL = 'all';
+
     /**
      * Updates a reservation with an edited version.
      */
@@ -162,20 +195,106 @@ class ReservationController extends Controller
     {
         $this->authorize('modify', $reservation);
 
-        $validatedData = self::validateReservation($request);
+        $validator = Validator::make($request->all(), [
+            'title' => 'nullable|string|max:255',
+            'note' => 'nullable|string|max:2047',
+            'reserved_from' => 'required|date',
+            'reserved_until' => 'required|date',
+            'for_what' => [
+                Rule::excludeIf(!$reservation->isRecurring()),
+                'required',
+                Rule::in([self::THIS_ONLY, self::ALL_AFTER, self::ALL])
+            ],
+            'last_day' => [
+                Rule::excludeIf(!$reservation->isRecurring()
+                                || self::THIS_ONLY == $request->for_what),
+                'required', 'date'
+            ]
+        ]);
 
-        // we do not save it yet!
-        $reservation->title = $validatedData['title'];
-        $reservation->note = $validatedData['note'];
-        $reservation->reserved_from = Carbon::make($validatedData['reserved_from']);
-        $reservation->reserved_until = Carbon::make($validatedData['reserved_until']);
+        $validator->after(function ($validator) use ($request, $reservation) {
+            if ($request->reserved_from > $request->reserved_until) {
+                $validator->errors()->add('reserved_until',
+                    'The reservation cannot end before it starts.');
+            } else if ($reservation->isRecurring()
+                       && Carbon::make($request->reserved_from)
+                         > Carbon::make($request->last_day)) {
+                $validator->errors()->add('last_day',
+                    'The last day cannot be before the beginning.');
+            }
+        });
 
-        $reservation->verified = Auth::user()->can('reserveImmediately', $reservation->item);
+        $validatedData = $validator->validate();
 
-        ReservationController::abortConflictingReservation($reservation);
+        if (!$reservation->isRecurring()
+            || self::THIS_ONLY == $validatedData['for_what']) {
+            // we do not save it yet!
+            $reservation->title = $validatedData['title'];
+            $reservation->note = $validatedData['note'];
+            $reservation->reserved_from = Carbon::make($validatedData['reserved_from']);
+            $reservation->reserved_until = Carbon::make($validatedData['reserved_until']);
 
-        // and finally:
-        $reservation->save();
+            $reservation->verified = Auth::user()->can('reserveImmediately', $reservation->item);
+
+            ReservationController::abortConflictingReservation($reservation);
+
+            // and finally:
+            $reservation->save();
+        } else {
+            try {
+                $defaultTitle =
+                ($validatedData['title'] != $reservation->title)
+                ? $validatedData['title'] : null;
+                $defaultFrom =
+                Carbon::make($validatedData['reserved_from']) != Carbon::make($reservation->reserved_from)
+                ? Carbon::make($validatedData['reserved_from']) : null;
+                $defaultUntil =
+                    Carbon::make($validatedData['reserved_until']) != Carbon::make($reservation->reserved_until)
+                    ? Carbon::make($validatedData['reserved_until']) : null;
+                $defaultNote =
+                    $validatedData['note'] != $reservation->note
+                    ? $validatedData['note'] : null;
+
+                // for now:
+                $defaultItem = null; $user = null;
+
+                $verified = user()->can('reserveImmediately', $reservation->reservableItem)
+                    || $reservation->group->verified
+                        && is_null($defaultFrom) && is_null($defaultUntil);
+
+                if (self::ALL_AFTER == $validatedData['for_what']) {
+                    $reservation->group->setForAllAfter(
+                        firstReservation: $reservation,
+                        defaultItem: $defaultItem,
+                        user: $user,
+                        // ?int $frequency = null, // it cannot be set for now
+                        defaultTitle: $defaultTitle,
+                        defaultFrom: $defaultFrom,
+                        defaultUntil: $defaultUntil,
+                        defaultNote: $defaultNote,
+                        verified: $verified
+                    );
+                } else { // self::ALL == $validatedData['for_what']
+                    $reservation->group->setForAll(
+                        defaultItem: $defaultItem,
+                        user: $user,
+                        // ?int $frequency = null, // it cannot be set for now
+                        defaultTitle: $defaultTitle,
+                        defaultFrom: $defaultFrom,
+                        defaultUntil: $defaultUntil,
+                        defaultNote: $defaultNote,
+                        verified: $verified
+                    );
+                }
+
+                // and for the last day:
+                if ($validatedData['last_day'] != $reservation->group->last_day) {
+                    $reservation->group->setLastDay($validatedData['last_day']);
+                }
+            } catch (ConflictException $e) {
+                abort(409, $e->getMessage());
+            }
+        }
 
         return redirect()->route('reservations.show', $reservation);
     }
@@ -200,6 +319,29 @@ class ReservationController extends Controller
         }
     }
 
+        /**
+     * Enables a user with administrative rights to approve
+     * all the reservations of a group.
+     */
+    public function verifyAll(Reservation $reservation) {
+        $this->authorize('administer', Reservation::class);
+
+        if ($reservation->verified || !$reservation->isRecurring()) {
+            abort(400); // TODO: check this out
+        } else {
+            $reservation->group->setForAll(
+                verified: true
+            );
+
+            Mail::to($reservation->user)->queue(new ReservationVerified(
+                user()->name,
+                $reservation
+            ));
+
+            return redirect()->route('reservations.show', $reservation);
+        }
+    }
+
     /**
      * Deletes a reservation.
      */
@@ -207,6 +349,20 @@ class ReservationController extends Controller
         $this->authorize('modify', $reservation);
 
         $reservation->delete();
+        return redirect()->route('reservations.items.show', $reservation->reservableItem);
+    }
+
+    /**
+     * Deletes a reservation.
+     */
+    public function deleteAll(Reservation $reservation) {
+        $this->authorize('modify', $reservation);
+
+        if (!$reservation->isRecurring()) {
+            abort(400); // TODO: check this out
+        }
+
+        $reservation->group->delete();
         return redirect()->route('reservations.items.show', $reservation->reservableItem);
     }
 }

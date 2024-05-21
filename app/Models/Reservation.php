@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+use App\Models\ReservableItem;
+use App\Models\ReservationGroup;
+
 class Reservation extends Model
 {
     use HasFactory;
@@ -14,10 +17,12 @@ class Reservation extends Model
     protected $fillable = [
         'reservable_item_id',
         'user_id',
+        'group_id',
         'title',
         'note',
         'reserved_from',
-        'reserved_until'
+        'reserved_until',
+        'verified'
     ];
 
     /**
@@ -34,6 +39,22 @@ class Reservation extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * The group to which the reservation belongs, if any.
+     */
+    public function group(): BelongsTo
+    {
+        return $this->belongsTo(ReservationGroup::class, 'group_id');
+    }
+
+    /**
+     * Whether the reservation belongs to a group of recurring events.
+     */
+    public function isRecurring(): bool
+    {
+        return isset($this->group_id);
     }
 
     /**
