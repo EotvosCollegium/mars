@@ -20,10 +20,12 @@ class Reservation extends Model
     protected $fillable = [
         'reservable_item_id',
         'user_id',
+        'group_id',
         'title',
         'note',
         'reserved_from',
-        'reserved_until'
+        'reserved_until',
+        'verified'
     ];
 
     /**
@@ -64,7 +66,7 @@ class Reservation extends Model
      */
     public function isRecurring(): bool
     {
-        return is_null($this->group);
+        return isset($this->group);
     }
 
     /**
@@ -104,7 +106,7 @@ class Reservation extends Model
      */
     public function displayName(): string
     {
-        if (!is_null($this->name)) return $this->name;
+        if (!is_null($this->title)) return $this->title;
         else if (!is_null($this->user)) {
             return $this->user->name;
         } else return "";

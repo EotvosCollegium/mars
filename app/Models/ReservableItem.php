@@ -84,10 +84,12 @@ class ReservableItem extends Model
      * Returns whether the room is free
      * in the given time interval.
      * If $until is null, $from will be a single point in time.
+     * If $from is null, it will be the current time.
      */
-    public function isFree(Carbon $from, Carbon $until = null): bool
+    public function isFree(Carbon $from = null, Carbon $until = null): bool
     {
+        if (is_null($from)) $from = Carbon::now();
         if (is_null($until)) $until = $from;
-        return $this->reservationsInSlot($from, $until)->empty();
+        return $this->reservationsInSlot($from, $until)->isEmpty();
     }
 }

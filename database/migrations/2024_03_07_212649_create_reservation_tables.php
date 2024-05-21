@@ -29,18 +29,22 @@ return new class extends Migration
         // for recurring reservations
         Schema::create('reservation_groups', function (Blueprint $table) {
             $table->id();
-            $table->integer('frequency'); // in days
             $table->unsignedBigInteger('default_item');
             $table->unsignedBigInteger('user_id');
-            $table->string('title')->nullable();
+            $table->integer('frequency'); // in days
+            $table->string('default_title')->nullable();
             $table->time('default_from');
             $table->time('default_until');
             $table->text('default_note')->nullable();
-            $table->date('first_day');
-            $table->date('last_day')->nullable();
+            $table->date('last_day'); // for now, this won't be nullable
+            $table->boolean('verified')->default(true);
+            $table->timestamps();
 
-            $table->foreign('default_item')->references('id')->on('reservable_items');
+            $table->foreign('default_item')->references('id')->on('reservable_items')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')
+                ->onUpdate('cascade')
                 ->onDelete('cascade');
         });
         Schema::create('reservations', function (Blueprint $table) {
@@ -81,6 +85,7 @@ return new class extends Migration
     public function down()
     {
         Schema::dropIfExists('reservable_items');
+        Schema::dropIfExists('reservation_groups');
         Schema::dropIfExists('reservations');
     }
 };

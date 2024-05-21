@@ -26,13 +26,62 @@ if(isset($reservation)) $item = $reservation->reservableItem;
                 @csrf
 
                 <div class="card-content">
-                    <span class="card-title">@lang('reservations.item')</span>
+                    <span class="card-title">@lang('reservations.create_reservation')</span>
+
+                    {{$errors}}
+
                     <div class="row">
-                        <span s="12" l="6">{{ $item->name }}</span>
-                        <span s="12" l="6">{{ (isset($reservation) && isset($reservation->user))
+                        <div s="12" m="6">{{ $item->name }}</div>
+                        <div s="12" m="6">{{ (isset($reservation) && isset($reservation->user))
                                               ? $reservation->user->name
-                                              : ''  }}</span>
+                                              : ''  }}</div>
                     </div>
+
+                    {{-- For recurring reservations --}}
+                    @if ('room' == $item->type)
+                        @if(isset($reservation) && $reservation->isRecurring())
+                        <div class="row">
+                            {{-- this is needed for validation --}}
+                            <input type="hidden" name="recurring" value="on"/>
+
+                            <span>@lang('reservations.for_what')</span>
+                            <x-input.radio name="for_what" value="this_only" :text="__('reservations.this_only')"
+                                onchange="document.getElementById('last_day').disabled = ('this_only' == this.value);"/>
+                            <x-input.radio name="for_what" value="all_after" :text="__('reservations.all_after')"
+                                onchange="document.getElementById('last_day').disabled = ('this_only' == this.value);"/>
+                            <x-input.radio name="for_what" value="all" :text="__('reservations.all')"
+                                onchange="document.getElementById('last_day').disabled = ('this_only' == this.value);"/>
+                        </div>
+                        <div class="row">
+                            <x-input.datepicker disabled m="6" id="last_day" type="date-local" without-label :helper="__('reservations.last_day')"
+                                        :value="isset($reservation->group) ? $reservation->group->last_day : ''"/>
+                        </div>
+                        @elseif(!isset($reservation))
+                        <div class="row">
+                            <x-input.checkbox
+                                s="12"
+                                only-input
+                                id='recurring'
+                                :text="__('reservations.recurring')"
+                                onchange="
+                                    document.getElementById('frequency').disabled = !this.checked;
+                                    document.getElementById('last_day').disabled = !this.checked;
+                                "
+                            />
+                        </div>
+                        <div class="row">
+                            <x-input.text disabled m="6" type="number" text="reservations.frequency"
+                                id="frequency" :value="isset($reservation->group) ? $reservation->group->frequency : ''"/>
+                            <x-input.datepicker disabled m="6" id="last_day" type="date-local" without-label :helper="__('reservations.last_day')"
+                                        :value="isset($reservation->group) ? $reservation->group->last_day : ''"/>
+                        </div>
+                        @endif
+
+                        <hr />
+                    @endif
+
+                    {{-- Further details --}}
+
                     @if($item->type == 'room')
                     <div class="row">
                         <x-input.text s="12" type="text" text="reservations.title"

@@ -17,8 +17,6 @@
                         <tr>
                             <th></th> {{-- for a colored dot indicating whether it works --}}
                             <th>@lang('reservations.name')</th>
-                            <th>@lang('reservations.out_of_order_from')</th>
-                            <th>@lang('reservations.out_of_order_until')</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -27,20 +25,12 @@
                             <td>
                                 @if($item->isFree())
                                 <span class="new badge green" data-badge-caption="">@lang('reservations.free')</span>
-                                @elseif($item->isOutOfOrder())
-                                <span class="new badge grey" data-badge-caption="">@lang('reservations.out_of_order')</span>
                                 @else
                                 <span class="new badge red" data-badge-caption="">@lang('reservations.occupied')</span>
                                 @endif
                             </td>
                             <td>
                                 {{ $item->name }}
-                            </td>
-                            <td>
-                                {{ $item->out_of_order_from }}
-                            </td>
-                            <td>
-                                {{ $item->out_of_order_until }}
                             </td>
                         </tr>
                         @endforeach

@@ -80,8 +80,8 @@ class ReservationSeeder extends Seeder
                     $reservation->reserved_until = $until;
                     $reservation->verified = $faker->boolean(50);
 
-                    $status = $room->statusOfSlot($from, $until);
-                    if (ReservableItem::FREE == $status) {
+                    if ($room->isFree($from, $until)) {
+                        // only now
                         $reservation->save();
                     }
                 }

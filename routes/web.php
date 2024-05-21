@@ -278,5 +278,8 @@ Route::middleware(['auth', 'log', 'verified'])->group(function () {
         Route::post('/{reservation}', [ReservationController::class, 'update'])->name('update');
         Route::post('/verify/{reservation}', [ReservationController::class, 'verify'])->name('verify');
         Route::post('/delete/{reservation}', [ReservationController::class, 'delete'])->name('delete');
+        // for the groups
+        Route::post('/verify/{reservation}/all', [ReservationController::class, 'verifyAll'])->name('verify_all');
+        Route::post('/delete/{reservation}/all', [ReservationController::class, 'deleteAll'])->name('delete_all');
     });
 });

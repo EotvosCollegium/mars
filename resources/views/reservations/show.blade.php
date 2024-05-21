@@ -24,6 +24,16 @@
                         <th>@lang('general.user')</th>
                         <td>{{is_null($reservation->user) ? "" : $reservation->user->name}}</td>
                     </tr>
+                    @if($reservation->isRecurring())
+                    <tr>
+                        <th>@lang('reservations.frequency')</th>
+                        <td>{{$reservation->group->frequency}} @lang('reservations.day')</td>
+                    </tr>
+                    <tr>
+                        <th>@lang('reservations.last_day')</th>
+                        <td>{{$reservation->group->last_day}}</td>
+                    </tr>
+                    @endif
                     <tr>
                         <th>@lang('reservations.from')</th>
                         <td>{{$reservation->reserved_from}}</td>
@@ -43,15 +53,28 @@
                 <a href="{{ route('reservations.edit', $reservation) }}" class="btn waves-effect">
                     @lang('general.edit')
                 </a>
-                <form action="{{ route('reservations.delete', $reservation->id) }}" method="POST">
-                    @csrf
-                    <x-input.button text="general.delete" class="red" />
-                </form>
-                @if(!$reservation->verified && user()->can('administer', App\Models\Reservation::class))
                 <form action="{{ route('reservations.verify', $reservation->id) }}" method="POST">
                     @csrf
                     <x-input.button text="reservations.verify" class="green" />
                 </form>
+                @if($reservation->isRecurring())
+                <form action="{{ route('reservations.verify_all', $reservation->id) }}" method="POST">
+                    @csrf
+                    <x-input.button text="reservations.verify_all" class="green" />
+                </form>
+                @endif
+                <form action="{{ route('reservations.delete', $reservation->id) }}" method="POST">
+                    @csrf
+                    <x-input.button text="general.delete" class="red" />
+                </form>
+                @if($reservation->isRecurring())
+                <form action="{{ route('reservations.delete_all', $reservation->id) }}" method="POST">
+                    @csrf
+                    <x-input.button text="general.delete_all" class="red" />
+                </form>
+                @endif
+                @if(!$reservation->verified && user()->can('administer', App\Models\Reservation::class))
+
                 @endif
             </div>
             @endcan
