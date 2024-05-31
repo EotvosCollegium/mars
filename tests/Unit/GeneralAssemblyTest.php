@@ -168,6 +168,9 @@ class GeneralAssemblyTest extends TestCase
         $this->assertNotNull($excused->first()->pivot->comment); // Check if excuse reason is set
     }
 
+    /**
+     * @return void
+     */
     public function test_new_students_pass_requirements(): void
     {
         $user = User::factory()->create(['verified' => true]);
