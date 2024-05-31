@@ -357,7 +357,7 @@ class UserPolicy
         if (!$target->isCollegist()) {
             return false;
         }
-        if ($user->hasRole(Role::SECRETARY)) {
+        if ($user->hasRole(Role::SECRETARY) || $user->hasRole([Role::STUDENT_COUNCIL => Role::SCIENCE_VICE_PRESIDENT])) {
             return true;
         }
         return $user->roleWorkshops->intersect($target->workshops)->count() > 0;
