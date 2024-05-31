@@ -187,5 +187,8 @@ class GeneralAssemblyTest extends TestCase
         $generalAssembly2->presenceChecks()->create();
 
         $this->assertTrue(GeneralAssembly::requirementsPassed($user));
+
+        $generalAssembly->update(['closed_at' => now()->setYear(now()->year)->setMonth(9)->setDay(16)]);
+        $this->assertFalse(GeneralAssembly::requirementsPassed($user));
     }
 }
