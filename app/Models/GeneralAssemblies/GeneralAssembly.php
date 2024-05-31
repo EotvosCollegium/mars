@@ -3,6 +3,7 @@
 namespace App\Models\GeneralAssemblies;
 
 use App\Enums\PresenceType;
+use App\Models\EducationalInformation;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -147,7 +148,12 @@ class GeneralAssembly extends Model
      */
     public static function requirementsPassed(User $user): bool
     {
-        $lastAssemblies = GeneralAssembly::all()->sortByDesc('closed_at')->take(2);
+        $year_of_acceptance = $user->educationalInformation->year_of_acceptance;
+        $acceptance_date = now()->setYear($year_of_acceptance)->setMonth(9)->setDay(1);
+        $lastAssemblies = GeneralAssembly::orderBy('closed_at', 'desc')->take(2);
+        if ($acceptance_date > $lastAssemblies->get()[1]->closed_at) { // If the user was accepted after the second last assembly
+            return true;
+        }
         foreach ($lastAssemblies as $assembly) {
             if ($assembly->isAttended($user)) {
                 return true;

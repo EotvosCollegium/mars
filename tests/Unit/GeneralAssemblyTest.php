@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Models\EducationalInformation;
 use App\Models\SemesterStatus;
 use App\Models\User;
 use App\Models\GeneralAssemblies\Question;
@@ -165,5 +166,23 @@ class GeneralAssemblyTest extends TestCase
         $this->assertEquals(2, $excused->count());
         $this->assertTrue($excused->contains($userPassive1) && $excused->contains($userPassive2));
         $this->assertNotNull($excused->first()->pivot->comment); // Check if excuse reason is set
+    }
+
+    public function test_new_students_pass_requirements(): void
+    {
+        $user = User::factory()->create(['verified' => true]);
+        $user->educationalInformation()->save(EducationalInformation::factory()->make());
+        $user->educationalInformation->update(['year_of_acceptance' => now()->year]);
+
+        $generalAssembly = GeneralAssembly::factory()->create();
+        $generalAssembly2 = GeneralAssembly::factory()->create();
+
+        $generalAssembly->update(['closed_at' => now()->setYear(now()->year)->setMonth(2)->setDay(15)]);
+        $generalAssembly2->update(['closed_at' => now()->setYear(now()->year)->setMonth(9)->setDay(15)]);
+
+        $generalAssembly->presenceChecks()->create();
+        $generalAssembly2->presenceChecks()->create();
+
+        $this->assertTrue(GeneralAssembly::requirementsPassed($user));
     }
 }
