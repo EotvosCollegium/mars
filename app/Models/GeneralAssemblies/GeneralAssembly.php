@@ -151,7 +151,8 @@ class GeneralAssembly extends Model
         $year_of_acceptance = $user->educationalInformation->year_of_acceptance;
         $acceptance_date = now()->setYear($year_of_acceptance)->setMonth(9)->setDay(1);
         $lastAssemblies = GeneralAssembly::orderBy('closed_at', 'desc')->take(2);
-        if ($acceptance_date > $lastAssemblies->get()[1]->closed_at) { // If the user was accepted after the second last assembly
+        if ($lastAssemblies->count() >= 2 && $acceptance_date > $lastAssemblies->get()[1]->closed_at) {
+            // If the user was accepted after the second last assembly
             return true;
         }
         foreach ($lastAssemblies as $assembly) {
