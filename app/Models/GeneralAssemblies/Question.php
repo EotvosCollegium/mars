@@ -162,6 +162,10 @@ class Question extends Model
         if ($this->max_options < count($options)) {
             throw new Exception("too many options given");
         }
+        // sort options to avoid deadlock
+        usort($options, function ($a, $b) {
+            return $a->id - $b->id;
+        });
         DB::transaction(function () use ($user, $options) {
             QuestionUser::create([
                 'question_id' => $this->id,
