@@ -3,7 +3,7 @@
 return [
     'administrators' => 'The administrators',
     'anonymous_feedback' => 'Anonymous feedback',
-    'approved_registration' => 'Your registration have been approved.',
+    'approved_registration' => 'Your registration has been approved.',
     'dear' => 'Dear',
     'email_sent' => 'System administrators notified.',
     'more_info' => 'More information',
