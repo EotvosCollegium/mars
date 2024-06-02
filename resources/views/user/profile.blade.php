@@ -60,14 +60,16 @@
     @endif
 @endcan
 {{-- Internet --}}
-<ul class="collapsible">
-    <li>
-        <div class="collapsible-header"><b>@lang('internet.internet')</b></div>
-        <div class="collapsible-body">
-            @include('user.internet', ['user' => $user])
-        </div>
-    </li>
-</ul>
+@can('handle', $user->internetAccess)
+    <ul class="collapsible">
+        <li>
+            <div class="collapsible-header"><b>@lang('internet.internet')</b></div>
+            <div class="collapsible-body">
+                @include('user.internet', ['user' => $user])
+            </div>
+        </li>
+    </ul>
+@endcan
 {{-- Printing --}}
 <ul class="collapsible">
     <li>
