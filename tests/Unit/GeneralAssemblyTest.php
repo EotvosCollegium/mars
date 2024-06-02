@@ -7,6 +7,7 @@ use App\Models\SemesterStatus;
 use App\Models\User;
 use App\Models\GeneralAssemblies\Question;
 use App\Models\GeneralAssemblies\GeneralAssembly;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -174,14 +175,10 @@ class GeneralAssemblyTest extends TestCase
     public function test_new_students_pass_requirements(): void
     {
         $user = User::factory()->create(['verified' => true]);
-        $user->educationalInformation()->save(EducationalInformation::factory()->make());
-        $user->educationalInformation->update(['year_of_acceptance' => now()->year]);
+        EducationalInformation::factory()->create(['user_id' => $user->id, 'year_of_acceptance' => now()->year]);
 
-        $generalAssembly = GeneralAssembly::factory()->create();
-        $generalAssembly2 = GeneralAssembly::factory()->create();
-
-        $generalAssembly->update(['closed_at' => now()->setYear(now()->year)->setMonth(2)->setDay(15)]);
-        $generalAssembly2->update(['closed_at' => now()->setYear(now()->year)->setMonth(9)->setDay(15)]);
+        $generalAssembly = GeneralAssembly::factory()->create(['closed_at' => Carbon::createFromDate(now()->year, 2, 15)]);
+        $generalAssembly2 = GeneralAssembly::factory()->create(['closed_at' => Carbon::createFromDate(now()->year, 9, 15)]);
 
         $generalAssembly->presenceChecks()->create();
         $generalAssembly2->presenceChecks()->create();

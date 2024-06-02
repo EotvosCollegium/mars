@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 
 use App\Models\GeneralAssemblies\Question;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
@@ -149,10 +150,12 @@ class GeneralAssembly extends Model
     public static function requirementsPassed(User $user): bool
     {
         $year_of_acceptance = $user->educationalInformation->year_of_acceptance;
-        $acceptance_date = now()->setYear($year_of_acceptance)->setMonth(9)->setDay(1);
-        $lastAssemblies = GeneralAssembly::orderBy('closed_at', 'desc')->take(2);
-        if ($lastAssemblies->count() >= 2 && $acceptance_date > $lastAssemblies->get()[1]->closed_at) {
-            // If the user was accepted after the second last assembly
+        $acceptance_date = Carbon::createFromDate($year_of_acceptance, 9, 1);
+
+        $lastAssemblies = GeneralAssembly::orderBy('closed_at', 'desc')->take(2)->get();
+        $secondLastAssembly = $lastAssemblies->count() >= 2 ? $lastAssemblies[1] : null;
+
+        if ($secondLastAssembly && $secondLastAssembly->closed_at < $acceptance_date) {
             return true;
         }
         foreach ($lastAssemblies as $assembly) {
