@@ -339,7 +339,10 @@ class ApplicationTest extends TestCase
         $this->assertTrue($user->internetAccess->has_internet_until > now());
     }
 
-
+    /**
+     * Test that the users see the correct status and that the accepted/banished states are hidden.
+     * @return void
+     */
     public function test_hide_status()
     {
         $applicant_in_progress = User::factory()->create(['verified' => false]);

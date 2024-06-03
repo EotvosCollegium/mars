@@ -9,7 +9,6 @@ use App\Models\Semester;
 use App\Models\SemesterStatus;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
@@ -17,6 +16,10 @@ class StatusTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * Set up the tests
+     * @return void
+     */
     protected function setUp(): void
     {
         parent::setUp();
