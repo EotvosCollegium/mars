@@ -53,7 +53,7 @@ trait HasPeriodicEvent
      * @param Carbon|null $extended_end_date
      * @return PeriodicEvent
      */
-    final public function updatePeriodicEvent(Semester $semester, Carbon $start_date, Carbon $end_date, ?Carbon $extended_end_date): PeriodicEvent
+    final public function updatePeriodicEvent(Semester $semester, Carbon $start_date, Carbon $end_date, Carbon $extended_end_date = null): PeriodicEvent
     {
         if($end_date < now()) {
             throw new \InvalidArgumentException('End date must be in the future.');
@@ -86,6 +86,8 @@ trait HasPeriodicEvent
 
     /**
      * Handle periodic event start event.
+     * @see PeriodicEventsProcessor
+     * @see PeriodicEvent
      */
     public function handlePeriodicEventStart(): void
     {
@@ -94,6 +96,8 @@ trait HasPeriodicEvent
 
     /**
      * Handle periodic event end event.
+     * @see PeriodicEventsProcessor
+     * @see PeriodicEvent
      */
     public function handlePeriodicEventEnd(): void
     {
@@ -103,6 +107,8 @@ trait HasPeriodicEvent
     /**
      * Handle periodic event reminder. Runs daily until the end date.
      * @param int $daysBeforeEnd the number of days left until the end date. The last day is 0.
+     * @see PeriodicEventsProcessor
+     * @see PeriodicEvent
      */
     public function handlePeriodicEventReminder(int $daysBeforeEnd): void
     {
