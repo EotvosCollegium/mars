@@ -9,10 +9,12 @@ use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\DB;
 use App\Models\GeneralAssemblies\GeneralAssembly;
 use App\Models\GeneralAssemblies\QuestionOption;
 use App\Models\GeneralAssemblies\QuestionUser;
+use App\Models\GeneralAssemblies\LongAnswer;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Throwable;
@@ -26,7 +28,7 @@ use Throwable;
  * @property int $max_options
  * @property string|null $opened_at
  * @property string|null $closed_at
- * @property-read GeneralAssembly $generalAssembly
+ * @property-read GeneralAssembly|Semester $parent
  * @property-read Collection|QuestionOption[] $options
  * @property-read int|null $options_count
  * @property-read Collection|User[] $users
@@ -52,11 +54,13 @@ class Question extends Model
     public $timestamps = false;
 
     /**
-     * @return BelongsTo The parent general_assembly.
+     * The parent (either a general assembly or a semester
+     *                               having an evaluation form).
+     * @return MorphTo
      */
-    public function generalAssembly(): BelongsTo
+    public function parent(): MorphTo
     {
-        return $this->belongsTo(GeneralAssembly::class);
+        return $this->morphTo();
     }
 
     /**
@@ -65,6 +69,15 @@ class Question extends Model
     public function options(): HasMany
     {
         return $this->hasMany(QuestionOption::class);
+    }
+
+    /**
+     * The answers belonging to a question
+     * which expects long text answers.
+     */
+    public function longAnswers(): HasMany
+    {
+        return $this->hasMany(LongAnswer::class);
     }
 
     /**
@@ -106,7 +119,7 @@ class Question extends Model
      */
     public function open(): void
     {
-        if (!$this->generalAssembly->isOpen()) {
+        if (!$this->parent->isOpen()) {
             throw new Exception("tried to open question when general_assembly was not open");
         }
         if ($this->isOpen() || $this->isClosed()) {

@@ -12,10 +12,20 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::create('answer_sheets', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedSmallInteger('semester_id');
+            // $table->boolean('is_resident'); // but the BBs... let this be a question
+            $table->unsignedSmallInteger('year_of_admission');
+            // no timestamps (for better anonymity)
+
+            $table->foreign('semester_id')->references('id')->on('semesters');
+        });
+
         Schema::table('questions', function (Blueprint $table) {
-            $table->renameColumn('general_assembly_id', 'parent_id');
             // for a polymorphic relationship
             $table->string('parent_type')->after('general_assembly_id')->nullable();
+            $table->renameColumn('general_assembly_id', 'parent_id');
             $table->boolean('has_long_answers'); // whether it expects a long text answer
         });
         DB::table('questions')->update(['parent_type' => 'general_assembly']);
@@ -24,13 +34,24 @@ return new class extends Migration
             $table->string('parent_type')->nullable(false)->change();
         });
 
+        Schema::create('answer_sheet_question_options', function (Blueprint $table) {
+            $table->unsignedBigInteger('answer_sheet_id');
+            $table->unsignedBigInteger('question_option_id');
+            // no timestamps
+
+            $table->foreign('answer_sheet_id')->references('id')->on('answer_sheets');
+            $table->foreign('question_option_id')->references('id')->on('question_options');
+        });
+
         Schema::create('long_answers', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('question_id');
+            $table->unsignedBigInteger('answer_sheet_id');
             $table->text('text');
-            // $table->timestamps();   // no timestamps for better anonymity
+            // no timestamps
 
             $table->foreign('question_id')->references('id')->on('questions');
+            $table->foreign('answer_sheet_id')->references('id')->on('answer_sheets');
         });
     }
 
