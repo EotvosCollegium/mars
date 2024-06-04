@@ -5,9 +5,15 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 use InvalidArgumentException;
+
+use App\Models\AnonymousQuestions\AnswerSheet;
+use App\Models\GeneralAssemblies\Question;
 
 /**
  * A semester is identified by a year and by it's either autumn or spring.
@@ -153,9 +159,17 @@ class Semester extends Model
     }
 
     /**
+     * Whether the semester is in the past.
+     */
+    public function isClosed(): bool
+    {
+        return Carbon::today() > $this->getEndDate();
+    }
+
+    /**
      * Returns the users with any status in the semester.
      */
-    public function users()
+    public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'semester_status')->withPivot(['status', 'verified', 'comment']);
     }
@@ -163,7 +177,7 @@ class Semester extends Model
     /**
      * Returns the users with the specified status in the semester.
      */
-    public function usersWithStatus($status)
+    public function usersWithStatus($status): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'semester_status')
             ->wherePivot('status', '=', $status)
@@ -207,12 +221,12 @@ class Semester extends Model
     /**
      * Returns the transactions made in the semester.
      */
-    public function transactions()
+    public function transactions(): HasMany
     {
         return $this->hasMany('App\Models\Transaction', 'semester_id');
     }
 
-    public function communityServices()
+    public function communityServices(): HasMany
     {
         return $this->hasMany(\App\Models\CommunityService::class, 'semester_id');
     }
@@ -230,9 +244,27 @@ class Semester extends Model
     /**
      * Returns the workshop balances in the semester.
      */
-    public function workshopBalances()
+    public function workshopBalances(): HasMany
     {
         return $this->hasMany('App\Models\WorkshopBalance');
+    }
+
+    /**
+     * Returns the anonymous answer sheets filled as part of the evaluation form
+     * in the semester.
+     */
+    public function answerSheets(): HasMany
+    {
+        return $this->hasMany(AnswerSheet::class);
+    }
+
+    /**
+     * Returns the anonymous questions forming part of
+     * the semester's evaluation form.
+     */
+    public function questions(): MorphMany
+    {
+        return $this->morphMany(Question::class, 'parent');
     }
 
     /**

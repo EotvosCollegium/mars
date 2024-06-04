@@ -28,13 +28,13 @@ return new class extends Migration
             $table->renameColumn('general_assembly_id', 'parent_id');
             $table->boolean('has_long_answers'); // whether it expects a long text answer
         });
-        DB::table('questions')->update(['parent_type' => 'general_assembly']);
+        DB::table('questions')->update(['parent_type' => 'App\Models\GeneralAssemblies\GeneralAssembly']);
         // and then make it non-nullable
         Schema::table('questions', function (Blueprint $table) {
             $table->string('parent_type')->nullable(false)->change();
         });
 
-        Schema::create('answer_sheet_question_options', function (Blueprint $table) {
+        Schema::create('answer_sheet_question_option', function (Blueprint $table) {
             $table->unsignedBigInteger('answer_sheet_id');
             $table->unsignedBigInteger('question_option_id');
             // no timestamps

@@ -24,6 +24,7 @@ use App\Http\Controllers\Network\InternetController;
 use App\Http\Controllers\Network\MacAddressController;
 use App\Http\Controllers\Network\RouterController;
 use App\Http\Controllers\IssuesController;
+use App\Http\Controllers\Secretariat\AnonymousQuestionController;
 use App\Http\Controllers\Secretariat\DocumentController;
 use App\Http\Controllers\Secretariat\GuestsController;
 use App\Http\Controllers\Secretariat\InvitationController;
@@ -266,4 +267,12 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
     Route::get('/general_assemblies/{general_assembly}/presence_checks/{presence_check}', [GeneralAssemblyPresenceCheckController::class, 'show'])->name('general_assemblies.presence_checks.show');
     Route::post('/general_assemblies/{general_assembly}/presence_checks/{presence_check}/close', [GeneralAssemblyPresenceCheckController::class, 'closePresenceCheck'])->name('general_assemblies.presence_checks.close');
     Route::post('/general_assemblies/{general_assembly}/presence_checks/{presence_check}/sign_presence', [GeneralAssemblyPresenceCheckController::class, 'signPresence'])->name('general_assemblies.presence_checks.presence.store')->withoutMiddleware(LogRequests::class);
+
+    /** anonymous questions */
+    Route::prefix('/anonymous_questions')->group(function () {
+        Route::get('/{semester}', [AnonymousQuestionController::class, 'index'])->name('anonymous_questions.index');
+        Route::get('/{semester}/create', [AnonymousQuestionController::class, 'create'])->name('anonymous_questions.create');
+        Route::post('/{semester}', [AnonymousQuestionController::class, 'store'])->name('anonymous_questions.store');
+        Route::get('/{semester}/{question}', [AnonymousQuestionController::class, 'show'])->name('anonymous_questions.show');
+    });
 });
