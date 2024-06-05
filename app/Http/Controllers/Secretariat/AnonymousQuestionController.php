@@ -22,6 +22,19 @@ use App\Exports\UsersSheets\AnonymousQuestionsExport;
 class AnonymousQuestionController extends Controller
 {
     /**
+     * Lists semesters as collapsible cards;
+     * containing the export option,
+     * the list of questions
+     * and the option to add new ones.
+     */
+    public function indexSemesters()
+    {
+        $this->authorize('administer', AnswerSheet::class);
+
+        return view('secretariat.evaluation-form.index_semesters');
+    }
+
+    /**
      * Returns the 'new question' page.
      */
     public function create(Semester $semester)
@@ -79,10 +92,9 @@ class AnonymousQuestionController extends Controller
             ]);
         }
 
-        return redirect()->route('anonymous_questions.show', [
-            "semester" => $semester,
-            "question" => $question,
-        ])->with('message', __('general.successful_modification'));
+        session()->put('section', $semester->id);
+        return redirect()->route('anonymous_questions.index_semesters')
+                         ->with('message', __('general.successful_modification'));
     }
 
     /**
@@ -105,7 +117,7 @@ class AnonymousQuestionController extends Controller
     private static function answerValidationRules(Semester $semester): array
     {
         $rules = [];
-        foreach ($semester->questions as $question) {
+        foreach ($semester->questionsNotAnsweredBy(user()) as $question) {
             // It does not really work well with ids as keys;
             // it then believes this is a plain array
             // and not an associative one.
@@ -143,11 +155,14 @@ class AnonymousQuestionController extends Controller
 
         $validatedData = $request->validate(self::answerValidationRules($semester));
 
+        // Since answer sheets are anonymous,
+        // we cannot append new answers to the previous sheet (if any);
+        // we have to create a new one.
         $answerSheet = $semester->answerSheets()->create([
             'year_of_acceptance' => user()->educationalInformation->year_of_acceptance
         ]);
 
-        foreach($semester->questions as $question) {
+        foreach($semester->questionsNotAnsweredBy(user()) as $question) {
             // validation ensures we have answers
             // to all of these questions
             $answer = $validatedData['q' . $question->id];

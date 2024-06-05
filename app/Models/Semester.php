@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 use InvalidArgumentException;
 
+use App\Models\User;
 use App\Models\AnonymousQuestions\AnswerSheet;
 use App\Models\GeneralAssemblies\Question;
 
@@ -265,6 +266,16 @@ class Semester extends Model
     public function questions(): MorphMany
     {
         return $this->morphMany(Question::class, 'parent');
+    }
+
+    /**
+     * The questions which a given user has not yet answered.
+     * This returns a Collection.
+     */
+    public function questionsNotAnsweredBy(User $user)
+    {
+        return $this->questions
+                ->filter(function ($question) use ($user) {return !$question->hasVoted($user);});
     }
 
     /**

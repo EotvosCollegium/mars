@@ -122,6 +122,17 @@
                                     </a>
                                 </li>
                                 @endcan
+                                @can('is-collegist')
+                                {{-- results of anonymous questions --}}
+                                @can('administer', \App\Models\AnonymousQuestions\AnswerSheet::class)
+                                <li>
+                                    <a class="waves-effect" href="{{ route('anonymous_questions.index_semesters') }}">
+                                        <i class="material-icons left">assessment</i>
+                                        @lang('anonymous_questions.anonymous_questions')
+                                    </a>
+                                </li>
+                                @endcan
+                                @endcan
                             </ul>
                         </div>
                     </li>

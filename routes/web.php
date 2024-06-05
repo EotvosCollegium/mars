@@ -270,7 +270,7 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
 
     /** anonymous questions */
     Route::prefix('/anonymous_questions')->name('anonymous_questions.')->group(function () {
-        Route::get('/{semester}', [AnonymousQuestionController::class, 'showSemester'])->name('show_semester');
+        Route::get('/', [AnonymousQuestionController::class, 'indexSemesters'])->name('index_semesters');
         Route::get('/{semester}/questions/', [AnonymousQuestionController::class, 'index'])->name('index');
         Route::get('/{semester}/questions/create', [AnonymousQuestionController::class, 'create'])->name('create');
         Route::post('/{semester}/questions', [AnonymousQuestionController::class, 'store'])->name('store');

@@ -43,23 +43,22 @@ class AnonymousQuestionsExport implements FromCollection, WithMapping, WithHeadi
     {
         $row = [
             $answerSheet->id,
-            $answerSheet->semester->year,
-            $answerSheet->semester->part,
+            $answerSheet->semester->tag,
             $answerSheet->year_of_acceptance
         ];
         foreach ($this->semester->questions()->orderBy('id')->get() as $question) {
             if ($question->has_long_answers) {
                 $row[] = $answerSheet->longAnswers()
                                         ->where('question_id', $question->id)
-                                        ->first()->text;
+                                        ->first()->text ?? '';
             } else if ($question->isMultipleChoice()) {
                 $row[] = $answerSheet->chosenOptions()
                                         ->where('question_id', $question->id)
-                                        ->pluck('title')->implode(',');
+                                        ->pluck('title')->implode(',') ?? '';
             } else {
                 $row[] = $answerSheet->chosenOptions()
                                         ->where('question_id', $question->id)
-                                        ->first()->title;
+                                        ->first()->title ?? '';
             }
         }
         return $row;
@@ -72,7 +71,6 @@ class AnonymousQuestionsExport implements FromCollection, WithMapping, WithHeadi
     {
         return array_merge([
             __('general.id'),
-            __('anonymous_questions.academic_year'),
             __('general.semester'),
             __('user.year_of_acceptance')
         ], $this->semester->questions()->orderBy('id')->pluck('title')->all());

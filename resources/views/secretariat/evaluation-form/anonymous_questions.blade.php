@@ -8,8 +8,7 @@
 
     @php
         // We only take the questions that have been answered.
-        $questions = App\Models\Semester::current()->questions
-            ->filter(function ($question) {return !$question->hasVoted(user());})
+        $questions = App\Models\Semester::current()->questionsNotAnsweredBy(user());
     @endphp
 
     @if ($questions->isEmpty())
