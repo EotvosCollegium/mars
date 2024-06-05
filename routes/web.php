@@ -269,11 +269,13 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
     Route::post('/general_assemblies/{general_assembly}/presence_checks/{presence_check}/sign_presence', [GeneralAssemblyPresenceCheckController::class, 'signPresence'])->name('general_assemblies.presence_checks.presence.store')->withoutMiddleware(LogRequests::class);
 
     /** anonymous questions */
-    Route::prefix('/anonymous_questions')->group(function () {
-        Route::get('/{semester}', [AnonymousQuestionController::class, 'index'])->name('anonymous_questions.index');
-        Route::get('/{semester}/create', [AnonymousQuestionController::class, 'create'])->name('anonymous_questions.create');
-        Route::post('/{semester}', [AnonymousQuestionController::class, 'store'])->name('anonymous_questions.store');
-        Route::get('/{semester}/{question}', [AnonymousQuestionController::class, 'show'])->name('anonymous_questions.show');
-        Route::post('/{semester}/answer', [AnonymousQuestionController::class, 'storeAnswers'])->name('anonymous_questions.storeAnswers');
+    Route::prefix('/anonymous_questions')->name('anonymous_questions.')->group(function () {
+        Route::get('/{semester}', [AnonymousQuestionController::class, 'showSemester'])->name('show_semester');
+        Route::get('/{semester}/questions/', [AnonymousQuestionController::class, 'index'])->name('index');
+        Route::get('/{semester}/questions/create', [AnonymousQuestionController::class, 'create'])->name('create');
+        Route::post('/{semester}/questions', [AnonymousQuestionController::class, 'store'])->name('store');
+        Route::get('/{semester}/questions/{question}', [AnonymousQuestionController::class, 'show'])->name('show');
+        Route::post('/{semester}/sheets/', [AnonymousQuestionController::class, 'storeAnswerSheet'])->name('store_answer_sheet');
+        Route::get('/{semester}/sheets/', [AnonymousQuestionController::class, 'exportAnswerSheets'])->name('export_answer_sheets');
     });
 });

@@ -8,11 +8,13 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Maatwebsite\Excel\Facades\Excel;
 
 use App\Models\AnonymousQuestions\AnswerSheet;
 use App\Models\Semester;
 use App\Models\GeneralAssemblies\Question;
 use App\Models\GeneralAssemblies\QuestionOption;
+use App\Exports\UsersSheets\AnonymousQuestionsExport;
 
 /**
  * Controls actions related to anonymous questions.
@@ -135,7 +137,7 @@ class AnonymousQuestionController extends Controller
      * Handles all questions at once
      * and creates an answer sheet for them.
      */
-    public function storeAnswers(Request $request, Semester $semester)
+    public function storeAnswerSheet(Request $request, Semester $semester)
     {
         $this->authorize('is-collegist');
 
@@ -174,5 +176,17 @@ class AnonymousQuestionController extends Controller
         }
 
         return back()->with('message', __('general.successful_modification'))->with('section', $request->section);
+    }
+
+    /**
+     * Returns an Excel sheet containing all the answers
+     * to the questions of a given semester.
+     */
+    public function exportAnswerSheets(Semester $semester)
+    {
+        $this->authorize('administer', AnswerSheet::class);
+
+        return Excel::download(new AnonymousQuestionsExport($semester),
+            'anonymous_questions_' . $semester->year . '_' . $semester->part . '.xlsx');
     }
 }

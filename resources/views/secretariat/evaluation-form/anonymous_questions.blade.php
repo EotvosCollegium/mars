@@ -3,7 +3,7 @@
 
     A névtelen visszajelzéseket nem tároljuk, ezért a mező küldés után üres marad. Ismételt elküldésre nincs szükség.
 </blockquote>
-<form method="POST" action="{{ route('anonymous_questions.storeAnswers', App\Models\Semester::current()) }}">
+<form method="POST" action="{{ route('anonymous_questions.store_answer_sheet', App\Models\Semester::current()) }}">
     @csrf
 
     @php

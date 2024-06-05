@@ -15,6 +15,6 @@ class AnswerSheetPolicy
     {
         return $user->isAdmin()
           || $user->hasRole([Role::STUDENT_COUNCIL => Role::PRESIDENT])
-          || $user->hasRole([Role::STUDENT_COUNCIL => Role::SCIENTIFIC_VICE_PRESIDENT]);
+          || $user->hasRole([Role::STUDENT_COUNCIL => Role::SCIENCE_VICE_PRESIDENT]);
     }
 }
