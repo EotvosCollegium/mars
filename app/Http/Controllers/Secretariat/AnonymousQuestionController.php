@@ -83,7 +83,8 @@ class AnonymousQuestionController extends Controller
         $question = $semester->questions()->create([
             'title' => $request->title,
             'max_options' => $hasLongAnswers ? 0 : $request->max_options,
-            'has_long_answers' => $hasLongAnswers
+            'has_long_answers' => $hasLongAnswers,
+            'opened_at' => \Carbon\Carbon::now()
         ]);
         if (!$hasLongAnswers) foreach ($options as $option) {
             $question->options()->create([

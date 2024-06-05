@@ -17,7 +17,7 @@
         <div class="collapsible-body">
             <div>
                 <b>
-                    @lang('anonymous_questions.number_of_fillers'):
+                    @lang('anonymous_questions.number_of_respondents'):
                     {{$semester->answerSheets->count()}}
                 </b>
                 <x-input.button :href="route('anonymous_questions.export_answer_sheets', $semester)"
