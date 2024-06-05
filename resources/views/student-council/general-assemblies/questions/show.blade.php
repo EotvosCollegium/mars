@@ -2,7 +2,7 @@
 
 @section('title')
 <a href="{{route('general_assemblies.index')}}" class="breadcrumb" style="cursor: pointer">@lang('voting.assembly')</a>
-<a href="{{route('general_assemblies.show', $question->generalAssembly->id)}}" class="breadcrumb" style="cursor: pointer">{{ $question->generalAssembly->title }}</a>
+<a href="{{route('general_assemblies.show', $question->parent->id)}}" class="breadcrumb" style="cursor: pointer">{{ $question->parent->title }}</a>
 <a href="#!" class="breadcrumb">{{ $question->title }}</a>
 @endsection
 @section('student_council_module') active @endsection
@@ -14,7 +14,7 @@
     <div class="col s12">
         <div class="card">
             <form method="POST" action="{{ route('general_assemblies.questions.votes.store', [
-                "general_assembly" => $question->generalAssembly->id,
+                "general_assembly" => $question->parent->id,
                 "question" => $question->id,
             ])}}">
                 @csrf
@@ -98,15 +98,15 @@
                         @if($question->isOpen())
                         <p>
                             <form action="{{ route('general_assemblies.questions.close', [
-                                "general_assembly" => $question->generalAssembly->id,
+                                "general_assembly" => $question->parent->id,
                                 "question" => $question->id,
                             ]) }}" method="POST" style="display:inline;">
                         </p>
                         @elseif(!$question->hasBeenOpened())
-                            @if($question->generalAssembly->isOpen())
+                            @if($question->parent->isOpen())
                             <p>
                                 <form action="{{ route('general_assemblies.questions.open', [
-                                "general_assembly" => $question->generalAssembly->id,
+                                "general_assembly" => $question->parent->id,
                                 "question" => $question->id,
                             ]) }}" method="POST" style="display:inline;">
                                     @csrf
@@ -115,7 +115,7 @@
                             </p>
                             @else
                             <p class="red-text"><i>
-                                @if($question->generalAssembly->hasBeenOpened())
+                                @if($question->parent->hasBeenOpened())
                                 @lang('voting.question_not_opened')
                                 @else
                                 @lang('voting.question_after_sitting')

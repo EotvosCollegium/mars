@@ -27,7 +27,7 @@ class GeneralAssemblyTest extends TestCase
 
         $general_assembly = GeneralAssembly::factory()->create();
         $question = Question::factory()
-            ->for($general_assembly)
+            ->for($general_assembly, 'parent')
             ->hasOptions(3)
             ->create(['opened_at' => now()->subDay(), 'closed_at' => now()->subDay()]);
 
@@ -44,7 +44,7 @@ class GeneralAssemblyTest extends TestCase
 
         $general_assembly = GeneralAssembly::factory()->create();
         $question = Question::factory()
-            ->for($general_assembly)
+            ->for($general_assembly, 'parent')
             ->hasOptions(3)
             ->create(['opened_at' => null, 'closed_at' => null]);
 
@@ -61,7 +61,7 @@ class GeneralAssemblyTest extends TestCase
 
         $general_assembly = GeneralAssembly::factory()->create();
         $question = Question::factory()
-            ->for($general_assembly)
+            ->for($general_assembly, 'parent')
             ->hasOptions(3)
             ->create(['opened_at' => now()->subDay(), 'closed_at' => now()->addDay()]);
 
@@ -79,7 +79,7 @@ class GeneralAssemblyTest extends TestCase
 
         $general_assembly = GeneralAssembly::factory()->create();
         $question = Question::factory()
-            ->for($general_assembly)
+            ->for($general_assembly, 'parent')
             ->hasOptions(3)
             ->create(['opened_at' => now()->subDay(), 'closed_at' => now()->addDay(), 'max_options' => 1]);
 
@@ -99,7 +99,7 @@ class GeneralAssemblyTest extends TestCase
 
         $general_assembly = GeneralAssembly::factory()->create();
         $question = Question::factory()
-            ->for($general_assembly)
+            ->for($general_assembly, 'parent')
             ->hasOptions(3)
             ->create(['opened_at' => now()->subDay(), 'closed_at' => now()->addDay(), 'max_options' => 1]);
 
@@ -116,7 +116,7 @@ class GeneralAssemblyTest extends TestCase
 
         $general_assembly = GeneralAssembly::factory()->create();
         $question = Question::factory()
-            ->for($general_assembly)
+            ->for($general_assembly, 'parent')
             ->hasOptions(3)
             ->create(['opened_at' => now()->subDay(), 'closed_at' => now()->addDay(), 'max_options' => 3]);
 
@@ -136,7 +136,7 @@ class GeneralAssemblyTest extends TestCase
 
         $general_assembly = GeneralAssembly::factory()->create();
         $question = Question::factory()
-            ->for($general_assembly)
+            ->for($general_assembly, 'parent')
             ->hasOptions(3)
             ->create(['opened_at' => now()->subDay(), 'closed_at' => now()->addDay(), 'max_options' => 2]);
 

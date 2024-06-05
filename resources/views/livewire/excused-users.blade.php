@@ -13,7 +13,7 @@
                                     wire:model.live="user"
                                     :elements="\App\Models\User::collegists()"
                                     :formatter="fn($user) => $user->uniqueName"
-                                    :allowEmpty
+                                    allowEmpty
                                 />
                             </div>
                         </div>
