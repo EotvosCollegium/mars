@@ -152,7 +152,7 @@ class SemesterEvaluationController extends Controller
         $this->authorize('fill', SemesterEvaluation::class);
 
         $validator = Validator::make($request->all(), [
-            'section' => 'required|in:alfonso,courses,avg,general_assembly,feedback,other,status',
+            'section' => 'required|in:alfonso,courses,avg,general_assembly,anonymous_questions,other,status',
             'alfonso_note' => 'nullable|string',
             'courses' => 'nullable|array',
             'courses.name' => 'string',
@@ -170,8 +170,6 @@ class SemesterEvaluationController extends Controller
             'educational_activity' => 'nullable|array',
             'public_life_activities' => 'nullable|array',
             'can_be_shared' => 'nullable|in:on',
-            'anonymous_feedback' => 'nullable|in:on',
-            'feedback' => 'nullable|string',
             'resign_residency' => 'nullable|in:on',
             'next_status' => ['nullable', Rule::in([SemesterStatus::ACTIVE, SemesterStatus::PASSIVE, Role::ALUMNI])],
             'next_status_note' => 'nullable|string|max:20',
@@ -206,16 +204,6 @@ class SemesterEvaluationController extends Controller
                     $request->only(['professional_results', 'research', 'publications', 'conferences', 'scholarships', 'educational_activity', 'public_life_activities']),
                     ['can_be_shared' => $request->has('can_be_shared')]
                 ));
-                break;
-            case 'feedback':
-                if ($request->has('anonymous_feedback')) {
-                    Mail::to(User::president())
-                        ->queue(new \App\Mail\AnonymousFeedback(User::president()->name, $request->feedback));
-                    Mail::to(User::studentCouncilSecretary())
-                        ->queue(new \App\Mail\AnonymousFeedback(User::studentCouncilSecretary()->name, $request->feedback));
-                } else {
-                    $evaluation->update($request->only(['feedback']));
-                }
                 break;
             case 'status':
                 $evaluation->update(array_merge(

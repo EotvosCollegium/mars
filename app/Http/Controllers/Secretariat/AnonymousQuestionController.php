@@ -150,10 +150,7 @@ class AnonymousQuestionController extends Controller
             // to all of these questions
             $answer = $validatedData['q' . $question->id];
             if ($question->has_long_answers) {
-                $question->longAnswers()->create([
-                    'answer_sheet_id' => $answerSheet->id,
-                    'text' => $answer
-                ]);
+                $question->giveLongAnswer(user(), $answerSheet, $answer);
             } else if ($question->isMultipleChoice()) {
                 // validation ensures these really belong to the question
                 $options = array_map(
@@ -166,7 +163,7 @@ class AnonymousQuestionController extends Controller
                     ]);
                 }
             } else {
-                // validation ensures thiss really belongs to the question
+                // validation ensures this really belongs to the question
                 $option = QuestionOption::find($answer);
                 $question->vote(user(), $option);
                 DB::table('answer_sheet_question_option')->insert([

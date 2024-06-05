@@ -5,7 +5,17 @@
 </blockquote>
 <form method="POST" action="{{ route('anonymous_questions.storeAnswers', App\Models\Semester::current()) }}">
     @csrf
-    @foreach (App\Models\Semester::current()->questions as $question)
+
+    @php
+        // We only take the questions that have been answered.
+        $questions = App\Models\Semester::current()->questions
+            ->filter(function ($question) {return !$question->hasVoted(user());})
+    @endphp
+
+    @if ($questions->isEmpty())
+    @lang('anonymous_questions.all_questions_filled')
+    @else
+    @foreach ($questions as $question)
     <div>
         <div class="question-title">{{ $question->title }}</div>
         <div class="row">
@@ -31,5 +41,6 @@
             @lang('general.save')
         </button>
     </div>
+    @endif
 </form>
 <blockquote>

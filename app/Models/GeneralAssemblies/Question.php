@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\GeneralAssemblies\GeneralAssembly;
 use App\Models\GeneralAssemblies\QuestionOption;
 use App\Models\GeneralAssemblies\QuestionUser;
+use App\Models\AnonymousQuestions\AnswerSheet;
 use App\Models\AnonymousQuestions\LongAnswer;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -210,5 +211,26 @@ class Question extends Model
                 $option->increment('votes');
             }
         });
+    }
+
+    /**
+     * Creates a long answer for the question
+     * and records that the user has answered the question.
+     * Throws if the question does not accept long answers.
+     */
+    public function giveLongAnswer(User $user, AnswerSheet $answerSheet, string $text): LongAnswer
+    {
+        if (!$this->has_long_answers) {
+            throw new \Exception('this question does not accept long answers');
+        } else {
+            QuestionUser::create([
+                'question_id' => $this->id,
+                'user_id' => $user->id,
+            ]);
+            return $this->longAnswers()->create([
+                'answer_sheet_id' => $answerSheet->id,
+                'text' => $text
+            ]);
+        }
     }
 }
