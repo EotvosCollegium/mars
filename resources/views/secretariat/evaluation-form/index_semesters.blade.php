@@ -15,8 +15,8 @@
                 <b>{{$semester->tag}}</b>
         </div>
         <div class="collapsible-body">
-            <div>
-                <b>
+            <div class="row" style="margin: 0">
+                <b style="font-size: 120%;">
                     @lang('anonymous_questions.number_of_respondents'):
                     {{$semester->answerSheets->count()}}
                 </b>
@@ -24,17 +24,17 @@
                     class="right" :text="__('anonymous_questions.export')" />
             </div>
 
-            <ul>
+            <ul class="collection">
                 @foreach($semester->questions as $question)
-                <li>
-                    {{$question->title}}
+                <li class="collection-item">
+                    <b style="font-size: 110%;">{{$question->title}}</b>
                     @if($question->has_long_answers)
                     (@lang('anonymous_questions.has_long_answers'))
                     @else
                     @if($question->isMultipleChoice()) (@lang('anonymous_questions.is_multiple_choice')) @endif
-                    <ul>
+                    <ul class="collection">
                         @foreach($question->options as $option)
-                        <li>
+                        <li class="collection-item">
                             {{$option->title}}:
                             {{$option->votes}}
                         </li>
@@ -46,8 +46,10 @@
             </ul>
 
             @if(!$semester->isClosed())
-            <x-input.button :href="route('anonymous_questions.create', $semester)"
-                    class="right green" :text="__('anonymous_questions.create_question')" />
+            <div class="row" style="margin: 0">
+                <x-input.button :href="route('anonymous_questions.create', $semester)"
+                        class="right green" :text="__('anonymous_questions.create_question')" />
+            </div>
             @endif
         </div>
     </li>
