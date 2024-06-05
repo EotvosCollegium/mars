@@ -18,6 +18,20 @@ class LongAnswer extends Model
     use HasFactory;
 
     /**
+     * For better anonymity,
+     * this model should not be timestamped.
+     *
+     * @var bool
+     */
+    public $timestamps = false;
+
+    protected $fillable = [
+        'question_id',
+        'answer_sheet_id',
+        'text'
+    ];
+
+    /**
      * The answer sheet (anonymous user)
      * containing the answer.
      */

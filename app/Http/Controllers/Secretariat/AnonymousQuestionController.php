@@ -6,10 +6,13 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 use App\Models\AnonymousQuestions\AnswerSheet;
 use App\Models\Semester;
 use App\Models\GeneralAssemblies\Question;
+use App\Models\GeneralAssemblies\QuestionOption;
 
 /**
  * Controls actions related to anonymous questions.
@@ -92,5 +95,87 @@ class AnonymousQuestionController extends Controller
         return view('anonymous_questions.show', [
             "question" => $question
         ]);
+    }
+
+    /**
+     * Returns validation rules for the semester's anonymous questions.
+     */
+    private static function answerValidationRules(Semester $semester): array
+    {
+        $rules = [];
+        foreach ($semester->questions as $question) {
+            // It does not really work well with ids as keys;
+            // it then believes this is a plain array
+            // and not an associative one.
+            // But it does not work well with titles containing
+            // capital letters either.
+            // So:
+            $key = 'q' . $question->id;
+            if ($question->has_long_answers) {
+                $rules[$key] = 'required|string';
+            } else if ($question->isMultipleChoice()) {
+                $rules[$key] = 'required|array';
+                $rules[$key . '.*'] = Rule::in($question->options->map(
+                    function (QuestionOption $option) {return $option->id;}
+                ));
+            } else {
+                $rules[$key] = [
+                    'required',
+                    Rule::in($question->options->map(
+                        function (QuestionOption $option) {return $option->id;}
+                    ))
+                ];
+            }
+        }
+        return $rules;
+    }
+
+    /**
+     * Stores the answers given by a user.
+     * Handles all questions at once
+     * and creates an answer sheet for them.
+     */
+    public function storeAnswers(Request $request, Semester $semester)
+    {
+        $this->authorize('is-collegist');
+
+        $validatedData = $request->validate(self::answerValidationRules($semester));
+
+        $answerSheet = $semester->answerSheets()->create([
+            'year_of_acceptance' => user()->educationalInformation->year_of_acceptance
+        ]);
+
+        foreach($semester->questions as $question) {
+            // validation ensures we have answers
+            // to all of these questions
+            $answer = $validatedData['q' . $question->id];
+            if ($question->has_long_answers) {
+                $question->longAnswers()->create([
+                    'answer_sheet_id' => $answerSheet->id,
+                    'text' => $answer
+                ]);
+            } else if ($question->isMultipleChoice()) {
+                // validation ensures these really belong to the question
+                $options = array_map(
+                    function(int $id) {return QuestionOption::find($id);}, $answer);
+                $question->vote(user(), $options);
+                foreach($answer as $id) {
+                    DB::table('answer_sheet_question_option')->insert([
+                        'answer_sheet_id' => $answerSheet->id,
+                        'question_option_id' => $id
+                    ]);
+                }
+            } else {
+                // validation ensures thiss really belongs to the question
+                $option = QuestionOption::find($answer);
+                $question->vote(user(), $option);
+                DB::table('answer_sheet_question_option')->insert([
+                    'answer_sheet_id' => $answerSheet->id,
+                    'question_option_id' => $answer
+                ]);
+            }
+        }
+
+        return back()->with('message', __('general.successful_modification'))->with('section', $request->section);
     }
 }

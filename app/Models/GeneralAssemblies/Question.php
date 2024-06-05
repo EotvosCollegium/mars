@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\GeneralAssemblies\GeneralAssembly;
 use App\Models\GeneralAssemblies\QuestionOption;
 use App\Models\GeneralAssemblies\QuestionUser;
-use App\Models\GeneralAssemblies\LongAnswer;
+use App\Models\AnonymousQuestions\LongAnswer;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Throwable;
@@ -64,6 +64,15 @@ class Question extends Model
     }
 
     /**
+     * Whether the parent is a general assembly
+     * or a semester (evaluation form).
+     */
+    public function isForAssembly(): bool
+    {
+        return 'App\\Models\\GeneralAssemblies\\GeneralAssembly' == $this->parent_type;
+    }
+
+    /**
      * @return HasMany the options belonging to the question
      */
     public function options(): HasMany
@@ -93,16 +102,20 @@ class Question extends Model
      */
     public function hasBeenOpened(): bool
     {
-        return $this->opened_at != null && $this->opened_at <= now();
+        return
+            !$this->isForAssembly() ||
+            ($this->opened_at != null && $this->opened_at <= now());
     }
 
     /**
-     * @return bool Whether the question is currently open.*
+     * @return bool Whether the question is currently open.
      */
     public function isOpen(): bool
     {
-        return $this->hasBeenOpened() &&
-            !$this->isClosed();
+        return
+            $this->isForAssembly()
+            ? ($this->hasBeenOpened() && !$this->isClosed())
+            : !$this->parent->isClosed();
     }
 
     /**
@@ -110,7 +123,10 @@ class Question extends Model
      */
     public function isClosed(): bool
     {
-        return $this->closed_at != null && $this->closed_at <= now();
+        return
+            $this->isForAssembly()
+            ? ($this->closed_at != null && $this->closed_at <= now())
+            : $this->parent->isClosed();
     }
 
     /**
@@ -161,14 +177,17 @@ class Question extends Model
     }
 
     /**
-     * Votes for a list of given options in the name of the user.
+     * Votes for an option or a list of given options in the name of the user.
      * @param User $user
-     * @param array $options QuestionOption array
+     * @param QuestionOption|array $options
      * @throws Exception if an option does not belong to the question or if too many options are selected.
      * @throws Throwable
      */
-    public function vote(User $user, array $options): void
+    public function vote(User $user, QuestionOption|array $options): void
     {
+        // if there is only one option given:
+        if (!is_array($options)) $options = [$options];
+
         if (!$this->isOpen()) {
             throw new Exception("question not open");
         }

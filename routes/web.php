@@ -274,5 +274,6 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
         Route::get('/{semester}/create', [AnonymousQuestionController::class, 'create'])->name('anonymous_questions.create');
         Route::post('/{semester}', [AnonymousQuestionController::class, 'store'])->name('anonymous_questions.store');
         Route::get('/{semester}/{question}', [AnonymousQuestionController::class, 'show'])->name('anonymous_questions.show');
+        Route::post('/{semester}/answer', [AnonymousQuestionController::class, 'storeAnswers'])->name('anonymous_questions.storeAnswers');
     });
 });

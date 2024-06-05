@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedSmallInteger('semester_id');
             // $table->boolean('is_resident'); // but the BBs... let this be a question
-            $table->unsignedSmallInteger('year_of_admission');
+            $table->unsignedSmallInteger('year_of_acceptance');
             // no timestamps (for better anonymity)
 
             $table->foreign('semester_id')->references('id')->on('semesters');

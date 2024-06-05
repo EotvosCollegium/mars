@@ -21,6 +21,18 @@ class AnswerSheet extends Model
     use HasFactory;
 
     /**
+     * For better anonymity,
+     * this model should not be timestamped.
+     *
+     * @var bool
+     */
+    public $timestamps = false;
+
+    protected $fillable = [
+        'year_of_acceptance'
+    ];
+
+    /**
      * The semester in which the form was filled.
      */
     public function semester(): BelongsTo
