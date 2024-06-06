@@ -4,6 +4,9 @@
 @endsection
 
 @section('content')
+    @include('secretariat.evaluation-form.period')
+    @include('secretariat.evaluation-form.users_havent_filled_out')
+    @can('fill', \App\Models\SemesterEvaluation::class)
     <div class="row">
         <div class="col">
             <blockquote>
@@ -11,37 +14,23 @@
                 <p>Amennyiben bármilyen ok miatt nem lehet kitölteni a valós adatokat,
                     bármilyen helyesbítést, megjegyzést írj be a megfelelő mezőbe. A rendszerben a követelmények
                     teljesítésére kiszámolt adatok csak tájékoztató jellegűek.</p>
-                <p>Technikai probléma, észrevétel esetén mindenképp <a href="{{route('issues.create')}}">jelentsd a
-                        problémát</a>.
-                    Ha technikai gond miatt nem tudod megfelelően beadni a kérdőívet, akkor <a
-                        href="mailto:{{ config('mail.sys_admin_mail')}}">vedd fel a kapcsolatot a rendszergazdákkal</a>.
+                <p>Technikai gondok esetén <a href="mailto:{{ config('mail.sys_admin_mail')}}">
+                        vedd fel a kapcsolatot a rendszergazdákkal</a>.
                 </p>
                 <p>Először ellenőrizd a személyes és tanulmányi adataid, minden hiányosságot és változást ments el.</p>
+                @if($phd)
+                <p><i>Doktori képzésben résztvevő hallgatók számára a (rövidített) kérdőív kitöltése szintén kötelező,
+                        <b>a seniori beszámoló mellett</b>.<br/>
+                        A seniori beszámolóval kapcsolatban a titkárság ad tájékoztatást.
+                </i></p>
+                @endif
                 <p>A kérvényeket a <a href="mailto:{{ config('mail.secretary_email')}}"> titkárság</a> számára küldd el
                     időben.</p>
                 <p>A kérdőív kitöltése bármikor abbahagyható, és a határidőig később folytatható.</p>
                 <p>A válaszaidhoz a Tanári Kar, a Választmány elnöke és szakmai alelnöke, a titkárság, az igazgató és a
                     rendszergazdák férnek hozzá.</p>
-                <p>A kitöltés határideje: <i class="coli-text text-orange">{{ $deadline }}</i> (Figyelem, a határidő
-                    változhat a tanári értekezlet pontos időpontja függvényében, ezért figyeld az ezzel kapcsolatos
-                    híreket.)</p>
+                <p>A kitöltés határideje: <i class="coli-text text-orange">{{ $periodicEvent->deadline() }}</i>.</p>
             </blockquote>
-            @if($phd)
-                <blockquote class="error">
-                    Doktori képzésben résztvevő hallgatók számára a (rövidített) kérdőív kitöltése szintén kötelező, <i>a
-                        seniori beszámoló mellett</i>.<br/>
-                    A seniori beszámolóval kapcsolatban a titkárság ad tájékoztatást.
-                </blockquote>
-            @endif
-            @if(user()->isAdmin())
-                <blockquote class="error">
-                    Megjegyzés rendszergazdáknak: a határidő állítható a .env fájlban. Ha nem lett frissítve előző
-                    szemeszterről, akkor az alapértelmezett értéke a deactivate status signal EventTrigger dátuma. Az
-                    EventTrigger aktiválásakor alumnivá állítja a rendszer azokat, akik nem töltötték ki a következő
-                    félévre a státuszukat, ezért mindenképp győzödj meg róla, hogy ez később történik, mint a form
-                    határideje.
-                </blockquote>
-            @endif
         </div>
     </div>
     <div class="row">
@@ -165,6 +154,9 @@
             </blockquote>
         </div>
     </div>
+    @else
+        <blockquote class="error">A kérdőívet jelenleg nem lehet kitölteni.</blockquote>
+    @endcan
 
     @push('scripts')
         <script>
