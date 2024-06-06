@@ -11,6 +11,10 @@ use App\Models\Role;
  */
 class AnswerSheetPolicy
 {
+    /**
+     * Whether the user can create questions,
+     * access results etc.
+     */
     public function administer(User $user): bool
     {
         return $user->isAdmin()
