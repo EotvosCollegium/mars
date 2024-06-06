@@ -228,7 +228,7 @@ class Question extends Model
 
             // for the sake of the seeders,
             // we have to accept answers for closed questions too
-            if (!$this->isOpen() && !app()->runningInConsole()) {
+            if (!$this->isOpen() && (!app()->runningInConsole() || app()->runningUnitTests())) {
                 throw new Exception("question not open");
             }
             if ($this->max_options < count($options)) {

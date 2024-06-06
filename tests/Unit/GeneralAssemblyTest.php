@@ -88,6 +88,12 @@ class GeneralAssemblyTest extends TestCase
         $this->assertEquals(1, $question->options->first()->votes);
         $this->assertEquals(0, $question->options->get(1)->votes);
         $this->assertEquals(0, $question->options->get(2)->votes);
+
+        $this->assertTrue(
+            $question->users()
+                ->where('id', $user->id)
+                ->exists()
+        );
     }
 
     /**
@@ -125,6 +131,12 @@ class GeneralAssemblyTest extends TestCase
         $this->assertEquals(1, $question->options->first()->votes);
         $this->assertEquals(1, $question->options->get(1)->votes);
         $this->assertEquals(0, $question->options->get(2)->votes);
+
+        $this->assertTrue(
+            $question->users()
+                ->where('id', $user->id)
+                ->exists()
+        );
     }
 
     /**

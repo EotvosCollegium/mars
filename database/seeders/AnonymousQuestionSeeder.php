@@ -39,9 +39,7 @@ class AnonymousQuestionSeeder extends Seeder
 
             // the test users should not be included
             foreach(User::withRole(Role::COLLEGIST)->where('id', '>', 4)->get() as $collegist) {
-                $answerSheet = $semester->answerSheets()->create([
-                    'year_of_acceptance' => $collegist->educationalInformation->year_of_acceptance
-                ]);
+                $answerSheet = AnswerSheet::createForUser($collegist, $semester);
 
                 $singleChoice->giveAnonymousAnswer($collegist, $answerSheet, $singleChoice->options->random());
                 $multipleChoice->giveAnonymousAnswer($collegist, $answerSheet, $multipleChoice->options->random(2)->all());

@@ -159,9 +159,7 @@ class AnonymousQuestionController extends Controller
         // Since answer sheets are anonymous,
         // we cannot append new answers to the previous sheet (if any);
         // we have to create a new one.
-        $answerSheet = $semester->answerSheets()->create([
-            'year_of_acceptance' => user()->educationalInformation->year_of_acceptance
-        ]);
+        $answerSheet = AnswerSheet::createForUser(user(), $semester);
 
         foreach($semester->questionsNotAnsweredBy(user()) as $question) {
             // validation ensures we have answers
