@@ -86,11 +86,13 @@ class AnonymousQuestionController extends Controller
             'has_long_answers' => $hasLongAnswers,
             'opened_at' => \Carbon\Carbon::now()
         ]);
-        if (!$hasLongAnswers) foreach ($options as $option) {
-            $question->options()->create([
-                'title' => $option,
-                'votes' => 0
-            ]);
+        if (!$hasLongAnswers) {
+            foreach ($options as $option) {
+                $question->options()->create([
+                    'title' => $option,
+                    'votes' => 0
+                ]);
+            }
         }
 
         session()->put('section', $semester->id);
@@ -106,7 +108,9 @@ class AnonymousQuestionController extends Controller
         $this->authorize('administer', AnswerSheet::class);
         // check whether it really belongs here
         // and throw a 404 if not
-        if ($semester != $question->parent) abort(404);
+        if ($semester != $question->parent) {
+            abort(404);
+        }
         return view('anonymous_questions.show', [
             "question" => $question
         ]);
@@ -128,7 +132,7 @@ class AnonymousQuestionController extends Controller
             $key = 'q' . $question->id;
             if ($question->has_long_answers) {
                 $rules[$key] = 'required|string';
-            } else if ($question->isMultipleChoice()) {
+            } elseif ($question->isMultipleChoice()) {
                 $rules[$key] = 'required|array';
                 $rules[$key . '.*'] = Rule::in($question->options->map(
                     function (QuestionOption $option) {return $option->id;}
@@ -167,9 +171,11 @@ class AnonymousQuestionController extends Controller
             $answer = $validatedData['q' . $question->id];
             if ($question->has_long_answers) {
                 $question->giveLongAnswer(user(), $answerSheet, $answer);
-            } else if ($question->isMultipleChoice()) {
+            } elseif ($question->isMultipleChoice()) {
                 $options = array_map(
-                    function(int $id) {return QuestionOption::find($id);}, $answer);
+                    function (int $id) {return QuestionOption::find($id);},
+                    $answer
+                );
                 $question->giveAnonymousAnswer(user(), $answerSheet, $options);
             } else {
                 $option = QuestionOption::find($answer);
@@ -188,7 +194,9 @@ class AnonymousQuestionController extends Controller
     {
         $this->authorize('administer', AnswerSheet::class);
 
-        return Excel::download(new AnonymousQuestionsExport($semester),
-            'anonymous_questions_' . $semester->year . '_' . $semester->part . '.xlsx');
+        return Excel::download(
+            new AnonymousQuestionsExport($semester),
+            'anonymous_questions_' . $semester->year . '_' . $semester->part . '.xlsx'
+        );
     }
 }

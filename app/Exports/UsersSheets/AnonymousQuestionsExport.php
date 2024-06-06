@@ -51,7 +51,7 @@ class AnonymousQuestionsExport implements FromCollection, WithMapping, WithHeadi
                 $row[] = $answerSheet->longAnswers()
                                         ->where('question_id', $question->id)
                                         ->first()->text ?? '';
-            } else if ($question->isMultipleChoice()) {
+            } elseif ($question->isMultipleChoice()) {
                 $row[] = $answerSheet->chosenOptions()
                                         ->where('question_id', $question->id)
                                         ->pluck('title')->implode('/') ?? '';

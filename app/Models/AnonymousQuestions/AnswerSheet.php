@@ -64,7 +64,9 @@ class AnswerSheet extends Model
      */
     public static function createForUser(User $user, Semester $semester = null): AnswerSheet
     {
-        if (is_null($semester)) $semester = Semester::current();
+        if (is_null($semester)) {
+            $semester = Semester::current();
+        }
 
         return $semester->answerSheets()->create([
             'year_of_acceptance' => $user->educationalInformation->year_of_acceptance

@@ -22,8 +22,9 @@ class AnonymousQuestionSeeder extends Seeder
         $faker = \Faker\Factory::create();
 
         foreach(Semester::all()->filter(
-                // not for future semesters
-                function (Semester $semester) {return $semester->isCurrent() || $semester->isClosed();})
+            // not for future semesters
+            function (Semester $semester) {return $semester->isCurrent() || $semester->isClosed();}
+        )
                 as $semester) {
             $singleChoice = Question::factory()
                 ->for($semester, 'parent')

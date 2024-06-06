@@ -32,8 +32,11 @@ class AnonymousQuestionTest extends TestCase
             ->create(['opened_at' => now()->subDay(), 'closed_at' => null]);
 
         $this->expectException(\Exception::class);
-        $question->giveAnonymousAnswer($user, AnswerSheet::createForUser($user, $semester),
-                                        $question->options->first());
+        $question->giveAnonymousAnswer(
+            $user,
+            AnswerSheet::createForUser($user, $semester),
+            $question->options->first()
+        );
     }
 
     /**
@@ -120,8 +123,11 @@ class AnonymousQuestionTest extends TestCase
             ->create(['opened_at' => now()->subDay(), 'closed_at' => null, 'max_options' => 1]);
 
         $this->expectException(\Exception::class);
-        $question->giveAnonymousAnswer($user,
-            AnswerSheet::createForUser($user, $semester), $question->options->random(2)->all());
+        $question->giveAnonymousAnswer(
+            $user,
+            AnswerSheet::createForUser($user, $semester),
+            $question->options->random(2)->all()
+        );
     }
 
     /**
@@ -139,8 +145,11 @@ class AnonymousQuestionTest extends TestCase
             ->create(['opened_at' => now()->subDay(), 'closed_at' => null, 'max_options' => 4]);
 
         $answerSheet = AnswerSheet::createForUser($user, $semester);
-        $question->giveAnonymousAnswer($user, $answerSheet,
-            [$question->options->first(), $question->options->get(1)]);
+        $question->giveAnonymousAnswer(
+            $user,
+            $answerSheet,
+            [$question->options->first(), $question->options->get(1)]
+        );
 
         $this->assertEquals(1, $question->options->first()->votes);
         $this->assertEquals(1, $question->options->get(1)->votes);

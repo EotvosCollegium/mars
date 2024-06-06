@@ -79,7 +79,9 @@ class GeneralAssemblyQuestionController extends Controller
         $this->authorize('viewAny', GeneralAssembly::class);
         // check whether it belongs here
         // and throw a 404 if not
-        if ($generalAssembly != $question->parent) abort(404);
+        if ($generalAssembly != $question->parent) {
+            abort(404);
+        }
         return view('student-council.general-assemblies.questions.show', [
             "question" => $question
         ]);
@@ -94,7 +96,9 @@ class GeneralAssemblyQuestionController extends Controller
         $this->authorize('administer', GeneralAssembly::class);
         // check whether it really belongs here
         // and throw a 404 if not
-        if ($generalAssembly != $question->parent) abort(404);
+        if ($generalAssembly != $question->parent) {
+            abort(404);
+        }
         if (!$generalAssembly->isOpen()) {
             abort(403, "tried to open a question when the sitting itself was not open");
         }
@@ -113,7 +117,9 @@ class GeneralAssemblyQuestionController extends Controller
         $this->authorize('administer', GeneralAssembly::class);
         // check whether it really belongs here
         // and throw a 404 if not
-        if ($generalAssembly != $question->parent) abort(404);
+        if ($generalAssembly != $question->parent) {
+            abort(404);
+        }
         if (!$question->isOpen()) {
             abort(403, "tried to close a question which was not open");
         }
@@ -128,7 +134,9 @@ class GeneralAssemblyQuestionController extends Controller
     {
         // check whether it really belongs here
         // and throw a 404 if not
-        if ($generalAssembly != $question->parent) abort(404);
+        if ($generalAssembly != $question->parent) {
+            abort(404);
+        }
         $this->authorize('vote', $question); //this also checks whether the user has already voted
 
         if ($question->isMultipleChoice()) {

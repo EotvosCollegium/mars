@@ -187,7 +187,9 @@ class Question extends Model
     public function vote(User $user, QuestionOption|array $options): void
     {
         // if there is only one option given:
-        if (!is_array($options)) $options = [$options];
+        if (!is_array($options)) {
+            $options = [$options];
+        }
 
         if (!$this->isOpen()) {
             throw new Exception("question not open");
@@ -224,7 +226,9 @@ class Question extends Model
             throw new \Exception("this question is not an anonymous feedback question");
         } else {
             // if there is only one option given:
-            if (!is_array($options)) $options = [$options];
+            if (!is_array($options)) {
+                $options = [$options];
+            }
 
             // for the sake of the seeders,
             // we have to accept answers for closed questions too
