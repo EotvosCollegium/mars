@@ -214,6 +214,47 @@ class Question extends Model
     }
 
     /**
+     * Adds answers to an anonymous answer sheet.
+     * Throws if an option does not belong to the question or if too many options are selected,
+     * or if this is not an anonymous question belonging to a semester.
+     */
+    public function giveAnonymousAnswer(User $user, AnswerSheet $answerSheet, array|QuestionOption $options): void
+    {
+        if ($this->isForAssembly()) {
+            throw new \Exception("this question is not an anonymous feedback question");
+        } else {
+            // if there is only one option given:
+            if (!is_array($options)) $options = [$options];
+
+            // for the sake of the seeders,
+            // we have to accept answers for closed questions too
+            if (!$this->isOpen() && !app()->runningInConsole()) {
+                throw new Exception("question not open");
+            }
+            if ($this->max_options < count($options)) {
+                throw new Exception("too many options given");
+            }
+
+            DB::transaction(function () use ($user, $answerSheet, $options) {
+                QuestionUser::create([
+                    'question_id' => $this->id,
+                    'user_id' => $user->id,
+                ]);
+                foreach ($options as $option) {
+                    if ($option->question_id != $this->id) {
+                        throw new Exception("Received an option which does not belong to the question");
+                    }
+                    $option->increment('votes');
+                    DB::table('answer_sheet_question_option')->insert([
+                        'answer_sheet_id' => $answerSheet->id,
+                        'question_option_id' => $option->id
+                    ]);
+                }
+            });
+        }
+    }
+
+    /**
      * Creates a long answer for the question
      * and records that the user has answered the question.
      * Throws if the question does not accept long answers.

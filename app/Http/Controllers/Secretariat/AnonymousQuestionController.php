@@ -170,24 +170,12 @@ class AnonymousQuestionController extends Controller
             if ($question->has_long_answers) {
                 $question->giveLongAnswer(user(), $answerSheet, $answer);
             } else if ($question->isMultipleChoice()) {
-                // validation ensures these really belong to the question
                 $options = array_map(
                     function(int $id) {return QuestionOption::find($id);}, $answer);
-                $question->vote(user(), $options);
-                foreach($answer as $id) {
-                    DB::table('answer_sheet_question_option')->insert([
-                        'answer_sheet_id' => $answerSheet->id,
-                        'question_option_id' => $id
-                    ]);
-                }
+                $question->giveAnonymousAnswer(user(), $answerSheet, $options);
             } else {
-                // validation ensures this really belongs to the question
                 $option = QuestionOption::find($answer);
-                $question->vote(user(), $option);
-                DB::table('answer_sheet_question_option')->insert([
-                    'answer_sheet_id' => $answerSheet->id,
-                    'question_option_id' => $answer
-                ]);
+                $question->giveAnonymousAnswer(user(), $answerSheet, $option);
             }
         }
 
