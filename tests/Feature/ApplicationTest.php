@@ -2,8 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Http\Controllers\Auth\ApplicationController;
 use App\Models\ApplicationForm;
 use App\Models\Faculty;
+use App\Models\PeriodicEvent;
 use App\Models\Role;
 use App\Models\Semester;
 use App\Models\User;
@@ -22,6 +24,21 @@ use Tests\TestCase;
 class ApplicationTest extends TestCase
 {
     use RefreshDatabase;
+
+    /**
+     * Set up the test.
+     * @return void
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+        //open application period
+        PeriodicEvent::create([
+            'event_model' => ApplicationController::class,
+            'start_date' => now()->subWeeks(2),
+            'end_date' => now()->addWeeks(2),
+        ]);
+    }
 
     /**
      * Create a new applicant.
@@ -71,15 +88,16 @@ class ApplicationTest extends TestCase
     {
         $user = $this->createApplicant();
 
-        $response = $this->get('/application');
+        $this->get('/application'); // for `redirect->back()`...
         $response = $this->post('/application', [
             'page' => 'questions',
             'status' => 'extern',
             'graduation_average' => '4'
         ]);
         $response->assertStatus(302);
-        $response->assertRedirect('/application');
         $response->assertSessionHasNoErrors();
+        $response->assertRedirect('/application');
+
         $response->assertSessionHas('message', __('general.successful_modification'));
 
 
@@ -321,7 +339,10 @@ class ApplicationTest extends TestCase
         $this->assertTrue($user->internetAccess->has_internet_until > now());
     }
 
-
+    /**
+     * Test that the users see the correct status and that the accepted/banished states are hidden.
+     * @return void
+     */
     public function test_hide_status()
     {
         $applicant_in_progress = User::factory()->create(['verified' => false]);

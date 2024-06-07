@@ -171,6 +171,7 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
     Route::post('/secretariat/invite', [InvitationController::class, 'store'])->name('secretariat.invite');
 
     /** Application handling */
+    Route::post('/applications/period/update', [ApplicationController::class, 'updateApplicationPeriod'])->name('applications.period.update');
     Route::get('/applications', [ApplicationController::class, 'showApplications'])->name('applications');
     Route::post('/applications', [ApplicationController::class, 'editApplication'])->name('applications.edit');
     Route::get('/applications/export', [ApplicationController::class, 'exportApplications'])->name('applications.export');
@@ -190,6 +191,7 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
     /** Evaluation form */
     Route::get('/secretariat/evaluation', [SemesterEvaluationController::class, 'show'])->name('secretariat.evaluation.show');
     Route::post('/secretariat/evaluation', [SemesterEvaluationController::class, 'store'])->name('secretariat.evaluation.store');
+    Route::post('/secretariat/evaluation/period', [SemesterEvaluationController::class, 'updateEvaluationPeriod'])->name('secretariat.evaluation.period.update');
 
     /** Documents */
     Route::get('/documents', [DocumentController::class, 'index'])->name('documents');
@@ -228,13 +230,14 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
     Route::get('/communication_committee/epistola/preview', [EpistolaController::class, 'preview'])->name('epistola.preview');
     Route::get('/communication_committee/epistola/send', [EpistolaController::class, 'send'])->name('epistola.send');
 
-    Route::get('/community_committee/mr_and_miss/vote', [MrAndMissController::class, 'indexVote'])->name('mr_and_miss.vote');
+    Route::get('/community_committee/mr_and_miss', [MrAndMissController::class, 'index'])->name('mr_and_miss.index');
     Route::post('/community_committee/mr_and_miss/vote', [MrAndMissController::class, 'saveVote'])->name('mr_and_miss.vote.save');
     Route::post('/community_committee/mr_and_miss/vote/custom', [MrAndMissController::class, 'customVote'])->name('mr_and_miss.vote.custom');
-    Route::get('/community_committee/mr_and_miss/categories', [MrAndMissController::class, 'indexCategories'])->name('mr_and_miss.categories');
-    Route::post('/community_committee/mr_and_miss/categories', [MrAndMissController::class, 'createCategory'])->name('mr_and_miss.categories.create');
-    Route::post('/community_committee/mr_and_miss/categories/create', [MrAndMissController::class, 'editCategories'])->name('mr_and_miss.categories.edit');
-    Route::get('/community_committee/mr_and_miss/results', [MrAndMissController::class, 'indexResults'])->name('mr_and_miss.results');
+    Route::get('/community_committee/mr_and_miss/admin', [MrAndMissController::class, 'indexAdmin'])->name('mr_and_miss.admin');
+    Route::post('/community_committee/mr_and_miss/admin/categories', [MrAndMissController::class, 'createCategory'])->name('mr_and_miss.categories.create');
+    Route::post('/community_committee/mr_and_miss/admin/categories/create', [MrAndMissController::class, 'editCategories'])->name('mr_and_miss.categories.edit');
+    Route::post('/community_committee/mr_and_miss/admin/period', [MrAndMissController::class, 'updateVotePeriod'])->name('mr_and_miss.period.update');
+    Route::get('/community_committee/mr_and_miss/admin/results', [MrAndMissController::class, 'indexResults'])->name('mr_and_miss.results');
 
     Route::get('/community_service', [CommunityServiceController::class, 'index'])->name('community_service');
     Route::post('/community_service/approve/{community_service}', [CommunityServiceController::class, 'approve'])->name('community_service.approve');

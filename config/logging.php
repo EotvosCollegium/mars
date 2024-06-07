@@ -105,6 +105,12 @@ return [
             'level' => 'debug',
         ],
 
+        'mail' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/mails.log'),
+            'level' => 'debug',
+        ],
+
         'null' => [
             'driver' => 'monolog',
             'handler' => NullHandler::class,
