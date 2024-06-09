@@ -24,10 +24,10 @@ class AnonymousQuestionTest extends TestCase
     {
         app(\App\Http\Controllers\Secretariat\SemesterEvaluationController::class)
             ->updatePeriodicEvent(
-            Semester::current(),
-            Carbon::now()->subMinute(1),
-            Carbon::now()->addMinute(20)
-        );
+                Semester::current(),
+                Carbon::now()->subMinute(1),
+                Carbon::now()->addMinute(20)
+            );
     }
 
     /**
@@ -38,10 +38,10 @@ class AnonymousQuestionTest extends TestCase
     {
         app(\App\Http\Controllers\Secretariat\SemesterEvaluationController::class)
             ->updatePeriodicEvent(
-            Semester::current(),
-            Carbon::now()->addMinute(10),
-            Carbon::now()->addMinute(11)
-        );
+                Semester::current(),
+                Carbon::now()->addMinute(10),
+                Carbon::now()->addMinute(11)
+            );
     }
 
 
