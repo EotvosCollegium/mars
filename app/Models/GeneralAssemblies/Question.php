@@ -7,18 +7,20 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\DB;
+use Throwable;
+
 use App\Models\GeneralAssemblies\GeneralAssembly;
 use App\Models\GeneralAssemblies\QuestionOption;
 use App\Models\GeneralAssemblies\QuestionUser;
 use App\Models\AnonymousQuestions\AnswerSheet;
 use App\Models\AnonymousQuestions\LongAnswer;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Throwable;
+use App\Models\Semester;
 
 /**
  * App\Models\GeneralAssemblies\Question
@@ -116,7 +118,8 @@ class Question extends Model
         return
             $this->isForAssembly()
             ? ($this->hasBeenOpened() && !$this->isClosed())
-            : !$this->parent->isClosed();
+            : (app(\App\Http\Controllers\Secretariat\SemesterEvaluationController::class)->isActive()
+               && $this->parent->id == Semester::current()->id);
     }
 
     /**

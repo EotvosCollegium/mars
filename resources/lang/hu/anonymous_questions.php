@@ -8,9 +8,9 @@ return [
     'has_long_answers' => 'kifejtős',
     'information_text' => "Ezek a visszajelzések a Választmánynak segítenek,
                             hogy jobb munkát végezzen.<br />
-                            A válaszaid névtelenek
-                            (csak a tényt tároljuk, hogy válaszoltál),
-                            de beküldés után már nem változtathatod meg őket.",
+                            A válaszaid névtelenek; az évfolyamodat kötjük csak hozzájuk
+                            (illetve a tényt tároljuk, hogy válaszoltál).
+                            Beküldés után viszont már nem változtathatod meg őket.",
     'is_multiple_choice' => 'több válasz is megjelölhető',
     'long_answer_placeholder' => 'Írj pár mondatot...',
     'number_of_fillings' => 'Kitöltések száma'

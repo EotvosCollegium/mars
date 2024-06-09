@@ -274,8 +274,10 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
         Route::get('/{semester}/questions/', [AnonymousQuestionController::class, 'index'])->name('index');
         Route::get('/{semester}/questions/create', [AnonymousQuestionController::class, 'create'])->name('create');
         Route::post('/{semester}/questions', [AnonymousQuestionController::class, 'store'])->name('store');
-        Route::get('/{semester}/questions/{question}', [AnonymousQuestionController::class, 'show'])->name('show');
-        Route::post('/{semester}/sheets/', [AnonymousQuestionController::class, 'storeAnswerSheet'])->name('store_answer_sheet');
+        Route::get('/{semester}/questions/{question}', [AnonymousQuestionController::class, 'show'])->name('show')
+            ->withoutMiddleware([LogRequests::class]);
+        Route::post('/{semester}/sheets/', [AnonymousQuestionController::class, 'storeAnswerSheet'])->name('store_answer_sheet')
+            ->withoutMiddleware([LogRequests::class]);
         Route::get('/{semester}/sheets/', [AnonymousQuestionController::class, 'exportAnswerSheets'])->name('export_answer_sheets');
     });
 });
