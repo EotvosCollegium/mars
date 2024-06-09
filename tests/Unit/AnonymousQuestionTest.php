@@ -17,6 +17,35 @@ use App\Models\GeneralAssemblies\Question;
 class AnonymousQuestionTest extends TestCase
 {
     /**
+     * Open the current semester's evaluation form;
+     * with start and end dates close to the current time.
+     */
+    public static function openForm(): void
+    {
+        app(\App\Http\Controllers\Secretariat\SemesterEvaluationController::class)
+            ->updatePeriodicEvent(
+            Semester::current(),
+            Carbon::now()->subMinute(1),
+            Carbon::now()->addMinute(20)
+        );
+    }
+
+    /**
+     * Close the current semester's evaluation form
+     * by giving a start date after the current time.
+     */
+    public static function delayForm(): void
+    {
+        app(\App\Http\Controllers\Secretariat\SemesterEvaluationController::class)
+            ->updatePeriodicEvent(
+            Semester::current(),
+            Carbon::now()->addMinute(10),
+            Carbon::now()->addMinute(11)
+        );
+    }
+
+
+    /**
      * Tests answering a question belonging to an already closed semester
      * (which should fail).
      * @return void
@@ -40,6 +69,31 @@ class AnonymousQuestionTest extends TestCase
     }
 
     /**
+     * Tests answering a question belonging to the current semester
+     * but before the start date of the evaluation form
+     * (which should fail).
+     * @return void
+     */
+    public function test_answering_not_yet_opened_question(): void
+    {
+        $user = User::factory()->hasEducationalInformation()->create();
+
+        self::delayForm();
+        $semester = Semester::current();
+        $question = Question::factory()
+            ->for($semester, 'parent')
+            ->hasOptions(3)
+            ->create(['opened_at' => now()->subDay(), 'closed_at' => null]);
+
+        $this->expectException(\Exception::class);
+        $question->giveAnonymousAnswer(
+            $user,
+            AnswerSheet::createForUser($user, $semester),
+            $question->options->first()
+        );
+    }
+
+    /**
      * Tests answering the same question twice as the same user
      * (which should fail).
      * @return void
@@ -48,6 +102,7 @@ class AnonymousQuestionTest extends TestCase
     {
         $user = User::factory()->hasEducationalInformation()->create();
 
+        self::openForm();
         $semester = Semester::current(); // gets created if does not already exist
         $question = Question::factory()
             ->for($semester, 'parent')
@@ -70,6 +125,7 @@ class AnonymousQuestionTest extends TestCase
     {
         $user = User::factory()->hasEducationalInformation()->create();
 
+        self::openForm();
         $semester = Semester::current();
         $question = Question::factory()
             ->for($semester, 'parent')
@@ -116,6 +172,7 @@ class AnonymousQuestionTest extends TestCase
     {
         $user = User::factory()->hasEducationalInformation()->create();
 
+        self::openForm();
         $semester = Semester::current();
         $question = Question::factory()
             ->for($semester, 'parent')
@@ -138,6 +195,7 @@ class AnonymousQuestionTest extends TestCase
     {
         $user = User::factory()->hasEducationalInformation()->create();
 
+        self::openForm();
         $semester = Semester::current();
         $question = Question::factory()
             ->for($semester, 'parent')
@@ -194,6 +252,7 @@ class AnonymousQuestionTest extends TestCase
     {
         $user = User::factory()->hasEducationalInformation()->create();
 
+        self::openForm();
         $semester = Semester::current();
         $question = Question::factory()
             ->for($semester, 'parent')
