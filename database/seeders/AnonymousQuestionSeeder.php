@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Semester;
 use App\Models\User;
 use App\Models\Role;
-use App\Models\GeneralAssemblies\Question;
+use App\Models\Question;
 use App\Models\AnonymousQuestions\AnswerSheet;
 
 class AnonymousQuestionSeeder extends Seeder

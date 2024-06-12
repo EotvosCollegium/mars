@@ -12,8 +12,8 @@ use Maatwebsite\Excel\Facades\Excel;
 
 use App\Models\AnonymousQuestions\AnswerSheet;
 use App\Models\Semester;
-use App\Models\GeneralAssemblies\Question;
-use App\Models\GeneralAssemblies\QuestionOption;
+use App\Models\Question;
+use App\Models\QuestionOption;
 use App\Exports\UsersSheets\AnonymousQuestionsExport;
 
 /**
@@ -31,7 +31,7 @@ class AnonymousQuestionController extends Controller
     {
         $this->authorize('administer', AnswerSheet::class);
 
-        return view('secretariat.evaluation-form.index_semesters');
+        return view('student-council.anonymous-questions.index_semesters');
     }
 
     /**
@@ -44,7 +44,7 @@ class AnonymousQuestionController extends Controller
         if ($semester->isClosed()) {
             abort(403, "tried to add a question to a closed semester");
         }
-        return view('student-council.general-assemblies.questions.create', [
+        return view('student-council.anonymous-questions.create', [
             "semester" => $semester
         ]);
     }
@@ -106,11 +106,7 @@ class AnonymousQuestionController extends Controller
     public function show(Semester $semester, Question $question)
     {
         $this->authorize('administer', AnswerSheet::class);
-        // check whether it really belongs here
-        // and throw a 404 if not
-        if ($semester != $question->parent) {
-            abort(404);
-        }
+
         return view('anonymous_questions.show', [
             "question" => $question
         ]);
@@ -123,13 +119,7 @@ class AnonymousQuestionController extends Controller
     {
         $rules = [];
         foreach ($semester->questionsNotAnsweredBy(user()) as $question) {
-            // It does not really work well with ids as keys;
-            // it then believes this is a plain array
-            // and not an associative one.
-            // But it does not work well with titles containing
-            // capital letters either.
-            // So:
-            $key = 'q' . $question->id;
+            $key = $question->formKey();
             if ($question->has_long_answers) {
                 $rules[$key] = 'required|string';
             } elseif ($question->isMultipleChoice()) {
@@ -163,12 +153,12 @@ class AnonymousQuestionController extends Controller
         // Since answer sheets are anonymous,
         // we cannot append new answers to the previous sheet (if any);
         // we have to create a new one.
-        $answerSheet = AnswerSheet::createForUser(user(), $semester);
+        $answerSheet = AnswerSheet::createForCurrentUser($semester);
 
         foreach($semester->questionsNotAnsweredBy(user()) as $question) {
             // validation ensures we have answers
             // to all of these questions
-            $answer = $validatedData['q' . $question->id];
+            $answer = $validatedData[$question->formKey()];
             if ($question->has_long_answers) {
                 $question->giveLongAnswer(user(), $answerSheet, $answer);
             } elseif ($question->isMultipleChoice()) {

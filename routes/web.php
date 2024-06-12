@@ -257,16 +257,33 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
 
     Route::get('/general_assemblies/{general_assembly}/questions/create', [GeneralAssemblyQuestionController::class, 'create'])->name('general_assemblies.questions.create');
     Route::post('/general_assemblies/{general_assembly}/questions', [GeneralAssemblyQuestionController::class, 'store'])->name('general_assemblies.questions.store');
-    Route::get('/general_assemblies/{general_assembly}/questions/{question}', [GeneralAssemblyQuestionController::class, 'show'])->name('general_assemblies.questions.show');
-    Route::post('/general_assemblies/{general_assembly}/questions/{question}/open', [GeneralAssemblyQuestionController::class, 'openQuestion'])->name('general_assemblies.questions.open');
-    Route::post('/general_assemblies/{general_assembly}/questions/{question}/close', [GeneralAssemblyQuestionController::class, 'closeQuestion'])->name('general_assemblies.questions.close');
-    Route::post('/general_assemblies/{general_assembly}/questions/{question}/votes', [GeneralAssemblyQuestionController::class, 'saveVote'])->name('general_assemblies.questions.votes.store')->withoutMiddleware(LogRequests::class);
+    Route::get('/general_assemblies/{general_assembly}/questions/{question}', [GeneralAssemblyQuestionController::class, 'show'])
+                ->name('general_assemblies.questions.show')
+                ->scopeBindings();
+    Route::post('/general_assemblies/{general_assembly}/questions/{question}/open', [GeneralAssemblyQuestionController::class, 'openQuestion'])
+                ->name('general_assemblies.questions.open')
+                ->scopeBindings();
+    Route::post('/general_assemblies/{general_assembly}/questions/{question}/close', [GeneralAssemblyQuestionController::class, 'closeQuestion'])
+                ->name('general_assemblies.questions.close')
+                ->scopeBindings();
+    Route::post('/general_assemblies/{general_assembly}/questions/{question}/votes', [GeneralAssemblyQuestionController::class, 'saveVote'])
+                ->name('general_assemblies.questions.votes.store')
+                ->withoutMiddleware(LogRequests::class)
+                ->scopeBindings();
 
-    Route::get('/general_assemblies/{general_assembly}/presence_checks/create', [GeneralAssemblyPresenceCheckController::class, 'create'])->name('general_assemblies.presence_checks.create');
-    Route::post('/general_assemblies/{general_assembly}/presence_checks', [GeneralAssemblyPresenceCheckController::class, 'store'])->name('general_assemblies.presence_checks.store');
-    Route::get('/general_assemblies/{general_assembly}/presence_checks/{presence_check}', [GeneralAssemblyPresenceCheckController::class, 'show'])->name('general_assemblies.presence_checks.show');
-    Route::post('/general_assemblies/{general_assembly}/presence_checks/{presence_check}/close', [GeneralAssemblyPresenceCheckController::class, 'closePresenceCheck'])->name('general_assemblies.presence_checks.close');
-    Route::post('/general_assemblies/{general_assembly}/presence_checks/{presence_check}/sign_presence', [GeneralAssemblyPresenceCheckController::class, 'signPresence'])->name('general_assemblies.presence_checks.presence.store')->withoutMiddleware(LogRequests::class);
+    Route::get('/general_assemblies/{general_assembly}/presence_checks/create', [GeneralAssemblyPresenceCheckController::class, 'create'])
+                ->name('general_assemblies.presence_checks.create');
+    Route::post('/general_assemblies/{general_assembly}/presence_checks', [GeneralAssemblyPresenceCheckController::class, 'store'])
+                ->name('general_assemblies.presence_checks.store');
+    Route::get('/general_assemblies/{general_assembly}/presence_checks/{presence_check}', [GeneralAssemblyPresenceCheckController::class, 'show'])
+                ->name('general_assemblies.presence_checks.show')
+                ->scopeBindings();
+    Route::post('/general_assemblies/{general_assembly}/presence_checks/{presence_check}/close', [GeneralAssemblyPresenceCheckController::class, 'closePresenceCheck'])
+                ->name('general_assemblies.presence_checks.close')
+                ->scopeBindings();
+    Route::post('/general_assemblies/{general_assembly}/presence_checks/{presence_check}/sign_presence', [GeneralAssemblyPresenceCheckController::class, 'signPresence'])
+                ->name('general_assemblies.presence_checks.presence.store')->withoutMiddleware(LogRequests::class)
+                ->scopeBindings();
 
     /** anonymous questions */
     Route::prefix('/anonymous_questions')->name('anonymous_questions.')->group(function () {
@@ -275,7 +292,8 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
         Route::get('/{semester}/questions/create', [AnonymousQuestionController::class, 'create'])->name('create');
         Route::post('/{semester}/questions', [AnonymousQuestionController::class, 'store'])->name('store');
         Route::get('/{semester}/questions/{question}', [AnonymousQuestionController::class, 'show'])->name('show')
-            ->withoutMiddleware([LogRequests::class]);
+            ->withoutMiddleware([LogRequests::class])
+            ->scopeBindings();
         Route::post('/{semester}/sheets/', [AnonymousQuestionController::class, 'storeAnswerSheet'])->name('store_answer_sheet')
             ->withoutMiddleware([LogRequests::class]);
         Route::get('/{semester}/sheets/', [AnonymousQuestionController::class, 'exportAnswerSheets'])->name('export_answer_sheets');

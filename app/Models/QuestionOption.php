@@ -1,22 +1,22 @@
 <?php
 
-namespace App\Models\GeneralAssemblies;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-use App\Models\GeneralAssemblies\Question;
+use App\Models\Question;
 
 /**
- * App\Models\GeneralAssemblies\QuestionOption
+ * App\Models\QuestionOption
  *
  * @property int $id
  * @property int $question_id
  * @property string $title
  * @property int $votes
  * @property-read Question|null $question
- * @method static \Database\Factories\GeneralAssemblies\QuestionOptionFactory factory(...$parameters)
+ * @method static \Database\Factories\QuestionOptionFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|QuestionOption newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|QuestionOption newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|QuestionOption query()

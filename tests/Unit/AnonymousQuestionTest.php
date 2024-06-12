@@ -8,7 +8,7 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Semester;
 use App\Models\AnonymousQuestions\AnswerSheet;
-use App\Models\GeneralAssemblies\Question;
+use App\Models\Question;
 
 /**
  * Tests anonymous feedback questions.

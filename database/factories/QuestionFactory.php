@@ -1,12 +1,12 @@
 <?php
 
-namespace Database\Factories\GeneralAssemblies;
+namespace Database\Factories;
 
 use App\Models\GeneralAssemblies\GeneralAssembly;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\GeneralAssemblies\Question>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Question>
  */
 class QuestionFactory extends Factory
 {

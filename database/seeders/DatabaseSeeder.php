@@ -13,6 +13,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        // so that we do not send emails during seeding
+        config(['mail.driver' => 'log']);
+
         $this->call(UsersTableSeeder::class);
         $this->call(SemesterSeeder::class);
         $this->call(RouterSeeder::class);

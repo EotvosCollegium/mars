@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
 
 use App\Models\AnonymousQuestions\AnswerSheet;
-use App\Models\GeneralAssemblies\Question;
+use App\Models\Question;
 
 /**
  * A long written answer given to an anonymous question

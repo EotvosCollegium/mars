@@ -41,27 +41,7 @@ class AnonymousQuestionsExport implements FromCollection, WithMapping, WithHeadi
      */
     public function map($answerSheet): array
     {
-        $row = [
-            $answerSheet->id,
-            $answerSheet->semester->tag,
-            $answerSheet->year_of_acceptance
-        ];
-        foreach ($this->semester->questions()->orderBy('id')->get() as $question) {
-            if ($question->has_long_answers) {
-                $row[] = $answerSheet->longAnswers()
-                                        ->where('question_id', $question->id)
-                                        ->first()->text ?? '';
-            } elseif ($question->isMultipleChoice()) {
-                $row[] = $answerSheet->chosenOptions()
-                                        ->where('question_id', $question->id)
-                                        ->pluck('title')->implode('/') ?? '';
-            } else {
-                $row[] = $answerSheet->chosenOptions()
-                                        ->where('question_id', $question->id)
-                                        ->first()->title ?? '';
-            }
-        }
-        return $row;
+        return $answerSheet->toArray();
     }
 
     /**

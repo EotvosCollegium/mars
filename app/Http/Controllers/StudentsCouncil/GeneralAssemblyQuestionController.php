@@ -4,8 +4,8 @@ namespace App\Http\Controllers\StudentsCouncil;
 
 use App\Http\Controllers\Controller;
 use App\Models\GeneralAssemblies\GeneralAssembly;
-use App\Models\GeneralAssemblies\Question;
-use App\Models\GeneralAssemblies\QuestionOption;
+use App\Models\Question;
+use App\Models\QuestionOption;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -77,11 +77,7 @@ class GeneralAssemblyQuestionController extends Controller
     public function show(GeneralAssembly $generalAssembly, Question $question)
     {
         $this->authorize('viewAny', GeneralAssembly::class);
-        // check whether it belongs here
-        // and throw a 404 if not
-        if ($generalAssembly != $question->parent) {
-            abort(404);
-        }
+
         return view('student-council.general-assemblies.questions.show', [
             "question" => $question
         ]);
@@ -93,12 +89,7 @@ class GeneralAssemblyQuestionController extends Controller
     public function openQuestion(GeneralAssembly $generalAssembly, Question $question)
     {
         $this->authorize('administer', GeneralAssembly::class);
-        $this->authorize('administer', GeneralAssembly::class);
-        // check whether it really belongs here
-        // and throw a 404 if not
-        if ($generalAssembly != $question->parent) {
-            abort(404);
-        }
+
         if (!$generalAssembly->isOpen()) {
             abort(403, "tried to open a question when the sitting itself was not open");
         }
@@ -115,11 +106,7 @@ class GeneralAssemblyQuestionController extends Controller
     public function closeQuestion(GeneralAssembly $generalAssembly, Question $question)
     {
         $this->authorize('administer', GeneralAssembly::class);
-        // check whether it really belongs here
-        // and throw a 404 if not
-        if ($generalAssembly != $question->parent) {
-            abort(404);
-        }
+
         if (!$question->isOpen()) {
             abort(403, "tried to close a question which was not open");
         }
@@ -132,11 +119,6 @@ class GeneralAssemblyQuestionController extends Controller
      */
     public function saveVote(Request $request, GeneralAssembly $generalAssembly, Question $question)
     {
-        // check whether it really belongs here
-        // and throw a 404 if not
-        if ($generalAssembly != $question->parent) {
-            abort(404);
-        }
         $this->authorize('vote', $question); //this also checks whether the user has already voted
 
         if ($question->isMultipleChoice()) {

@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 
 use App\Models\User;
 use App\Models\Semester;
-use App\Models\GeneralAssemblies\QuestionOption;
+use App\Models\QuestionOption;
 use App\Models\AnonymousQuestions\LongAnswer;
 
 /**
@@ -64,6 +64,9 @@ class AnswerSheet extends Model
      */
     public static function createForUser(User $user, Semester $semester = null): AnswerSheet
     {
+        if (is_null($user)) {
+            $user = user();
+        }
         if (is_null($semester)) {
             $semester = Semester::current();
         }
@@ -71,5 +74,46 @@ class AnswerSheet extends Model
         return $semester->answerSheets()->create([
             'year_of_acceptance' => $user->educationalInformation->year_of_acceptance
         ]);
+    }
+
+    /**
+     * Create an answer sheet for the current user `user()`,
+     * with their anonymous data.
+     * The default semester is the current one.
+     */
+    public static function createForCurrentUser(Semester $semester = null): AnswerSheet
+    {
+        return self::createForUser(user(), $semester);
+    }
+
+    /**
+     * Returns an array with the data associated with the sheet:
+     * year of acceptance and then textual answers to the questions
+     * in order of ascending id.
+     * (For multiple-choice questions, the separators between the choices are commas.)
+     */
+    public function toArray(): array
+    {
+        $row = [
+            $answerSheet->id,
+            $answerSheet->semester->tag,
+            $answerSheet->year_of_acceptance
+        ];
+        foreach ($this->semester->questions()->orderBy('id')->get() as $question) {
+            if ($question->has_long_answers) {
+                $row[] = $answerSheet->longAnswers()
+                                        ->where('question_id', $question->id)
+                                        ->first()->text ?? '';
+            } elseif ($question->isMultipleChoice()) {
+                $row[] = $answerSheet->chosenOptions()
+                                        ->where('question_id', $question->id)
+                                        ->pluck('title')->implode('/') ?? '';
+            } else {
+                $row[] = $answerSheet->chosenOptions()
+                                        ->where('question_id', $question->id)
+                                        ->first()->title ?? '';
+            }
+        }
+        return $row;
     }
 }

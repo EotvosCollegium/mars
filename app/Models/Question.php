@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\GeneralAssemblies;
+namespace App\Models;
 
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
@@ -15,15 +15,27 @@ use Illuminate\Support\Facades\DB;
 use Throwable;
 
 use App\Models\GeneralAssemblies\GeneralAssembly;
-use App\Models\GeneralAssemblies\QuestionOption;
-use App\Models\GeneralAssemblies\QuestionUser;
+use App\Models\QuestionOption;
+use App\Models\QuestionUser;
 use App\Models\AnonymousQuestions\AnswerSheet;
 use App\Models\AnonymousQuestions\LongAnswer;
 use App\Models\User;
 use App\Models\Semester;
 
 /**
- * App\Models\GeneralAssemblies\Question
+ * App\Models\Question
+ *
+ * A question fillable by collegists,
+ * either belonging to a semester's evaluation form
+ * or to a general assembly.
+ * Answers are anonymous;
+ * only the fact that a user has answered
+ * gets stored
+ * (in the question_user table).
+ * Can have QuestionOptions (with a counter)
+ * with the number of options to choose in a single answer
+ * (if this is greater than 1, the question is multiple-choice).
+ * Can alternatively have a possibly to give long textual answers.
  *
  * @property int $id
  * @property int $general_assembly_id
@@ -36,7 +48,7 @@ use App\Models\Semester;
  * @property-read int|null $options_count
  * @property-read Collection|User[] $users
  * @property-read int|null $users_count
- * @method static \Database\Factories\GeneralAssemblies\QuestionFactory factory(...$parameters)
+ * @method static \Database\Factories\QuestionFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|Question newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Question newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Question query()
@@ -72,7 +84,7 @@ class Question extends Model
      */
     public function isForAssembly(): bool
     {
-        return 'App\\Models\\GeneralAssemblies\\GeneralAssembly' == $this->parent_type;
+        return GeneralAssembly::class == $this->parent_type;
     }
 
     /**
@@ -130,7 +142,7 @@ class Question extends Model
         return
             $this->isForAssembly()
             ? ($this->closed_at != null && $this->closed_at <= now())
-            : $this->parent->isClosed();
+            : !$this->parent->isClosed();
     }
 
     /**
@@ -271,14 +283,27 @@ class Question extends Model
         if (!$this->has_long_answers) {
             throw new \Exception('this question does not accept long answers');
         } else {
-            QuestionUser::create([
-                'question_id' => $this->id,
-                'user_id' => $user->id,
-            ]);
-            return $this->longAnswers()->create([
-                'answer_sheet_id' => $answerSheet->id,
-                'text' => $text
-            ]);
+            return DB::transaction(function () use ($user, $answerSheet, $text) {
+                QuestionUser::create([
+                    'question_id' => $this->id,
+                    'user_id' => $user->id,
+                ]);
+                return $this->longAnswers()->create([
+                    'answer_sheet_id' => $answerSheet->id,
+                    'text' => $text
+                ]);
+            });
         }
+    }
+
+    /**
+     * Returns the key used in the POST request
+     * for the inputs belonging to the question.
+     * Used because numeric keys in arrays
+     * would confuse PHP.
+     */
+    public function formKey(): string
+    {
+        return "q{$this->id}";
     }
 }

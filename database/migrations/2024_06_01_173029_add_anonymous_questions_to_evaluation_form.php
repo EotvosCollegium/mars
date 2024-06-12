@@ -14,7 +14,6 @@ return new class () extends Migration {
         Schema::create('answer_sheets', function (Blueprint $table) {
             $table->id();
             $table->unsignedSmallInteger('semester_id');
-            // $table->boolean('is_resident'); // but the BBs... let this be a question
             $table->unsignedSmallInteger('year_of_acceptance');
             // no timestamps (for better anonymity)
 

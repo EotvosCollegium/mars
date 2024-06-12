@@ -14,7 +14,7 @@ use InvalidArgumentException;
 
 use App\Models\User;
 use App\Models\AnonymousQuestions\AnswerSheet;
-use App\Models\GeneralAssemblies\Question;
+use App\Models\Question;
 
 /**
  * A semester is identified by a year and by it's either autumn or spring.
@@ -224,7 +224,7 @@ class Semester extends Model
      */
     public function transactions(): HasMany
     {
-        return $this->hasMany('App\Models\Transaction', 'semester_id');
+        return $this->hasMany(App\Models\Transaction::class, 'semester_id');
     }
 
     public function communityServices(): HasMany
@@ -247,7 +247,7 @@ class Semester extends Model
      */
     public function workshopBalances(): HasMany
     {
-        return $this->hasMany('App\Models\WorkshopBalance');
+        return $this->hasMany(App\Models\WorkshopBalance::class);
     }
 
     /**
@@ -274,8 +274,9 @@ class Semester extends Model
      */
     public function questionsNotAnsweredBy(User $user)
     {
-        return $this->questions
-                ->filter(function ($question) use ($user) {return !$question->hasVoted($user);});
+        return $this->questions()->whereDoesntHave('users', function ($query) use ($user) {
+            $query->where('id', $user->id);
+        })->get();
     }
 
     /**

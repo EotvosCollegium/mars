@@ -4,7 +4,7 @@ namespace Tests\Unit;
 
 use App\Models\SemesterStatus;
 use App\Models\User;
-use App\Models\GeneralAssemblies\Question;
+use App\Models\Question;
 use App\Models\GeneralAssemblies\GeneralAssembly;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
