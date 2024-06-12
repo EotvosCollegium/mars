@@ -43,9 +43,9 @@ class AnonymousQuestionSeeder extends Seeder
             foreach(User::withRole(Role::COLLEGIST)->where('id', '>', 4)->get() as $collegist) {
                 $answerSheet = AnswerSheet::createForUser($collegist, $semester);
 
-                $singleChoice->giveAnonymousAnswer($collegist, $answerSheet, $singleChoice->options->random());
-                $multipleChoice->giveAnonymousAnswer($collegist, $answerSheet, $multipleChoice->options->random(2)->all());
-                $withLongAnswers->giveLongAnswer($collegist, $answerSheet, $faker->text());
+                $singleChoice->storeAnswers($collegist, $singleChoice->options->random(), $answerSheet);
+                $multipleChoice->storeAnswers($collegist, $multipleChoice->options->random(2)->all(), $answerSheet);
+                $withLongAnswers->storeAnswers($collegist, $faker->text(), $answerSheet);
             }
         }
     }

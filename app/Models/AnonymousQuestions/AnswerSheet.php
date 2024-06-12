@@ -95,21 +95,21 @@ class AnswerSheet extends Model
     public function toArray(): array
     {
         $row = [
-            $answerSheet->id,
-            $answerSheet->semester->tag,
-            $answerSheet->year_of_acceptance
+            $this->id,
+            $this->semester->tag,
+            $this->year_of_acceptance
         ];
         foreach ($this->semester->questions()->orderBy('id')->get() as $question) {
             if ($question->has_long_answers) {
-                $row[] = $answerSheet->longAnswers()
+                $row[] = $this->longAnswers()
                                         ->where('question_id', $question->id)
                                         ->first()->text ?? '';
             } elseif ($question->isMultipleChoice()) {
-                $row[] = $answerSheet->chosenOptions()
+                $row[] = $this->chosenOptions()
                                         ->where('question_id', $question->id)
                                         ->pluck('title')->implode('/') ?? '';
             } else {
-                $row[] = $answerSheet->chosenOptions()
+                $row[] = $this->chosenOptions()
                                         ->where('question_id', $question->id)
                                         ->first()->title ?? '';
             }

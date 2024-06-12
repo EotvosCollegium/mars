@@ -63,8 +63,8 @@ class GeneralAssemblySeeder extends Seeder
         ]);
 
         foreach(User::collegists() as $collegist) {
-            $openQuestion->vote($collegist, [$openQuestion->options->random()]);
-            $openCheckboxQuestion->vote($collegist, $openCheckboxQuestion->options->random(2)->all());
+            $openQuestion->storeAnswers($collegist, [$openQuestion->options->random()]);
+            $openCheckboxQuestion->storeAnswers($collegist, $openCheckboxQuestion->options->random(2)->all());
         }
     }
 }

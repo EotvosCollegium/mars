@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Secretariat;
+namespace App\Http\Controllers\StudentsCouncil;
 
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Facades\Excel;
 
 use App\Models\AnonymousQuestions\AnswerSheet;
@@ -113,33 +112,6 @@ class AnonymousQuestionController extends Controller
     }
 
     /**
-     * Returns validation rules for the semester's anonymous questions.
-     */
-    private static function answerValidationRules(Semester $semester): array
-    {
-        $rules = [];
-        foreach ($semester->questionsNotAnsweredBy(user()) as $question) {
-            $key = $question->formKey();
-            if ($question->has_long_answers) {
-                $rules[$key] = 'required|string';
-            } elseif ($question->isMultipleChoice()) {
-                $rules[$key] = 'required|array';
-                $rules[$key . '.*'] = Rule::in($question->options->map(
-                    function (QuestionOption $option) {return $option->id;}
-                ));
-            } else {
-                $rules[$key] = [
-                    'required',
-                    Rule::in($question->options->map(
-                        function (QuestionOption $option) {return $option->id;}
-                    ))
-                ];
-            }
-        }
-        return $rules;
-    }
-
-    /**
      * Stores the answers given by a user.
      * Handles all questions at once
      * and creates an answer sheet for them.
@@ -148,7 +120,11 @@ class AnonymousQuestionController extends Controller
     {
         $this->authorize('is-collegist');
 
-        $validatedData = $request->validate(self::answerValidationRules($semester));
+        $validatedData = $request->validate(
+            $semester->questionsNotAnsweredBy(user())
+                     ->flatMap(fn ($q) => $q->validationRules())
+                     ->all()
+        );
 
         // Since answer sheets are anonymous,
         // we cannot append new answers to the previous sheet (if any);
@@ -160,16 +136,16 @@ class AnonymousQuestionController extends Controller
             // to all of these questions
             $answer = $validatedData[$question->formKey()];
             if ($question->has_long_answers) {
-                $question->giveLongAnswer(user(), $answerSheet, $answer);
+                $question->storeAnswers(user(), $answer, $answerSheet);
             } elseif ($question->isMultipleChoice()) {
                 $options = array_map(
                     function (int $id) {return QuestionOption::find($id);},
                     $answer
                 );
-                $question->giveAnonymousAnswer(user(), $answerSheet, $options);
+                $question->storeAnswers(user(), $options, $answerSheet);
             } else {
                 $option = QuestionOption::find($answer);
-                $question->giveAnonymousAnswer(user(), $answerSheet, $option);
+                $question->storeAnswers(user(), $option, $answerSheet);
             }
         }
 

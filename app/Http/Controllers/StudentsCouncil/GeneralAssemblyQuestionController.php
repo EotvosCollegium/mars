@@ -142,7 +142,7 @@ class GeneralAssemblyQuestionController extends Controller
                 }
                 array_push($options, $option);
             }
-            $question->vote(user(), $options);
+            $question->storeAnswers(user(), $options);
         } else {
             $validator = Validator::make($request->all(), [
                 'option' => 'exists:question_options,id',
@@ -159,7 +159,7 @@ class GeneralAssemblyQuestionController extends Controller
             if ($option->question->id != $question->id) {
                 abort(401, "Tried to vote for an option which does not belong to the question");
             }
-            $question->vote(user(), array($option));
+            $question->storeAnswers(user(), $option);
         }
 
         return redirect()->route('general_assemblies.show', $question->parent)->with('message', __('voting.successful_voting'));

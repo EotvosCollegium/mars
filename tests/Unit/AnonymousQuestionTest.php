@@ -61,10 +61,10 @@ class AnonymousQuestionTest extends TestCase
             ->create(['opened_at' => now()->subDay(), 'closed_at' => null]);
 
         $this->expectException(\Exception::class);
-        $question->giveAnonymousAnswer(
+        $question->storeAnswers(
             $user,
-            AnswerSheet::createForUser($user, $semester),
-            $question->options->first()
+            $question->options->first(),
+            AnswerSheet::createForUser($user, $semester)
         );
     }
 
@@ -86,10 +86,10 @@ class AnonymousQuestionTest extends TestCase
             ->create(['opened_at' => now()->subDay(), 'closed_at' => null]);
 
         $this->expectException(\Exception::class);
-        $question->giveAnonymousAnswer(
+        $question->storeAnswers(
             $user,
-            AnswerSheet::createForUser($user, $semester),
-            $question->options->first()
+            $question->options->first(),
+            AnswerSheet::createForUser($user, $semester)
         );
     }
 
@@ -113,8 +113,8 @@ class AnonymousQuestionTest extends TestCase
 
         $answerSheet1 = AnswerSheet::createForUser($user, $semester);
         $answerSheet2 = AnswerSheet::createForUser($user, $semester);
-        $question->giveAnonymousAnswer($user, $answerSheet1, $question->options->random(2)->all());
-        $question->giveAnonymousAnswer($user, $answerSheet2, $question->options->random());
+        $question->storeAnswers($user, $question->options->random(2)->all(), $answerSheet1);
+        $question->storeAnswers($user, $question->options->random(), $answerSheet2);
     }
 
     /**
@@ -133,7 +133,7 @@ class AnonymousQuestionTest extends TestCase
             ->create(['opened_at' => now()->subDay(), 'closed_at' => null, 'max_options' => 1]);
 
         $answerSheet = AnswerSheet::createForUser($user, $semester);
-        $question->giveAnonymousAnswer($user, $answerSheet, $question->options->first());
+        $question->storeAnswers($user, $question->options->first(), $answerSheet);
 
         $this->assertEquals(1, $question->options->first()->votes);
         $this->assertEquals(0, $question->options->get(1)->votes);
@@ -180,10 +180,10 @@ class AnonymousQuestionTest extends TestCase
             ->create(['opened_at' => now()->subDay(), 'closed_at' => null, 'max_options' => 1]);
 
         $this->expectException(\Exception::class);
-        $question->giveAnonymousAnswer(
+        $question->storeAnswers(
             $user,
-            AnswerSheet::createForUser($user, $semester),
-            $question->options->random(2)->all()
+            $question->options->random(2)->all(),
+            AnswerSheet::createForUser($user, $semester)
         );
     }
 
@@ -203,10 +203,10 @@ class AnonymousQuestionTest extends TestCase
             ->create(['opened_at' => now()->subDay(), 'closed_at' => null, 'max_options' => 4]);
 
         $answerSheet = AnswerSheet::createForUser($user, $semester);
-        $question->giveAnonymousAnswer(
+        $question->storeAnswers(
             $user,
-            $answerSheet,
-            [$question->options->first(), $question->options->get(1)]
+            [$question->options->first(), $question->options->get(1)],
+            $answerSheet
         );
 
         $this->assertEquals(1, $question->options->first()->votes);
@@ -260,6 +260,58 @@ class AnonymousQuestionTest extends TestCase
             ->create(['opened_at' => now()->subDay(), 'closed_at' => null, 'max_options' => 2]);
 
         $this->expectException(\Exception::class);
-        $question->vote($user, [$question->options->first(), $question->options->get(1), $question->options->get(2)]);
+        $question->storeAnswers($user, [$question->options->first(), $question->options->get(1), $question->options->get(2)]);
+    }
+
+    /**
+     * Tests answering a question with a long textual answer.
+     * @return void
+     */
+    public function test_answering_long_text(): void
+    {
+        $user = User::factory()->hasEducationalInformation()->create();
+
+        self::openForm();
+        $semester = Semester::current();
+        $question = Question::factory()
+            ->for($semester, 'parent')
+            ->create(['opened_at' => now()->subDay(), 'closed_at' => null, 'has_long_answers' => true]);
+
+        $answerSheet = AnswerSheet::createForUser($user, $semester);
+        $question->storeAnswers($user, "The quick brown fox jumped over the lazy dog.", $answerSheet);
+
+        $this->assertTrue(
+            $question->users()
+                ->where('id', $user->id)
+                ->exists()
+        );
+
+        $this->assertTrue(
+            $answerSheet->longAnswers()
+                ->where('question_id', $question->id)
+                ->exists()
+        );
+    }
+
+    /**
+     * Tests answering a question with a long textual answer
+     * when it does not support that
+     * (this should fail).
+     * @return void
+     */
+    public function test_answering_long_text_when_not_supported(): void
+    {
+        $user = User::factory()->hasEducationalInformation()->create();
+
+        self::openForm();
+        $semester = Semester::current();
+        $question = Question::factory()
+            ->for($semester, 'parent')
+            ->create(['opened_at' => now()->subDay(), 'closed_at' => null, 'has_long_answers' => false]);
+
+        $answerSheet = AnswerSheet::createForUser($user, $semester);
+
+        $this->expectException(\Exception::class);
+        $question->storeAnswers($user, "The quick brown fox jumped over the lazy dog.", $answerSheet);
     }
 }
