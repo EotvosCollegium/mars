@@ -245,7 +245,7 @@ class Question extends Model
                     }
                 }
             } // else it is a string
-            else if (!$this->has_long_answers) {
+            elseif (!$this->has_long_answers) {
                 throw new Exception("This question does not support long answers");
             } else {
                 return $this->longAnswers()->create([
