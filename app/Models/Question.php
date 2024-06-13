@@ -230,7 +230,7 @@ class Question extends Model
             elseif (!$this->has_long_answers) {
                 throw new Exception("This question does not support long answers");
             } else {
-                return $this->longAnswers()->create([
+                $this->longAnswers()->create([
                     'answer_sheet_id' => $answerSheet->id,
                     'text' => $answer
                 ]);

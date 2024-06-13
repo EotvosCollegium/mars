@@ -133,6 +133,10 @@ class AnonymousQuestionTest extends TestCase
         $answerSheet = AnswerSheet::createForUser($user, $semester);
         $question->storeAnswers($user, $question->options->first(), $answerSheet);
 
+        $question->load('users');
+
+        echo $question->users()->count() . "\n";
+
         $this->assertEquals(1, $question->options->first()->votes);
         $this->assertEquals(0, $question->options->get(1)->votes);
         $this->assertEquals(0, $question->options->get(2)->votes);
@@ -211,6 +215,10 @@ class AnonymousQuestionTest extends TestCase
             $answerSheet
         );
 
+        $question->load('users');
+
+        echo $question->users()->count() . "\n";
+
         $this->assertEquals(1, $question->options->first()->votes);
         $this->assertEquals(1, $question->options->get(1)->votes);
         $this->assertEquals(0, $question->options->get(2)->votes);
@@ -285,6 +293,10 @@ class AnonymousQuestionTest extends TestCase
 
         $answerSheet = AnswerSheet::createForUser($user, $semester);
         $question->storeAnswers($user, "The quick brown fox jumped over the lazy dog.", $answerSheet);
+
+        $question->load('users');
+
+        echo $question->users()->count() . "\n";
 
         $this->assertTrue(
             $question->users()
