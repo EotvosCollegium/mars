@@ -79,11 +79,14 @@ class AnonymousQuestionController extends Controller
         }
         $validator->validate();
 
+        // NOTE: for now, we set the start and end dates for the _current_ semester;
+        // they will be updated when we set the dates for the semester evaluation form
         $question = $semester->questions()->create([
             'title' => $request->title,
             'max_options' => $hasLongAnswers ? 0 : $request->max_options,
             'has_long_answers' => $hasLongAnswers,
-            'opened_at' => \Carbon\Carbon::now()
+            'opened_at' => (app(SemesterEvaluationController::class))->getStartDate() ?? Carbon::now(),
+            'closed_at' => (app(SemesterEvaluationController::class))->getEndDate()
         ]);
         if (!$hasLongAnswers) {
             foreach ($options as $option) {

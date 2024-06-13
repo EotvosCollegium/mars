@@ -91,7 +91,7 @@ class GeneralAssemblyQuestionController extends Controller
         $this->authorize('administer', GeneralAssembly::class);
 
         if (!$generalAssembly->isOpen()) {
-            abort(403, "tried to open a question when the sitting itself was not open");
+            abort(403, "tried to open a question when the general assembly itself was not open");
         }
         if ($question->hasBeenOpened()) {
             abort(403, "tried to open a question which has already been opened");

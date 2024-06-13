@@ -17,54 +17,45 @@ use App\Models\Question;
 class AnonymousQuestionTest extends TestCase
 {
     /**
+     * Sets the start and end dates of a given semester's evaluation form.
+     */
+    private function setDates(Semester $semester, Carbon $startDate, Carbon $endDate): void
+    {
+        $admin = User::factory()->create(['verified' => true]);
+        $admin->roles()->attach(\App\Models\Role::sysAdmin());
+
+        $response = $this->actingAs($admin)->post('/secretariat/evaluation/period', [
+            'semester_id' => $semester->id,
+            'start_date' => $startDate,
+            'end_date' => $endDate
+        ]);
+        $response->assertStatus(302);
+        $response->assertSessionHasNoErrors();
+    }
+
+    /**
      * Open the current semester's evaluation form;
      * with start and end dates close to the current time.
      */
-    public static function openForm(): void
+    private function openForm(): void
     {
-        app(\App\Http\Controllers\Secretariat\SemesterEvaluationController::class)
-            ->updatePeriodicEvent(
-                Semester::current(),
-                Carbon::now()->subMinute(1),
-                Carbon::now()->addMinute(20)
-            );
+        $this->setDates(
+            Semester::current(),
+            Carbon::now()->subMinute(1),
+            Carbon::now()->addMinute(20)
+        );
     }
 
     /**
      * Close the current semester's evaluation form
      * by giving a start date after the current time.
      */
-    public static function delayForm(): void
+    private function delayForm(): void
     {
-        app(\App\Http\Controllers\Secretariat\SemesterEvaluationController::class)
-            ->updatePeriodicEvent(
-                Semester::current(),
-                Carbon::now()->addMinute(10),
-                Carbon::now()->addMinute(11)
-            );
-    }
-
-
-    /**
-     * Tests answering a question belonging to an already closed semester
-     * (which should fail).
-     * @return void
-     */
-    public function test_answering_closed_question(): void
-    {
-        $user = User::factory()->hasEducationalInformation()->create();
-
-        $semester = Semester::previous(); // important!
-        $question = Question::factory()
-            ->for($semester, 'parent')
-            ->hasOptions(3)
-            ->create(['opened_at' => now()->subDay(), 'closed_at' => null]);
-
-        $this->expectException(\Exception::class);
-        $question->storeAnswers(
-            $user,
-            $question->options->first(),
-            AnswerSheet::createForUser($user, $semester)
+        $this->setDates(
+            Semester::current(),
+            Carbon::now()->addMinute(10),
+            Carbon::now()->addMinute(11)
         );
     }
 
@@ -78,12 +69,15 @@ class AnonymousQuestionTest extends TestCase
     {
         $user = User::factory()->hasEducationalInformation()->create();
 
-        self::delayForm();
         $semester = Semester::current();
         $question = Question::factory()
             ->for($semester, 'parent')
             ->hasOptions(3)
-            ->create(['opened_at' => now()->subDay(), 'closed_at' => null]);
+            ->create();
+
+        $this->delayForm(); // important!
+        // don't forget this
+        $question->refresh();
 
         $this->expectException(\Exception::class);
         $question->storeAnswers(
@@ -102,12 +96,14 @@ class AnonymousQuestionTest extends TestCase
     {
         $user = User::factory()->hasEducationalInformation()->create();
 
-        self::openForm();
         $semester = Semester::current(); // gets created if does not already exist
         $question = Question::factory()
             ->for($semester, 'parent')
             ->hasOptions(3)
-            ->create(['opened_at' => now()->subDay(), 'closed_at' => null]);
+            ->create();
+
+        $this->openForm(); // this also sets the start and end dates
+        $question->refresh();
 
         $this->expectException(\Exception::class);
 
@@ -125,12 +121,14 @@ class AnonymousQuestionTest extends TestCase
     {
         $user = User::factory()->hasEducationalInformation()->create();
 
-        self::openForm();
         $semester = Semester::current();
         $question = Question::factory()
             ->for($semester, 'parent')
             ->hasOptions(3)
-            ->create(['opened_at' => now()->subDay(), 'closed_at' => null, 'max_options' => 1]);
+            ->create(['max_options' => 1]);
+
+        $this->openForm();
+        $question->refresh();
 
         $answerSheet = AnswerSheet::createForUser($user, $semester);
         $question->storeAnswers($user, $question->options->first(), $answerSheet);
@@ -172,12 +170,14 @@ class AnonymousQuestionTest extends TestCase
     {
         $user = User::factory()->hasEducationalInformation()->create();
 
-        self::openForm();
         $semester = Semester::current();
         $question = Question::factory()
             ->for($semester, 'parent')
             ->hasOptions(3)
-            ->create(['opened_at' => now()->subDay(), 'closed_at' => null, 'max_options' => 1]);
+            ->create(['max_options' => 1]);
+
+        $this->openForm();
+        $question->refresh();
 
         $this->expectException(\Exception::class);
         $question->storeAnswers(
@@ -191,16 +191,18 @@ class AnonymousQuestionTest extends TestCase
      * Tests answering a multiple-choice question.
      * @return void
      */
-    public function test_voting_checkbox(): void
+    public function test_answering_checkbox(): void
     {
         $user = User::factory()->hasEducationalInformation()->create();
 
-        self::openForm();
         $semester = Semester::current();
         $question = Question::factory()
             ->for($semester, 'parent')
             ->hasOptions(4)
-            ->create(['opened_at' => now()->subDay(), 'closed_at' => null, 'max_options' => 4]);
+            ->create(['max_options' => 4]);
+
+        $this->openForm();
+        $question->refresh();
 
         $answerSheet = AnswerSheet::createForUser($user, $semester);
         $question->storeAnswers(
@@ -248,16 +250,18 @@ class AnonymousQuestionTest extends TestCase
      * (which should fail).
      * @return void
      */
-    public function test_voting_checkbox_with_more_options(): void
+    public function test_answering_checkbox_with_more_options(): void
     {
         $user = User::factory()->hasEducationalInformation()->create();
 
-        self::openForm();
         $semester = Semester::current();
         $question = Question::factory()
             ->for($semester, 'parent')
             ->hasOptions(4)
-            ->create(['opened_at' => now()->subDay(), 'closed_at' => null, 'max_options' => 2]);
+            ->create(['max_options' => 2]);
+
+        $this->openForm();
+        $question->refresh();
 
         $this->expectException(\Exception::class);
         $question->storeAnswers($user, [$question->options->first(), $question->options->get(1), $question->options->get(2)]);
@@ -271,11 +275,13 @@ class AnonymousQuestionTest extends TestCase
     {
         $user = User::factory()->hasEducationalInformation()->create();
 
-        self::openForm();
         $semester = Semester::current();
         $question = Question::factory()
             ->for($semester, 'parent')
-            ->create(['opened_at' => now()->subDay(), 'closed_at' => null, 'has_long_answers' => true]);
+            ->create(['has_long_answers' => true]);
+
+        $this->openForm();
+        $question->refresh();
 
         $answerSheet = AnswerSheet::createForUser($user, $semester);
         $question->storeAnswers($user, "The quick brown fox jumped over the lazy dog.", $answerSheet);
@@ -303,11 +309,13 @@ class AnonymousQuestionTest extends TestCase
     {
         $user = User::factory()->hasEducationalInformation()->create();
 
-        self::openForm();
         $semester = Semester::current();
         $question = Question::factory()
             ->for($semester, 'parent')
-            ->create(['opened_at' => now()->subDay(), 'closed_at' => null, 'has_long_answers' => false]);
+            ->create(['has_long_answers' => false]);
+
+        $this->openForm();
+        $question->refresh();
 
         $answerSheet = AnswerSheet::createForUser($user, $semester);
 

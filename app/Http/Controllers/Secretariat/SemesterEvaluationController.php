@@ -11,6 +11,7 @@ use App\Mail\EvaluationFormReminder;
 use App\Mail\StatusDeactivated;
 use App\Models\Faculty;
 use App\Models\GeneralAssemblies\GeneralAssembly;
+use App\Models\Question;
 use App\Models\Role;
 use App\Models\RoleUser;
 use App\Models\Semester;
@@ -50,14 +51,19 @@ class SemesterEvaluationController extends Controller
             'end_date' => 'required|date|after:now|after:start_date'
         ]);
 
-        $this->updatePeriodicEvent(
-            Semester::find($request->semester_id),
-            Carbon::parse($request->start_date),
-            Carbon::parse($request->end_date),
-        );
+        $semester = Semester::find($request->semester_id);
+        $startDate = Carbon::parse($request->start_date);
+        $endDate = Carbon::parse($request->end_date);
+
+        $this->updatePeriodicEvent($semester, $startDate, $endDate);
+
+        // setting start and end dates of questions
+        $semester->questions()->update([
+            'opened_at' => $startDate,
+            'closed_at' => $endDate
+        ]);
 
         return back()->with('message', __('general.successful_modification'));
-
     }
 
     /**

@@ -81,15 +81,6 @@ class Question extends Model
     }
 
     /**
-     * Whether the parent is a general assembly
-     * or a semester (evaluation form).
-     */
-    public function isForAssembly(): bool
-    {
-        return GeneralAssembly::class == $this->parent_type;
-    }
-
-    /**
      * @return HasMany the options belonging to the question
      */
     public function options(): HasMany
@@ -119,9 +110,7 @@ class Question extends Model
      */
     public function hasBeenOpened(): bool
     {
-        return
-            !$this->isForAssembly() ||
-            ($this->opened_at != null && $this->opened_at <= now());
+        return $this->opened_at != null && $this->opened_at <= now();
     }
 
     /**
@@ -129,11 +118,7 @@ class Question extends Model
      */
     public function isOpen(): bool
     {
-        return
-            $this->isForAssembly()
-            ? ($this->hasBeenOpened() && !$this->isClosed())
-            : (app(\App\Http\Controllers\Secretariat\SemesterEvaluationController::class)->isActive()
-               && $this->parent->id == Semester::current()->id);
+        return $this->hasBeenOpened() && !$this->isClosed();
     }
 
     /**
@@ -141,10 +126,7 @@ class Question extends Model
      */
     public function isClosed(): bool
     {
-        return
-            $this->isForAssembly()
-            ? ($this->closed_at != null && $this->closed_at <= now())
-            : $this->parent->isClosed();
+        return $this->closed_at != null && $this->closed_at <= now();
     }
 
     /**
@@ -154,7 +136,7 @@ class Question extends Model
     public function open(): void
     {
         if (!$this->parent->isOpen()) {
-            throw new Exception("tried to open question when general_assembly was not open");
+            throw new Exception("tried to open question when the parent was not open");
         }
         if ($this->isOpen() || $this->isClosed()) {
             throw new Exception("tried to open question when it has already been opened");
