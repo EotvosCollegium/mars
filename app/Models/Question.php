@@ -66,7 +66,7 @@ class Question extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'sitting_id', 'max_options', 'opened_at', 'closed_at', 'has_long_answers'];
+    protected $fillable = ['title', 'max_options', 'opened_at', 'closed_at', 'has_long_answers'];
 
     public $timestamps = false;
 
@@ -195,6 +195,14 @@ class Question extends Model
         }
 
         DB::transaction(function () use ($user, $answer, $answerSheet) {
+            try {
+                // For some reason, it seems to be stable
+                // only if we manipulate the database directly.
+                DB::table('question_user')->insert(['question_id' => $this->id, 'user_id' => $user->id]);
+            } catch (\Illuminate\Database\UniqueConstraintViolationException $e) {
+                throw new Exception("The user has already answered this question");
+            }
+
             // if we get only one option:
             if ($answer instanceof QuestionOption) {
                 $answer = [$answer];
@@ -225,14 +233,6 @@ class Question extends Model
                     'answer_sheet_id' => $answerSheet->id,
                     'text' => $answer
                 ]);
-            }
-
-            try {
-                // For some reason, it seems to be stable
-                // only if we manipulate the database directly.
-                DB::table('question_user')->insert(['question_id' => $this->id, 'user_id' => $user->id]);
-            } catch (\Illuminate\Database\UniqueConstraintViolationException $e) {
-                throw new Exception("The user has already answered this question");
             }
         });
     }

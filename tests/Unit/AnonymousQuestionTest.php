@@ -81,7 +81,7 @@ class AnonymousQuestionTest extends TestCase
         // don't forget this
         $question->refresh();
 
-        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("Tried to store answers for a question which is not open");
         $question->storeAnswers(
             $user,
             $question->options->first(),
@@ -102,12 +102,12 @@ class AnonymousQuestionTest extends TestCase
         $question = Question::factory()
             ->for($semester, 'parent')
             ->hasOptions(3)
-            ->create();
+            ->create(['max_options' => 2]);
 
         $this->openForm(); // this also sets the start and end dates
         $question->refresh();
 
-        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("The user has already answered this question");
 
         $answerSheet1 = AnswerSheet::createForUser($user, $semester);
         $answerSheet2 = AnswerSheet::createForUser($user, $semester);
@@ -183,7 +183,7 @@ class AnonymousQuestionTest extends TestCase
         $this->openForm();
         $question->refresh();
 
-        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("More answers given then allowed ({$question->max_options})");
         $question->storeAnswers(
             $user,
             $question->options->random(2)->all(),
@@ -267,7 +267,7 @@ class AnonymousQuestionTest extends TestCase
         $this->openForm();
         $question->refresh();
 
-        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("More answers given then allowed ({$question->max_options})");
         $question->storeAnswers($user, [$question->options->first(), $question->options->get(1), $question->options->get(2)]);
     }
 
