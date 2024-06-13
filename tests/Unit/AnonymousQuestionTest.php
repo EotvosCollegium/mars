@@ -2,6 +2,8 @@
 
 namespace Tests\Unit;
 
+use Illuminate\Support\Facades\DB;
+
 use Tests\TestCase;
 use Carbon\Carbon;
 
@@ -133,17 +135,15 @@ class AnonymousQuestionTest extends TestCase
         $answerSheet = AnswerSheet::createForUser($user, $semester);
         $question->storeAnswers($user, $question->options->first(), $answerSheet);
 
-        $question->load('users');
-
-        echo $question->users()->count() . "\n";
-
         $this->assertEquals(1, $question->options->first()->votes);
         $this->assertEquals(0, $question->options->get(1)->votes);
         $this->assertEquals(0, $question->options->get(2)->votes);
 
+        // For some reason, it seems to be stable
+        // only if we manipulate the database directly.
         $this->assertTrue(
-            $question->users()
-                ->where('id', $user->id)
+            DB::table('question_user')
+                ->where('question_id', $question->id)->where('user_id', $user->id)
                 ->exists()
         );
 
@@ -215,18 +215,14 @@ class AnonymousQuestionTest extends TestCase
             $answerSheet
         );
 
-        $question->load('users');
-
-        echo $question->users()->count() . "\n";
-
         $this->assertEquals(1, $question->options->first()->votes);
         $this->assertEquals(1, $question->options->get(1)->votes);
         $this->assertEquals(0, $question->options->get(2)->votes);
         $this->assertEquals(0, $question->options->get(3)->votes);
 
         $this->assertTrue(
-            $question->users()
-                ->where('id', $user->id)
+            DB::table('question_user')
+                ->where('question_id', $question->id)->where('user_id', $user->id)
                 ->exists()
         );
 
@@ -294,13 +290,9 @@ class AnonymousQuestionTest extends TestCase
         $answerSheet = AnswerSheet::createForUser($user, $semester);
         $question->storeAnswers($user, "The quick brown fox jumped over the lazy dog.", $answerSheet);
 
-        $question->load('users');
-
-        echo $question->users()->count() . "\n";
-
         $this->assertTrue(
-            $question->users()
-                ->where('id', $user->id)
+            DB::table('question_user')
+                ->where('question_id', $question->id)->where('user_id', $user->id)
                 ->exists()
         );
 

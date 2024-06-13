@@ -195,15 +195,6 @@ class Question extends Model
         }
 
         DB::transaction(function () use ($user, $answer, $answerSheet) {
-            try {
-                QuestionUser::create([
-                    'question_id' => $this->id,
-                    'user_id' => $user->id,
-                ]);
-            } catch (\Illuminate\Database\UniqueConstraintViolationException $e) {
-                throw new Exception("The given user has already answered this question");
-            }
-
             // if we get only one option:
             if ($answer instanceof QuestionOption) {
                 $answer = [$answer];
@@ -234,6 +225,14 @@ class Question extends Model
                     'answer_sheet_id' => $answerSheet->id,
                     'text' => $answer
                 ]);
+            }
+
+            try {
+                // For some reason, it seems to be stable
+                // only if we manipulate the database directly.
+                DB::table('question_user')->insert(['question_id' => $this->id, 'user_id' => $user->id]);
+            } catch (\Illuminate\Database\UniqueConstraintViolationException $e) {
+                throw new Exception("The user has already answered this question");
             }
         });
     }
