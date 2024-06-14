@@ -25,7 +25,7 @@ class AnonymousQuestionController extends Controller
     /**
      * This will use the same periodic event as SemesterEvaluationController.
      */
-    function __construct()
+    public function __construct()
     {
         $this->underlyingControllerName =
             \App\Http\Controllers\Secretariat\SemesterEvaluationController::class;

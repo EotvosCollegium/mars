@@ -53,7 +53,9 @@ trait HasPeriodicEvent
      */
     final public function periodicEventForSemester(?Semester $semester): ?PeriodicEvent
     {
-        if (is_null($semester)) $semester = Semester::current();
+        if (is_null($semester)) {
+            $semester = Semester::current();
+        }
         return PeriodicEvent::where('event_model', $this->underlyingControllerName)
             ->where('semester_id', $semester->id)
             ->first();
