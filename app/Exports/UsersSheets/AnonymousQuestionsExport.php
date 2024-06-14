@@ -31,7 +31,10 @@ class AnonymousQuestionsExport implements FromCollection, WithMapping, WithHeadi
      */
     public function collection(): \Illuminate\Support\Collection
     {
-        return $this->semester->answerSheets;
+        return $this->semester->answerSheets()
+            ->orderBy('year_of_acceptance')
+            ->inRandomOrder()    // so that they cannot be tracked as easily
+            ->get();
     }
 
     /**

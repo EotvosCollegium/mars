@@ -89,13 +89,13 @@ class AnswerSheet extends Model
     /**
      * Returns an array with the data associated with the sheet:
      * year of acceptance and then textual answers to the questions
-     * in order of ascending id.
+     * in order of their ids.
      * (For multiple-choice questions, the separators between the choices are commas.)
+     * The id of the sheet is omitted for better pseudonomity.
      */
     public function toArray(): array
     {
         $row = [
-            $this->id,
             $this->semester->tag,
             $this->year_of_acceptance
         ];
