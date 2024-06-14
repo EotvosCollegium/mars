@@ -13,6 +13,7 @@ use App\Models\AnonymousQuestions\AnswerSheet;
 use App\Models\Semester;
 use App\Models\Question;
 use App\Models\QuestionOption;
+use App\Utils\HasPeriodicEvent;
 use App\Exports\UsersSheets\AnonymousQuestionsExport;
 
 /**
@@ -20,6 +21,16 @@ use App\Exports\UsersSheets\AnonymousQuestionsExport;
  */
 class AnonymousQuestionController extends Controller
 {
+    use HasPeriodicEvent;
+    /**
+     * This will use the same periodic event as SemesterEvaluationController.
+     */
+    function __construct()
+    {
+        $this->underlyingControllerName =
+            \App\Http\Controllers\Secretariat\SemesterEvaluationController::class;
+    }
+
     /**
      * Lists semesters as collapsible cards;
      * containing the export option,
@@ -79,14 +90,14 @@ class AnonymousQuestionController extends Controller
         }
         $validator->validate();
 
-        // NOTE: for now, we set the start and end dates for the _current_ semester;
-        // they will be updated when we set the dates for the semester evaluation form
+        $event = $this->periodicEventForSemester($semester);
+
         $question = $semester->questions()->create([
             'title' => $request->title,
             'max_options' => $hasLongAnswers ? 0 : $request->max_options,
             'has_long_answers' => $hasLongAnswers,
-            'opened_at' => (app(SemesterEvaluationController::class))->getStartDate() ?? Carbon::now(),
-            'closed_at' => (app(SemesterEvaluationController::class))->getEndDate()
+            'opened_at' => $event?->start_date ?? null,
+            'closed_at' => $event?->end_date ?? null
         ]);
         if (!$hasLongAnswers) {
             foreach ($options as $option) {
