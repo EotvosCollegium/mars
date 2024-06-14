@@ -20,15 +20,19 @@
     @if ($canHaveLongAnswers)
     <div class="row">
         <x-input.checkbox s="12" name="has_long_answers" text="anonymous_questions.has_long_answers"
-            {{-- disable answer options if this is checked --}}
-            onchange="
-                document.getElementById('max_options').disabled = this.checked;
-                const toDisable = document.getElementsByClassName('parent-child');
-                for (let i = 0; i < toDisable.length; i++) {
-                    toDisable[i].disabled = this.checked;
-                }
-            "
-            />
+            onchange="toggleLongAnswers(this);"/>
     </div>
     @endif
 </div>
+@push('scripts')
+{{-- disable answer options if this is checked --}}
+<script>
+function toggleLongAnswers(checkbox) {
+    document.getElementById('max_options').disabled = checkbox.checked;
+    const toDisable = document.getElementsByClassName('parent-child');
+    for (let i = 0; i < toDisable.length; i++) {
+        toDisable[i].disabled = checkbox.checked;
+    }
+}
+</script>
+@endpush

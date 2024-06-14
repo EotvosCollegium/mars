@@ -15,7 +15,8 @@ return new class () extends Migration {
             $table->id();
             $table->unsignedSmallInteger('semester_id');
             $table->unsignedSmallInteger('year_of_acceptance');
-            // no timestamps (for better anonymity)
+            // no timestamps (for better pseudonimity)
+            // note: the order of records might still break anonymity
 
             $table->foreign('semester_id')->references('id')->on('semesters');
         });
