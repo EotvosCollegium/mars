@@ -264,7 +264,11 @@ class Question extends Model
         if ($this->has_long_answers) {
             $rules[$key] = 'required|string';
         } elseif ($this->isMultipleChoice()) {
-            $rules[$key] = 'required|array';
+            $rules[$key] = [
+                'required',
+                'array',
+                'max:' . $this->max_options
+            ];
             $rules[$key . '.*'] = Rule::in($this->options->map(
                 function (QuestionOption $option) {return $option->id;}
             ));
