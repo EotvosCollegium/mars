@@ -20,6 +20,7 @@ return [
     'failed' => 'Hiba történt. Kérlek, írj a rendszergazdáknak!',
     'filter' => 'Szűrés',
     'home' => 'Kezdőlap',
+    'id' => 'Azonosító',
     'i_understand' => 'Értem',
     'if_mail_not_working' => 'Néhány esetben ez a funkció nem működhet megfelelően. Ebben az esetben küldd el a hibát a rendszergazdáknak! Köszönjük!',
     'information' => 'Információk',

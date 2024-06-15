@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Models\GeneralAssemblies;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\GeneralAssemblies\QuestionUser
+ * App\Models\QuestionUser
  *
  * @property int $question_id
  * @property int $user_id

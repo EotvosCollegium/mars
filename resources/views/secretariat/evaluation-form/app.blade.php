@@ -133,10 +133,10 @@
     </div>
     <div class="row">
         <div class="col s12">
-            <div class="card" id="feedback">
+            <div class="card" id="anonymous_questions">
                 <div class="card-content">
-                    <div class="card-title">Visszajelzés a Választmány felé</div>
-                    @include('secretariat.evaluation-form.feedback')
+                    <div class="card-title">@lang('anonymous_questions.anonymous_questions')</div>
+                    @include('secretariat.evaluation-form.anonymous_questions')
                 </div>
             </div>
         </div>
