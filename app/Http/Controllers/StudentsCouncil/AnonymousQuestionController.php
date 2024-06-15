@@ -3,10 +3,8 @@
 namespace App\Http\Controllers\StudentsCouncil;
 
 use Illuminate\Http\Request;
-use Carbon\Carbon;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
 use App\Models\AnonymousQuestions\AnswerSheet;
@@ -37,36 +35,34 @@ class AnonymousQuestionController extends Controller
      * the list of questions
      * and the option to add new ones.
      */
-    public function indexSemesters()
+    public function index()
     {
         $this->authorize('administer', AnswerSheet::class);
 
-        return view('student-council.anonymous-questions.index_semesters');
+        return view('student-council.anonymous-questions.index');
     }
 
     /**
      * Returns the 'new question' page.
      */
-    public function create(Semester $semester)
+    public function create()
     {
         $this->authorize('administer', AnswerSheet::class);
 
-        if ($semester->isClosed()) {
+        if (!$this->isActive()) {
             abort(403, "tried to add a question to a closed semester");
         }
-        return view('student-council.anonymous-questions.create', [
-            "semester" => $semester
-        ]);
+        return view('student-council.anonymous-questions.create');
     }
 
     /**
      * Saves a new question.
      */
-    public function store(Request $request, Semester $semester)
+    public function store(Request $request)
     {
         $this->authorize('administer', AnswerSheet::class);
 
-        if ($semester->isClosed()) {
+        if (!$this->isActive()) {
             abort(403, "tried to add a question to a closed semester");
         }
 
@@ -90,14 +86,15 @@ class AnonymousQuestionController extends Controller
         }
         $validator->validate();
 
-        $event = $this->periodicEventForSemester($semester);
+        $event = $this->periodicEvent();
 
-        $question = $semester->questions()->create([
+        $question = $event->semester->questions()->create([
             'title' => $request->title,
             'max_options' => $hasLongAnswers ? 0 : $request->max_options,
             'has_long_answers' => $hasLongAnswers,
-            'opened_at' => $event?->start_date ?? null,
-            'closed_at' => $event?->end_date ?? null
+            // does not have individual dates, voting is constrained by the periodicEvent
+            'opened_at' => null,
+            'closed_at' => null
         ]);
         if (!$hasLongAnswers) {
             foreach ($options as $option) {
@@ -108,7 +105,7 @@ class AnonymousQuestionController extends Controller
             }
         }
 
-        session()->put('section', $semester->id);
+        //session()->put('section', $semester->id);
         return redirect()->route('anonymous_questions.index_semesters')
                          ->with('message', __('general.successful_modification'));
     }
@@ -116,7 +113,7 @@ class AnonymousQuestionController extends Controller
     /**
      * Returns a page with the options (and results, if authorized) of a question.
      */
-    public function show(Semester $semester, Question $question)
+    public function show(Question $question)
     {
         $this->authorize('administer', AnswerSheet::class);
 
@@ -130,9 +127,17 @@ class AnonymousQuestionController extends Controller
      * Handles all questions at once
      * and creates an answer sheet for them.
      */
-    public function storeAnswerSheet(Request $request, Semester $semester)
+    public function storeAnswers(Request $request)
     {
         $this->authorize('is-collegist');
+        $semester = $this->semester(); //semester connected to periodicEvent
+
+        if (!$this->isActive()) {
+            abort(403, "tried to save an answer when the questionnaire is not open");
+        }
+
+        // Answers for all available questions are stored each time, grouped to an answerSheet.
+        // However, the available questions might change.
 
         $validatedData = $request->validate(
             $semester->questionsNotAnsweredBy(user())
