@@ -53,7 +53,6 @@ class AnonymousQuestionsExport implements FromCollection, WithMapping, WithHeadi
     public function headings(): array
     {
         return array_merge([
-            __('general.id'),
             __('general.semester'),
             __('user.year_of_acceptance')
         ], $this->semester->questions()->orderBy('id')->pluck('title')->all());
