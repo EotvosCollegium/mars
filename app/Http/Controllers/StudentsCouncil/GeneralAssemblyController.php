@@ -6,8 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
 use App\Models\GeneralAssemblies\GeneralAssembly;
-use App\Models\GeneralAssemblies\Question;
-use App\Models\GeneralAssemblies\QuestionOption;
+use App\Models\Question;
+use App\Models\QuestionOption;
 
 class GeneralAssemblyController extends Controller
 {

@@ -4,7 +4,8 @@ namespace App\Http\Controllers\StudentsCouncil;
 
 use App\Http\Controllers\Controller;
 use App\Models\GeneralAssemblies\GeneralAssembly;
-use App\Models\GeneralAssemblies\QuestionOption;
+use App\Models\Question;
+use App\Models\QuestionOption;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -18,7 +19,7 @@ class GeneralAssemblyQuestionController extends Controller
         $this->authorize('administer', GeneralAssembly::class);
 
         if ($generalAssembly->isClosed()) {
-            abort(401, "tried to modify a general_assembly which has been closed");
+            abort(403, "tried to modify a general_assembly which has been closed");
         }
         return view('student-council.general-assemblies.questions.create', [
             "general_assembly" => $generalAssembly
@@ -31,6 +32,10 @@ class GeneralAssemblyQuestionController extends Controller
     public function store(Request $request, GeneralAssembly $generalAssembly)
     {
         $this->authorize('administer', GeneralAssembly::class);
+
+        if ($generalAssembly->isClosed()) {
+            abort(403, "tried to modify a general assembly which has been closed");
+        }
 
         $validator = Validator::make($request->all(), [
             'title' => 'required|string',
@@ -48,13 +53,10 @@ class GeneralAssemblyQuestionController extends Controller
         }
         $validator->validate();
 
-        if ($generalAssembly->isClosed()) {
-            abort(401, "tried to modify a general assembly which has been closed");
-        }
-
         $question = $generalAssembly->questions()->create([
             'title' => $request->title,
-            'max_options' => $request->max_options
+            'max_options' => $request->max_options,
+            'has_long_answers' => false
         ]);
         foreach ($options as $option) {
             $question->options()->create([
@@ -72,10 +74,10 @@ class GeneralAssemblyQuestionController extends Controller
     /**
      * Returns a page with the options (and results, if authorized) of a question.
      */
-    public function show(GeneralAssembly $generalAssembly, $question)
+    public function show(GeneralAssembly $generalAssembly, Question $question)
     {
         $this->authorize('viewAny', GeneralAssembly::class);
-        $question = $generalAssembly->questions()->findOrFail($question);
+
         return view('student-council.general-assemblies.questions.show', [
             "question" => $question
         ]);
@@ -84,16 +86,15 @@ class GeneralAssemblyQuestionController extends Controller
     /**
      * Opens a question.
      */
-    public function openQuestion(GeneralAssembly $generalAssembly, $question)
+    public function openQuestion(GeneralAssembly $generalAssembly, Question $question)
     {
         $this->authorize('administer', GeneralAssembly::class);
-        $this->authorize('administer', GeneralAssembly::class);
-        $question = $generalAssembly->questions()->findOrFail($question);
+
         if (!$generalAssembly->isOpen()) {
-            abort(401, "tried to open a question when the sitting itself was not open");
+            abort(403, "tried to open a question when the general assembly itself was not open");
         }
         if ($question->hasBeenOpened()) {
-            abort(401, "tried to open a question which has already been opened");
+            abort(403, "tried to open a question which has already been opened");
         }
         $question->open();
         return back()->with('message', __('voting.question_opened'));
@@ -102,12 +103,12 @@ class GeneralAssemblyQuestionController extends Controller
     /**
      * Closes a question.
      */
-    public function closeQuestion(GeneralAssembly $generalAssembly, $question)
+    public function closeQuestion(GeneralAssembly $generalAssembly, Question $question)
     {
         $this->authorize('administer', GeneralAssembly::class);
-        $question = $generalAssembly->questions()->findOrFail($question);
+
         if (!$question->isOpen()) {
-            abort(401, "tried to close a question which was not open");
+            abort(403, "tried to close a question which was not open");
         }
         $question->close();
         return back()->with('message', __('voting.question_closed'));
@@ -116,9 +117,8 @@ class GeneralAssemblyQuestionController extends Controller
     /**
      * Saves a vote.
      */
-    public function saveVote(Request $request, GeneralAssembly $generalAssembly, $question)
+    public function saveVote(Request $request, GeneralAssembly $generalAssembly, Question $question)
     {
-        $question = $generalAssembly->questions()->findOrFail($question);
         $this->authorize('vote', $question); //this also checks whether the user has already voted
 
         if ($question->isMultipleChoice()) {
@@ -142,7 +142,7 @@ class GeneralAssemblyQuestionController extends Controller
                 }
                 array_push($options, $option);
             }
-            $question->vote(user(), $options);
+            $question->storeAnswers(user(), $options);
         } else {
             $validator = Validator::make($request->all(), [
                 'option' => 'exists:question_options,id',
@@ -159,9 +159,9 @@ class GeneralAssemblyQuestionController extends Controller
             if ($option->question->id != $question->id) {
                 abort(401, "Tried to vote for an option which does not belong to the question");
             }
-            $question->vote(user(), array($option));
+            $question->storeAnswers(user(), $option);
         }
 
-        return redirect()->route('general_assemblies.show', $question->generalAssembly)->with('message', __('voting.successful_voting'));
+        return redirect()->route('general_assemblies.show', $question->parent)->with('message', __('voting.successful_voting'));
     }
 }

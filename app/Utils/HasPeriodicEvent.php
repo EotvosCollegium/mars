@@ -32,7 +32,7 @@ trait HasPeriodicEvent
     protected $underlyingControllerName = self::class; // the controller that uses the trait
 
     /**
-     * Get the PeriodicEvent connected to the controller.
+     * Get the last PeriodicEvent connected to the controller.
      *
      * @return PeriodicEvent|null
      */
@@ -41,6 +41,23 @@ trait HasPeriodicEvent
         return PeriodicEvent::where('event_model', $this->underlyingControllerName)
             //ensure we only get one event
             ->orderBy('start_date', 'desc')
+            ->first();
+    }
+
+    /**
+     * Get the PeriodicEvent connected to the controller
+     * and belonging to the given semester
+     * (by default the current one).
+     *
+     * @return PeriodicEvent|null
+     */
+    final public function periodicEventForSemester(?Semester $semester): ?PeriodicEvent
+    {
+        if (is_null($semester)) {
+            $semester = Semester::current();
+        }
+        return PeriodicEvent::where('event_model', $this->underlyingControllerName)
+            ->where('semester_id', $semester->id)
             ->first();
     }
 

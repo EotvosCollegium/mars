@@ -4,10 +4,11 @@ namespace App\Models\GeneralAssemblies;
 
 use App\Enums\PresenceType;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-use App\Models\GeneralAssemblies\Question;
+use App\Models\Question;
 use App\Models\User;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -56,11 +57,12 @@ class GeneralAssembly extends Model
     ];
 
     /**
-     * @return HasMany The questions that belong to the general_assembly.
+     * The questions that belong to the general_assembly.
+     * @return MorphMany
      */
-    public function questions(): HasMany
+    public function questions(): MorphMany
     {
-        return $this->hasMany(Question::class);
+        return $this->morphMany(Question::class, 'parent');
     }
 
     /**
