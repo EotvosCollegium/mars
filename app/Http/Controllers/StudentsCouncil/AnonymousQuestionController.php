@@ -134,7 +134,8 @@ class AnonymousQuestionController extends Controller
     {
         $this->authorize('is-collegist');
 
-        $validator = Validator::make($request->all(),
+        $validator = Validator::make(
+            $request->all(),
             $semester->questionsNotAnsweredBy(user())
                      ->flatMap(fn ($q) => $q->validationRules())
                      ->all()
@@ -150,7 +151,7 @@ class AnonymousQuestionController extends Controller
 
         $validatedData = $validator->validated();
 
-        DB::transaction(function() use ($validatedData, $semester) {
+        DB::transaction(function () use ($validatedData, $semester) {
             // Since answer sheets are anonymous,
             // we cannot append new answers to the previous sheet (if any);
             // we have to create a new one.
