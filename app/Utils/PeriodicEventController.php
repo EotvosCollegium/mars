@@ -2,22 +2,27 @@
 
 namespace App\Utils;
 
+use App\Http\Controllers\Controller;
 use App\Jobs\PeriodicEventsProcessor;
 use App\Models\PeriodicEvent;
 use App\Models\Semester;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 /**
- * Add this trait to controllers that is connected to periodic events.
- * Status changes and events are handled automatically.
+ * Special controllers that are connected to periodic events.
+ * A periodic event defined in the constructor will be handled and used by the controller.
+ * Status changes and events are handled automatically (register them in PeriodicEvent).
  *
- * The idea behind this is that the controller will have a periodicEvent attached to it.
- * Through that, we can check if the event is active or not, get the deadline, etc.
+ * Through the functions of this class, we can check if the event is active or not, get the deadline, etc.
  * We can set up actions that will be executed when the event starts or ends.
  * The PeriodicEvent is also attached to a semester. The controller should use that semester
  * (through the periodicEvent) to avoid conflicts when semesters change.
+ * Store that semester in the related models.
+ *
+ * @warning Be aware that the PeriodicEvent's data and semester gets overwritten every iteration.
  *
  * Usage:
  * Use the periodicEvent() method or the other getters to get the PeriodicEvent's data.
@@ -27,9 +32,14 @@ use Illuminate\Support\Facades\DB;
  * @see PeriodicEvent
  * @see PeriodicEventsProcessor
  */
-trait HasPeriodicEvent
+abstract class PeriodicEventController extends Controller
 {
-    protected $underlyingControllerName = self::class; // the controller that uses the trait
+    protected string $periodicEventName;
+
+    public function __construct(string $periodicEventName)
+    {
+        $this->periodicEventName = $periodicEventName;
+    }
 
     /**
      * Get the last PeriodicEvent connected to the controller.
@@ -38,7 +48,7 @@ trait HasPeriodicEvent
      */
     final public function periodicEvent(): ?PeriodicEvent
     {
-        return PeriodicEvent::where('event_model', $this->underlyingControllerName)
+        return PeriodicEvent::where('event_model', $this->periodicEventName)
             //ensure we only get one event
             ->orderBy('start_date', 'desc')
             ->first();
@@ -56,7 +66,7 @@ trait HasPeriodicEvent
         if (is_null($semester)) {
             $semester = Semester::current();
         }
-        return PeriodicEvent::where('event_model', $this->underlyingControllerName)
+        return PeriodicEvent::where('event_model', $this->periodicEventName)
             ->where('semester_id', $semester->id)
             ->first();
     }
@@ -83,7 +93,7 @@ trait HasPeriodicEvent
         }
 
         return DB::transaction(function () use ($semester, $start_date, $end_date, $extended_end_date) {
-            $event = $this->periodicEvent() ?? new PeriodicEvent(['event_model' => $this->underlyingControllerName]);
+            $event = $this->periodicEvent() ?? new PeriodicEvent(['event_model' => $this->periodicEventName]);
             $event->semester_id = $semester->id;
             $event->start_date = $start_date;
             $event->end_date = $end_date;
@@ -109,6 +119,7 @@ trait HasPeriodicEvent
     public function handlePeriodicEventStart(): void
     {
         // Do nothing by default
+        Log::debug("handlePeriodicEventStart of " . self::class . " got called with empty body.");
     }
 
     /**
@@ -119,6 +130,8 @@ trait HasPeriodicEvent
     public function handlePeriodicEventEnd(): void
     {
         // Do nothing by default
+        Log::debug("handlePeriodicEventEnd of " . self::class . " got called with empty body.");
+
     }
 
     /**
@@ -130,6 +143,8 @@ trait HasPeriodicEvent
     public function handlePeriodicEventReminder(int $daysBeforeEnd): void
     {
         // Do nothing by default
+        Log::debug("handlePeriodicEventReminder of " . self::class . " got called with empty body.");
+
     }
 
     /**

@@ -3,16 +3,16 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Exports\ApplicantsExport;
-use App\Http\Controllers\Controller;
 use App\Models\ApplicationForm;
 use App\Models\Faculty;
 use App\Models\File;
+use App\Models\PeriodicEvent;
 use App\Models\Role;
 use App\Models\RoleUser;
 use App\Models\Semester;
 use App\Models\User;
 use App\Models\Workshop;
-use App\Utils\HasPeriodicEvent;
+use App\Utils\PeriodicEventController;
 use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\RedirectResponse;
@@ -23,16 +23,19 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
 
-class ApplicationController extends Controller
+class ApplicationController extends PeriodicEventController
 {
-    use HasPeriodicEvent;
-
     private const EDUCATIONAL_ROUTE = 'educational';
     private const QUESTIONS_ROUTE = 'questions';
     private const FILES_ROUTE = 'files';
     private const DELETE_FILE_ROUTE = 'files.delete';
     private const ADD_PROFILE_PIC_ROUTE = 'files.profile';
     private const SUBMIT_ROUTE = 'submit';
+
+    public function __construct()
+    {
+        parent::__construct(PeriodicEvent::APPLICATION_PERIOD);
+    }
 
     /**
      * Update the PeriodicEvent connected to the applications.

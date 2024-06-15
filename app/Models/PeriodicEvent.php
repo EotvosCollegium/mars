@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\Auth\ApplicationController;
+use App\Http\Controllers\Secretariat\SemesterEvaluationController;
+use App\Http\Controllers\StudentsCouncil\MrAndMissController;
 use App\Jobs\PeriodicEventsProcessor;
-use App\Utils\HasPeriodicEvent;
+use App\Utils\PeriodicEventController;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -11,10 +14,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * A PeriodicEvent is connected to a feature that is active for a certain period of time.
- * It is connected to the user of the HasPeriodicEvent trait with the `event_model` attribute.
- * @warning PeriodicEvents should only be modified by the HasPeriodicEvent trait.
+ * It is connected to the `$periodicEventName` defined in PeriodicEventController, stored as the `event_model` attribute.
+ * @warning PeriodicEvents should only be modified by a PeriodicEventController.
  * @warning Do not attach other models to PeriodicEvents, use the connected Semester ids instead.
- * @see HasPeriodicEvent
+ * @see PeriodicEventController
  * @see PeriodicEventsProcessor
  *
  * @property int $id
@@ -46,6 +49,21 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class PeriodicEvent extends Model
 {
+    public const SEMESTER_EVALUATION_PERIOD = "SEMESTER_EVALUATION_PERIOD";
+    public const APPLICATION_PERIOD = "APPLICATION_PERIOD";
+    public const KKT_NETREG_PAYMENT_PERIOD = "KKT_NETREG_PAYMENT_PERIOD";
+    public const MR_AND_MISS_VOTING_PERIOD = "MR_AND_MISS_VOTING_PERIOD";
+
+    /**
+     * The classes that handle start/end/etc. of the events.
+     */
+    public const periodicEventHandlers = [
+        self::SEMESTER_EVALUATION_PERIOD => SemesterEvaluationController::class,
+        self::APPLICATION_PERIOD => ApplicationController::class,
+        //self::KKT_NETREG_PAYMENT_PERIOD =>
+        self::MR_AND_MISS_VOTING_PERIOD => MrAndMissController::class
+    ];
+
     protected $fillable = [
         'event_model',
         'start_date',
@@ -113,6 +131,15 @@ class PeriodicEvent extends Model
     }
 
     /**
+     * Get the class that handles the events.
+     * @return mixed
+     */
+    public function getHandlerClass(): mixed
+    {
+        return app(self::periodicEventHandlers[$this->event_model]);
+    }
+
+    /**
      * Handle the start of the PeriodicEvent.
      */
     public function handleStart(): void
@@ -129,8 +156,7 @@ class PeriodicEvent extends Model
      */
     public function handleEnd(): void
     {
-        //Get the corresponding controller and call its start method
-        app($this->event_model)->handlePeriodicEventEnd();
+        $this->getHandlerClass()->handlePeriodicEventEnd();
 
         $this->end_handled = now();
         $this->save(['timestamps' => false]); // save without updating timestamps
@@ -143,8 +169,7 @@ class PeriodicEvent extends Model
     {
         $days_left = (int)$this->endDate()->diffInDays(now()) * (-1);
 
-        //Get the corresponding controller and call its start method
-        app($this->event_model)->handlePeriodicEventReminder($days_left);
+        $this->getHandlerClass()->handlePeriodicEventReminder($days_left);
     }
 
 

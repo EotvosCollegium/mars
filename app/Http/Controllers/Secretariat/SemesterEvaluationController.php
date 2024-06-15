@@ -11,7 +11,7 @@ use App\Mail\EvaluationFormReminder;
 use App\Mail\StatusDeactivated;
 use App\Models\Faculty;
 use App\Models\GeneralAssemblies\GeneralAssembly;
-use App\Models\Question;
+use App\Models\PeriodicEvent;
 use App\Models\Role;
 use App\Models\RoleUser;
 use App\Models\Semester;
@@ -19,7 +19,7 @@ use App\Models\SemesterEvaluation;
 use App\Models\SemesterStatus;
 use App\Models\User;
 use App\Models\Workshop;
-use App\Utils\HasPeriodicEvent;
+use App\Utils\PeriodicEventController;
 use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
@@ -30,9 +30,12 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
-class SemesterEvaluationController extends Controller
+class SemesterEvaluationController extends PeriodicEventController
 {
-    use HasPeriodicEvent;
+    public function __construct()
+    {
+        parent::__construct(PeriodicEvent::SEMESTER_EVALUATION_PERIOD);
+    }
 
     /**
      * Update the PeriodicEvent for the evaluation form.
@@ -97,7 +100,7 @@ class SemesterEvaluationController extends Controller
     /**
      * Send email about results and deactivate collegists who did not fill out the form.
      */
-    public function handlePeriodicEventEnd()
+    public function handlePeriodicEventEnd(): void
     {
         $users = $this->usersHaventFilledOutTheForm();
         $users_names = $users->pluck('name')->toArray();
