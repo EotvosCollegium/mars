@@ -39,11 +39,10 @@ jobs:
         run: |
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
-          git config --global pull.rebase true
           git config --global --add safe.directory /__w/mars/mars # Add the original repo name as safe
 
       - name: Fetch latest changes from the remote branch
-        run: git pull https://x-access-token:${GH_PAT}@github.com/${{ github.repository }}.git HEAD:refs/heads/${{ github.head_ref }}
+        run: git reset --hard https://x-access-token:${GH_PAT}@github.com/${{ github.repository }}.git HEAD:refs/heads/${{ github.head_ref }}
   
       - name: Generate ide-helper comments
         run: php artisan ide-helper:refresh
