@@ -48,10 +48,12 @@ jobs:
         run: |
           git add .
           git commit -m "Refresh ide-helper automatically" || echo "No changes to commit"
-
+      - name: Extract branch name
+        id: extract_branch
+        run: echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+  
       - name: Push changes
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
         run: |
-          git push https://x-access-token:${GH_PAT}@github.com/${{ github.repository }}.git HEAD:main
-
+          git push https://x-access-token:${GH_PAT}@github.com/${{ github.repository }}.git HEAD:refs/heads/${{ env.BRANCH_NAME }}
