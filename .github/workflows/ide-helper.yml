@@ -25,16 +25,16 @@ jobs:
       - name: Install composer dependencies
         run: |
           composer install --no-scripts
-      
-      - name: Set up database
-        run: |
-          php artisan migrate:fresh
-      
+
       - name: Prepare Laravel Application
         run: |
           cp .env.ci .env
           php artisan key:generate
-
+      
+      - name: Set up database
+        run: |
+          php artisan migrate:fresh
+  
       - name: Generate ide-helper comments
         run: php artisan ide-helper:refresh
 
