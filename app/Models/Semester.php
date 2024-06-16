@@ -124,11 +124,19 @@ class Semester extends Model
         return $this->getStartDate()->format('Y.m.d') . '-' . $this->getEndDate()->format('Y.m.d');
     }
 
+    /**
+     * Returns whether this is an autumn semester
+     * (the first semester of the academic year).
+     */
     public function isAutumn(): bool
     {
         return $this->part == 1;
     }
 
+    /**
+     * Returns whether this is a spring semester
+     * (the second semester of the academic year).
+     */
     public function isSpring(): bool
     {
         return $this->part == 2;
@@ -227,6 +235,9 @@ class Semester extends Model
         return $this->hasMany(\App\Models\Transaction::class, 'semester_id');
     }
 
+    /**
+     * Returns the CommunityService models created in the semester.
+     */
     public function communityServices(): HasMany
     {
         return $this->hasMany(\App\Models\CommunityService::class, 'semester_id');
