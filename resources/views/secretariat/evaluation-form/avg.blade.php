@@ -1,7 +1,7 @@
 <form method="POST" action="">
     @csrf
     <blockquote>
-        Ha még nem vagy lezárva minden tárgyból, ne írd be az átlagodat! (Ha lezárnak a beküldési határidő előtt, akkor be tudod majd írni akkor is.)
+        Ha még nem vagy lezárva minden tárgyból, ne írd be az átlagodat! (A beküldési határidőig bármikor beírhatod majd.)
     </blockquote>
     <div class="row">
         <input type="hidden" name="section" value="avg"/>
@@ -12,7 +12,7 @@
         <a href="https://eotvos.elte.hu/collegium/mukodes/szabalyzatok">CTSZK 7. § (4) b.</a>
         A collegiumi tagság automatikusan megszűnik, ha a hallgatónak a tanulmányi átlaga két egymást követő félévben 4,25 alá süllyed<br>
         i. ahol a hagyományos átlagszámítás az érvényes, melybe minden szöveges értékelésű és nullkredites tárgy is beleszámít, illetve a BTK-s és TáTK-s kezelési körben meghirdetett kurzusok esetében az elhagyott tanegység értéke nulla,<br>
-        ii. a hallgató mentesül a 7. § (4) b. rendelkezés alól, amennyiben a műhelyvezető támogatásával a hallgató kérelmezésére kezdeményezett vizsgálat alapján teljesítménye mindkét kérdéses félévben az adott szakon azonos számú aktív félévvel rendelkező hallgatók kreditindexe alapján felállított lista legjobb 10%-ához tartozik
+        ii. a hallgató mentesül a 7. § (4) b. rendelkezés alól, amennyiben a műhelyvezető támogatásával a hallgató kérelmezésére kezdeményezett vizsgálat alapján teljesítménye mindkét kérdéses félévben az adott szakon azonos számú aktív félévvel rendelkező hallgatók kreditindexe alapján felállított lista legjobb 10%-ához tartozik.
     </blockquote>
     <div class="row">
         <x-input.button class="right" text="general.save" />

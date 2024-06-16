@@ -6,29 +6,58 @@ use App\Exports\ApplicantsExport;
 use App\Http\Controllers\Controller;
 use App\Models\ApplicationForm;
 use App\Models\Faculty;
-use App\Models\User;
-use App\Models\Workshop;
-use App\Models\RoleUser;
 use App\Models\File;
 use App\Models\Role;
+use App\Models\RoleUser;
+use App\Models\Semester;
+use App\Models\User;
+use App\Models\Workshop;
+use App\Utils\HasPeriodicEvent;
 use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ApplicationController extends Controller
 {
+    use HasPeriodicEvent;
+
     private const EDUCATIONAL_ROUTE = 'educational';
     private const QUESTIONS_ROUTE = 'questions';
     private const FILES_ROUTE = 'files';
     private const DELETE_FILE_ROUTE = 'files.delete';
     private const ADD_PROFILE_PIC_ROUTE = 'files.profile';
     private const SUBMIT_ROUTE = 'submit';
+
+    /**
+     * Update the PeriodicEvent connected to the applications.
+     * @throws AuthorizationException
+     */
+    public function updateApplicationPeriod(Request $request): RedirectResponse
+    {
+        $this->authorize('finalize', ApplicationForm::class);
+
+        $request->validate([
+            'semester_id' => 'required|exists:semesters,id',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after:now|after:start_date',
+            'extended_end_date' => 'nullable|date|after:end_date',
+        ]);
+
+        $this->updatePeriodicEvent(
+            Semester::find($request->semester_id),
+            Carbon::parse($request->start_date),
+            Carbon::parse($request->end_date),
+            $request->extended_end_date ? Carbon::parse($request->extended_end_date) : null
+        );
+
+        return back()->with('message', __('general.successful_modification'));
+    }
 
     /**
      * Return the view based on the request's page parameter.
@@ -48,8 +77,8 @@ class ApplicationController extends Controller
         $data = [
             'workshops' => Workshop::all(),
             'faculties' => Faculty::all(),
-            'deadline' => self::getApplicationDeadline(),
-            'deadline_extended' => self::isDeadlineExtended(),
+            'deadline' => $this->getDeadline(),
+            'deadline_extended' => $this->isExtended(),
             'user' => user(),
         ];
         switch ($request->input('page')) {
@@ -74,7 +103,7 @@ class ApplicationController extends Controller
     {
         $user = $request->user();
 
-        if (now() > self::getApplicationDeadline()) {
+        if (now() > $this->getDeadline()) {
             return redirect()->route('application')->with('error', 'A jelentkezési határidő lejárt');
         }
 
@@ -113,13 +142,13 @@ class ApplicationController extends Controller
         if ($request->has('id')) { // return one application in detail
             $user = User::withoutGlobalScope('verified')
                 ->with('application')->findOrFail($request->input('id'));
-            $this->authorize('viewApplication', $user);
+            $this->authorize('view', $user->application);
             return view('auth.application.applications_details', [
                 'user' => $user,
             ]);
         } else { //return all applications that can be visible
-            $this->authorize('viewSomeApplication', User::class);
-            if($authUser->can('viewAllApplications', User::class)) {
+            $this->authorize('viewSome', ApplicationForm::class);
+            if($authUser->can('viewAll', ApplicationForm::class)) {
                 $workshops = Workshop::all();
             } else {
                 $workshops = $authUser->roleWorkshops->concat($authUser->applicationCommitteWorkshops);
@@ -150,7 +179,8 @@ class ApplicationController extends Controller
                 'workshop' => $request->input('workshop'), //filtered workshop
                 'workshops' => $workshops, //workshops that can be chosen to filter
                 'status' => $request->input('status'), //filtered status
-                'applicationDeadline' => self::getApplicationDeadline(),
+                'applicationDeadline' => $this->getDeadline(),
+                'periodicEvent' => $this->periodicEvent()
             ]);
         }
     }
@@ -163,7 +193,7 @@ class ApplicationController extends Controller
      */
     public function editApplication(Request $request): RedirectResponse
     {
-        $this->authorize('viewSomeApplication', User::class);
+        $this->authorize('viewSome', ApplicationForm::class);
         $application = ApplicationForm::findOrFail($request->input('application'));
         $newStatus = $request->input('status_'.$application->user->id);
         if ($request->has('note')) {
@@ -181,7 +211,7 @@ class ApplicationController extends Controller
      */
     public function finalizeApplicationProcess()
     {
-        $this->authorize('finalizeApplicationProcess', User::class);
+        $this->authorize('finalize', ApplicationForm::class);
         Cache::forget('collegists');
         $not_handled_applicants = User::query()->withoutGlobalScope('verified')
             ->where('verified', 0)
@@ -221,22 +251,6 @@ class ApplicationController extends Controller
 
         Cache::clear();
         return back()->with('message', 'Sikeresen jóváhagyta az elfogadott jelentkezőket');
-    }
-
-    /**
-     * @return Carbon the application deadline set in .env
-     */
-    public static function getApplicationDeadline(): Carbon
-    {
-        return Carbon::parse(config('custom.application_deadline'));
-    }
-
-    /**
-     * @return bool if the deadline has been extended or not
-     */
-    public static function isDeadlineExtended(): bool
-    {
-        return config('custom.application_extended');
     }
 
 
@@ -314,7 +328,7 @@ class ApplicationController extends Controller
         if ($user->application->missingData() == []) {
             $user->application->update(['status' => ApplicationForm::STATUS_SUBMITTED]);
             $user->internetAccess->setWifiCredentials($user->educationalInformation->neptun);
-            $user->internetAccess()->update(['has_internet_until' => $this::getApplicationDeadline()->addMonth(1)]);
+            $user->internetAccess()->update(['has_internet_until' => $this->getDeadline()?->addMonth()]);
             return back()->with('message', 'Sikeresen véglegesítette a jelentkezését!');
         } else {
             return back()->with('error', 'Hiányzó adatok!');
@@ -326,7 +340,7 @@ class ApplicationController extends Controller
      */
     public function exportApplications()
     {
-        $this->authorize('viewAllApplications', User::class);
+        $this->authorize('viewAll', ApplicationForm::class);
 
         $applications = ApplicationForm::with('user')
                 ->where('status', ApplicationForm::STATUS_SUBMITTED)

@@ -26,7 +26,10 @@ class NotifyAboutEvaluation
             && !$request->routeIs('secretariat.evaluation.*')
             && $user->isCollegist(alumni: false)
             && $user->getStatus(Semester::next()) == null
-            && SemesterEvaluationController::isEvaluationAvailable()
+            // this is non-static, but actually, the controller contains nothing;
+            // so it will be to construct an instance,
+            // and app(...) does this
+            && app(SemesterEvaluationController::class)->isActive()
         ) {
             $request->session()->flash('message', 'Töltsd ki a szemeszter végi kérdőívet a profilod alatt!');
         }
