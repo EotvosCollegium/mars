@@ -70,15 +70,15 @@ abstract class PeriodicEventController extends Controller
             ->first();
     }
 
-     /**
-     * Create or update the current PeriodicEvent connected to the model.
-     * Make sure the $data is properly validated:
-     * @param Semester $semester
-     * @param Carbon $start_date
-     * @param Carbon $end_date
-     * @param Carbon|null $extended_end_date
-     * @return PeriodicEvent
-     */
+    /**
+    * Create or update the current PeriodicEvent connected to the model.
+    * Make sure the $data is properly validated:
+    * @param Semester $semester
+    * @param Carbon $start_date
+    * @param Carbon $end_date
+    * @param Carbon|null $extended_end_date
+    * @return PeriodicEvent
+    */
     final public function updatePeriodicEvent(Semester $semester, Carbon $start_date, Carbon $end_date, Carbon $extended_end_date = null): PeriodicEvent
     {
         if($end_date < now()) {
