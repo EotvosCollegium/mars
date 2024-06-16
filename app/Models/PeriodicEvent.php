@@ -2,15 +2,22 @@
 
 namespace App\Models;
 
+use App\Events\SemesterEvaluationPeriodEnd;
+use App\Events\SemesterEvaluationPeriodReminder;
+use App\Events\SemesterEvaluationPeriodStart;
 use App\Http\Controllers\Auth\ApplicationController;
 use App\Http\Controllers\Secretariat\SemesterEvaluationController;
 use App\Http\Controllers\StudentsCouncil\MrAndMissController;
 use App\Jobs\PeriodicEventsProcessor;
+use App\Mail\EvaluationFormAvailable;
+use App\Mail\EvaluationFormAvailableDetails;
 use App\Utils\PeriodicEventController;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 /**
  * A PeriodicEvent is connected to a feature that is active for a certain period of time.
@@ -53,16 +60,6 @@ class PeriodicEvent extends Model
     public const APPLICATION_PERIOD = "APPLICATION_PERIOD";
     public const KKT_NETREG_PAYMENT_PERIOD = "KKT_NETREG_PAYMENT_PERIOD";
     public const MR_AND_MISS_VOTING_PERIOD = "MR_AND_MISS_VOTING_PERIOD";
-
-    /**
-     * The classes that handle start/end/etc. of the events.
-     */
-    public const periodicEventHandlers = [
-        self::SEMESTER_EVALUATION_PERIOD => SemesterEvaluationController::class,
-        self::APPLICATION_PERIOD => ApplicationController::class,
-        //self::KKT_NETREG_PAYMENT_PERIOD =>
-        self::MR_AND_MISS_VOTING_PERIOD => MrAndMissController::class
-    ];
 
     protected $fillable = [
         'event_model',
@@ -130,22 +127,19 @@ class PeriodicEvent extends Model
         return $this->extended_end_date != null;
     }
 
-    /**
-     * Get the class that handles the events.
-     * @return mixed
-     */
-    public function getHandlerClass(): mixed
-    {
-        return app(self::periodicEventHandlers[$this->event_model]);
-    }
 
     /**
      * Handle the start of the PeriodicEvent.
      */
     public function handleStart(): void
     {
-        //Get the corresponding controller and call its start method
-        app($this->event_model)->handlePeriodicEventStart();
+        switch ($this->event_model) {
+            case self::SEMESTER_EVALUATION_PERIOD:
+                event(new SemesterEvaluationPeriodStart($this));
+                break;
+            default:
+                Log::debug("No event handler defined for ". $this->event_model . "'s start time");
+        }
 
         $this->start_handled = now();
         $this->save(['timestamps' => false]); // save without updating timestamps
@@ -156,7 +150,13 @@ class PeriodicEvent extends Model
      */
     public function handleEnd(): void
     {
-        $this->getHandlerClass()->handlePeriodicEventEnd();
+        switch ($this->event_model) {
+            case self::SEMESTER_EVALUATION_PERIOD:
+                event(new SemesterEvaluationPeriodEnd($this));
+                break;
+            default:
+                Log::debug("No event handler defined for ". $this->event_model . "'s end time");
+        }
 
         $this->end_handled = now();
         $this->save(['timestamps' => false]); // save without updating timestamps
@@ -167,9 +167,13 @@ class PeriodicEvent extends Model
      */
     public function handleReminder(): void
     {
-        $days_left = (int)$this->endDate()->diffInDays(now()) * (-1);
-
-        $this->getHandlerClass()->handlePeriodicEventReminder($days_left);
+        switch ($this->event_model) {
+            case self::SEMESTER_EVALUATION_PERIOD:
+                event(new SemesterEvaluationPeriodReminder($this));
+                break;
+            default:
+                Log::debug("No event handler defined for ". $this->event_model . "'s reminder");
+        }
     }
 
 

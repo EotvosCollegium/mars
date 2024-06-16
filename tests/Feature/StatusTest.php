@@ -15,6 +15,7 @@ use Tests\TestCase;
 class StatusTest extends TestCase
 {
     use RefreshDatabase;
+    protected PeriodicEvent $periodicEvent;
 
     /**
      * Set up the tests
@@ -23,8 +24,8 @@ class StatusTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        PeriodicEvent::create([
-            'event_model' => SemesterEvaluationController::class,
+        $this->periodicEvent = PeriodicEvent::create([
+            'event_model' => PeriodicEvent::SEMESTER_EVALUATION_PERIOD,
             'start_date' => now(),
             'end_date' => now()->addDays(1),
             'semester_id' => Semester::current()->id,
@@ -42,8 +43,9 @@ class StatusTest extends TestCase
 
         $user = User::factory()->create(['verified' => true]);
         $user->setCollegist(Role::RESIDENT);
+        //no status set for next semester
 
-        app(SemesterEvaluationController::class)->handlePeriodicEventEnd();
+        $this->periodicEvent->handleEnd();
 
         $this->assertFalse($user->hasRole(Role::COLLEGIST));
         $this->assertTrue($user->hasRole(Role::ALUMNI));
@@ -62,7 +64,7 @@ class StatusTest extends TestCase
         $user->setCollegist(Role::RESIDENT);
         $user->setStatusFor(Semester::next(), SemesterStatus::ACTIVE);
 
-        app(SemesterEvaluationController::class)->handlePeriodicEventEnd();
+        $this->periodicEvent->handleEnd();
 
         $this->assertTrue($user->isActive(Semester::next()));
         $this->assertFalse($user->hasRole(Role::ALUMNI));

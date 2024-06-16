@@ -12,7 +12,6 @@ class EvaluationFormReminder extends Mailable
     use Queueable;
     use SerializesModels;
 
-    public int $count;
     public string $deadline;
 
     /**
@@ -20,9 +19,8 @@ class EvaluationFormReminder extends Mailable
      *
      * @return void
      */
-    public function __construct(int $count, ?Carbon $deadline)
+    public function __construct(Carbon $deadline)
     {
-        $this->count = $count;
         $this->deadline = $deadline?->format('Y-m-d');
 
     }

@@ -9,7 +9,6 @@ use App\Models\Semester;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 /**
  * Special controllers that are connected to periodic events.
@@ -108,42 +107,6 @@ abstract class PeriodicEventController extends Controller
             $event->refresh();
             return $event;
         });
-
-    }
-
-    /**
-     * Handle periodic event start event.
-     * @see PeriodicEventsProcessor
-     * @see PeriodicEvent
-     */
-    public function handlePeriodicEventStart(): void
-    {
-        // Do nothing by default
-        Log::debug("handlePeriodicEventStart of " . self::class . " got called with empty body.");
-    }
-
-    /**
-     * Handle periodic event end event.
-     * @see PeriodicEventsProcessor
-     * @see PeriodicEvent
-     */
-    public function handlePeriodicEventEnd(): void
-    {
-        // Do nothing by default
-        Log::debug("handlePeriodicEventEnd of " . self::class . " got called with empty body.");
-
-    }
-
-    /**
-     * Handle periodic event reminder. Runs daily until the end date.
-     * @param int $daysBeforeEnd the number of days left until the end date. The last day is 0.
-     * @see PeriodicEventsProcessor
-     * @see PeriodicEvent
-     */
-    public function handlePeriodicEventReminder(int $daysBeforeEnd): void
-    {
-        // Do nothing by default
-        Log::debug("handlePeriodicEventReminder of " . self::class . " got called with empty body.");
 
     }
 

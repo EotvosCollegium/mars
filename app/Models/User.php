@@ -381,6 +381,7 @@ class User extends Authenticatable implements HasLocalePreference
 
     /**
      * Returns the semesters where the user has any status. The relation uses a SemesterStatus pivot class.
+     * TODO move relation to EducationalInformation
      * @return BelongsToMany
      */
     public function semesterStatuses(): BelongsToMany
@@ -525,7 +526,7 @@ class User extends Authenticatable implements HasLocalePreference
      * Scope a query to only include active users in the given semester.
      *
      * @param Builder $query
-     * @param int $semester_id
+     * @param int|null $semester_id
      * @return Builder
      */
     public function scopeActive(Builder $query, ?int $semester_id = null): Builder
@@ -533,6 +534,19 @@ class User extends Authenticatable implements HasLocalePreference
         return $query->whereHas('semesterStatuses', function ($q) use ($semester_id) {
             $q->where('status', SemesterStatus::ACTIVE)
                 ->where('id', $semester_id ?? Semester::current()->id);
+        });
+    }
+
+    /**
+     * Scope a query to only include collegists who do not have any status set for the given semester.
+     *
+     * @param Builder $query
+     * @param Semester $semester
+     * @return Builder
+     */
+    public function scopeDoesntHaveStatusFor(Builder $query, Semester $semester) {
+        return $query->withRole(Role::COLLEGIST)->whereDoesntHave('semesterStatuses', function ($query) use ($semester) {
+            $query->where('semester_id', $semester->id);
         });
     }
 
