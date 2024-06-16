@@ -7,6 +7,17 @@ jobs:
     container:
       image: kirschbaumdevelopment/laravel-test-runner:8.2
 
+    services:
+      mysql:
+        image: mysql:8.3
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: test
+        ports:
+          - 33306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -14,6 +25,10 @@ jobs:
       - name: Install composer dependencies
         run: |
           composer install --no-scripts
+      
+      - name: Set up database
+        run: |
+          php artisan migrate:fresh
 
       - name: Generate ide-helper comments
         run: php artisan ide-helper:refresh
@@ -22,7 +37,7 @@ jobs:
         run: |
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
-          git config --global --add safe.directory /__w/${{ github.repository }} # Add your repo's directory as safe
+          git config --global --add safe.directory /__w/mars # Add the original repo name as safe
 
       - name: Commit changes
         run: |
