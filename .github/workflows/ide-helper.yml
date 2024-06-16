@@ -22,6 +22,7 @@ jobs:
         run: |
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
+          git config --global --add safe.directory /__w/${{ github.repository }} # Add your repo's directory as safe
 
       - name: Commit changes
         run: |
