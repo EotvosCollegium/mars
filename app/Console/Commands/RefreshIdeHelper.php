@@ -40,7 +40,7 @@ class RefreshIdeHelper extends Command
     {
         Artisan::call('ide-helper:generate');
         Artisan::call('ide-helper:meta');
-        Artisan::call('ide-helper:models --nowrite');
+        Artisan::call('ide-helper:models -W -R');
         Artisan::call('ide-helper:eloquent');
     }
 }
