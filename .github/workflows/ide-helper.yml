@@ -34,6 +34,13 @@ jobs:
       - name: Set up database
         run: |
           php artisan migrate:fresh
+      
+      - name: Fetch latest changes from the remote branch
+        run: git fetch https://x-access-token:${GH_PAT}@github.com/${{ github.repository }}.git HEAD:refs/heads/${{ github.head_ref }}
+  
+      - name: Merge changes from the remote branch
+        run: git merge HEAD:refs/heads/${{ github.head_ref }} --ff-only
+  
   
       - name: Generate ide-helper comments
         run: php artisan ide-helper:refresh
@@ -48,6 +55,7 @@ jobs:
         run: |
           git add .
           git commit -m "Refresh ide-helper automatically" || echo "No changes to commit"
+      
       - name: Extract branch name
         id: extract_branch
         run: echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
