@@ -1,0 +1,16 @@
+on: [ pull_request ]
+name: CI
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install composer dependencies
+        run: |
+          composer install --no-scripts
+
+      - name: Generate ide-helper comments
+        run: php artisan ide-helper:refresh
