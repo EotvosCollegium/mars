@@ -25,7 +25,7 @@ class StatusTest extends TestCase
     {
         parent::setUp();
         $this->periodicEvent = PeriodicEvent::create([
-            'event_model' => PeriodicEvent::SEMESTER_EVALUATION_PERIOD,
+            'event_name' => PeriodicEvent::SEMESTER_EVALUATION_PERIOD,
             'start_date' => now(),
             'end_date' => now()->addDays(1),
             'semester_id' => Semester::current()->id,

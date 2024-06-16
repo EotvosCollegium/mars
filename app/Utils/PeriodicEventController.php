@@ -47,7 +47,7 @@ abstract class PeriodicEventController extends Controller
      */
     final public function periodicEvent(): ?PeriodicEvent
     {
-        return PeriodicEvent::where('event_model', $this->periodicEventName)
+        return PeriodicEvent::where('event_name', $this->periodicEventName)
             //ensure we only get one event
             ->orderBy('start_date', 'desc')
             ->first();
@@ -65,7 +65,7 @@ abstract class PeriodicEventController extends Controller
         if (is_null($semester)) {
             $semester = Semester::current();
         }
-        return PeriodicEvent::where('event_model', $this->periodicEventName)
+        return PeriodicEvent::where('event_name', $this->periodicEventName)
             ->where('semester_id', $semester->id)
             ->first();
     }
@@ -92,7 +92,7 @@ abstract class PeriodicEventController extends Controller
         }
 
         return DB::transaction(function () use ($semester, $start_date, $end_date, $extended_end_date) {
-            $event = $this->periodicEvent() ?? new PeriodicEvent(['event_model' => $this->periodicEventName]);
+            $event = $this->periodicEvent() ?? new PeriodicEvent(['event_name' => $this->periodicEventName]);
             $event->semester_id = $semester->id;
             $event->start_date = $start_date;
             $event->end_date = $end_date;

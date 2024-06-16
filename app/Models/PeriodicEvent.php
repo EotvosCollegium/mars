@@ -21,14 +21,14 @@ use Illuminate\Support\Facades\Mail;
 
 /**
  * A PeriodicEvent is connected to a feature that is active for a certain period of time.
- * It is connected to the `$periodicEventName` defined in PeriodicEventController, stored as the `event_model` attribute.
+ * It is connected to the `$periodicEventName` defined in PeriodicEventController, stored as the `event_name` attribute.
  * @warning PeriodicEvents should only be modified by a PeriodicEventController.
  * @warning Do not attach other models to PeriodicEvents, use the connected Semester ids instead.
  * @see PeriodicEventController
  * @see PeriodicEventsProcessor
  *
  * @property int $id
- * @property string $event_model
+ * @property string $event_name
  * @property int|null $semester_id
  * @property \Illuminate\Support\Carbon $start_date
  * @property string|null $start_handled
@@ -62,7 +62,7 @@ class PeriodicEvent extends Model
     public const MR_AND_MISS_VOTING_PERIOD = "MR_AND_MISS_VOTING_PERIOD";
 
     protected $fillable = [
-        'event_model',
+        'event_name',
         'start_date',
         'start_handled',
         'end_date',
@@ -133,12 +133,12 @@ class PeriodicEvent extends Model
      */
     public function handleStart(): void
     {
-        switch ($this->event_model) {
+        switch ($this->event_name) {
             case self::SEMESTER_EVALUATION_PERIOD:
                 event(new SemesterEvaluationPeriodStart($this));
                 break;
             default:
-                Log::debug("No event handler defined for ". $this->event_model . "'s start time");
+                Log::debug("No event handler defined for ". $this->event_name . "'s start time");
         }
 
         $this->start_handled = now();
@@ -150,12 +150,12 @@ class PeriodicEvent extends Model
      */
     public function handleEnd(): void
     {
-        switch ($this->event_model) {
+        switch ($this->event_name) {
             case self::SEMESTER_EVALUATION_PERIOD:
                 event(new SemesterEvaluationPeriodEnd($this));
                 break;
             default:
-                Log::debug("No event handler defined for ". $this->event_model . "'s end time");
+                Log::debug("No event handler defined for ". $this->event_name . "'s end time");
         }
 
         $this->end_handled = now();
@@ -167,12 +167,12 @@ class PeriodicEvent extends Model
      */
     public function handleReminder(): void
     {
-        switch ($this->event_model) {
+        switch ($this->event_name) {
             case self::SEMESTER_EVALUATION_PERIOD:
                 event(new SemesterEvaluationPeriodReminder($this));
                 break;
             default:
-                Log::debug("No event handler defined for ". $this->event_model . "'s reminder");
+                Log::debug("No event handler defined for ". $this->event_name . "'s reminder");
         }
     }
 
