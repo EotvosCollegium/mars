@@ -381,7 +381,6 @@ class User extends Authenticatable implements HasLocalePreference
 
     /**
      * Returns the semesters where the user has any status. The relation uses a SemesterStatus pivot class.
-     * TODO move relation to EducationalInformation
      * @return BelongsToMany
      */
     public function semesterStatuses(): BelongsToMany

@@ -70,7 +70,7 @@ abstract class PeriodicEventController extends Controller
             ->first();
     }
 
-    /**
+     /**
      * Create or update the current PeriodicEvent connected to the model.
      * Make sure the $data is properly validated:
      * @param Semester $semester

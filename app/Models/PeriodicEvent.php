@@ -5,19 +5,13 @@ namespace App\Models;
 use App\Events\SemesterEvaluationPeriodEnd;
 use App\Events\SemesterEvaluationPeriodReminder;
 use App\Events\SemesterEvaluationPeriodStart;
-use App\Http\Controllers\Auth\ApplicationController;
-use App\Http\Controllers\Secretariat\SemesterEvaluationController;
-use App\Http\Controllers\StudentsCouncil\MrAndMissController;
 use App\Jobs\PeriodicEventsProcessor;
-use App\Mail\EvaluationFormAvailable;
-use App\Mail\EvaluationFormAvailableDetails;
 use App\Utils\PeriodicEventController;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 
 /**
  * A PeriodicEvent is connected to a feature that is active for a certain period of time.
