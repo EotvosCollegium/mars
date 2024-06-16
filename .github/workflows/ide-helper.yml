@@ -35,6 +35,12 @@ jobs:
         run: |
           php artisan migrate:fresh
       
+      - name: Configure Git
+        run: |
+          git config --global user.name 'github-actions'
+          git config --global user.email 'github-actions@github.com'
+          git config --global --add safe.directory /__w/mars/mars # Add the original repo name as safe
+
       - name: Fetch latest changes from the remote branch
         run: git fetch https://x-access-token:${GH_PAT}@github.com/${{ github.repository }}.git HEAD:refs/heads/${{ github.head_ref }}
   
@@ -44,12 +50,6 @@ jobs:
   
       - name: Generate ide-helper comments
         run: php artisan ide-helper:refresh
-
-      - name: Configure Git
-        run: |
-          git config --global user.name 'github-actions'
-          git config --global user.email 'github-actions@github.com'
-          git config --global --add safe.directory /__w/mars/mars # Add the original repo name as safe
 
       - name: Commit changes
         run: |
