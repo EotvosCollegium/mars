@@ -56,4 +56,4 @@ jobs:
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
         run: |
-          git push https://x-access-token:${GH_PAT}@github.com/${{ github.repository }}.git HEAD:refs/heads/${{ env.BRANCH_NAME }}
+          git push https://x-access-token:${GH_PAT}@github.com/${{ github.repository }}.git HEAD:refs/heads/${{ github.head_ref }}
