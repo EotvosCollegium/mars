@@ -39,6 +39,7 @@ jobs:
         run: |
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
+          git config pull.rebase true
           git config --global --add safe.directory /__w/mars/mars # Add the original repo name as safe
 
       - name: Fetch latest changes from the remote branch
