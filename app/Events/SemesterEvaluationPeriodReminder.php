@@ -9,7 +9,9 @@ use Illuminate\Queue\SerializesModels;
 
 class SemesterEvaluationPeriodReminder
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable;
+    use InteractsWithSockets;
+    use SerializesModels;
 
     public PeriodicEvent $periodicEvent;
 

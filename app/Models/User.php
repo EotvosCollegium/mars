@@ -544,7 +544,8 @@ class User extends Authenticatable implements HasLocalePreference
      * @param Semester $semester
      * @return Builder
      */
-    public function scopeDoesntHaveStatusFor(Builder $query, Semester $semester) {
+    public function scopeDoesntHaveStatusFor(Builder $query, Semester $semester)
+    {
         return $query->withRole(Role::COLLEGIST)->whereDoesntHave('semesterStatuses', function ($query) use ($semester) {
             $query->where('semester_id', $semester->id);
         });

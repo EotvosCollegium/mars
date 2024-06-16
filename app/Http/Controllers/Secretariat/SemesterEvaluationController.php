@@ -88,7 +88,7 @@ class SemesterEvaluationController extends PeriodicEventController
      * Update form information.
      * @throws \Exception
      */
-    public function store(Request $request) : RedirectResponse
+    public function store(Request $request): RedirectResponse
     {
         $this->authorize('fill', SemesterEvaluation::class);
 
