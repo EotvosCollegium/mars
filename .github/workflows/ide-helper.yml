@@ -1,9 +1,9 @@
 on: [ pull_request ]
 name: CI
 jobs:
-  run-script:
+  refresh-ide-helper:
     runs-on: ubuntu-latest
-    
+
     container:
       image: kirschbaumdevelopment/laravel-test-runner:8.2
 
@@ -17,3 +17,20 @@ jobs:
 
       - name: Generate ide-helper comments
         run: php artisan ide-helper:refresh
+
+      - name: Configure Git
+        run: |
+          git config --global user.name 'github-actions'
+          git config --global user.email 'github-actions@github.com'
+
+      - name: Commit changes
+        run: |
+          git add .
+          git commit -m "Refresh ide-helper automatically" || echo "No changes to commit"
+
+      - name: Push changes
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+        run: |
+          git push https://x-access-token:${GH_PAT}@github.com/${{ github.repository }}.git HEAD:main
+
