@@ -232,7 +232,7 @@ class Semester extends Model
      */
     public function transactions(): HasMany
     {
-        return $this->hasMany(App\Models\Transaction::class, 'semester_id');
+        return $this->hasMany(\App\Models\Transaction::class, 'semester_id');
     }
 
     /**
@@ -258,7 +258,7 @@ class Semester extends Model
      */
     public function workshopBalances(): HasMany
     {
-        return $this->hasMany(App\Models\WorkshopBalance::class);
+        return $this->hasMany(\App\Models\WorkshopBalance::class);
     }
 
     /**
