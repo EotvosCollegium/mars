@@ -34,19 +34,20 @@
 
 \newcommand\Footer{
 
-	{\footnotesize 
+	{\footnotesize
 	\begin{minipage}[t]{0.4\textwidth}
 		\begin{flushright}
 		\textsc{
-            {\color{darkblue} 
+            {\color{darkblue}
 			ELTE EÖTVÖS JÓZSEF\\
-			COLLEGIUM}\\
-		    {\scriptsize 
-		    Dr. Horváth László\\
-			igazgató\\
-%			Rémai Martin\\
-%			választmányi elnök\\
+			COLLEGIUM
+            }\\
             }
+        \textsc{
+		    {\scriptsize
+                {{ \App\Models\User::director()?->name }}\\
+                igazgató\\
+                }
             }
 		\end{flushright}
 	\end{minipage}
@@ -54,10 +55,10 @@
 	\begin{minipage}[t]{0.45\textwidth}
 		\begin{flushleft}
 			{\scriptsize H-1118 Budapest, Ménesi út 11-13\\
-			Tel.: +36 1 460 4481 • Fax.: +36 1 209 2044\\
-			E-mail:	titkarsag@eotvos.elte.hu • horvathl@eotvos.elte.hu
+			Tel.: +36 1 460 4481 • Fax.: +36 1 209 2044 \\
+			E-mail:	{{config("mail.secretary_mail")}} • {{\App\Models\User::director()?->email }}
 		%	valasztmany@eotvos.elte.hu • elnok@eotvos.elte.hu\\
-			Honlap: http://www.eotvos.elte.hu/ }
+			Honlap: https://eotvos.elte.hu/ }
 		\end{flushleft}
 	\end{minipage}
 	}
@@ -67,7 +68,7 @@
 \pagestyle{empty}
 \AtBeginShipoutFirst{\Header}
 
-\newcommand{\signiture}[3]{
+\newcommand{\signature}[3]{
 \begin{center}
 	#1\\
 	#2\\
@@ -78,13 +79,13 @@
 \begin{document}
 \maketitle
 
-Alulírott Horváth László, az ELTE Eötvös József Collegium igazgatója, hivatalosan igazolom, hogy {{ $name }} (Neptun-kód: {{ $neptun }}) az ELTE Eötvös József Collegium tagja {{ $from }}. szeptemberétől.
+Alulírott {{ \App\Models\User::director()?->name }}, az ELTE Eötvös József Collegium igazgatója, hivatalosan igazolom, hogy {{ $name }} (Neptun-kód: {{ $neptun }}) az ELTE Eötvös József Collegium tagja {{ $from }}. szeptemberétől.
 
 A tagság érvényességének befejezése: {{ $until }}
 
 Személyes adatai:
 \begin{itemize}
-	\itemsep0em 
+	\itemsep0em
 	\item születési helye és ideje: {{ $place_and_date_of_birth }}
 	\item anyja neve: {{ $mothers_name }}
 	\item állandó lakcíme: {{ $address }}
@@ -95,17 +96,9 @@ Személyes adatai:
 Kelt: Budapest, \today
 \vspace{5em}
 
-% \begin{flushright}
-% 	\begin{minipage}[t]{0.4\textwidth}
-% 		\signiture{Kocsis Ábel}{elnök}{Eötvös József Collegium Választmány}
-% 	\end{minipage}
-% \end{flushright}
-
-% \vspace{5em}
-
 \begin{flushright}
 \begin{minipage}[t]{0.4\textwidth}
-	\signiture{Dr. Horváth László}{igazgató}{Eötvös József Collegium}
+	\signature{ {{ \App\Models\User::director()?->name }} }{igazgató}{Eötvös József Collegium}
 \end{minipage}
 \end{flushright}
 

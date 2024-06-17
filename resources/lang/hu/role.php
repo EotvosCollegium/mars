@@ -31,6 +31,7 @@ return [
     'hu' => 'Magyar',
     'internet-user' => 'Internethasználó',
     'it' => 'Olasz',
+    'kkt-handler' => 'KKT befizetőhely',
     'la' => 'Latin',
     'locale-admin' => 'Nyelvi adminisztrátor',
     'other' => 'Egyéb',
@@ -56,4 +57,5 @@ return [
     'tenant' => 'Vendég',
     'workshop-administrator' => 'Műhelytitkár',
     'workshop-leader' => 'Műhelyvezető',
+    'workshop-functionaries' => 'A műhelyek tisztségviselői',
 ];

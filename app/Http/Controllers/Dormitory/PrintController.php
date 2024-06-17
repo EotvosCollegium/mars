@@ -311,7 +311,7 @@ class PrintController extends Controller
             md5(rand(0, 100000) . date('c')) . '.pdf',
             'printing'
         );
-        $path=Storage::disk('printing')->path($path);
+        $path = Storage::disk('printing')->path($path);
 
         return $path;
     }

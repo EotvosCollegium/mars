@@ -4,6 +4,7 @@ namespace App\Exports\UsersSheets;
 
 use App\Models\Semester;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithEvents;
@@ -17,9 +18,9 @@ class StatusesExport implements FromCollection, WithTitle, WithMapping, WithHead
     protected $users;
     protected $semesters;
 
-    public function __construct()
+    public function __construct(Collection|User $includedUsers)
     {
-        $this->users = User::canView()->orderBy('name')->get();
+        $this->users = $includedUsers;
         $this->semesters = Semester::allUntilCurrent()->sortByDesc('tag');
     }
 
@@ -60,7 +61,7 @@ class StatusesExport implements FromCollection, WithTitle, WithMapping, WithHead
         })->toArray();
 
         $data = [
-            '=HYPERLINK("'.route('users.show', ['user'=> $user->id]).'", "'.$user->name.'")',
+            '=HYPERLINK("'.route('users.show', ['user' => $user->id]).'", "'.$user->name.'")',
             $user->educationalInformation?->neptun,
             $user->educationalInformation?->year_of_acceptance,
         ];

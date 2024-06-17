@@ -13,7 +13,10 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -176,7 +179,8 @@ trait CheckoutHandler
      * Create a basic expense transaction in the checkout.
      * The receiver and the payer also will be the authenticated user
      * (since this does not mean a payment between users, just a transaction from the checkout).
-     * The only exception for the payer is when the checkout handler administrates a transaction payed by someone else.
+     * The only exception for the payer is when the checkout handler administrates a transaction paid by someone else.
+     * We require a receipt here.
      *
      * @param Request $request
      * @return RedirectResponse
@@ -190,23 +194,34 @@ trait CheckoutHandler
         $validator = Validator::make($request->all(), [
             'comment' => 'required|string',
             'amount' => 'required|integer|min:0',
-            'payer' => 'exists:users,id'
+            'payer' => 'exists:users,id',
+            'receipt' => 'required|mimes:pdf,jpg,jpeg,png,gif,svg',
         ]);
         $validator->validate();
 
         $user = $request->has('payer') ? User::find($request->input('payer')) : user();
         $paid = $request->has('paid');
 
-        $transaction = Transaction::create([
-            'checkout_id'       => $this->checkout()->id,
-            'receiver_id'       => $user->id,
-            'payer_id'          => $user->id,
-            'semester_id'       => Semester::current()->id,
-            'amount'            => (-1) * $request->amount,
-            'payment_type_id'   => PaymentType::expense()->id,
-            'comment'           => $request->comment,
-            'paid_at'           => $paid ? Carbon::now() : null,
-        ]);
+        // an output variable
+        $transaction = null;
+
+        // wrapping into one transaction so that if one of them fails,
+        // the whole is reverted
+        DB::transaction(function () use ($user, $request, $paid, &$transaction) {
+            $transaction = Transaction::create([
+                'checkout_id'       => $this->checkout()->id,
+                'receiver_id'       => $user->id,
+                'payer_id'          => $user->id,
+                'semester_id'       => Semester::current()->id,
+                'amount'            => (-1) * $request->amount,
+                'payment_type_id'   => PaymentType::expense()->id,
+                'comment'           => $request->comment,
+                'paid_at'           => $paid ? Carbon::now() : null,
+            ]);
+
+            $path = $request->file('receipt')->store('receipts');
+            $transaction->receipt()->create(['path' => $path, 'name' => 'receipt']);
+        });
 
         Mail::to($user)->queue(
             new Transactions(
@@ -241,14 +256,21 @@ trait CheckoutHandler
     {
         $this->authorize('delete', $transaction);
 
+        DB::transaction(function () use ($transaction) {
+            if ($transaction->receipt != null) {
+                Storage::delete($transaction->receipt->path);
+                $transaction->receipt()->delete();
+            }
+
+            $transaction->delete();
+        });
+
         if ($transaction->payer) {
             Mail::to($transaction->payer)->queue(new Transactions($transaction->payer->name, [$transaction], "Tranzakció törölve", "A tranzakciók törlésre kerültek."));
         }
         if ($transaction->receiver && $transaction->receiver->id != $transaction->payer?->id) {
             Mail::to($transaction->receiver)->queue(new Transactions($transaction->receiver->name, [$transaction], "Tranzakció törölve", "A tranzakciók törlésre kerültek."));
         }
-
-        $transaction->delete();
 
         return redirect()->back()->with('message', __('general.successfully_deleted'));
     }

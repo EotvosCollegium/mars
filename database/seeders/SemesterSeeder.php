@@ -18,7 +18,7 @@ class SemesterSeeder extends Seeder
     public function run()
     {
         $semester = Semester::firstOrCreate([
-            'year' => Carbon::now()->year -2,
+            'year' => Carbon::now()->year - 2,
             'part' => 1,
         ]);
 

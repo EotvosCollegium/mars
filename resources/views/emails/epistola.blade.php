@@ -1,29 +1,15 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="hu">
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="preconnect" href="https://fonts.gstatic.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;1,300;1,400;1,600&display=swap" rel="stylesheet">
-</head>
-<body>
+<link type="text/css" rel="stylesheet" href="{{ mix('css/app.css') }}">
 <style>
-@media only screen and (max-width: 600px) {
-.inner-body {
-width: 100% !important;
+.article {
+    hyphens: auto;
 }
-
-.footer {
-width: 100% !important;
-}
-}
-
-@media only screen and (max-width: 500px) {
-.button {
-width: 100% !important;
-}
-}
+</style>
+<style>
 @-ms-viewport{
     width: extend-to-zoom;
     zoom: 1.0;
@@ -33,6 +19,28 @@ width: 100% !important;
     width: extend-to-zoom;
 }
 </style>
+<style>
+@media only screen and (max-width: 600px) {
+    .inner-body {
+        width: 100% !important;
+    }
+    .footer {
+        width: 100% !important;
+    }
+}
+@media only screen and (max-width: 500px) {
+    .button {
+        width: 100% !important;
+    }
+}
+@media only screen and (max-width:1000px) {
+    p {
+        text-align: left !important;
+    }
+}
+</style>
+</head>
+<body>
 <div style="max-width: 800px;">
 <!--[if (gte mso 9)|(IE)]>
     <table cellspacing="0" cellpadding="0" border="0" width="800"><tr><td>
@@ -100,7 +108,7 @@ width: 100% !important;
             </table>
             <table class="inner-body" align="center" width="570" cellpadding="0" cellspacing="0" role="presentation">
                 <tr>
-                    <td class="content-cell">
+                    <td class="content-cell article">
                         @foreach ($news as $article)
                             <h2>{{ $loop->iteration }}.<span>{{$article->title }}</span></h2>
                             <h3>{{$article->date_time}}</h3>
@@ -134,8 +142,8 @@ width: 100% !important;
                         <a href="https://eotvos.elte.hu" target="_blank" rel="noopener">Eötvös József Collegium</a><br>
                         <img src="{{ asset('img/valasztmany_logo.png') }}" width="120" alt=""><br>
                         <p>
-                        <a href="mailto:{{env('MAIL_VALASZTMANY')}}">{{env('MAIL_VALASZTMANY')}}</a><br>
-                        <a href="mailto:{{env('MAIL_KOMMBIZ')}}">{{env('MAIL_KOMMBIZ')}}</a>
+                        <a href="mailto:{{config('contacts.mail_valasztmany')}}">{{config('contacts.mail_valasztmany')}}</a><br>
+                        <a href="mailto:{{config('contacts.mail_kommbiz')}}">{{config('contacts.mail_kommbiz')}}</a>
                         </p>
                         <div class="subcopy">
                             <p>

@@ -22,11 +22,11 @@ trait HasRoles
      * See also: hasRole(...) getter for User models.
      *
      * @param Builder $query
-     * @param Role|string $role
+     * @param Role|int|string $role
      * @param Workshop|RoleObject|string|null $object
      * @return Builder
      */
-    public function scopeWithRole(Builder $query, Role|string $role, Workshop|RoleObject|string $object = null): Builder
+    public function scopeWithRole(Builder $query, Role|int|string $role, Workshop|RoleObject|string $object = null): Builder
     {
         $role = Role::get($role);
         if ($object) {
@@ -50,6 +50,39 @@ trait HasRoles
     }
 
     /**
+     * Scope a query to only include users with all the given roles.
+     * Usage: ->withAllRoles(...)
+     *
+     * @param Builder $query
+     * @param Role[]|int[]|string[] $allRoles a homogeneous array of Role objects, role IDs or role names
+     * @return Builder
+     */
+    public function scopeWithAllRoles(Builder $query, array $allRoles): Builder
+    {
+        // Empty array => nothing to filter, nothing to do
+        if (empty($allRoles)) {
+            return $query;
+        }
+
+        // Input is an array of role names => filter based on names
+        if (is_string($allRoles[0])) {
+            return $query->whereHas('roles', function (Builder $query) use ($allRoles) {
+                $query->whereIn('name', $allRoles);
+            }, '=', count($allRoles));
+        }
+
+        // Input is an array of role objects => convert objects to IDs
+        if ($allRoles[0] instanceof Role) {
+            $allRoles = array_map(fn ($role) => $role->id, $allRoles);
+        }
+
+        // Input is an array of role IDs => filter based on IDs
+        return $query->whereHas('roles', function (Builder $query) use ($allRoles) {
+            $query->whereIn('id', $allRoles);
+        }, '=', count($allRoles));
+    }
+
+    /**
      * Decides if the user has any of the given roles.
      * See also: withRole(...) scope for query builders.
      *
@@ -62,10 +95,11 @@ trait HasRoles
      * hasRole([Role::COLLEGIST => 4, Role::get(Role::WORKSHOP_LEADER)])
      * hasRole([Role::STUDENT_COUNCIL => [Role::PRESIDENT, Role::SCIENCE_VICE_PRESIDENT]]])
      *
-     * @param $roles Role|name|id|[Role|name|id|[Role|name => RoleObject|Workshop|name|id]]
+     *
+     * @param $roles array|int|string|Role|[Role|name|id|[Role|name => RoleObject|Workshop|name|id]]
      * @return bool
      */
-    public function hasRole($roles): bool
+    public function hasRole(array|int|string|Role $roles): bool
     {
         if (!is_array($roles)) {
             $roles = [$roles];
@@ -155,14 +189,13 @@ trait HasRoles
             $this->roles()->detach($role->id);
         }
 
-        if($role->name == Role::COLLEGIST) {
+        if ($role->name == Role::COLLEGIST) {
             Cache::forget('collegists');
         }
-        if($role->name == Role::SYS_ADMIN) {
+        if ($role->name == Role::SYS_ADMIN) {
             Cache::forget('sys-admins');
         }
     }
-
 
 
 }

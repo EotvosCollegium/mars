@@ -20,20 +20,20 @@ class RoomController extends Controller
     public function index()
     {
         $this->authorize('viewAny', Room::class);
-        $users=User::where('room', '!=', 'null');
+        $users = User::where('room', '!=', 'null');
         $rooms = Room::with('users')->get();
 
-        $roomNumbersSecondFloor=$rooms->filter(function ($value, $key) {
-            return $value->name[0]=='2' && $value->name!='219';
+        $roomNumbersSecondFloor = $rooms->filter(function ($value, $key) {
+            return $value->name[0] == '2' && $value->name != '219';
         })->pluck('name');
-        $roomNumbersThirdFloor=$rooms->filter(function ($value, $key) {
-            return $value->name[0]=='3';
+        $roomNumbersThirdFloor = $rooms->filter(function ($value, $key) {
+            return $value->name[0] == '3';
         })->pluck('name');
 
-        $roomCoords=require base_path('room_coords.php');
+        $roomCoords = require base_path('room_coords.php');
 
-        $specialRoomsSecondFloor=$roomCoords['specialRoomsSecondFloor'];
-        $specialRoomsThirdFloor=$roomCoords['specialRoomsThirdFloor'];
+        $specialRoomsSecondFloor = $roomCoords['specialRoomsSecondFloor'];
+        $specialRoomsThirdFloor = $roomCoords['specialRoomsThirdFloor'];
 
 
         return view(
@@ -50,12 +50,16 @@ class RoomController extends Controller
         );
     }
 
+    /**
+     * Returns the view used to update the rooms;
+     * with the users' and rooms' lists preloaded.
+     */
     public function modify()
     {
         $this->authorize('updateAny', Room::class);
-        $users=User::active()->resident()->get();
-        $tenants=User::currentTenant()->get();
-        $users=$users->concat($tenants)->unique();
+        $users = User::collegist()->active()->get();       // externs too (to solve the resident-extern problem temporarily)
+        $tenants = User::currentTenant()->get();
+        $users = $users->concat($tenants)->unique();
         $rooms = Room::with('users')->get();
         return view('dormitory.rooms.modify', ['users' => $users, 'rooms' => $rooms]);
     }
@@ -72,14 +76,14 @@ class RoomController extends Controller
             'type' => 'required|string|in:add,remove'
         ]);
         $validator->validate();
-        $new_capacity=$room->capacity+($request->type=='add' ? 1 : -1);
-        if ($new_capacity<$room->residentNumber()) {
+        $new_capacity = $room->capacity + ($request->type == 'add' ? 1 : -1);
+        if ($new_capacity < $room->residentNumber()) {
             return back()->with('error', 'Nincs elég hely a szobában');
         }
-        if ($new_capacity>4 || $new_capacity<1) {
+        if ($new_capacity > 4 || $new_capacity < 1) {
             return back()->with('error', 'A lakószámnak 1 és 4 között kell lennie');
         }
-        if ($request->type=='add') {
+        if ($request->type == 'add') {
             $room->increment('capacity');
         } else {
             $room->decrement('capacity');
@@ -97,7 +101,7 @@ class RoomController extends Controller
 
         User::where('id', '>', 0)->update(['room' => null]);
         foreach (Room::all() as $room) {
-            $userIds=isset($request->rooms[$room->name]) ? $request->rooms[$room->name] : null;
+            $userIds = isset($request->rooms[$room->name]) ? $request->rooms[$room->name] : null;
             User::whereIn('id', $userIds ?? [])->update(['room' => $room->name]);
         }
         return back()->with('message', __('general.successful_modification'));

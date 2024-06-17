@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
+ * App\Models\SemesterEvaluation
+ *
  * @property int $id
  * @property int $user_id
  * @property User $user
@@ -33,7 +35,36 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $next_status
  * @property string $next_status_note
  * @property bool $will_write_request
- *
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|SemesterEvaluation newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|SemesterEvaluation newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|SemesterEvaluation query()
+ * @method static \Illuminate\Database\Eloquent\Builder|SemesterEvaluation whereAlfonsoNote($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SemesterEvaluation whereCanBeShared($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SemesterEvaluation whereConferences($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SemesterEvaluation whereCourses($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SemesterEvaluation whereCoursesNote($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SemesterEvaluation whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SemesterEvaluation whereCurrentAvg($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SemesterEvaluation whereEducationalActivity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SemesterEvaluation whereFeedback($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SemesterEvaluation whereGeneralAssemblyNote($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SemesterEvaluation whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SemesterEvaluation whereLastAvg($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SemesterEvaluation whereNextStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SemesterEvaluation whereNextStatusNote($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SemesterEvaluation whereProfessionalResults($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SemesterEvaluation wherePublicLifeActivities($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SemesterEvaluation wherePublications($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SemesterEvaluation whereResearch($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SemesterEvaluation whereResignResidency($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SemesterEvaluation whereScholarships($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SemesterEvaluation whereSemesterId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SemesterEvaluation whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SemesterEvaluation whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SemesterEvaluation whereWillWriteRequest($value)
+ * @mixin \Eloquent
  */
 class SemesterEvaluation extends Model
 {

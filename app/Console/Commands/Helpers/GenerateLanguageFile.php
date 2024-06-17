@@ -1,6 +1,6 @@
 <?php
 
-if (! function_exists('var_export54')) {
+if (!function_exists('var_export54')) {
     function var_export54($var, $indent = '')
     {
         switch (gettype($var)) {
@@ -26,7 +26,7 @@ if (! function_exists('var_export54')) {
         }
     }
 }
-if (! function_exists('generate_file')) {
+if (!function_exists('generate_file')) {
     function generate_file($path, $expressions)
     {
         return fwrite($path, "<?php\n\nreturn ".var_export54($expressions).";\n");

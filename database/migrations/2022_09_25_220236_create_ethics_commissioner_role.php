@@ -14,7 +14,7 @@ class CreateEthicsCommissionerRole extends Migration
     public function up()
     {
         DB::table('roles')->updateOrInsert(
-            ['name'=>'ethics-commissioner'],
+            ['name' => 'ethics-commissioner'],
             ['has_workshops' => 0, 'has_objects' => 0]
         );
     }

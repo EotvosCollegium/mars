@@ -3,9 +3,9 @@
         <div class="card-content">
             <span class="card-title">Szűrés</span>
             <input type="text" class="input-field" id="filter_name" placeholder="@lang('user.name')"
-                   wire:model="filter_name"/>
+                   wire:model.live="filter_name"/>
             <input type="number" class="input-field" id="year_of_acceptance" placeholder="@lang('user.year_of_acceptance')"
-                   wire:model="year_of_acceptance"/>
+                   wire:model.live="year_of_acceptance"/>
             <h6>@lang('role.roles')</h6>
             @foreach (\App\Models\Role::all() as $r)
                 @if(in_array($r->id, $this->roles))
@@ -65,7 +65,7 @@
             {{-- List --}}
             <div class="row">
                 <div class="col s12 xl7">
-                    <span class="card-title">Felhasználók</span>
+                    <span class="card-title">@lang("general.users")</span>
                 </div>
             </div>
 
@@ -122,5 +122,12 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    {{-- Export --}}
+    <div class="fixed-action-btn tooltipped" data-position="left" data-tooltip="Szűrt felhasználók adatainak exportálása">
+        <span wire:click="export()" class="btn-floating btn-large">
+            <i class="large material-icons">file_download</i>
+        </span>
     </div>
 </div>

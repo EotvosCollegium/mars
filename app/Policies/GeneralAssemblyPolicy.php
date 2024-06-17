@@ -15,7 +15,7 @@ class GeneralAssemblyPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->isCollegist(false) || $user->isAdmin();
+        return $user->isCollegist(alumni: false) || $user->isAdmin() || $user->hasRole(Role::SECRETARY);
     }
 
     /**

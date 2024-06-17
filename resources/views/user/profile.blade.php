@@ -2,6 +2,9 @@
     <blockquote class="error">{{ $error }}</blockquote>
 @endforeach
 @can('view', $user)
+    {{-- Profile picture --}}
+    @include('utils.user.profile-picture', ['user' => $user])
+
     {{-- Personal information --}}
     <ul class="collapsible">
         <li @if(session()->get('section') == "personal_information") class="active" @endif>
@@ -12,28 +15,28 @@
         </li>
     </ul>
     @if($user->hasEducationalInformation())
-    {{-- Educational information --}}
-    <ul class="collapsible">
-        <li @if(session()->get('section') == "educational_information") class="active" @endif>
-            <div class="collapsible-header"><b>@lang('user.educational_information')</b></div>
-            <div class="collapsible-body">
-                @include('user.educational-information', ['user' => $user])
-            </div>
-        </li>
-    </ul>
-    {{-- Alfonso --}}
-    <ul class="collapsible">
-        <li @if(session()->get('section') == "alfonso") class="active" @endif>
-            <div class="collapsible-header"><b>ALFONSÓ</b></div>
-            <div class="collapsible-body">
-                @include('user.alfonso', ['user' => $user])
-                <div class="divider"></div>
-                @include('user.alfonso-language-exams', ['user' => $user])
-                <div class="divider"></div>
-                @include('user.alfonso-requirements', ['user' => $user])
-            </div>
-        </li>
-    </ul>
+        {{-- Educational information --}}
+        <ul class="collapsible">
+            <li @if(session()->get('section') == "educational_information") class="active" @endif>
+                <div class="collapsible-header"><b>@lang('user.educational_information')</b></div>
+                <div class="collapsible-body">
+                    @include('user.educational-information', ['user' => $user])
+                </div>
+            </li>
+        </ul>
+        {{-- Alfonso --}}
+        <ul class="collapsible">
+            <li @if(session()->get('section') == "alfonso") class="active" @endif>
+                <div class="collapsible-header"><b>ALFONSÓ</b></div>
+                <div class="collapsible-body">
+                    @include('user.alfonso', ['user' => $user])
+                    <div class="divider"></div>
+                    @include('user.alfonso-language-exams', ['user' => $user])
+                    <div class="divider"></div>
+                    @include('user.alfonso-requirements', ['user' => $user])
+                </div>
+            </li>
+        </ul>
     @endif
     {{-- Roles --}}
     <ul class="collapsible">
@@ -57,14 +60,16 @@
     @endif
 @endcan
 {{-- Internet --}}
-<ul class="collapsible">
-    <li>
-        <div class="collapsible-header"><b>@lang('internet.internet')</b></div>
-        <div class="collapsible-body">
-            @include('user.internet', ['user' => $user])
-        </div>
-    </li>
-</ul>
+@can('handle', $user->internetAccess)
+    <ul class="collapsible">
+        <li>
+            <div class="collapsible-header"><b>@lang('internet.internet')</b></div>
+            <div class="collapsible-body">
+                @include('user.internet', ['user' => $user])
+            </div>
+        </li>
+    </ul>
+@endcan
 {{-- Printing --}}
 <ul class="collapsible">
     <li>
@@ -87,7 +92,8 @@
                                       autocomplete="password"/>
                         <x-input.text s=6 id='new_password' text="registration.new_password" type='password' required
                                       autocomplete="new-password"/>
-                        <x-input.text s=6 id='confirmpwd' text="registration.confirmpwd" name="new_password_confirmation"
+                        <x-input.text s=6 id='confirmpwd' text="registration.confirmpwd"
+                                      name="new_password_confirmation"
                                       type='password' required autocomplete="new-password"/>
                         <x-input.button class="right" text="general.change_password"/>
                     </div>
@@ -95,8 +101,8 @@
             </div>
         </li>
     </ul>
-    @if($user->isCollegist() && \App\Http\Controllers\Secretariat\SemesterEvaluationController::isEvaluationAvailable())
-    <a href="{{ route('secretariat.evaluation.show') }}" class="btn left coli blue">Szemeszter értékelés</a>
+    @can('fill', App\Models\SemesterEvaluation::class)
+        <a href="{{ route('secretariat.evaluation.show') }}" class="btn left coli blue">Szemeszter értékelés</a>
     @endif
 
     <form action="{{ route('logout') }}" method="POST">

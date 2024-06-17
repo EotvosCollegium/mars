@@ -27,10 +27,11 @@ return [
     'ethics-commissioner' => 'Ethics commissioner',
     'extern' => 'Extern',
     'fr' => 'French',
-    'gr' => 'Ancient greek',
+    'gr' => 'Ancient Greek',
     'hu' => 'Hungarian',
     'internet-user' => 'Internet user',
     'it' => 'Italian',
+    'kkt-handler' => 'Handler of Community and Culture Tax',
     'la' => 'Latin',
     'locale-admin' => 'Locale admin',
     'other' => 'Other',
@@ -56,4 +57,5 @@ return [
     'tenant' => 'Tenant',
     'workshop-administrator' => 'Workshop administrator',
     'workshop-leader' => 'Workshop leader',
+    'workshop-functionaries' => 'Workshop functionaries',
 ];

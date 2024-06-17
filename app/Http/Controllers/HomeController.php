@@ -8,6 +8,7 @@ use App\Models\Role;
 use App\Models\RoleObject;
 use App\Models\RoleUser;
 use App\Models\User;
+use App\Models\Workshop;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
@@ -41,11 +42,6 @@ class HomeController extends Controller
             'epistola' => $epistola ?? null,
             'contacts' => $this->getHomePageContacts()
         ]);
-    }
-
-    public function colorMode($mode)
-    {
-        return response('ok')->cookie('theme', $mode, config('app.colormode_cookie_lifespan'));
     }
 
     public function welcome()
@@ -119,55 +115,6 @@ class HomeController extends Controller
         return $response;
     }
 
-    /* Report bug */
-    public function indexReportBug()
-    {
-        return view('report_bug');
-    }
-
-    public function reportBug(Request $request)
-    {
-        $username = user()->name;
-
-        //personal auth token from your github.com account - see CONTRIBUTING.md
-        $token = env('GITHUB_AUTH_TOKEN');
-
-        $url = "https://api.github.com/repos/" . env('GITHUB_REPO') . "/issues";
-
-        //request details, removing slashes and sanitize content
-        $title = htmlspecialchars(stripslashes('Reported bug'), ENT_QUOTES);
-        $body = htmlspecialchars(stripslashes($request->description), ENT_QUOTES);
-        $body .= '\n\n> This bug is reported by ' . $username . ' and generated automatically.';
-
-        //build json post
-        $post = '{"title": "' . $title . '","body": "' . $body . '","labels": ["bug"] }';
-
-        //set file_get_contents header info
-        $opts = [
-            'http' => [
-                'method' => 'POST',
-                'header' => [
-                    'User-Agent: request',
-                    'Content-type: application/x-www-form-urlencoded',
-                    'Accept: application/vnd.github.v3+json',
-                    'Authorization: token ' . $token,
-                ],
-                'content' => $post
-            ]
-        ];
-
-        //initiate file_get_contents
-        $context = stream_context_create($opts);
-
-        //make request
-        $content = file_get_contents($url, false, $context);
-
-        //decode response to array
-        $response_array = json_decode($content, true);
-
-        return view('report_bug', ['url' => $response_array['html_url']]);
-    }
-
     /**
      * Get the contacts for the home page.
      */
@@ -195,11 +142,11 @@ class HomeController extends Controller
                 'phone_number' => $staff?->personalInformation?->phone_number
             ],
             'reception' => [
-                'phone_number' => env('PORTA_PHONE')
+                'phone_number' => config('contacts.porta_phone')
             ],
             'doctor' => [
-                'name' => env('DOCTOR_NAME'),
-                'link' => env('DOCTOR_LINK')
+                'name' => config('contacts.doctor_name'),
+                'link' => config('contacts.doctor_link')
             ]
         ];
 
@@ -208,17 +155,25 @@ class HomeController extends Controller
                 ->orWhereIn('name', Role::COMMITTEE_LEADERS)
                 ->get()->pluck('id')->toArray();
             $student_council = RoleUser::where('role_id', Role::studentsCouncil()->id)
-                        ->whereIn('object_id', $student_council_objects)
-                        ->with('user')
-                        ->orderBy('object_id')
-                        ->get();
+                ->whereIn('object_id', $student_council_objects)
+                ->with('user')
+                ->orderBy('object_id')
+                ->get();
             $contacts = array_merge($contacts, [
                 Role::STUDENT_COUNCIL => $student_council,
                 Role::STUDENT_COUNCIL_SECRETARY => User::studentCouncilSecretary(),
                 Role::BOARD_OF_TRUSTEES_MEMBER => User::boardOfTrusteesMembers(),
                 Role::ETHICS_COMMISSIONER => User::ethicsCommissioners(),
             ]);
+
+            $contacts['workshops'] = Workshop::all()->flatMap(fn ($workshop) => [
+                $workshop->name => [
+                    'leaders' => $workshop->leaders->pluck('name')->implode(', '),
+                    'administrators' => $workshop->administrators->pluck('name')->implode(', ')
+                ]
+            ]);
         }
+
         return $contacts;
     }
 }

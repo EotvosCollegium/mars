@@ -3,13 +3,14 @@
 return [
 
     // Set to true, if you wish to send mails on triggers.
-    'active' => env('MAIL_ACTIVE', false),
+    'active' => env('MAIL_ACTIVE', true),
 
     // Test mail to seed the admin user with.
     'test_mail' => env('MAIL_TEST_ADMIN', 'example@uran.hu'),
 
     'sys_admin_mail' => env('MAIL_SYSADMIN'),
     'secretary_mail' => env('MAIL_SECRETARY'),
+    'membra_mail' => env('MAIL_MEMBRA'),
 
     /*
     |--------------------------------------------------------------------------
@@ -18,14 +19,14 @@ return [
     |
     | Laravel supports both SMTP and PHP's "mail" function as drivers for the
     | sending of e-mail. You may specify which one you're using throughout
-    | your application here. By default, Laravel is setup for SMTP mail.
+    | your application here.
     |
     | Supported: "smtp", "sendmail", "mailgun", "ses",
     |            "postmark", "log", "array"
     |
     */
 
-    'driver' => 'smtp',
+    'driver' => env('MAIL_MAILER', 'log'),
 
     /*
     |--------------------------------------------------------------------------

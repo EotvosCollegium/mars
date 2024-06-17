@@ -5,7 +5,6 @@ namespace App\Http\Controllers\StudentsCouncil;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\EpistolaCollegii;
 use Image;
@@ -137,7 +136,7 @@ class EpistolaController extends Controller
     {
         $this->authorize('send', EpistolaNews::class);
 
-        Mail::to(env('MAIL_KOMMBIZ'))->send(new EpistolaCollegii(self::getActiveNews()));
+        Mail::to(config('contacts.mail_kommbiz'))->send(new EpistolaCollegii(self::getActiveNews()));
 
         EpistolaNews::where('sent', false)->update(['sent' => true]);
 

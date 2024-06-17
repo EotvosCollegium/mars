@@ -1,8 +1,5 @@
 <?php
 
-use App\Models\EventTrigger;
-use App\Models\Semester;
-use Carbon\Carbon;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -37,19 +34,19 @@ class CreateEventTriggersTable extends Migration
         //     'comment' => 'When the date is reached, activating internet will have new default value',
         // ]);
 
-        EventTrigger::create([
-            'name' => 'SEMESTER_EVALUATION_AVAILABLE',
-            'date' => Semester::current()->getEndDate()->subMonth(2),
-            'signal' => EventTrigger::SEMESTER_EVALUATION_AVAILABLE,
-            'comment' => 'The trigger to nofify students about filling out statements regarding their status in the next semester',
-        ]);
-
-        EventTrigger::create([
-            'name' => 'DEACTIVATE_STATUS_SIGNAL',
-            'date' => Semester::current()->getEndDate()->subDay(1),
-            'signal' => EventTrigger::DEACTIVATE_STATUS_SIGNAL,
-            'comment' => 'The date when all students who did not make the above statement will lose their status for the next semester',
-        ]);
+        //        EventTrigger::create([
+        //            'name' => 'SEMESTER_EVALUATION_AVAILABLE',
+        //            'date' => Semester::current()->getEndDate()->subMonth(2),
+        //            'signal' => EventTrigger::SEMESTER_EVALUATION_AVAILABLE,
+        //            'comment' => 'The trigger to nofify students about filling out statements regarding their status in the next semester',
+        //        ]);
+        //
+        //        EventTrigger::create([
+        //            'name' => 'DEACTIVATE_STATUS_SIGNAL',
+        //            'date' => Semester::current()->getEndDate()->subDay(1),
+        //            'signal' => EventTrigger::DEACTIVATE_STATUS_SIGNAL,
+        //            'comment' => 'The date when all students who did not make the above statement will lose their status for the next semester',
+        //        ]);
     }
 
     /**

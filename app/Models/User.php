@@ -3,12 +3,14 @@
 namespace App\Models;
 
 use App\Mail\Invitation;
+use App\Models\GeneralAssemblies\PresenceCheck;
 use App\Models\Internet\InternetAccess;
-use App\Models\Internet\MacAddress;
-use App\Models\Internet\WifiConnection;
 use App\Utils\HasRoles;
 use App\Utils\NotificationCounter;
 use Carbon\Carbon;
+use Database\Factories\UserFactory;
+use Eloquent;
+use Illuminate\Auth\Passwords\PasswordBroker;
 use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -26,6 +28,8 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 
 /**
+ * App\Models\User
+ *
  * @property int $id
  * @property string $name
  * @property string $unique_name
@@ -46,8 +50,6 @@ use Illuminate\Support\Facades\Mail;
  * @property PrintAccountHistory[]|Collection $printHistory
  * @property PrintJob[]|Collection $printJobs
  * @property InternetAccess|null $internetAccess
- * @property MacAddress[]|Collection $macAddresses
- * @property WifiConnection[]|Collection $wifiConnections
  * @property Semester[]|Collection $semesterStatuses
  * @property Transaction[]|Collection $transactionsPaid
  * @property Transaction[]|Collection $transactionsReceived
@@ -63,6 +65,56 @@ use Illuminate\Support\Facades\Mail;
  * @method currentTenant()
  * @method hasToPayKKTNetregInSemester(int $semester_id)
  * @method semestersWhere(string $status)
+ * @property string $email
+ * @property \Illuminate\Support\Carbon|null $email_verified_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read int|null $community_service_approvals_count
+ * @property-read int|null $community_service_requests_count
+ * @property-read int|null $faculties_count
+ * @property-read int|null $free_pages_count
+ * @property-read int|null $import_items_count
+ * @property-read int|null $mac_addresses_count
+ * @property-read int|null $mr_and_miss_votes_given_count
+ * @property-read int|null $mr_and_miss_votes_got_count
+ * @property-read Collection|PresenceCheck[] $presenceChecks
+ * @property-read int|null $presence_checks_count
+ * @property-read int|null $print_history_count
+ * @property-read int|null $print_jobs_count
+ * @property-read int|null $roles_count
+ * @property-read Collection|SemesterEvaluation[] $semesterEvaluations
+ * @property-read int|null $semester_evaluations_count
+ * @property-read int|null $semester_statuses_count
+ * @property-read int|null $transactions_paid_count
+ * @property-read int|null $transactions_received_count
+ * @property-read int|null $wifi_connections_count
+ * @property-read int|null $workshops_count
+ * @method static Builder|User canView()
+ * @method static UserFactory factory(...$parameters)
+ * @method static Builder|User hasToPayKKTNetreg()
+ * @method static Builder|User hasToPayKKTNetregInSemester(int $semester_id)
+ * @method static Builder|User newModelQuery()
+ * @method static Builder|User newQuery()
+ * @method static Builder|User query()
+ * @method static Builder|User verified()
+ * @method static Builder|User whereCreatedAt($value)
+ * @method static Builder|User whereEmail($value)
+ * @method static Builder|User whereEmailVerifiedAt($value)
+ * @method static Builder|User whereId($value)
+ * @method static Builder|User whereName($value)
+ * @method static Builder|User wherePassword($value)
+ * @method static Builder|User whereRememberToken($value)
+ * @method static Builder|User whereRoom($value)
+ * @method static Builder|User whereUpdatedAt($value)
+ * @method static Builder|User whereVerified($value)
+ * @method static Builder|User withRole(Role|string $role, Workshop|RoleObject|string|null $object = null)
+ * @property-read Collection|\App\Models\Workshop[] $applicationCommitteWorkshops
+ * @property-read int|null $application_committe_workshops_count
+ * @property-read Collection|\App\Models\Workshop[] $roleWorkshops
+ * @property-read int|null $role_workshops_count
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
+ * @property-read int|null $notifications_count
+ * @mixin Eloquent
  */
 class User extends Authenticatable implements HasLocalePreference
 {
@@ -148,6 +200,17 @@ class User extends Authenticatable implements HasLocalePreference
 
     /*
     |--------------------------------------------------------------------------
+    | Functions
+    |--------------------------------------------------------------------------
+    */
+
+    public function generatePasswordResetToken(): string
+    {
+        return app(PasswordBroker::class)->createToken($this);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
     | Relations
     |--------------------------------------------------------------------------
     */
@@ -208,9 +271,9 @@ class User extends Authenticatable implements HasLocalePreference
     }
 
     /**
-    * The workshops where the user is a leader or administrator.
-    * @return HasManyThrough
-    */
+     * The workshops where the user is a leader or administrator.
+     * @return HasManyThrough
+     */
     public function roleWorkshops(): HasManyThrough
     {
         return $this->hasManyThrough(
@@ -304,10 +367,8 @@ class User extends Authenticatable implements HasLocalePreference
         return $this->hasMany(PrintJob::class);
     }
 
-    /* Internet module related */
-
     /**
-     * The user's internet access.
+     * The user's internet access that contains wifi connections, mac addresses, etc.
      * @return hasOne
      */
     public function internetAccess(): HasOne
@@ -315,30 +376,6 @@ class User extends Authenticatable implements HasLocalePreference
         return $this->hasOne(InternetAccess::class);
     }
 
-    /**
-     * The user's mac addresses.
-     * @return hasMany
-     */
-    public function macAddresses(): HasMany
-    {
-        return $this->hasMany(MacAddress::class);
-    }
-
-    /**
-     * The user's wifi connections.
-     * @return hasManyThrough
-     */
-    public function wifiConnections(): HasManyThrough
-    {
-        return $this->hasManyThrough(
-            WifiConnection::class,
-            InternetAccess::class,
-            'user_id', // Foreign key on InternetAccess table...
-            'wifi_username', // Foreign key on WifiConnection table...
-            'id', // Local key on Users table...
-            'wifi_username' // Local key on InternetAccess table...
-        );
-    }
 
     /* Semester related */
 
@@ -421,6 +458,14 @@ class User extends Authenticatable implements HasLocalePreference
         return $this->hasMany(CommunityService::class, 'approver_id');
     }
 
+    /**
+     * Returns the general assembly presence checks the user has signed.
+     * @return BelongsToMany
+     */
+    public function presenceChecks(): BelongsToMany
+    {
+        return $this->belongsToMany(PresenceCheck::class);
+    }
 
     /*
     |--------------------------------------------------------------------------
@@ -429,13 +474,13 @@ class User extends Authenticatable implements HasLocalePreference
     */
 
     /**
-    * Scope a query to only include verified users. See also: global 'verified' scope.
-    * @param Builder $query
-    * @return Builder
-    */
+     * Scope a query to only include verified users. See also: global 'verified' scope.
+     * @param Builder $query
+     * @return Builder
+     */
     public function scopeVerified(Builder $query): Builder
     {
-        return $query->where('verified', 1);
+        return $query->where('users.verified', 1);
     }
 
     /**
@@ -445,16 +490,16 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function scopeCanView(Builder $query): Builder
     {
-        if(user()->isAdmin()) {
+        if (user()->isAdmin()) {
             return $query;
         }
-        if(user()->hasRole(Role::STAFF)) {
+        if (user()->hasRole(Role::STAFF)) {
             return $query->withRole(Role::TENANT);
         }
-        if(user()->can('viewAll', User::class)) {
+        if (user()->can('viewAll', User::class)) {
             return $query->collegist();
         }
-        if(user()->can('viewSome', User::class)) {
+        if (user()->can('viewSome', User::class)) {
             return $query->collegist()->whereHas('workshops', function ($query) {
                 $query->whereIn('id', user()->roleWorkshops->pluck('id')->toArray());
             });
@@ -487,7 +532,7 @@ class User extends Authenticatable implements HasLocalePreference
     {
         return $query->whereHas('semesterStatuses', function ($q) use ($semester_id) {
             $q->where('status', SemesterStatus::ACTIVE)
-              ->where('id', $semester_id ?? Semester::current()->id);
+                ->where('id', $semester_id ?? Semester::current()->id);
         });
     }
 
@@ -554,6 +599,50 @@ class User extends Authenticatable implements HasLocalePreference
                 $query->where('semester_id', $semester_id);
                 $query->whereIn('payment_type_id', [PaymentType::kkt()->id, PaymentType::netreg()->id]);
             });
+    }
+
+    /**
+     * Scope a query to only include users who got accepted in the specified year.
+     */
+    public function scopeYearOfAcceptance(Builder $query, int $yearOfAcceptance): Builder
+    {
+        return $query->whereHas('educationalInformation', function (Builder $query) use ($yearOfAcceptance) {
+            $query->where('year_of_acceptance', $yearOfAcceptance);
+        });
+    }
+
+    /**
+     * Scope a query to only include users whose name contains the given string.
+     */
+    public function scopeNameLike(Builder $query, string $nameLike): Builder
+    {
+        return $query->where('name', 'like', '%' . $nameLike . '%');
+    }
+
+    /**
+     * Scope a query to only include users who are in all the specified workshops.
+     * The workshops are specified by their IDs.
+     */
+    public function scopeInAllWorkshopIds(Builder $query, array $workshopsIdsAll): Builder
+    {
+        return $query->whereHas('workshops', function (Builder $query) use ($workshopsIdsAll) {
+            $query->whereIn('id', $workshopsIdsAll);
+        }, '=', count($workshopsIdsAll));
+    }
+
+    /**
+     * Scope a query to only include users who have any of the specified roles.
+     */
+    public function scopeHasStatusAnyOf(Builder $query, array $statusesAny): Builder
+    {
+        return $query->where(function ($query) use ($statusesAny) {
+            foreach ($statusesAny as $status) {
+                $query->orWhereHas('semesterStatuses', function (Builder $query) use ($status) {
+                    $query->where('status', $status);
+                    $query->where('id', Semester::current()->id);
+                });
+            }
+        });
     }
 
     /*
@@ -633,9 +722,9 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function isCollegist($alumni = true): bool
     {
-        if($this->verified == false) {
+        if ($this->verified == false) {
             return $this->roles()->where('role_id', Role::collegist()->id)->exists();
-        };
+        }
 
         return in_array(
             $this->id,
@@ -662,7 +751,7 @@ class User extends Authenticatable implements HasLocalePreference
         $this->addRole($role, $object);
 
         Cache::forget('collegists');
-        WorkshopBalance::generateBalances(Semester::current()->id);
+        WorkshopBalance::generateBalances(Semester::current());
     }
 
     /**
@@ -672,11 +761,11 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function isResident(): bool
     {
-        if($this->verified == false) {
+        if ($this->verified == false) {
             return $this->roles()
-            ->where('role_id', Role::collegist()->id)
-            ->where('object_id', RoleObject::firstWhere('name', Role::RESIDENT)->id)
-            ->exists();
+                ->where('role_id', Role::collegist()->id)
+                ->where('object_id', RoleObject::firstWhere('name', Role::RESIDENT)->id)
+                ->exists();
         }
         return $this->hasRole([Role::COLLEGIST => Role::RESIDENT]);
     }
@@ -697,11 +786,11 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function isExtern(): bool
     {
-        if($this->verified == false) {
+        if ($this->verified == false) {
             return $this->roles()
-            ->where('role_id', Role::collegist()->id)
-            ->where('object_id', RoleObject::firstWhere('name', Role::EXTERN)->id)
-            ->exists();
+                ->where('role_id', Role::collegist()->id)
+                ->where('object_id', RoleObject::firstWhere('name', Role::EXTERN)->id)
+                ->exists();
         }
         return $this->hasRole([Role::COLLEGIST => Role::EXTERN]);
     }
@@ -837,10 +926,10 @@ class User extends Authenticatable implements HasLocalePreference
     }
 
     /**
-    * Returns how many free pages the user used.
-    *
-    * @return int
-    */
+     * Returns how many free pages the user used.
+     *
+     * @return int
+     */
     public function spentFreePages(): int
     {
         return abs($this->printHistory()
@@ -860,27 +949,27 @@ class User extends Authenticatable implements HasLocalePreference
     /* Transaction related */
 
     /**
-     * Returns the payed kkt amount in the semester. 0 if has not payed kkt.
+     * Returns the paid kkt amount in the semester; or null if the user has not paid kkt.
      * @param Semester $semester
-     * @return int
+     * @return ?int
      */
-    public function payedKKTInSemester(Semester $semester): int
+    public function paidKKTInSemester(Semester $semester): ?int
     {
         $transaction = $this->transactionsPaid()
             ->where('payment_type_id', PaymentType::kkt()->id)
             ->where('semester_id', $semester->id)
-            ->get();
+            ->first();
 
-        return $transaction ? $transaction->amount : 0;
+        return $transaction ? $transaction->amount : null;
     }
 
     /**
-     * Returns the payed kkt amount in the current semester. 0 if has not payed kkt.
-     * @return int
+     * Returns the paid kkt amount in the current semester; or null if the user has not paid kkt.
+     * @return ?int
      */
-    public function payedKKT(): int
+    public function paidKKT(): ?int
     {
-        return $this->payedKKTInSemester(Semester::current());
+        return $this->paidKKTInSemester(Semester::current());
     }
 
     /*
@@ -963,11 +1052,19 @@ class User extends Authenticatable implements HasLocalePreference
     }
 
     /**
-     * @return User|null the president
+     * @return User|null the secretary
      */
     public static function secretary(): ?User
     {
         return self::withRole(Role::SECRETARY)->first();
+    }
+
+    /**
+     * @return array|User[]|Collection workshop leaders
+     */
+    public static function workshopLeaders(): Collection|array
+    {
+        return self::withRole(Role::WORKSHOP_LEADER)->get();
     }
 
     /**
@@ -999,7 +1096,7 @@ class User extends Authenticatable implements HasLocalePreference
      * Used by the NotificationCounter trait.
      * @return int
      */
-    public static function notifications(): int
+    public static function notificationCount(): int
     {
         return self::withoutGlobalScope('verified')->where('verified', false)->count();
     }

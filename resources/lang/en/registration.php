@@ -12,5 +12,5 @@ return [
     'old_password' => 'Old password',
     'password' => 'Password',
     'remember' => 'Remember Me',
-    'set_permissions' => 'Sent an invitation letter to the given address. Please set permissions of the new user.',
+    'set_permissions' => 'Sent an invitation letter to the given address. Please set permissions for the new user.',
 ];

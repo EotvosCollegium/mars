@@ -5,6 +5,29 @@ namespace App\Models;
 use App\Utils\NotificationCounter;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\Fault
+ *
+ * @property int $id
+ * @property int|null $reporter_id
+ * @property string $location
+ * @property string $description
+ * @property string $status
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\User|null $reporter
+ * @method static \Illuminate\Database\Eloquent\Builder|Fault newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Fault newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Fault query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Fault whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Fault whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Fault whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Fault whereLocation($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Fault whereReporterId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Fault whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Fault whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class Fault extends Model
 {
     use NotificationCounter;
@@ -31,7 +54,10 @@ class Fault extends Model
         return strtoupper($value);
     }
 
-    public static function notifications()
+    /**
+     * @return int The number of unseen faults.
+     */
+    public static function notificationCount(): int
     {
         return self::where('status', self::UNSEEN)->count();
     }

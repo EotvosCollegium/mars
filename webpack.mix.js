@@ -27,11 +27,15 @@ mix.js('resources/js/materialize_custom.js', 'public/js/materialize.js') // We u
    // Add common styles here
    .styles([
       'resources/css/tabulator_materialize.min.css', // This might cause problems if it gets ouf of sync with the JS
-      'resources/css/cookieconsent.min.css'
+      'resources/css/cookieconsent.min.css',
+      'resources/css/fonts.css'
    ], 'public/css/app.css')
    // Add page specific files one by one
    .styles('resources/css/welcome_page.css', 'public/css/welcome_page.css')
    .js('resources/js/page_based/localizations.js', 'public/js/page_based/localizations.js');
+
+// For fonts downloaded from Google Fonts
+mix.copyDirectory('resources/fonts', 'public/fonts');
 
 if (mix.inProduction()) {
    mix.version(); // For cache bumping

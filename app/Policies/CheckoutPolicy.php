@@ -46,12 +46,23 @@ class CheckoutPolicy
             Role::SYS_ADMIN,
             Role::STUDENT_COUNCIL => [
                 Role::ECONOMIC_VICE_PRESIDENT,
-                Role::CULTURAL_LEADER,
-                Role::CULTURAL_MEMBER
-            ]
+                Role::KKT_HANDLER,
+            ],
         ]);
     }
 
+    /**
+     * Determine whether the user can calculate the workshop balance.
+     */
+    public function calculateWorkshopBalance(User $user): bool
+    {
+        return $user->hasRole([
+            Role::SYS_ADMIN,
+            Role::STUDENT_COUNCIL => [
+                Role::ECONOMIC_VICE_PRESIDENT,
+            ]
+        ]);
+    }
 
     /**
      * Determine whether the user can administrate the given checkout.

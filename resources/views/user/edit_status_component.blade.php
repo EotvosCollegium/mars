@@ -4,7 +4,7 @@
     </td>
     @can('updateStatus', $user)
     <td>
-        <input wire:model="comment" wire:change.debounce.150ms="save" placeholder="Megjegyzés" />
+        <input wire:model.live="comment" wire:change.debounce.150ms="save" placeholder="Megjegyzés" />
     </td>
     @endcan
     <td>
