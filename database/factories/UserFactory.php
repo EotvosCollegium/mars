@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\ApplicationForm;
+use App\Models\Application;
 use App\Models\User;
 use App\Models\Room;
 use App\Models\PrintAccount;
@@ -49,7 +49,7 @@ class UserFactory extends Factory
         })->afterCreating(function (User $user) {
             $user->personalInformation()->save(PersonalInformation::factory()->for($user)->create());
             if (!$user->verified) {
-                $user->application()->create(['status' => $this->faker->randomElement(ApplicationForm::STATUSES)]);
+                $user->application()->create(['submitted' => $this->faker->randomElement([true, false])]);
             }
         });
     }

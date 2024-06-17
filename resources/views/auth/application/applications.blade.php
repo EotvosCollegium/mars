@@ -14,7 +14,7 @@
                         <x-input.select id="workshop" :elements="$workshops" allow-empty :default="$workshop"
                                         text="Műhely"/>
                         @can('viewUnfinishedApplications', \App\models\User::class)
-                            @foreach (\App\Models\ApplicationForm::STATUSES as $st)
+                            @foreach (\App\Models\Application::STATUSES as $st)
                                 <label>
                                     <input type="radio" name="status" value="{{$st}}"
                                            @if($status == $st) checked @endif>

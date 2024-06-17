@@ -2,12 +2,12 @@
 
 namespace App\Livewire;
 
-use App\Models\ApplicationForm;
+use App\Models\Application;
 use Livewire\Component;
 
 class ApplicationStatusUpdate extends Component
 {
-    public ApplicationForm $application;
+    public Application $application;
 
     /**
      * Update the status of the application and flases a confirmation message

@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use App\Http\Controllers\Auth\ApplicationController;
-use App\Models\ApplicationForm;
+use App\Models\Application;
 use App\Models\Faculty;
 use App\Models\PeriodicEvent;
 use App\Models\Role;
@@ -47,7 +47,7 @@ class ApplicationTest extends TestCase
     {
         $user = User::factory()->create(['verified' => false]);
         $user->roles()->attach(Role::collegist()->id);
-        $user->application->update(['status' => ApplicationForm::STATUS_IN_PROGRESS]);
+        $user->application->update(['status' => Application::STATUS_IN_PROGRESS]);
         $this->actingAs($user);
 
         return $user;
@@ -333,7 +333,7 @@ class ApplicationTest extends TestCase
         $response->assertStatus(302);
         $response->assertSessionHas('message', 'Sikeresen véglegesítette a jelentkezését!');
         $user->load('application');
-        $this->assertEquals(ApplicationForm::STATUS_SUBMITTED, $user->application->status);
+        $this->assertEquals(Application::STATUS_SUBMITTED, $user->application->status);
         $this->assertNotNull($user->internetAccess);
         $this->assertTrue($user->internetAccess->wifi_username == $user->educationalInformation->neptun);
         $this->assertTrue($user->internetAccess->has_internet_until > now());
@@ -346,14 +346,14 @@ class ApplicationTest extends TestCase
     public function test_hide_status()
     {
         $applicant_in_progress = User::factory()->create(['verified' => false]);
-        $applicant_in_progress->application->update(['status' => ApplicationForm::STATUS_IN_PROGRESS]);
+        $applicant_in_progress->application->update(['status' => Application::STATUS_IN_PROGRESS]);
         $this->actingAs($applicant_in_progress);
         $response = $this->get('/application');
         $response->assertStatus(200);
         $response->assertSee('Folyamatban');
 
         $applicant_called_in = User::factory()->create(['verified' => false]);
-        $applicant_called_in->application->update(['status' => ApplicationForm::STATUS_CALLED_IN]);
+        $applicant_called_in->application->update(['status' => Application::STATUS_CALLED_IN]);
         $this->actingAs($applicant_called_in);
         $response = $this->get('/application');
         $response->assertStatus(200);
@@ -361,7 +361,7 @@ class ApplicationTest extends TestCase
         $response->assertDontSee('Behívva');
 
         $applicant_accepted = User::factory()->create(['verified' => false]);
-        $applicant_accepted->application->update(['status' => ApplicationForm::STATUS_ACCEPTED]);
+        $applicant_accepted->application->update(['status' => Application::STATUS_ACCEPTED]);
         $this->actingAs($applicant_accepted);
         $response = $this->get('/application');
         $response->assertStatus(200);
@@ -369,7 +369,7 @@ class ApplicationTest extends TestCase
         $response->assertDontSee('Felvéve');
 
         $applicant_banished = User::factory()->create(['verified' => false]);
-        $applicant_banished->application->update(['status' => ApplicationForm::STATUS_BANISHED]);
+        $applicant_banished->application->update(['status' => Application::STATUS_BANISHED]);
         $this->actingAs($applicant_banished);
         $response = $this->get('/application');
         $response->assertStatus(200);
@@ -389,19 +389,19 @@ class ApplicationTest extends TestCase
         $this->actingAs($user);
 
         $applicant_in_progress = User::factory()->create(['verified' => false]);
-        $applicant_in_progress->application->update(['status' => ApplicationForm::STATUS_IN_PROGRESS]);
+        $applicant_in_progress->application->update(['status' => Application::STATUS_IN_PROGRESS]);
 
         $applicant_submitted = User::factory()->create(['verified' => false]);
-        $applicant_submitted->application->update(['status' => ApplicationForm::STATUS_SUBMITTED]);
+        $applicant_submitted->application->update(['status' => Application::STATUS_SUBMITTED]);
 
         $applicant_called_in = User::factory()->create(['verified' => false]);
-        $applicant_called_in->application->update(['status' => ApplicationForm::STATUS_CALLED_IN]);
+        $applicant_called_in->application->update(['status' => Application::STATUS_CALLED_IN]);
 
         $applicant_accepted = User::factory()->create(['verified' => false]);
-        $applicant_accepted->application->update(['status' => ApplicationForm::STATUS_ACCEPTED]);
+        $applicant_accepted->application->update(['status' => Application::STATUS_ACCEPTED]);
 
         $applicant_banished = User::factory()->create(['verified' => false]);
-        $applicant_banished->application->update(['status' => ApplicationForm::STATUS_BANISHED]);
+        $applicant_banished->application->update(['status' => Application::STATUS_BANISHED]);
 
         $response = $this->post('/application/finalize');
         $response->assertStatus(302);
@@ -422,15 +422,15 @@ class ApplicationTest extends TestCase
         Config::set('custom.application_deadline', now()->subWeeks(3));
         $this->actingAs($user);
 
-        ApplicationForm::query()->delete();
+        Application::query()->delete();
         $applicant_in_progress = User::factory()->create(['verified' => false]);
-        $applicant_in_progress->application->update(['status' => ApplicationForm::STATUS_IN_PROGRESS]);
+        $applicant_in_progress->application->update(['status' => Application::STATUS_IN_PROGRESS]);
 
         $applicant_accepted = User::factory()->create(['verified' => false]);
-        $applicant_accepted->application->update(['status' => ApplicationForm::STATUS_ACCEPTED]);
+        $applicant_accepted->application->update(['status' => Application::STATUS_ACCEPTED]);
 
         $applicant_banished = User::factory()->create(['verified' => false]);
-        $applicant_banished->application->update(['status' => ApplicationForm::STATUS_BANISHED]);
+        $applicant_banished->application->update(['status' => Application::STATUS_BANISHED]);
 
 
         $response = $this->post('/application/finalize');
@@ -442,7 +442,7 @@ class ApplicationTest extends TestCase
         $this->assertNull(User::find($applicant_banished->id));
         $this->assertNull(User::find($applicant_in_progress->id));
 
-        $this->assertTrue(ApplicationForm::count() == 0);
+        $this->assertTrue(Application::count() == 0);
 
         $user->refresh();
         $this->assertTrue($user->hasRole(Role::firstWhere('name', Role::SYS_ADMIN)));

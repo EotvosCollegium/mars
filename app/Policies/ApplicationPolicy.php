@@ -2,12 +2,12 @@
 
 namespace App\Policies;
 
-use App\Models\ApplicationForm;
+use App\Models\Application;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class ApplicationFormPolicy
+class ApplicationPolicy
 {
     use HandlesAuthorization;
 
@@ -26,15 +26,15 @@ class ApplicationFormPolicy
 
     /**
      * @param User $user
-     * @param ApplicationForm $target
+     * @param Application $target
      * @return bool
      */
-    public function view(User $user, ApplicationForm $target): bool
+    public function view(User $user, Application $target): bool
     {
         if ($user->id == $target->user_id) {
             return true;
         }
-        if ($user->can('viewAll', ApplicationForm::class)) {
+        if ($user->can('viewAll', Application::class)) {
             return true;
         }
 

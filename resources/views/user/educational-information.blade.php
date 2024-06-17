@@ -64,7 +64,7 @@
     @foreach($user->educationalInformation?->studyLines ?? [] as $studyLine)
         @include('user.study-line-selector', ['index' => $loop->index, 'value' => $studyLine])
     @endforeach
-    <x-input.button type="button" id="addStudyLine" floating icon="add" onclick="insertEmptyStudyLine()" />
+    <x-input.button type="button" id="addStudyLine" floating icon="add" class="tooltipped" data-tooltip="Szak hozzáadása" onclick="insertEmptyStudyLine()" />
     {{-- hiding these fields from applications; they are not relevant there --}}
     @if(\Route::current()->getName() != 'application')
     <x-input.textarea

@@ -72,11 +72,9 @@ Auth::routes(); //check \Laravel\Ui\AuthRouteMethods
 
 Route::get('/register/guest', [RegisterController::class, 'showTenantRegistrationForm'])->name('register.guest');
 
-Route::middleware([Authenticate::class, LogRequests::class, OnlyHungarian::class])->group(function () {
-    Route::get('/application', [ApplicationController::class, 'show'])->name('application');
-});
 Route::middleware([Authenticate::class, LogRequests::class])->group(function () {
     /** Routes that needs to be accessed during the application process */
+    Route::get('/application', [ApplicationController::class, 'show'])->name('application')->middleware(OnlyHungarian::class);
     Route::post('/application', [ApplicationController::class, 'store'])->name('application.store');
     Route::post('/users/{user}/profile_picture', [UserController::class, 'storeProfilePicture'])->name('users.update.profile-picture');
     Route::delete('/users/{user}/profile_picture', [UserController::class, 'deleteProfilePicture'])->name('users.delete.profile-picture');

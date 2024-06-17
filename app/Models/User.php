@@ -40,7 +40,7 @@ use Illuminate\Support\Facades\Mail;
  * @property PersonalInformation|null $personalInformation
  * @property EducationalInformation|null $educationalInformation
  * @property File|null $profilePicture
- * @property ApplicationForm|null $application
+ * @property Application|null $application
  * @property Workshops[]|Collection $workshops
  * @property Faculty[]|Collection $faculties
  * @property ImportItem[]|Collection $importItems
@@ -258,7 +258,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function application(): HasOne
     {
-        return $this->hasOne(ApplicationForm::class);
+        return $this->hasOne(Application::class);
     }
 
     /**

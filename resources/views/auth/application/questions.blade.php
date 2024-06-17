@@ -1,9 +1,5 @@
 @extends('auth.application.app')
 
-@section('questions-active')
-    active
-@endsection
-
 @section('form')
 
     <div class="card">
@@ -51,7 +47,7 @@
                         <p style="margin-bottom:10px"><label style="font-size: 1em">Megpályázni kívánt státusz</label>
                         </p>
                         <p>
-                            @php $checked = old('status') ?  old('status') == 'resident' : $user->isResident() @endphp
+                            @php $checked = old('status') ?  old('status') == 'resident' : $user->application->applied_for_resident_status @endphp
                             <label>
                                 <input type="radio" name="status" value="resident"
                                     {{ $checked ? 'checked' : '' }}>
@@ -59,7 +55,7 @@
                             </label>
                         </p>
                         <p>
-                            @php $checked = old('status') ?  old('status') == 'extern' : $user->isExtern() @endphp
+                            @php $checked = old('status') ?  old('status') == 'extern' : !$user->application->applied_for_resident_status @endphp
                             <label>
                                 <input type="radio" name="status" value="extern"
                                     {{ $checked ? 'checked' : '' }}>
@@ -72,7 +68,7 @@
                     </div>
                     <div class="input-field col s12"><p style="margin-bottom:10px"><label style="font-size: 1em">Honnan
                                 hallott a Collegiumról?</label></p>
-                        @foreach(\App\Models\ApplicationForm::QUESTION_1 as $answer)
+                        @foreach(\App\Models\Application::QUESTION_1 as $answer)
                             @if(in_array($answer, $user->application->question_1 ?? []) !== false)
                                 <p>
                                     <x-input.checkbox
@@ -117,7 +113,12 @@
                     <x-input.checkbox id="accommodation"
                                       text="Igényel-e szállást a felvételi idejére?"
                                       :checked="$user->application->accommodation"/>
+                    <div class="col s12">
+                        <label>A szállással kapcsolatban figyelje a titkárság tájékoztatását. Az igénylés nem garantál szálláshelyet.</label>
+                    </div>
+
                 </div>
+
 
             </div>
             <div class="card-action">

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\ApplicationForm;
+use App\Models\Application;
 use App\Models\Faculty;
 use App\Models\Role;
 use App\Models\Semester;
@@ -13,10 +13,10 @@ use App\Utils\HasPeriodicEvent;
 use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
 use App\Utils\ApplicationHandler;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Maatwebsite\Excel\Facades\Excel;
 
 /**
  * Controller handling the applicantion process.
@@ -39,7 +39,7 @@ class ApplicationController extends Controller
      */
     public function updateApplicationPeriod(Request $request): RedirectResponse
     {
-        $this->authorize('finalize', ApplicationForm::class);
+        $this->authorize('finalize', Application::class);
 
         $request->validate([
             'semester_id' => 'required|exists:semesters,id',
@@ -65,17 +65,20 @@ class ApplicationController extends Controller
      */
     public function show(Request $request): View|RedirectResponse
     {
-        if (user()->hasRole(Role::get(Role::TENANT))) {
+        if (user()->hasRole(Role::TENANT)) {
             //let the user delete their tenant status
-            return view('user.update_tenant_status');
+            return redirect()->route('user.update_tenant_status');
         }
-        if (user()->application()->doesntExist()) {
-            user()->application()->create();
+
+        // only allow access if the application period is open or after, if the user has submitted application
+        if(!($this->isActive() || user()->application?->submitted)) {
+            abort(403, "A felvétel jelenleg nincs megnyitva");
         }
 
         $data = [
             'workshops' => Workshop::all(),
             'faculties' => Faculty::all(),
+            'is_active' => $this->isActive(),
             'deadline' => $this->getDeadline(),
             'deadline_extended' => $this->isExtended(),
             'user' => user(),
@@ -97,16 +100,21 @@ class ApplicationController extends Controller
     /**
      * @param Request $request
      * @return RedirectResponse
+     * @throws AuthenticationException
      */
-    public function store(Request $request)
+    public function store(Request $request) //RedirectResponse
     {
-        $user = $request->user();
+        $user = user();
 
-        if (now() > $this->getDeadline()) {
-            return redirect()->route('application')->with('error', 'A jelentkezési határidő lejárt');
+        if (!$this->isActive()) {
+            return redirect()->route('application')->with('error', 'A jelentkezési határidő lejárt!');
         }
 
-        if (isset($user->application) && $user->application->status == ApplicationForm::STATUS_SUBMITTED) {
+        if ($user->application()->doesntExist()) {
+            $user->application()->create();
+        }
+
+        if ($user->application->submitted) {
             return redirect()->route('application')->with('error', 'Már véglegesítette a jelentkezését!');
         }
 
@@ -122,7 +130,7 @@ class ApplicationController extends Controller
                 $this->deleteFile($request, $user);
                 break;
             case self::SUBMIT_ROUTE:
-                return $this->submitApplication($user);
+                return $this->submit($user);
             default:
                 abort(404);
         }
@@ -134,33 +142,18 @@ class ApplicationController extends Controller
      * @param $user
      * @return RedirectResponse
      */
-    public function submitApplication(User $user)
+    public function submit(User $user): RedirectResponse
     {
-        $user->load('application');
-        if ($user->application->missingData() == []) {
-            $user->application->update(['status' => ApplicationForm::STATUS_SUBMITTED]);
-            $user->internetAccess->setWifiCredentials($user->educationalInformation->neptun);
-            $user->internetAccess()->update(['has_internet_until' => $this->getDeadline()?->addMonth()]);
-            return back()->with('message', 'Sikeresen véglegesítette a jelentkezését!');
-        } else {
+        if (!$this->isActive()) {
+            return redirect()->route('application')->with('error', 'A jelentkezési határidő lejárt');
+        }
+
+        if ($user->application->missingData() != []) {
             return back()->with('error', 'Hiányzó adatok!');
         }
-    }
-
-    /**
-     * Export all applications to excel
-     */
-    public function exportApplications()
-    {
-        $this->authorize('viewAll', ApplicationForm::class);
-
-        $applications = ApplicationForm::with('user')
-                ->where('status', ApplicationForm::STATUS_SUBMITTED)
-                ->orWhere('status', ApplicationForm::STATUS_CALLED_IN)
-                ->orWhere('status', ApplicationForm::STATUS_ACCEPTED)
-                ->get();
-
-        return Excel::download(new ApplicantsExport($applications), 'felveteli.xlsx');
-
+        $user->application->update(['submitted' => true]);
+        $user->internetAccess->setWifiCredentials();
+        $user->internetAccess->extendInternetAccess($this->getDeadline()?->addMonth());
+        return back()->with('message', 'Sikeresen véglegesítette a jelentkezését!');
     }
 }

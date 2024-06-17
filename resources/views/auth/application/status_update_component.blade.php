@@ -1,6 +1,6 @@
 <div class="right">
-    @foreach (\App\Models\ApplicationForm::STATUSES as $st)
-    @if($st != \App\Models\ApplicationForm::STATUS_IN_PROGRESS || user()->isAdmin())
+    @foreach (\App\Models\Application::STATUSES as $st)
+    @if($st != \App\Models\Application::STATUS_IN_PROGRESS || user()->isAdmin())
 
     <p style="margin:5px">
         <label>

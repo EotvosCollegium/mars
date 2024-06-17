@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Exports\ApplicantsExport;
 use App\Http\Controllers\Controller;
-use App\Models\ApplicationForm;
+use App\Models\Application;
 use App\Models\User;
 use App\Models\RoleUser;
 use App\Models\File;
@@ -37,8 +37,8 @@ class ApplicantsController extends Controller
         $authUser = $request->user();
         $this->authorize('viewSomeApplication', User::class);
 
-        $applications = ApplicationForm::select('*');
-        $applications->join('workshop_users', 'application_forms.user_id', '=', 'workshop_users.user_id');
+        $applications = Application::select('*');
+        $applications->join('workshop_users', 'applications.user_id', '=', 'workshop_users.user_id');
         if ($request->has('workshop') && $request->input('workshop') !== "null"){
             //filter by selected workshop
             if($authUser->cannot('viewAllApplications', User::class)) {
@@ -57,7 +57,7 @@ class ApplicantsController extends Controller
         }
         //hide unfinished
         if ($authUser->cannot('viewUnfinishedApplications', [User::class])) {
-            $applications->where('status', '!=', ApplicationForm::STATUS_IN_PROGRESS);
+            $applications->where('status', '!=', Application::STATUS_IN_PROGRESS);
         }
         //filter by status
         if ($request->has('status')) {
@@ -88,7 +88,7 @@ class ApplicantsController extends Controller
     public function edit(Request $request, $id): RedirectResponse
     {
         $this->authorize('viewSomeApplication', User::class);
-        $application = ApplicationForm::findOrFail($request->input('application'));
+        $application = Application::findOrFail($request->input('application'));
         $newStatus=$request->input('status_'.$application->user->id);
         if ($request->has('note')) {
             $application->update(['note' => $request->input('note')]);
@@ -110,7 +110,7 @@ class ApplicantsController extends Controller
         $not_handled_applicants = User::query()->withoutGlobalScope('verified')
             ->where('verified', 0)
             ->whereHas('application', function ($query) {
-                $query->whereIn('status', [ApplicationForm::STATUS_SUBMITTED, ApplicationForm::STATUS_SUBMITTED]);
+                $query->whereIn('status', [Application::STATUS_SUBMITTED, Application::STATUS_SUBMITTED]);
             })
             ->count();
         if ($not_handled_applicants > 0) {
@@ -120,7 +120,7 @@ class ApplicantsController extends Controller
             User::query()->withoutGlobalScope('verified')
                 ->where('verified', 0)
                 ->whereHas('application', function ($query) {
-                    $query->where('status', ApplicationForm::STATUS_ACCEPTED);
+                    $query->where('status', Application::STATUS_ACCEPTED);
                 })
                 ->update(['verified' => true]);
             $usersToDelete = User::query()->withoutGlobalScope('verified')
@@ -131,12 +131,12 @@ class ApplicantsController extends Controller
                     $user->profilePicture()->delete();
                 }
             }
-            $files = File::where('application_form_id', '!=', null);
+            $files = File::where('application_id', '!=', null);
             foreach ($files->get() as $file) {
                 Storage::delete($file->path);
             }
             $files->delete();
-            ApplicationForm::query()->delete();
+            Application::query()->delete();
             $usersToDelete->forceDelete();
 
             RoleUser::where('role_id', Role::get(Role::APPLICATION_COMMITTEE_MEMBER)->id)->delete();
@@ -154,10 +154,10 @@ class ApplicantsController extends Controller
     {
         $this->authorize('viewAllApplications', User::class);
 
-        $applications = ApplicationForm::with('user')
-                ->where('status', ApplicationForm::STATUS_SUBMITTED)
-                ->orWhere('status', ApplicationForm::STATUS_CALLED_IN)
-                ->orWhere('status', ApplicationForm::STATUS_ACCEPTED)
+        $applications = Application::with('user')
+                ->where('status', Application::STATUS_SUBMITTED)
+                ->orWhere('status', Application::STATUS_CALLED_IN)
+                ->orWhere('status', Application::STATUS_ACCEPTED)
                 ->get();
 
         return Excel::download(new ApplicantsExport($applications), 'felveteli.xlsx');

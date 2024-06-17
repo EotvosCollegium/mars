@@ -1,5 +1,5 @@
 {{-- All the application's data for finalization and for the admission committes to show --}}
-@can('viewApplication', $user)
+@can('view', $user->application)
     <div class="card">
         <div class="card-content">
             <div class="row" style="margin-bottom: 0">
@@ -12,7 +12,7 @@
                 </div>
                 <div class="col s12 xl8">
                     @can('editApplicationStatus', \App\Models\User::class)
-                        @if(!(user()->isAdmin() || $user->application->status != \App\Models\ApplicationForm::STATUS_IN_PROGRESS))
+                        @if(!(user()->isAdmin() || $user->application->status != \App\Models\Application::STATUS_IN_PROGRESS))
                             <span class="right">
                                 @include('auth.application.status', ['status' => $user->application->status])
                             </span>

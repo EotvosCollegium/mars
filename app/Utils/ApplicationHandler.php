@@ -2,7 +2,7 @@
 
 namespace App\Utils;
 
-use App\Models\ApplicationForm;
+use App\Models\Application;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -42,25 +42,21 @@ trait ApplicationHandler
             'competition' => 'nullable',
             'publication' => 'nullable',
             'foreign_studies' => 'nullable',
-            'question_1' => 'nullable|string',
+            'question_1' => 'nullable|array',
+            'question_1.*' => 'string',
             'question_2' => 'nullable|string',
-            'question_3',
-            'question_4',
-            'present',
-            'accommodation'
+            'question_3' => 'nullable|string',
+            'question_4' => 'nullable|string',
+            'present' => 'nullable|string',
+            'accommodation' => 'nullable|in:on'
         ]);
-        if ($request->input('status') == 'resident') {
-            $user->setResident();
-        } elseif ($request->input('status') == 'extern') {
-            $user->setExtern();
-        }
 
-        ApplicationForm::updateOrCreate(
+        $data['applied_for_resident_status'] = $request->input('status') == "resident";
+        $data['accommodation'] = $request->input('accommodation') === "on";
+
+        Application::updateOrCreate(
             ['user_id' => $user->id],
-            Arr::except($data, ['accommodation']) +
-            [
-                'accommodation' => $request->input('accommodation') === "on"
-            ]
+            $data
         );
     }
 
@@ -72,7 +68,7 @@ trait ApplicationHandler
     public function storeFiles(Request $request, $user): void
     {
         $request->validate([
-            'file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5240',
+            'file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2000',
             'name' => 'required|string|max:255',
         ]);
         $path = $request->file('file')->store('uploads');
@@ -104,7 +100,7 @@ trait ApplicationHandler
     public function storeProfilePicture(Request $request, $user): void
     {
         $request->validate([
-            'picture' => 'required|mimes:jpg,jpeg,png,gif,svg',
+            'picture' => 'required|mimes:jpg,jpeg,png|max:2000',
         ]);
         $path = $request->file('picture')->store('avatars');
         $old_profile = $user->profilePicture;
