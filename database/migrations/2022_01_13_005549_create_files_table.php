@@ -15,7 +15,7 @@ class CreateFilesTable extends Migration
     {
         Schema::create('files', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('application_id')->nullable()->constrained();
+            $table->foreignId('application_form_id')->nullable()->constrained();
             $table->foreignId('user_id')->nullable()->constrained();
             $table->string('name');
             $table->string('path');
