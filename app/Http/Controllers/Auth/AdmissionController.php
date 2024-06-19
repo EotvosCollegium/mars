@@ -89,9 +89,9 @@ class AdmissionController extends Controller
             $applications->where('submitted', true);
         }
         //filter by status
-//        if ($request->has('status')) {
-//            $applications->where('status', $request->input('status'));
-//        }
+        //        if ($request->has('status')) {
+        //            $applications->where('status', $request->input('status'));
+        //        }
         return view('auth.admission.index', [
             'applications' => $applications->with('user.educationalInformation')->get()->unique()->sortBy('user.name'),
             'workshop' => $request->input('workshop'), //filtered workshop
@@ -133,45 +133,45 @@ class AdmissionController extends Controller
      */
     public function finalize(): RedirectResponse
     {
-//        $this->authorize('finalizeApplicationProcess', User::class);
-//        Cache::forget('collegists');
-//        $not_handled_applicants = User::query()->withoutGlobalScope('verified')
-//            ->where('verified', 0)
-//            ->whereHas('application', function ($query) {
-//                $query->where('submitted', true);
-//            })
-//            ->count();
-//        if ($not_handled_applicants > 0) {
-//            return redirect()->back()->with('error', 'Még vannak feldolgozatlan jelentkezések!');
-//        }
-//        DB::transaction(function () {
-//            User::query()->withoutGlobalScope('verified')
-//                ->where('verified', 0)
-//                ->whereHas('application', function ($query) {
-//                    $query->where('status', Application::STATUS_ACCEPTED);
-//                })
-//                ->update(['verified' => true]);
-//            $usersToDelete = User::query()->withoutGlobalScope('verified')
-//                ->where('verified', 0)->whereHas('application');
-//            foreach ($usersToDelete->get() as $user) {
-//                if ($user->profilePicture!=null) {
-//                    Storage::delete($user->profilePicture->path);
-//                    $user->profilePicture()->delete();
-//                }
-//            }
-//            $files = File::where('application_id', '!=', null);
-//            foreach ($files->get() as $file) {
-//                Storage::delete($file->path);
-//            }
-//            $files->delete();
-//            Application::query()->delete();
-//            $usersToDelete->forceDelete();
-//
-//            RoleUser::where('role_id', Role::get(Role::APPLICATION_COMMITTEE_MEMBER)->id)->delete();
-//            RoleUser::where('role_id', Role::get(Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER)->id)->delete();
-//        });
-//
-//        Cache::clear();
+        //        $this->authorize('finalizeApplicationProcess', User::class);
+        //        Cache::forget('collegists');
+        //        $not_handled_applicants = User::query()->withoutGlobalScope('verified')
+        //            ->where('verified', 0)
+        //            ->whereHas('application', function ($query) {
+        //                $query->where('submitted', true);
+        //            })
+        //            ->count();
+        //        if ($not_handled_applicants > 0) {
+        //            return redirect()->back()->with('error', 'Még vannak feldolgozatlan jelentkezések!');
+        //        }
+        //        DB::transaction(function () {
+        //            User::query()->withoutGlobalScope('verified')
+        //                ->where('verified', 0)
+        //                ->whereHas('application', function ($query) {
+        //                    $query->where('status', Application::STATUS_ACCEPTED);
+        //                })
+        //                ->update(['verified' => true]);
+        //            $usersToDelete = User::query()->withoutGlobalScope('verified')
+        //                ->where('verified', 0)->whereHas('application');
+        //            foreach ($usersToDelete->get() as $user) {
+        //                if ($user->profilePicture!=null) {
+        //                    Storage::delete($user->profilePicture->path);
+        //                    $user->profilePicture()->delete();
+        //                }
+        //            }
+        //            $files = File::where('application_id', '!=', null);
+        //            foreach ($files->get() as $file) {
+        //                Storage::delete($file->path);
+        //            }
+        //            $files->delete();
+        //            Application::query()->delete();
+        //            $usersToDelete->forceDelete();
+        //
+        //            RoleUser::where('role_id', Role::get(Role::APPLICATION_COMMITTEE_MEMBER)->id)->delete();
+        //            RoleUser::where('role_id', Role::get(Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER)->id)->delete();
+        //        });
+        //
+        //        Cache::clear();
         return back()->with('message', 'Sikeresen jóváhagyta az elfogadott jelentkezőket');
     }
 
@@ -183,7 +183,7 @@ class AdmissionController extends Controller
         $this->authorize('viewAll', Application::class);
 
         $applications = Application::with('user')
-                ->where('submitted',  true)
+                ->where('submitted', true)
                 ->get();
 
         return Excel::download(new ApplicantsExport($applications), 'felveteli.xlsx');

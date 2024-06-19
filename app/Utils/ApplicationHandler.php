@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Storage;
 
 trait ApplicationHandler
 {
-
     /**
      * @param Request $request
      * @param User $user
