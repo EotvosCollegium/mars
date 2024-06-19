@@ -68,9 +68,9 @@
                             class="material-icons left">rate_review</i>Szemeszter értékelés</a>
             </li>
         @endcan
-        <!-- applications page -->
+        <!-- admission page -->
         @can('viewSome', \App\Models\Application::class)
-            <li><a class="waves-effect" href="{{ route('applications') }}"><i
+            <li><a class="waves-effect" href="{{ route('admission.applicants.index') }}"><i
                             class="material-icons left">person_search</i>Felvételi</a></li>
         @endcan
         <!-- collapsible modules -->

@@ -33,30 +33,7 @@ class ApplicationController extends Controller
     private const ADD_PROFILE_PIC_ROUTE = 'files.profile';
     private const SUBMIT_ROUTE = 'submit';
 
-    /**
-     * Update the PeriodicEvent connected to the applications.
-     * @throws AuthorizationException
-     */
-    public function updateApplicationPeriod(Request $request): RedirectResponse
-    {
-        $this->authorize('finalize', Application::class);
 
-        $request->validate([
-            'semester_id' => 'required|exists:semesters,id',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after:now|after:start_date',
-            'extended_end_date' => 'nullable|date|after:end_date',
-        ]);
-
-        $this->updatePeriodicEvent(
-            Semester::find($request->semester_id),
-            Carbon::parse($request->start_date),
-            Carbon::parse($request->end_date),
-            $request->extended_end_date ? Carbon::parse($request->extended_end_date) : null
-        );
-
-        return back()->with('message', __('general.successful_modification'));
-    }
 
     /**
      * Return the view based on the request's page parameter.
@@ -102,7 +79,7 @@ class ApplicationController extends Controller
      * @return RedirectResponse
      * @throws AuthenticationException
      */
-    public function store(Request $request) //RedirectResponse
+    public function store(Request $request): RedirectResponse
     {
         $user = user();
 
@@ -119,12 +96,12 @@ class ApplicationController extends Controller
         }
 
         switch ($request->input('page')) {
-            //personal and educational data update is in UserController
+            //personal, educational data and profile picture update is in UserController
             case self::QUESTIONS_ROUTE:
                 $this->storeQuestionsData($request, $user);
                 break;
             case self::FILES_ROUTE:
-                $this->storeFiles($request, $user);
+                $this->storeFile($request, $user);
                 break;
             case self::DELETE_FILE_ROUTE:
                 $this->deleteFile($request, $user);

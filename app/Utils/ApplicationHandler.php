@@ -11,22 +11,6 @@ use Illuminate\Support\Facades\Storage;
 
 trait ApplicationHandler
 {
-    /**
-     * @return Carbon the application deadline set in .env
-     */
-    public static function getApplicationDeadline(): Carbon
-    {
-        return Carbon::parse(config('custom.application_deadline'));
-    }
-
-    /**
-     * @return bool if the deadline has been extended or not
-     */
-    public static function isDeadlineExtended(): bool
-    {
-        return config('custom.application_extended');
-    }
-
 
     /**
      * @param Request $request
@@ -65,7 +49,7 @@ trait ApplicationHandler
      * @param $user
      * @return void
      */
-    public function storeFiles(Request $request, $user): void
+    public function storeFile(Request $request, $user): void
     {
         $request->validate([
             'file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2000',
@@ -90,25 +74,5 @@ trait ApplicationHandler
 
         Storage::delete($file->path);
         $file->delete();
-    }
-
-    /**
-     * @param Request $request
-     * @param $user
-     * @return void
-     */
-    public function storeProfilePicture(Request $request, $user): void
-    {
-        $request->validate([
-            'picture' => 'required|mimes:jpg,jpeg,png|max:2000',
-        ]);
-        $path = $request->file('picture')->store('avatars');
-        $old_profile = $user->profilePicture;
-        if ($old_profile) {
-            Storage::delete($old_profile->path);
-            $old_profile->update(['path' => $path]);
-        } else {
-            $user->profilePicture()->create(['path' => $path, 'name' => 'profile_picture']);
-        }
     }
 }

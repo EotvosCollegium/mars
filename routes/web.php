@@ -11,7 +11,7 @@
 |
 */
 
-use App\Http\Controllers\Auth\ApplicantsController;
+use App\Http\Controllers\Auth\AdmissionController;
 use App\Http\Controllers\Auth\ApplicationController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Dormitory\FaultController;
@@ -169,14 +169,15 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
     Route::get('/secretariat/registrations/reject/{id}', [GuestsController::class, 'reject'])->name('secretariat.registrations.reject');
     Route::post('/secretariat/invite', [InvitationController::class, 'store'])->name('secretariat.invite');
 
-    /** Application handling */
-    Route::post('/applications/period/update', [ApplicationController::class, 'updateApplicationPeriod'])->name('applications.period.update');
-    Route::get('/applicants', [ApplicantsController::class, 'index'])->name('applicants.index');
-    Route::get('/applications/{id}', [ApplicantsController::class, 'show'])->name('applicants.show');
-    Route::get('/applications/{id}/edit', [ApplicantsController::class, 'edit'])->name('applicants.edit');
-    Route::post('/applicants/{id}', [ApplicantsController::class, 'update'])->name('applicants.update');
-    Route::post('/applicants/finalize', [ApplicantsController::class, 'finalize'])->name('applicants.finalize');
-    Route::get('/applicants/export', [ApplicationController::class, 'export'])->name('applications.export');
+    /** Admission and applicants handling */
+    Route::post('/admission/period/update', [AdmissionController::class, 'updateApplicationPeriod'])->name('admission.period.update');
+    Route::get('/admission/export', [AdmissionController::class, 'export'])->name('admission.export');
+    Route::post('/admission/finalize', [AdmissionController::class, 'finalize'])->name('admission.finalize');
+
+    Route::get('/applicants', [AdmissionController::class, 'index'])->name('admission.applicants.index');
+    Route::get('/applicants/{application}', [AdmissionController::class, 'show'])->name('admission.applicants.show');
+    Route::get('/applicants/{application}/edit', [AdmissionController::class, 'edit'])->name('admission.applicants.edit');
+    Route::post('/applicants/{application}', [AdmissionController::class, 'update'])->name('admission.applicants.update');
 
     /** Faults */
     Route::get('/faults', [FaultController::class, 'index'])->name('faults');
