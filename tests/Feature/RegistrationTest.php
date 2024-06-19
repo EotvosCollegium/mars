@@ -54,7 +54,7 @@ class RegistrationTest extends TestCase
         ]);
         $this->assertDatabaseHas('applications', [
             'user_id' => $user->id,
-            'status' => Application::STATUS_IN_PROGRESS
+            'submitted' => false
         ]);
 
     }

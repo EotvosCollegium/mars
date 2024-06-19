@@ -85,6 +85,10 @@ class Application extends Model
         'note'
     ];
 
+    protected $casts = [
+        'submitted' => 'bool',
+        'applied_for_resident_status' => 'bool'
+    ];
 
     public const QUESTION_1 = [
         "tanárom ajánlotta",
@@ -275,10 +279,6 @@ class Application extends Model
 
         if ($user->faculties->count() == 0) {
             $missingData[] =  'Megjelölt kar';
-        }
-
-        if (!$user->isResident() && !$user->isExtern()) {
-            $missingData[] =  'Megjelölt collegista státusz';
         }
 
         if (!isset($this->graduation_average)) {
