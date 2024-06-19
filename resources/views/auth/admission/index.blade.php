@@ -10,7 +10,7 @@
         <div class="card">
             <div class="card-content">
                 <div class="row center" style="margin-bottom: 0">
-                    <form id="workshop-filter" method="GET" route="{{route('admission.applicants.index')}}">
+                    <form id="workshop-filter" method="GET" action="{{route('admission.applicants.index')}}">
                         <x-input.select id="workshop" :elements="$workshops" :default="$workshop"
                                         text="Műhely"/>
                         @can('viewUnfinished', \App\Models\Application::class)
@@ -21,7 +21,7 @@
                         @endif
                         <x-input.button type="submit" text="Szűrés"/>
                     </form>
-                    <form id="empty-filter" method="GET" route="{{route('admission.applicants.index')}}"
+                    <form id="empty-filter" method="GET" action="{{route('admission.applicants.index')}}"
                           style="{{($status=='' && $workshop=='')?'display: none':''}}">
                         <x-input.button id="delete-filter" class="grey" text="Szűrő törlése"/>
                     </form>

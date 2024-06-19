@@ -8,7 +8,7 @@
 @section('content')
     @include('auth.application.application', ['user' => $user, 'expanded' => true, 'admin' => $admin ?? false])
     <div class="card">
-        <form method="POST" route="{{route('admission.applicants.edit', ['application' => $user->application->id])}}">
+        <form method="POST" action="{{route('admission.applicants.edit', ['application' => $user->application->id])}}">
             <div class="card-content">
                 <div class="row">
                     @csrf

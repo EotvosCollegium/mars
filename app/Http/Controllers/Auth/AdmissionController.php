@@ -101,7 +101,15 @@ class AdmissionController extends Controller
             'periodicEvent' => $this->periodicEvent()
         ]);
     }
-    public function show(Application $application)//: View
+
+    /**
+     * Show and application's details
+     *
+     * @param Application $application
+     * @return View
+     * @throws AuthorizationException
+     */
+    public function show(Application $application): View
     {
         $this->authorize('view', $application);
         $user = User::withoutGlobalScope('verified')->with('application')->find($application->user_id);

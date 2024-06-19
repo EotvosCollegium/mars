@@ -331,7 +331,6 @@ class ApplicationTest extends TestCase
         $response = $this->post('/application', [
             'page' => 'submit'
         ]);
-        echo $response->ddSession();
         $response->assertStatus(302);
         $response->assertSessionHas('message', 'Sikeresen véglegesítette a jelentkezését!');
         $user->load('application');

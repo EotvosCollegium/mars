@@ -114,6 +114,10 @@ class Application extends Model
         return $this->belongsTo('App\Models\User')->withoutGlobalScope('verified');
     }
 
+    /**
+     * Uploaded files
+     * @return HasMany
+     */
     public function files(): HasMany
     {
         return $this->hasMany('App\Models\File');
