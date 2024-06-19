@@ -3,15 +3,11 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\Application;
 use App\Models\Faculty;
 use App\Models\Role;
-use App\Models\Semester;
 use App\Models\User;
 use App\Models\Workshop;
 use App\Utils\HasPeriodicEvent;
-use Carbon\Carbon;
-use Illuminate\Auth\Access\AuthorizationException;
 use App\Utils\ApplicationHandler;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\RedirectResponse;
@@ -124,12 +120,12 @@ class ApplicationController extends Controller
         if (!$this->isActive()) {
             return redirect()->route('application')->with('error', 'A jelentkezési határidő lejárt');
         }
-
+        $user->load('application'); // refresh
         if ($user->application->missingData() != []) {
             return back()->with('error', 'Hiányzó adatok!');
         }
         $user->application->update(['submitted' => true]);
-        $user->internetAccess->setWifiCredentials();
+        $user->internetAccess->setWifiCredentials($user->educationalInformation->neptun);
         $user->internetAccess->extendInternetAccess($this->getDeadline()?->addMonth());
         return back()->with('message', 'Sikeresen véglegesítette a jelentkezését!');
     }

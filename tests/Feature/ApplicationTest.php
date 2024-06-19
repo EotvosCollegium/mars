@@ -332,11 +332,12 @@ class ApplicationTest extends TestCase
             'page' => 'submit'
         ]);
         $response->assertStatus(302);
-        $response->assertSessionHas('message', 'Sikeresen véglegesítette a jelentkezését!');
         $user->load('application');
-        $this->asserttrue($user->application->submitted);
+        $response->assertSessionHasNoErrors();
+        $response->assertSessionHas('message', 'Sikeresen véglegesítette a jelentkezését!');
+        $this->assertTrue($user->application->submitted);
         $this->assertNotNull($user->internetAccess);
-        $this->assertTrue($user->internetAccess->wifi_username == $user->educationalInformation->neptun);
+        $this->assertEquals($user->internetAccess->wifi_username, $user->educationalInformation->neptun);
         $this->assertTrue($user->internetAccess->has_internet_until > now());
     }
 
