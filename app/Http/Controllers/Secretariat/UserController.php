@@ -159,7 +159,7 @@ class UserController extends Controller
             'neptun' => 'required|string|size:6',
             'faculty' => 'array',
             'faculty.*' => 'exists:faculties,id',
-            'workshop' => 'array',
+            'workshop' => 'nullable|array',
             'workshop.*' => 'exists:workshops,id',
             'study_lines' => 'array',
             'study_lines.*.name' => 'required|string|max:255',

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Collection;
 
 /**
@@ -111,7 +112,25 @@ class Application extends Model
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo('App\Models\User')->withoutGlobalScope('verified');
+        return $this->belongsTo(User::class)->withoutGlobalScope('verified');
+    }
+
+    /**
+     */
+    public function applicationWorkshops(): HasMany
+    {
+        return $this->hasMany(ApplicationWorkshop::class);
+    }
+
+    public function appliedWorkshops(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            Workshop::class,
+            ApplicationWorkshop::class,
+            'application_id',
+            'id',
+            'id',
+            'workshop_id');
     }
 
     /**
@@ -299,5 +318,25 @@ class Application extends Model
         }
 
         return $missingData;
+    }
+
+    /**
+     * Sync the applied workshops.
+     * @param $workshop_ids
+     * @return void
+     */
+    public function syncAppliedWorkshops($workshop_ids): void
+    {
+        foreach (Workshop::all() as $workshop) {
+            if(in_array($workshop->id, $workshop_ids)) {
+                // make sure applied workshop exists
+                $this
+                    ->applicationWorkshops()
+                    ->updateOrCreate(['workshop_id' => $workshop->id]);
+            } else {
+                // delete application to workshop
+                $this->applicationWorkshops()->where('workshop_id', $workshop->id)->delete();
+            }
+        }
     }
 }

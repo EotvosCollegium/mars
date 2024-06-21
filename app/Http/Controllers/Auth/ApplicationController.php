@@ -43,6 +43,8 @@ class ApplicationController extends Controller
             return redirect()->route('user.update_tenant_status');
         }
 
+        $this->ensureApplicationExists(user());
+
         // only allow access if the application period is open or after, if the user has submitted application
         if(!($this->isActive() || user()->application?->submitted)) {
             abort(403, "A felvétel jelenleg nincs megnyitva");
@@ -75,17 +77,14 @@ class ApplicationController extends Controller
      * @return RedirectResponse
      * @throws AuthenticationException
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)//: RedirectResponse
     {
         $user = user();
 
         if (!$this->isActive()) {
             return redirect()->route('application')->with('error', 'A jelentkezési határidő lejárt!');
         }
-
-        if ($user->application()->doesntExist()) {
-            $user->application()->create();
-        }
+        $this->ensureApplicationExists($user);
 
         if ($user->application->submitted) {
             return redirect()->route('application')->with('error', 'Már véglegesítette a jelentkezését!');
@@ -128,5 +127,12 @@ class ApplicationController extends Controller
         $user->internetAccess->setWifiCredentials($user->educationalInformation->neptun);
         $user->internetAccess->extendInternetAccess($this->getDeadline()?->addMonth());
         return back()->with('message', 'Sikeresen véglegesítette a jelentkezését!');
+    }
+
+    private function ensureApplicationExists(User $user): void
+    {
+        if ($user->application()->doesntExist()) {
+            $user->application()->create();
+        }
     }
 }

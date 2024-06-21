@@ -2,7 +2,7 @@
     @if($optional)
     <div class="input-field col s3" style="padding: 0">
         <p>
-            <label>
+            <label class="black-text">
                 <input type="checkbox" class="filled-in checkbox-color" @if(!$hidden) checked @endif wire:click="show">
                 <span>{{ $title }}</span>
             </label>

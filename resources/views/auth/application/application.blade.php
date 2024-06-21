@@ -29,28 +29,24 @@
                         @endforelse
                     </p>
                     <p style="margin-bottom: 5px">
-                        @if ($user->workshops->count() > 0)
-                            @include('user.workshop_tags', ['user' => $user, 'newline' => true])
+                        @if ($user->application->appliedWorkshops->count() > 0)
+                            @include('user.workshop_tags', ['workshops' => $user->application->appliedWorkshops, 'newline' => true])
                         @else
                             <span style="font-style:italic;color:red">hiányzó műhely</span>
                         @endif
                     </p>
                     <p>
-                        @if ($user->isResident())
+                        @if ($user->application->applied_for_resident_status)
                             <span class="new badge coli blue tag" style="float:none;padding:4px;margin:0 10px 0px 2px;"
                                   data-badge-caption="">
                             @lang('role.resident')
                         </span>
-                        @endif
-                        @if ($user->isExtern())
+                        @else
                             <span class="new badge coli orange tag"
                                   style="float:none;padding:4px;margin:0 10px 0px 2px;"
                                   data-badge-caption="">
                             @lang('role.extern')
                         </span>
-                        @endif
-                        @if(!$user->isResident() && !$user->isExtern())
-                            <span style="font-style:italic;color:red">hiányzó státusz</span>
                         @endif
                     </p>
                 </div>

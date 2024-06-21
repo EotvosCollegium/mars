@@ -44,11 +44,10 @@
                         'items' => $user->application->foreign_studies])
                     </div>
                     <div class="input-field col s12">
-                        <p style="margin-bottom:10px"><label style="font-size: 1em">Megpályázni kívánt státusz</label>
-                        </p>
+                        <p style="margin-bottom:10px">Megpályázni kívánt státusz:</p>
                         <p>
                             @php $checked = old('status') ?  old('status') == 'resident' : $user->application->applied_for_resident_status @endphp
-                            <label>
+                            <label class="black-text">
                                 <input type="radio" name="status" value="resident"
                                     {{ $checked ? 'checked' : '' }}>
                                 <span>@lang('role.resident')</span>
@@ -56,7 +55,7 @@
                         </p>
                         <p>
                             @php $checked = old('status') ?  old('status') == 'extern' : !$user->application->applied_for_resident_status @endphp
-                            <label>
+                            <label class="black-text">
                                 <input type="radio" name="status" value="extern"
                                     {{ $checked ? 'checked' : '' }}>
                                 <span>@lang('role.extern')</span>
@@ -66,8 +65,28 @@
                         <blockquote class="error">A státusz kitöltése kötelező</blockquote>
                         @enderror
                     </div>
-                    <div class="input-field col s12"><p style="margin-bottom:10px"><label style="font-size: 1em">Honnan
-                                hallott a Collegiumról?</label></p>
+                    <div class="input-field col s12">
+                        <p style="margin-bottom:10px">
+                                Megpályázni kívánt műhely(ek):
+                        </p>
+                        <div class="row">
+                        @foreach ($workshops as $workshop)
+                            <div class="col s6">
+                                @php $checked = $user->application->appliedWorkshops->contains($workshop->id) @endphp
+                                <x-input.checkbox only_input id="workshop_{{$workshop->id}}" :text="$workshop->name" name="workshop[]"
+                                                  value="{{ $workshop->id }}" checked='{{$checked}}'/>
+                            </div>
+                        @endforeach
+                        </div>
+                        @error('workshop')
+                        <blockquote class="error">@lang('user.workshop_must_be_filled')</blockquote>
+                        @enderror
+                        <blockquote>
+                        Kérjük, jelentkezését csak a szakmailag releváns műhelyekbe adja le. A műhelyek egymástól függetlenül dönthetnek a meghallgatásáról.
+                        </blockquote>
+                    </div>
+                    <div class="input-field col s12">
+                        <p style="margin-bottom:10px">Honnan hallott a Collegiumról?</p>
                         @foreach(\App\Models\Application::QUESTION_1 as $answer)
                             @if(in_array($answer, $user->application->question_1 ?? []) !== false)
                                 <p>

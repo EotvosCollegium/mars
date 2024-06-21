@@ -1,7 +1,7 @@
 @if(!$onlyInput)
 <div class="input-field col s{{$s}} m{{$m}} l{{$l}} xl{{$xl}}"><p>
 @endif
-<label>
+<label class="black-text">
     <input
         type="checkbox"
         {{$attributes->merge([
