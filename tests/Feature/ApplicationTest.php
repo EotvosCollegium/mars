@@ -23,8 +23,6 @@ use Tests\TestCase;
  */
 class ApplicationTest extends TestCase
 {
-    use RefreshDatabase;
-
     /**
      * Set up the test.
      * @return void
@@ -46,8 +44,7 @@ class ApplicationTest extends TestCase
     private function createApplicant(): User
     {
         $user = User::factory()->create(['verified' => false]);
-        $user->roles()->attach(Role::collegist()->id);
-        $user->application->update(['submitted' => false]);
+        $user->application()->create(['submitted' => false]);
         $this->actingAs($user);
 
         return $user;
@@ -230,7 +227,6 @@ class ApplicationTest extends TestCase
         $this->assertContains('Tanulmányi adatok', $user->application->missingData());
         $this->assertContains('Megjelölt szak', $user->application->missingData());
         $this->assertContains('Megjelölt kar', $user->application->missingData());
-        $this->assertContains('Megjelölt műhely', $user->application->missingData());
         $response = $this->post('/users/' . $user->id . '/educational_information', [
             'year_of_graduation' => '2018',
             'year_of_acceptance' => '2018',
@@ -241,7 +237,6 @@ class ApplicationTest extends TestCase
                 "level" => "bachelor",
                 "start" => Semester::current()->id]],
             'email' => 'study@email.com',
-            'workshop' => [Workshop::first()->id],
             'faculty' => [Faculty::first()->id],
         ]);
         $response->assertStatus(302);
@@ -250,7 +245,6 @@ class ApplicationTest extends TestCase
         $this->assertNotContains('Tanulmányi adatok', $user->application->missingData());
         $this->assertNotContains('Megjelölt szak', $user->application->missingData());
         $this->assertNotContains('Megjelölt kar', $user->application->missingData());
-        $this->assertNotContains('Megjelölt műhely', $user->application->missingData());
 
         //alfonso
         $this->assertContains('Megjelölt ALFONSÓ nyelv', $user->application->missingData());
@@ -306,6 +300,7 @@ class ApplicationTest extends TestCase
         $user->load('application');
         $this->assertNotContains('Érettségi átlaga', $user->application->missingData());
 
+        $this->assertContains('Megjelölt műhely', $user->application->missingData());
         $this->assertContains('"Honnan hallott a Collegiumról?" kérdés', $user->application->missingData());
         $this->assertContains('"Miért kíván a Collegium tagja lenni?" kérdés', $user->application->missingData());
         $this->assertContains('"Tervez-e tovább tanulni a diplomája megszerzése után? Milyen tervei vannak az egyetem után?" kérdés', $user->application->missingData());
@@ -313,6 +308,9 @@ class ApplicationTest extends TestCase
             'page' => 'questions',
             'status' => 'extern',
             'graduation_average' => '4',
+            'workshop' => [
+                Workshop::first()->id
+            ],
             'question_1' => ['answer 1'],
             'question_2' => 'answer 2',
             'question_3' => 'answer 3',
@@ -320,6 +318,7 @@ class ApplicationTest extends TestCase
         $response->assertStatus(302);
         $response->assertSessionHasNoErrors();
         $user->load('application');
+        $this->assertNotContains('Megjelölt műhely', $user->application->missingData());
         $this->assertNotContains('"Honnan hallott a Collegiumról?" kérdés', $user->application->missingData());
         $this->assertNotContains('"Miért kíván a Collegium tagja lenni?" kérdés', $user->application->missingData());
         $this->assertNotContains('"Tervez-e tovább tanulni a diplomája megszerzése után? Milyen tervei vannak az egyetem után?" kérdés', $user->application->missingData());
@@ -340,78 +339,4 @@ class ApplicationTest extends TestCase
         $this->assertEquals($user->internetAccess->wifi_username, $user->educationalInformation->neptun);
         $this->assertTrue($user->internetAccess->has_internet_until > now());
     }
-
-    //    /**
-    //     * Test the admin finalization
-    //     *
-    //     * @return void
-    //     */
-    //    public function test_cannot_finalize()
-    //    {
-    //        $user = User::factory()->create();
-    //        $user->addRole(Role::firstWhere('name', Role::SYS_ADMIN));
-    //        $this->actingAs($user);
-    //
-    //        $applicant_in_progress = User::factory()->create(['verified' => false]);
-    //        $applicant_in_progress->application->update(['submitted' => false]);
-    //
-    //        $applicant_submitted = User::factory()->create(['verified' => false]);
-    //        $applicant_submitted->application->update(['submitted' => true]);
-    ////
-    ////        $applicant_called_in = User::factory()->create(['verified' => false]);
-    ////        $applicant_called_in->application->update(['status' => Application::STATUS_CALLED_IN]);
-    ////
-    ////        $applicant_accepted = User::factory()->create(['verified' => false]);
-    ////        $applicant_accepted->application->update(['status' => Application::STATUS_ACCEPTED]);
-    ////
-    ////        $applicant_banished = User::factory()->create(['verified' => false]);
-    ////        $applicant_banished->application->update(['status' => Application::STATUS_BANISHED]);
-    //
-    //        $response = $this->post('/application/finalize');
-    //        $response->assertStatus(302);
-    //        $response->assertSessionHas('error', 'Még vannak feldolgozatlan jelentkezések!');
-    //    }
-
-    //    /**
-    //     * Test the admin finalization
-    //     *
-    //     * @return void
-    //     */
-    //    public function test_finalize()
-    //    {
-    //        $user = User::factory()->create(['verified' => true]);
-    //        $user->addRole(Role::firstWhere('name', Role::SYS_ADMIN));
-    //        $user->addRole(Role::firstWhere('name', Role::APPLICATION_COMMITTEE_MEMBER));
-    //        $user->addRole(Role::firstWhere('name', Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER));
-    //        Config::set('custom.application_deadline', now()->subWeeks(3));
-    //        $this->actingAs($user);
-    //
-    //        Application::query()->delete();
-    //        $applicant_in_progress = User::factory()->create(['verified' => false]);
-    //        $applicant_in_progress->application->update(['status' => Application::STATUS_IN_PROGRESS]);
-    //
-    //        $applicant_accepted = User::factory()->create(['verified' => false]);
-    //        $applicant_accepted->application->update(['status' => Application::STATUS_ACCEPTED]);
-    //
-    //        $applicant_banished = User::factory()->create(['verified' => false]);
-    //        $applicant_banished->application->update(['status' => Application::STATUS_BANISHED]);
-    //
-    //
-    //        $response = $this->post('/application/finalize');
-    //        $response->assertStatus(302);
-    //        $response->assertSessionHas('message', 'Sikeresen jóváhagyta az elfogadott jelentkezőket');
-    //
-    //        $applicant_accepted->refresh();
-    //        $this->assertTrue($applicant_accepted->verified == 1);
-    //        $this->assertNull(User::find($applicant_banished->id));
-    //        $this->assertNull(User::find($applicant_in_progress->id));
-    //
-    //        $this->assertTrue(Application::count() == 0);
-    //
-    //        $user->refresh();
-    //        $this->assertTrue($user->hasRole(Role::firstWhere('name', Role::SYS_ADMIN)));
-    //        $this->assertFalse($user->hasRole(Role::firstWhere('name', Role::APPLICATION_COMMITTEE_MEMBER)));
-    //        $this->assertFalse($user->hasRole(Role::firstWhere('name', Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER)));
-    //    }
-
 }

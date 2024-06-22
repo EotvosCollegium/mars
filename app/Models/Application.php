@@ -296,7 +296,7 @@ class Application extends Model
             $missingData[] =  'Legalább két feltöltött fájl';
         }
 
-        if ($user->workshops->count() == 0) {
+        if ($this->appliedWorkshops->count() == 0) {
             $missingData[] =  'Megjelölt műhely';
         }
 
@@ -322,13 +322,13 @@ class Application extends Model
 
     /**
      * Sync the applied workshops.
-     * @param $workshop_ids
+     * @param array|null $workshop_ids
      * @return void
      */
-    public function syncAppliedWorkshops($workshop_ids): void
+    public function syncAppliedWorkshops(?array $workshop_ids): void
     {
         foreach (Workshop::all() as $workshop) {
-            if(in_array($workshop->id, $workshop_ids)) {
+            if(in_array($workshop->id, $workshop_ids ?? [])) {
                 // make sure applied workshop exists
                 $this
                     ->applicationWorkshops()

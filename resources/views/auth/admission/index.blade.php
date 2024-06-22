@@ -15,14 +15,14 @@
                                         text="Műhely"/>
                         @can('viewUnfinished', \App\Models\Application::class)
                             <label>
-                                <input type="checkbox" name="submitted" checked>
-                                <span style="padding-left: 25px; margin: 5px">Véglegesített</span>
+                                <input type="checkbox" name="show_not_submitted" {{$show_not_submitted ? "checked": ""}}>
+                                <span style="padding-left: 25px; margin: 5px">Nem véglegesítettek</span>
                             </label>
                         @endif
                         <x-input.button type="submit" text="Szűrés"/>
                     </form>
                     <form id="empty-filter" method="GET" action="{{route('admission.applicants.index')}}"
-                          style="{{($status=='' && $workshop=='')?'display: none':''}}">
+                          style="{{($workshop=='')?'display: none':''}}">
                         <x-input.button id="delete-filter" class="grey" text="Szűrő törlése"/>
                     </form>
                 </div>

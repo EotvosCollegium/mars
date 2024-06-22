@@ -38,10 +38,10 @@ class ApplicationPolicy
             return true;
         }
 
-        return $target->workshops
+        return $target->appliedWorkshops
                 ->intersect($user->applicationCommitteWorkshops)
                 ->count() > 0
-            || $target->workshops
+            || $target->appliedWorkshops
                 ->intersect($user->roleWorkshops)
                 ->count() > 0;
     }

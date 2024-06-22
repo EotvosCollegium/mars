@@ -11,10 +11,18 @@
                     @endif
                 </div>
                 <div class="col s12 xl8">
-{{--                    @can('editStatus', \App\Models\Application::class)--}}
-{{--                        @livewire('application-status-update', ['application' => $user->application])--}}
-{{--                    @endcan--}}
-
+                    {{--                    @can('editStatus', \App\Models\Application::class)--}}
+                    {{--                        @livewire('application-status-update', ['application' => $user->application])--}}
+                    {{--                    @endcan--}}
+                    @can('viewUnfinished', \App\Models\Application::class)
+                        <span class="right">
+                            @if($user->application->submitted)
+                                Véglegesítve
+                            @else
+                                Folyamatban
+                            @endif
+                        </span>
+                    @endcan
                     <div class="card-title">{{ $user->name }}</div>
                     <p style="margin-bottom: 5px"><a href="mailto:{{ $user->email }}">{{ $user->email }}</a></p>
                     <p style="margin-bottom: 5px">{{ $user->personalInformation?->phone_number }}</p>
@@ -164,7 +172,8 @@
                                 <td>
                                     @forelse ($user->educationalInformation?->languageExams?->sortBy('date') ?? [] as $exam)
                                         <a href="/{{ $exam->path }}">
-                                            {{ __('role.'.$exam->language) }} - {{ $exam->level }}, {{ $exam->type }}, {{$exam->date->format('Y-m')}}
+                                            {{ __('role.'.$exam->language) }} - {{ $exam->level }}, {{ $exam->type }}
+                                            , {{$exam->date->format('Y-m')}}
                                         </a>
                                         <br>
                                     @empty
