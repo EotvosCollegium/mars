@@ -38,7 +38,7 @@
 
 \begin{enumerate}
 @foreach($items as $item)
-    \item {{ $item->name }} @if(isset($item->serial_number)) ({{ $item->serial_number }}) @endif 
+    \item {{ \App\Utils\LatexSanitizer::sanitizeLatex($item->name) }} @if(isset($item->serial_number)) ({{ \App\Utils\LatexSanitizer::sanitizeLatex($item->serial_number) }}) @endif
 @endforeach
 \end{enumerate}
 
@@ -63,11 +63,11 @@
 birtokolt programokat és egyéb tartalmakat.
 
 \vspace{2em}
-\noindent{}Budapest, {{ $date }}
+\noindent{}Budapest, {{ \App\Utils\LatexSanitizer::sanitizeLatex($date) }}
 
 \hfill\lotofdots
 
-\hfill {{ $name }} \hspace{3.5em}
+\hfill {{ \App\Utils\LatexSanitizer::sanitizeLatex($name) }} \hspace{3.5em}
 
 \vspace{3em}
 
