@@ -4,10 +4,9 @@ namespace App\Utils;
 
 class LatexSanitizer
 {
-
     private static function convertCharToSymbol(string $char): string
     {
-        if($char == ' '){
+        if($char == ' ') {
             return ' ';
         }
         return "\\symbol{" . mb_ord($char) . "}";
@@ -20,7 +19,7 @@ class LatexSanitizer
      */
     public static function sanitizeLatex(string|null $data): string
     {
-        if($data == null){
+        if($data == null) {
             return "";
         }
         $len = mb_strlen($data);
