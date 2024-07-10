@@ -55,7 +55,7 @@ class AnonymousQuestionController extends Controller
             $endDate = $this->getEndDate();
             return is_null($endDate)
                 || $this->semester()->id == $semester->id && !$endDate->isPast();
-                                         // ^ it must be the semester belonging to the periodic event
+            // ^ it must be the semester belonging to the periodic event
         }
     }
 
