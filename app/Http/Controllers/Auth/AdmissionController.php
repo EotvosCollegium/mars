@@ -101,7 +101,6 @@ class AdmissionController extends Controller
 
         $applications = $applications->get()->unique()->sortBy('user.name');
         session()->push('applications', implode(":", $applications->pluck('user.name')->toArray()));
-        echo implode(":", $applications->pluck('user.name')->toArray()) . "\n";
         return view('auth.admission.index', [
             'applications' => $applications,
             'workshop' => $request->input('workshop'), //filtered workshop
@@ -129,6 +128,7 @@ class AdmissionController extends Controller
     /**
      * Edit an application's note.
      * @param Request $request
+     * @param Application $application
      * @return RedirectResponse
      * @throws AuthorizationException
      */
@@ -139,6 +139,7 @@ class AdmissionController extends Controller
         if ($request->has('note')) {
             $application->update(['note' => $request->input('note')]);
         } elseif ($newStatus) {
+            $this->authorize('editStatus', $application);
             $application->update(['status' => $newStatus]);
         }
         return redirect()->back();

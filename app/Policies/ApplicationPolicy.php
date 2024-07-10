@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\Application;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Workshop;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class ApplicationPolicy
@@ -67,8 +68,18 @@ class ApplicationPolicy
      * @param User $user
      * @return bool
      */
-    public function editStatus(User $user): bool
+    public function editStatus(User $user, ?Workshop $workshop = null): bool
     {
+        if ($workshop) {
+            if($user->hasRole([
+                Role::SECRETARY,
+                Role::DIRECTOR,
+                Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS
+            ]))
+                return true;
+            if($user->hasRole(Role::WORKSHOP_LEADER))
+                return $user->roleWorkshops->contains($workshop);
+        }
         return $user->hasRole([
             Role::SECRETARY,
             Role::DIRECTOR,

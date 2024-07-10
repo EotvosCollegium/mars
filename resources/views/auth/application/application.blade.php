@@ -11,19 +11,64 @@
                     @endif
                 </div>
                 <div class="col s12 xl8">
-                    {{--                    @can('editStatus', \App\Models\Application::class)--}}
-                    {{--                        @livewire('application-status-update', ['application' => $user->application])--}}
-                    {{--                    @endcan--}}
-                    @can('viewUnfinished', \App\Models\Application::class)
-                        <span class="right">
-                            @if($user->application->submitted)
-                                Véglegesítve
-                            @else
-                                Folyamatban
+
+                    <div class="right" style="margin:5px;width:150px">
+                        @can('viewUnfinished', \App\Models\Application::class)
+                            @if(!$user->application->submitted)
+                                <span class="new badge scale-transition red tag" style="display: block;"
+                                      data-badge-caption="">
+                                Nincs véglegesítve
+                                </span>
                             @endif
+
+                        @endcan
+                        @if ($user->application->applied_for_resident_status)
+                            <span class="new badge scale-transition coli blue tag" style="display: block;"
+                                  data-badge-caption="">
+                                @lang('role.resident')
+                            </span>
+                        @else
+                            <span class="new badge scale-transition coli orange tag" style="display: block;"
+                                  data-badge-caption="">
+                            @lang('role.extern')
                         </span>
-                    @endcan
-                    <div class="card-title">{{ $user->name }}</div>
+                        @endif
+                            <div class="divider" style="margin: 3px"></div>
+                        @foreach($user->application->applicationWorkshops as $workshop)
+                            <span class="new badge {{ $workshop->workshop->color() }} scale-transition tag"
+                                  data-badge-caption=""
+                                  style="display: block;white-space: nowrap;overflow: hidden;text-overflow: ellipsis">
+                                {{$workshop->workshop->name}}
+                            </span>
+                            <div style="display: flex;flex-direction: column;align-items: center;justify-content: center;">
+                                @can('editStatus', [\App\Models\Application::class, $workshop->workshop])
+                                    @livewire('application-status-update', ['application' => $user->application, 'workshop' => $workshop])
+                                @else
+                                    @if(isset($application))
+                                        <label style="font-size: 1em">
+                                            @if($workshop->admitted)
+                                                felvéve
+                                            @elseif($workshop->called_in)
+                                                behívva
+                                            @else
+                                                nincs behívva
+                                            @endif
+                                        </label>
+                                    @endif
+                                @endcan
+                            </div>
+                        @endforeach
+                    </div>
+
+                    <div class="card-title">
+                        @if(isset($application))
+                            <a href="{{route('admission.applicants.show', ['application' => $application->id])}}">
+                                {{ $user->name }}
+                            </a>
+                        @else
+                            {{ $user->name }}
+                        @endif
+                    </div>
                     <p style="margin-bottom: 5px"><a href="mailto:{{ $user->email }}">{{ $user->email }}</a></p>
                     <p style="margin-bottom: 5px">{{ $user->personalInformation?->phone_number }}</p>
                     <p style="margin-bottom: 5px">
@@ -35,27 +80,6 @@
                         @empty
                             <span style="font-style:italic;color:red">hiányzó szak</span>
                         @endforelse
-                    </p>
-                    <p style="margin-bottom: 5px">
-                        @if ($user->application->appliedWorkshops->count() > 0)
-                            @include('user.workshop_tags', ['workshops' => $user->application->appliedWorkshops, 'newline' => true])
-                        @else
-                            <span style="font-style:italic;color:red">hiányzó műhely</span>
-                        @endif
-                    </p>
-                    <p>
-                        @if ($user->application->applied_for_resident_status)
-                            <span class="new badge coli blue tag" style="float:none;padding:4px;margin:0 10px 0px 2px;"
-                                  data-badge-caption="">
-                            @lang('role.resident')
-                        </span>
-                        @else
-                            <span class="new badge coli orange tag"
-                                  style="float:none;padding:4px;margin:0 10px 0px 2px;"
-                                  data-badge-caption="">
-                            @lang('role.extern')
-                        </span>
-                        @endif
                     </p>
                 </div>
                 @if($expanded ?? true)
@@ -81,7 +105,8 @@
                                     {{ $user->personalInformation?->country }},
                                     {{ $user->personalInformation?->county }}
                                     <br>
-                                    {{ $user->personalInformation?->zip_code }} {{ $user->personalInformation?->city }},
+                                    {{ $user->personalInformation?->zip_code }} {{ $user->personalInformation?->city }}
+                                    ,
                                     {{ $user->personalInformation?->street_and_number }}
                                 </td>
                             </tr>
@@ -172,7 +197,8 @@
                                 <td>
                                     @forelse ($user->educationalInformation?->languageExams?->sortBy('date') ?? [] as $exam)
                                         <a href="/{{ $exam->path }}">
-                                            {{ __('role.'.$exam->language) }} - {{ $exam->level }}, {{ $exam->type }}
+                                            {{ __('role.'.$exam->language) }} - {{ $exam->level }}
+                                            , {{ $exam->type }}
                                             , {{$exam->date->format('Y-m')}}
                                         </a>
                                         <br>
@@ -264,7 +290,8 @@
                                         @endif
                                         <div class="row" style="margin-bottom: 0; padding: 10px">
                                             <div class="col" style="margin-top: 5px">
-                                                <a href="{{ url($file->path) }}" target="_blank">{{ $file->name }}</a>
+                                                <a href="{{ url($file->path) }}"
+                                                   target="_blank">{{ $file->name }}</a>
                                             </div>
                                         </div>
                                     @empty

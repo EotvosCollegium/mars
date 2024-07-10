@@ -50,9 +50,7 @@
         </div>
     @endif
     @foreach($applications as $application)
-        <a href="{{route('admission.applicants.show', ['application' => $application->id])}}">
-            @include('auth.application.application', ['user' => $application->user, 'expanded' => false])
-        </a>
+        @include('auth.application.application', ['user' => $application->user, 'expanded' => false])
     @endforeach
     <hr>
     <h6>Összesen: <b class="right">{{$applications->count()}} jelentkező</b></h6>
