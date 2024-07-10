@@ -153,36 +153,50 @@ class AnonymousQuestionController extends Controller
         // Answers for all available questions are stored each time, grouped to an answerSheet.
         // However, the available questions might change.
 
-        $validatedData = $request->validate(
+        $validator = Validator::make(
+            $request->all(),
             $semester->questionsNotAnsweredBy(user())
                      ->flatMap(fn ($q) => $q->validationRules())
                      ->all()
         );
 
-        // Since answer sheets are anonymous,
-        // we cannot append new answers to the previous sheet (if any);
-        // we have to create a new one.
-        $answerSheet = AnswerSheet::createForCurrentUser($semester);
-
-        foreach($semester->questionsNotAnsweredBy(user()) as $question) {
-            // validation ensures we have answers
-            // to all of these questions
-            $answer = $validatedData[$question->formKey()];
-            if ($question->has_long_answers) {
-                $question->storeAnswers(user(), $answer, $answerSheet);
-            } elseif ($question->isMultipleChoice()) {
-                $options = array_map(
-                    function (int $id) {return QuestionOption::find($id);},
-                    $answer
-                );
-                $question->storeAnswers(user(), $options, $answerSheet);
-            } else {
-                $option = QuestionOption::find($answer);
-                $question->storeAnswers(user(), $option, $answerSheet);
-            }
+        // redirect to the correct section
+        // we will ignore the 'section' field for now and hard-code it
+        if ($validator->fails()) {
+            return back()->withErrors($validator)
+                ->with('section', 'anonymous_questions')
+                ->withInput();
         }
 
-        return back()->with('message', __('general.successful_modification'))->with('section', $request->section);
+        $validatedData = $validator->validated();
+
+        DB::transaction(function () use ($validatedData, $semester) {
+            // Since answer sheets are anonymous,
+            // we cannot append new answers to the previous sheet (if any);
+            // we have to create a new one.
+            $answerSheet = AnswerSheet::createForCurrentUser($semester);
+
+            foreach($semester->questionsNotAnsweredBy(user()) as $question) {
+                // validation ensures we have answers
+                // to all of these questions
+                $answer = $validatedData[$question->formKey()];
+                if ($question->has_long_answers) {
+                    $question->storeAnswers(user(), $answer, $answerSheet);
+                } elseif ($question->isMultipleChoice()) {
+                    $options = array_map(
+                        function (int $id) {return QuestionOption::find($id);},
+                        $answer
+                    );
+                    $question->storeAnswers(user(), $options, $answerSheet);
+                } else {
+                    $option = QuestionOption::find($answer);
+                    $question->storeAnswers(user(), $option, $answerSheet);
+                }
+            }
+        });
+
+        // we will ignore the 'section' field for now and hard-code this
+        return back()->with('message', __('general.successful_modification'))->with('section', 'anonymous_questions');
     }
 
     /**

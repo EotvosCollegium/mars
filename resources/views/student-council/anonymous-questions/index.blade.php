@@ -13,9 +13,13 @@ $anonymousQuestionController = app(\App\Http\Controllers\StudentsCouncil\Anonymo
 
 @section('content')
 
-@foreach(App\Models\Semester::orderBy('year', 'desc')->orderBy('part', 'desc')->get() as $semester)
-<ul class="collapsible" @if(session()->get('section') == $semester->id) class="active" @endif>
-    <li @if(session()->get('section') == $semester->id) class="active" @endif>
+@foreach(App\Models\Semester::allUntilCurrent()
+    ->sortBy(function (App\Models\Semester $semester) {
+        return $semester->getStartDate();
+    })->reverse()
+    as $semester)
+<ul class="collapsible">
+    <li @if($semester->isCurrent()) class="active" @endif>
         <div class="collapsible-header">
                 <b>{{$semester->tag}}</b>
         </div>
