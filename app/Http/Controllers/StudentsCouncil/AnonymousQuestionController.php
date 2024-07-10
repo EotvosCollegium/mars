@@ -48,8 +48,9 @@ class AnonymousQuestionController extends Controller
     public function canAddQuestionTo(Semester $semester): bool
     {
         // true for future, false for past semesters
-        if (!$semester->isCurrent()) return !$semester->isClosed();
-        else {
+        if (!$semester->isCurrent()) {
+            return !$semester->isClosed();
+        } else {
             $endDate = $this->getEndDate();
             return is_null($endDate) || !$endDate->isPast();
         }
