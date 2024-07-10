@@ -5,6 +5,11 @@
 @endsection
 @section('secretariat_module') active @endsection
 
+@php
+// let us decide the openness of semesters
+// based on the periodic event itself
+$anonymousQuestionController = app(\App\Http\Controllers\StudentsCouncil\AnonymousQuestionController::class);
+@endphp
 
 @section('content')
 
@@ -45,7 +50,7 @@
                 @endforeach
             </ul>
 
-            @if($semester->isCurrent() || !$semester->isClosed())
+            @if($anonymousQuestionController->canAddQuestionTo($semester))
             <div class="row" style="margin: 0">
                 <x-input.button :href="route('anonymous_questions.create', $semester)"
                         class="right green" :text="__('anonymous_questions.create_question')" />
