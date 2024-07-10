@@ -4,6 +4,7 @@ namespace App\Http\Controllers\StudentsCouncil;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -52,7 +53,9 @@ class AnonymousQuestionController extends Controller
             return !$semester->isClosed();
         } else {
             $endDate = $this->getEndDate();
-            return is_null($endDate) || !$endDate->isPast();
+            return is_null($endDate)
+                || $this->semester()->id == $semester->id && !$endDate->isPast();
+                                         // ^ it must be the semester belonging to the periodic event
         }
     }
 
