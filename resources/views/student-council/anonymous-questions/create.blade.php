@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('title')
-<a href="{{route('anonymous_questions.index_semesters')}}" class="breadcrumb" style="cursor: pointer">@lang('anonymous_questions.anonymous_questions')</a>
-<a href="{{route('anonymous_questions.index_semesters')}}" class="breadcrumb" style="cursor: pointer">{{ $semester->tag }}</a>
+<a href="{{route('anonymous_questions.index')}}" class="breadcrumb" style="cursor: pointer">@lang('anonymous_questions.anonymous_questions')</a>
+<a href="{{route('anonymous_questions.index')}}" class="breadcrumb" style="cursor: pointer">{{ $semester->tag }}</a>
 <a href="#!" class="breadcrumb">@lang('anonymous_questions.create_question')</a>
 
 @endsection

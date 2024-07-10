@@ -57,7 +57,7 @@ class SemesterEvaluationController extends Controller
 
         $this->updatePeriodicEvent($semester, $startDate, $endDate);
 
-        // setting start and end dates of questions
+        // updating start and end dates of questions
         $semester->questions()->update([
             'opened_at' => $startDate,
             'closed_at' => $endDate

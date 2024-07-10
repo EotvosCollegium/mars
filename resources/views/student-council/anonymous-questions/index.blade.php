@@ -20,7 +20,7 @@
                     @lang('anonymous_questions.number_of_fillings'):
                     {{$semester->answerSheets->count()}}
                 </b>
-                <x-input.button :href="route('anonymous_questions.export_answer_sheets', $semester)"
+                <x-input.button :href="route('anonymous_questions.export_answers', $semester)"
                     class="right" :text="__('anonymous_questions.export')" />
             </div>
 
@@ -45,7 +45,7 @@
                 @endforeach
             </ul>
 
-            @if(!$semester->isClosed())
+            @if($semester->isCurrent() || !$semester->isClosed())
             <div class="row" style="margin: 0">
                 <x-input.button :href="route('anonymous_questions.create', $semester)"
                         class="right green" :text="__('anonymous_questions.create_question')" />

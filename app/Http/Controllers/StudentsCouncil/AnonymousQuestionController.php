@@ -45,24 +45,27 @@ class AnonymousQuestionController extends Controller
     /**
      * Returns the 'new question' page.
      */
-    public function create()
+    public function create(Semester $semester)
     {
         $this->authorize('administer', AnswerSheet::class);
 
-        if (!$this->isActive()) {
+        if ($semester->isClosed() && !$semester->isCurrent()) {
             abort(403, "tried to add a question to a closed semester");
         }
-        return view('student-council.anonymous-questions.create');
+        return view('student-council.anonymous-questions.create', [
+            "semester" => $semester
+        ]);
     }
 
     /**
      * Saves a new question.
      */
-    public function store(Request $request)
+    public function store(Request $request, Semester $semester)
     {
         $this->authorize('administer', AnswerSheet::class);
 
-        if (!$this->isActive()) {
+        // we need this; the current semester might also be closed
+        if ($semester->isClosed() && !$semester->isCurrent()) {
             abort(403, "tried to add a question to a closed semester");
         }
 
@@ -86,14 +89,11 @@ class AnonymousQuestionController extends Controller
         }
         $validator->validate();
 
-        $event = $this->periodicEvent();
-
-        $question = $event->semester->questions()->create([
+        $question = $semester->questions()->create([
             'title' => $request->title,
             'max_options' => $hasLongAnswers ? 0 : $request->max_options,
             'has_long_answers' => $hasLongAnswers,
-            // does not have individual dates, voting is constrained by the periodicEvent
-            'opened_at' => null,
+            'opened_at' => \Carbon\Carbon::now(),   // let it simply be open by default
             'closed_at' => null
         ]);
         if (!$hasLongAnswers) {
@@ -106,7 +106,7 @@ class AnonymousQuestionController extends Controller
         }
 
         //session()->put('section', $semester->id);
-        return redirect()->route('anonymous_questions.index_semesters')
+        return redirect()->route('anonymous_questions.index')
                          ->with('message', __('general.successful_modification'));
     }
 
@@ -175,7 +175,7 @@ class AnonymousQuestionController extends Controller
      * Returns an Excel sheet containing all the answers
      * to the questions of a given semester.
      */
-    public function exportAnswerSheets(Semester $semester)
+    public function exportAnswers(Semester $semester)
     {
         $this->authorize('administer', AnswerSheet::class);
 

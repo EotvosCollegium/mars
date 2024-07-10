@@ -1,12 +1,19 @@
 <blockquote>
     @lang('anonymous_questions.information_text')
 </blockquote>
-<form method="POST" action="{{ route('anonymous_questions.store_answer_sheet', App\Models\Semester::current()) }}">
+
+@php
+// let the current semester be found based on the periodic event itself
+// we can safely assume it is not null
+$semester = app(\App\Http\Controllers\Secretariat\SemesterEvaluationController::class)->semester();
+@endphp
+
+<form method="POST" action="{{ route('anonymous_questions.store_answers', $semester) }}">
     @csrf
 
     @php
         // We only take the questions that have been answered.
-        $questions = App\Models\Semester::current()->questionsNotAnsweredBy(user());
+        $questions = $semester->questionsNotAnsweredBy(user());
     @endphp
 
     @if ($questions->isEmpty())

@@ -125,7 +125,7 @@
                                 {{-- results of anonymous questions --}}
                                 @can('administer', \App\Models\AnonymousQuestions\AnswerSheet::class)
                                 <li>
-                                    <a class="waves-effect" href="{{ route('anonymous_questions.index_semesters') }}">
+                                    <a class="waves-effect" href="{{ route('anonymous_questions.index') }}">
                                         <i class="material-icons left">assessment</i>
                                         @lang('anonymous_questions.anonymous_questions')
                                     </a>
