@@ -28,6 +28,7 @@ return new class () extends Migration {
 
         // Current resident collegists should get this role.
         $residentRoleId = DB::table('roles')->where('name', 'resident')->first()->id;
+        $collegistRoleId = DB::table('roles')->where('name', 'collegist')->first()->id;
         $residentObjectId = DB::table('role_objects')->where('name', 'resident')->first()->id;
         foreach(DB::table('role_users')->where('object_id', $residentObjectId)->pluck('user_id') as $userId) {
             DB::table('role_users')->insert(['role_id' => $residentRoleId, 'user_id' => $userId]);
@@ -38,7 +39,7 @@ return new class () extends Migration {
         DB::table('role_objects')->where('name', 'resident')->delete();
         DB::table('role_objects')->where('name', 'extern')->delete();
 
-        DB::table('role_users')->where('name', 'collegist')->update(['object_id' => null]);
+        DB::table('role_users')->where('role_id', $collegistRoleId)->update(['object_id' => null]);
         DB::table('roles')->where('name', 'collegist')->update(['has_objects' => 0]);
 
         // TODO: also test this on data seeded on the development branch
