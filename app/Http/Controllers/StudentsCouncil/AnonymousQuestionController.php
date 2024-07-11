@@ -44,29 +44,13 @@ class AnonymousQuestionController extends Controller
     }
 
     /**
-     * Whether we allow a semester to be added questions.
-     */
-    public function canAddQuestionTo(Semester $semester): bool
-    {
-        // true for future, false for past semesters
-        if (!$semester->isCurrent()) {
-            return !$semester->isClosed();
-        } else {
-            $endDate = $this->getEndDate();
-            return is_null($endDate)
-                || $this->semester()->id == $semester->id && !$endDate->isPast();
-            // ^ it must be the semester belonging to the periodic event
-        }
-    }
-
-    /**
      * Returns the 'new question' page.
      */
     public function create(Semester $semester)
     {
         $this->authorize('administer', AnswerSheet::class);
 
-        if (!$this->canAddQuestionTo($semester)) {
+        if ($semester->isClosed() && !$semester->isCurrent()) {
             abort(403, "tried to add a question to a closed semester");
         }
         return view('student-council.anonymous-questions.create', [
@@ -82,7 +66,7 @@ class AnonymousQuestionController extends Controller
         $this->authorize('administer', AnswerSheet::class);
 
         // we need this; the current semester might also be closed
-        if (!$this->canAddQuestionTo($semester)) {
+        if ($semester->isClosed() && !$semester->isCurrent()) {
             abort(403, "tried to add a question to a closed semester");
         }
 
