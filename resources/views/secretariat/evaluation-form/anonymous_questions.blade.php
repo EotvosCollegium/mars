@@ -2,12 +2,6 @@
     @lang('anonymous_questions.information_text')
 </blockquote>
 
-@php
-// let the current semester be found based on the periodic event itself
-// we can safely assume it is not null
-$semester = app(\App\Http\Controllers\Secretariat\SemesterEvaluationController::class)->semester();
-@endphp
-
 <form method="POST" action="{{ route('anonymous_questions.store_answers', $semester) }}">
     @csrf
     <input type="hidden" name="section" value="anonymous_questions">

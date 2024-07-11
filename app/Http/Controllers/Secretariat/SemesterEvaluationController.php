@@ -136,6 +136,9 @@ class SemesterEvaluationController extends Controller
         $this->authorize('fillOrManage', SemesterEvaluation::class);
 
         return view('secretariat.evaluation-form.app', [
+            // let the current semester be found based on the periodic event itself
+            // we can safely assume it is not null
+            'semester' => app(\App\Http\Controllers\Secretariat\SemesterEvaluationController::class)->semester(),
             'phd' => user()->educationalInformation->studyLines()->currentlyEnrolled()->where('type', 'phd')->exists(),
             'user' => user(),
             'faculties' => Faculty::all(),
