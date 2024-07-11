@@ -41,9 +41,12 @@ trait HasRoles
      * @param bool $includesExpired
      * @return Builder
      */
-    public function scopeWithRole(Builder $query, Role|int|string $role, Workshop|RoleObject|string $object = null,
-                                    bool $includesExpired = false): Builder
-    {
+    public function scopeWithRole(
+        Builder $query,
+        Role|int|string $role,
+        Workshop|RoleObject|string $object = null,
+        bool $includesExpired = false
+    ): Builder {
         $connection = $includesExpired ? 'everHadRoles' : 'roles';
 
         $role = Role::get($role);
@@ -203,13 +206,16 @@ trait HasRoles
     {
         if ($role->has_objects && isset($object)) {
             $this->roles()->where('roles.id', $role->id)->wherePivot('object_id', $object->id)
-                ->update(['valid_until' => Carbon::now()]);;
+                ->update(['valid_until' => Carbon::now()]);
+            ;
         } elseif ($role->has_workshops && isset($object)) {
             $this->roles()->where('roles.id', $role->id)->wherePivot('workshop_id', $object->id)
-                ->update(['valid_until' => Carbon::now()]);;
+                ->update(['valid_until' => Carbon::now()]);
+            ;
         } else {
             $this->roles()->where('roles.id', $role->id)
-                ->update(['valid_until' => Carbon::now()]);;
+                ->update(['valid_until' => Carbon::now()]);
+            ;
         }
 
         if ($role->name == Role::COLLEGIST) {

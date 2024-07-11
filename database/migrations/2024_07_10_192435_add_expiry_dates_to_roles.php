@@ -8,8 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 use Carbon\Carbon;
 
-return new class extends Migration
-{
+return new class () extends Migration {
     /**
      * Run the migrations.
      */
@@ -85,7 +84,7 @@ return new class extends Migration
                     ->where('role_id', $collegistRoleId)
                     ->where('user_id', $userId)
                     ->update('object_id', $externObjectId);
-            }            
+            }
         }
 
         DB::table('roles')->where('name', 'resident')->delete();
