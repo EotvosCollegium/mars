@@ -9,11 +9,14 @@ use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 
 use App\Models\AnonymousQuestions\AnswerSheet;
+use App\Models\PeriodicEvent;
 use App\Models\Semester;
 use App\Models\Question;
 use App\Models\QuestionOption;
 use App\Utils\HasPeriodicEvent;
 use App\Exports\UsersSheets\AnonymousQuestionsExport;
+
+use App\Http\Controllers\Secretariat\SemesterEvaluationController;
 
 /**
  * Controls actions related to anonymous questions.
@@ -26,8 +29,7 @@ class AnonymousQuestionController extends Controller
      */
     public function __construct()
     {
-        $this->underlyingControllerName =
-            \App\Http\Controllers\Secretariat\SemesterEvaluationController::class;
+        $this->underlyingControllerName = SemesterEvaluationController::class;
     }
 
     /**
@@ -44,31 +46,43 @@ class AnonymousQuestionController extends Controller
     }
 
     /**
-     * Returns the 'new question' page.
+     * Checks whether the form exists and has not yet been closed;
+     * aborts the request if necessary.
+     * If successful, it returns the periodic event.
      */
-    public function create(Semester $semester)
+    private function checkPeriodicEvent(): PeriodicEvent
     {
-        $this->authorize('administer', AnswerSheet::class);
-
-        if ($semester->isClosed() && !$semester->isCurrent()) {
-            abort(403, "tried to add a question to a closed semester");
+        $periodicEvent = $this->periodicEvent();
+        if (is_null($periodicEvent)) {
+            abort(404, "no evaluation form exists yet");
+        } elseif ($periodicEvent->endDate()?->isPast() ?? false) {
+            abort(403, "tried to add a question to a closed form");
+        } else {
+            return $periodicEvent;
         }
-        return view('student-council.anonymous-questions.create', [
-            "semester" => $semester
-        ]);
     }
 
     /**
-     * Saves a new question.
+     * Returns the 'new question' page.
      */
-    public function store(Request $request, Semester $semester)
+    public function create()
+    {
+        $this->authorize('administer', AnswerSheet::class);
+        $this->checkPeriodicEvent();
+
+        return view('student-council.anonymous-questions.create');
+    }
+
+    /**
+     * Saves a new question for the semester
+     * to which the current evaluation form belongs.
+     */
+    public function store(Request $request)
     {
         $this->authorize('administer', AnswerSheet::class);
 
-        // we need this; the current semester might also be closed
-        if ($semester->isClosed() && !$semester->isCurrent()) {
-            abort(403, "tried to add a question to a closed semester");
-        }
+        $periodicEvent = $this->checkPeriodicEvent();
+        $semester = $periodicEvent->semester;
 
         $validator = Validator::make($request->all(), [
             'title' => 'required|string',
@@ -94,8 +108,8 @@ class AnonymousQuestionController extends Controller
             'title' => $request->title,
             'max_options' => $hasLongAnswers ? 0 : $request->max_options,
             'has_long_answers' => $hasLongAnswers,
-            'opened_at' => \Carbon\Carbon::now(),   // let it simply be open by default
-            'closed_at' => null
+            'opened_at' => $periodicEvent->startDate(),
+            'closed_at' => $periodicEvent->endDate()
         ]);
         if (!$hasLongAnswers) {
             foreach ($options as $option) {
@@ -109,18 +123,6 @@ class AnonymousQuestionController extends Controller
         //session()->put('section', $semester->id);
         return redirect()->route('anonymous_questions.index')
                          ->with('message', __('general.successful_modification'));
-    }
-
-    /**
-     * Returns a page with the options (and results, if authorized) of a question.
-     */
-    public function show(Question $question)
-    {
-        $this->authorize('administer', AnswerSheet::class);
-
-        return view('anonymous_questions.show', [
-            "question" => $question
-        ]);
     }
 
     /**

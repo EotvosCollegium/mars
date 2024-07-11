@@ -5,16 +5,39 @@
 @endsection
 @section('secretariat_module') active @endsection
 
+@php
+// let the current semester be found based on the periodic event itself
+// beware: it might be null
+$periodicEvent = app(\App\Http\Controllers\Secretariat\SemesterEvaluationController::class)->periodicEvent();
+$currentSemester = $periodicEvent?->semester;
+@endphp
 
 @section('content')
+
+
+<div class="row">
+    <div class="col s12">
+        <div class="card">
+            <div class="card-content">
+                <p>@lang('anonymous_questions.creation_for_current_only')</p>
+            </div>
+        </div>
+    </div>
+</div>
 
 @foreach(App\Models\Semester::allUntilCurrent()
     ->sortBy(function (App\Models\Semester $semester) {
         return $semester->getStartDate();
     })->reverse()
     as $semester)
+
+@php
+$isActive = $currentSemester?->id == $semester->id
+            && (!$periodicEvent->endDate()?->isPast() ?? false);
+@endphp
+
 <ul class="collapsible">
-    <li @if($semester->isCurrent()) class="active" @endif>
+    <li @if($isActive) class="active" @endif>
         <div class="collapsible-header">
                 <b>{{$semester->tag}}</b>
         </div>
@@ -49,7 +72,7 @@
                 @endforeach
             </ul>
 
-            @if($semester->isCurrent() || !$semester->isClosed())
+            @if($isActive)
             <div class="row" style="margin: 0">
                 <x-input.button :href="route('anonymous_questions.create', $semester)"
                         class="right green" :text="__('anonymous_questions.create_question')" />
