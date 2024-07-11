@@ -187,7 +187,7 @@ class Question extends Model
      * if the user has already answered the question
      * or if a long textual answer is provided for a question which does not support it.
      */
-    public function storeAnswers(User $user, QuestionOption|array|string $answer, ?AnswerSheet $answerSheet = null): void
+    public function storeAnswers(User $user, QuestionOption|array|string|null $answer, ?AnswerSheet $answerSheet = null): void
     {
         // the additional check is needed for the seeder
         if (!$this->isOpen() && (!app()->runningInConsole() || app()->runningUnitTests())) {
@@ -225,7 +225,7 @@ class Question extends Model
                         ]);
                     }
                 }
-            } // else it is a string
+            } // else it is a string or null for a question with long answers
             elseif (!$this->has_long_answers) {
                 throw new Exception("This question does not support long answers");
             } else {
@@ -262,7 +262,7 @@ class Question extends Model
         $key = $this->formKey();
         $rules = [];
         if ($this->has_long_answers) {
-            $rules[$key] = 'required|string';
+            $rules[$key] = 'nullable|string';
         } elseif ($this->isMultipleChoice()) {
             $rules[$key] = [
                 'required',
