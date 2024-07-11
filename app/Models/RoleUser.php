@@ -33,7 +33,14 @@ class RoleUser extends Pivot
 {
     protected $table = 'role_users';
 
-    protected $fillable = ['workshop_id', 'object_id', 'user_id', 'role_id'];
+    protected $fillable = ['workshop_id', 'object_id', 'user_id', 'role_id', 'valid_from', 'valid_until'];
+
+    /**
+     * We don't need the default timestamps.
+     *
+     * @var bool
+     */
+    public $timestamps = false;
 
     /**
      * Always eager load workshop and object relations.

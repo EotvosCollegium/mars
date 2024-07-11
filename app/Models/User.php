@@ -216,13 +216,31 @@ class User extends Authenticatable implements HasLocalePreference
     */
 
     /**
-     * The user's roles. The relation uses a RoleUser pivot class which includes role objects and workshops.
+     * The user's current roles. The relation uses a RoleUser pivot class which includes role objects and workshops.
+     * Does not include expired roles.
      * @return BelongsToMany
      */
     public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Role::class, 'role_users')
-            ->withPivot(['object_id', 'workshop_id'])->using(RoleUser::class);
+            ->withPivot(['object_id', 'workshop_id', 'valid_from', 'valid_until'])
+            ->using(RoleUser::class)
+            ->wherePivot('valid_from', '<=', Carbon::now())
+            ->where(function ($q) {
+                $q->whereNull('role_users.valid_until')
+                  ->orWhere('role_users.valid_until', '>', Carbon::now());
+            });
+    }
+
+    /**
+     * The user's all roles, _including expired ones_.
+     * @return BelongsToMany
+     */
+    public function everHadRoles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class, 'role_users')
+            ->withPivot(['object_id', 'workshop_id', 'valid_from', 'valid_until'])
+            ->using(RoleUser::class);
     }
 
     /**
@@ -494,7 +512,7 @@ class User extends Authenticatable implements HasLocalePreference
             return $query;
         }
         if (user()->hasRole(Role::STAFF)) {
-            return $query->withRole(Role::TENANT);
+            return $query->withRole(Role::RESIDENT);
         }
         if (user()->can('viewAll', User::class)) {
             return $query->collegist();
@@ -567,7 +585,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function scopeCurrentTenant(Builder $query): Builder
     {
-        return $query->withRole(Role::TENANT)
+        return $query->withRole(Role::RESIDENT)->withoutRole(Role::COLLEGIST)
             ->whereHas('personalInformation', function ($q) {
                 $q->where('tenant_until', '>', now());
             });
@@ -666,8 +684,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function preferredLocale(): string
     {
-        // default english, see issue #11
-        return $this->hasRole(Role::TENANT) ? 'en' : 'hu';
+        return $this->isCollegist() ? 'hu' : 'en';
     }
 
     /**
@@ -815,12 +832,13 @@ class User extends Authenticatable implements HasLocalePreference
     }
 
     /**
-     * Determine if the user has a tenant role.
+     * Determine if the user has a resident role
+     * without being a current collegist.
      * @return boolean
      */
     public function isTenant(): bool
     {
-        return $this->hasRole(Role::TENANT);
+        return $this->hasRole(Role::RESIDENT) && !$this->hasRole(Role::COLLEGIST);
     }
 
     /**
@@ -995,6 +1013,14 @@ class User extends Authenticatable implements HasLocalePreference
     }
 
     /**
+     * @return array|User[]|Collection the collegists, including those with an expired role
+     */
+    public static function collegistsIncludingExpired(): Collection|array
+    {
+        return User::withEverHadRole(Role::collegist())->get();
+    }
+
+    /**
      * @return array|User[]|Collection the student council leaders (including committee leaders)
      */
     public static function studentCouncilLeaders(): array|Collection
@@ -1020,7 +1046,7 @@ class User extends Authenticatable implements HasLocalePreference
     }
 
     /**
-     * @return User|null the president
+     * @return User|null the secretary of the Students' Council
      */
     public static function studentCouncilSecretary(): ?User
     {

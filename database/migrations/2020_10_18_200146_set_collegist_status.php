@@ -14,7 +14,9 @@ class SetCollegistStatus extends Migration
      */
     public function up()
     {
-        $collegists = User::collegists();
+        // we have to obtain these in a legacy way,
+        // as we do not have 'valid_from' and 'valid_until' columns yet
+        $collegists = User::withRole(Role::collegist(), includesExpired: true);
         foreach ($collegists as $collegist) {
             $extern_id = Role::getObjectIdByName(Role::COLLEGIST, 'extern');
             $collegist->roles()->detach(Role::firstWhere('name', Role::COLLEGIST)->id);

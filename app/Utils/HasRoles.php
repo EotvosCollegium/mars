@@ -9,48 +9,67 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\Cache;
 
+use Carbon\Carbon;
+
 /**
  * Helper class for role getters/setters.
  */
 trait HasRoles
 {
+    /**
+     * Only includes currently valid roles.
+     */
     abstract public function roles(): BelongsToMany;
+    /**
+     * Also includes expired roles.
+     */
+    abstract public function everHadRoles(): BelongsToMany;
 
     /**
      * Scope a query to only include users with the given role.
      * Usage: ->withRole(...)
      * See also: hasRole(...) getter for User models.
      *
+     * If $includesExpired is true,
+     * it also includes expired roles.
+     * This is sometimes used as a legacy call in migrations
+     * where the 'valid_from' and 'valid_until' fields do not yet exist.
+     *
      * @param Builder $query
      * @param Role|int|string $role
      * @param Workshop|RoleObject|string|null $object
+     * @param bool $includesExpired
      * @return Builder
      */
-    public function scopeWithRole(Builder $query, Role|int|string $role, Workshop|RoleObject|string $object = null): Builder
+    public function scopeWithRole(Builder $query, Role|int|string $role, Workshop|RoleObject|string $object = null,
+                                    bool $includesExpired = false): Builder
     {
+        $connection = $includesExpired ? 'everHadRoles' : 'roles';
+
         $role = Role::get($role);
         if ($object) {
             $object = $role->getObject($object);
         }
         if ($object instanceof RoleObject) {
-            return $query->whereHas('roles', function ($q) use ($role, $object) {
+            return $query->whereHas($connection, function ($q) use ($role, $object) {
                 $q->where('role_users.role_id', $role->id)
                     ->where('role_users.object_id', $object->id);
             });
         }
         if ($object instanceof Workshop) {
-            return $query->whereHas('roles', function ($q) use ($role, $object) {
+            return $query->whereHas($connection, function ($q) use ($role, $object) {
                 $q->where('role_users.role_id', $role->id)
                     ->where('role_users.workshop_id', $object->id);
             });
         }
-        return $query->whereHas('roles', function ($q) use ($role) {
+        return $query->whereHas($connection, function ($q) use ($role) {
             $q->where('role_users.role_id', $role->id);
         });
     }
 
     /**
      * Scope a query to only include users with all the given roles.
+     * Only counts with currently valid roles.
      * Usage: ->withAllRoles(...)
      *
      * @param Builder $query
@@ -83,7 +102,7 @@ trait HasRoles
     }
 
     /**
-     * Decides if the user has any of the given roles.
+     * Decides if the user currently has any of the given roles.
      * See also: withRole(...) scope for query builders.
      *
      * If a base_role => [possible_objects] array is given, it will check if the user has the base_role with any of the possible_objects.
@@ -105,7 +124,7 @@ trait HasRoles
             $roles = [$roles];
         }
 
-        $query = $this->roles();
+        $query = $this->roles();  // this already filters for currently valid roles
         $query->where(function ($query) use ($roles) {
             foreach ($roles as $key => $value) {
                 $query->orWhere(function ($query) use ($key, $value) {
@@ -174,7 +193,8 @@ trait HasRoles
     }
 
     /**
-     * Detach a role from a user. Assumes a valid role-object pair.
+     * Detach a role from a user by setting the expiry date to the current time.
+     * Assumes a valid role-object pair.
      * @param Role $role
      * @param RoleObject|Workshop|null $object
      * @return void
@@ -182,11 +202,14 @@ trait HasRoles
     public function removeRole(Role $role, Workshop|RoleObject $object = null): void
     {
         if ($role->has_objects && isset($object)) {
-            $this->roles()->where('roles.id', $role->id)->wherePivot('object_id', $object->id)->detach($role->id);
+            $this->roles()->where('roles.id', $role->id)->wherePivot('object_id', $object->id)
+                ->update(['valid_until' => Carbon::now()]);;
         } elseif ($role->has_workshops && isset($object)) {
-            $this->roles()->where('roles.id', $role->id)->wherePivot('workshop_id', $object->id)->detach($role->id);
+            $this->roles()->where('roles.id', $role->id)->wherePivot('workshop_id', $object->id)
+                ->update(['valid_until' => Carbon::now()]);;
         } else {
-            $this->roles()->detach($role->id);
+            $this->roles()->where('roles.id', $role->id)
+                ->update(['valid_until' => Carbon::now()]);;
         }
 
         if ($role->name == Role::COLLEGIST) {

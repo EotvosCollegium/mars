@@ -18,6 +18,8 @@ use App\Models\EducationalInformation;
 use App\Models\StudyLine;
 use Illuminate\Database\Seeder;
 
+use Carbon\Carbon;
+
 class UsersTableSeeder extends Seeder
 {
     /**
@@ -83,7 +85,9 @@ class UsersTableSeeder extends Seeder
         for ($x = 0; $x < rand(1, 3); $x++) {
             $user->workshops()->attach(rand(1, count(Workshop::ALL)));
         }
-        $user->roles()->attach(Role::collegist()->id, ['object_id' => RoleObject::firstWhere('name', Role::RESIDENT)->id]);
+        $user->roles()->attach(Role::collegist()->id);
+        // he is to be a permanent resident:
+        $user->roles()->attach(Role::resident()->id);
         $user->roles()->attach(Role::sysAdmin()->id);
         $wifi_username = $user->internetAccess->setWifiCredentials();
         WifiConnection::factory($user->id % 5)->create(['wifi_username' => $wifi_username]);
@@ -94,15 +98,15 @@ class UsersTableSeeder extends Seeder
     {
         MacAddress::factory()->count($user->id % 5)->create(['user_id' => $user->id]);
         PrintJob::factory()->count($user->id % 5)->create(['user_id' => $user->id]);
-        $user->roles()->attach(
-            Role::get(Role::COLLEGIST)->id,
-            [
-                'object_id' => rand(
-                    RoleObject::firstWhere('name', 'resident')->id,
-                    RoleObject::firstWhere('name', 'extern')->id
-                )
-            ]
-        );
+        $user->roles()->attach(Role::collegist()->id);
+        if (rand(1, 3) > 1) {
+            $user->roles()->attach(
+                Role::resident()->id,
+                ['valid_until' => rand(0, 1) ? null
+                                             : Carbon::today()->addDays(rand(-366, 366))
+                                                ->addHours(23)->addMinutes(59)->addSeconds(59)]
+            );
+        }
         $user->educationalInformation()->save(EducationalInformation::factory()->make(['user_id' => $user->id]));
         StudyLine::factory()->count(rand(1, 2))->create(['educational_information_id' => $user->educationalInformation->id]);
         $user->roles()->attach(Role::get(Role::PRINTER)->id);
@@ -124,7 +128,12 @@ class UsersTableSeeder extends Seeder
 
     private function createTenant($user)
     {
-        $user->roles()->attach(Role::get(Role::TENANT)->id);
+        $user->roles()->attach(
+            Role::get(Role::RESIDENT)->id,
+            ['valid_until' => rand(0, 1) ? null
+                                             : Carbon::today()->addDays(rand(-366, 366))
+                                                ->addHours(23)->addMinutes(59)->addSeconds(59)]
+        );
         $wifi_username = $user->internetAccess->setWifiCredentials();
         WifiConnection::factory($user->id % 5)->create(['wifi_username' => $wifi_username]);
         MacAddress::factory()->count($user->id % 5)->create(['user_id' => $user->id]);
