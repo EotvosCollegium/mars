@@ -4,9 +4,10 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-use Illuminate\Support\Facades\DB;
-
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+use App\Models\User;
+use App\Models\Role;
 
 return new class () extends Migration {
     /**
@@ -28,21 +29,30 @@ return new class () extends Migration {
 
         // Current resident collegists should get this role.
         $residentRoleId = DB::table('roles')->where('name', 'resident')->first()->id;
+        $tenantRoleId = DB::table('roles')->where('name', 'tenant')->first()?->id;
         $collegistRoleId = DB::table('roles')->where('name', 'collegist')->first()->id;
         $residentObjectId = DB::table('role_objects')->where('name', 'resident')->first()->id;
         foreach(DB::table('role_users')->where('object_id', $residentObjectId)->pluck('user_id') as $userId) {
             DB::table('role_users')->insert(['role_id' => $residentRoleId, 'user_id' => $userId]);
         }
 
-        // TODO: add role to current tenants, too!
-
-        DB::table('role_objects')->where('name', 'resident')->delete();
-        DB::table('role_objects')->where('name', 'extern')->delete();
+        foreach(DB::table('role_users')->where('role_id', $tenantRoleId)->pluck('user_id') as $userId) {
+            DB::table('role_users')->updateOrInsert(
+                ['user_id' => $userId, 'role_id' => $residentRoleId],
+                ['valid_until' => User::find($userId)->personalInformation->tenant_until]
+            );
+        }
 
         DB::table('role_users')->where('role_id', $collegistRoleId)->update(['object_id' => null]);
         DB::table('roles')->where('name', 'collegist')->update(['has_objects' => 0]);
 
-        // TODO: also test this on data seeded on the development branch
+        DB::table('role_objects')->where('name', 'resident')->delete();
+        DB::table('role_objects')->where('name', 'extern')->delete();
+        DB::table('roles')->where('name', 'tenant')->delete();
+
+        Schema::table('personal_information', function (Blueprint $table) {
+            $table->dropColumn('tenant_until');
+        });
     }
 
     /**
@@ -50,6 +60,10 @@ return new class () extends Migration {
      */
     public function down(): void
     {
+        Schema::table('personal_information', function (Blueprint $table) {
+            $table->date('tenant_until')->nullable();
+        });
+
         // delete invalid roles
         DB::table('role_users')
             ->where('valid_from', '>', Carbon::now())
@@ -58,6 +72,10 @@ return new class () extends Migration {
 
         DB::table('roles')->where('name', 'collegist')->update(['has_objects' => 1]);
 
+        DB::table('roles')->updateOrInsert(
+            ['name' => 'tenant'],
+            ['has_workshops' => 0, 'has_objects' => 0]
+        );
         DB::table('role_objects')->insert([
             'role_id' => Role::where('name', 'collegist')->first()->id,
             'name' => 'resident'
@@ -68,6 +86,7 @@ return new class () extends Migration {
         ]);
 
         $residentRoleId = DB::table('roles')->where('name', 'resident')->first()->id;
+        $tenantRoleId = DB::table('roles')->where('name', 'tenant')->first()->id;
         $collegistRoleId = DB::table('roles')->where('name', 'collegist')->first()->id;
         $residentObjectId = DB::table('role_objects')->where('name', 'resident')->first()->id;
         $externObjectId = DB::table('role_objects')->where('name', 'extern')->first()->id;
@@ -79,12 +98,26 @@ return new class () extends Migration {
                 DB::table('role_users')
                     ->where('role_id', $collegistRoleId)
                     ->where('user_id', $userId)
-                    ->update('object_id', $residentObjectId);
+                    ->update(['object_id' => $residentObjectId]);
             } else {
                 DB::table('role_users')
                     ->where('role_id', $collegistRoleId)
                     ->where('user_id', $userId)
-                    ->update('object_id', $externObjectId);
+                    ->update(['object_id' => $externObjectId]);
+            }
+        }
+        foreach(DB::table('role_users')->where('role_id', $residentRoleId)->get() as $row) {
+            $userId = $row->user_id;
+            if (DB::table('role_users')
+                    ->where('role_id', $collegistRoleId)->where('user_id', $userId)
+                    ->doesntExist()) {
+                DB::table('role_users')
+                    ->insert([
+                        'role_id' => $tenantRoleId,
+                        'user_id' => $userId
+                    ]);
+                DB::table('personal_information')->where('user_id', $userId)
+                    ->update(['tenant_until' => $row->valid_until]);
             }
         }
 
