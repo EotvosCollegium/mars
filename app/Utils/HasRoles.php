@@ -34,7 +34,7 @@ trait HasRoles
      * it also includes expired roles.
      * This is sometimes used as a legacy call in migrations
      * where the 'valid_from' and 'valid_until' fields do not yet exist.
-     * 
+     *
      * If $includesExpired is false
      * and $permanentOnly is true,
      * it only includes currently valid and _permanent_ roles
@@ -64,19 +64,25 @@ trait HasRoles
             return $query->whereHas($connection, function ($q) use ($role, $object, $permanentOnly) {
                 $q->where('role_users.role_id', $role->id)
                     ->where('role_users.object_id', $object->id);
-                if ($permanentOnly) $q->whereNull('role_users.valid_until');
+                if ($permanentOnly) {
+                    $q->whereNull('role_users.valid_until');
+                }
             });
         }
         if ($object instanceof Workshop) {
             return $query->whereHas($connection, function ($q) use ($role, $object, $permanentOnly) {
                 $q->where('role_users.role_id', $role->id)
                     ->where('role_users.workshop_id', $object->id);
-                if ($permanentOnly) $q->whereNull('role_users.valid_until');
+                if ($permanentOnly) {
+                    $q->whereNull('role_users.valid_until');
+                }
             });
         }
         return $query->whereHas($connection, function ($q) use ($role, $permanentOnly) {
             $q->where('role_users.role_id', $role->id);
-            if ($permanentOnly) $q->whereNull('role_users.valid_until');
+            if ($permanentOnly) {
+                $q->whereNull('role_users.valid_until');
+            }
         });
     }
 
@@ -111,19 +117,25 @@ trait HasRoles
             return $query->whereDoesntHave('roles', function ($q) use ($role, $object, $permanentOnly) {
                 $q->where('role_users.role_id', $role->id)
                     ->where('role_users.object_id', $object->id);
-                if ($permanentOnly) $q->whereNull('role_users.valid_until');
+                if ($permanentOnly) {
+                    $q->whereNull('role_users.valid_until');
+                }
             });
         }
         if ($object instanceof Workshop) {
             return $query->whereDoesntHave('roles', function ($q) use ($role, $object, $permanentOnly) {
                 $q->where('role_users.role_id', $role->id)
                     ->where('role_users.workshop_id', $object->id);
-                if ($permanentOnly) $q->whereNull('role_users.valid_until');
+                if ($permanentOnly) {
+                    $q->whereNull('role_users.valid_until');
+                }
             });
         }
         return $query->whereDoesntHave('roles', function ($q) use ($role, $permanentOnly) {
             $q->where('role_users.role_id', $role->id);
-            if ($permanentOnly) $q->whereNull('role_users.valid_until');
+            if ($permanentOnly) {
+                $q->whereNull('role_users.valid_until');
+            }
         });
     }
 

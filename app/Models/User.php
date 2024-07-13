@@ -773,8 +773,10 @@ class User extends Authenticatable implements HasLocalePreference
     {
         $this->addRole(Role::collegist());
         if (Role::RESIDENT == $objectName) {
-            if (!$this->isResident()) $this->addRole(Role::resident());
-        } else if ($this->isResident()) {
+            if (!$this->isResident()) {
+                $this->addRole(Role::resident());
+            }
+        } elseif ($this->isResident()) {
             $this->removeRole(Role::resident());
         }
 
