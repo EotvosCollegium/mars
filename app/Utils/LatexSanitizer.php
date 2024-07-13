@@ -4,6 +4,11 @@ namespace App\Utils;
 
 class LatexSanitizer
 {
+    /**
+     * Converts a single character to a \symbol{...} command
+     * @param  string  $char
+     * @return string  $string
+     */
     private static function convertCharToSymbol(string $char): string
     {
         if($char == ' ') {
