@@ -14,7 +14,7 @@ $(document).ready(function() {
         columns: [
             {
                 title: "Felhasználó",
-                field: "user.name",
+                field: "user_name",
                 sorter: "string",
                 headerFilter: 'input',
                 minWidth:200
@@ -39,7 +39,7 @@ $(document).ready(function() {
             },
             {
                 title: "Módosító",
-                field: "modifier.name",
+                field: "modifier_name",
                 sorter: "string",
                 headerFilter: 'input',
                 minWidth:180
