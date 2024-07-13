@@ -65,6 +65,8 @@ class WorkshopBalance extends Model
      *                / member's workshops' count
      * Uses the config values for the ratios if they are null.
      *
+     * Here, only permanent residents count as residents.
+     *
      * @param Semester $semester
      * @param ?float $workshop_balance_resident
      * @param ?float $workshop_balance_extern

@@ -555,40 +555,47 @@ class User extends Authenticatable implements HasLocalePreference
     }
 
     /**
-     * Scope a query to only include resident users.
+     * Scope a query to only include permanent resident users.
      *
      * @param Builder $query
      * @return Builder
      */
     public function scopeResident(Builder $query): Builder
     {
-        return $query->withRole(Role::COLLEGIST, Role::RESIDENT);
+        return $query->withRole(Role::COLLEGIST)
+                     ->withPermanentRole(Role::RESIDENT);
     }
 
     /**
-     * Scope a query to only include extern users.
+     * Scope a query to only include extern users
+     * (that is, those who are collegists but not permanent residents).
      *
      * @param Builder $query
      * @return Builder
      */
     public function scopeExtern(Builder $query): Builder
     {
-        return $query->withRole(Role::COLLEGIST, RoleObject::firstWhere('name', Role::EXTERN));
+        return $query->withRole(Role::COLLEGIST)
+            ->where(function ($q) {
+                $q->withoutRole(Role::RESIDENT)
+                    ->orWhereHas('roles', function ($q) {
+                        $q->where('role_users.role_id', Role::collegist()->id)
+                          ->whereNotNull('role_users.valid_until');
+                    });
+            });
     }
 
     /**
      * Scope a query to only include current tenant users.
-     * A tenant is currently active if his tenant until date is in the future.
+     * A user is a tenant if they are no collegists,
+     * but they have a currently valid resident role.
      *
      * @param Builder $query
      * @return Builder
      */
     public function scopeCurrentTenant(Builder $query): Builder
     {
-        return $query->withRole(Role::RESIDENT)->withoutRole(Role::COLLEGIST)
-            ->whereHas('personalInformation', function ($q) {
-                $q->where('tenant_until', '>', now());
-            });
+        return $query->withRole(Role::RESIDENT)->withoutRole(Role::COLLEGIST);
     }
 
     /**
@@ -734,7 +741,8 @@ class User extends Authenticatable implements HasLocalePreference
     }
 
     /**
-     * Determine if the user is a collegist (including alumni). Uses cache.
+     * Determine if the user is a collegist (including alumni by default).
+     * Uses cache.
      * @return boolean
      */
     public function isCollegist($alumni = true): bool
@@ -758,33 +766,43 @@ class User extends Authenticatable implements HasLocalePreference
 
     /**
      * Attach collegist role as extern or resident.
-     * If the user is already a collegist, the object is updated.
+     * Adds a permanent resident role if $objectName == 'resident'
+     * and removes the resident role otherwise.
      */
-    public function setCollegist($objectName): void
+    public function setCollegist(string $objectName): void
     {
-        $role = Role::collegist();
-        $object = $role->getObject($objectName);
-        $this->removeRole($role);
-        $this->addRole($role, $object);
+        $this->addRole(Role::collegist());
+        if (Role::RESIDENT == $objectName) {
+            if (!$this->isResident()) $this->addRole(Role::resident());
+        } else if ($this->isResident()) {
+            $this->removeRole(Role::resident());
+        }
 
         Cache::forget('collegists');
         WorkshopBalance::generateBalances(Semester::current());
     }
 
     /**
-     * Decides if the user is a resident collegist currently.
+     * Decides if the user is a _permanent_ resident collegist currently.
+     * Also include non-permanent residents
+     * if $permanentOnly is false.
      *
+     * @param bool $permanentOnly
      * @return bool
      */
-    public function isResident(): bool
+    public function isResident(bool $permanentOnly = true): bool
     {
         if ($this->verified == false) {
+            // then they are applicants; so non-permanent residency is irrelevant
             return $this->roles()
                 ->where('role_id', Role::collegist()->id)
-                ->where('object_id', RoleObject::firstWhere('name', Role::RESIDENT)->id)
+                ->exists()
+                && $this->roles()
+                ->where('role_id', Role::resident()->id)
                 ->exists();
         }
-        return $this->hasRole([Role::COLLEGIST => Role::RESIDENT]);
+        return $this->hasRole(Role::COLLEGIST)
+            && $this->hasRole(Role::RESIDENT, includesExpired: $permanentOnly);
     }
 
     /**
@@ -797,19 +815,29 @@ class User extends Authenticatable implements HasLocalePreference
     }
 
     /**
+     * Returns the expiry date of the resident role,
+     * or null if there is none.
+     * Throws if the user is not a resident.
+     */
+    public function residesUntil(): ?Carbon
+    {
+        $residentRole = $this->roles->findOrFail(Role::resident()->id);
+        return $residentRole->pivot->valid_until;
+    }
+
+    /**
      * Decides if the user is an extern collegist currently.
+     * By default, this includes non-permanent residents;
+     * that can be disabled
+     * by setting $nonPermanent to false.
      *
+     * @param bool $nonPermanent
      * @return bool
      */
-    public function isExtern(): bool
+    public function isExtern(bool $nonPermanent = true): bool
     {
-        if ($this->verified == false) {
-            return $this->roles()
-                ->where('role_id', Role::collegist()->id)
-                ->where('object_id', RoleObject::firstWhere('name', Role::EXTERN)->id)
-                ->exists();
-        }
-        return $this->hasRole([Role::COLLEGIST => Role::EXTERN]);
+        return $this->isCollegist(alumni: false)
+            && !$this->isResident(permanentOnly: $nonPermanent);
     }
 
 
@@ -832,27 +860,51 @@ class User extends Authenticatable implements HasLocalePreference
     }
 
     /**
-     * Determine if the user has a resident role
+     * Determine if the user has a (possibly expired) resident role
      * without being a current collegist.
      * @return boolean
      */
     public function isTenant(): bool
     {
-        return $this->hasRole(Role::RESIDENT) && !$this->hasRole(Role::COLLEGIST);
+        return $this->hasRole(Role::RESIDENT, includesExpired: true)
+            && !$this->hasRole(Role::COLLEGIST);
     }
 
     /**
-     * @return bool if the user is currently a tenant
-     * A tenant is currently a tenant if they are a tenant and their tenant_until date is in the future.
+     * Determine if the user is currently a tenant.
+     * A user is currently a tenant if they are not collegists
+     * but have a currently valid resident role.
      */
     public function isCurrentTenant(): bool
     {
-        return $this->isTenant() && $this->personalInformation->tenant_until && Carbon::parse($this->personalInformation->tenant_until)->gt(Carbon::now());
+        return $this->hasRole(Role::RESIDENT)
+            && !$this->hasRole(Role::COLLEGIST);
+    }
+
+    /**
+     * Returns a string on whether the user is
+     * a resident, an extern, an alumnus or a tenant.
+     * Also includes the expiry of the resident role, if relevant.
+     */
+    public function collegistStatus(): string
+    {
+        if ($this->hasRole(Role::RESIDENT)) {
+            $residesUntil = $user->residesUntil();
+            if (is_null($residesUntil)) {
+                return $user->isCollegist() ? 'Bentlakó' : 'Vendég';
+            } else {
+                return ($user->isCollegist() ? 'Bentlakó (' : 'Vendég (')
+                     . $residesUntil . ')';
+            }
+        } else {
+            return $user->isCollegist() ? 'Bejáró' : 'Alumni';
+        }
     }
 
     /**
      * @return bool if the user needs to update their tenant status
-     * A user needs to update their tenant status if they are a tenant and their tenant_until date is in the past.
+     * A user needs to update their tenant status if they are a tenant
+     * but their resident role has expired.
      */
     public function needsUpdateTenantUntil(): bool
     {
@@ -1017,7 +1069,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public static function collegistsIncludingExpired(): Collection|array
     {
-        return User::withEverHadRole(Role::collegist())->get();
+        return User::withRole(Role::COLLEGIST, includesExpired: true)->get();
     }
 
     /**
@@ -1114,7 +1166,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public static function tenants(): Collection|array
     {
-        return self::withRole(Role::TENANT)->get();
+        return self::withRole(Role::RESIDENT)->withoutRole(Role::COLLEGIST)->get();
     }
 
     /**

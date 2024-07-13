@@ -18,7 +18,7 @@
 @endforeach
 @can('updateAnyPermission', $user)
     <div class="divider" style="margin-bottom: 15px"></div>
-    @foreach (App\Models\Role::all()->sortBy(function ($r, $key){return __('role.' . $r['name']);}) as $role)
+    @foreach (\App\Models\Role::all()->sortBy(function ($r, $key){return __('role.' . $r['name']);}) as $role)
         @can('updateAnyPermission', [$user, $role])
             @if(!$user->roles->contains($role) || $role->has_objects || $role->has_workshops)
                 <form action="{{ route('users.roles.add', ['user' => $user->id, 'role'=>$role->id]) }}" method="post">
