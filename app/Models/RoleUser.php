@@ -99,6 +99,9 @@ class RoleUser extends Pivot
                         return $this->workshop->name;
                     });
                 }
+                if ($this->valid_until) {
+                    return $this->valid_until;
+                }
                 return '';
             }
         );

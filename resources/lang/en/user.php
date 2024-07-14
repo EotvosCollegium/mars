@@ -87,6 +87,7 @@ return [
     'update_tenant_status' => 'Update tenant status',
     'user_data' => 'User data',
     'users_amount' => 'users',
+    'valid_until' => 'Valid until (empty if permanent)',
     'workshop' => 'Workshop',
     'workshop_must_be_filled' => 'The workshop must be filled.',
     'workshops' => 'Workshops',

@@ -375,7 +375,17 @@ class UserController extends Controller
             return redirect()->back()->with('error', 'Ezt a jogosultságot nem tudja kezelni!');
         }
 
-        if ($user->addRole($role, $object)) {
+        $valid_until = $request->get('valid_until');
+        // if it does not contain the time:
+        if (!is_null($valid_until) && !str_contains($valid_until, ':')) {
+            $valid_until = $valid_until . ' 23:59:59';
+        }
+
+        if (!is_null($valid_until) && new Carbon($valid_until) < Carbon::now()) {
+            return redirect()->back()->with('error', 'A lejárati dátumot nem lehet utólag a múltba állítani.');
+        }
+
+        if ($user->addRole($role, $object, $valid_until)) {
             return redirect()->back()->with('message', __('general.successfully_added'));
         } else {
             return redirect()->back()->with('error', 'Ezt a jogosultságot nem lehet hozzárendelni senkihez.');

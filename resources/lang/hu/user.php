@@ -87,6 +87,7 @@ return [
     'update_tenant_status' => 'Vendég státusz frissítése',
     'user_data' => 'Felhasználói adatok',
     'users_amount' => 'felhasználó',
+    'valid_until' => 'Érvényes (üres, ha állandó)',
     'workshop' => 'Műhely',
     'workshop_must_be_filled' => 'A műhely kitöltése kötelező.',
     'workshops' => 'Műhelyek',

@@ -13,6 +13,11 @@ return new class () extends Migration {
      */
     public function up(): void
     {
+        Schema::table('roles', function (Blueprint $table) {
+            // whether the UI should present the option to set an expiry date
+            // this will be true for the resident role
+            $table->boolean('has_expiry_date')->default(0);
+        });
         Schema::table('role_users', function (Blueprint $table) {
             $table->dateTime('valid_from')->useCurrent();  // CURRENT_TIMESTAMP as default value
             $table->dateTime('valid_until')->nullable();
@@ -22,7 +27,7 @@ return new class () extends Migration {
         // used for both collegists and tenants.
         DB::table('roles')->updateOrInsert(
             ['name' => 'resident'],
-            ['has_workshops' => 0, 'has_objects' => 0]
+            ['has_workshops' => 0, 'has_objects' => 0, 'has_expiry_date' => 1]
         );
 
         // Current resident collegists should get this role.
@@ -124,6 +129,9 @@ return new class () extends Migration {
         Schema::table('role_users', function (Blueprint $table) {
             $table->dropColumn('valid_from');
             $table->dropColumn('valid_until');
+        });
+        Schema::table('roles', function (Blueprint $table) {
+            $table->dropColumn('has_expiry_date');
         });
     }
 };

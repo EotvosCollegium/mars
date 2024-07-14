@@ -8,6 +8,7 @@ use App\Models\Workshop;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 use Carbon\Carbon;
 
@@ -239,32 +240,46 @@ trait HasRoles
      * Attach a role to the user.
      * @param Role $role
      * @param RoleObject|Workshop|null $object
+     * @param string|Carbon|null $validUntil
      * @return bool
      */
-    public function addRole(Role $role, Workshop|RoleObject $object = null): bool
+    public function addRole(Role $role, Workshop|RoleObject $object = null, string|Carbon|null $validUntil = null): bool
     {
         if (!$role->isValid($object)) {
             return false;
         }
 
-        if ($role->has_objects) {
-            //if adding a collegist role to a collegist
-            if ($role->name == Role::COLLEGIST) {
-                //delete other object, if exists
-                $this->roles()->detach($role->id);
-                $this->roles()->attach($role->id, ['object_id' => $object->id]);
-                Cache::forget('collegists');
-            } elseif ($this->roles()->where('id', $role->id)->wherePivot('object_id', $object->id)->doesntExist()) {
-                $this->roles()->attach($role->id, ['object_id' => $object->id]);
+        if ($role->has_expiry_date) {
+            $oldRole = $this->roles()->where('id', $role->id)->first();
+            if (is_null($oldRole)) {
+                $this->roles()->attach($role->id, ['valid_until' => $validUntil]);
+            } else {
+                // we have to do this so that not all pivot rows get updated
+                DB::table('role_users')      // this is not really compatible with the HasRoles abstraction...
+                    ->where('user_id', $this->id)
+                    ->where('role_id', $oldRole->id)
+                    ->where('valid_from', $oldRole->pivot->valid_from)
+                    ->where('valid_until', $oldRole->pivot->valid_until)
+                    ->update(['valid_until' => $validUntil]);
+            }
+        } elseif ($role->has_objects) {
+            if ($this->roles()->where('id', $role->id)->wherePivot('object_id', $object->id)->doesntExist()) {
+                $this->roles()->attach($role->id, ['object_id' => $object->id, 'valid_until' => $validUntil]);
             }
         } elseif ($role->has_workshops) {
             if ($this->roles()->where('id', $role->id)->wherePivot('workshop_id', $object->id)->doesntExist()) {
-                $this->roles()->attach($role->id, ['workshop_id' => $object->id]);
+                $this->roles()->attach($role->id, ['workshop_id' => $object->id, 'valid_until' => $validUntil]);
             }
         } else {
             if ($this->roles()->where('id', $role->id)->doesntExist()) {
                 $this->roles()->attach($role->id);
             }
+        }
+
+        if (Role::COLLEGIST == $role->name) {
+            Cache::forget('collegists');
+        } elseif (Role::SYS_ADMIN == $role->name) {
+            Cache::forget('sys-admins');
         }
         return true;
     }
@@ -294,8 +309,7 @@ trait HasRoles
 
         if ($role->name == Role::COLLEGIST) {
             Cache::forget('collegists');
-        }
-        if ($role->name == Role::SYS_ADMIN) {
+        } elseif ($role->name == Role::SYS_ADMIN) {
             Cache::forget('sys-admins');
         }
     }

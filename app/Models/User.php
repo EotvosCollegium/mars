@@ -794,17 +794,26 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function isResident(bool $permanentOnly = true): bool
     {
-        if ($this->verified == false) {
-            // then they are applicants; so non-permanent residency is irrelevant
-            return $this->roles()
-                ->where('role_id', Role::collegist()->id)
-                ->exists()
-                && $this->roles()
+        if ($permanentOnly) {
+            $hasResidency = $this->roles()
+                ->where('role_id', Role::resident()->id)
+                ->wherePivotNull('valid_until')
+                ->exists();
+        } else {
+            $hasResidency = $this->roles()
                 ->where('role_id', Role::resident()->id)
                 ->exists();
         }
-        return $this->hasRole(Role::COLLEGIST)
-            && $this->hasRole(Role::RESIDENT, includesExpired: $permanentOnly);
+
+        if ($this->verified == false) {
+            return $this->roles()
+                ->where('role_id', Role::collegist()->id)
+                ->exists()
+                && $hasResidency;
+        } else {
+            return $this->hasRole(Role::COLLEGIST)
+                && $hasResidency;
+        }
     }
 
     /**
