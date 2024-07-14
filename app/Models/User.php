@@ -858,7 +858,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function setExtern(): void
     {
-        $this->setCollegist(Role::EXTERN);
+        $this->setCollegist('extern');
     }
 
     /**

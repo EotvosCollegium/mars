@@ -30,6 +30,11 @@ class RegisterController extends Controller
     use RegistersUsers;
 
     /**
+     * Used as a type for registrations.
+     */
+    public const TENANT = 'tenant';
+
+    /**
      * Where to redirect users after registration.
      *
      * @var string
@@ -50,7 +55,7 @@ class RegisterController extends Controller
     {
         return view('auth.register', [
             'user_type' => Role::COLLEGIST,
-            'application_open' => ApplicationController::getApplicationDeadline() > now(),
+            'application_open' => app(ApplicationController::class)->getDeadline() > now(),
             // 'countries' => require base_path('countries.php'),
         ]);
     }
@@ -58,7 +63,7 @@ class RegisterController extends Controller
     public function showTenantRegistrationForm()
     {
         return view('auth.register', [
-            'user_type' => Role::TENANT
+            'user_type' => self::TENANT
         ]);
     }
 
@@ -71,7 +76,7 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         switch ($data['user_type']) {
-            case Role::TENANT:
+            case self::TENANT:
                 return Validator::make($data, [
                     'tenant_until' => 'required|date|after:today',
                     'name' => 'required|string|max:255',
@@ -108,7 +113,7 @@ class RegisterController extends Controller
             $user->roles()->attach(Role::firstWhere('name', Role::PRINTER)->id);
             $user->roles()->attach(Role::firstWhere('name', $data['user_type'])->id);
 
-            if ($data['user_type'] == Role::TENANT) {
+            if ($data['user_type'] == self::TENANT) {
                 $user->personalInformation()->create([
                     'tenant_until' => $data['tenant_until'],
                     'phone_number' => $data['phone_number'],

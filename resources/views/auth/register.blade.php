@@ -16,7 +16,8 @@
                 @if($user_type == \App\Models\Role::COLLEGIST)
                 <blockquote><a href="{{route('register.guest')}}" style="text-decoration: underline">@lang('registration.information_tenant')</a></blockquote>
                 @endif
-                @if($user_type == \App\Models\Role::TENANT || $application_open ?? false)
+                @if($user_type == \App\Http\Controllers\Auth\RegisterController::TENANT
+                    || $application_open ?? false)
                 <form method="POST" action="{{ route('register') }}">
                     @csrf
                     @foreach ($errors->all() as $error)
@@ -28,7 +29,7 @@
                         <x-input.text id="email" type="email" text="user.email" required autocomplete="email" />
                         <x-input.text id="password" text="registration.password" type="password" required autocomplete="new-password" />
                         <x-input.text id="confirmpwd" text="registration.confirmpwd" name="password_confirmation" type="password" required autocomplete="new-password" />
-                        @if ($user_type == \App\Models\Role::TENANT)
+                        @if ($user_type == \App\Http\Controllers\Auth\RegisterController::TENANT)
                         <x-input.text id='phone_number' type='tel' required pattern="[+][0-9]{1,4}[-\s()0-9]*" minlength="8" maxlength="18" text='user.phone_number' helper='+36 (20) 123-4567' />
                         <x-input.datepicker id='tenant_until' required text='user.tenant_until' />
                         @else

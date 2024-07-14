@@ -155,6 +155,7 @@ class ApplicationController extends Controller
             }
             $applications = ApplicationForm::select('*');
             $applications->join('workshop_users', 'application_forms.user_id', '=', 'workshop_users.user_id');
+            /*
             if ($request->has('workshop') && $request->input('workshop') !== "null" && $workshops->contains($request->input('workshop'))) {
                 //filter by workshop selected
                 $applications->where('workshop_id', $request->input('workshop'));
@@ -174,6 +175,7 @@ class ApplicationController extends Controller
             if ($request->has('status')) {
                 $applications->where('status', $request->input('status'));
             }
+            */
             return view('auth.application.applications', [
                 'applications' => $applications->with('user.educationalInformation')->get()->unique()->sortBy('user.name'),
                 'workshop' => $request->input('workshop'), //filtered workshop
