@@ -6,8 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-use App\Models\User;
-use App\Models\Role;
 
 return new class () extends Migration {
     /**
