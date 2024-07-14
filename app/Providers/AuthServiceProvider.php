@@ -42,11 +42,11 @@ class AuthServiceProvider extends ServiceProvider
         });
         Gate::define('document.register-statement', function ($user) {
             return $user->isCollegist(alumni: false)
-                || $user->hasRole(Role::TENANT);
+                || $user->isTenant();
         });
         Gate::define('document.import-license', function ($user) {
             return $user->isCollegist()
-                || $user->hasRole(Role::TENANT);
+                || $user->isTenant();
         });
 
         Gate::define('document.any', function ($user) {

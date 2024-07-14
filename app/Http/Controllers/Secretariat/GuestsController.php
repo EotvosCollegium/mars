@@ -31,7 +31,10 @@ class GuestsController extends Controller
         $users = User::withoutGlobalScope('verified')
             ->where('verified', false)
             ->whereHas('roles', function (Builder $query) {
-                $query->where('name', Role::TENANT);
+                $query->where('name', Role::RESIDENT);
+            })
+            ->whereDoesntHave('roles', function (Builder $query) {
+                $query->where('name', Role::COLLEGIST);
             })
             ->with(['personalInformation'])
             ->get();
@@ -55,7 +58,7 @@ class GuestsController extends Controller
         }
 
         $user->update(['verified' => true]);
-        if ($user->hasRole(Role::TENANT)) {
+        if ($user->isTenant()) {
             $date = min(Carbon::now()->addMonths(6), Carbon::parse($user->personalInformation->tenant_until));
             $user->internetAccess()->update(['has_internet_until' => $date]);
             $user->personalInformation()->update(['tenant_until' => $date]);

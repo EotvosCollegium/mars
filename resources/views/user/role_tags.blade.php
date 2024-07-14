@@ -23,6 +23,14 @@ $chunks = $roles->chunkWhile(function($current, $key, $chunk) {
             <nobr>{{ $role->pivot->translatedName }}</nobr>
         </span>
         @endif
+
+        @php $valid_until = $role['pivot']['valid_until']; @endphp
+        @if(!is_null($valid_until))
+        <span class="new badge {{ $rolegroup->first()->color() }} tag" data-badge-caption="">
+            <nobr>({{ $valid_until }})</nobr>
+        </span>
+        @endif
     @endforeach
+
     @if($newline ?? false) <br> @endif
 @endforeach

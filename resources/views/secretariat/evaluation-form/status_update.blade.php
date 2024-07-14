@@ -1,7 +1,7 @@
 <div class="card">
     <div class="card-content">
         <span class="card-title">Nyilatkozz a következő félévedről ({{$periodicEvent->semester->succ()->tag}})!</span>
-        @if(user()->hasRole(App\Models\Role::ALUMNI))
+        @if(user()->hasRole(\App\Models\Role::ALUMNI))
         <blockquote>
             A beállított státuszod: <span class="coli-text text-blue">alumni</span>.
             Ha ez véletlen lenne, akkor keresd fel a titkárságot!
@@ -10,8 +10,11 @@
         <form action="{{ route('secretariat.evaluation.store') }}" method="post">
             @csrf
             <input type="hidden" name="section" value="status" />
-            @if(user()->isResident())
-            <blockquote>A jelenlegi bentlakási státuszod: <span class="coli-text text-blue">bentlakó</span>.</blockquote>
+            @if(user()->isResident(permanentOnly: false))
+            <blockquote>
+                A jelenlegi bentlakási státuszod: <span class="coli-text text-blue">bentlakó</span>.
+                @if(!user()->isResident()) ({{user()->residesUntil()}}-ig érvényes a bentlakásod.) @endif
+            </blockquote>
             <div class="row">
                 <x-input.checkbox s=12 id="resign_residency" text="A továbbiakban lemondok bentlakó helyemről, bejáró leszek." />
             </div>

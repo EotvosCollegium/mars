@@ -120,7 +120,8 @@
                         <blockquote>
                             *Bentlakók - bejárók (+ akik még nem fizettek, de aktív státuszú collegisták)<br>
                             Azok közül, akik fizettek, minden bentlakó után a műhely {{config('custom.kkt')}} * {{config('custom.workshop_balance_resident')}}, minden bejáró után {{config('custom.kkt')}} * {{config('custom.workshop_balance_extern')}} forintot kap.
-                            (Ha egy collegistának több műhelye is van, a műhelyei megosztoznak az összegen.)
+                            (Ha egy collegistának több műhelye is van, a műhelyei megosztoznak az összegen.)<br>
+                            Bentlakónak csak az állandó bentlakók számítanak.
                         </blockquote>
                         @can('calculateWorkshopBalance', \App\Models\Checkout::class)
                         <blockquote>

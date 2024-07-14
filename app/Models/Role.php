@@ -35,7 +35,6 @@ class Role extends Model
     // General roles
     public const SYS_ADMIN = 'sys-admin';
     public const COLLEGIST = 'collegist';
-    public const TENANT = 'tenant';
     public const WORKSHOP_ADMINISTRATOR = 'workshop-administrator';
     public const WORKSHOP_LEADER = 'workshop-leader';
     public const APPLICATION_COMMITTEE_MEMBER = 'application-committee';
@@ -104,15 +103,15 @@ class Role extends Model
     // Module-related roles
     public const PRINTER = 'printer';
 
-    //collegist related roles
+    // The resident role is indefinite for 'true' residents
+    // and has an expiry date for resident-externs.
+    // Tenants also have this role.
     public const RESIDENT = 'resident';
-    public const EXTERN = 'extern';
 
     // all roles
     public const ALL = [
         self::SYS_ADMIN,
         self::COLLEGIST,
-        self::TENANT,
         self::WORKSHOP_ADMINISTRATOR,
         self::WORKSHOP_LEADER,
         self::APPLICATION_COMMITTEE_MEMBER,
@@ -249,6 +248,14 @@ class Role extends Model
     }
 
     /**
+     * Returns the resident role.
+     */
+    public static function resident(): Role
+    {
+        return self::where('name', self::RESIDENT)->first();
+    }
+
+    /**
      * Returns the role for the students council.
      */
     public static function studentsCouncil(): Role
@@ -298,7 +305,7 @@ class Role extends Model
         return match ($this->name) {
             self::SYS_ADMIN => 'pink',
             self::COLLEGIST => 'coli',
-            self::TENANT => 'coli blue',
+            self::RESIDENT => 'coli blue',
             self::WORKSHOP_ADMINISTRATOR => 'purple',
             self::WORKSHOP_LEADER => 'deep-purple',
             self::SECRETARY => 'indigo',

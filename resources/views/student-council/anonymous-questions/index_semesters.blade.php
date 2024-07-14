@@ -8,8 +8,8 @@
 
 @section('content')
 
-@foreach(App\Models\Semester::allUntilCurrent()
-    ->sortBy(function (App\Models\Semester $semester) {
+@foreach(\App\Models\Semester::allUntilCurrent()
+    ->sortBy(function (\App\Models\Semester $semester) {
         return $semester->getStartDate();
     })->reverse()
     as $semester)

@@ -66,7 +66,7 @@ class ApplicationController extends Controller
      */
     public function showApplicationForm(Request $request): View|RedirectResponse
     {
-        if (user()->hasRole(Role::get(Role::TENANT))) {
+        if (user()->isTenant()) {
             //let the user delete their tenant status
             return view('user.update_tenant_status');
         }

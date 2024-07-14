@@ -1,18 +1,18 @@
 @can('viewSomeApplication', \App\Models\User::class)
     @switch($status)
-        @case(App\Models\ApplicationForm::STATUS_IN_PROGRESS)
+        @case(\App\Models\ApplicationForm::STATUS_IN_PROGRESS)
             Folyamatban
             @break
-        @case(App\Models\ApplicationForm::STATUS_SUBMITTED)
+        @case(\App\Models\ApplicationForm::STATUS_SUBMITTED)
             Véglegesítve
             @break
-        @case(App\Models\ApplicationForm::STATUS_BANISHED)
+        @case(\App\Models\ApplicationForm::STATUS_BANISHED)
             Elutasítva
             @break
-        @case(App\Models\ApplicationForm::STATUS_CALLED_IN)
+        @case(\App\Models\ApplicationForm::STATUS_CALLED_IN)
             Behívva
             @break
-        @case(App\Models\ApplicationForm::STATUS_ACCEPTED)
+        @case(\App\Models\ApplicationForm::STATUS_ACCEPTED)
             Felvéve
             @break
         @default
@@ -21,7 +21,7 @@
 @endcan
 @cannot('viewSomeApplication', \App\Models\User::class)
     @switch($status)
-        @case(App\Models\ApplicationForm::STATUS_IN_PROGRESS)
+        @case(\App\Models\ApplicationForm::STATUS_IN_PROGRESS)
             Folyamatban
             @break
         @default

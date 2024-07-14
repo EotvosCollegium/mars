@@ -19,8 +19,13 @@ return new class () extends Migration {
             $table->foreignId('handler_id')->nullable()->references('id')->on('users');
         });
 
+        $role = Role::studentsCouncil();
+        $object = $role->getObject(Role::ECONOMIC_VICE_PRESIDENT);
         Checkout::studentsCouncil()->update([
-            'handler_id' => User::withRole(Role::studentsCouncil(), Role::ECONOMIC_VICE_PRESIDENT)->first()?->id
+            // here, we do not have 'valid_from' and 'valid_until' fields yet
+            'handler_id' => User::withRole(Role::studentsCouncil(), Role::ECONOMIC_VICE_PRESIDENT, includesExpired: true)
+                                ->first()?->id
+
         ]);
     }
 

@@ -100,7 +100,7 @@ class RegistrationTest extends TestCase
         ]);
 
         $this->assertTrue($user->hasRole(Role::PRINTER));
-        $this->assertTrue($user->hasRole(Role::TENANT));
+        $this->assertTrue($user->isTenant());
     }
 
 }

@@ -95,22 +95,24 @@ class Workshop extends Model
     }
 
     /**
-     * Returns a collection containing the residents in the workshop.
+     * Returns a collection containing the residents in the workshop
+     * (by default, only permanent residents).
      */
-    public function residents()
+    public function residents(bool $permanentOnly = true)
     {
         return $this->users->filter(function ($user, $key) {
-            return $user->isResident();
+            return $user->isResident(permanentOnly: $permanentOnly);
         });
     }
 
     /**
-     * Returns a collection containing the externs in the workshop.
+     * Returns a collection containing the externs in the workshop
+     * (by default, non-permanent residents too).
      */
-    public function externs()
+    public function externs(bool $nonPermanent = true)
     {
         return $this->users->filter(function ($user, $key) {
-            return $user->isExtern();
+            return $user->isExtern(nonPermanent: $nonPermanent);
         });
     }
 
