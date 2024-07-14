@@ -111,7 +111,7 @@ class WorkshopBalance extends Model
                 if (isset($active_users[$member->id])) {
                     $amount = $member->paidKKTInSemester($semester);
                     if (!is_null($amount)) {
-                        if ($member->isResident()) {
+                        if ($member->isResident(permanentOnly: true)) {
                             $amount *= $workshop_balance_resident;
                             $resident++;
                         } else {
