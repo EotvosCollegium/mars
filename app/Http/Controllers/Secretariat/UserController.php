@@ -101,7 +101,7 @@ class UserController extends Controller
      */
     public function updatePersonalInformation(Request $request, User $user): RedirectResponse
     {
-        $this->authorize('view', $user);
+        $this->authorize('updateInformation', $user);
         session()->put('section', 'personal_information');
 
         $isCollegist = $user->isCollegist();
@@ -149,7 +149,7 @@ class UserController extends Controller
      */
     public function updateEducationalInformation(Request $request, User $user): RedirectResponse
     {
-        $this->authorize('view', $user);
+        $this->authorize('updateInformation', $user);
         session()->put('section', 'educational_information');
 
         $request->validate([
@@ -170,6 +170,11 @@ class UserController extends Controller
             'research_topics' => ['nullable', 'string', 'max:1000'],
             'extra_information' => ['nullable', 'string', 'max:1500'],
         ]);
+
+        // whether Neptun code is unique
+        if (EducationalInformation::where('neptun', $request->neptun)->exists()) {
+            return redirect()->back()->with('message', 'A megadott Neptun-kód már létezik! Ha a kód az Öné, lépjen be a korábbi fiókjával.');
+        }
 
         $educational_data = $request->only([
             'year_of_graduation',
@@ -254,7 +259,7 @@ class UserController extends Controller
      */
     public function uploadLanguageExam(Request $request, User $user)
     {
-        $this->authorize('view', $user);
+        $this->authorize('updateInformation', $user);
         session()->put('section', 'alfonso');
 
         $validator = Validator::make($request->all(), [

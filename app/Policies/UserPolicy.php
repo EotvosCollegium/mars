@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Workshop;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Support\Facades\Cache;
+use Carbon\Carbon;
 
 class UserPolicy
 {
@@ -112,6 +113,23 @@ class UserPolicy
             return $user->hasRole([Role::STAFF, Role::STUDENT_COUNCIL => Role::PRESIDENT]);
         }
         return false;
+    }
+
+    /**
+     * Whether one can edit the user's educational or personal information.
+     *
+     * @param User $user
+     * @param User $target
+     * @return bool
+     */
+    public function updateInformation(User $user, User $target): bool
+    {
+        if (!$target->verified && $target->isCollegist()) {
+            // that means, they are applicants
+            $endDate = app(\App\Http\Controllers\Auth\ApplicationController::class)->getEndDate();
+            return (is_null($endDate) || Carbon::now() < $endDate)
+            && ($user->id == $target->id);
+        } else return $this->view($user, $target);
     }
 
 

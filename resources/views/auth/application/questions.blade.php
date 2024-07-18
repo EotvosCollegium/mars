@@ -11,15 +11,15 @@
             @csrf
             <div class="card-content">
                 <div class="row">
-                    <x-input.text s=12 id="graduation_average" text="application.graduation_average" type='number' step="0.01" min="0"
+                    <x-input.text s=12 id="graduation_average" text="application.graduation_average" type='number' step="0.01" min="1"
                                   max="5" text="Érettségi átlaga" :value="$user->application->graduation_average"
                                   required
-                                  helper='Az összes érettségi tárgy hagyományos átlaga'/>
+                                  helper='Az összes érettségi tárgy hagyományos átlaga (tizedesponttal)'/>
                     <div class="col s12">
                         @livewire('parent-child-form', [
                         'title' => "Van lezárt egyetemi félévem",
                         'name' => 'semester_average',
-                        'helper' => 'Hagyományos átlag a félév(ek)ben',
+                        'helper' => 'Hagyományos átlag a félév(ek)ben (tizedesponttal)',
                         'optional' => true,
                         'items' => $user->application->semester_average])
                     </div>
@@ -103,16 +103,20 @@
                         </div>
                     </div>
                     <x-input.textarea id="question_2" text="Miért kíván a Collegium tagja lenni?"
-                                      helper="≈300-500 karakter" :value="$user->application->question_2"/>
+                                      helper="≈300-500 karakter" maxlength="1000"
+                                      :value="$user->application->question_2"/>
                     <x-input.textarea id="question_3"
-                                      text="Tervez-e tovább tanulni a diplomája megszerzése után? Milyen tervei vannak az egyetem után?"
+                                      text="Tervez-e továbbtanulni a diplomája megszerzése után? Milyen tervei vannak az egyetem után?"
+                                      maxlength="1000"
                                       :value="$user->application->question_3"/>
                     <x-input.textarea id="question_4"
                                       text="Részt vett-e közéleti tevékenységben? Ha igen, röviden jellemezze!"
                                       helper="Pl. diákönkormányzati tevékenység, önkéntesség, szervezeti tagság. (nem kötelező)"
+                                      maxlength="1000"
                                       :value="$user->application->question_4"/>
                     <x-input.textarea id="present"
                                       text="Amennyiben nem tud jelen lenni a felvételi teljes ideje alatt (vasárnap-szerda), kérjük itt indoklással jelezze!"
+                                      maxlength="1000"
                                       :value="$user->application->present"  helper="Változás esetén értesítse a titkárságot!"/>
                     <x-input.checkbox id="accommodation"
                                       text="Igényel-e szállást a felvételi idejére?"

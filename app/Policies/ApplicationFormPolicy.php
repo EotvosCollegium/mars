@@ -31,19 +31,31 @@ class ApplicationFormPolicy
      */
     public function view(User $user, ApplicationForm $target): bool
     {
-        if ($user->id == $target->user_id) {
+        if ($user->id == $target->user_id || $user->can('viewAll', ApplicationForm::class)) {
             return true;
-        }
-        if ($user->can('viewAll', ApplicationForm::class)) {
-            return true;
-        }
-
-        return $target->workshops
+        } elseif (is_null($target->user->workshops)) {
+            return false;
+        } else {
+            return $target->user->workshops
                 ->intersect($user->applicationCommitteWorkshops)
                 ->count() > 0
-            || $target->workshops
+            || $target->user->workshops
                 ->intersect($user->roleWorkshops)
                 ->count() > 0;
+        }
+    }
+
+    /**
+     * Whether one can edit the note attached to the application.
+     *
+     * @param User $user
+     * @param ApplicationForm $target
+     * @return bool
+     */
+    public function editNote(User $user, ApplicationForm $target): bool
+    {
+        return $this->view($user, $target)
+        && $user->id != $target->user_id;
     }
 
     /**

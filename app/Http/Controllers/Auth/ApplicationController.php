@@ -191,10 +191,11 @@ class ApplicationController extends Controller
      * @return RedirectResponse
      * @throws AuthorizationException
      */
-    public function editApplication(Request $request): RedirectResponse
+    public function editApplicationNote(Request $request): RedirectResponse
     {
-        $this->authorize('viewSome', ApplicationForm::class);
         $application = ApplicationForm::findOrFail($request->input('application'));
+        $this->authorize('editNote', $application);
+
         $newStatus = $request->input('status_'.$application->user->id);
         if ($request->has('note')) {
             $application->update(['note' => $request->input('note')]);
@@ -255,35 +256,44 @@ class ApplicationController extends Controller
 
 
     /**
+     * Saves questions not included in either personal or educational information.
+     *
      * @param Request $request
      * @param User $user
      * @return void
      */
     public function storeQuestionsData(Request $request, User $user): void
     {
-        $request->validate([
-            'status' => 'required|in:extern,resident',
-            'graduation_average' => 'required|numeric',
-        ]);
+        $this->authorize('updateInformation', $user);
+
         if ($request->input('status') == 'resident') {
             $user->setResident();
         } elseif ($request->input('status') == 'extern') {
             $user->setExtern();
+        } else {
+            abort(400, 'invalid status');
         }
 
-        ApplicationForm::updateOrCreate(['user_id' => $user->id], [
-            'graduation_average' => $request->input('graduation_average'),
-            'semester_average' => $request->input('semester_average'),
-            'competition' => $request->input('competition'),
-            'publication' => $request->input('publication'),
-            'foreign_studies' => $request->input('foreign_studies'),
-            'question_1' => $request->input('question_1'),
-            'question_2' => $request->input('question_2'),
-            'question_3' => $request->input('question_3'),
-            'question_4' => $request->input('question_4'),
-            'accommodation' => $request->input('accommodation') === "on",
-            'present' => $request->input('present')
+        $validatedData = $request->validate([
+            'graduation_average' => 'required|numeric|min:1|max:5',
+            'semester_average' => 'nullable|array',
+            'semester_average.*' => 'numeric|min:1|max:5',
+            'competition' => 'nullable|array',
+            'competition.*' => 'string|max:500',
+            'publication' => 'nullable|array',
+            'publication.*' => 'string|max:500',
+            'foreign_studies' => 'nullable|array',
+            'foreign_studies.*' => 'string|max:500',
+            'question_1' => 'nullable|max:1000',
+            'question_2' => 'nullable|max:1000',
+            'question_3' => 'nullable|max:1000',
+            'question_4' => 'nullable|max:1000',
+            'present' => 'nullable|max:1000',
+            'accommodation' => 'nullable|in:on'
         ]);
+        $validatedData['accommodation'] = $request->input('accommodation') === "on";
+
+        ApplicationForm::updateOrCreate(['user_id' => $user->id], $validatedData);
     }
 
     /**
@@ -293,6 +303,8 @@ class ApplicationController extends Controller
      */
     public function storeFiles(Request $request, $user): void
     {
+        $this->authorize('updateInformation', $user);
+
         $request->validate([
             'file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5240',
             'name' => 'required|string|max:255',
@@ -314,8 +326,8 @@ class ApplicationController extends Controller
 
         $file = $user->application->files()->findOrFail($request->input('id'));
 
-        Storage::delete($file->path);
         $file->delete();
+        Storage::delete($file->path);
     }
 
     /**

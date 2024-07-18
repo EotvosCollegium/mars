@@ -1,4 +1,4 @@
-<!-- Admin site showing one applicants -->
+<!-- Admin site showing one applicant -->
 @extends('layouts.app')
 @section('title')
     <a href="{{ route('applications') }}" class="breadcrumb" style="cursor: pointer">Felvételi jelentkezők</a>
@@ -7,6 +7,8 @@
 
 @section('content')
     @include('auth.application.application', ['user' => $user, 'expanded' => true, 'admin' => $admin ?? false])
+
+    @can('editNote', $user->application)
     <div class="card">
         <form method="POST" route="{{route('applications.edit')}}">
             <div class="card-content">
@@ -22,4 +24,5 @@
             </div>
         </form>
     </div>
+    @endcan
 @endsection

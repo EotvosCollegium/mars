@@ -174,7 +174,7 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
     /** Application handling */
     Route::post('/applications/period/update', [ApplicationController::class, 'updateApplicationPeriod'])->name('applications.period.update');
     Route::get('/applications', [ApplicationController::class, 'showApplications'])->name('applications');
-    Route::post('/applications', [ApplicationController::class, 'editApplication'])->name('applications.edit');
+    Route::post('/applications', [ApplicationController::class, 'editApplicationNote'])->name('applications.edit');
     Route::get('/applications/export', [ApplicationController::class, 'exportApplications'])->name('applications.export');
 
     /** Faults */
