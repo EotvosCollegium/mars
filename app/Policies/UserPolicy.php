@@ -129,7 +129,9 @@ class UserPolicy
             $endDate = app(\App\Http\Controllers\Auth\ApplicationController::class)->getEndDate();
             return (is_null($endDate) || Carbon::now() < $endDate)
             && ($user->id == $target->id);
-        } else return $this->view($user, $target);
+        } else {
+            return $this->view($user, $target);
+        }
     }
 
 
