@@ -32,7 +32,7 @@ class MacAddressPolicy
      * Determine whether the user can approve a mac address.
      *
      * @param User $user
-     * @return mixed
+     * @return bool
      */
     public function update(User $user, MacAddress $macAddress): bool
     {
@@ -45,7 +45,7 @@ class MacAddressPolicy
      *
      * @param User $user
      * @param MacAddress $macAddress
-     * @return mixed
+     * @return bool
      */
     public function delete(User $user, MacAddress $macAddress): bool
     {

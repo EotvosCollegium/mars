@@ -32,7 +32,7 @@ class WifiConnectionPolicy
     public function view(User $user, WifiConnection $wifiConnection)
     {
         return $user->isAdmin()
-            || $user->wifiConnections->contains($wifiConnection);
+            || $user->internetAccess->wifiConnections->contains($wifiConnection);
     }
 
     public function approveAny(User $user): bool

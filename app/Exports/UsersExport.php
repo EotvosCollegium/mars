@@ -41,6 +41,7 @@ class UsersExport implements WithMultipleSheets, WithDefaultStyles
 
     public function defaultStyles(Style $defaultStyle)
     {
+        // @phpstan-ignore-next-line
         return $defaultStyle->getAlignment()->setWrapText(true);
     }
 

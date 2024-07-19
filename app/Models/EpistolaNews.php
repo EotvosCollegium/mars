@@ -116,7 +116,7 @@ class EpistolaNews extends Model
     public function dateTime(): Attribute
     {
         return Attribute::make(
-            get: function (): string|null {
+            get: function (): string {
                 $datetime = $this->date?->format('Y.m.d.') ?? '';
                 $datetime .= $this->time?->format(' G:i') ?? '';
                 $datetime .= $this->end_date?->format(' - Y.m.d.') ?? '';

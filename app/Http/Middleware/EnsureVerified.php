@@ -18,8 +18,8 @@ class EnsureVerified
         if (!$request->user()) {
             abort(403);
         }
-        if (!$request->user()?->verified) {
-            if ($request->user()?->isCollegist()) {
+        if (!$request->user()->verified) {
+            if ($request->user()->isCollegist()) {
                 //if an applicant
                 return Redirect::route('application');
             }

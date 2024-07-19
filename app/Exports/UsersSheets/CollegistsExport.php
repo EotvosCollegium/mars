@@ -91,7 +91,9 @@ class CollegistsExport implements FromCollection, WithTitle, WithMapping, WithHe
             $user->educationalInformation?->languageExamsAfterAcceptance?->map(function ($exam) {
                 return implode(", ", [__('role.'.$exam->language), $exam->level, $exam->type, $exam->date->format('Y-m')]);
             })->implode(" \n"),
-            ($user->educationalInformation?->alfonso_language ? __('role.'.$user->educationalInformation?->alfonso_language) . " " . $user->educationalInformation?->alfonso_desired_level : ""),
+            ($user->educationalInformation?->alfonso_language ?
+                __('role.'.$user->educationalInformation->alfonso_language) . " " . $user->educationalInformation->alfonso_desired_level
+                : ""),
             ($user->educationalInformation?->alfonsoCompleted() ?? false)
                 ? 'Igen'
                 : (($user->educationalInformation?->alfonsoCanBeCompleted() ?? true) ? "Folyamatban" : "Nem"),

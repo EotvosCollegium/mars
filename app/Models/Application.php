@@ -261,6 +261,7 @@ class Application extends Model
             $missingData[] = 'Tanulmányi adatok';
         }
 
+        // @phpstan-ignore-next-line
         if ($educationalInformation?->studyLines->count() == 0) {
             $missingData[] =  'Megjelölt szak';
         }

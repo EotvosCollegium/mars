@@ -180,7 +180,7 @@ class DocumentController extends Controller
         $pdf = $this->generatePDF(
             'latex.register-statement',
             [ 'name' => $user->name,
-              'address' => $user->zip_code . ' ' . $info->getAddress(),
+              'address' => $info->zip_code . ' ' . $info->getAddress(),
               'phone' => $info->phone_number,
               'email' => $user->email,
               'place_and_of_birth' => $info->getPlaceAndDateOfBirth(),

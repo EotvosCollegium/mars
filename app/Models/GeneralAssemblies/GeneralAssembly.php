@@ -48,11 +48,6 @@ class GeneralAssembly extends Model
 
     protected $fillable = ['title', 'opened_at', 'closed_at'];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
     protected $casts = [
         'opened_at' => 'datetime',
         'closed_at' => 'datetime',
@@ -170,7 +165,6 @@ class GeneralAssembly extends Model
 
     /**
      * Opens the question.
-     * @throws Exception if it has already been opened.
      */
     public function open(): void
     {
@@ -182,7 +176,6 @@ class GeneralAssembly extends Model
 
     /**
      * Closes the question.
-     * @throws Exception if it has already been closed or if it is not even open.
      */
     public function close(): void
     {
