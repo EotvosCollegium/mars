@@ -9,12 +9,10 @@
                wire:click="admit('{{$workshop->workshop_id}}')" @checked($workshop->admitted) />
         <span>Felvéve</span>
     </label>
-
-
-    @if (session()->has('message'))
-        <script>
-            M.toast({html: "{{ session('message') }}"});
-        </script>
-    @endif
+    <div wire:poll.1000ms>
+        @if($this->updated)
+            <label> Státusz frissítve! </label>
+        @endif
+    </div>
 </div>
 
