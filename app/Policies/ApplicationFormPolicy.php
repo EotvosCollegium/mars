@@ -33,8 +33,6 @@ class ApplicationFormPolicy
     {
         if ($user->id == $target->user_id || $user->can('viewAll', ApplicationForm::class)) {
             return true;
-        } elseif (is_null($target->user->workshops)) {
-            return false;
         } else {
             return $target->user->workshops
                 ->intersect($user->applicationCommitteWorkshops)
