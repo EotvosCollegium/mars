@@ -66,7 +66,7 @@ return [
         'option' => 'vote',
         'alfonso_language' => 'Alfonsó language',
         'alfonso_desired_level' => 'Alfonsó level',
-        'semester_average.*' => 'average in earlier semester',
+        'semester_average' => array_fill(0, 10, 'average in earlier semester'), // from semester_average.0 to semester_average.9
         'question_1' => "\"Honnan hallott a Collegiumról?\" question",
         'question_1_other' => "\"Honnan hallott a Collegiumról?\" question's other value",
         'question_2' => "\"Miért kíván a Collegium tagja lenni?\" question",

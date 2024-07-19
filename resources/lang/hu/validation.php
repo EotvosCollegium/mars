@@ -66,7 +66,7 @@ return [
         'option' => 'szavazat',
         'alfonso_language' => 'Alfonsó nyelv',
         'alfonso_desired_level' => 'Alfonsó szint',
-        'semester_average.*' => 'korábbi szemeszter átlaga',
+        'semester_average' => array_fill(0, 10, 'korábbi szemeszter átlaga'), // from semester_average.0 to semester_average.9
         'question_1' => "\"Honnan hallott a Collegiumról?\" kérdés",
         'question_1_other' => "\"Honnan hallott a Collegiumról?\" kérdés egyéb mezője",
         'question_2' => "\"Miért kíván a Collegium tagja lenni?\" kérdés",
