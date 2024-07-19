@@ -17,7 +17,7 @@
                                 @include('auth.application.status', ['status' => $user->application->status])
                             </span>
                         @else
-                            @livewire('application-status-update', ['application' => $user->application])
+                            @livewire('application-status-update', ['applicationForm' => $user->application])
                         @endif
                     @endcan
 
@@ -304,5 +304,3 @@
         </div>
     </div>
 @endcan
-
-

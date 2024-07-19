@@ -7,21 +7,27 @@ use Livewire\Component;
 
 class ApplicationStatusUpdate extends Component
 {
-    public ApplicationForm $application;
+    public ApplicationForm $applicationForm;
 
     /**
-     * Update the status of the application and flases a confirmation message
-     * @param $status
+     * Gets the data from the @livewire parameters and sets the component properties.
      */
-    public function set($status)
+    public function mount($applicationForm)
     {
-        $this->application->update(['status' => $status]);
+        $this->applicationForm = $applicationForm;
+    }
+
+    /**
+     * Updates the status of the application and flashes a confirmation message.
+     */
+    public function setStatus($status)
+    {
+        $this->applicationForm->update(['status' => $status]);
         session()->flash('message', 'Státusz frissítve!');
     }
 
     /**
-     * Render the component
-     * @return \Illuminate\View\View
+     * Renders the component.
      */
     public function render()
     {

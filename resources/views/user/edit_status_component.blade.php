@@ -22,7 +22,7 @@
     </td>
     @can('updateStatus', $user)
     <td>  
-    <button
+        <button
             class="red tooltipped waves-effect btn-floating right"
             style="margin-right: 5px; margin-left: 5px;"
             wire:click="removeStatus"
