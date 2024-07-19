@@ -56,7 +56,7 @@
     @endforeach
     <hr>
     <h6>Összesen: <b class="right">{{$applications->count()}} jelentkező</b></h6>
-    @can('finalizeApplicationProcess', \App\Models\User::class)
+    @can('finalize', \App\Models\Application::class)
         @if($applicationDeadline?->addWeeks(1) < now())
             <div class="card" style="margin-top:20px">
                 <div class="card-content">

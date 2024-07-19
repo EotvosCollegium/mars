@@ -13,6 +13,9 @@ class UserPolicy
 {
     use HandlesAuthorization;
 
+    /**
+     * We let admins do anything here.
+     */
     public function before(User $user)
     {
         if ($user->isAdmin()) {

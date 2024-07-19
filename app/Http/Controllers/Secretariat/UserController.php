@@ -60,7 +60,7 @@ class UserController extends Controller
         session()->put('section', 'profile_picture');
 
         $request->validate([
-            'picture' => 'required|mimes:jpg,jpeg,png|max:2000',
+            'picture' => 'required|mimes:jpg,jpeg,png,gif|max:2000',
         ]);
         $path = $request->file('picture')->store('avatars');
         $old_profile = $user->profilePicture;
