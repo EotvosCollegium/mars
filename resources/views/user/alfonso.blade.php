@@ -1,10 +1,12 @@
 
 @if(isset($application))
 <blockquote>
-A Collegiumban az ALFONSÓ nyelvi program keretében nyelvoktatás folyik.
-    <a href="https://eotvos.elte.hu/collegium/mukodes/szabalyzatok"
-        style="text-decoration:underline">
-        A program szabályzata elérhető itt.</a>
+    <p>A Collegiumban az ALFONSÓ nyelvi program keretében nyelvoktatás folyik.
+        <a href="https://eotvos.elte.hu/collegium/mukodes/szabalyzatok" target="_blank"
+            style="text-decoration:underline">
+            A program szabályzata elérhető itt.</a>
+    </p>
+    <p>Az igények előrejelzése miatt kérjük, adja meg, milyen nyelven szeretné elkezdeni a programot.</p>
 </blockquote>
 @endif
 

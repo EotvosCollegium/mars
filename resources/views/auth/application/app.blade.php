@@ -27,11 +27,14 @@
             <blockquote>
                 @if($user->application->status == App\Models\ApplicationForm::STATUS_IN_PROGRESS)
                     <p>A jelentkezése jelen állapotában még nem látható a felvételiztető bizottság számára! </p>
-                    <p>A jelentkezése bármikor félbe szakítható, a regisztrációnál megadott e-mail címmel és jelszóval
-                        belépve bármikor visszatérhet erre az oldalra, és folytathatja az űrlap kitöltését.</p>
-                    <p>Miután minden szükséges kérdést megválaszolt és fájlt feltöltött, kérjük, véglegesítse a
-                        jelentkezését.</p>
-                    <p>Kérjük figyeljen a határidőre, mert utána már nem lesz lehetősége véglegesíteni azt.</p>
+                    <ul class="browser-default">
+                        <li>A jelentkezése bármikor félbeszakítható: a regisztrációnál megadott e-mail címmel és jelszóval
+                            belépve bármikor visszatérhet erre az oldalra, és folytathatja az űrlap kitöltését.</li>
+                        <li>Minden mező kötelező, ahol az ellenkezője nincs külön jelezve.</li>
+                        <li>Miután minden szükséges kérdést megválaszolt és fájlt feltöltött,
+                            kérjük, véglegesítse a jelentkezését.
+                            Kérjük figyeljen a határidőre, mert utána már nem lesz lehetősége véglegesíteni azt.</li>
+                    </ul>
                     <p>Amennyiben bármi kérdése lenne a felvételivel kapcsolatban, kérjük, írjon a
                         <a href="mailto:{{config('mail.secretary_mail')}}">{{config('mail.secretary_mail')}}</a> e-mail címre. Ha
                         technikai

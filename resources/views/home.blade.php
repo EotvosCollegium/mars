@@ -113,7 +113,7 @@
 
                 <!-- Workshop functionaries -->
                 <div class="arrow-dropdown">
-                    <h5 class="arrow-dropdown-title" class="closed"><a>
+                    <h5 class="arrow-dropdown-title closed"><a>
                         @lang('role.workshop-functionaries')
                     </a></h5>
                     <div class="arrow-dropdown-content">

@@ -32,7 +32,7 @@
                     allow-empty="Nincs teljesítve"
                     helper="Csak teljesítés után töltendő ki" />
 
-        <x-input.button type="button" s="1" class="right red" floating icon="delete" onclick="removeStudyLine({{$index}})"/>
+        <x-input.button type="button" s="1" class="right red tooltipped" floating icon="delete" data-tooltip="Szak törlése" onclick="removeStudyLine({{$index}})"/>
     </div>
     <div class="divider" style="margin:10px"></div>
 </div>

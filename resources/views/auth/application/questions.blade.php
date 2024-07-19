@@ -121,6 +121,9 @@
                     <x-input.checkbox id="accommodation"
                                       text="Igényel-e szállást a felvételi idejére?"
                                       :checked="$user->application->accommodation"/>
+                    <div class="col s12">
+                        <label>A szállással kapcsolatban figyelje a titkárság tájékoztatását. Az igénylés nem garantál szálláshelyet.</label>
+                    </div>
                 </div>
 
             </div>
