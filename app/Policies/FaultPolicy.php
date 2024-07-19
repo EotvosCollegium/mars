@@ -15,7 +15,7 @@ class FaultPolicy
      * Determine whether the user can create fault.
      *
      * @param User $user
-     * @return mixed
+     * @return bool
      */
     public function create(User $user): bool
     {
@@ -26,7 +26,7 @@ class FaultPolicy
      * Determine whether the user can view faults.
      *
      * @param User $user
-     * @return mixed
+     * @return bool
      */
     public function view(User $user): bool
     {

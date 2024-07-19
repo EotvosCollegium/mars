@@ -7,7 +7,7 @@ class LatexSanitizer
     /**
      * Converts a single character to a \symbol{...} command
      * @param  string  $char
-     * @return string  $string
+     * @return string
      */
     private static function convertCharToSymbol(string $char): string
     {
@@ -20,7 +20,7 @@ class LatexSanitizer
     /**
      * Converts string to a relatively safe Latex code by putting every character into a seperate \symbol{...}
      * @param  string  $data
-     * @return string|null  $string
+     * @return string
      */
     public static function sanitizeLatex(string|null $data): string
     {

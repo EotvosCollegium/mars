@@ -21,7 +21,7 @@ class InternetAccessPolicy
      * Determine whether the user can handle and view any internet accesses.
      *
      * @param User $user
-     * @return mixed
+     * @return bool
      */
     public function handleAny(User $user): bool
     {
@@ -33,7 +33,7 @@ class InternetAccessPolicy
      *
      * @param User $user
      * @param InternetAccess $internetAccess
-     * @return mixed
+     * @return bool
      */
     public function handle(User $user, InternetAccess $internetAccess): bool
     {
@@ -45,7 +45,7 @@ class InternetAccessPolicy
      *
      * @param User $user
      * @param InternetAccess $internetAccess
-     * @return mixed
+     * @return bool
      */
     public function extend(User $user, InternetAccess $internetAccess): bool
     {
