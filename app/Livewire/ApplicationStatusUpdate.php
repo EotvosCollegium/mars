@@ -13,6 +13,12 @@ class ApplicationStatusUpdate extends Component
     public ApplicationWorkshop $workshop;
     public Carbon $lastUpdated;
 
+    /**
+     * Mount the component
+     * @param Application $application
+     * @param ApplicationWorkshop $workshop
+     * @return void
+     */
     public function mount(Application $application, ApplicationWorkshop $workshop)
     {
         $this->application = $application;
@@ -40,6 +46,10 @@ class ApplicationStatusUpdate extends Component
         $this->lastUpdated = Carbon::now();
     }
 
+    /**
+     * $this->updated
+     * @return bool
+     */
     public function getUpdatedProperty()
     {
         return $this->lastUpdated > Carbon::now()->subSeconds(2);

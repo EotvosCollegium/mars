@@ -40,6 +40,12 @@ class AdmissionTest extends TestCase
         ]);
 
     }
+
+    /**
+     * Create an application with given parameters.
+     *
+     * @return void
+     */
     private function createApplicant(string $name, bool $submitted, $workshops): User
     {
         /* @var User $user */
@@ -56,7 +62,7 @@ class AdmissionTest extends TestCase
     }
 
     /**
-     * Test redirecting to application form.
+     * Test viewing all applications as secretary.
      *
      * @return void
      */
@@ -82,6 +88,11 @@ class AdmissionTest extends TestCase
         $response->assertSee('applicant3');
     }
 
+    /**
+     * Test viewing all finalised applications in a workshop as workshop leader.
+     *
+     * @return void
+     */
     public function test_view_applications_as_workshop_leader()
     {
         $user = User::factory()->create(['verified' => true]);
@@ -107,6 +118,11 @@ class AdmissionTest extends TestCase
         $response->assertDontSee('applicant4');
     }
 
+    /**
+     * Test viewing all finalised applications in a workshop as workshop admin.
+     *
+     * @return void
+     */
     public function test_view_applications_as_workshop_admin()
     {
         $user = User::factory()->create(['verified' => true]);
@@ -132,6 +148,11 @@ class AdmissionTest extends TestCase
         $response->assertDontSee('applicant4');
     }
 
+    /**
+     * Test viewing all finalised applications as aggregated committe member.
+     *
+     * @return void
+     */
     public function test_view_applications_as_aggregated_committee_member()
     {
         $user = User::factory()->create(['verified' => true]);
@@ -156,6 +177,11 @@ class AdmissionTest extends TestCase
         $response->assertSee('applicant4');
     }
 
+    /**
+     * Test viewing all finalised applications in a workshop as workshop committe member.
+     *
+     * @return void
+     */
     public function test_view_applications_as_workshop_committee_member()
     {
         $user = User::factory()->create(['verified' => true]);
@@ -182,6 +208,11 @@ class AdmissionTest extends TestCase
     }
 
 
+    /**
+     * Test viewing all finalised applications with multiple workshop roles.
+     *
+     * @return void
+     */
     public function test_view_applications_with_mixed_roles()
     {
         $user = User::factory()->create(['verified' => true]);

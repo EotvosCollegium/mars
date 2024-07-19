@@ -46,6 +46,10 @@ class RegisterController extends Controller
         $this->middleware('guest');
     }
 
+    /**
+     * Register form for applying as collegist.
+     * @return \Illuminate\Contracts\View\View
+     */
     public function showRegistrationForm()
     {
         return view('auth.register', [
@@ -54,6 +58,10 @@ class RegisterController extends Controller
         ]);
     }
 
+    /**
+     * Register form for tenants/guests.
+     * @return \Illuminate\Contracts\View\View
+     */
     public function showTenantRegistrationForm()
     {
         return view('auth.register', [

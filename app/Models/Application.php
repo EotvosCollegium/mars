@@ -107,18 +107,28 @@ class Application extends Model
     |--------------------------------------------------------------------------
     */
 
+    /**
+     * The applicant User.
+     * @return BelongsTo
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class)->withoutGlobalScope('verified');
     }
 
+
     /**
+     * The ApplicationWorkshop models that the user applied for (includes status of application).
      */
     public function applicationWorkshops(): HasMany
     {
         return $this->hasMany(ApplicationWorkshop::class);
     }
 
+    /**
+     * The Workshop models that the user applied for.
+     * @return HasManyThrough
+     */
     public function appliedWorkshops(): HasManyThrough
     {
         return $this->hasManyThrough(

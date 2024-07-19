@@ -128,6 +128,10 @@ class ApplicationController extends Controller
         return back()->with('message', 'Sikeresen véglegesítette a jelentkezését!');
     }
 
+    /**
+     * Create the application for the user if it doesn't exist.
+     * @param User $user
+     */
     private function ensureApplicationExists(User $user): void
     {
         if ($user->application()->doesntExist()) {

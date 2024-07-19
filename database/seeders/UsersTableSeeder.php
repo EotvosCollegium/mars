@@ -125,6 +125,11 @@ class UsersTableSeeder extends Seeder
         }
     }
 
+    /**
+     * Create application details for the user
+     * @param $user
+     * @return void
+     */
     private function createApplicant($user)
     {
         $user->application()->create(['submitted' => rand(0, 1)]);
