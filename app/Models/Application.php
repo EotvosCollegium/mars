@@ -63,9 +63,6 @@ class Application extends Model
 {
     use HasFactory;
 
-    /**
-     * @var mixed|null
-     */
     protected $fillable = [
         'user_id',
         'submitted',

@@ -65,7 +65,6 @@ class AdmissionController extends Controller
 
     /**
      * @param Request $request
-     * @var User $authUser
      * @return View
      * @throws AuthorizationException
      */
