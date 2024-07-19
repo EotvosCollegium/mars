@@ -28,7 +28,7 @@
                 </div>
                 <blockquote>
                     @can('editStatus', \App\Models\Application::class)
-                        <p>A behívott/elutasított státusz a jelentkezők számára nem nyilvános.</p>
+                        <p>A behívott/felvett státusz a jelentkezők számára nem nyilvános.</p>
                     @endcan
                     @can('finalize', \App\Models\Application::class)
                         <p>{{$applicationDeadline?->addWeeks(1)?->format('Y. m. d.')}} után lehet a lap alján felvenni a
