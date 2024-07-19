@@ -45,23 +45,6 @@ trait HasPeriodicEvent
     }
 
     /**
-     * Get the PeriodicEvent connected to the controller
-     * and belonging to the given semester
-     * (by default the current one).
-     *
-     * @return PeriodicEvent|null
-     */
-    final public function periodicEventForSemester(?Semester $semester): ?PeriodicEvent
-    {
-        if (is_null($semester)) {
-            $semester = Semester::current();
-        }
-        return PeriodicEvent::where('event_model', $this->underlyingControllerName)
-            ->where('semester_id', $semester->id)
-            ->first();
-    }
-
-    /**
      * Create or update the current PeriodicEvent connected to the model.
      * Make sure the $data is properly validated:
      * @param Semester $semester

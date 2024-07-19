@@ -1,13 +1,14 @@
 <blockquote>
     @lang('anonymous_questions.information_text')
 </blockquote>
-<form method="POST" action="{{ route('anonymous_questions.store_answer_sheet', App\Models\Semester::current()) }}">
+
+<form method="POST" action="{{ route('anonymous_questions.store_answers', $semester) }}">
     @csrf
     <input type="hidden" name="section" value="anonymous_questions">
 
     @php
         // We only take the questions that have been answered.
-        $questions = App\Models\Semester::current()->questionsNotAnsweredBy(user());
+        $questions = $semester->questionsNotAnsweredBy(user());
     @endphp
 
     @if ($questions->isEmpty())

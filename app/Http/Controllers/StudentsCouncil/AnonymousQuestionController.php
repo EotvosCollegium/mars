@@ -3,18 +3,20 @@
 namespace App\Http\Controllers\StudentsCouncil;
 
 use Illuminate\Http\Request;
-use Carbon\Carbon;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 
 use App\Models\AnonymousQuestions\AnswerSheet;
+use App\Models\PeriodicEvent;
 use App\Models\Semester;
 use App\Models\Question;
 use App\Models\QuestionOption;
 use App\Utils\HasPeriodicEvent;
 use App\Exports\UsersSheets\AnonymousQuestionsExport;
+
+use App\Http\Controllers\Secretariat\SemesterEvaluationController;
 
 /**
  * Controls actions related to anonymous questions.
@@ -27,8 +29,7 @@ class AnonymousQuestionController extends Controller
      */
     public function __construct()
     {
-        $this->underlyingControllerName =
-            \App\Http\Controllers\Secretariat\SemesterEvaluationController::class;
+        $this->underlyingControllerName = SemesterEvaluationController::class;
     }
 
     /**
@@ -37,38 +38,51 @@ class AnonymousQuestionController extends Controller
      * the list of questions
      * and the option to add new ones.
      */
-    public function indexSemesters()
+    public function index()
     {
         $this->authorize('administer', AnswerSheet::class);
 
-        return view('student-council.anonymous-questions.index_semesters');
+        return view('student-council.anonymous-questions.index');
+    }
+
+    /**
+     * Checks whether the form exists and has not yet been closed;
+     * aborts the request if necessary.
+     * If successful, it returns the periodic event.
+     */
+    private function checkPeriodicEvent(): PeriodicEvent
+    {
+        $periodicEvent = $this->periodicEvent();
+        if (is_null($periodicEvent)) {
+            abort(404, "no evaluation form exists yet");
+        } elseif ($periodicEvent->endDate()?->isPast() ?? false) {
+            abort(403, "tried to add a question to a closed form");
+        } else {
+            return $periodicEvent;
+        }
     }
 
     /**
      * Returns the 'new question' page.
      */
-    public function create(Semester $semester)
+    public function create()
     {
         $this->authorize('administer', AnswerSheet::class);
+        $this->checkPeriodicEvent();
 
-        if ($semester->isClosed()) {
-            abort(403, "tried to add a question to a closed semester");
-        }
-        return view('student-council.anonymous-questions.create', [
-            "semester" => $semester
-        ]);
+        return view('student-council.anonymous-questions.create');
     }
 
     /**
-     * Saves a new question.
+     * Saves a new question for the semester
+     * to which the current evaluation form belongs.
      */
-    public function store(Request $request, Semester $semester)
+    public function store(Request $request)
     {
         $this->authorize('administer', AnswerSheet::class);
 
-        if ($semester->isClosed()) {
-            abort(403, "tried to add a question to a closed semester");
-        }
+        $periodicEvent = $this->checkPeriodicEvent();
+        $semester = $periodicEvent->semester;
 
         $validator = Validator::make($request->all(), [
             'title' => 'required|string',
@@ -90,14 +104,12 @@ class AnonymousQuestionController extends Controller
         }
         $validator->validate();
 
-        $event = $this->periodicEventForSemester($semester);
-
         $question = $semester->questions()->create([
             'title' => $request->title,
             'max_options' => $hasLongAnswers ? 0 : $request->max_options,
             'has_long_answers' => $hasLongAnswers,
-            'opened_at' => $event?->start_date ?? null,
-            'closed_at' => $event?->end_date ?? null
+            'opened_at' => $periodicEvent->startDate(),
+            'closed_at' => $periodicEvent->endDate()
         ]);
         if (!$hasLongAnswers) {
             foreach ($options as $option) {
@@ -108,21 +120,9 @@ class AnonymousQuestionController extends Controller
             }
         }
 
-        session()->put('section', $semester->id);
-        return redirect()->route('anonymous_questions.index_semesters')
+        //session()->put('section', $semester->id);
+        return redirect()->route('anonymous_questions.index')
                          ->with('message', __('general.successful_modification'));
-    }
-
-    /**
-     * Returns a page with the options (and results, if authorized) of a question.
-     */
-    public function show(Semester $semester, Question $question)
-    {
-        $this->authorize('administer', AnswerSheet::class);
-
-        return view('anonymous_questions.show', [
-            "question" => $question
-        ]);
     }
 
     /**
@@ -130,9 +130,17 @@ class AnonymousQuestionController extends Controller
      * Handles all questions at once
      * and creates an answer sheet for them.
      */
-    public function storeAnswerSheet(Request $request, Semester $semester)
+    public function storeAnswers(Request $request)
     {
         $this->authorize('is-collegist');
+        $semester = $this->semester(); //semester connected to periodicEvent
+
+        if (!$this->isActive()) {
+            abort(403, "tried to save an answer when the questionnaire is not open");
+        }
+
+        // Answers for all available questions are stored each time, grouped to an answerSheet.
+        // However, the available questions might change.
 
         $validator = Validator::make(
             $request->all(),
@@ -184,7 +192,7 @@ class AnonymousQuestionController extends Controller
      * Returns an Excel sheet containing all the answers
      * to the questions of a given semester.
      */
-    public function exportAnswerSheets(Semester $semester)
+    public function exportAnswers(Semester $semester)
     {
         $this->authorize('administer', AnswerSheet::class);
 

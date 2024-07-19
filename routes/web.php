@@ -287,15 +287,11 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
 
     /** anonymous questions */
     Route::prefix('/anonymous_questions')->name('anonymous_questions.')->group(function () {
-        Route::get('/', [AnonymousQuestionController::class, 'indexSemesters'])->name('index_semesters');
-        Route::get('/{semester}/questions/', [AnonymousQuestionController::class, 'index'])->name('index');
-        Route::get('/{semester}/questions/create', [AnonymousQuestionController::class, 'create'])->name('create');
-        Route::post('/{semester}/questions', [AnonymousQuestionController::class, 'store'])->name('store');
-        Route::get('/{semester}/questions/{question}', [AnonymousQuestionController::class, 'show'])->name('show')
-            ->withoutMiddleware([LogRequests::class])
-            ->scopeBindings();
-        Route::post('/{semester}/sheets/', [AnonymousQuestionController::class, 'storeAnswerSheet'])->name('store_answer_sheet')
+        Route::get('/', [AnonymousQuestionController::class, 'index'])->name('index');
+        Route::get('/questions/create', [AnonymousQuestionController::class, 'create'])->name('create');
+        Route::post('/questions', [AnonymousQuestionController::class, 'store'])->name('store');
+        Route::post('/sheets/', [AnonymousQuestionController::class, 'storeAnswers'])->name('store_answers')
             ->withoutMiddleware([LogRequests::class]);
-        Route::get('/{semester}/sheets/', [AnonymousQuestionController::class, 'exportAnswerSheets'])->name('export_answer_sheets');
+        Route::get('/sheets/{semester}', [AnonymousQuestionController::class, 'exportAnswers'])->name('export_answers');
     });
 });
