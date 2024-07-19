@@ -83,7 +83,7 @@ class AppServiceProvider extends ServiceProvider
 
                 return new \Illuminate\Filesystem\FilesystemAdapter($driver, $adapter);
             });
-        } catch(Exception $e) {
+        } catch(\Exception $e) {
             Log::error($e->getMessage());
         }
     }

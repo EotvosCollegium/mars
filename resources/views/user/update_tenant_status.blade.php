@@ -27,7 +27,7 @@
     </div>
 
     @if (
-        App\Http\Controllers\Auth\ApplicationController::getApplicationDeadline() > \Carbon\Carbon::now()
+        app(App\Http\Controllers\Auth\ApplicationController::class)->isActive()
         && user()->isTenant()
         && !user()->isCollegist(alumni: false)
     )

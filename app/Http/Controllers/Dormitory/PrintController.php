@@ -182,6 +182,7 @@ class PrintController extends Controller
         $this->updateCompletedPrintingJobs();
 
         $columns = ['created_at', 'filename', 'cost', 'state', 'user.name'];
+        // @phpstan-ignore-next-line
         $printJobs = PrintJob::join('users as user', 'user.id', '=', 'user_id')
             ->select('print_jobs.*')
             ->with('user')
@@ -227,13 +228,11 @@ class PrintController extends Controller
     {
         $this->authorize('viewAny', PrintJob::class);
 
-        $columns = ['user.name', 'balance_change', 'free_page_change', 'deadline_change', 'modifier.name', 'modified_at'];
+        $columns = ['user_name', 'balance_change', 'free_page_change', 'deadline_change', 'modifier_name', 'modified_at'];
         $paginator = TabulatorPaginator::from(
             PrintAccountHistory::join('users as user', 'user.id', '=', 'user_id')
                 ->join('users as modifier', 'modifier.id', '=', 'modified_by')
-                ->select('print_account_history.*')
-                ->with('user')
-                ->with('modifier')
+                ->select(['user.name as user_name', 'balance_change', 'free_page_change', 'deadline_change', 'modifier.name as modifier_name', 'modified_at'])
         )->sortable($columns)
             ->filterable($columns)
             ->paginate();
@@ -264,7 +263,7 @@ class PrintController extends Controller
                     $printJob->state = PrintJob::SUCCESS;
                     return redirect()->back()->with('message', __('general.successful_modification'));
                 } else {
-                    Log::warning("cannot cancel print job " . $printJob->job_id ." for unknown reasons: " . var_dump($result));
+                    Log::warning("cannot cancel print job " . $printJob->job_id .".", [$result]);
                     return redirect()->back()->with('error', __('general.unknown_error'));
                 }
             }

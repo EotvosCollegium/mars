@@ -97,14 +97,16 @@ class SemesterEvaluationExport implements FromCollection, WithTitle, WithMapping
             $user->educationalInformation?->languageExamsAfterAcceptance?->map(function ($exam) {
                 return implode(", ", [__('role.'.$exam->language), $exam->level, $exam->type, $exam->date->format('Y-m')]);
             })->implode(" \n"),
-            ($user->educationalInformation?->alfonso_language ? __('role.'.$user->educationalInformation?->alfonso_language) . " " . $user->educationalInformation?->alfonso_desired_level : ""),
+            ($user->educationalInformation?->alfonso_language ?
+                __('role.'.$user->educationalInformation->alfonso_language) . " " . $user->educationalInformation->alfonso_desired_level
+                : ""),
             ($user->educationalInformation?->alfonsoCompleted() ?? false)
                 ? 'Igen'
                 : (($user->educationalInformation?->alfonsoCanBeCompleted() ?? true) ? "Folyamatban" : "Nem"),
             $evaluation->alfonso_note,
             $evaluation->current_avg,
             $evaluation->last_avg,
-            implode(" \n", array_map(fn ($course) => $course['code'] . " " . $course['name'] . ' - ' . $course['grade'] ?? "N/A", $evaluation->courses)),
+            implode(" \n", array_map(fn ($course) => $course['code'] . " " . $course['name'] . ' - ' . $course['grade'], $evaluation->courses)),
             GeneralAssembly::all()->sortByDesc('closed_at')->take(2)->map(function ($generalAssembly) use ($user) {
                 return $generalAssembly->isAttended($user) ? "Részt vett" : "Nem vett részt";
             })->implode(" \n"),

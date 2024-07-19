@@ -29,7 +29,6 @@ class ApplicationController extends PeriodicEventController
     private const QUESTIONS_ROUTE = 'questions';
     private const FILES_ROUTE = 'files';
     private const DELETE_FILE_ROUTE = 'files.delete';
-    private const ADD_PROFILE_PIC_ROUTE = 'files.profile';
     private const SUBMIT_ROUTE = 'submit';
 
     public function __construct()
@@ -135,7 +134,6 @@ class ApplicationController extends PeriodicEventController
 
     /**
      * @param Request $request
-     * @var User $authUser
      * @return View
      * @throws AuthorizationException
      */
@@ -166,7 +164,7 @@ class ApplicationController extends PeriodicEventController
                 $applications->whereIn('workshop_id', $workshops->pluck('id'));
             }
             //hide unfinished
-            if ($authUser->cannot('viewUnfinishedApplications', [User::class])) {
+            if ($authUser->cannot('viewUnfinished', \App\Models\ApplicationForm::class)) {
                 $applications->where(function ($query) {
                     $query->where('status', ApplicationForm::STATUS_SUBMITTED)
                         ->orWhere('status', ApplicationForm::STATUS_CALLED_IN)

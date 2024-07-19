@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $year_of_graduation
  * @property string $high_school
  * @property string $neptun
- * @property string $year_of_acceptance
+ * @property int $year_of_acceptance
  * @property string $email
  * @property string $alfonso_language
  * @property string $alfonso_desired_level
@@ -117,6 +117,7 @@ class EducationalInformation extends Model
             $requirements[$language] = "B2";
         }
 
+        // @phpstan-ignore-next-line
         if ($entryLevel->count() >= 2) {
             foreach ($entryLevel as $exam) {
                 if (!in_array($exam->level, ["C1", "C2"])) {
@@ -126,6 +127,7 @@ class EducationalInformation extends Model
                 }
             }
         }
+        // @phpstan-ignore-next-line
         if ($entryLevel->count() == 1) {
             foreach ($entryLevel as $exam) {
                 unset($requirements[$exam->language]);

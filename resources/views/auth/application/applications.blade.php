@@ -13,7 +13,7 @@
                     <form id="workshop-filter" method="GET" route="{{route('applications')}}">
                         <x-input.select id="workshop" :elements="$workshops" allow-empty :default="$workshop"
                                         text="Műhely"/>
-                        @can('viewUnfinishedApplications', \App\models\User::class)
+                        @can('viewUnfinished', \App\Models\ApplicationForm::class)
                             @foreach (\App\Models\ApplicationForm::STATUSES as $st)
                                 <label>
                                     <input type="radio" name="status" value="{{$st}}"
@@ -22,7 +22,7 @@
                                         style="padding-left: 25px; margin: 5px">@include('auth.application.status', ['status' => $st])</span>
                                 </label>
                             @endforeach
-                        @endif
+                        @endcan
                         <x-input.button type="submit" text="Szűrés"/>
                     </form>
                     <form id="empty-filter" method="GET" route="{{route('application')}}"
@@ -31,10 +31,10 @@
                     </form>
                 </div>
                 <blockquote>
-                    @can('editApplicationStatus', \App\Models\User::class)
+                    @can('editStatus', \App\Models\ApplicationForm::class)
                         <p>A jelentkezők aktuális státusza a jelentkezők számára nem nyilvános.</p>
                     @endcan
-                    @can('finalizeApplicationProcess', \App\Models\User::class)
+                    @can('finalize', \App\Models\ApplicationForm::class)
                         <p>{{$applicationDeadline?->addWeeks(1)?->format('Y. m. d.')}} után lehet a lap alján felvenni a
                             kiválasztott jelentkezőket, ezzel véglegesíteni a felvételit.</p>
                     @endcan
@@ -60,7 +60,7 @@
     @endforeach
     <hr>
     <h6>Összesen: <b class="right">{{$applications->count()}} jelentkező</b></h6>
-    @can('finalizeApplicationProcess', \App\Models\User::class)
+    @can('finalize', \App\Models\ApplicationForm::class)
         @if($applicationDeadline?->addWeeks(1) < now())
             <div class="card" style="margin-top:20px">
                 <div class="card-content">
@@ -83,7 +83,7 @@
             </div>
         @endif
     @endcan
-    @can('viewAllApplications', \App\Models\User::class)
+    @can('viewAll', \App\Models\ApplicationForm::class)
         <div class="fixed-action-btn">
             <a href="{{ route('applications.export') }}" class="btn-floating btn-large">
                 <i class="large material-icons">file_download</i>

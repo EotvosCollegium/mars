@@ -61,7 +61,6 @@ class SemesterEvaluationController extends PeriodicEventController
         return back()->with('message', __('general.successful_modification'));
     }
 
-
     /**
      * Show the evaluation form.
      * @throws AuthenticationException|AuthorizationException

@@ -64,9 +64,6 @@ class AnswerSheet extends Model
      */
     public static function createForUser(User $user, Semester $semester = null): AnswerSheet
     {
-        if (is_null($user)) {
-            $user = user();
-        }
         if (is_null($semester)) {
             $semester = Semester::current();
         }
@@ -107,7 +104,7 @@ class AnswerSheet extends Model
             } elseif ($question->isMultipleChoice()) {
                 $row[] = $this->chosenOptions()
                                         ->where('question_id', $question->id)
-                                        ->pluck('title')->implode('/') ?? '';
+                                        ->pluck('title')->implode('/');
             } else {
                 $row[] = $this->chosenOptions()
                                         ->where('question_id', $question->id)

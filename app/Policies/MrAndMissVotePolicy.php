@@ -36,7 +36,7 @@ class MrAndMissVotePolicy
      * Determine whether the user can manage the categories and see the results.
      *
      * @param User $user
-     * @return mixed
+     * @return bool
      */
     public function manage(User $user): bool
     {
@@ -52,7 +52,9 @@ class MrAndMissVotePolicy
      */
     public function voteOrManage(User $user)
     {
-        // Note: vote might return a Response object, the order is important
-        return $this->manage($user) || $this->vote($user);
+        if(!$this->manage($user)) {
+            return $this->vote($user);
+        }
+        return true;
     }
 }

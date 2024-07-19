@@ -40,8 +40,8 @@ class PingRouters implements ShouldQueue
                     'failed_for' => 0,
                 ]);
             } elseif (config('app.debug') == false) {
-                $this->router->increment('failed_for');
-                $this->router->sendWarning();
+                $router->increment('failed_for');
+                $router->sendWarning();
             }
         }
     }

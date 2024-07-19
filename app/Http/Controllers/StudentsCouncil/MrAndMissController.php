@@ -156,7 +156,7 @@ class MrAndMissController extends PeriodicEventController
             throw new \Exception('Nincs megjeleníthető eredmény.');
         }
         $results = MrAndMissVote::select(DB::raw('count(*) as count, users.name, votee_name, title, mr, custom'))
-                ->where('semester', $this->semester()?->id)
+                ->where('semester', $this->semester()->id)
                 ->join('mr_and_miss_categories', 'mr_and_miss_categories.id', '=', 'mr_and_miss_votes.category')
                 ->leftJoin('users', 'users.id', '=', 'mr_and_miss_votes.votee_id')
                 ->groupBy(['mr_and_miss_categories.id', 'title', 'users.name', 'votee_name', 'mr', 'custom'])
