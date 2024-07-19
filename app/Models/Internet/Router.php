@@ -74,7 +74,7 @@ class Router extends Model
     /**
      * Check if the router is not reachable.
      */
-    public function isDown() : bool
+    public function isDown(): bool
     {
         return $this->failed_for > 0;
     }
@@ -82,7 +82,7 @@ class Router extends Model
     /**
      * Check if the router is reachable.
      */
-    public function isUp() : bool
+    public function isUp(): bool
     {
         return $this->failed_for == 0;
     }

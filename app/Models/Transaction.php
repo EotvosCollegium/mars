@@ -81,22 +81,22 @@ class Transaction extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function payer() : BelongsTo
+    public function payer(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function checkout() : BelongsTo
+    public function checkout(): BelongsTo
     {
         return $this->belongsTo(Checkout::class);
     }
 
-    public function semester() : BelongsTo
+    public function semester(): BelongsTo
     {
         return $this->belongsTo(Semester::class);
     }
 
-    public function type() : BelongsTo
+    public function type(): BelongsTo
     {
         return $this->belongsTo(PaymentType::class, 'payment_type_id');
     }

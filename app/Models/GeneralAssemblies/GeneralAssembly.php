@@ -45,7 +45,7 @@ class GeneralAssembly extends Model
     public $timestamps = false;
 
     protected $fillable = ['title', 'opened_at', 'closed_at'];
-    
+
     protected $casts = [
         'opened_at' => 'datetime',
         'closed_at' => 'datetime',

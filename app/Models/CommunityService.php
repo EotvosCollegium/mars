@@ -53,7 +53,7 @@ class CommunityService extends Model
     /**
      * @return BelongsTo the approver of the CommunityService
      */
-    public function approver() : BelongsTo
+    public function approver(): BelongsTo
     {
         return $this->belongsTo(\App\Models\User::class);
     }

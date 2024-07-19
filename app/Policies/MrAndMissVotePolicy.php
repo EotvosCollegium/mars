@@ -52,8 +52,9 @@ class MrAndMissVotePolicy
      */
     public function voteOrManage(User $user)
     {
-        if(!$this->manage($user))
+        if(!$this->manage($user)) {
             return $this->vote($user);
+        }
         return true;
     }
 }
