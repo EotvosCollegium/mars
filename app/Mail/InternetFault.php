@@ -24,8 +24,6 @@ class InternetFault extends Mailable
 
     /**
      * Create a new message instance.
-     *
-     * @param string $userName
      */
     public function __construct(
         string  $recipient,

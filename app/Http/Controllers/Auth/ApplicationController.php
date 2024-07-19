@@ -26,7 +26,6 @@ class ApplicationController extends Controller
     private const QUESTIONS_ROUTE = 'questions';
     private const FILES_ROUTE = 'files';
     private const DELETE_FILE_ROUTE = 'files.delete';
-    private const ADD_PROFILE_PIC_ROUTE = 'files.profile';
     private const SUBMIT_ROUTE = 'submit';
 
 

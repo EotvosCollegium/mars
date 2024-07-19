@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Artisan;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Artisan;
 
 class RefreshIdeHelper extends Command
 {
@@ -36,11 +36,12 @@ class RefreshIdeHelper extends Command
      *
      * @return int
      */
-    public function handle()
+    public function handle(): int
     {
         Artisan::call('ide-helper:generate');
         Artisan::call('ide-helper:meta');
         Artisan::call('ide-helper:models --nowrite');
         Artisan::call('ide-helper:eloquent');
+        return 0;
     }
 }

@@ -14,6 +14,7 @@ use InvalidArgumentException;
  * App\Models\Role
  *
  * @property string $name
+ * @property string $translatedName
  * @property boolean $has_objects
  * @property boolean $has_workshops
  * @property integer $id

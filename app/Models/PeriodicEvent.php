@@ -20,13 +20,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $id
  * @property string $event_model
  * @property int|null $semester_id
- * @property \Illuminate\Support\Carbon $start_date
+ * @property Carbon $start_date
  * @property string|null $start_handled
- * @property \Illuminate\Support\Carbon $end_date
- * @property \Illuminate\Support\Carbon|null $extended_end_date
+ * @property Carbon $end_date
+ * @property Carbon|null $extended_end_date
  * @property string|null $end_handled
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property-read Semester|null $semester
  * @method static Builder|PeriodicEvent newModelQuery()
  * @method static Builder|PeriodicEvent newQuery()

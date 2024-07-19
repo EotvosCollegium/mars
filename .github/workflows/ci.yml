@@ -41,3 +41,6 @@ jobs:
 
       - name: Run Testsuite
         run: vendor/bin/phpunit tests/
+
+      - name: Run phpstan static analysis
+        run: composer phpstan

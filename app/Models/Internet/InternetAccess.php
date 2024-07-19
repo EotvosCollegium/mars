@@ -25,9 +25,6 @@ use Illuminate\Support\Str;
  * @property string $wifi_password
  * @property User $user
  * @property WifiConnection[]|Collection $wifiConnections
- * @method $isActive
- * @method $setWifiCredentials
- * @method $resetPassword
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read int|null $wifi_connections_count

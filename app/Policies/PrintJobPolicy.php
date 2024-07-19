@@ -36,7 +36,6 @@ class PrintJobPolicy
      * Determine whether the user can view his/her print jobs.
      *
      * @param User $user
-     * @param PrintJob $printJob
      * @return mixed
      */
     public function viewSelf(User $user)
