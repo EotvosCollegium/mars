@@ -127,7 +127,7 @@ class UsersTableSeeder extends Seeder
 
     private function createApplicant($user)
     {
-        $user->application()->create(['submitted' => rand(0,1)]);
+        $user->application()->create(['submitted' => rand(0, 1)]);
         $workshop = Workshop::get()->random(rand(1, 3));
         $user->application->syncAppliedWorkshops($workshop->pluck('id')->toArray());
     }

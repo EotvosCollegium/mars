@@ -75,10 +75,12 @@ class ApplicationPolicy
                 Role::SECRETARY,
                 Role::DIRECTOR,
                 Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS
-            ]))
+            ])) {
                 return true;
-            if($user->hasRole(Role::WORKSHOP_LEADER))
+            }
+            if($user->hasRole(Role::WORKSHOP_LEADER)) {
                 return $user->roleWorkshops->contains($workshop);
+            }
         }
         return $user->hasRole([
             Role::SECRETARY,

@@ -130,7 +130,8 @@ class Application extends Model
             'application_id',
             'id',
             'id',
-            'workshop_id');
+            'workshop_id'
+        );
     }
 
     /**
