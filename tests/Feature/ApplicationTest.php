@@ -109,7 +109,7 @@ class ApplicationTest extends TestCase
             'page' => 'questions',
             "graduation_average" => "3",
             "semester_average" => [
-                "3.3", "3.5", "3231"
+                "3.3", "3.5", "5"
             ],
             "status" => "resident",
             "question_1" => [
@@ -129,7 +129,7 @@ class ApplicationTest extends TestCase
 
         $this->assertTrue($user->isResident());
         $this->assertEquals('3', $user->application->graduation_average);
-        $this->assertEquals(["3.3", "3.5", "3231"], $user->application->semester_average);
+        $this->assertEquals(["3.3", "3.5", "5"], $user->application->semester_average);
         $this->assertEquals(["question 1_1", "question 1_2"], $user->application->question_1);
         $this->assertEquals("question 2", $user->application->question_2);
         $this->assertEquals("question 3", $user->application->question_3);
