@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -11,9 +12,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * App\Models\Transaction
  *
  * @property PaymentType $type
- * @property User $receiver
+ * @property null|User $receiver
  * @property Checkout $checkout
- * @property User $payer
+ * @property null|User $payer
  * @property File|null $receipt
  * @property int $id
  * @property int $checkout_id
@@ -75,29 +76,29 @@ class Transaction extends Model
         'paid_at' => 'datetime',
     ];
 
-    public function receiver()
+    public function receiver(): BelongsTo
     {
-        return $this->belongsTo('App\Models\User');
+        return $this->belongsTo(User::class);
     }
 
-    public function payer()
+    public function payer() : BelongsTo
     {
-        return $this->belongsTo('App\Models\User');
+        return $this->belongsTo(User::class);
     }
 
-    public function checkout()
+    public function checkout() : BelongsTo
     {
-        return $this->belongsTo('App\Models\Checkout');
+        return $this->belongsTo(Checkout::class);
     }
 
-    public function semester()
+    public function semester() : BelongsTo
     {
-        return $this->belongsTo('App\Models\Semester');
+        return $this->belongsTo(Semester::class);
     }
 
-    public function type()
+    public function type() : BelongsTo
     {
-        return $this->belongsTo('App\Models\PaymentType', 'payment_type_id');
+        return $this->belongsTo(PaymentType::class, 'payment_type_id');
     }
 
     /**

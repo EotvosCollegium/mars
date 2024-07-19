@@ -97,7 +97,6 @@ class PresenceCheck extends Model
     /**
      * Votes for a list of given options in the name of the user.
      * @param User $user
-     * @throws Exception if presenceCheck is not open.
      */
     public function signPresence(User $user): void
     {
@@ -110,8 +109,6 @@ class PresenceCheck extends Model
 
     /**
      * Closes the presence check.
-     * @throws Exception if presenceCheck is already closed.
-     * @throws Exception if presenceCheck is not open.
      */
     public function close(): void
     {

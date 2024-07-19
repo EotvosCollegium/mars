@@ -37,12 +37,13 @@ class RecalculateWorkshopBalances extends Command
      *
      * @return int
      */
-    public function handle()
+    public function handle(): int
     {
         $semesters = Semester::all()
             ->where('tag', '<=', Semester::current()->tag);
         foreach ($semesters as $semester) {
             WorkshopBalance::generateBalances($semester);
         }
+        return 0;
     }
 }
