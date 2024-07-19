@@ -230,7 +230,6 @@ class PrintController extends Controller
 
         $columns = ['user_name', 'balance_change', 'free_page_change', 'deadline_change', 'modifier_name', 'modified_at'];
         $paginator = TabulatorPaginator::from(
-            // @phpstan-ignore-next-line
             PrintAccountHistory::join('users as user', 'user.id', '=', 'user_id')
                 ->join('users as modifier', 'modifier.id', '=', 'modified_by')
                 ->select(['user.name as user_name', 'balance_change', 'free_page_change', 'deadline_change', 'modifier.name as modifier_name', 'modified_at'])
