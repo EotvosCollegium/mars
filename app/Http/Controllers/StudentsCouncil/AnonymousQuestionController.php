@@ -5,6 +5,7 @@ namespace App\Http\Controllers\StudentsCouncil;
 use App\Models\PeriodicEvent;
 use App\Utils\PeriodicEventController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 

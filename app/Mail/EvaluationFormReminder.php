@@ -21,8 +21,7 @@ class EvaluationFormReminder extends Mailable
      */
     public function __construct(Carbon $deadline)
     {
-        $this->deadline = $deadline?->format('Y-m-d');
-
+        $this->deadline = $deadline->format('Y-m-d');
     }
 
     /**
