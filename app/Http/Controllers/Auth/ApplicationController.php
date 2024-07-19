@@ -161,7 +161,7 @@ class ApplicationController extends Controller
                 $applications->whereIn('workshop_id', $workshops->pluck('id'));
             }
             //hide unfinished
-            if ($authUser->cannot('viewUnfinishedApplications', [User::class])) {
+            if ($authUser->cannot('viewUnfinished', \App\Models\ApplicationForm::class)) {
                 $applications->where(function ($query) {
                     $query->where('status', ApplicationForm::STATUS_SUBMITTED)
                         ->orWhere('status', ApplicationForm::STATUS_CALLED_IN)

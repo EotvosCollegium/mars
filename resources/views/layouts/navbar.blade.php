@@ -8,7 +8,7 @@
                         class="material-icons">menu</i></a>
                 <!--logo for mobile-->
                 <a class="brand-logo center hide-on-large-only"
-                   style="text-transform: uppercase;font-weight:300;letter-spacing:3px;" href="{{ url('/') }}">
+                    style="text-transform: uppercase;font-weight:300;letter-spacing:3px;" href="{{ url('/') }}">
                     {{ config('app.name', 'Urán') }} </a>
                 <!--title-->
 

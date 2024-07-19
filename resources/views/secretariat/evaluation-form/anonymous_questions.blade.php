@@ -3,6 +3,7 @@
 </blockquote>
 <form method="POST" action="{{ route('anonymous_questions.store_answer_sheet', App\Models\Semester::current()) }}">
     @csrf
+    <input type="hidden" name="section" value="anonymous_questions">
 
     @php
         // We only take the questions that have been answered.
@@ -27,9 +28,12 @@
                 @else
                 @foreach($question->options()->get() as $option)
                     @if($question->max_options==1)
-                    <x-input.radio :name="$question->formKey()" value="{{$option->id}}" text="{{$option->title}}" />
+                    <x-input.radio :name="$question->formKey()" value="{{$option->id}}" text="{{$option->title}}"
+                        :checked="old($question->formKey()) == $option->id" />
                     @else
-                    <x-input.checkbox :name="$question->formKey().'[]'" value="{{$option->id}}" text="{{$option->title}}" />
+                    <x-input.checkbox :name="$question->formKey().'[]'" value="{{$option->id}}" text="{{$option->title}}"
+                        :checked="!is_null(old($question->formKey()))
+                                  && in_array($option->id, old($question->formKey()))" />
                     @endif
                 @endforeach
                 @endif

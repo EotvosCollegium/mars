@@ -195,7 +195,7 @@ trait CheckoutHandler
             'comment' => 'required|string',
             'amount' => 'required|integer|min:0',
             'payer' => 'exists:users,id',
-            'receipt' => 'required|mimes:pdf,jpg,jpeg,png,gif,svg',
+            'receipt' => 'required|mimes:pdf,jpg,jpeg,png,gif',
         ]);
         $validator->validate();
 
