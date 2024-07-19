@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Cache;
  *
  * @property mixed $name
  * @property mixed $id
- * @property User $handler
+ * @property null|User $handler
  * @property int|null $handler_id
  * @property-read Collection|\App\Models\Transaction[] $transactions
  * @property-read int|null $transactions_count

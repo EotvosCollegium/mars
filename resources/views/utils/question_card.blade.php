@@ -9,7 +9,7 @@
 
     <span class="card-title">@lang('voting.new_question')</span>
     <div class="row">
-        <x-input.text s="12" type="text" text="voting.question_title" id="title" maxlength="100" required/>
+        <x-input.text s="12" type="text" text="voting.question_title" id="title" maxlength="250" required/>
     </div>
     <div class="row">
         @livewire('parent-child-form', ['title' => __('voting.options'), 'name' => 'options', 'items' => old('options')])

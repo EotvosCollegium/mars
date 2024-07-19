@@ -1,0 +1,11 @@
+# Configuartion for phpstan (static analyser), using larastan (laravel version).
+# See https://github.com/larastan/larastan.
+
+includes:
+    - vendor/larastan/larastan/extension.neon
+parameters:
+    paths:
+        - app
+    level: 5
+    ignoreErrors:
+    excludePaths:

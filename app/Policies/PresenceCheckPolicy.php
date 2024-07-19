@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\GeneralAssemblies\GeneralAssembly;
 use App\Models\GeneralAssemblies\PresenceCheck;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;

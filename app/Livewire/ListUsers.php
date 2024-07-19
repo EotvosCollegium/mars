@@ -20,9 +20,9 @@ class ListUsers extends Component
     public $filter_name = '';
 
     /**
-     * @return User|Builder the query with all filters (the properties of this class) applied
+     * @return Builder the query with all filters (the properties of this class) applied
      */
-    private function createFilteredQuery(): User|Builder
+    private function createFilteredQuery(): Builder
     {
         $query = User::canView()
             ->withAllRoles($this->roles)
@@ -40,9 +40,9 @@ class ListUsers extends Component
     /**
      * Return the `users` property.
      *
-     * @return array|User[]|Collection the users that match the specified filters, so the users that should be listed
+     * returns the users that match the specified filters, so the users that should be listed
      */
-    public function getUsersProperty(): array|Collection
+    public function getUsersProperty()
     {
         return $this->createFilteredQuery()
             ->with(['roles', 'workshops', 'educationalInformation', 'semesterStatuses'])
