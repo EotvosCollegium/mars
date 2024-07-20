@@ -82,7 +82,7 @@
                         <blockquote class="error">@lang('user.workshop_must_be_filled')</blockquote>
                         @enderror
                         <blockquote>
-                        Kérjük, jelentkezését csak a szakmailag releváns műhelyekbe adja le. A műhelyek egymástól függetlenül dönthetnek a meghallgatásáról.
+                            Kérjük, jelentkezését csak olyan műhelyekbe adja be, amelyek munkájában szakmailag részt tud venni. A műhelyek egymástól függetlenül dönthetnek a meghallgatásáról.
                         </blockquote>
                     </div>
                     <div class="input-field col s12">

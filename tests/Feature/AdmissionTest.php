@@ -62,6 +62,32 @@ class AdmissionTest extends TestCase
     }
 
     /**
+     * Test filtering by workshops.
+     *
+     * @return void
+     */
+    public function test_filter_by_workshop()
+    {
+        $user = User::factory()->create(['verified' => true]);
+        $user->addRole(Role::get(Role::SECRETARY));
+        $this->actingAs($user);
+
+        $aurelion = Workshop::firstWhere('name', Workshop::AURELION)->id;
+        $info = Workshop::firstWhere('name', Workshop::INFORMATIKA)->id;
+
+        $this->createApplicant("applicant1", true, []);
+        $this->createApplicant("applicant2", true, [$aurelion, $info]);
+        $this->createApplicant("applicant3", true, [$info]);
+
+
+        $this->actingAs($this->admin);
+        $response = $this->get(route('admission.applicants.index') . "?workshop="+$aurelion);
+        $response->assertDontSee('applicant1');
+        $response->assertSee('applicant2');
+        $response->assertDontSee('applicant3');
+    }
+
+    /**
      * Test viewing all applications as secretary.
      *
      * @return void
@@ -110,7 +136,7 @@ class AdmissionTest extends TestCase
         $this->createApplicant("applicant3", true, [$info->id, $angol->id]);
         $this->createApplicant("applicant4", true, [$angol->id]);
 
-        $response = $this->get(route('admission.applicants.index') . "?show_not_submitted=true");
+        $response = $this->get(route('admission.applicants.index') . "?show_not_submitted=true"); // show_not_submitted gets ignored
 
         $response->assertDontSee('applicant1');
         $response->assertSee('applicant2');
@@ -140,7 +166,7 @@ class AdmissionTest extends TestCase
         $this->createApplicant("applicant3", true, [$info->id, $angol->id]);
         $this->createApplicant("applicant4", true, [$angol->id]);
 
-        $response = $this->get(route('admission.applicants.index') . "?show_not_submitted=true");
+        $response = $this->get(route('admission.applicants.index') . "?show_not_submitted=true"); // show_not_submitted gets ignored
 
         $response->assertDontSee('applicant1');
         $response->assertSee('applicant2');
@@ -169,7 +195,7 @@ class AdmissionTest extends TestCase
         $this->createApplicant("applicant3", true, [$info->id, $angol->id]);
         $this->createApplicant("applicant4", true, [$angol->id]);
 
-        $response = $this->get(route('admission.applicants.index') . "?show_not_submitted=true");
+        $response = $this->get(route('admission.applicants.index') . "?show_not_submitted=true"); // show_not_submitted gets ignored
 
         $response->assertDontSee('applicant1');
         $response->assertSee('applicant2');
@@ -199,7 +225,7 @@ class AdmissionTest extends TestCase
         $this->createApplicant("applicant3", true, [$info->id, $angol->id]);
         $this->createApplicant("applicant4", true, [$angol->id]);
 
-        $response = $this->get(route('admission.applicants.index') . "?show_not_submitted=true");
+        $response = $this->get(route('admission.applicants.index') . "?show_not_submitted=true"); // show_not_submitted gets ignored
 
         $response->assertDontSee('applicant1');
         $response->assertSee('applicant2');
@@ -230,7 +256,7 @@ class AdmissionTest extends TestCase
         $this->createApplicant("applicant3", true, [$info->id, $angol->id]);
         $this->createApplicant("applicant4", true, [$angol->id]);
 
-        $response = $this->get(route('admission.applicants.index') . "?show_not_submitted=true");
+        $response = $this->get(route('admission.applicants.index') . "?show_not_submitted=true"); // show_not_submitted gets ignored
 
         $response->assertDontSee('applicant1');
         $response->assertSee('applicant2');

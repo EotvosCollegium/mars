@@ -15,12 +15,12 @@
                     <div class="right" style="margin:5px;width:150px">
                         @can('viewUnfinished', \App\Models\Application::class)
                             @if(!$user->application->submitted)
-                                <span class="new badge scale-transition red tag" style="display: block;"
+                                <span class="new badge scale-transition red tag" style="display: block;text-transform: uppercase"
                                       data-badge-caption="">
                                 Nincs véglegesítve
                                 </span>
+                                <div class="divider" style="margin: 5px"></div>
                             @endif
-
                         @endcan
                         @if ($user->application->applied_for_resident_status)
                             <span class="new badge scale-transition coli blue tag" style="display: block;"
@@ -30,33 +30,36 @@
                         @else
                             <span class="new badge scale-transition coli orange tag" style="display: block;"
                                   data-badge-caption="">
-                            @lang('role.extern')
-                        </span>
+                                @lang('role.extern')
+                            </span>
                         @endif
-                            <div class="divider" style="margin: 3px"></div>
+                        <div class="divider" style="margin: 5px"></div>
                         @foreach($user->application->applicationWorkshops as $workshop)
                             <span class="new badge {{ $workshop->workshop->color() }} scale-transition tag"
                                   data-badge-caption=""
                                   style="display: block;white-space: nowrap;overflow: hidden;text-overflow: ellipsis">
                                 {{$workshop->workshop->name}}
                             </span>
-                            <div style="display: flex;flex-direction: column;align-items: center;justify-content: center;">
-                                @can('editStatus', [\App\Models\Application::class, $workshop->workshop])
-                                    @livewire('application-status-update', ['application' => $user->application, 'workshop' => $workshop])
-                                @else
-                                    @if(isset($application))
-                                        <label style="font-size: 1em">
-                                            @if($workshop->admitted)
-                                                felvéve
-                                            @elseif($workshop->called_in)
-                                                behívva
-                                            @else
-                                                nincs behívva
-                                            @endif
-                                        </label>
-                                    @endif
-                                @endcan
-                            </div>
+                            @if($user->application->submitted)
+                                <div
+                                    style="display: flex;flex-direction: column;align-items: center;justify-content: center;">
+                                    @can('editStatus', [\App\Models\Application::class, $workshop->workshop])
+                                        @livewire('application-status-update', ['application' => $user->application, 'workshop' => $workshop])
+                                    @else
+                                        @if(isset($application))
+                                            <label style="font-size: 1em">
+                                                @if($workshop->admitted)
+                                                    felvéve
+                                                @elseif($workshop->called_in)
+                                                    behívva
+                                                @else
+                                                    nincs behívva
+                                                @endif
+                                            </label>
+                                        @endif
+                                    @endcan
+                                </div>
+                            @endif
                         @endforeach
                     </div>
 

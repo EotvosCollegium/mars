@@ -39,7 +39,7 @@ class ApplicationController extends Controller
     {
         if (user()->hasRole(Role::TENANT)) {
             //let the user delete their tenant status
-            return redirect()->route('user.update_tenant_status');
+            return redirect()->route('users.tenant-update.show');
         }
 
         $this->ensureApplicationExists(user());
