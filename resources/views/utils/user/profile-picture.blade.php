@@ -2,7 +2,7 @@
 <div class="card horizontal hide-on-med-and-down">
     <div class="card-image">
         <img src="{{ url($user->profilePicture ? $user->profilePicture->path : '/img/avatar.png') }}"
-                style="max-width:300px">
+                style="max-width:300px; max-height:500px;">
     </div>
     <div class="card-stacked">
         <div class="card-content">

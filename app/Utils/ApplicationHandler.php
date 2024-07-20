@@ -20,8 +20,9 @@ trait ApplicationHandler
     {
         $data = $request->validate([
             'status' => 'required|in:extern,resident',
-            'graduation_average' => 'required|numeric',
-            'semester_average' => 'nullable',
+            'graduation_average' => 'required|numeric|min:1|max:5',
+            'semester_average' => 'nullable|array',
+            'semester_average.*' => 'numeric|min:1|max:5',
             'competition' => 'nullable',
             'publication' => 'nullable',
             'foreign_studies' => 'nullable',
@@ -74,7 +75,7 @@ trait ApplicationHandler
 
         $file = $user->application->files()->findOrFail($request->input('id'));
 
-        Storage::delete($file->path);
         $file->delete();
+        Storage::delete($file->path);
     }
 }

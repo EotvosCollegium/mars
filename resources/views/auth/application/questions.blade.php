@@ -7,15 +7,15 @@
             @csrf
             <div class="card-content">
                 <div class="row">
-                    <x-input.text s=12 id="graduation_average" text="application.graduation_average" type='number' step="0.01" min="0"
+                    <x-input.text s=12 id="graduation_average" text="application.graduation_average" type='number' step="0.01" min="1"
                                   max="5" text="Érettségi átlaga" :value="$user->application->graduation_average"
                                   required
-                                  helper='Az összes érettségi tárgy hagyományos átlaga'/>
+                                  helper='Az összes érettségi tárgy hagyományos átlaga (tizedesponttal)'/>
                     <div class="col s12">
                         @livewire('parent-child-form', [
                         'title' => "Van lezárt egyetemi félévem",
                         'name' => 'semester_average',
-                        'helper' => 'Hagyományos átlag a félév(ek)ben',
+                        'helper' => 'Hagyományos átlag a félév(ek)ben (tizedesponttal)',
                         'optional' => true,
                         'items' => $user->application->semester_average])
                     </div>

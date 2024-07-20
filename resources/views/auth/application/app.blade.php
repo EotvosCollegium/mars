@@ -31,16 +31,21 @@
             <blockquote>
                 @if(!$user->application->submitted)
                     <p>A jelentkezése jelen állapotában még nem látható a felvételiztető bizottság számára! </p>
-                    <p>A jelentkezése bármikor félbe szakítható, a regisztrációnál megadott e-mail címmel és jelszóval
-                        belépve bármikor visszatérhet erre az oldalra, és folytathatja az űrlap kitöltését.</p>
-                    <p>Minden mező kötelező, ahol az ellenkezője nincs külön jelezve. Miután minden szükséges kérdést megválaszolt és fájlt feltöltött,
-                        kérjük, véglegesítse a jelentkezését a lap alján lévő gombra kattintva.</p>
-                    <p>Kérjük figyeljen a határidőre, mert utána már nem lesz lehetősége véglegesíteni azt.</p>
+
+                    <ul class="browser-default">
+                        <li>Jelentkezése bármikor félbeszakítható: a regisztrációnál megadott e-mail címmel és jelszóval
+                            belépve bármikor visszatérhet erre az oldalra, és folytathatja az űrlap kitöltését.</li>
+                        <li>Minden mező kötelező, ahol az ellenkezője nincs külön jelezve.</li>
+                        <li>Miután minden szükséges kérdést megválaszolt és fájlt feltöltött,
+                            véglegesítse jelentkezését a lap alján lévő gombra kattintva.
+                            Kérjük, figyeljen a határidőre, mert utána már nem lesz lehetősége véglegesítésre.</li>
+                    </ul>
+
                     <p>Amennyiben bármi kérdése lenne a felvételivel kapcsolatban, kérjük, írjon a
-                        <a href="mailto:{{config('mail.secretary_mail')}}">{{config('mail.secretary_mail')}}</a> e-mail címre. Ha
-                        technikai
-                        probléma adódna, kérjük, jelezze felénk a <a href="mailto:{{config('mail.sys_admin_mail')}}">{{config('mail.sys_admin_mail')}}</a>
-                        e-mail címen.
+                        <a href="mailto:{{config('mail.secretary_mail')}}">{{config('mail.secretary_mail')}}</a> e-mail címre.
+                        Ha technikai probléma adódna,
+                        jelezze felénk a <a href="mailto:{{config('mail.sys_admin_mail')}}">{{config('mail.sys_admin_mail')}}</a>
+                        e-mail-címen.
                     </p>
                 @else
                     <p>Köszönjük, hogy jelentkezett az Eötvös Collegiumba!</p>
