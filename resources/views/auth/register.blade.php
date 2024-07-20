@@ -1,16 +1,17 @@
 @extends('layouts.app')
-
-@php
-    $countries = require base_path('countries.php');
-@endphp
-
 @section('content')
 <div class="row">
     <div class="col s12 l8 xl6 offset-l2 offset-xl3">
         <div class="card">
             <div class="card-image">
                 <img src="/img/EC_building.jpg">
-                <span class="card-title">@lang('general.register')</span>
+                <span class="card-title">
+                    @if($user_type == \App\Models\Role::TENANT)
+                    @lang('general.register_guest')
+                    @else
+                    @lang('general.register_collegist')
+                    @endif
+                </span>
             </div>
             <div class="card-content">
                 @if($user_type == \App\Models\Role::COLLEGIST)
