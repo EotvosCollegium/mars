@@ -101,8 +101,7 @@ class AdmissionController extends Controller
         //            $applications->where('status', $request->input('status'));
         //        }
 
-        $applications = $applications->get()->unique()->sortBy('user.name');
-        session()->push('applications', implode(":", $applications->pluck('user.name')->toArray()));
+        $applications = $applications->with('user.educationalInformation')->distinct()->get()->sortBy('user.name');
         return view('auth.admission.index', [
             'applications' => $applications,
             'workshop' => $request->input('workshop'), //filtered workshop
