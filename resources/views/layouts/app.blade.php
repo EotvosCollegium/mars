@@ -57,6 +57,9 @@
         z-index: 9999;
         background: url(/loading.gif) center no-repeat #fff;
     }
+    .dark .preloader {
+        filter: invert(100%);
+    }
     </style>
 
 </head>
