@@ -81,7 +81,7 @@ class AdmissionTest extends TestCase
 
 
         $this->actingAs($this->admin);
-        $response = $this->get(route('admission.applicants.index') . "?workshop="+$aurelion);
+        $response = $this->get(route('admission.applicants.index') . "?workshop=".$aurelion);
         $response->assertDontSee('applicant1');
         $response->assertSee('applicant2');
         $response->assertDontSee('applicant3');

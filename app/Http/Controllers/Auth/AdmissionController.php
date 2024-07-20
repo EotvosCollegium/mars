@@ -84,7 +84,10 @@ class AdmissionController extends Controller
                 if ($filtered_workshop) {
                     $query->where('workshop_id', $filtered_workshop->id);
                 }
-            })->orWhereDoesntHave('applicationWorkshops');
+            });
+            if (!$filtered_workshop) {
+                $query->orWhereDoesntHave('applicationWorkshops');
+            }
         });
 
         //hide unfinished
