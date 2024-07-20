@@ -34,7 +34,7 @@
                     <p>A jelentkezése bármikor félbe szakítható, a regisztrációnál megadott e-mail címmel és jelszóval
                         belépve bármikor visszatérhet erre az oldalra, és folytathatja az űrlap kitöltését.</p>
                     <p>Minden mező kötelező, ahol az ellenkezője nincs külön jelezve. Miután minden szükséges kérdést megválaszolt és fájlt feltöltött,
-                        kérjük, véglegesítse a jelentkezését.</p>
+                        kérjük, véglegesítse a jelentkezését a lap alján lévő gombra kattintva.</p>
                     <p>Kérjük figyeljen a határidőre, mert utána már nem lesz lehetősége véglegesíteni azt.</p>
                     <p>Amennyiben bármi kérdése lenne a felvételivel kapcsolatban, kérjük, írjon a
                         <a href="mailto:{{config('mail.secretary_mail')}}">{{config('mail.secretary_mail')}}</a> e-mail címre. Ha
@@ -81,7 +81,7 @@
     @endif
 
     @if(request()->get('page') != 'submit')
-    <x-input.button href="{{ route('application', ['page' => 'submit']) }}"
+    <x-input.button href="{{ route('application', ['page' => 'submit']) }}" style="margin-bottom: 40px"
        class="right coli blue" text="Ellenőrzés és véglegesítés" />
     @endif
 @endsection

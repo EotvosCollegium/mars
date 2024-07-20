@@ -108,8 +108,7 @@
                                     {{ $user->personalInformation?->country }},
                                     {{ $user->personalInformation?->county }}
                                     <br>
-                                    {{ $user->personalInformation?->zip_code }} {{ $user->personalInformation?->city }}
-                                    ,
+                                    {{ $user->personalInformation?->zip_code }} {{ $user->personalInformation?->city }},
                                     {{ $user->personalInformation?->street_and_number }}
                                 </td>
                             </tr>

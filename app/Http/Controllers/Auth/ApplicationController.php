@@ -76,7 +76,7 @@ class ApplicationController extends Controller
      * @return RedirectResponse
      * @throws AuthenticationException
      */
-    public function store(Request $request)//: RedirectResponse
+    public function store(Request $request): RedirectResponse
     {
         $user = user();
 
