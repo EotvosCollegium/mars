@@ -264,12 +264,13 @@ class ApplicationController extends Controller
     {
         $this->authorize('updateInformation', $user);
 
+        $request->validate([
+            'status' => 'required|in:resident,extern', // Replace with actual valid statuses
+        ]);
         if ($request->input('status') == 'resident') {
             $user->setResident();
-        } elseif ($request->input('status') == 'extern') {
-            $user->setExtern();
         } else {
-            abort(400, 'invalid status');
+            $user->setExtern();
         }
 
         $validatedData = $request->validate([
