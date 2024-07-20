@@ -8,6 +8,7 @@ use App\Models\Semester;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * Add this trait to controllers that is connected to periodic events.
@@ -96,6 +97,10 @@ trait HasPeriodicEvent
             }
             $event->save();
             $event->refresh();
+
+            Cache::put($this->underlyingControllerName . '_start_date', $start_date);
+            Cache::put($this->underlyingControllerName . '_end_date', $extended_end_date ?? $end_date);
+
             return $event;
         });
 
@@ -155,7 +160,9 @@ trait HasPeriodicEvent
      */
     final public function getStartDate(): ?Carbon
     {
-        return $this->periodicEvent()?->startDate();
+        return Cache::remember($this->underlyingControllerName . '_start_date', 86400,
+            fn() => $this->periodicEvent()?->startDate()
+        );
     }
 
     /**
@@ -163,7 +170,9 @@ trait HasPeriodicEvent
      */
     final public function getEndDate(): ?Carbon
     {
-        return $this->periodicEvent()?->endDate();
+        return Cache::remember($this->underlyingControllerName . '_end_date', 86400,
+            fn() => $this->periodicEvent()?->endDate()
+        );
     }
 
     /**
