@@ -39,8 +39,10 @@ class ApplicationController extends Controller
     {
         if (user()->hasRole(Role::TENANT)) {
             //let the user delete their tenant status
-            return redirect()->route('user.update_tenant_status');
+            return redirect()->route('users.tenant-update.show');
         }
+
+        $this->ensureApplicationExists(user());
 
         // only allow access if the application period is open or after, if the user has submitted application
         if(!($this->isActive() || user()->application?->submitted)) {
@@ -81,10 +83,7 @@ class ApplicationController extends Controller
         if (!$this->isActive()) {
             return redirect()->route('application')->with('error', 'A jelentkezési határidő lejárt!');
         }
-
-        if ($user->application()->doesntExist()) {
-            $user->application()->create();
-        }
+        $this->ensureApplicationExists($user);
 
         if ($user->application->submitted) {
             return redirect()->route('application')->with('error', 'Már véglegesítette a jelentkezését!');
@@ -127,5 +126,16 @@ class ApplicationController extends Controller
         $user->internetAccess->setWifiCredentials($user->educationalInformation->neptun);
         $user->internetAccess->extendInternetAccess($this->getDeadline()?->addMonth());
         return back()->with('message', 'Sikeresen véglegesítette a jelentkezését!');
+    }
+
+    /**
+     * Create the application for the user if it doesn't exist.
+     * @param User $user
+     */
+    private function ensureApplicationExists(User $user): void
+    {
+        if ($user->application()->doesntExist()) {
+            $user->application()->create();
+        }
     }
 }

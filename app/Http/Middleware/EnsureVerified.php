@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Role;
 use Closure;
 use Illuminate\Support\Facades\Redirect;
 
@@ -19,11 +20,11 @@ class EnsureVerified
             abort(403);
         }
         if (!$request->user()->verified) {
-            if ($request->user()->isCollegist()) {
-                //if an applicant
+            if ($request->user()->hasRole(Role::TENANT)) {
+                return Redirect::route('verification');
+            } else {
                 return Redirect::route('application');
             }
-            return Redirect::route('verification');
         }
 
         return $next($request);

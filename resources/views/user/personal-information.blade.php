@@ -16,7 +16,7 @@
             text="user.email"
             :value="$user->email"
             required />
-        @if ($user->isCollegist())
+        @if (!$user->isTenant() || isset($application))
         <x-input.text
             l=6
             id='place_of_birth'
@@ -45,7 +45,7 @@
             text='user.phone_number'
             helper='+36 (20) 123-4567'
             :value="$user->personalInformation?->phone_number" />
-        @if ($user->isCollegist())
+        @if (!$user->isTenant() || isset($application))
         <x-input.select
             id="country"
             :elements="$countries"

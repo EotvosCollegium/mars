@@ -15,20 +15,20 @@
                                         text="Műhely"/>
                         @can('viewUnfinished', \App\Models\Application::class)
                             <label>
-                                <input type="checkbox" name="submitted" checked>
-                                <span style="padding-left: 25px; margin: 5px">Véglegesített</span>
+                                <input type="checkbox" name="show_not_submitted" {{$show_not_submitted ? "checked": ""}}>
+                                <span style="padding-left: 25px; margin: 5px">Nem véglegesítettek</span>
                             </label>
                         @endif
                         <x-input.button type="submit" text="Szűrés"/>
                     </form>
                     <form id="empty-filter" method="GET" action="{{route('admission.applicants.index')}}"
-                          style="{{($status=='' && $workshop=='')?'display: none':''}}">
+                          style="{{($workshop=='')?'display: none':''}}">
                         <x-input.button id="delete-filter" class="grey" text="Szűrő törlése"/>
                     </form>
                 </div>
                 <blockquote>
                     @can('editStatus', \App\Models\Application::class)
-                        <p>A behívott/elutasított státusz a jelentkezők számára nem nyilvános.</p>
+                        <p>A behívott/felvett státusz a jelentkezők számára nem nyilvános.</p>
                     @endcan
                     @can('finalize', \App\Models\Application::class)
                         <p>{{$applicationDeadline?->addWeeks(1)?->format('Y. m. d.')}} után lehet a lap alján felvenni a
@@ -50,9 +50,7 @@
         </div>
     @endif
     @foreach($applications as $application)
-        <a href="{{route('admission.applicants.show', ['application' => $application->id])}}">
-            @include('auth.application.application', ['user' => $application->user, 'expanded' => false])
-        </a>
+        @include('auth.application.application', ['user' => $application->user, 'expanded' => false])
     @endforeach
     <hr>
     <h6>Összesen: <b class="right">{{$applications->count()}} jelentkező</b></h6>

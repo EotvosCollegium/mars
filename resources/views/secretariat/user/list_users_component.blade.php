@@ -82,7 +82,7 @@
                         <!-- Workshops -->
                         <div class="col s12 xl4">
                             @if($user->hasEducationalInformation())
-                                @include('user.workshop_tags', ['user' => $user, 'newline' => true])
+                                @include('user.workshop_tags', ['workshops' => $user->workshops, 'newline' => true])
                             @endif
                         </div>
                         <!-- Roles -->

@@ -46,6 +46,10 @@ class RegisterController extends Controller
         $this->middleware('guest');
     }
 
+    /**
+     * Register form for applying as collegist.
+     * @return \Illuminate\Contracts\View\View
+     */
     public function showRegistrationForm()
     {
         return view('auth.register', [
@@ -54,6 +58,10 @@ class RegisterController extends Controller
         ]);
     }
 
+    /**
+     * Register form for tenants/guests.
+     * @return \Illuminate\Contracts\View\View
+     */
     public function showTenantRegistrationForm()
     {
         return view('auth.register', [
@@ -104,10 +112,10 @@ class RegisterController extends Controller
                 'password' => Hash::make($data['password']),
             ]);
 
-            $user->roles()->attach(Role::firstWhere('name', Role::PRINTER)->id);
-            $user->roles()->attach(Role::firstWhere('name', $data['user_type'])->id);
+            $user->roles()->attach(Role::get(Role::PRINTER)->id);
 
             if ($data['user_type'] == Role::TENANT) {
+                $user->roles()->attach(Role::get(Role::TENANT));
                 $user->personalInformation()->create([
                     'tenant_until' => $data['tenant_until'],
                     'phone_number' => $data['phone_number'],
@@ -115,17 +123,10 @@ class RegisterController extends Controller
                 // Send confirmation mail.
                 Mail::to($user)->queue(new \App\Mail\Confirmation($user->name));
                 // Send notification about new tenant to the staff and network admins.
-                if (!$user->isCollegist()) {
-                    $users_to_notify = User::whereHas('roles', function ($q) {
-                        $q->whereIn('role_id', [
-                            Role::firstWhere('name', Role::SYS_ADMIN)->id
-                        ]);
-                    })->get();
-                    foreach ($users_to_notify as $person) {
-                        Mail::to($person)->send(new NewRegistration($person->name, $user));
-                    }
-                    Cache::increment('user');
+                foreach (User::admins() as $admin) {
+                    Mail::to($admin)->send(new NewRegistration($admin->name, $user));
                 }
+                Cache::increment('user');
             } else {
                 $user->application()->create();
             }
@@ -133,7 +134,6 @@ class RegisterController extends Controller
             return $user;
         });
 
-        Cache::forget('collegists');
 
         return $user;
     }

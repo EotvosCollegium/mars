@@ -25,8 +25,10 @@ trait ApplicationHandler
             'competition' => 'nullable',
             'publication' => 'nullable',
             'foreign_studies' => 'nullable',
+            'workshop' => 'nullable|array',
+            'workshop.*' => 'nullable|exists:workshops,id',
             'question_1' => 'nullable|array',
-            'question_1.*' => 'string',
+            'question_1.*' => 'nullable|string',
             'question_2' => 'nullable|string',
             'question_3' => 'nullable|string',
             'question_4' => 'nullable|string',
@@ -37,10 +39,11 @@ trait ApplicationHandler
         $data['applied_for_resident_status'] = $request->input('status') == "resident";
         $data['accommodation'] = $request->input('accommodation') === "on";
 
-        Application::updateOrCreate(
+        $application = Application::updateOrCreate(
             ['user_id' => $user->id],
             $data
         );
+        $application->syncAppliedWorkshops($request->input('workshop'));
     }
 
     /**

@@ -23,8 +23,6 @@ use Tests\TestCase;
  */
 class ApplicationTest extends TestCase
 {
-    use RefreshDatabase;
-
     /**
      * Set up the test.
      * @return void
@@ -46,8 +44,7 @@ class ApplicationTest extends TestCase
     private function createApplicant(): User
     {
         $user = User::factory()->create(['verified' => false]);
-        $user->roles()->attach(Role::collegist()->id);
-        $user->application->update(['submitted' => false]);
+        $user->application()->create(['submitted' => false]);
         $this->actingAs($user);
 
         return $user;
@@ -230,7 +227,6 @@ class ApplicationTest extends TestCase
         $this->assertContains('Tanulmányi adatok', $user->application->missingData());
         $this->assertContains('Megjelölt szak', $user->application->missingData());
         $this->assertContains('Megjelölt kar', $user->application->missingData());
-        $this->assertContains('Megjelölt műhely', $user->application->missingData());
         $response = $this->post('/users/' . $user->id . '/educational_information', [
             'year_of_graduation' => '2018',
             'year_of_acceptance' => '2018',
@@ -241,7 +237,6 @@ class ApplicationTest extends TestCase
                 "level" => "bachelor",
                 "start" => Semester::current()->id]],
             'email' => 'study@email.com',
-            'workshop' => [Workshop::first()->id],
             'faculty' => [Faculty::first()->id],
         ]);
         $response->assertStatus(302);
@@ -250,7 +245,6 @@ class ApplicationTest extends TestCase
         $this->assertNotContains('Tanulmányi adatok', $user->application->missingData());
         $this->assertNotContains('Megjelölt szak', $user->application->missingData());
         $this->assertNotContains('Megjelölt kar', $user->application->missingData());
-        $this->assertNotContains('Megjelölt műhely', $user->application->missingData());
 
         //alfonso
         $this->assertContains('Megjelölt ALFONSÓ nyelv', $user->application->missingData());
@@ -306,6 +300,7 @@ class ApplicationTest extends TestCase
         $user->load('application');
         $this->assertNotContains('Érettségi átlaga', $user->application->missingData());
 
+        $this->assertContains('Megjelölt műhely', $user->application->missingData());
         $this->assertContains('"Honnan hallott a Collegiumról?" kérdés', $user->application->missingData());
         $this->assertContains('"Miért kíván a Collegium tagja lenni?" kérdés', $user->application->missingData());
         $this->assertContains('"Tervez-e tovább tanulni a diplomája megszerzése után? Milyen tervei vannak az egyetem után?" kérdés', $user->application->missingData());
@@ -313,6 +308,9 @@ class ApplicationTest extends TestCase
             'page' => 'questions',
             'status' => 'extern',
             'graduation_average' => '4',
+            'workshop' => [
+                Workshop::first()->id
+            ],
             'question_1' => ['answer 1'],
             'question_2' => 'answer 2',
             'question_3' => 'answer 3',
@@ -320,6 +318,7 @@ class ApplicationTest extends TestCase
         $response->assertStatus(302);
         $response->assertSessionHasNoErrors();
         $user->load('application');
+        $this->assertNotContains('Megjelölt műhely', $user->application->missingData());
         $this->assertNotContains('"Honnan hallott a Collegiumról?" kérdés', $user->application->missingData());
         $this->assertNotContains('"Miért kíván a Collegium tagja lenni?" kérdés', $user->application->missingData());
         $this->assertNotContains('"Tervez-e tovább tanulni a diplomája megszerzése után? Milyen tervei vannak az egyetem után?" kérdés', $user->application->missingData());

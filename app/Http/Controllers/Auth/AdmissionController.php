@@ -76,26 +76,37 @@ class AdmissionController extends Controller
         $applications = Application::query();
         $filtered_workshop = $this->getFilteredWorkshop($request);
         $accessible_workshops = $this->getAccessibleWorkshops($authUser);
+        $show_not_submitted = (bool)$request->input('show_not_submitted');
 
-        $applications->join('workshop_users', 'applications.user_id', '=', 'workshop_users.user_id');
-        $applications->whereIn('workshop_id', $accessible_workshops->pluck('id'));
-        if ($filtered_workshop) {
-            $applications->where('workshop_id', $filtered_workshop->id);
-        }
+        $applications->where(function ($query) use ($accessible_workshops, $filtered_workshop) {
+            $query->whereHas('applicationWorkshops', function ($query) use ($accessible_workshops, $filtered_workshop) {
+                $query->whereIn('workshop_id', $accessible_workshops->pluck('id'));
+                if ($filtered_workshop) {
+                    $query->where('workshop_id', $filtered_workshop->id);
+                }
+            });
+            if (!$filtered_workshop) {
+                $query->orWhereDoesntHave('applicationWorkshops');
+            }
+        });
 
         //hide unfinished
         if ($authUser->cannot('viewUnfinished', Application::class)) {
             $applications->where('submitted', true);
+        } else {
+            $applications->where('submitted', !$show_not_submitted);
         }
         //filter by status
         //        if ($request->has('status')) {
         //            $applications->where('status', $request->input('status'));
         //        }
+
+        $applications = $applications->with('user.educationalInformation')->distinct()->get()->sortBy('user.name');
         return view('auth.admission.index', [
-            'applications' => $applications->with('user.educationalInformation')->get()->unique()->sortBy('user.name'),
+            'applications' => $applications,
             'workshop' => $request->input('workshop'), //filtered workshop
             'workshops' => $accessible_workshops, //workshops that can be chosen to filter
-            'status' => $request->input('status'), //filtered status
+            'show_not_submitted' => $show_not_submitted,
             'applicationDeadline' => $this->getDeadline(),
             'periodicEvent' => $this->periodicEvent()
         ]);
@@ -118,6 +129,7 @@ class AdmissionController extends Controller
     /**
      * Edit an application's note.
      * @param Request $request
+     * @param Application $application
      * @return RedirectResponse
      * @throws AuthorizationException
      */
@@ -128,6 +140,7 @@ class AdmissionController extends Controller
         if ($request->has('note')) {
             $application->update(['note' => $request->input('note')]);
         } elseif ($newStatus) {
+            $this->authorize('editStatus', $application);
             $application->update(['status' => $newStatus]);
         }
         return redirect()->back();
@@ -213,10 +226,10 @@ class AdmissionController extends Controller
      * @param User $user
      * @return Collection|Workshop[]
      */
-    private function getAccessibleWorkshops(User $user): Collection
+    public function getAccessibleWorkshops(User $user): Collection
     {
         if ($user->cannot('viewAll', Application::class)) {
-            return $accessible_workshops = $user->roleWorkshops->concat($user->applicationCommitteWorkshops);
+            return $user->roleWorkshops->concat($user->applicationCommitteWorkshops);
         }
         return Workshop::all();
     }
