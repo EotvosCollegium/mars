@@ -160,8 +160,10 @@ trait HasPeriodicEvent
      */
     final public function getStartDate(): ?Carbon
     {
-        return Cache::remember($this->underlyingControllerName . '_start_date', 86400,
-            fn() => $this->periodicEvent()?->startDate()
+        return Cache::remember(
+            $this->underlyingControllerName . '_start_date',
+            86400,
+            fn () => $this->periodicEvent()?->startDate()
         );
     }
 
@@ -170,8 +172,10 @@ trait HasPeriodicEvent
      */
     final public function getEndDate(): ?Carbon
     {
-        return Cache::remember($this->underlyingControllerName . '_end_date', 86400,
-            fn() => $this->periodicEvent()?->endDate()
+        return Cache::remember(
+            $this->underlyingControllerName . '_end_date',
+            86400,
+            fn () => $this->periodicEvent()?->endDate()
         );
     }
 
