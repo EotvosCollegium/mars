@@ -51,7 +51,6 @@ class RegisterController extends Controller
         return view('auth.register', [
             'user_type' => Role::COLLEGIST,
             'application_open' => app(ApplicationController::class)->isActive(),
-            // 'countries' => require base_path('countries.php'),
         ]);
     }
 

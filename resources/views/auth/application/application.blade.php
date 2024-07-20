@@ -11,15 +11,9 @@
                     @endif
                 </div>
                 <div class="col s12 xl8">
-                    @can('editStatus', \App\Models\ApplicationForm::class)
-                        @if(!(user()->isAdmin() || $user->application->status != \App\Models\ApplicationForm::STATUS_IN_PROGRESS))
-                            <span class="right">
-                                @include('auth.application.status', ['status' => $user->application->status])
-                            </span>
-                        @else
-                            @livewire('application-status-update', ['application' => $user->application])
-                        @endif
-                    @endcan
+{{--                    @can('editStatus', \App\Models\Application::class)--}}
+{{--                        @livewire('application-status-update', ['application' => $user->application])--}}
+{{--                    @endcan--}}
 
                     <div class="card-title">{{ $user->name }}</div>
                     <p style="margin-bottom: 5px"><a href="mailto:{{ $user->email }}">{{ $user->email }}</a></p>

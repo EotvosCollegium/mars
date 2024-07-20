@@ -5,36 +5,32 @@
 @endsection
 
 @section('content')
-    @include('auth.application.period')
+    @include('auth.admission.period')
     @if($workshops->count() > 1)
         <div class="card">
             <div class="card-content">
                 <div class="row center" style="margin-bottom: 0">
-                    <form id="workshop-filter" method="GET" route="{{route('applications')}}">
-                        <x-input.select id="workshop" :elements="$workshops" allow-empty :default="$workshop"
+                    <form id="workshop-filter" method="GET" action="{{route('admission.applicants.index')}}">
+                        <x-input.select id="workshop" :elements="$workshops" :default="$workshop"
                                         text="Műhely"/>
-                        @can('viewUnfinished', \App\Models\ApplicationForm::class)
-                            @foreach (\App\Models\ApplicationForm::STATUSES as $st)
-                                <label>
-                                    <input type="radio" name="status" value="{{$st}}"
-                                           @if($status == $st) checked @endif>
-                                    <span
-                                        style="padding-left: 25px; margin: 5px">@include('auth.application.status', ['status' => $st])</span>
-                                </label>
-                            @endforeach
-                        @endcan
+                        @can('viewUnfinished', \App\Models\Application::class)
+                            <label>
+                                <input type="checkbox" name="submitted" checked>
+                                <span style="padding-left: 25px; margin: 5px">Véglegesített</span>
+                            </label>
+                        @endif
                         <x-input.button type="submit" text="Szűrés"/>
                     </form>
-                    <form id="empty-filter" method="GET" route="{{route('application')}}"
+                    <form id="empty-filter" method="GET" action="{{route('admission.applicants.index')}}"
                           style="{{($status=='' && $workshop=='')?'display: none':''}}">
-                        <x-input.button id="delete-filter" text="Szűrő törlése"/>
+                        <x-input.button id="delete-filter" class="grey" text="Szűrő törlése"/>
                     </form>
                 </div>
                 <blockquote>
-                    @can('editStatus', \App\Models\ApplicationForm::class)
-                        <p>A jelentkezők aktuális státusza a jelentkezők számára nem nyilvános.</p>
+                    @can('editStatus', \App\Models\Application::class)
+                        <p>A behívott/elutasított státusz a jelentkezők számára nem nyilvános.</p>
                     @endcan
-                    @can('finalize', \App\Models\ApplicationForm::class)
+                    @can('finalize', \App\Models\Application::class)
                         <p>{{$applicationDeadline?->addWeeks(1)?->format('Y. m. d.')}} után lehet a lap alján felvenni a
                             kiválasztott jelentkezőket, ezzel véglegesíteni a felvételit.</p>
                     @endcan
@@ -54,19 +50,19 @@
         </div>
     @endif
     @foreach($applications as $application)
-        <a href="{{route('applications', ['id' => $application->user_id])}}">
+        <a href="{{route('admission.applicants.show', ['application' => $application->id])}}">
             @include('auth.application.application', ['user' => $application->user, 'expanded' => false])
         </a>
     @endforeach
     <hr>
     <h6>Összesen: <b class="right">{{$applications->count()}} jelentkező</b></h6>
-    @can('finalize', \App\Models\ApplicationForm::class)
+    @can('finalize', \App\Models\Application::class)
         @if($applicationDeadline?->addWeeks(1) < now())
             <div class="card" style="margin-top:20px">
                 <div class="card-content">
                     <div class="row" style="margin:0">
                         <form id="finalize-application-process" method="POST"
-                              action="{{route('application.finalize')}}">
+                              action="{{route('admission.finalize')}}">
                             @csrf
                             <div class="col">
                                 Hogyha a felvételi eljárás befejeződött, akkor a felvett jelentkezőket itt lehet
@@ -83,9 +79,9 @@
             </div>
         @endif
     @endcan
-    @can('viewAll', \App\Models\ApplicationForm::class)
+    @can('viewAll', \App\Models\Application::class)
         <div class="fixed-action-btn">
-            <a href="{{ route('applications.export') }}" class="btn-floating btn-large">
+            <a href="{{ route('admission.export') }}" class="btn-floating btn-large">
                 <i class="large material-icons">file_download</i>
             </a>
         </div>
