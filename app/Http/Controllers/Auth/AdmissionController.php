@@ -133,9 +133,13 @@ class AdmissionController extends Controller
      * @return RedirectResponse
      * @throws AuthorizationException
      */
-    public function update(Request $request, Application $application): RedirectResponse
+    public function updateNote(Request $request, Application $application): RedirectResponse
     {
         $this->authorize('view', $application);
+        if (user()->id == $application->user_id) {
+            return redirect()->back()->with('error', 'You cannot modify the internal note of yourself.');
+        }
+
         $newStatus = $request->input('status_'.$application->user->id);
         if ($request->has('note')) {
             $application->update(['note' => $request->input('note')]);
@@ -192,7 +196,8 @@ class AdmissionController extends Controller
         //        });
         //
         //        Cache::clear();
-        return back()->with('message', 'Sikeresen jóváhagyta az elfogadott jelentkezőket');
+        // return back()->with('message', 'Sikeresen jóváhagyta az elfogadott jelentkezőket');
+        return back()->with('error', 'Még nincs implementálva.');
     }
 
     /**

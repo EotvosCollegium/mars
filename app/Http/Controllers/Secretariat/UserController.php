@@ -180,6 +180,12 @@ class UserController extends Controller
             'research_topics',
             'extra_information'
         ]);
+
+        // whether Neptun code is unique
+        if (EducationalInformation::where('neptun', $request->neptun)->where('user_id', '<>', $user->id)->exists()) {
+            return redirect()->back()->with('error', 'A megadott Neptun-kód már létezik! Ha a kód az Öné, lépjen be a korábbi fiókjával.');
+        }
+
         DB::transaction(function () use ($user, $request, $educational_data) {
             if (!$user->hasEducationalInformation()) {
                 $user->educationalInformation()->create($educational_data);

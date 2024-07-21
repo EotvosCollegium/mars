@@ -32,19 +32,16 @@ class ApplicationPolicy
      */
     public function view(User $user, Application $target): bool
     {
-        if ($user->id == $target->user_id) {
+        if ($user->id == $target->user_id || $user->can('viewAll', Application::class)) {
             return true;
-        }
-        if ($user->can('viewAll', Application::class)) {
-            return true;
-        }
-
-        return $target->appliedWorkshops
+        } else {
+            return $target->appliedWorkshops
                 ->intersect($user->applicationCommitteWorkshops)
                 ->count() > 0
             || $target->appliedWorkshops
                 ->intersect($user->roleWorkshops)
                 ->count() > 0;
+        }
     }
 
     /**

@@ -127,8 +127,10 @@ class RegisterController extends Controller
                     Mail::to($admin)->send(new NewRegistration($admin->name, $user));
                 }
                 Cache::increment('user');
+                $this->redirectTo = '/verification';
             } else {
                 $user->application()->create();
+                $this->redirectTo = '/application';
             }
 
             return $user;
