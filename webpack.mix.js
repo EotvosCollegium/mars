@@ -10,12 +10,8 @@ const mix = require('laravel-mix');
  |
  */
 
-mix.js('resources/js/materialize_custom.js', 'public/js/materialize.js') // We use our custom materialize JS
-   .js('resources/js/cookieconsent-initialize.js', 'public/js/')
-   .scripts(['resources/js/site.js'], 'public/js/site.js')
-   // We have to copy already minimized JS
-   .copy('resources/js/cookieconsent.min.js', 'public/js/') // TODO: see #223
-   .copy([
+mix.copy([
+      'node_modules/@materializecss/materialize/dist/js/materialize.min.js',
       'node_modules/moment/min/moment.min.js',
       'node_modules/jquery/dist/jquery.min.js',
       'node_modules/tabulator-tables/dist/js/tabulator.min.js'
@@ -27,7 +23,7 @@ mix.js('resources/js/materialize_custom.js', 'public/js/materialize.js') // We u
    // Add common styles here
    .styles([
       'resources/css/tabulator_materialize.min.css', // This might cause problems if it gets ouf of sync with the JS
-      'resources/css/cookieconsent.min.css',
+      //'resources/css/cookieconsent.min.css',
       'resources/css/fonts.css'
    ], 'public/css/app.css')
    // Add page specific files one by one

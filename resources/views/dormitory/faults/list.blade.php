@@ -30,7 +30,7 @@
                     break;
 
                 case "{{ App\Models\Fault::WONT_FIX }}":
-                    var style = "waves-effect btn coli blue btn-fixed-height";
+                    var style = "waves-effect btn primary btn-fixed-height";
                     var text = "@lang('faults.wont_fix')";
                     break;
 

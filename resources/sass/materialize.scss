@@ -1,30 +1,51 @@
-//custom color
-$coli: (
-    "blue": if($isDebug == "true", #5e1a10, #242851),
-    "orange": if($isDebug == "true", #dc3c1c, #b38f2f),
-    "lightblue": #6e76e5
-);
-//import and overwrite default colors
-@import "~@materializecss/materialize/sass/components/color-variables";
-$colors: map-merge(
-    $colors,
-    (
-        "coli": $coli
-    )
-);
+////custom color
+//$coli: (
+//    "blue": if($isDebug == "true", #5e1a10, #242851),
+//    "orange": if($isDebug == "true", #dc3c1c, #b38f2f),
+//    "lightblue": #6e76e5
+//);
+////import and overwrite default colors
+//@import "~@materializecss/materialize/sass/components/color-variables";
+//$colors: map-merge(
+//    $colors,
+//    (
+//        "coli": $coli
+//    )
+//);
+//
+////create color classes
+//@import "~@materializecss/materialize/sass/components/color-classes";
+//
+////set colors to use
+//$primary-color: color("coli", "blue");
+//$secondary-color: color("coli", "orange");
+//$success-color: color("blue-grey", "lighten-1");
 
-//create color classes
-@import "~@materializecss/materialize/sass/components/color-classes";
-
-//set colors to use
-$primary-color: color("coli", "blue");
-$secondary-color: color("coli", "orange");
-$success-color: color("blue-grey", "lighten-1");
-$link-color: color("coli", "orange");
+$link-color: var(--md-sys-color-primary);
 
 //import the remaining materialize style
 //(will include the previous ones also, but it won't overwrite those)
 @import "~@materializecss/materialize/sass/materialize.scss";
+
+i.left {
+    margin-right: 15px;
+}
+.sidenav li > a {
+    color: rgba(0, 0, 0, 0.67) !important;
+}
+
+//.primary {
+//    background-color: var(--md-sys-color-primary);
+//    color: var(--md-sys-color-on-primary);
+//}
+//.secondary {
+//    background-color: var(--md-sys-color-secondary);
+//    color: var(--md-sys-color-on-secondary);
+//}
+//.card a {
+//    text-decoration: underline;
+//    color: var(--md-sys-color-primary);
+//}
 
 //for the Material Icons font hosted locally
 i.material-icons {
@@ -34,249 +55,230 @@ i.material-icons {
     //this fixed the payment buttons on checkout pages
     text-transform: none;
 }
+//
+///* overwrite some materialize classes */
 
-/* overwrite some materialize classes */
-.card a {
-    text-decoration: underline;
-}
-
-blockquote {
-    margin: 20px 0;
-    padding-left: 1.5rem;
-    border-left: 5px solid $secondary-color !important;
-    &.error {
-        color: $secondary-color;
-    }
-}
-
-h5 {
-    font-size: 1.3em;
-}
-
-.breadcrumb {
-    cursor: default;
-}
-.sidenav .divider {
-    margin: 0;
-}
-
-span.badge.tag {
-    padding: 2px 6px;
-    margin-left: 2px;
-    margin-top: 2px;
-    margin-bottom: 2px;
-    float: none;
-}
-
-// for our custom arrow dropdowns
-// (e.g. for the workshop functionaries on the home page)
-.arrow-dropdown .arrow-dropdown-title a {
-    color: inherit;
-    text-decoration: inherit;
-    cursor: pointer;
-}
-.arrow-dropdown .arrow-dropdown-title.closed::after {
-    content: '▶';
-    display: inline-block;
-    font-size: 0.6em;
-    transform: translateY(-0.4em);
-}
-.arrow-dropdown .arrow-dropdown-title.open::after {
-    content: '▼';
-    display: inline-block;
-    font-size: 0.6em;
-    transform: translateY(-0.3em);
-}
-.arrow-dropdown .arrow-dropdown-content ul li ul {
-    margin: 0 0 10px 20px;
-}
-.arrow-dropdown > .arrow-dropdown-title.closed + .arrow-dropdown-content ul {
-    display: none;
-}
-.arrow-dropdown > .arrow-dropdown-title.open + .arrow-dropdown-content ul {
-    display: block;
-}
-
-//enable multiline buttons if the text does not fit in
-.btn,
-.btn-flat {
-    height: inherit;
-}
-.btn-fixed-height {
-    height: $button-height;
-}
-.btn-floating {
-    &.btn-large {
-        height: $button-floating-large-size !important;
-    }
-    &.btn-small {
-        height: $button-floating-small-size !important;
-    }
-}
-
-/* Settings for dark mode */
-$transition-effects: color 1s ease, background-color 0.5s ease;
-
-body {
-    transition: $transition-effects;
-    &.dark {
-        background-color: #000000;
-        color: #fff;
-        .card {
-            background-color: rgba(25, 25, 25, 255);
-        }
-        .divider {
-            opacity: 0.2;
-        }
-        .tabulator {
-            background-color: rgba(25, 25, 25, 255);
-        }
-        .tabulator-col {
-            background-color: rgba(25, 25, 25, 255);
-        }
-        .tabulator-col-content {
-            background-color: rgba(25, 25, 25, 255);
-        }
-        .tabulator-page {
-            color: #fff;
-        }
-        .collapsible {
-            border-top: solid 2px rgba(255, 255, 255, 0.2);
-            border-bottom:solid 2px rgba(255, 255, 255, 0.2);
-            border-left: solid 2px rgba(255, 255, 255, 0.2);
-            border-right: solid 2px rgba(255, 255, 255, 0.2);
-        }
-        .collapsible-header {
-            background-color: rgba(25, 25, 25, 255);
-            border-bottom: rgba(255, 255, 255, 0.2);
-        }
-        .collapsible-body {
-            background-color: rgba(25, 25, 25, 255);
-            border-bottom: rgba(255, 255, 255, 0.2);
-        }
-        .dropdown-trigger {
-            color: #fff;
-        }
-        .caret {
-            fill: #fff;
-        }
-        .selected {
-            span {
-                color: #fff;
-            }
-        }
-        .input-field {
-            input {
-                color: #fff;
-            }
-        }
-        .dropdown-content {
-            background-color: rgba(25, 25, 25, 255);
-        }
-        .datepicker-calendar {
-            color: #000000;
-            .dropdown-trigger {
-                color: #000000;
-            }
-            .caret {
-                fill: #000000;
-            }
-        }
-        .sidenav {
-            background-color: rgba(25, 25, 25, 255);
-            li {
-                background-color: rgba(25, 25, 25, 255);
-                a {
-                    &:not(.subheader) {
-                        color: #fff;
-                        &:hover {
-                            background-color: #3b4043;
-                        }
-                    }
-                    &.subheader {
-                        color: #9aa0a6;
-                    }
-                    .material-icons {
-                        color: #9aa0a6;
-                    }
-                }
-            }
-        }
-        .collection {
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            .collection-item {
-                background-color: rgba(255, 255, 255, 0.2);
-                border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-            }
-        }
-        textarea {
-            color: #fff;
-        }
-        .input-field {
-            textarea {
-                color: #fff;
-            }
-        }
-        a {
-            color: $primary-color;
-        }
-        .black-text {
-            color: #fff !important;
-        }
-        .select-dropdown span {
-            color: #fff !important;
-        }
-        .tabulator-header-filter input{
-            color: #fff;
-        }
-        svg .on-background {
-            fill: #fff;
-        }
-        table tr {
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        .card-content input {
-            color: #fff !important;
-        }
-        .tab {
-            background-color: rgba(25, 25, 25, 255);
-        }
-        .tab a {
-            color: $secondary-color !important;
-        }
-        .lever {
-            background-color: #fff !important;
-        }
-    }
-}
-
-body.dark a {
-  color: $secondary-color;
-}
-
-body.dark .nav-wrapper a {
-  color: #fff; /*this for the username in the navbar*/
-}
-
-body.dark a.btn {
-  color: #fff; /*this for buttons*/
-}
-
-//other, custom classes
-.noselect {
-    -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
-    -khtml-user-select: none; /* Konqueror HTML */
-    -moz-user-select: none; /* Old versions of Firefox */
-    -ms-user-select: none; /* Internet Explorer/Edge */
-    user-select: none; /* Non-prefixed version, currently
-                                  supported by Chrome, Opera and Firefox */
-}
-
-.hidden {
-    display: none;
-}
-
+//
+//blockquote {
+//    margin: 20px 0;
+//    padding-left: 1.5rem;
+//    border-left: 5px solid $secondary-color !important;
+//    &.error {
+//        color: $secondary-color;
+//    }
+//}
+//
+//h5 {
+//    font-size: 1.3em;
+//}
+//
+//.breadcrumb {
+//    cursor: default;
+//}
+//.sidenav .divider {
+//    margin: 0;
+//}
+//
+//span.badge.tag {
+//    padding: 2px 6px;
+//    margin-left: 2px;
+//    margin-top: 2px;
+//    margin-bottom: 2px;
+//    float: none;
+//}
+//
+//// for our custom arrow dropdowns
+//// (e.g. for the workshop functionaries on the home page)
+//.arrow-dropdown .arrow-dropdown-title a {
+//    color: inherit;
+//    text-decoration: inherit;
+//    cursor: pointer;
+//}
+//.arrow-dropdown .arrow-dropdown-title.closed::after {
+//    content: '▶';
+//    display: inline-block;
+//    font-size: 0.6em;
+//    transform: translateY(-0.4em);
+//}
+//.arrow-dropdown .arrow-dropdown-title.open::after {
+//    content: '▼';
+//    display: inline-block;
+//    font-size: 0.6em;
+//    transform: translateY(-0.3em);
+//}
+//.arrow-dropdown .arrow-dropdown-content ul li ul {
+//    margin: 0 0 10px 20px;
+//}
+//.arrow-dropdown > .arrow-dropdown-title.closed + .arrow-dropdown-content ul {
+//    display: none;
+//}
+//.arrow-dropdown > .arrow-dropdown-title.open + .arrow-dropdown-content ul {
+//    display: block;
+//}
+//
+///* Settings for dark mode */
+//$transition-effects: color 1s ease, background-color 0.5s ease;
+//
+//body {
+//    transition: $transition-effects;
+//    &.dark {
+//        background-color: #000000;
+//        color: #fff;
+//        .card {
+//            background-color: rgba(25, 25, 25, 255);
+//        }
+//        .divider {
+//            opacity: 0.2;
+//        }
+//        .tabulator {
+//            background-color: rgba(25, 25, 25, 255);
+//        }
+//        .tabulator-col {
+//            background-color: rgba(25, 25, 25, 255);
+//        }
+//        .tabulator-col-content {
+//            background-color: rgba(25, 25, 25, 255);
+//        }
+//        .tabulator-page {
+//            color: #fff;
+//        }
+//        .collapsible {
+//            border-top: solid 2px rgba(255, 255, 255, 0.2);
+//            border-bottom:solid 2px rgba(255, 255, 255, 0.2);
+//            border-left: solid 2px rgba(255, 255, 255, 0.2);
+//            border-right: solid 2px rgba(255, 255, 255, 0.2);
+//        }
+//        .collapsible-header {
+//            background-color: rgba(25, 25, 25, 255);
+//            border-bottom: rgba(255, 255, 255, 0.2);
+//        }
+//        .collapsible-body {
+//            background-color: rgba(25, 25, 25, 255);
+//            border-bottom: rgba(255, 255, 255, 0.2);
+//        }
+//        .dropdown-trigger {
+//            color: #fff;
+//        }
+//        .caret {
+//            fill: #fff;
+//        }
+//        .selected {
+//            span {
+//                color: #fff;
+//            }
+//        }
+//        .input-field {
+//            input {
+//                color: #fff;
+//            }
+//        }
+//        .dropdown-content {
+//            background-color: rgba(25, 25, 25, 255);
+//        }
+//        .datepicker-calendar {
+//            color: #000000;
+//            .dropdown-trigger {
+//                color: #000000;
+//            }
+//            .caret {
+//                fill: #000000;
+//            }
+//        }
+//        .sidenav {
+//            background-color: rgba(25, 25, 25, 255);
+//            li {
+//                background-color: rgba(25, 25, 25, 255);
+//                a {
+//                    &:not(.subheader) {
+//                        color: #fff;
+//                        &:hover {
+//                            background-color: #3b4043;
+//                        }
+//                    }
+//                    &.subheader {
+//                        color: #9aa0a6;
+//                    }
+//                    .material-icons {
+//                        color: #9aa0a6;
+//                    }
+//                }
+//            }
+//        }
+//        .collection {
+//            border: 1px solid rgba(255, 255, 255, 0.2);
+//            .collection-item {
+//                background-color: rgba(255, 255, 255, 0.2);
+//                border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+//            }
+//        }
+//        textarea {
+//            color: #fff;
+//        }
+//        .input-field {
+//            textarea {
+//                color: #fff;
+//            }
+//        }
+//        a {
+//            color: $primary-color;
+//        }
+//        . {
+//            color: #fff !important;
+//        }
+//        .select-dropdown span {
+//            color: #fff !important;
+//        }
+//        .tabulator-header-filter input{
+//            color: #fff;
+//        }
+//        svg .on-background {
+//            fill: #fff;
+//        }
+//        table tr {
+//            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+//        }
+//        .card-content input {
+//            color: #fff !important;
+//        }
+//        .tab {
+//            background-color: rgba(25, 25, 25, 255);
+//        }
+//        .tab a {
+//            color: $secondary-color !important;
+//        }
+//        .lever {
+//            background-color: #fff !important;
+//        }
+//    }
+//}
+//
+//body.dark a {
+//  color: $secondary-color;
+//}
+//
+//body.dark .nav-wrapper a {
+//  color: #fff; /*this for the username in the navbar*/
+//}
+//
+//body.dark a.btn {
+//  color: #fff; /*this for buttons*/
+//}
+//
+////other, custom classes
+//.noselect {
+//    -webkit-touch-callout: none; /* iOS Safari */
+//    -webkit-user-select: none; /* Safari */
+//    -khtml-user-select: none; /* Konqueror HTML */
+//    -moz-user-select: none; /* Old versions of Firefox */
+//    -ms-user-select: none; /* Internet Explorer/Edge */
+//    user-select: none; /* Non-prefixed version, currently
+//                                  supported by Chrome, Opera and Firefox */
+//}
+//
+//.hidden {
+//    display: none;
+//}
+//
 @mixin column-count($ct) {
     -webkit-column-count: $ct;
     -moz-column-count: $ct;

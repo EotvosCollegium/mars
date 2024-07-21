@@ -9,7 +9,7 @@
 @endif
     {{$attributes->whereDoesntStartWith('href')->merge([
         'type' => 'submit',
-        'class' => 'waves-effect '.($floating ? "btn-floating" : 'btn')
+        'class' => 'waves-effect filled '.($floating ? "btn-floating" : 'btn')
     ])}}
 >
 @if($icon)

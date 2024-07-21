@@ -53,7 +53,7 @@
                 textArea.select();
                 document.execCommand("Copy");
                 textArea.remove();
-                M.toast({html: '<span class="white-text">@lang("internet.copied")</span>'});
+                M.toast({html: '<span class="">@lang("internet.copied")</span>'});
             });
         });
     </script>

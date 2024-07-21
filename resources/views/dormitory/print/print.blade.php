@@ -27,27 +27,25 @@
                 @endif
             </div>
         </form>
-        <div class="row">
-            <div class="col l9">
-                <blockquote>
-                    @if(Cache::has('print.no-paper'))
-                        @lang('print.no-paper-reported', ['date' => Cache::get('print.no-paper')])
-                    @else
-                        @lang('print.no-paper-description')
-                    @endif
-                </blockquote>
-            </div>
+        <div style="display: flex; gap: 25px; align-items: center">
             @if(Cache::has('print.no-paper') && user()->can('handleAny', \App\Models\PrintAccount::class))
                 <form method="POST" action="{{ route('print.added_paper') }}">
                     @csrf
-                    <x-input.button l=3 class="right coli blue" text="Papír újratöltve"/>
+                    <x-input.button l=3 class="outlined" text="Papír újratöltve"/>
                 </form>
             @else
                 <form method="POST" action="{{ route('print.no_paper') }}">
                     @csrf
-                    <x-input.button l=3 class="right coli blue" text="print.no_paper" />
+                    <x-input.button l=3 class="outlined" text="print.no_paper" />
                 </form>
             @endif
+            <blockquote>
+                @if(Cache::has('print.no-paper'))
+                    @lang('print.no-paper-reported', ['date' => Cache::get('print.no-paper')])
+                @else
+                    @lang('print.no-paper-description')
+                @endif
+            </blockquote>
         </div>
     </div>
 </div>

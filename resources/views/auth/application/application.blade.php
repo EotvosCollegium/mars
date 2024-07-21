@@ -23,12 +23,12 @@
                             @endif
                         @endcan
                         @if ($user->application->applied_for_resident_status)
-                            <span class="new badge scale-transition coli blue tag" style="display: block;"
+                            <span class="new badge scale-transition primary tag" style="display: block;"
                                   data-badge-caption="">
                                 @lang('role.resident')
                             </span>
                         @else
-                            <span class="new badge scale-transition coli orange tag" style="display: block;"
+                            <span class="new badge scale-transition secondary tag" style="display: block;"
                                   data-badge-caption="">
                                 @lang('role.extern')
                             </span>

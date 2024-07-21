@@ -193,12 +193,12 @@
                 <div class="row">
                     <div style="vertical-align: top">
                         <x-input.text s=9  id="nameInput" text="Keress névre vagy szobaszámra" type="text" />
-                        <x-input.button s=3 id="nameSubmit" class="right coli blue" text="Keresés" />
+                        <x-input.button s=3 id="nameSubmit" class="right primary" text="Keresés" />
                     </div>
                 </div>
                 @can('updateAny', \App\Models\Room::class)
                 <div class="center row">
-                    <x-input.button class="coli blue" text="Szobabeosztás szerkesztése" :href="route('rooms.modify')"/>
+                    <x-input.button class="primary" text="Szobabeosztás szerkesztése" :href="route('rooms.modify')"/>
                 </div>
                 @endcan
             </div>

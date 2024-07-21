@@ -20,7 +20,7 @@
         <script type="text/javascript">
             $(document).ready(function () {
                 var deleteButton = function (cell, formatterParams, onRendered) {
-                    return $("<button type=\"button\" class=\"btn waves-effect btn-fixed-height coli blue right\">@lang('internet.delete')</button>").click(function () {
+                    return $("<button type=\"button\" class=\"btn waves-effect btn-fixed-height primary right\">@lang('internet.delete')</button>").click(function () {
                         var data = cell.getRow().getData();
                         $.ajax({
                             type: "DELETE",

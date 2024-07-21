@@ -3,7 +3,7 @@
 @if (!$onlyInput)
     <div class="input-field file-field col s{{ $s }} m{{ $m }} l{{ $l }} xl{{ $xl }}">
 @endif
-<div class="btn waves-effect">
+<div class="btn waves-effect secondary tonal" style="height: 100%">
     <span>File</span>
     <input type="file" id="{{ $id }}" {{ $attributes->merge(['name' => $id]) }}>
 </div>

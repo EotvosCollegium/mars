@@ -15,7 +15,7 @@
             <button
                 class='btn-flat toast-action'
                 onclick="dismissToast()">
-                <i class='material-icons white-text'>clear</i>
+                <i class='material-icons '>clear</i>
             </button>
             `;
 

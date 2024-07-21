@@ -25,7 +25,7 @@
                             </td>
                             <td>
                                 @can('print.print')
-                                <x-input.button :href="route('documents.register-statement.print')" class="coli blue" text="nyomtatás" />
+                                <x-input.button :href="route('documents.register-statement.print')" class="primary" text="nyomtatás" />
                                 @endcan
                             </td>
                         </tr>
@@ -41,7 +41,7 @@
                             </td>
                             <td>
                                 @can('print.print')
-                                <x-input.button :href="route('documents.import.print')" class="coli blue" text="document.print" />
+                                <x-input.button :href="route('documents.import.print')" class="primary" text="document.print" />
                                 @endcan
                             </td>
                         </tr>
@@ -54,7 +54,7 @@
                                 <x-input.button :href="route('documents.status-cert.download')" text="letöltés" />
                             </td>
                             <td>
-                                <x-input.button :href="route('documents.status-cert.request')" class="coli blue" text="igénylés" />
+                                <x-input.button :href="route('documents.status-cert.request')" class="primary" text="igénylés" />
                             </td>
                         </tr>
                         @endcan

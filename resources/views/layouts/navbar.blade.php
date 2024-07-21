@@ -1,36 +1,33 @@
 <!--navbar-->
 <div class="navbar-fixed">
-    <nav class="top-nav">
+    <nav class="secondary">
         <div class="nav-wrapper">
-            <div class="row">
-                <!--sidenav trigger for mobile-->
-                <a href="#" data-target="sidenav" class="sidenav-trigger hide-on-large-only"><i
-                            class="material-icons">menu</i></a>
-                <!--logo for mobile-->
-                <a class="brand-logo center hide-on-large-only"
-                    style="text-transform: uppercase;font-weight:300;letter-spacing:3px;" href="{{ url('/') }}">
-                    {{ config('app.name', 'Urán') }} </a>
-                <!--title-->
+            <!--sidenav trigger for mobile-->
+            <a href="#" data-target="sidenav" class="sidenav-trigger hide-on-large-only"><i
+                        class="material-icons">menu</i></a>
+            <!--logo for mobile-->
+            <a class="brand-logo hide-on-large-only"
+                style="text-transform: uppercase;font-weight:300;letter-spacing:3px;" href="{{ url('/') }}">
+                {{ config('app.name', 'Urán') }} </a>
+            <!--title-->
+            <ul class="right hide-on-med-and-down">
+                @include('layouts.navigators.user')
+            </ul>
+            <ul class="col hide-on-med-and-down" style="margin-left:310px">
+                @yield('title')
+            </ul>
+            <!-- Right Side Of Navbar -->
 
-                <div class="col hide-on-med-and-down noselect" style="margin-left:310px">
-                    @yield('title')
-                </div>
-
-                <!-- Right Side Of Navbar -->
-                <ul class="right hide-on-med-and-down">
-                    @include('layouts.navigators.user')
-                </ul>
-            </div>
         </div>
     </nav>
 </div>
 
 <!--sidebar-->
-<ul class="sidenav sidenav-fixed" id="sidenav">
+<ul class="sidenav sidenav-fixed " id="sidenav">
     <!-- logo -->
     @include('layouts.logo')
     @if(config('app.env') == 'production' && config('app.debug'))
-        <li class="grey darken-1 white-text" style="padding:5px;line-height:1.5em">@lang('general.debug_descr')</li>
+        <li class="grey darken-1 " style="padding:5px;line-height:1.5em">@lang('general.debug_descr')</li>
     @endif
 
     <!-- main options -->
@@ -75,14 +72,13 @@
         @endcan
         <!-- collapsible modules -->
         <li class="no-padding">
-            <ul class="collapsible collapsible-accordion">
+            <ul class="collapsible">
                 <!-- students' council module -->
                 @if(user()->can('is-collegist') || user()->hasRole(\App\Models\Role::SECRETARY))
                     <li class="@yield('student_council_module')">
-                        <a class="collapsible-header waves-effect" style="padding-left:32px">
+                        <a class="collapsible-header waves-effect">
                             <i class="material-icons left">groups</i> <!-- star icon? -->
                             Választmány
-                            <i class="material-icons right">arrow_drop_down</i>
                         </a>
                         <div class="collapsible-body">
                             <ul>
@@ -140,10 +136,10 @@
                 @if(Auth::user()->isAdmin() || Auth::user()->isCollegist())
                     {{-- Sysadmin module --}}
                     <li class="@yield('admin_module')">
-                        <a class="collapsible-header waves-effect" style="padding-left:32px">
+                        <a class="collapsible-header waves-effect">
                             <i class="material-icons left">admin_panel_settings</i>
                             Rendszergazda
-                            <i class="material-icons right">arrow_drop_down</i>
+
                         </a>
                         <div class="collapsible-body">
                             <ul>
@@ -198,8 +194,10 @@
                 @can('handleGuests', \App\Models\User::class)
                     <li>
                         <a class="waves-effect" href="{{ route('secretariat.registrations') }}">
+
                             <i class="material-icons left">how_to_reg</i> Regisztrációk
                             @notification(\App\Models\User::class)
+
                         </a>
                     </li>
                 @endcan
@@ -219,9 +217,9 @@
         <ul class="collapsible collapsible-accordion">
             <!-- language select -->
             <li>
-                <a class="collapsible-header waves-effect" style="padding-left:32px">
+                <a class="collapsible-header waves-effect">
                     <i class="material-icons left">language</i>Language
-                    <i class="material-icons right">arrow_drop_down</i></a>
+                    </a>
                 <div class="collapsible-body">
                     <ul>
                         @foreach (config('app.locales') as $code => $name)
@@ -234,9 +232,9 @@
             <!-- other -->
             @if(Auth::user()?->verified)
                 <li>
-                    <a class="collapsible-header waves-effect" style="padding-left:32px">
+                    <a class="collapsible-header waves-effect">
                         <i class="material-icons left">more_horiz</i>@lang('general.other')
-                        <i class="material-icons right">arrow_drop_down</i></a>
+                        </a>
                     <div class="collapsible-body">
                         <ul>
                             <!-- language contributions -->

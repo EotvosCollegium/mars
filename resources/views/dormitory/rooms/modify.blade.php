@@ -25,7 +25,7 @@
                     @csrf
                     @method('put')
                     <input type="hidden" name="type" value="remove"/>
-                    <x-input.button s=3 class="right coli blue" icon="person_remove" value="update-remove"/>
+                    <x-input.button s=3 class="right primary" icon="person_remove" value="update-remove"/>
                 </form>
             @else
                 <h5 class="col s3 center"></h5>
@@ -36,7 +36,7 @@
                     @csrf
                     @method('put')
                     <input type="hidden" name="type" value="add"/>
-                    <x-input.button s=3 class="left coli blue" icon="person_add" value="update-add"/>
+                    <x-input.button s=3 class="left primary" icon="person_add" value="update-add"/>
                 </form>
             @endif
         </div>

@@ -102,7 +102,7 @@
         </li>
     </ul>
     @can('fill', App\Models\SemesterEvaluation::class)
-        <a href="{{ route('secretariat.evaluation.show') }}" class="btn left coli blue">Szemeszter értékelés</a>
+        <a href="{{ route('secretariat.evaluation.show') }}" class="btn left primary">Szemeszter értékelés</a>
     @endif
 
     <form action="{{ route('logout') }}" method="POST">
