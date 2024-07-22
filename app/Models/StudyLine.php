@@ -59,16 +59,27 @@ class StudyLine extends Model
         'other' => 'Egyéb'
     ];
 
+    /**
+     * The semester in which the user started the study line.
+     */
     public function startSemester()
     {
         return $this->belongsTo(Semester::class, 'start');
     }
 
+    /**
+     * The semester in which the user finished the study line
+     * (null if it is still in progress).
+     */
     public function endSemester(): BelongsTo
     {
         return $this->belongsTo(Semester::class, 'end');
     }
 
+    /**
+     * Returns a textual representation of the study line;
+     * including the minor after a dash, if there is any.
+     */
     public function getName(): string
     {
         $name = $this->name;
@@ -82,6 +93,10 @@ class StudyLine extends Model
         return $name;
     }
 
+    /**
+     * Returns a textual representation like getName,
+     * but adds additional information about the starting and ending semesters.
+     */
     public function getNameWithYear(): string
     {
         $name = $this->getName();

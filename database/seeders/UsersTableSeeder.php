@@ -66,6 +66,10 @@ class UsersTableSeeder extends Seeder
         });
     }
 
+    /**
+     * Creates and saves an administrator account
+     * with the e-mail address specified in .env.
+     */
     private function createSuperUser()
     {
         $user = User::create([
@@ -93,6 +97,12 @@ class UsersTableSeeder extends Seeder
         Checkout::query()->update(['handler_id' => $user->id]);
     }
 
+    /**
+     * Takes a pre-created user
+     * and makes it a collegist
+     * by adding appropriate roles and
+     * fake data.
+     */
     private function createCollegist($user)
     {
         MacAddress::factory()->count($user->id % 5)->create(['user_id' => $user->id]);
@@ -137,6 +147,12 @@ class UsersTableSeeder extends Seeder
         $user->application->syncAppliedWorkshops($workshop->pluck('id')->toArray());
     }
 
+    /**
+     * Takes a pre-created user
+     * and makes it a tenant
+     * by adding appropriate roles and
+     * fake data.
+     */
     private function createTenant($user)
     {
         $user->roles()->attach(Role::get(Role::TENANT)->id);
@@ -145,6 +161,11 @@ class UsersTableSeeder extends Seeder
         MacAddress::factory()->count($user->id % 5)->create(['user_id' => $user->id]);
     }
 
+    /**
+     * Creates and saves a user
+     * with a staff role
+     * and a hard-coded e-mail address.
+     */
     private function createStaff()
     {
         $user = User::create([

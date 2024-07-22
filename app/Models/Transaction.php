@@ -76,26 +76,43 @@ class Transaction extends Model
         'paid_at' => 'datetime',
     ];
 
+    /**
+     * The user who receives the payment.
+     */
     public function receiver(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * The user who pays.
+     */
     public function payer(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * The checkout to which the transaction is related.
+     */
     public function checkout(): BelongsTo
     {
         return $this->belongsTo(Checkout::class);
     }
 
+    /**
+     * The semester in which the payment is made.
+     */
     public function semester(): BelongsTo
     {
         return $this->belongsTo(Semester::class);
     }
 
+    /**
+     * The type of the payment.
+     * Can only be one of those
+     * defined in the payment_types table.
+     */
     public function type(): BelongsTo
     {
         return $this->belongsTo(PaymentType::class, 'payment_type_id');

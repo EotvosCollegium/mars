@@ -132,6 +132,9 @@ class SemesterEvaluationExport implements FromCollection, WithTitle, WithMapping
         ];
     }
 
+    /**
+     * Freezes the panes at C2 when the sheet is finished.
+     */
     public function registerEvents(): array
     {
         return [

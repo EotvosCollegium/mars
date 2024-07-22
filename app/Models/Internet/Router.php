@@ -87,6 +87,10 @@ class Router extends Model
         return $this->failed_for == 0;
     }
 
+    /**
+     * Get the approximate date of when the router started to malfunction.
+     * Returns 0 if the router is functional.
+     */
     public function getFailStartDate()
     {
         return Carbon::now()->subMinutes($this->failed_for * 5)->roundMinute(5)->format('Y-m-d H:i');

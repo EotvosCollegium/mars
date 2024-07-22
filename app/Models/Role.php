@@ -142,12 +142,18 @@ class Role extends Model
 
     public $timestamps = false;
 
+    /**
+     * The users who currently have this role.
+     */
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'role_users')
             ->withPivot(['object_id', 'workshop_id'])->using(RoleUser::class);
     }
 
+    /**
+     * The objects (subcategories) of the role, if any.
+     */
     public function objects(): HasMany
     {
         return $this->hasMany(RoleObject::class, 'role_id');
@@ -293,7 +299,9 @@ class Role extends Model
         );
     }
 
-
+    /**
+     * The color of the badge of the role.
+     */
     public function color(): string
     {
         return match ($this->name) {

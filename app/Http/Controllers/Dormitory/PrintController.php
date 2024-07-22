@@ -33,6 +33,9 @@ class PrintController extends Controller
         $this->middleware('can:use,App\Models\PrintAccount');
     }
 
+    /**
+     * Returns the printer page.
+     */
     public function index()
     {
         return view('dormitory.print.app', [
@@ -41,6 +44,9 @@ class PrintController extends Controller
             ]);
     }
 
+    /**
+     * Handles when a user clicks the 'no paper' button.
+     */
     public function noPaper()
     {
         $reporterName = user()->name;
@@ -52,6 +58,10 @@ class PrintController extends Controller
         return redirect()->back()->with('message', __('mail.email_sent'));
     }
 
+    /**
+     * Handles when the admin clicks the 'added paper' button.
+     * after someone has signed paper shortage.
+     */
     public function addedPaper()
     {
         $this->authorize('handleAny', PrintAccount::class);
@@ -60,6 +70,9 @@ class PrintController extends Controller
         return redirect()->back()->with('message', __('general.successful_modification'));
     }
 
+    /**
+     * Returns the admin page.
+     */
     public function admin()
     {
         $this->authorize('handleAny', PrintAccount::class);
@@ -67,6 +80,9 @@ class PrintController extends Controller
         return view('dormitory.print.manage.app', ["users" => User::printers()]);
     }
 
+    /**
+     * Handles a print request.
+     */
     public function print(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -87,6 +103,9 @@ class PrintController extends Controller
         return $printer->print();
     }
 
+    /**
+     * Handles when one user sends printer money to another.
+     */
     public function transferBalance(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -115,6 +134,9 @@ class PrintController extends Controller
         return redirect()->back()->with('message', __('general.successful_transaction'));
     }
 
+    /**
+     * Handles balance modification by an admin.
+     */
     public function modifyBalance(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -153,6 +175,9 @@ class PrintController extends Controller
         return redirect()->back()->with('message', __('general.successful_modification'));
     }
 
+    /**
+     * Handles when an admin adds free pages.
+     */
     public function addFreePages(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -175,6 +200,9 @@ class PrintController extends Controller
         return redirect()->back()->with('message', __('general.successfully_added'));
     }
 
+    /**
+     * Lists every print job (only available for authorized users).
+     */
     public function listAllPrintJobs()
     {
         $this->authorize('viewAny', PrintJob::class);
@@ -191,6 +219,9 @@ class PrintController extends Controller
         return $this->printJobsPaginator($printJobs, $columns);
     }
 
+    /**
+     * Lists the authenticated user's own print jobs.
+     */
     public function listPrintJobs()
     {
         $this->authorize('viewSelf', PrintJob::class);
@@ -203,6 +234,9 @@ class PrintController extends Controller
         return $this->printJobsPaginator($printJobs, $columns);
     }
 
+    /**
+     * Lists every free page pack given (only available for authorized users).
+     */
     public function listAllFreePages()
     {
         $this->authorize('viewAny', FreePages::class);
@@ -214,6 +248,9 @@ class PrintController extends Controller
         return $this->freePagesPaginator($freePages, $columns);
     }
 
+    /**
+     * Lists the authenticated user's own free page packs.
+     */
     public function listFreePages()
     {
         $this->authorize('viewSelf', FreePages::class);
@@ -224,6 +261,10 @@ class PrintController extends Controller
         return $this->freePagesPaginator($freePages, $columns);
     }
 
+    /**
+     * Returns another, more detailed table for checking all print jobs
+     * (only for authorized users).
+     */
     public function listPrintAccountHistory()
     {
         $this->authorize('viewAny', PrintJob::class);
@@ -239,6 +280,9 @@ class PrintController extends Controller
         return $paginator;
     }
 
+    /**
+     * Handles cancelling a print job.
+     */
     public function cancelPrintJob($id)
     {
         $printJob = PrintJob::findOrFail($id);
@@ -273,6 +317,9 @@ class PrintController extends Controller
 
     /** Private helper functions */
 
+    /**
+     * Returns a paginator for a print job history table.
+     */
     private function printJobsPaginator($printJobs, $columns)
     {
         $paginator = TabulatorPaginator::from($printJobs)->sortable($columns)->filterable($columns)->paginate();
@@ -283,6 +330,9 @@ class PrintController extends Controller
         return $paginator;
     }
 
+    /**
+     * Returns a paginator for a free page history table.
+     */
     private function freePagesPaginator($freePages, $columns)
     {
         $paginator = TabulatorPaginator::from(
@@ -293,6 +343,9 @@ class PrintController extends Controller
         return $paginator;
     }
 
+    /**
+     * Updates the state of jobs that have been completed.
+     */
     private function updateCompletedPrintingJobs()
     {
         try {
@@ -303,6 +356,11 @@ class PrintController extends Controller
         }
     }
 
+    /**
+     * Stores the uploaded file on the server
+     * with a hash as the filename,
+     * then returns the path.
+     */
     private function storeFile($file)
     {
         $path = $file->storePubliclyAs(
@@ -315,6 +373,10 @@ class PrintController extends Controller
         return $path;
     }
 
+    /**
+     * Responds to requests
+     * where the user does not have enough balance.
+     */
     private function handleNoBalance()
     {
         return back()->withInput()->with('error', __('print.no_balance'));
