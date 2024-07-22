@@ -31,9 +31,9 @@
                     <x-input.radio :name="$question->formKey()" value="{{$option->id}}" text="{{$option->title}}"
                         :checked="old($question->formKey()) == $option->id" />
                     @else
-                    <x-input.checkbox :name="$question->formKey().'[]'" value="{{$option->id}}" text="{{$option->title}}"
-                        :checked="!is_null(old($question->formKey()))
-                                  && in_array($option->id, old($question->formKey()))" />
+                    <x-input.checkbox :id="$question->formKey()" :name="$question->formKey().'[]'" value="{{$option->id}}" text="{{$option->title}}"
+                        {{-- for some reason, having a custom id changes the structure of old($id) --}}
+                        :checked="in_array($option->id, (old($question->formKey()) ?? []))" />
                     @endif
                 @endforeach
                 @endif

@@ -4,7 +4,7 @@ namespace Tests\Feature;
 
 use App\Http\Controllers\Auth\RegisterController;
 use App\Mail\Invitation;
-use App\Models\ApplicationForm;
+use App\Models\Application;
 use App\Models\PersonalInformation;
 use App\Models\Role;
 use App\Models\User;
@@ -52,9 +52,9 @@ class RegistrationTest extends TestCase
             'user_id' => $user->id,
             'balance' => 0
         ]);
-        $this->assertDatabaseHas('application_forms', [
+        $this->assertDatabaseHas('applications', [
             'user_id' => $user->id,
-            'status' => ApplicationForm::STATUS_IN_PROGRESS
+            'submitted' => false
         ]);
 
     }

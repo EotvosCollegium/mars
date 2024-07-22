@@ -28,8 +28,6 @@ class ImportItem extends Model
 {
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array
      */
     protected $fillable = [
         'id', 'name', 'user_id', 'serial_number',

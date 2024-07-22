@@ -1,9 +1,5 @@
 @extends('auth.application.app')
 
-@section('submit-active')
-    active
-@endsection
-
 @section('form')
 
     @include('auth.application.application')

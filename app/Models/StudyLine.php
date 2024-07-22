@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * App\Models\StudyLine
@@ -15,7 +16,7 @@ use Illuminate\Database\Eloquent\Builder;
  * @property string $minor
  * @property string $type
  * @property Semester $startSemester
- * @property Semester $endSemester
+ * @property ?Semester $endSemester
  * @property int $id
  * @property int $educational_information_id
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -63,7 +64,7 @@ class StudyLine extends Model
         return $this->belongsTo(Semester::class, 'start');
     }
 
-    public function endSemester()
+    public function endSemester(): BelongsTo
     {
         return $this->belongsTo(Semester::class, 'end');
     }

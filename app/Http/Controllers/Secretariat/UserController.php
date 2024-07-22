@@ -60,7 +60,7 @@ class UserController extends Controller
         session()->put('section', 'profile_picture');
 
         $request->validate([
-            'picture' => 'required|mimes:jpg,jpeg,png,gif',
+            'picture' => 'required|mimes:jpg,jpeg,png,gif|max:2000',
         ]);
         $path = $request->file('picture')->store('avatars');
         $old_profile = $user->profilePicture;
@@ -159,7 +159,7 @@ class UserController extends Controller
             'neptun' => 'required|string|size:6',
             'faculty' => 'array',
             'faculty.*' => 'exists:faculties,id',
-            'workshop' => 'array',
+            'workshop' => 'nullable|array',
             'workshop.*' => 'exists:workshops,id',
             'study_lines' => 'array',
             'study_lines.*.name' => 'required|string|max:255',
@@ -180,6 +180,12 @@ class UserController extends Controller
             'research_topics',
             'extra_information'
         ]);
+
+        // whether Neptun code is unique
+        if (EducationalInformation::where('neptun', $request->neptun)->where('user_id', '<>', $user->id)->exists()) {
+            return redirect()->back()->with('error', 'A megadott Neptun-kód már létezik! Ha a kód az Öné, lépjen be a korábbi fiókjával.');
+        }
+
         DB::transaction(function () use ($user, $request, $educational_data) {
             if (!$user->hasEducationalInformation()) {
                 $user->educationalInformation()->create($educational_data);
@@ -410,9 +416,6 @@ class UserController extends Controller
      */
     public function showTenantUpdate()
     {
-        if (!user()->needsUpdateTenantUntil()) {
-            return redirect('/');
-        }
         return view('user.update_tenant_status');
     }
 
@@ -426,11 +429,9 @@ class UserController extends Controller
         }
         $user = user();
         $user->personalInformation()->update(['tenant_until' => null]);
-        $user->update(['verified' => false]);
         $user->removeRole(Role::get(Role::TENANT));
-        $user->setExtern();
         $user->application()->create();
         Cache::forget('collegists');
-        return back();
+        return redirect(route('application'));
     }
 }

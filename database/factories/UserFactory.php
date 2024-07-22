@@ -2,11 +2,12 @@
 
 namespace Database\Factories;
 
-use App\Models\ApplicationForm;
+use App\Models\Application;
 use App\Models\User;
 use App\Models\Room;
 use App\Models\PrintAccount;
 use App\Models\PersonalInformation;
+use App\Models\Workshop;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -48,9 +49,6 @@ class UserFactory extends Factory
             //
         })->afterCreating(function (User $user) {
             $user->personalInformation()->save(PersonalInformation::factory()->for($user)->create());
-            if (!$user->verified) {
-                $user->application()->create(['status' => $this->faker->randomElement(ApplicationForm::STATUSES)]);
-            }
         });
     }
 }

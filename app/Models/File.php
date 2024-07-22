@@ -34,7 +34,7 @@ class File extends Model
 
     protected $fillable = [
         'user_id',
-        'application_form_id', //if belongs to an application
+        'application_id', //if belongs to an application
         'name',
         'path',
     ];

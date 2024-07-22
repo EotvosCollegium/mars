@@ -2,10 +2,12 @@
 
 namespace Tests\Unit;
 
+use App\Models\EducationalInformation;
 use App\Models\SemesterStatus;
 use App\Models\User;
 use App\Models\Question;
 use App\Models\GeneralAssemblies\GeneralAssembly;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -177,5 +179,25 @@ class GeneralAssemblyTest extends TestCase
         $this->assertEquals(2, $excused->count());
         $this->assertTrue($excused->contains($userPassive1) && $excused->contains($userPassive2));
         $this->assertNotNull($excused->first()->pivot->comment); // Check if excuse reason is set
+    }
+
+    /**
+     * @return void
+     */
+    public function test_new_students_pass_requirements(): void
+    {
+        $user = User::factory()->create(['verified' => true]);
+        EducationalInformation::factory()->create(['user_id' => $user->id, 'year_of_acceptance' => now()->year]);
+
+        $generalAssembly = GeneralAssembly::factory()->create(['closed_at' => Carbon::createFromDate(now()->year, 2, 15)]);
+        $generalAssembly2 = GeneralAssembly::factory()->create(['closed_at' => Carbon::createFromDate(now()->year, 9, 15)]);
+
+        $generalAssembly->presenceChecks()->create();
+        $generalAssembly2->presenceChecks()->create();
+
+        $this->assertTrue(GeneralAssembly::requirementsPassed($user));
+
+        $generalAssembly->update(['closed_at' => now()->setYear(now()->year)->setMonth(9)->setDay(16)]);
+        $this->assertFalse(GeneralAssembly::requirementsPassed($user));
     }
 }

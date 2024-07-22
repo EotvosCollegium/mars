@@ -47,7 +47,7 @@ class PaymentType extends Model
      *
      * Uses cache.
      *
-     * @param Checkout
+     * @param Checkout $checkout
      * @return Collection of the payment types.
      */
     public static function forCheckout(Checkout $checkout)
@@ -99,7 +99,7 @@ class PaymentType extends Model
     /**
      * Get the paymentType by name. Uses cache.
      *
-     * @param string payment type name
+     * @param string $type payment type name
      * @return PaymentType
      */
     public static function getFromCache(string $type): PaymentType
@@ -112,7 +112,7 @@ class PaymentType extends Model
     /**
      * Get the paymentType by name. Uses cache.
      *
-     * @param string payment type name
+     * @param string $name payment type name
      * @return PaymentType
      */
     public static function getByName(string $name): PaymentType

@@ -26,6 +26,10 @@
     <header>
         <div class="navbar-fixed">
             <nav class="top-nav">
+                <ul id="register-dropdown" class="dropdown-content">
+                    <li><a href="{{ route('register') }}">@lang('general.register_collegist')</a></li>
+                    <li><a href="{{ route('register.guest') }}">@lang('general.register_guest')</a></li>
+                </ul>
                 <div class="nav-wrapper">
                     <div class="row">
                         <ul class="right">
@@ -33,8 +37,7 @@
                             <li><a href="{{ url('/home') }}">@lang('general.home')</a></li>
                             @else
                             <li><a href="{{ route('login') }}">@lang('general.login')</a></li>
-                            <li><a href="{{ route('register') }}">@lang('general.register_collegist')</a></li>
-                            <li><a href="{{ route('register.guest') }}">@lang('general.register_guest')</a></li>
+                            <li><a class="dropdown-trigger" href="#!" data-target="register-dropdown">@lang('general.register')<i class="material-icons right">arrow_drop_down</i></a></li>
                             @endauth
                         </ul>
                     </div>
@@ -78,13 +81,12 @@
             @lang('main.open')</a><br class="mobile-break" />
     </div>
 
-    @if (config('app.debug'))
-        <script>
-            $(document).ready(function(){
-                $('.tooltipped').tooltip();
-            });
-        </script>
-    @endif
+    <script>
+        $(document).ready(function(){
+            $('.tooltipped').tooltip();
+            $(".dropdown-trigger").dropdown();
+        });
+    </script>
 </body>
 
 </html>
