@@ -50,7 +50,7 @@
         </div>
     @endif
     @foreach($applications as $application)
-        @include('auth.application.application', ['user' => $application->user, 'expanded' => false])
+        @include('auth.application.application', ['application' => $application, 'expanded' => false])
     @endforeach
     <hr>
     <h6>Összesen: <b class="right">{{$applications->count()}} jelentkező</b></h6>
