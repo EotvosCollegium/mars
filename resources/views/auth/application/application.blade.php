@@ -1,5 +1,9 @@
 {{-- All the application's data for finalization and for the admission committes to show --}}
-@can('view', $user->application)
+@php
+$user = $application->user;
+@endphp
+
+@can('view', $application)
     <div class="card">
         <div class="card-content">
             <div class="row" style="margin-bottom: 0">
@@ -14,7 +18,7 @@
 
                     <div class="right" style="margin:5px;width:150px">
                         @can('viewUnfinished', \App\Models\Application::class)
-                            @if(!$user->application->submitted)
+                            @if(!$application->submitted)
                                 <span class="new badge scale-transition red tag" style="display: block;text-transform: uppercase"
                                       data-badge-caption="">
                                 Nincs véglegesítve
@@ -22,7 +26,7 @@
                                 <div class="divider" style="margin: 5px"></div>
                             @endif
                         @endcan
-                        @if ($user->application->applied_for_resident_status)
+                        @if ($application->applied_for_resident_status)
                             <span class="new badge scale-transition coli blue tag" style="display: block;"
                                   data-badge-caption="">
                                 @lang('role.resident')
@@ -34,17 +38,17 @@
                             </span>
                         @endif
                         <div class="divider" style="margin: 5px"></div>
-                        @foreach($user->application->applicationWorkshops as $workshop)
+                        @foreach($application->applicationWorkshops as $workshop)
                             <span class="new badge {{ $workshop->workshop->color() }} scale-transition tag"
                                   data-badge-caption=""
                                   style="display: block;white-space: nowrap;overflow: hidden;text-overflow: ellipsis">
                                 {{$workshop->workshop->name}}
                             </span>
-                            @if($user->application->submitted)
+                            @if($application->submitted)
                                 <div
                                     style="display: flex;flex-direction: column;align-items: center;justify-content: center;">
                                     @can('editStatus', [\App\Models\Application::class, $workshop->workshop])
-                                        @livewire('application-status-update', ['application' => $user->application, 'workshop' => $workshop])
+                                        @livewire('application-status-update', ['application' => $application, 'workshop' => $workshop])
                                     @else
                                         @if(isset($application))
                                             <label style="font-size: 1em">
@@ -64,7 +68,7 @@
                     </div>
 
                     <div class="card-title">
-                        @if(isset($application))
+                        @if(request()->routeIs('admission.applicants.index'))
                             <a href="{{route('admission.applicants.show', ['application' => $application->id])}}">
                                 {{ $user->name }}
                             </a>
@@ -178,8 +182,8 @@
                             <tr>
                                 <th scope="row">Érettségi átlaga</th>
                                 <td>
-                                    {{ $user->application->graduation_average }}
-                                    @if(!$user->application->graduation_average)
+                                    {{ $application->graduation_average }}
+                                    @if(!$application->graduation_average)
                                         <span style="font-style:italic;color:red">hiányzó adat</span>
                                     @endif
                                 </td>
@@ -187,7 +191,7 @@
                             <tr>
                                 <th scope="row">Előző szemeszterek átlaga</th>
                                 <td>
-                                    @forelse ($user->application->semester_average ?? [] as $key => $avg)
+                                    @forelse ($application->semester_average ?? [] as $key => $avg)
                                         {{ $key + 1 }}. félév: {{ $avg }}<br>
                                     @empty
                                         -
@@ -212,7 +216,7 @@
                             <tr>
                                 <th scope="row">Versenyeredmények</th>
                                 <td>
-                                    @forelse ($user->application->competition ?? [] as $item)
+                                    @forelse ($application->competition ?? [] as $item)
                                         {{ $item }}<br>
                                     @empty
                                         -
@@ -223,7 +227,7 @@
                             <tr>
                                 <th scope="row">Publikációk</th>
                                 <td>
-                                    @forelse ($user->application->publication ?? [] as $item)
+                                    @forelse ($application->publication ?? [] as $item)
                                         {{ $item }}<br>
                                     @empty
                                         -
@@ -233,7 +237,7 @@
                             <tr>
                                 <th scope="row">Külföldi tanulmányok</th>
                                 <td>
-                                    @forelse ($user->application->foreign_studies ?? [] as $item)
+                                    @forelse ($application->foreign_studies ?? [] as $item)
                                         {{ $item }}<br>
                                     @empty
                                         -
@@ -244,8 +248,8 @@
                                 <td colspan="2">
                                     <p style="font-weight: bold;">Honnan hallott a Collegiumról?</p>
                                     <p>
-                                        {{ implode(", ", $user->application->question_1 ?? []) }}
-                                        @if(!$user->application->question_1)
+                                        {{ implode(", ", $application->question_1 ?? []) }}
+                                        @if(!$application->question_1)
                                             <span style="font-style:italic;color:red">hiányzó adat</span>
                                         @endif
                                     </p>
@@ -255,8 +259,8 @@
                                 <td colspan="2">
                                     <p style="font-weight: bold;">Miért kíván a Collegium tagja lenni?</p>
                                     <p>
-                                        {{ $user->application->question_2 }}
-                                        @if(!$user->application->question_2)
+                                        {{ $application->question_2 }}
+                                        @if(!$application->question_2)
                                             <span style="font-style:italic;color:red">hiányzó adat</span>
                                         @endif
                                     </p>
@@ -269,8 +273,8 @@
                                         után?
                                         Milyen tervei vannak az egyetem után?</p>
                                     <p>
-                                        {{ $user->application->question_3}}
-                                        @if(!$user->application->question_3)
+                                        {{ $application->question_3}}
+                                        @if(!$application->question_3)
                                             <span style="font-style:italic;color:red">hiányzó adat</span>
                                         @endif
                                     </p>
@@ -280,13 +284,13 @@
                                 <td colspan="2">
                                     <p style="font-weight: bold;">Részt vett-e közéleti tevékenységben? Ha
                                         igen, röviden jellemezze!</p>
-                                    <p>{{ $user->application->question_4 ?? "-" }}</p>
+                                    <p>{{ $application->question_4 ?? "-" }}</p>
                                 </td>
                             </tr>
                             <tr>
                                 <th scope="row">Csatolmányok</th>
                                 <td>
-                                    @forelse ($user->application->files ?? [] as $file)
+                                    @forelse ($application->files ?? [] as $file)
                                         @if (!$loop->first)
                                             <div class="divider"></div>
                                         @endif
@@ -299,7 +303,7 @@
                                     @empty
                                         <span style="font-style:italic;color:red">hiányzó adat</span>
                                     @endforelse
-                                    @if(count($user->application->files ?? []) > 0 && count($user->application->files ?? []) < 2)
+                                    @if(count($application->files ?? []) > 0 && count($application->files ?? []) < 2)
                                         <span
                                             style="font-style:italic;color:red">legalább 2 fájlt fel kell tölteni</span>
                                     @endif
@@ -308,8 +312,8 @@
                             <tr>
                                 <th scope="row">A felvételi teljes időtartamában itt lesz?</th>
                                 <td>
-                                    {{ $user->application->present }}
-                                    @if(!$user->application->present)
+                                    {{ $application->present }}
+                                    @if(!$application->present)
                                         <span style="color:green">Igen</span>
                                     @endif
                                 </td>
@@ -317,7 +321,7 @@
                             <tr>
                                 <th scope="row">Igényel szállást?</th>
                                 <td>
-                                    @if($user->application->accommodation)
+                                    @if($application->accommodation)
                                         <span style="color:green">Igen</span>
                                     @else
                                         Nem
