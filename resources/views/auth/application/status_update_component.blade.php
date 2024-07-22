@@ -1,7 +1,7 @@
 <div style="display: flex;flex-direction: column;align-items: center;justify-content: center;">
     <label>
         <input type="checkbox"
-               wire:click="callIn('{{$workshop->workshop_id}}')" @checked($workshop->called_in) />
+               wire:click="callIn('{{$workshop->workshop_id}}')" @checked($workshop->called_in || $workshop->admitted) />
         <span>Behívva</span>
     </label>
     <label>
