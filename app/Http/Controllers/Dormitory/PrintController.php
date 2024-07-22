@@ -307,7 +307,7 @@ class PrintController extends Controller
     {
         $path = $file->storePubliclyAs(
             '',
-            md5(rand(0, 100000) . date('c')) . '.pdf',
+            hash('sha256', rand(0, 100000) . date('c')) . '.pdf',
             'printing'
         );
         $path = Storage::disk('printing')->path($path);
