@@ -74,15 +74,24 @@ class AdmissionController extends Controller
         $this->authorize('viewSome', Application::class);
 
         $applications = Application::query();
-        $filtered_workshop = $this->getFilteredWorkshop($request);
         $accessible_workshops = $this->getAccessibleWorkshops($authUser);
+        $filtered_workshop = $this->getFilteredWorkshop($request);
+        $filtered_called_in = (bool)$request->input('filtered_called_in');
+        $filtered_admitted = (bool)$request->input('filtered_admitted');
         $show_not_submitted = (bool)$request->input('show_not_submitted');
 
-        $applications->where(function ($query) use ($accessible_workshops, $filtered_workshop) {
-            $query->whereHas('applicationWorkshops', function ($query) use ($accessible_workshops, $filtered_workshop) {
+        $applications->where(function ($query) use ($accessible_workshops, $filtered_workshop, $filtered_called_in, $filtered_admitted) {
+            $query->whereHas('applicationWorkshops', function ($query) use ($accessible_workshops, $filtered_workshop, $filtered_called_in, $filtered_admitted) {
                 $query->whereIn('workshop_id', $accessible_workshops->pluck('id'));
                 if ($filtered_workshop) {
                     $query->where('workshop_id', $filtered_workshop->id);
+                }
+                if ($filtered_called_in) {
+                    $query->where('called_in', true);
+                    $query->orWhere('admitted', true);
+                }
+                if ($filtered_admitted) {
+                    $query->where('admitted', true);
                 }
             });
             if (!$filtered_workshop) {
@@ -96,10 +105,6 @@ class AdmissionController extends Controller
         } else {
             $applications->where('submitted', !$show_not_submitted);
         }
-        //filter by status
-        //        if ($request->has('status')) {
-        //            $applications->where('status', $request->input('status'));
-        //        }
 
         $applications = $applications->with([
             'user.educationalInformation',
@@ -112,6 +117,8 @@ class AdmissionController extends Controller
             'workshop' => $request->input('workshop'), //filtered workshop
             'workshops' => $accessible_workshops, //workshops that can be chosen to filter
             'show_not_submitted' => $show_not_submitted,
+            'filtered_called_in' => $filtered_called_in,
+            'filtered_admitted' => $filtered_admitted,
             'applicationDeadline' => $this->getDeadline(),
             'periodicEvent' => $this->periodicEvent()
         ]);
