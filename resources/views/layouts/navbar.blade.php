@@ -26,7 +26,7 @@
 </div>
 
 <!--sidebar-->
-<ul class="sidenav sidenav-fixed" id="sidenav">
+<ul class="sidenav @if ($fixed) sidenav-fixed @endif" id="sidenav">
     <!-- logo -->
     @include('layouts.logo')
     @if(config('app.env') == 'production' && config('app.debug'))

@@ -13,37 +13,16 @@
     <link rel="stylesheet" href="{{ mix('css/welcome_page.css') }}">
     <link type="text/css" rel="stylesheet" href="{{ mix('css/materialize.css') }}" media="screen,projection" />
 
-    @if (config('app.debug'))
-        <!-- Scripts -->
-        <script type="text/javascript" src="{{ mix('js/jquery.min.js') }}"></script>
-        <script type="text/javascript" src="{{ mix('js/materialize.js') }}"></script>
-    @endif
+    <!-- Scripts -->
+    <script type="text/javascript" src="{{ mix('js/jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ mix('js/materialize.js') }}"></script>
 </head>
 
 <body>
     <script>document.body.classList.add(localStorage.getItem('themeMode') || 'light');</script>
     @if (Route::has('login'))
     <header>
-        <div class="navbar-fixed">
-            <nav class="top-nav">
-                <ul id="register-dropdown" class="dropdown-content">
-                    <li><a href="{{ route('register') }}">@lang('general.register_collegist')</a></li>
-                    <li><a href="{{ route('register.guest') }}">@lang('general.register_guest')</a></li>
-                </ul>
-                <div class="nav-wrapper">
-                    <div class="row">
-                        <ul class="right">
-                            @auth
-                            <li><a href="{{ url('/home') }}">@lang('general.home')</a></li>
-                            @else
-                            <li><a href="{{ route('login') }}">@lang('general.login')</a></li>
-                            <li><a class="dropdown-trigger" href="#!" data-target="register-dropdown">@lang('general.register')<i class="material-icons right">arrow_drop_down</i></a></li>
-                            @endauth
-                        </ul>
-                    </div>
-                </div>
-            </nav>
-        </div>
+        @include('layouts.navbar', ['fixed' => false])
     </header>
     @endif
     </header>
@@ -84,7 +63,8 @@
     <script>
         $(document).ready(function(){
             $('.tooltipped').tooltip();
-            $(".dropdown-trigger").dropdown();
+            $('.sidenav').sidenav();
+            $('.collapsible').collapsible();
         });
     </script>
 </body>
