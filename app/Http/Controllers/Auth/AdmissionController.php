@@ -105,10 +105,6 @@ class AdmissionController extends Controller
         } else {
             $applications->where('submitted', !$show_not_submitted);
         }
-        //filter by status
-        if ($request->has('status')) {
-            $applications->where('status', $request->input('status'));
-        }
 
         $applications = $applications->with('user.educationalInformation')->distinct()->get()->sortBy('user.name');
         return view('auth.admission.index', [
