@@ -70,45 +70,47 @@ class AdmissionController extends Controller
      */
     public function index(Request $request): View
     {
+        $request->validate([
+            'status_filter' => 'in:everybody,unsubmitted,submitted,called_in,admitted',
+        ]);
         $authUser = $request->user();
         $this->authorize('viewSome', Application::class);
 
         $applications = Application::query();
         $accessible_workshops = $this->getAccessibleWorkshops($authUser);
         $filtered_workshop = $this->getFilteredWorkshop($request);
-        $filtered_called_in = (bool)$request->input('filtered_called_in');
-        $filtered_admitted = (bool)$request->input('filtered_admitted');
-        $show_not_submitted = (bool)$request->input('show_not_submitted');
-
-        if(!$filtered_called_in && !$filtered_called_in && !$show_not_submitted) {
-            $filtered_called_in = true;
-            $filtered_admitted = true;
-            $show_not_submitted = true;
+        $status_filter = $request->input('status_filter');
+        if(!isset($status_filter)) {
+            $status_filter = 'submitted';
         }
 
-        $applications->where(function ($query) use ($accessible_workshops, $filtered_workshop, $filtered_called_in, $filtered_admitted) {
-            $query->whereHas('applicationWorkshops', function ($query) use ($accessible_workshops, $filtered_workshop, $filtered_called_in, $filtered_admitted) {
+        $should_show_unsubmitted = $status_filter == 'everybody' || $status_filter == 'unsubmitted';
+        if ($authUser->cannot('viewUnfinished', Application::class) && $should_show_unsubmitted) {
+            abort(403);
+        }
+
+        $applications->where(function ($query) use ($accessible_workshops, $filtered_workshop, $status_filter, $should_show_unsubmitted) {
+            $query->whereHas('applicationWorkshops', function ($query) use ($accessible_workshops, $filtered_workshop, $status_filter) {
                 $query->whereIn('workshop_id', $accessible_workshops->pluck('id'));
                 if ($filtered_workshop) {
                     $query->where('workshop_id', $filtered_workshop->id);
                 }
-                if ($filtered_called_in) {
+
+                if ($status_filter == 'admitted') {
+                    $query->where('admitted', true);
+                } elseif ($status_filter == 'called_in') {
                     $query->where('called_in', true);
                     $query->orWhere('admitted', true);
                 }
-                if ($filtered_admitted) {
-                    $query->where('admitted', true);
-                }
             });
-            if (!$filtered_workshop) {
+            if (!$filtered_workshop && $should_show_unsubmitted) {
                 $query->orWhereDoesntHave('applicationWorkshops');
             }
         });
 
-        //hide unfinished
-        if ($authUser->cannot('viewUnfinished', Application::class) ||
-            !$show_not_submitted
-            ) {
+        if ($status_filter == 'unsubmitted') {
+            $applications->where('submitted', false);
+        } elseif ($status_filter == 'submitted') {
             $applications->where('submitted', true);
         }
 
@@ -117,9 +119,7 @@ class AdmissionController extends Controller
             'applications' => $applications,
             'workshop' => $request->input('workshop'), //filtered workshop
             'workshops' => $accessible_workshops, //workshops that can be chosen to filter
-            'show_not_submitted' => $show_not_submitted,
-            'filtered_called_in' => $filtered_called_in,
-            'filtered_admitted' => $filtered_admitted,
+            'status_filter' => $status_filter,
             'applicationDeadline' => $this->getDeadline(),
             'periodicEvent' => $this->periodicEvent()
         ]);
