@@ -298,9 +298,6 @@ class Application extends Model
             //level is required when updating language
         }
 
-        if (!isset($user->profilePicture)) {
-            $missingData[] =  'Profilkép';
-        }
         if (count($this->files) < 2) {
             $missingData[] =  'Legalább két feltöltött fájl';
         }
