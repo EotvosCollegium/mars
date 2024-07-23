@@ -15,17 +15,25 @@
                                         text="Műhely"/>
                         @can('viewUnfinished', \App\Models\Application::class)
                             <label>
-                                <input type="checkbox" name="show_not_submitted" {{$show_not_submitted ? "checked": ""}}>
-                                <span style="padding-left: 25px; margin: 5px">Nem véglegesítettek mutatása</span>
+                                <input type="radio" name="filtered_status" value="{{\App\Http\Controllers\Auth\AdmissionController::NOT_SUBMITTED_TOO}}"
+                                    {{\App\Http\Controllers\Auth\AdmissionController::NOT_SUBMITTED_TOO == $filtered_status ? "checked": ""}}>
+                                <span style="padding-left: 25px; margin: 5px">Nem véglegesítettek is</span>
                             </label>
                         @endif
                         <label>
-                            <input type="checkbox" name="filtered_called_in" {{$filtered_called_in ? "checked": ""}}>
-                            <span style="padding-left: 25px; margin: 5px">Behívottak mutatása</span>
+                            <input type="radio" name="filtered_status" value="{{\App\Http\Controllers\Auth\AdmissionController::EVERYONE}}"
+                                {{\App\Http\Controllers\Auth\AdmissionController::EVERYONE == $filtered_status ? "checked": ""}}>
+                            <span style="padding-left: 25px; margin: 5px">Minden véglegesített</span>
                         </label>
                         <label>
-                            <input type="checkbox" name="filtered_admitted" {{$filtered_admitted ? "checked": ""}}>
-                            <span style="padding-left: 25px; margin: 5px">Felvettek mutatása</span>
+                            <input type="radio" name="filtered_status" value="{{\App\Http\Controllers\Auth\AdmissionController::CALLED_IN_ONLY}}"
+                                {{\App\Http\Controllers\Auth\AdmissionController::CALLED_IN_ONLY == $filtered_status ? "checked": ""}}>
+                            <span style="padding-left: 25px; margin: 5px">Csak behívottak</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="filtered_status" value="{{\App\Http\Controllers\Auth\AdmissionController::ADMITTED_ONLY}}"
+                                {{\App\Http\Controllers\Auth\AdmissionController::ADMITTED_ONLY == $filtered_status ? "checked": ""}}>
+                            <span style="padding-left: 25px; margin: 5px">Csak felvettek</span>
                         </label>
                         <x-input.button type="submit" text="Szűrés"/>
                     </form>

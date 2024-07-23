@@ -88,7 +88,9 @@ class AdmissionTest extends TestCase
     }
 
     /**
-     * Test viewing all applications as secretary.
+     * Test viewing all applications as secretary,
+     * first even ones not yet submitted,
+     * then only submitted ones.
      *
      * @return void
      */
@@ -107,10 +109,14 @@ class AdmissionTest extends TestCase
 
 
         $this->actingAs($this->admin);
-        $response = $this->get(route('admission.applicants.index') . "?show_not_submitted=true");
+        $response = $this->get(route('admission.applicants.index') . "?filtered_status=not_submitted_too");
         $response->assertSee('applicant1');
         $response->assertSee('applicant2');
-        $response = $this->get(route('admission.applicants.index'));
+        $response->assertSee('applicant3');
+
+        $response = $this->get(route('admission.applicants.index')); // filtered_status=everyone is the default
+        $response->assertDontSee('applicant1');
+        $response->assertDontSee('applicant2');
         $response->assertSee('applicant3');
     }
 
@@ -136,7 +142,7 @@ class AdmissionTest extends TestCase
         $this->createApplicant("applicant3", true, [$info->id, $angol->id]);
         $this->createApplicant("applicant4", true, [$angol->id]);
 
-        $response = $this->get(route('admission.applicants.index') . "?show_not_submitted=true"); // show_not_submitted gets ignored
+        $response = $this->get(route('admission.applicants.index'));
 
         $response->assertDontSee('applicant1');
         $response->assertSee('applicant2');
@@ -256,7 +262,7 @@ class AdmissionTest extends TestCase
         $this->createApplicant("applicant3", true, [$info->id, $angol->id]);
         $this->createApplicant("applicant4", true, [$angol->id]);
 
-        $response = $this->get(route('admission.applicants.index') . "?show_not_submitted=true"); // show_not_submitted gets ignored
+        $response = $this->get(route('admission.applicants.index'));
 
         $response->assertDontSee('applicant1');
         $response->assertSee('applicant2');
@@ -264,7 +270,7 @@ class AdmissionTest extends TestCase
         $response->assertDontSee('applicant4');
     }
 
-
+    // TODO: tests for status filtering
 
     //    /**
     //     * Test the admin finalization
