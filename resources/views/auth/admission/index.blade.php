@@ -11,7 +11,7 @@
             <div class="card-content">
                 <div class="row center" style="margin-bottom: 0">
                     <form id="workshop-filter" method="GET" action="{{route('admission.applicants.index')}}">
-                        <x-input.select id="workshop" :elements="$workshops" :default="$workshop"
+                        <x-input.select id="workshop" :elements="$workshops" :default="$workshop" :allowEmpty=true
                                         text="Műhely"/>
                         @can('viewUnfinished', \App\Models\Application::class)
                             <label>
@@ -58,7 +58,7 @@
         </div>
     @endif
     @foreach($applications as $application)
-        @include('auth.application.application', ['application' => $application, 'expanded' => false])
+        @include('auth.application.application', ['user' => $application->user, 'expanded' => false])
     @endforeach
     <hr>
     <h6>Összesen: <b class="right">{{$applications->count()}} jelentkező</b></h6>
