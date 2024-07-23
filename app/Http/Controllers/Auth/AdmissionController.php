@@ -112,12 +112,7 @@ class AdmissionController extends Controller
             $applications->where('submitted', !$show_not_submitted);
         }
 
-        $applications = $applications->with([
-            'user.educationalInformation',
-            'user.personalInformation',
-            'user.profilePicture',
-            'applicationWorkshops.workshop'
-        ])->distinct()->get()->sortBy('user.name');
+        $applications = $applications->with('user.educationalInformation')->distinct()->get()->sortBy('user.name');
         return view('auth.admission.index', [
             'applications' => $applications,
             'workshop' => $request->input('workshop'), //filtered workshop
@@ -140,7 +135,8 @@ class AdmissionController extends Controller
     public function show(Application $application): View
     {
         $this->authorize('view', $application);
-        return view('auth.admission.application', ['application' => $application]);
+        $user = User::withoutGlobalScope('verified')->with('application')->find($application->user_id);
+        return view('auth.admission.application', ['user' => $user]);
     }
 
     /**
