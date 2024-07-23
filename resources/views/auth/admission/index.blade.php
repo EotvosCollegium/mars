@@ -11,7 +11,7 @@
             <div class="card-content">
                 <div class="row center" style="margin-bottom: 0">
                     <form id="workshop-filter" method="GET" action="{{route('admission.applicants.index')}}">
-                        <x-input.select id="workshop" :elements="$workshops" :default="$workshop"
+                        <x-input.select id="workshop" :elements="$workshops" :default="$workshop" :allowEmpty=true
                                         text="Műhely"/>
                         @can('viewUnfinished', \App\Models\Application::class)
                             <label>
