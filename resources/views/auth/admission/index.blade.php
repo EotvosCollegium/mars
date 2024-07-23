@@ -6,57 +6,67 @@
 
 @section('content')
     @include('auth.admission.period')
-    @if($workshops->count() > 1)
-        <div class="card">
-            <div class="card-content">
-                <div class="row center" style="margin-bottom: 0">
-                    <form id="workshop-filter" method="GET" action="{{route('admission.applicants.index')}}">
+    <div class="card">
+        <div class="card-content">
+            <div class="row center" style="margin-bottom: 0">
+                <form id="workshop-filter" method="GET" action="{{route('admission.applicants.index')}}">
+                    @if($workshops->count() > 1)
                         <x-input.select id="workshop" :elements="$workshops" :default="$workshop" :allowEmpty=true
-                                        text="Műhely"/>
-                        @can('viewUnfinished', \App\Models\Application::class)
-                            <label>
-                                <input type="checkbox" name="show_not_submitted" {{$show_not_submitted ? "checked": ""}}>
-                                <span style="padding-left: 25px; margin: 5px">Nem véglegesítettek mutatása</span>
-                            </label>
-                        @endif
-                        <label>
-                            <input type="checkbox" name="filtered_called_in" {{$filtered_called_in ? "checked": ""}}>
-                            <span style="padding-left: 25px; margin: 5px">Behívottak mutatása</span>
-                        </label>
-                        <label>
-                            <input type="checkbox" name="filtered_admitted" {{$filtered_admitted ? "checked": ""}}>
-                            <span style="padding-left: 25px; margin: 5px">Felvettek mutatása</span>
-                        </label>
-                        <x-input.button type="submit" text="Szűrés"/>
-                    </form>
-                    <form id="empty-filter" method="GET" action="{{route('admission.applicants.index')}}"
-                          style="{{($workshop=='')?'display: none':''}}">
-                        <x-input.button id="delete-filter" class="grey" text="Szűrő törlése"/>
-                    </form>
-                </div>
-                <blockquote>
-                    @can('editStatus', \App\Models\Application::class)
-                        <p>A behívott/felvett státusz a jelentkezők számára nem nyilvános.</p>
-                    @endcan
-                    @can('finalize', \App\Models\Application::class)
-                        <p>{{$applicationDeadline?->addWeeks(1)?->format('Y. m. d.')}} után lehet a lap alján felvenni a
-                            kiválasztott jelentkezőket, ezzel véglegesíteni a felvételit.</p>
-                    @endcan
-                </blockquote>
+                                    text="Műhely"/>
+                    @endif
 
-                @push('scripts')
-                    {{-- Show the empty filter button on change of the workshop selector --}}
-                    <script>
-                        $(document).ready(function () {
-                            $('#workshop').change(function () {
-                                $('#empty-filter').show();
-                            });
-                        });
-                    </script>
-                @endpush
+                    @can('viewUnfinished', \App\Models\Application::class)
+                        <label>
+                            <input type="radio" name="status_filter" value="everybody" {{$status_filter == 'everybody' ? "checked": ""}}>
+                            <span style="padding-left: 25px; margin: 5px">Minden jelentkező</span>
+                        </label>
+
+                        <label>
+                            <input type="radio" name="status_filter" value="unsubmitted" {{$status_filter == 'unsubmitted' ? "checked": ""}}>
+                            <span style="padding-left: 25px; margin: 5px">Csak nem véglegesítettek</span>
+                        </label>
+                    @endif
+                    <label>
+                        <input type="radio" name="status_filter" value="submitted" {{$status_filter == 'submitted' ? "checked": ""}}>
+                        <span style="padding-left: 25px; margin: 5px">Csak véglegesítettek</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="status_filter" value="called_in" {{($status_filter == 'called_in') ? "checked": ""}}>
+                        <span style="padding-left: 25px; margin: 5px">Csak behívottak</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="status_filter" value="admitted" {{($status_filter == 'admitted') ? "checked": ""}}>
+                        <span style="padding-left: 25px; margin: 5px">Csak felvettek</span>
+                    </label>
+                    <x-input.button type="submit" text="Szűrés"/>
+                </form>
+                <form id="empty-filter" method="GET" action="{{route('admission.applicants.index')}}"
+                        style="{{($workshop=='')?'display: none':''}}">
+                    <x-input.button id="delete-filter" class="grey" text="Szűrő törlése"/>
+                </form>
             </div>
+            <blockquote>
+                @can('editStatus', \App\Models\Application::class)
+                    <p>A behívott/felvett státusz a jelentkezők számára nem nyilvános.</p>
+                @endcan
+                @can('finalize', \App\Models\Application::class)
+                    <p>{{$applicationDeadline?->addWeeks(1)?->format('Y. m. d.')}} után lehet a lap alján felvenni a
+                        kiválasztott jelentkezőket, ezzel véglegesíteni a felvételit.</p>
+                @endcan
+            </blockquote>
+
+            @push('scripts')
+                {{-- Show the empty filter button on change of the workshop selector --}}
+                <script>
+                    $(document).ready(function () {
+                        $('#workshop').change(function () {
+                            $('#empty-filter').show();
+                        });
+                    });
+                </script>
+            @endpush
         </div>
-    @endif
+    </div>
     @foreach($applications as $application)
         @include('auth.application.application', ['user' => $application->user, 'expanded' => false])
     @endforeach
