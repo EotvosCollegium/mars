@@ -68,7 +68,7 @@
 <body>
     <script>document.body.classList.add(localStorage.getItem('themeMode') || 'light');</script>
     <header>
-        @include('layouts.navbar')
+        @include('layouts.navbar', ['fixed' => true])
     </header>
     <div class="row">
         <div class="container">
