@@ -68,9 +68,15 @@ Route::get('/privacy_policy', [HomeController::class, 'privacyPolicy'])->name('p
 Route::get('/img/{filename}', [HomeController::class, 'getPicture']);
 Route::get('/setlocale/{locale}', [HomeController::class, 'setLocale'])->name('setlocale');
 
-Auth::routes(); //check \Laravel\Ui\AuthRouteMethods
+Auth::routes(['register' => false]); //check \Laravel\Ui\AuthRouteMethods
 
-Route::get('/register/guest', [RegisterController::class, 'showTenantRegistrationForm'])->name('register.guest');
+/* Override the /register route from Auth::routes to force Hungarian */
+Route::prefix('/register')->group(function () {
+    Route::post('/', [RegisterController::class, 'register']);
+
+    Route::get('/', [RegisterController::class, 'showRegistrationForm'])->name('register')->middleware(OnlyHungarian::class);
+    Route::get('/guest', [RegisterController::class, 'showTenantRegistrationForm'])->name('register.guest');
+});
 
 Route::middleware([Authenticate::class, LogRequests::class])->group(function () {
     /** Routes that needs to be accessed during the application process */
