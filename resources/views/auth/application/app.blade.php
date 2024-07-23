@@ -11,7 +11,7 @@
     <div class="card">
         <div class="card-content">
             <h6>Jelentkezés státusza:
-                @if($user->application->submitted)
+                @if ($user->application->submitted)
                     <span class="green-text">Beadva.</span>
                 @else
                     <span class="coli-text text-orange"><i>Folyamatban...</i></span>
@@ -24,12 +24,12 @@
                     <small class="coli-text text-orange">(Meghosszabbítva)</small>
                 @endif
             </h6>
-            @if(!$user->application->submitted)
-                Hátra van: <i>{{ (int)\Carbon\Carbon::now()->diffInDays($deadline, false) }}</i> nap.
+            @if (!$user->application->submitted)
+                Hátra van: <i>{{ (int) \Carbon\Carbon::now()->diffInDays($deadline, false) }}</i> nap.
             @endif
 
             <blockquote>
-                @if(!$user->application->submitted)
+                @if (!$user->application->submitted)
                     <p>A jelentkezése jelen állapotában még nem látható a felvételiztető bizottság számára! </p>
 
                     <ul class="browser-default">
@@ -39,18 +39,36 @@
                         <li>Miután minden szükséges kérdést megválaszolt és fájlt feltöltött,
                             véglegesítse jelentkezését a lap alján lévő gombra kattintva.
                             Kérjük, figyeljen a határidőre, mert utána már nem lesz lehetősége véglegesítésre.</li>
+
+                        <li>Amennyiben az Informatikai Műhelybe (is) jelentkezik, abban az esetben a személyes felvételit
+                            megelőzően egy írásbeli, szakmai feladatsor elvégzését kérjük online módon 2024. augusztus 10.
+                            23:59:59-ig. Ennek elvégzése nagyjából 3-4 órát vesz igénybe, mely részleteiről e-mailben fogjuk
+                            tájékoztatni. Amennyiben a jelentkezését nagyrészt kitöltötte, akkor kérjük, hogy <a
+                                href="https://forms.office.com/e/SseYJFgHg2">a linkelt kérdőívben jelezze, hogy kéri a
+                                feladatsort</a>.</li>
                     </ul>
 
                     <p>Amennyiben bármi kérdése lenne a felvételivel kapcsolatban, kérjük, írjon a
-                        <a href="mailto:{{config('mail.secretary_mail')}}">{{config('mail.secretary_mail')}}</a> e-mail címre.
+                        <a href="mailto:{{ config('mail.secretary_mail') }}">{{ config('mail.secretary_mail') }}</a> e-mail
+                        címre.
                         Ha technikai probléma adódna,
-                        jelezze felénk a <a href="mailto:{{config('mail.sys_admin_mail')}}">{{config('mail.sys_admin_mail')}}</a>
+                        jelezze felénk a <a
+                            href="mailto:{{ config('mail.sys_admin_mail') }}">{{ config('mail.sys_admin_mail') }}</a>
                         e-mail-címen.
                     </p>
                 @else
                     <p>Köszönjük, hogy jelentkezett az Eötvös Collegiumba!</p>
+
+                    <p>Amennyiben az Informatikai Műhelybe (is) jelentkezett, abban az esetben a személyes felvételit
+                        megelőzően egy írásbeli, szakmai feladatsor elvégzését kérjük online módon 2024. augusztus 10.
+                        23:59:59-ig. Ennek elvégzése nagyjából 3-4 órát vesz igénybe, mely részleteiről e-mailben fogjuk
+                        tájékoztatni. Amennyiben a jelentkezését nagyrészt kitöltötte, akkor kérjük, hogy <a
+                            href="https://forms.office.com/e/SseYJFgHg2">a linkelt kérdőívben jelezze, hogy kéri a
+                            feladatsort</a>.</p>
+
                     <p>A felvételire behívottak névsora és a további teendők a
-                        <a href="https://eotvos.elte.hu/felveteli">Collegium honlapján</a> lesznek majd elérhetőek!</p>
+                        <a href="https://eotvos.elte.hu/felveteli">Collegium honlapján</a> lesznek majd elérhetőek!
+                    </p>
                 @endif
             </blockquote>
             @foreach ($errors->all() as $error)
@@ -58,22 +76,26 @@
             @endforeach
         </div>
     </div>
-    @if(!$user->application->submitted)
+    @if (!$user->application->submitted)
         <nav class="nav-extended">
             <div class="nav-content">
                 <ul class="tabs tabs-transparent">
                     <li class="tab">
                         <a href="{{ route('application', ['page' => 'personal']) }}"
-                           class="{{request()->get('page') == 'personal' ? "active" : ""}}">Általános</a></li>
+                            class="{{ request()->get('page') == 'personal' ? 'active' : '' }}">Általános</a>
+                    </li>
                     <li class="tab">
                         <a href="{{ route('application', ['page' => 'educational']) }}"
-                           class="{{request()->get('page') == 'educational' ? "active" : ""}}">Tanulmányok</a></li>
+                            class="{{ request()->get('page') == 'educational' ? 'active' : '' }}">Tanulmányok</a>
+                    </li>
                     <li class="tab">
                         <a href="{{ route('application', ['page' => 'questions']) }}"
-                           class="{{request()->get('page') == 'questions' ? "active" : ""}}">Egyéb kérdések</a></li>
+                            class="{{ request()->get('page') == 'questions' ? 'active' : '' }}">Egyéb kérdések</a>
+                    </li>
                     <li class="tab">
                         <a href="{{ route('application', ['page' => 'files']) }}"
-                           class="{{request()->get('page') == 'files' ? "active" : ""}}">Fájlok</a></li>
+                            class="{{ request()->get('page') == 'files' ? 'active' : '' }}">Fájlok</a>
+                    </li>
                 </ul>
             </div>
         </nav>
@@ -81,12 +103,15 @@
     @else
         @include('auth.application.application', ['user' => $user])
     @endif
-    @if($user->application->submitted)
-        @include('network.internet.wifi_password', ['internet_access' => $user->internetAccess, 'application' => true])
+    @if ($user->application->submitted)
+        @include('network.internet.wifi_password', [
+            'internet_access' => $user->internetAccess,
+            'application' => true,
+        ])
     @endif
 
-    @if(request()->get('page') != 'submit')
-    <x-input.button href="{{ route('application', ['page' => 'submit']) }}" style="margin-bottom: 40px"
-       class="right coli blue" text="Ellenőrzés és véglegesítés" />
+    @if (request()->get('page') != 'submit')
+        <x-input.button href="{{ route('application', ['page' => 'submit']) }}" style="margin-bottom: 40px"
+            class="right coli blue" text="Ellenőrzés és véglegesítés" />
     @endif
 @endsection
