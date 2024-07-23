@@ -106,10 +106,10 @@ class AdmissionController extends Controller
         });
 
         //hide unfinished
-        if ($authUser->cannot('viewUnfinished', Application::class)) {
+        if ($authUser->cannot('viewUnfinished', Application::class) ||
+            !$show_not_submitted
+            ) {
             $applications->where('submitted', true);
-        } else {
-            $applications->where('submitted', !$show_not_submitted);
         }
 
         $applications = $applications->with('user.educationalInformation')->distinct()->get()->sortBy('user.name');
