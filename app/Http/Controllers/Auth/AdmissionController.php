@@ -80,6 +80,12 @@ class AdmissionController extends Controller
         $filtered_admitted = (bool)$request->input('filtered_admitted');
         $show_not_submitted = (bool)$request->input('show_not_submitted');
 
+        if(!$filtered_called_in && !$filtered_called_in && !$show_not_submitted) {
+            $filtered_called_in = true;
+            $filtered_admitted = true;
+            $show_not_submitted = true;
+        }
+
         $applications->where(function ($query) use ($accessible_workshops, $filtered_workshop, $filtered_called_in, $filtered_admitted) {
             $query->whereHas('applicationWorkshops', function ($query) use ($accessible_workshops, $filtered_workshop, $filtered_called_in, $filtered_admitted) {
                 $query->whereIn('workshop_id', $accessible_workshops->pluck('id'));
