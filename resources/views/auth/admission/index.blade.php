@@ -16,16 +16,16 @@
                         @can('viewUnfinished', \App\Models\Application::class)
                             <label>
                                 <input type="checkbox" name="show_not_submitted" {{$show_not_submitted ? "checked": ""}}>
-                                <span style="padding-left: 25px; margin: 5px">Csak nem véglegesítettek</span>
+                                <span style="padding-left: 25px; margin: 5px">Nem véglegesítettek mutatása</span>
                             </label>
                         @endif
                         <label>
                             <input type="checkbox" name="filtered_called_in" {{$filtered_called_in ? "checked": ""}}>
-                            <span style="padding-left: 25px; margin: 5px">Csak behívottak</span>
+                            <span style="padding-left: 25px; margin: 5px">Behívottak mutatása</span>
                         </label>
                         <label>
                             <input type="checkbox" name="filtered_admitted" {{$filtered_admitted ? "checked": ""}}>
-                            <span style="padding-left: 25px; margin: 5px">Csak felvettek</span>
+                            <span style="padding-left: 25px; margin: 5px">Felvettek mutatása</span>
                         </label>
                         <x-input.button type="submit" text="Szűrés"/>
                     </form>

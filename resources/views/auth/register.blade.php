@@ -15,7 +15,12 @@
             </div>
             <div class="card-content">
                 @if($user_type == \App\Models\Role::COLLEGIST)
-                <blockquote><a href="{{route('register.guest')}}" style="text-decoration: underline">@lang('registration.information_tenant')</a></blockquote>
+                <blockquote>
+                    <a href="{{route('register.guest')}}" style="text-decoration: underline">@lang('registration.information_tenant')</a>
+                </blockquote>
+                <blockquote lang="en">
+                    <a href="{{route('register.guest')}}" style="text-decoration: underline">@lang('registration.information_tenant', [], 'en')</a>
+                </blockquote>
                 @endif
                 @if($user_type == \App\Models\Role::TENANT || $application_open ?? false)
                 <form method="POST" action="{{ route('register') }}">
