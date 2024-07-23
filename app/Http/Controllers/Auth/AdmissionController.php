@@ -108,7 +108,7 @@ class AdmissionController extends Controller
         //hide unfinished
         if ($authUser->cannot('viewUnfinished', Application::class) ||
             !$show_not_submitted
-            ) {
+        ) {
             $applications->where('submitted', true);
         }
 
