@@ -55,7 +55,7 @@ trait ApplicationHandler
     public function storeFile(Request $request, $user): void
     {
         $request->validate([
-            'file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:' . config('application.file_size_limit')/1000,
+            'file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:' . config('application.file_size_limit') / 1000,
             'name' => 'required|string|max:255',
         ]);
         $path = $request->file('file')->store('uploads');
