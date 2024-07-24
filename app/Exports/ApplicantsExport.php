@@ -48,7 +48,7 @@ class ApplicantsExport implements FromCollection, WithTitle, WithMapping, WithHe
             'Lakhely',
             'Érettségi éve',
             'Középiskola',
-            'Neptun kód',
+            'Neptun-kód',
             'Egyetemi e-mail',
             'Szak',
             'Kar',

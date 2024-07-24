@@ -1,5 +1,8 @@
 <form method="POST" action="{{ route('users.update.educational', ['user' => $user]) }}">
     @csrf
+    @if($application ?? false)
+        <blockquote>A Neptun-kódot és az egyetemi e-mail-címet elég véglegesítés előtt kitölteni.</blockquote>
+    @endif
     <div class="row">
         <x-input.text id="high_school" text="user.high_school"
                       :value="$user->educationalInformation?->high_school"
@@ -13,17 +16,22 @@
                           :max="date('Y')"
                           :value="$user->educationalInformation?->year_of_acceptance"
                           required/>
+            <x-input.text s=6 id="neptun" text="user.neptun"
+                          :value="$user->educationalInformation?->neptun"
+                          required/>
+            <x-input.text s=6 id='educational-email' text='user.educational-email' name="email"
+                          :value="$user->educationalInformation?->email"
+                          required helper="lehetőleg @student.elte.hu-s"/>
         @else
             <x-input.text s=12 m=6 id='year_of_acceptance' text='Collegiumi felvételi éve' type='number'
                           :value="date('Y')" disabled/>
             <input type="hidden" name="year_of_acceptance" value="{{date('Y')}}"/>
+            <x-input.text s=6 id="neptun" text="user.neptun"
+                          :value="$user->educationalInformation?->neptun" /> {{-- not required --}}
+            <x-input.text s=6 id='educational-email' text="user.educational-email" name="email"
+                          :value="$user->educationalInformation?->email"
+                          helper="lehetőleg @student.elte.hu-s"/> {{-- not required --}}
         @endif
-        <x-input.text s=6 id="neptun" text="user.neptun"
-                      :value="$user->educationalInformation?->neptun"
-                      required/>
-        <x-input.text s=6 id='educational-email' text='user.educational-email' name="email"
-                      :value="$user->educationalInformation?->email"
-                      required helper="lehetőleg @student.elte.hu-s"/>
 
         <div class="input-field col s12 m6">
             <p style="margin-bottom:10px">@lang('user.faculty'):</p>
