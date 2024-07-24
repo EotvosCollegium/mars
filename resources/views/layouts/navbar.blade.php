@@ -5,7 +5,7 @@
             <div class="row">
                 <!--sidenav trigger for mobile-->
                 <a href="#" data-target="sidenav" class="sidenav-trigger hide-on-large-only"><i
-                        class="material-icons">menu</i></a>
+                            class="material-icons">menu</i></a>
                 <!--logo for mobile-->
                 <a class="brand-logo center hide-on-large-only"
                     style="text-transform: uppercase;font-weight:300;letter-spacing:3px;" href="{{ url('/') }}">
@@ -26,7 +26,7 @@
 </div>
 
 <!--sidebar-->
-<ul class="sidenav sidenav-fixed" id="sidenav">
+<ul class="sidenav @if ($fixed) sidenav-fixed @endif" id="sidenav">
     <!-- logo -->
     @include('layouts.logo')
     @if(config('app.env') == 'production' && config('app.debug'))
@@ -38,15 +38,15 @@
         <!-- print page -->
         @can('use', \App\Models\PrintAccount::class)
             <li><a class="waves-effect" href="{{ route('print') }}"><i
-                        class="material-icons left">local_printshop</i>@lang('print.print')</a></li>
+                            class="material-icons left">local_printshop</i>@lang('print.print')</a></li>
         @endif
         <!-- internet page -->
         <li><a class="waves-effect" href="{{ route('internet.index') }}"><i
-                    class="material-icons left">wifi</i>@lang('internet.internet')</a></li>
+                        class="material-icons left">wifi</i>@lang('internet.internet')</a></li>
         <!-- faults page -->
         @can('view', \App\Models\Fault::class)
             <li><a class="waves-effect" href="{{ route('faults') }}"><i
-                        class="material-icons left">build</i>@lang('faults.faults')
+                            class="material-icons left">build</i>@lang('faults.faults')
                     @can('update', \App\Models\Fault::class)
                         @notification(\App\Models\Fault::class)
                     @endif
@@ -64,13 +64,14 @@
             </li>
         @endcan
         @can('fillOrManage', \App\Models\SemesterEvaluation::class)
-            <li><a class="waves-effect" href="{{ route('secretariat.evaluation.show') }}"><i class="material-icons left">rate_review</i>Szemeszter értékelés</a>
+            <li><a class="waves-effect" href="{{ route('secretariat.evaluation.show') }}"><i
+                            class="material-icons left">rate_review</i>Szemeszter értékelés</a>
             </li>
         @endcan
-        <!-- applications page -->
-        @can('viewSome', \App\Models\ApplicationForm::class)
-            <li><a class="waves-effect" href="{{ route('applications') }}"><i
-                        class="material-icons left">person_search</i>Felvételi</a></li>
+        <!-- admission page -->
+        @can('viewSome', \App\Models\Application::class)
+            <li><a class="waves-effect" href="{{ route('admission.applicants.index') }}"><i
+                            class="material-icons left">person_search</i>Felvételi</a></li>
         @endcan
         <!-- collapsible modules -->
         <li class="no-padding">
@@ -86,50 +87,51 @@
                         <div class="collapsible-body">
                             <ul>
                                 @can('is-collegist')
-                                <!-- economic committee -->
-                                <li>
-                                    <a class="waves-effect" href="{{ route('economic_committee') }}">
-                                        <i class="material-icons left">attach_money</i> Választmányi kassza
-                                    </a>
-                                </li>
-                                <!-- communication committee -->
-                                <li>
-                                    <a class="waves-effect" href="{{ route('epistola') }}">
-                                        <i class="material-icons left">campaign</i> Epistola Collegii
-                                    </a>
-                                </li>
-                                <!-- community committee -->
-                                @can('voteOrManage', \App\Models\MrAndMissVote::class)
-                                <li>
-                                    <a class="waves-effect" href="{{ route('mr_and_miss.index') }}">
-                                        <i class="material-icons left">how_to_vote</i> Mr. és Miss Eötvös
-                                    </a>
-                                </li>
-                                @endcan
-                                <!-- community service-->
-                                <li>
-                                    <a class="waves-effect" href="{{ route('community_service') }}">
-                                        <i class="material-icons left">business_center</i> Közösségi tevékenység
-                                    </a>
-                                </li>
+                                    <!-- economic committee -->
+                                    <li>
+                                        <a class="waves-effect" href="{{ route('economic_committee') }}">
+                                            <i class="material-icons left">attach_money</i> Választmányi kassza
+                                        </a>
+                                    </li>
+                                    <!-- communication committee -->
+                                    <li>
+                                        <a class="waves-effect" href="{{ route('epistola') }}">
+                                            <i class="material-icons left">campaign</i> Epistola Collegii
+                                        </a>
+                                    </li>
+                                    <!-- community committee -->
+                                    @can('voteOrManage', \App\Models\MrAndMissVote::class)
+                                        <li>
+                                            <a class="waves-effect" href="{{ route('mr_and_miss.index') }}">
+                                                <i class="material-icons left">how_to_vote</i> Mr. és Miss Eötvös
+                                            </a>
+                                        </li>
+                                    @endcan
+                                    <!-- community service-->
+                                    <li>
+                                        <a class="waves-effect" href="{{ route('community_service') }}">
+                                            <i class="material-icons left">business_center</i> Közösségi tevékenység
+                                        </a>
+                                    </li>
                                 @endcan
                                 {{-- the secretariat can only see general assemblies --}}
                                 @can('viewAny', \App\Models\GeneralAssembly::class)
-                                <!-- general assemblies -->
-                                <li>
-                                    <a class="waves-effect" href="{{ route('general_assemblies.index') }}">
-                                        <i class="material-icons left">thumbs_up_down</i> @lang('voting.assembly')
-                                    </a>
-                                </li>
+                                    <!-- general assemblies -->
+                                    <li>
+                                        <a class="waves-effect" href="{{ route('general_assemblies.index') }}">
+                                            <i class="material-icons left">thumbs_up_down</i> @lang('voting.assembly')
+                                        </a>
+                                    </li>
                                 @endcan
                                 {{-- results of anonymous questions --}}
                                 @can('administer', \App\Models\AnonymousQuestions\AnswerSheet::class)
-                                <li>
-                                    <a class="waves-effect" href="{{ route('anonymous_questions.index_semesters') }}">
-                                        <i class="material-icons left">assessment</i>
-                                        @lang('anonymous_questions.anonymous_questions')
-                                    </a>
-                                </li>
+                                    <li>
+                                        <a class="waves-effect"
+                                           href="{{ route('anonymous_questions.index_semesters') }}">
+                                            <i class="material-icons left">assessment</i>
+                                            @lang('anonymous_questions.anonymous_questions')
+                                        </a>
+                                    </li>
                                 @endcan
                             </ul>
                         </div>
@@ -251,7 +253,7 @@
                 </li>
                 <li>
                     <a class="dark-toggle" href="#" onclick="toggleColorMode()" title="Dark/light"><i
-                            class="material-icons left">brightness_4</i>@lang('general.toggle-dark-mode')</a>
+                                class="material-icons left">brightness_4</i>@lang('general.toggle-dark-mode')</a>
                 </li>
             @endif
         </ul>

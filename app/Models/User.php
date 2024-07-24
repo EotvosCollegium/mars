@@ -40,8 +40,8 @@ use Illuminate\Support\Facades\Mail;
  * @property PersonalInformation|null $personalInformation
  * @property EducationalInformation|null $educationalInformation
  * @property File|null $profilePicture
- * @property ApplicationForm|null $application
- * @property Workshops[]|Collection $workshops
+ * @property Application|null $application
+ * @property Workshop[]|Collection $workshops
  * @property Faculty[]|Collection $faculties
  * @property ImportItem[]|Collection $importItems
  * @property Room|null $room
@@ -57,14 +57,14 @@ use Illuminate\Support\Facades\Mail;
  * @property MrAndMissVote[]|Collection $mrAndMissVotesGot
  * @property CommunityService[]|Collection $communityServiceRequests
  * @property CommunityService[]|Collection $communityServiceApprovals
- * @method role(Role $role, Workshop|RoleObject|string|null $object)
- * @method collegist()
- * @method active()
- * @method resident()
- * @method extern()
- * @method currentTenant()
- * @method hasToPayKKTNetregInSemester(int $semester_id)
- * @method semestersWhere(string $status)
+ * @method Builder|static role(Role $role, Workshop|RoleObject|string|null $object)
+ * @method Builder|static collegist()
+ * @method Builder|static active()
+ * @method Builder|static resident()
+ * @method Builder|static extern()
+ * @method Builder|static currentTenant()
+ * @method Builder|static hasToPayKKTNetregInSemester(int $semester_id)
+ * @method Builder|static semestersWhere(string $status)
  * @property string $email
  * @property \Illuminate\Support\Carbon|null $email_verified_at
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -150,8 +150,6 @@ class User extends Authenticatable implements HasLocalePreference
 
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array
      */
     protected $fillable = [
         'name', 'email', 'password', 'verified', 'room'
@@ -159,8 +157,6 @@ class User extends Authenticatable implements HasLocalePreference
 
     /**
      * The attributes that should be hidden for arrays.
-     *
-     * @var array
      */
     protected $hidden = [
         'password', 'remember_token',
@@ -168,8 +164,6 @@ class User extends Authenticatable implements HasLocalePreference
 
     /**
      * The attributes that should be cast to native types.
-     *
-     * @var array
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
@@ -258,7 +252,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function application(): HasOne
     {
-        return $this->hasOne(ApplicationForm::class);
+        return $this->hasOne(Application::class);
     }
 
     /**
@@ -490,6 +484,8 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function scopeCanView(Builder $query): Builder
     {
+        /** @var Builder|static $query */
+
         if (user()->isAdmin()) {
             return $query;
         }
@@ -544,6 +540,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function scopeResident(Builder $query): Builder
     {
+        /** @var Builder|static $query */
         return $query->withRole(Role::COLLEGIST, Role::RESIDENT);
     }
 
@@ -555,6 +552,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function scopeExtern(Builder $query): Builder
     {
+        /** @var Builder|static $query */
         return $query->withRole(Role::COLLEGIST, RoleObject::firstWhere('name', Role::EXTERN));
     }
 
@@ -567,6 +565,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function scopeCurrentTenant(Builder $query): Builder
     {
+        /** @var Builder|static $query */
         return $query->withRole(Role::TENANT)
             ->whereHas('personalInformation', function ($q) {
                 $q->where('tenant_until', '>', now());
@@ -577,11 +576,11 @@ class User extends Authenticatable implements HasLocalePreference
      * Scope a query to only include users who have to pay kkt or netreg in the current semester.
      *
      * @param Builder $query
-     * @param int $semester_id
      * @return Builder
      */
     public function scopeHasToPayKKTNetreg(Builder $query): Builder
     {
+        /** @var Builder|static $query */
         return $query->hasToPayKKTNetregInSemester(Semester::current()->id);
     }
 
@@ -594,6 +593,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function scopeHasToPayKKTNetregInSemester(Builder $query, int $semester_id): Builder
     {
+        /** @var Builder|static $query */
         return $query->withRole(Role::collegist())->active($semester_id)
             ->whereDoesntHave('transactionsPaid', function ($query) use ($semester_id) {
                 $query->where('semester_id', $semester_id);
@@ -846,9 +846,9 @@ class User extends Authenticatable implements HasLocalePreference
     /**
      * Sets the collegist's status for a semester.
      *
-     * @param Semester the semester.
-     * @param string the status
-     * @param string optional comment
+     * @param Semester $semester
+     * @param string $status
+     * @param null|string $comment
      * @return User the modified user
      */
     public function setStatusFor(Semester $semester, $status, $comment = null): User
@@ -866,8 +866,8 @@ class User extends Authenticatable implements HasLocalePreference
     /**
      * Sets the collegist's status for the current semester.
      *
-     * @param string the status
-     * @param string optional comment
+     * @param string $status
+     * @param null|string $comment
      * @return User the modified user
      */
     public function setStatus($status, $comment = null): User
@@ -883,7 +883,8 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function getStatus(int|Semester $semester = null): SemesterStatus|null
     {
-        return $this->semesterStatuses->find($semester ?? Semester::current())?->pivot;
+
+        return $this->semesterStatuses->find($semester ?? Semester::current())?->getRelationValue("pivot");
     }
 
     /**
@@ -1115,6 +1116,7 @@ class User extends Authenticatable implements HasLocalePreference
         // You can use `withoutGlobalScope('verified')` to include the unverified users in queries.
         // Use local "verified" scope for queries that run automatically without Auth::user().
         static::addGlobalScope('verified', function (Builder $builder) {
+            /** @var Builder|static $builder */
             if (Auth::hasUser() && user()->verified) {
                 return $builder->verified();
             }

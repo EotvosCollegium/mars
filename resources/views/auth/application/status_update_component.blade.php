@@ -1,19 +1,18 @@
-<div class="right">
-    @foreach (\App\Models\ApplicationForm::STATUSES as $st)
-    @if($st != \App\Models\ApplicationForm::STATUS_IN_PROGRESS || user()->isAdmin())
-
-    <p style="margin:5px">
-        <label>
-            <input type="radio" wire:click="set('{{$st}}')" name="{{$this->application->id}}_status" @checked($this->application->status == $st) />
-            <span>@include('auth.application.status', ['status' => $st])</span>
-        </label>
-    </p>
-    @endif
-
-    @endforeach
-    @if (session()->has('message'))
-        <script>
-            M.toast({html: "{{ session('message') }}"});
-        </script>
-    @endif
+<div style="display: flex;flex-direction: column;align-items: center;justify-content: center;">
+    <label>
+        <input type="checkbox"
+               wire:click="callIn('{{$workshop->workshop_id}}')" @checked($workshop->called_in) @disabled($workshop->admitted) />
+        <span>Behívva</span>
+    </label>
+    <label>
+        <input type="checkbox"
+               wire:click="admit('{{$workshop->workshop_id}}')" @checked($workshop->admitted) />
+        <span>Felvéve</span>
+    </label>
+    <div wire:poll.1000ms>
+        @if($this->updated)
+            <label> Státusz frissítve! </label>
+        @endif
+    </div>
 </div>
+

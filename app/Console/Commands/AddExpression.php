@@ -70,11 +70,8 @@ class AddExpression extends Command
                 $expressions[$expression_key] = stripslashes($expression_value);
             }
 
-            if (!(ksort($expressions))) {
-                $this->error('Sorting '.$file.' failed.');
+            ksort($expressions);
 
-                return 1;
-            }
             if (!is_dir(base_path('/resources/lang/'.$language))) {
                 mkdir(base_path('/resources/lang/'.$language), 0755, true); // create folders if needed
             }
@@ -131,11 +128,8 @@ class AddExpression extends Command
                 } else {
                     $expressions[$expression_key] = stripslashes($expression_value);
                 }
-                if (!(ksort($expressions))) {
-                    $this->error('Sorting the '.($language == 'en' ? 'english' : 'hungarian').' '.$file.' failed.');
+                ksort($expressions);
 
-                    return 1;
-                }
                 $file_write = fopen(base_path($path), 'w');
                 if (!(generate_file($file_write, $expressions))) {
                     $this->error('Writing to the '.($language == 'en' ? 'english' : 'hungarian').' '.$file.' failed.');

@@ -42,8 +42,11 @@ class UsersTableSeeder extends Seeder
         $collegist->printAccount()->save(PrintAccount::factory()->make(['user_id' => $collegist->id]));
         $collegist->personalInformation()->save(PersonalInformation::factory()->make(['user_id' => $collegist->id]));
 
-        User::factory()->count(50)->create()->each(function ($user) {
+        User::factory(['verified' => true])->count(50)->create()->each(function ($user) {
             $this->createCollegist($user);
+        });
+        User::factory(['verified' => false])->count(50)->create()->each(function ($user) {
+            $this->createApplicant($user);
         });
 
         //generate tenants
@@ -120,6 +123,18 @@ class UsersTableSeeder extends Seeder
                 $user->workshops()->attach($workshop);
             }
         }
+    }
+
+    /**
+     * Create application details for the user
+     * @param $user
+     * @return void
+     */
+    private function createApplicant($user)
+    {
+        $user->application()->create(['submitted' => rand(0, 1)]);
+        $workshop = Workshop::get()->random(rand(1, 3));
+        $user->application->syncAppliedWorkshops($workshop->pluck('id')->toArray());
     }
 
     private function createTenant($user)

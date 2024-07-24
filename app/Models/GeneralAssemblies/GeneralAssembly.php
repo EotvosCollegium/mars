@@ -3,6 +3,7 @@
 namespace App\Models\GeneralAssemblies;
 
 use App\Enums\PresenceType;
+use App\Models\EducationalInformation;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -10,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 
 use App\Models\Question;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
@@ -46,11 +48,6 @@ class GeneralAssembly extends Model
 
     protected $fillable = ['title', 'opened_at', 'closed_at'];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
     protected $casts = [
         'opened_at' => 'datetime',
         'closed_at' => 'datetime',
@@ -149,7 +146,15 @@ class GeneralAssembly extends Model
      */
     public static function requirementsPassed(User $user): bool
     {
-        $lastAssemblies = GeneralAssembly::all()->sortByDesc('closed_at')->take(2);
+        $year_of_acceptance = $user->educationalInformation->year_of_acceptance;
+        $acceptance_date = Carbon::createFromDate($year_of_acceptance, 9, 1);
+
+        $lastAssemblies = GeneralAssembly::orderBy('closed_at', 'desc')->take(2)->get();
+        $secondLastAssembly = $lastAssemblies->count() >= 2 ? $lastAssemblies[1] : null;
+
+        if ($secondLastAssembly && $secondLastAssembly->closed_at < $acceptance_date) {
+            return true;
+        }
         foreach ($lastAssemblies as $assembly) {
             if ($assembly->isAttended($user)) {
                 return true;
@@ -160,7 +165,6 @@ class GeneralAssembly extends Model
 
     /**
      * Opens the question.
-     * @throws Exception if it has already been opened.
      */
     public function open(): void
     {
@@ -172,7 +176,6 @@ class GeneralAssembly extends Model
 
     /**
      * Closes the question.
-     * @throws Exception if it has already been closed or if it is not even open.
      */
     public function close(): void
     {

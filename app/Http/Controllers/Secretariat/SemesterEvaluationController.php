@@ -115,6 +115,7 @@ class SemesterEvaluationController extends Controller
             Mail::to($user)->queue(new EvaluationFormClosed($user->name));
         }
 
+
         foreach ($users as $user) {
             try {
                 Mail::to($user)->queue(new StatusDeactivated($user->name));

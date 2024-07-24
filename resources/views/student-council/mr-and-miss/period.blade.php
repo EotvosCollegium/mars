@@ -1,4 +1,4 @@
-@can('finalize', \App\Models\ApplicationForm::class)
+@can('finalize', \App\Models\Application::class)
     <div class="card">
         <form action="{{route('mr_and_miss.period.update')}}" method="POST">
             @csrf

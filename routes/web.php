@@ -11,6 +11,7 @@
 |
 */
 
+use App\Http\Controllers\Auth\AdmissionController;
 use App\Http\Controllers\Auth\ApplicationController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Dormitory\FaultController;
@@ -67,23 +68,26 @@ Route::get('/privacy_policy', [HomeController::class, 'privacyPolicy'])->name('p
 Route::get('/img/{filename}', [HomeController::class, 'getPicture']);
 Route::get('/setlocale/{locale}', [HomeController::class, 'setLocale'])->name('setlocale');
 
-Auth::routes(); //check \Laravel\Ui\AuthRouteMethods
+Auth::routes(['register' => false]); //check \Laravel\Ui\AuthRouteMethods
 
-Route::get('/register/guest', [RegisterController::class, 'showTenantRegistrationForm'])->name('register.guest');
+/* Override the /register route from Auth::routes to force Hungarian */
+Route::prefix('/register')->group(function () {
+    Route::post('/', [RegisterController::class, 'register']);
 
-Route::middleware([Authenticate::class, LogRequests::class, OnlyHungarian::class])->group(function () {
-    Route::get('/application', [ApplicationController::class, 'showApplicationForm'])->name('application');
+    Route::get('/', [RegisterController::class, 'showRegistrationForm'])->name('register')->middleware(OnlyHungarian::class);
+    Route::get('/guest', [RegisterController::class, 'showTenantRegistrationForm'])->name('register.guest');
 });
+
 Route::middleware([Authenticate::class, LogRequests::class])->group(function () {
     /** Routes that needs to be accessed during the application process */
-    Route::post('/application', [ApplicationController::class, 'storeApplicationForm'])->name('application.store');
+    Route::get('/application', [ApplicationController::class, 'show'])->name('application')->middleware(OnlyHungarian::class);
+    Route::post('/application', [ApplicationController::class, 'store'])->name('application.store');
     Route::post('/users/{user}/profile_picture', [UserController::class, 'storeProfilePicture'])->name('users.update.profile-picture');
     Route::delete('/users/{user}/profile_picture', [UserController::class, 'deleteProfilePicture'])->name('users.delete.profile-picture');
     Route::post('/users/{user}/personal_information', [UserController::class, 'updatePersonalInformation'])->name('users.update.personal');
     Route::post('/users/{user}/educational_information', [UserController::class, 'updateEducationalInformation'])->name('users.update.educational');
     Route::post('/users/{user}/alfonso', [UserController::class, 'updateAlfonsoStatus'])->name('users.update.alfonso');
     Route::post('/users/{user}/language_exam', [UserController::class, 'uploadLanguageExam'])->name('users.language_exams.upload');
-    Route::post('/application/finalize', [ApplicationController::class, 'finalizeApplicationProcess'])->name('application.finalize');
 });
 
 Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::class])->group(function () {
@@ -171,11 +175,14 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
     Route::get('/secretariat/registrations/reject/{id}', [GuestsController::class, 'reject'])->name('secretariat.registrations.reject');
     Route::post('/secretariat/invite', [InvitationController::class, 'store'])->name('secretariat.invite');
 
-    /** Application handling */
-    Route::post('/applications/period/update', [ApplicationController::class, 'updateApplicationPeriod'])->name('applications.period.update');
-    Route::get('/applications', [ApplicationController::class, 'showApplications'])->name('applications');
-    Route::post('/applications', [ApplicationController::class, 'editApplication'])->name('applications.edit');
-    Route::get('/applications/export', [ApplicationController::class, 'exportApplications'])->name('applications.export');
+    /** Admission and applicants handling */
+    Route::post('/admission/period/update', [AdmissionController::class, 'updateApplicationPeriod'])->name('admission.period.update');
+    Route::get('/admission/export', [AdmissionController::class, 'export'])->name('admission.export');
+    Route::post('/admission/finalize', [AdmissionController::class, 'finalize'])->name('admission.finalize');
+
+    Route::get('/applicants', [AdmissionController::class, 'index'])->name('admission.applicants.index');
+    Route::get('/applicants/{application}', [AdmissionController::class, 'show'])->name('admission.applicants.show');
+    Route::post('/applicants/{application}', [AdmissionController::class, 'updateNote'])->name('admission.applicants.update_note');
 
     /** Faults */
     Route::get('/faults', [FaultController::class, 'index'])->name('faults');
