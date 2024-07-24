@@ -99,8 +99,10 @@ class AdmissionController extends Controller
                 if ($status_filter == 'admitted') {
                     $query->where('admitted', true);
                 } elseif ($status_filter == 'called_in') {
-                    $query->where('called_in', true);
-                    $query->orWhere('admitted', true);
+                    $query->where(function ($query) {
+                        $query->where('called_in', true)
+                              ->orWhere('admitted', true);
+                    });
                 }
             });
             if (!$filtered_workshop && $should_show_unsubmitted) {
