@@ -127,7 +127,7 @@
                                       helper="Pl. diákönkormányzati tevékenység, önkéntesség, szervezeti tagság. (nem kötelező)"
                                       :value="$user->application->question_4"/>
                     <x-input.textarea id="present"
-                                      text="Amennyiben nem tud jelen lenni a felvételi teljes ideje alatt (vasárnap-szerda), kérjük itt indoklással jelezze!"
+                                      text="Amennyiben nem tud jelen lenni a felvételi teljes ideje alatt (kedd-péntek), kérjük itt indoklással jelezze!"
                                       :value="$user->application->present"  helper="Változás esetén értesítse a titkárságot!"/>
                     <x-input.checkbox id="accommodation"
                                       text="Igényel-e szállást a felvételi idejére?"
