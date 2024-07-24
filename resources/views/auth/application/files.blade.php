@@ -29,7 +29,8 @@
                   enctype='multipart/form-data'>
                 @csrf
                 <div class="row">
-                    <x-input.file s=12 m=6 id="file" size="2000000" accept=".pdf,.jpg,.png,.jpeg" text="general.browse" helper=".pdf,.jpg,.png,.jpeg fájlok tölthetőek fel, maximum 2 MB-os méretig." required/>
+                    <x-input.file s=12 m=6 id="file" :size="config('application.file_size_limit')" accept=".pdf,.jpg,.png,.jpeg" text="general.browse"
+                        helper=".pdf,.jpg,.png,.jpeg fájlok tölthetőek fel, maximum {{config('application.file_size_limit')/1000/1000}} MB-os méretig." required/>
                     <x-input.text s=12 m=6 id="name" text="Fájl megnevezése" required/>
                     <x-input.button only_input class="right" text="general.upload"/>
                 </div>
