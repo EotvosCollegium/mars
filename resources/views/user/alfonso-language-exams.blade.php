@@ -24,7 +24,7 @@
         enctype='multipart/form-data'>
     @csrf
     <div class="row">
-        <x-input.file s=12 m=12 id="file" :size="config('application.file_size_limit')" accept=".pdf,.jpg,.png,.jpeg" text="Új nyelvvizsga feltöltése" required/>
+        <x-input.file s=12 m=12 id="file" :size="config('custom.general_file_size_limit')" accept=".pdf,.jpg,.png,.jpeg" text="Új nyelvvizsga feltöltése" required/>
         <x-input.select s=12 m=3 id="language" text="Nyelv"
             :elements="App\View\Components\Input\Select::convertArray(array_merge(config('app.alfonso_languages'), ['other' => ' Egyéb']))"/>
         <x-input.select s=12 m=3 id="level" text="Szint" :elements="['A1', 'A2', 'B1', 'B2','C1', 'C2']"
@@ -34,7 +34,7 @@
     </div>
     <x-input.button only_input class="right" text="general.upload"/>
     <blockquote>A feltölteni kívánt fájlok maximális mérete:
-        {{config('application.file_size_limit')/1000/1000}} MB, az engedélyezett formátumok: .pdf, .jpg,
+        {{config('custom.general_file_size_limit')/1000/1000}} MB, az engedélyezett formátumok: .pdf, .jpg,
         .jpeg, .png
     </blockquote>
 </form>
