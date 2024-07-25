@@ -86,7 +86,7 @@ class AdmissionController extends Controller
 
         $should_show_unsubmitted = $status_filter == 'everybody' || $status_filter == 'unsubmitted';
         if ($authUser->cannot('viewUnfinished', Application::class) && $should_show_unsubmitted) {
-            abort(403);
+            abort(403, 'You are not authorized to access unsubmitted applications.');
         }
 
         $applications->where(function ($query) use ($accessible_workshops, $filtered_workshop, $status_filter, $should_show_unsubmitted) {

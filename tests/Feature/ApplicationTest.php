@@ -258,14 +258,13 @@ class ApplicationTest extends TestCase
         $this->assertNotContains('Megjelölt ALFONSÓ nyelv', $user->application->missingData());
 
         //profile picture
-        $this->assertContains('Profilkép', $user->application->missingData());
+        //this is not a required field due to privacy reasons
         $response = $this->post('/users/' . $user->id . '/profile_picture', [
             'picture' => UploadedFile::fake()->image('image.png', 100)
         ]);
         $response->assertStatus(302);
         $response->assertSessionHasNoErrors();
         $user->load('application');
-        $this->assertNotContains('Profilkép', $user->application->missingData());
 
         //files
         $this->assertContains('Legalább két feltöltött fájl', $user->application->missingData());
