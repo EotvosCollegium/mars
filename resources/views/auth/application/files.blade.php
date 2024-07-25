@@ -30,7 +30,7 @@
                 @csrf
                 <div class="row">
                     <x-input.file s=12 m=6 id="file" accept=".pdf,.jpg,.png,.jpeg" text="general.browse"
-                        helper=".pdf,.jpg,.png,.jpeg fájlok tölthetőek fel, maximum {{config('custom.general_file_size_limit')/1000/1000}} MB-os méretig." required/>
+                        helper=".pdf,.jpg,.png,.jpeg fájlok tölthetőek fel, maximum {{config('custom.general_file_size_limit')/1000}} MB-os méretig." required/>
                     <x-input.text s=12 m=6 id="name" text="Fájl megnevezése" required/>
                     <x-input.button only_input class="right" text="general.upload"/>
                 </div>

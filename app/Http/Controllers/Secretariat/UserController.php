@@ -60,7 +60,7 @@ class UserController extends Controller
         session()->put('section', 'profile_picture');
 
         $request->validate([
-            'picture' => 'required|mimes:jpg,jpeg,png,gif|max:' . config('custom.general_file_size_limit') / 1000,
+            'picture' => 'required|mimes:jpg,jpeg,png,gif|max:' . config('custom.general_file_size_limit'),
         ]);
         $path = $request->file('picture')->store('avatars');
         $old_profile = $user->profilePicture;
@@ -275,7 +275,7 @@ class UserController extends Controller
         session()->put('section', 'alfonso');
 
         $validator = Validator::make($request->all(), [
-            'file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:' . config('custom.general_file_size_limit') / 1000,
+            'file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:' . config('custom.general_file_size_limit'),
             'language' => ['required', Rule::in(array_merge(array_keys(config('app.alfonso_languages')), ['other']))],
             'level' => ['nullable', Rule::in(['A1', 'A2', 'B1', 'B2', 'C1', 'C2'])],
             'type' => 'required|string|max:255',
