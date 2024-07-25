@@ -156,7 +156,11 @@ class UserController extends Controller
             'year_of_graduation' => 'required|integer|between:1895,' . date('Y'),
             'year_of_acceptance' => 'required|integer|between:1895,' . date('Y'),
             'high_school' => 'required|string|max:255',
-            'neptun' => 'required|string|size:6',
+            'neptun' => [
+                ($user->application) ? 'nullable' : 'required',
+                'string',
+                'size:6'
+            ],
             'faculty' => 'array',
             'faculty.*' => 'exists:faculties,id',
             'workshop' => 'nullable|array',
@@ -166,7 +170,13 @@ class UserController extends Controller
             'study_lines.*.level' => ['required', Rule::in(array_keys(StudyLine::TYPES))],
             'study_lines.*.minor' => 'nullable|string|max:255',
             'study_lines.*.start' => 'required',
-            'email' => ['required', 'string', 'email', 'max:255', new SameOrUnique($user, EducationalInformation::class)],
+            'email' => [
+                ($user->application) ? 'nullable' : 'required',
+                'string',
+                'email',
+                'max:255',
+                new SameOrUnique($user, EducationalInformation::class)
+            ],
             'research_topics' => ['nullable', 'string', 'max:1000'],
             'extra_information' => ['nullable', 'string', 'max:1500'],
         ]);
@@ -181,8 +191,9 @@ class UserController extends Controller
             'extra_information'
         ]);
 
-        // whether Neptun code is unique
-        if (EducationalInformation::where('neptun', $request->neptun)->where('user_id', '<>', $user->id)->exists()) {
+        // whether Neptun code is unique (only checked if not null)
+        if (!is_null($request->neptun)
+              && EducationalInformation::where('neptun', $request->neptun)->where('user_id', '<>', $user->id)->exists()) {
             return redirect()->back()->with('error', 'A megadott Neptun-kód már létezik! Ha a kód az Öné, lépjen be a korábbi fiókjával.');
         }
 
