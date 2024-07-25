@@ -8,7 +8,7 @@ return [
     ],
 
     // Maximum accepted PDF size in byte.
-    'pdf_size_limit' => env('PRINT_MAX_FILE_SIZE', 5000000),
+    'pdf_size_limit' => env('PRINT_MAX_FILE_SIZE', 10000000),
 
     'printer_name' => env('PRINTER_NAME', 'ujbela'),
 
