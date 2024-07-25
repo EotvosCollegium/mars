@@ -38,7 +38,7 @@ class CollegistsExport implements FromCollection, WithTitle, WithMapping, WithHe
     {
         return [
             'Név',
-            'Neptun kód',
+            'Neptun-kód',
             'Collegista státusz',
             'Státusz ('.$this->semester->tag.')',
             'E-mail',

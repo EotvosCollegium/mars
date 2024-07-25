@@ -46,7 +46,7 @@ class SemesterEvaluationExport implements FromCollection, WithTitle, WithMapping
     {
         return [
             'Név',
-            'Neptun kód',
+            'Neptun-kód',
             'Szak',
             'Műhely',
             'Collegista státusz',
