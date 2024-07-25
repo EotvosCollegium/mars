@@ -288,6 +288,14 @@ class Application extends Model
             $missingData[] = 'Tanulmányi adatok';
         }
 
+        if (is_null($educationalInformation?->neptun)) {
+            $missingData[] =  'Neptun-kód';
+        }
+
+        if (is_null($educationalInformation?->email)) {
+            $missingData[] =  'Egyetemi e-mail-cím';
+        }
+
         // @phpstan-ignore-next-line
         if ($educationalInformation?->studyLines->count() == 0) {
             $missingData[] =  'Megjelölt szak';
