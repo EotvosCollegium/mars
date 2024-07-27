@@ -38,6 +38,10 @@ class RedirectToStatusUpdate
         if ($user->application) {
             return $next($request);
         }
+        // Ignore those having any role
+        if ($user->roles()->exists()) {
+            return $next($request);
+        }
         return redirect(route('users.tenant-update.show'));
     }
 }

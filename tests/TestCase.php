@@ -27,6 +27,7 @@ abstract class TestCase extends BaseTestCase
         Mail::fake();
 
         $this->user = User::factory()->create(['verified' => true]);
+        $this->user->roles()->attach(Role::tenant()); // they need a role so that they don't get redirected
         $this->admin = User::factory()->create(['verified' => true]);
         $this->admin->roles()->attach(Role::sysAdmin());
 

@@ -282,6 +282,14 @@ class Role extends Model
     }
 
     /**
+     * Returns the role for tenants.
+     */
+    public static function tenant(): Role
+    {
+        return self::where('name', self::TENANT)->first();
+    }
+
+    /**
      * Get the translated_name attribute.
      *
      * @return Attribute
