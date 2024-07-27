@@ -5,11 +5,11 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 
-class RedirectTenantsToUpdate
+class RedirectToStatusUpdate
 {
     /**
      * Redirects tenants to update their tenant_until property if it is in the past.
-     * This way we can distinguish between the active and inactive tenants.
+     * Also appears to users with no status whatsoever (neither collegist nor tenant).
      *
      * @param \Illuminate\Http\Request $request
      * @param \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse) $next
@@ -32,6 +32,10 @@ class RedirectTenantsToUpdate
         }
         // Ignore if update is not necessary
         if (!$user->needsUpdateTenantUntil()) {
+            return $next($request);
+        }
+        // Ignore those having an application in progress
+        if ($user->application) {
             return $next($request);
         }
         return redirect(route('users.tenant-update.show'));

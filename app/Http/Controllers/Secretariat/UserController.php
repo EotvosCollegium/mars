@@ -314,6 +314,7 @@ class UserController extends Controller
         $validator->validate();
 
         $date = min(Carbon::parse($request->tenant_until), Carbon::now()->addMonths(6));
+        $user->addRole(Role::get(Role::TENANT));
         $user->personalInformation->update(['tenant_until' => $date]);
         $user->internetAccess()->update(['has_internet_until' => $date]);
 
@@ -431,14 +432,15 @@ class UserController extends Controller
     }
 
     /**
-     * Updates a tenant to an applicant
+     * Updates a tenant (or a user with no status) to an applicant
      */
     public function tenantToApplicant()
     {
-        if (!user()->isTenant() || user()->isCollegist(alumni: false)) {
-            return abort(403);
+        if (user()->isCollegist(alumni: false)) {
+            return abort(403, 'You are already a collegist.');
         }
         $user = user();
+        $user->update(['verified' => false]);
         $user->personalInformation()->update(['tenant_until' => null]);
         $user->removeRole(Role::get(Role::TENANT));
         $user->application()->create();

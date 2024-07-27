@@ -3,7 +3,7 @@
 use App\Http\Middleware\Locale;
 use App\Http\Middleware\LogRequests;
 use App\Http\Middleware\NotifyAboutEvaluation;
-use App\Http\Middleware\RedirectTenantsToUpdate;
+use App\Http\Middleware\RedirectToStatusUpdate;
 use App\Jobs\PeriodicEventsProcessor;
 use App\Jobs\PingRouters;
 use App\Jobs\ProcessWifiConnections;
@@ -37,7 +37,7 @@ return Application::configure(basePath: dirname(__DIR__))
             Locale::class,
             LogRequests::class,
             NotifyAboutEvaluation::class,
-            RedirectTenantsToUpdate::class
+            RedirectToStatusUpdate::class
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

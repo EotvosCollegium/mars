@@ -76,6 +76,8 @@ Route::prefix('/register')->group(function () {
 
     Route::get('/', [RegisterController::class, 'showRegistrationForm'])->name('register')->middleware(OnlyHungarian::class);
     Route::get('/guest', [RegisterController::class, 'showTenantRegistrationForm'])->name('register.guest');
+
+    Route::post('/rerequest_tenant_status', [RegisterController::class, 'rerequestTenantStatus'])->name('register.rerequest_tenant_status');
 });
 
 Route::middleware([Authenticate::class, LogRequests::class])->group(function () {

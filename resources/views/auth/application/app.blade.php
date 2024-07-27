@@ -25,7 +25,7 @@
                 @endif
             </h6>
             @if (!$user->application->submitted)
-                Hátra van: <i>{{ (int) \Carbon\Carbon::now()->diffInDays($deadline, false) }}</i> nap.
+                Hátralevő idő: <i>{{ (int) \Carbon\Carbon::now()->diffInDays($deadline, false) }}</i> nap.
             @endif
 
             <blockquote>

@@ -834,11 +834,12 @@ class User extends Authenticatable implements HasLocalePreference
 
     /**
      * @return bool if the user needs to update their tenant status
-     * A user needs to update their tenant status if they are a tenant and their tenant_until date is in the past.
+     * A user needs to update their tenant status if they are a tenant and their tenant_until date is in the past;
+     * or if they have no status whatsoever.
      */
     public function needsUpdateTenantUntil(): bool
     {
-        return $this->isTenant() && !$this->isCurrentTenant();
+        return !$this->isCollegist() && !$this->isCurrentTenant();
     }
 
     /* Status related */

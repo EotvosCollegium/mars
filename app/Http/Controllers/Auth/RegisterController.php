@@ -98,6 +98,20 @@ class RegisterController extends Controller
     }
 
     /**
+     * Send mails related to requesting tenant status.
+     * This is an auxiliary function.
+     */
+    private static function sendMailsForVerification(User $user)
+    {
+        // Send confirmation mail.
+        Mail::to($user)->queue(new \App\Mail\Confirmation($user->name));
+        // Send notification about new tenant to the staff and network admins.
+        foreach (User::admins() as $admin) {
+            Mail::to($admin)->send(new NewRegistration($admin->name, $user));
+        }
+    }
+
+    /**
      * Create a new user instance after a valid registration.
      *
      * @param array $data
@@ -120,13 +134,10 @@ class RegisterController extends Controller
                     'tenant_until' => $data['tenant_until'],
                     'phone_number' => $data['phone_number'],
                 ]);
-                // Send confirmation mail.
-                Mail::to($user)->queue(new \App\Mail\Confirmation($user->name));
-                // Send notification about new tenant to the staff and network admins.
-                foreach (User::admins() as $admin) {
-                    Mail::to($admin)->send(new NewRegistration($admin->name, $user));
-                }
+
+                self::sendMailsForVerification($user);
                 Cache::increment('user');
+
                 $this->redirectTo = '/verification';
             } else {
                 $user->application()->create();
