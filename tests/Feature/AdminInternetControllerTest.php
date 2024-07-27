@@ -23,7 +23,7 @@ class AdminInternetControllerTest extends TestCase
     {
         $response = $this->actingAs($this->user)->get(route('internet.admin.index'));
 
-        echo substr(json_encode($response),0,500);
+        echo substr(json_encode($response), 0, 500);
 
         $response->assertStatus(403);
     }
