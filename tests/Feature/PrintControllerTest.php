@@ -16,6 +16,7 @@ class PrintControllerTest extends TestCase
     {
         $user = User::factory()->create();
         $user->setVerified();
+        $user->addRole(Role::tenant()); // they need a role so that they do not get redirected
         $this->actingAs($user);
 
         // The user is not allowed to see the page without the correct permissions.
