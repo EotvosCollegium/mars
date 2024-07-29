@@ -24,6 +24,7 @@ class RoomPolicy
             Role::SECRETARY,
             Role::STAFF,
             Role::COLLEGIST,
+            Role::TENANT,
             Role::SYS_ADMIN
         ]);
     }
