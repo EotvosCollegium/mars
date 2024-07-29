@@ -321,6 +321,9 @@ class Application extends Model
         if (!isset($this->graduation_average)) {
             $missingData[] =  'Érettségi átlaga';
         }
+        if (!isset($this->applied_for_resident_status)) {
+            $missingData[] =  'Megpályázni kívánt státusz';
+        }
         if (!isset($this->question_1) || $this->question_1 == []) {
             $missingData[] =  '"Honnan hallott a Collegiumról?" kérdés';
         }

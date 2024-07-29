@@ -6,6 +6,7 @@ use App\Exports\UsersExport;
 use App\Http\Controllers\Controller;
 use App\Models\EducationalInformation;
 use App\Models\Faculty;
+use App\Models\LanguageExam;
 use App\Models\Role;
 use App\Models\Semester;
 use App\Models\StudyLine;
@@ -86,8 +87,8 @@ class UserController extends Controller
 
         $profile = $user->profilePicture;
         if ($profile) {
-            Storage::delete($profile->path);
             $profile->delete();
+            Storage::delete($profile->path);
         }
         return redirect()->back()->with('message', __('general.successful_modification'));
     }
@@ -295,6 +296,28 @@ class UserController extends Controller
 
         return redirect()->back()->with('message', __('general.successful_modification'));
     }
+
+    /**
+     * Remove a language exam for the user.
+     * @param Request $request
+     * @param User $user
+     * @param LanguageExam $exam
+     * @return RedirectResponse
+     */
+    public function deleteLanguageExam(Request $request, User $user, LanguageExam $exam)
+    {
+        $this->authorize('view', $user);
+        if ($exam->educationalInformation->user->id != $user->id) {
+            abort(400, 'The language exam does not belong to the given user.');
+        }
+
+        $exam->delete();
+        Storage::delete($exam->path);
+
+        session()->put('section', 'alfonso');
+        return redirect()->back()->with('message', __('general.successful_modification'));
+    }
+
 
     /**
      * Updates tenant until date of a user.
