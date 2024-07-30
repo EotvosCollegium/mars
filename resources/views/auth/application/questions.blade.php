@@ -48,15 +48,17 @@
                         <p>
                             @php $checked = old('status') ?  old('status') == 'resident' : $user->application->applied_for_resident_status @endphp
                             <label class="black-text">
-                                <input type="radio" name="status" value="resident"
+                                <input type="radio" name="status" value="resident" required
                                     {{ $checked ? 'checked' : '' }}>
                                 <span>@lang('role.resident')</span>
                             </label>
                         </p>
                         <p>
-                            @php $checked = old('status') ?  old('status') == 'extern' : !$user->application->applied_for_resident_status @endphp
+                            {{-- beware: the flag might be null, but must be false for this to be checked --}}
+                            @php $checked = old('status') ?  old('status') == 'extern'
+                                    : (false === $user->application->applied_for_resident_status) @endphp
                             <label class="black-text">
-                                <input type="radio" name="status" value="extern"
+                                <input type="radio" name="status" value="extern" required
                                     {{ $checked ? 'checked' : '' }}>
                                 <span>@lang('role.extern')</span>
                             </label>

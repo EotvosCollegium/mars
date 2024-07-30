@@ -17,26 +17,26 @@
                 <div class="card-content">
                     <span class="card-title">@lang('router.edit')</span>
                     <div class="row">
-                        <x-input.text s="6" type="text" text="router.ip" id="ip" value="{{ $router->ip }}" maxlength="15" required/>
-                        <x-input.text s="6" type="text" text="router.room" id="room" value="{{ $router->room }}" maxlength="5" required/>
+                        <x-input.text s="6" type="text" text="router.ip" id="ip" :value="$router->ip" maxlength="15" required/>
+                        <x-input.text s="6" type="text" text="router.room" id="room" :value="$router->room" maxlength="5" required/>
                     </div>
                     <div class="row">
-                        <x-input.text s="4" type="text" text="router.port" id="port" value="{{ $router->port }}"/>
-                        <x-input.text s="4" type="text" text="router.type" id="type" value="{{ $router->type }}"/>
-                        <x-input.text s="4" type="text" text="router.serial_number" id="serial_number" value="{{ $router->serial_number }}"/>
+                        <x-input.text s="4" type="text" text="router.port" id="port" :value="$router->port"/>
+                        <x-input.text s="4" type="text" text="router.type" id="type" :value="$router->type"/>
+                        <x-input.text s="4" type="text" text="router.serial_number" id="serial_number" :value="$router->serial_number"/>
                     </div>
                     <div><p>@lang('internet.mac_address')</p></div>
                     <div class="row">
-                        <x-input.text s="4" type="text" text="WAN" id="mac_WAN" value="{{ $router->mac_WAN }}"/>
-                        <x-input.text s="4" type="text" text="2G/LAN" id="mac_2G_LAN" value="{{ $router->mac_2G_LAN }}"/>
-                        <x-input.text s="4" type="text" text="5G" id="mac_5G" value="{{ $router->mac_5G }}"/>
+                        <x-input.text s="4" type="text" text="WAN" id="mac_WAN" :value="$router->mac_WAN"/>
+                        <x-input.text s="4" type="text" text="2G/LAN" id="mac_2G_LAN" :value="$router->mac_2G_LAN"/>
+                        <x-input.text s="4" type="text" text="5G" id="mac_5G" :value="$router->mac_5G"/>
                     </div>
                     <div class="row">
-                        <x-input.text type="text" id="comment" text="general.comment" value="{{ $router->comment }}" maxlength="255"/>
+                        <x-input.text type="text" id="comment" text="general.comment" :value="$router->comment" maxlength="255"/>
                     </div>
                     <div class="row">
-                        <x-input.text s="6" type="date" id="date_of_acquisition" text="router.date_of_acquisition" value="{{ $router->date_of_acquisition }}"/>
-                        <x-input.text s="6" type="date" id="date_of_deployment" text="router.date_of_deployment" value="{{ $router->date_of_deployment }}"/>
+                        <x-input.text s="6" type="date" id="date_of_acquisition" text="router.date_of_acquisition" :value="$router->date_of_acquisition"/>
+                        <x-input.text s="6" type="date" id="date_of_deployment" text="router.date_of_deployment" :value="$router->date_of_deployment"/>
                     </div>
                 </div>
                 <div class="card-action">

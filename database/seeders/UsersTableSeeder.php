@@ -66,6 +66,11 @@ class UsersTableSeeder extends Seeder
         });
     }
 
+    /**
+     * Creates a new user with admin role
+     * and predefined credentials.
+     * It also becomes a collegist with random data.
+     */
     private function createSuperUser()
     {
         $user = User::create([
@@ -93,6 +98,10 @@ class UsersTableSeeder extends Seeder
         Checkout::query()->update(['handler_id' => $user->id]);
     }
 
+    /**
+     * Takes a generated user and makes it a collegist
+     * with random data.
+     */
     private function createCollegist($user)
     {
         MacAddress::factory()->count($user->id % 5)->create(['user_id' => $user->id]);
@@ -126,17 +135,34 @@ class UsersTableSeeder extends Seeder
     }
 
     /**
-     * Create application details for the user
+     * Takes a generated user and makes it an applicant.
      * @param $user
      * @return void
      */
     private function createApplicant($user)
     {
-        $user->application()->create(['submitted' => rand(0, 1)]);
+        $submitted = rand(0, 1);
+        if ($submitted) {
+            // submitted applications must not have a null status
+            $appliedForResidentStatus = rand(0, 1);
+        } else {
+            // unsubmitted applications may have a null status
+            $appliedForResidentStatus = rand(-1, 1);
+            if (-1 == $appliedForResidentStatus) {
+                $appliedForResidentStatus = null;
+            }
+        }
+        $user->application()->create([
+            'submitted' => $submitted,
+            'applied_for_resident_status' => $appliedForResidentStatus
+        ]);
         $workshop = Workshop::get()->random(rand(1, 3));
         $user->application->syncAppliedWorkshops($workshop->pluck('id')->toArray());
     }
 
+    /**
+     * Takes a generated user and makes it a tenant.
+     */
     private function createTenant($user)
     {
         $user->roles()->attach(Role::get(Role::TENANT)->id);
@@ -145,6 +171,10 @@ class UsersTableSeeder extends Seeder
         MacAddress::factory()->count($user->id % 5)->create(['user_id' => $user->id]);
     }
 
+    /**
+     * Creates a new user with staff role
+     * and predefined credentials.
+     */
     private function createStaff()
     {
         $user = User::create([

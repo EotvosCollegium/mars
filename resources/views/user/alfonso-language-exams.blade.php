@@ -1,22 +1,44 @@
 <div class="row">
     <div class="col s12">
         <h6>Feltöltött nyelvvizsgák:</h6>
-        <blockquote>
-            <ul>
-            @forelse ($user->educationalInformation?->languageExams?->sortBy('date') ?? [] as $exam)
-                <li>
-                    <a target="_blank" href="/{{ $exam->path }}">
-                        {{ __('role.'.$exam->language) }} - {{ $exam->level }}</a>
-                    @if($exam->wasBeforeEnrollment and !isset($application))
-                    ({{ $exam->type}}, {{$exam->date->format('Y-m')}}, collegista státusz előtt szerezve)
-                    @else
-                    ({{ $exam->type}}, {{$exam->date->format('Y-m')}})
-                    @endif
-                </li>
-            @empty
-                <li>Nincs nyelvvizsga feltöltve.</li>
-            @endforelse
-        </blockquote>
+        @if ($user->educationalInformation?->languageExams()->doesntExist())
+        <blockquote>Nincs nyelvvizsga feltöltve.</blockquote>
+        @else
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nyelv</th>
+                        <th>Szint</th>
+                        <th>Típus</th>
+                        <th>Dátum</th>
+                        <th></th> {{-- for the delete buttons --}}
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach ($user->educationalInformation?->languageExams?->sortBy('date') ?? [] as $exam)
+                    <tr>
+                        <td><a target="_blank" href="/{{ $exam->path }}">{{ __('role.'.$exam->language) }}</a></td>
+                        <td>{{ $exam->level }}</td>
+                        <td>{{ $exam->type }}</td>
+                        <td>
+                            @if($exam->wasBeforeEnrollment and !isset($application))
+                            {{$exam->date->format('Y-m-d')}} (collegista státusz előtt szerezve)
+                            @else
+                            {{$exam->date->format('Y-m-d')}}
+                            @endif
+                        </td>
+                        <td>
+                            <form method="POST" action="{{ route('users.language_exams.delete', ['user' => $user, 'exam' => $exam]) }}">
+                                @csrf
+                                @method('delete')
+                                <x-input.button floating icon="delete" class="red right" />
+                            </form>
+                        </td>
+                    </tr>
+                @endforeach
+                </tbody>
+            </table>
+        @endif
     </div>
 </div>
 @if($user->educationalInformation)
@@ -34,7 +56,7 @@
     </div>
     <x-input.button only_input class="right" text="general.upload"/>
     <blockquote>A feltölteni kívánt fájlok maximális mérete:
-        {{config('custom.general_file_size_limit')/1000/1000}} MB, az engedélyezett formátumok: .pdf, .jpg,
+        {{config('custom.general_file_size_limit')/1000}} MB, az engedélyezett formátumok: .pdf, .jpg,
         .jpeg, .png
     </blockquote>
 </form>

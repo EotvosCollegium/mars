@@ -6,6 +6,7 @@ use App\Exports\UsersExport;
 use App\Http\Controllers\Controller;
 use App\Models\EducationalInformation;
 use App\Models\Faculty;
+use App\Models\LanguageExam;
 use App\Models\Role;
 use App\Models\Semester;
 use App\Models\StudyLine;
@@ -60,7 +61,7 @@ class UserController extends Controller
         session()->put('section', 'profile_picture');
 
         $request->validate([
-            'picture' => 'required|mimes:jpg,jpeg,png,gif|max:' . config('custom.general_file_size_limit') / 1000,
+            'picture' => 'required|mimes:jpg,jpeg,png,gif|max:' . config('custom.general_file_size_limit'),
         ]);
         $path = $request->file('picture')->store('avatars');
         $old_profile = $user->profilePicture;
@@ -86,8 +87,8 @@ class UserController extends Controller
 
         $profile = $user->profilePicture;
         if ($profile) {
-            Storage::delete($profile->path);
             $profile->delete();
+            Storage::delete($profile->path);
         }
         return redirect()->back()->with('message', __('general.successful_modification'));
     }
@@ -275,7 +276,7 @@ class UserController extends Controller
         session()->put('section', 'alfonso');
 
         $validator = Validator::make($request->all(), [
-            'file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:' . config('custom.general_file_size_limit') / 1000,
+            'file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:' . config('custom.general_file_size_limit'),
             'language' => ['required', Rule::in(array_merge(array_keys(config('app.alfonso_languages')), ['other']))],
             'level' => ['nullable', Rule::in(['A1', 'A2', 'B1', 'B2', 'C1', 'C2'])],
             'type' => 'required|string|max:255',
@@ -295,6 +296,28 @@ class UserController extends Controller
 
         return redirect()->back()->with('message', __('general.successful_modification'));
     }
+
+    /**
+     * Remove a language exam for the user.
+     * @param Request $request
+     * @param User $user
+     * @param LanguageExam $exam
+     * @return RedirectResponse
+     */
+    public function deleteLanguageExam(Request $request, User $user, LanguageExam $exam)
+    {
+        $this->authorize('view', $user);
+        if ($exam->educationalInformation->user->isNot($user)) {
+            abort(400, 'The language exam does not belong to the given user.');
+        }
+
+        $exam->delete();
+        Storage::delete($exam->path);
+
+        session()->put('section', 'alfonso');
+        return redirect()->back()->with('message', __('general.successful_modification'));
+    }
+
 
     /**
      * Updates tenant until date of a user.
