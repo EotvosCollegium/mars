@@ -4,7 +4,7 @@
     <input
         id="{{$id}}"
         class="validate @error($id) invalid @enderror"
-        value="{{old($id) ?? $attributes->get('value')}}"
+        value="{{old($id, $value ?? '')}}"
         {{-- Default values + other provided attributes --}}
         {{$attributes->whereDoesntStartWith('value')->merge([
             'type' => 'text',

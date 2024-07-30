@@ -15,7 +15,7 @@
         @livewire('parent-child-form', ['title' => __('voting.options'), 'name' => 'options', 'items' => old('options')])
     </div>
     <div class="row">
-        <x-input.text type="number" value="1" id="max_options" text="voting.max_options" required/>
+        <x-input.text type="number" :value="1" id="max_options" text="voting.max_options" required/>
     </div>
     @if ($canHaveLongAnswers)
     <div class="row">

@@ -88,6 +88,7 @@ Route::middleware([Authenticate::class, LogRequests::class])->group(function () 
     Route::post('/users/{user}/educational_information', [UserController::class, 'updateEducationalInformation'])->name('users.update.educational');
     Route::post('/users/{user}/alfonso', [UserController::class, 'updateAlfonsoStatus'])->name('users.update.alfonso');
     Route::post('/users/{user}/language_exam', [UserController::class, 'uploadLanguageExam'])->name('users.language_exams.upload');
+    Route::delete('/users/{user}/language_exam/{exam}', [UserController::class, 'deleteLanguageExam'])->name('users.language_exams.delete');
 });
 
 Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::class])->group(function () {
