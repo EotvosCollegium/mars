@@ -4,7 +4,7 @@
         <blockquote>
             <p>
             @lang('print.pdf_description')
-            @lang("print.pdf_maxsize", ['maxsize' => config('print.pdf_size_limit')/1000/1000])
+            @lang("print.pdf_maxsize", ['maxsize' => config('print.pdf_size_limit')/1000])
             @lang('print.costs',['one_sided'=>App\Models\PrintAccount::$COST['one_sided'], "two_sided" => App\Models\PrintAccount::$COST['two_sided']])
             </p><p>
             @lang('print.available_money'): <b class="coli-text text-orange"> {{ user()->printAccount->balance }}</b> HUF.

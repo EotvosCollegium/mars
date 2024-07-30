@@ -200,7 +200,7 @@
                                 <th scope="row">Nyelvvizsga</th>
                                 <td>
                                     @forelse ($user->educationalInformation?->languageExams?->sortBy('date') ?? [] as $exam)
-                                        <a href="/{{ $exam->path }}">
+                                        <a href="/{{ $exam->path }}" target="_blank">
                                             {{ __('role.'.$exam->language) }} - {{ $exam->level }}
                                             , {{ $exam->type }}
                                             , {{$exam->date->format('Y-m')}}

@@ -56,7 +56,7 @@
     </div>
     <x-input.button only_input class="right" text="general.upload"/>
     <blockquote>A feltölteni kívánt fájlok maximális mérete:
-        {{config('custom.general_file_size_limit')/1000/1000}} MB, az engedélyezett formátumok: .pdf, .jpg,
+        {{config('custom.general_file_size_limit')/1000}} MB, az engedélyezett formátumok: .pdf, .jpg,
         .jpeg, .png
     </blockquote>
 </form>
