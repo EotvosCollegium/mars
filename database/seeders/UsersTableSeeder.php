@@ -132,7 +132,21 @@ class UsersTableSeeder extends Seeder
      */
     private function createApplicant($user)
     {
-        $user->application()->create(['submitted' => rand(0, 1)]);
+        $submitted = rand(0, 1);
+        if ($submitted) {
+            // submitted applications must not have a null status
+            $appliedForResidentStatus = rand(0, 1);
+        } else {
+            // unsubmitted applications may have a null status
+            $appliedForResidentStatus = rand(-1, 1);
+            if (-1 == $appliedForResidentStatus) {
+                $appliedForResidentStatus = null;
+            }
+        }
+        $user->application()->create([
+            'submitted' => $submitted,
+            'applied_for_resident_status' => $appliedForResidentStatus
+        ]);
         $workshop = Workshop::get()->random(rand(1, 3));
         $user->application->syncAppliedWorkshops($workshop->pluck('id')->toArray());
     }

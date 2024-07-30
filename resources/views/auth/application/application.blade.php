@@ -27,11 +27,13 @@
                                   data-badge-caption="">
                                 @lang('role.resident')
                             </span>
-                        @else
+                        @elseif (!is_null($user->application->applied_for_resident_status))
                             <span class="new badge scale-transition coli orange tag" style="display: block;"
                                   data-badge-caption="">
                                 @lang('role.extern')
                             </span>
+                        @else
+                            <div class="center-align" style="margin:-5px;font-style:italic;color:red">hiányzó státusz</div>
                         @endif
                         <div class="divider" style="margin: 5px"></div>
                         @foreach($user->application->applicationWorkshops as $workshop)
