@@ -54,8 +54,9 @@
                             </label>
                         </p>
                         <p>
+                            {{-- beware: the flag might be null, but must be false for this to be checked --}}
                             @php $checked = old('status') ?  old('status') == 'extern'
-                                    : (!is_null($user->application->applied_for_resident_status) && !$user->application->applied_for_resident_status) @endphp
+                                    : (false === $user->application->applied_for_resident_status) @endphp
                             <label class="black-text">
                                 <input type="radio" name="status" value="extern" required
                                     {{ $checked ? 'checked' : '' }}>

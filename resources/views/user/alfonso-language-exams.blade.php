@@ -22,9 +22,9 @@
                         <td>{{ $exam->type }}</td>
                         <td>
                             @if($exam->wasBeforeEnrollment and !isset($application))
-                            {{$exam->date->format('Y-m')}} (collegista státusz előtt szerezve)
+                            {{$exam->date->format('Y-m-d')}} (collegista státusz előtt szerezve)
                             @else
-                            {{$exam->date->format('Y-m')}}
+                            {{$exam->date->format('Y-m-d')}}
                             @endif
                         </td>
                         <td>

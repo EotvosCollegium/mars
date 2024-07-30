@@ -133,10 +133,11 @@ class UsersTableSeeder extends Seeder
     private function createApplicant($user)
     {
         $submitted = rand(0, 1);
-        // submitted applications must not have a null status
         if ($submitted) {
+            // submitted applications must not have a null status
             $appliedForResidentStatus = rand(0, 1);
         } else {
+            // unsubmitted applications may have a null status
             $appliedForResidentStatus = rand(-1, 1);
             if (-1 == $appliedForResidentStatus) {
                 $appliedForResidentStatus = null;
