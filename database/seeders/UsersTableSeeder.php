@@ -138,7 +138,9 @@ class UsersTableSeeder extends Seeder
             $appliedForResidentStatus = rand(0, 1);
         } else {
             $appliedForResidentStatus = rand(-1, 1);
-            if (-1 == $appliedForResidentStatus) $appliedForResidentStatus = null;
+            if (-1 == $appliedForResidentStatus) {
+                $appliedForResidentStatus = null;
+            }
         }
         $user->application()->create([
             'submitted' => $submitted,
