@@ -40,6 +40,12 @@
                             véglegesítse jelentkezését a lap alján lévő gombra kattintva.
                             Kérjük, figyeljen a határidőre, mert utána már nem lesz lehetősége véglegesítésre.</li>
 
+                        <li>A jelentkezés véglegesítéséhez Neptun-kódjának megadása is szükséges.
+                            Egyes karokon ezek létrehozása elhúzódhat, így szíves türelmét kérjük.
+                            Amennyiben ez 08.06. 23:59-ig sem történik meg, kérjük, jelezze a
+                            <a href="mailto:{{ config('mail.sys_admin_mail') }}">Rendszergazdáknak</a>,
+                            akik lehetőséget fognak biztosítani a Neptun-kód nélküli jelentkezésre.</li>
+
                         <li><strong>Amennyiben az Informatikai Műhelybe (is) jelentkezik,</strong> a személyes felvételit
                             megelőzően egy írásbeli, szakmai feladatsor megoldását kérjük online módon 2024. augusztus 10.
                             23:59:59-ig. Ennek elvégzése nagyjából 3-4 órát vesz igénybe;
