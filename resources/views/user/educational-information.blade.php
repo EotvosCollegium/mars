@@ -1,7 +1,10 @@
 <form method="POST" action="{{ route('users.update.educational', ['user' => $user]) }}">
     @csrf
     @if($application ?? false)
-        <blockquote>A Neptun-kódot és az egyetemi e-mail-címet elég véglegesítés előtt kitölteni.</blockquote>
+        <blockquote>
+            <p>A Neptun-kódot elég véglegesítés előtt kitölteni.</p>
+            <p>Az egyetemi e-mail-cím a felvételi eljárást követően is pótolható.</p>
+        </blockquote>
     @endif
     <div class="row">
         <x-input.text id="high_school" text="user.high_school"
@@ -30,7 +33,7 @@
                           :value="$user->educationalInformation?->neptun" /> {{-- not required --}}
             <x-input.text s=6 id='educational-email' text="user.educational-email" name="email"
                           :value="$user->educationalInformation?->email"
-                          helper="lehetőleg @student.elte.hu-s"/> {{-- not required --}}
+                          helper="lehetőleg @student.elte.hu-s (nem kötelező, a felvételit követően pótolható)"/> {{-- not required --}}
         @endif
 
         <div class="input-field col s12 m6">
