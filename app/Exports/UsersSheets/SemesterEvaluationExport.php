@@ -6,6 +6,7 @@ use App\Models\GeneralAssemblies\GeneralAssembly;
 use App\Models\Role;
 use App\Models\SemesterEvaluation;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithEvents;
@@ -18,12 +19,11 @@ class SemesterEvaluationExport implements FromCollection, WithTitle, WithMapping
 {
     protected $evaluations;
     protected $semester;
-    protected $show_feedback = false;
 
-    public function __construct()
+    public function __construct(Collection|User $includedUsers)
     {
         $this->semester = SemesterEvaluation::query()->orderBy('created_at', 'desc')->first()?->semester;
-        $users = User::query()->canView()->get(['id'])->pluck('id');
+        $users = $includedUsers->pluck('id');
         $this->evaluations = SemesterEvaluation::query()
             ->where('semester_id', $this->semester?->id)
             ->whereIn('user_id', $users)
@@ -46,7 +46,7 @@ class SemesterEvaluationExport implements FromCollection, WithTitle, WithMapping
     {
         return [
             'Név',
-            'Neptun kód',
+            'Neptun-kód',
             'Szak',
             'Műhely',
             'Collegista státusz',
@@ -97,14 +97,16 @@ class SemesterEvaluationExport implements FromCollection, WithTitle, WithMapping
             $user->educationalInformation?->languageExamsAfterAcceptance?->map(function ($exam) {
                 return implode(", ", [__('role.'.$exam->language), $exam->level, $exam->type, $exam->date->format('Y-m')]);
             })->implode(" \n"),
-            ($user->educationalInformation?->alfonso_language ? __('role.'.$user->educationalInformation?->alfonso_language) . " " . $user->educationalInformation?->alfonso_desired_level : ""),
+            ($user->educationalInformation?->alfonso_language ?
+                __('role.'.$user->educationalInformation->alfonso_language) . " " . $user->educationalInformation->alfonso_desired_level
+                : ""),
             ($user->educationalInformation?->alfonsoCompleted() ?? false)
                 ? 'Igen'
                 : (($user->educationalInformation?->alfonsoCanBeCompleted() ?? true) ? "Folyamatban" : "Nem"),
             $evaluation->alfonso_note,
             $evaluation->current_avg,
             $evaluation->last_avg,
-            implode(" \n", array_map(fn ($course) => $course['code'] . " " . $course['name'] . ' - ' . $course['grade'] ?? "N/A", $evaluation->courses)),
+            implode(" \n", array_map(fn ($course) => $course['code'] . " " . $course['name'] . ' - ' . $course['grade'], $evaluation->courses)),
             GeneralAssembly::all()->sortByDesc('closed_at')->take(2)->map(function ($generalAssembly) use ($user) {
                 return $generalAssembly->isAttended($user) ? "Részt vett" : "Nem vett részt";
             })->implode(" \n"),

@@ -1,12 +1,9 @@
 \documentclass[12pt,a4paper]{article}
-\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
 \usepackage[magyar]{babel}
 \usepackage{amsmath}
 \usepackage{graphicx}
 \usepackage{multirow}
-
-\usepackage{caption}
-\usepackage[letterspace=300]{microtype}
 
 \usepackage{atbegshi}
 \usepackage{tikz}
@@ -34,19 +31,20 @@
 
 \newcommand\Footer{
 
-	{\footnotesize 
+	{\footnotesize
 	\begin{minipage}[t]{0.4\textwidth}
 		\begin{flushright}
 		\textsc{
-            {\color{darkblue} 
+            {\color{darkblue}
 			ELTE EÖTVÖS JÓZSEF\\
-			COLLEGIUM}\\
-		    {\scriptsize 
-		    Dr. Horváth László\\
-			igazgató\\
-%			Rémai Martin\\
-%			választmányi elnök\\
+			COLLEGIUM
+            }\\
             }
+        \textsc{
+		    {\scriptsize
+                {{ \App\Utils\LatexSanitizer::sanitizeLatex(\App\Models\User::director()?->name) }}\\
+                igazgató\\
+                }
             }
 		\end{flushright}
 	\end{minipage}
@@ -54,10 +52,10 @@
 	\begin{minipage}[t]{0.45\textwidth}
 		\begin{flushleft}
 			{\scriptsize H-1118 Budapest, Ménesi út 11-13\\
-			Tel.: +36 1 460 4481 • Fax.: +36 1 209 2044\\
-			E-mail:	titkarsag@eotvos.elte.hu • horvathl@eotvos.elte.hu
+			Tel.: +36 1 460 4481 • Fax.: +36 1 209 2044 \\
+			E-mail:	{{ \App\Utils\LatexSanitizer::sanitizeLatex(config("mail.secretary_mail")) }} • {{ \App\Utils\LatexSanitizer::sanitizeLatex(\App\Models\User::director()?->email) }}
 		%	valasztmany@eotvos.elte.hu • elnok@eotvos.elte.hu\\
-			Honlap: http://www.eotvos.elte.hu/ }
+			Honlap: https://eotvos.elte.hu/ }
 		\end{flushleft}
 	\end{minipage}
 	}
@@ -67,7 +65,7 @@
 \pagestyle{empty}
 \AtBeginShipoutFirst{\Header}
 
-\newcommand{\signiture}[3]{
+\newcommand{\signature}[3]{
 \begin{center}
 	#1\\
 	#2\\
@@ -78,16 +76,16 @@
 \begin{document}
 \maketitle
 
-Alulírott Horváth László, az ELTE Eötvös József Collegium igazgatója, hivatalosan igazolom, hogy {{ $name }} (Neptun-kód: {{ $neptun }}) az ELTE Eötvös József Collegium tagja {{ $from }}. szeptemberétől.
+Alulírott {{ \App\Utils\LatexSanitizer::sanitizeLatex(\App\Models\User::director()?->name) }}, az ELTE Eötvös József Collegium igazgatója, hivatalosan igazolom, hogy {{ \App\Utils\LatexSanitizer::sanitizeLatex($name) }} (Neptun-kód: {{ \App\Utils\LatexSanitizer::sanitizeLatex($neptun) }}) az ELTE Eötvös József Collegium tagja {{ \App\Utils\LatexSanitizer::sanitizeLatex($from) }}. szeptemberétől.
 
-A tagság érvényességének befejezése: {{ $until }}
+A tagság érvényességének befejezése: {{ \App\Utils\LatexSanitizer::sanitizeLatex($until) }}
 
 Személyes adatai:
 \begin{itemize}
-	\itemsep0em 
-	\item születési helye és ideje: {{ $place_and_date_of_birth }}
-	\item anyja neve: {{ $mothers_name }}
-	\item állandó lakcíme: {{ $address }}
+	\itemsep0em
+	\item születési helye és ideje: {{ \App\Utils\LatexSanitizer::sanitizeLatex($place_and_date_of_birth) }}
+	\item anyja neve: {{ \App\Utils\LatexSanitizer::sanitizeLatex($mothers_name) }}
+	\item állandó lakcíme: {{ \App\Utils\LatexSanitizer::sanitizeLatex($address) }}
 \end{itemize}
 
 
@@ -95,17 +93,9 @@ Személyes adatai:
 Kelt: Budapest, \today
 \vspace{5em}
 
-% \begin{flushright}
-% 	\begin{minipage}[t]{0.4\textwidth}
-% 		\signiture{Kocsis Ábel}{elnök}{Eötvös József Collegium Választmány}
-% 	\end{minipage}
-% \end{flushright}
-
-% \vspace{5em}
-
 \begin{flushright}
 \begin{minipage}[t]{0.4\textwidth}
-	\signiture{Dr. Horváth László}{igazgató}{Eötvös József Collegium}
+	\signature{ {{ \App\Utils\LatexSanitizer::sanitizeLatex(\App\Models\User::director()?->name) }} }{igazgató}{Eötvös József Collegium}
 \end{minipage}
 \end{flushright}
 

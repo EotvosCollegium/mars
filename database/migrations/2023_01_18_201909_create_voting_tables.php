@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 use App\Models\User;
 use App\Models\GeneralAssemblies\GeneralAssembly;
-use App\Models\GeneralAssemblies\Question;
+use App\Models\Question;
 
 return new class () extends Migration {
     /**

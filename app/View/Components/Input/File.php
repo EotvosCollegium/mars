@@ -6,9 +6,12 @@ use App\View\Components\Input;
 
 class File extends Input
 {
-    public function __construct($id, $text = null, $s = 12, $m = null, $l = null, $xl = null, $onlyInput = false)
+    public $helper;
+
+    public function __construct($id, $text = null, $s = 12, $m = null, $l = null, $xl = null, $onlyInput = false, $helper = null)
     {
         parent::__construct($id, $text, $s, $m, $l, $xl, $onlyInput);
+        $this->helper = $helper;
     }
 
     /**

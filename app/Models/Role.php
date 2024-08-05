@@ -14,6 +14,7 @@ use InvalidArgumentException;
  * App\Models\Role
  *
  * @property string $name
+ * @property string $translatedName
  * @property boolean $has_objects
  * @property boolean $has_workshops
  * @property integer $id
@@ -57,6 +58,7 @@ class Role extends Model
     public const CULTURAL_LEADER = 'cultural-leader';
     public const CULTURAL_REFERENT = 'cultural-referent';
     public const CULTURAL_MEMBER = 'cultural-member';
+    public const KKT_HANDLER = 'kkt-handler';
     public const COMMUNITY_LEADER = 'community-leader';
     public const COMMUNITY_REFERENT = 'community-referent';
     public const COMMUNITY_MEMBER = 'community-member';
@@ -88,6 +90,7 @@ class Role extends Model
         self::COMMUNITY_MEMBER,
         self::COMMUNICATION_MEMBER,
         self::SPORT_MEMBER,
+        self::KKT_HANDLER,
     ];
 
     public const STUDENT_POSTION_ROLES = [
@@ -96,7 +99,7 @@ class Role extends Model
         self::STUDENT_COUNCIL_SECRETARY,
         self::STUDENT_COUNCIL,
         self::BOARD_OF_TRUSTEES_MEMBER,
-        self::ETHICS_COMMISSIONER
+        self::ETHICS_COMMISSIONER,
     ];
 
     // Module-related roles
@@ -124,7 +127,8 @@ class Role extends Model
         self::STUDENT_COUNCIL_SECRETARY,
         self::BOARD_OF_TRUSTEES_MEMBER,
         self::ETHICS_COMMISSIONER,
-        self::ALUMNI
+        self::ALUMNI,
+
     ];
 
     protected $fillable = [

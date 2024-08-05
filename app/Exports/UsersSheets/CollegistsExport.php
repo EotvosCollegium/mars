@@ -4,6 +4,7 @@ namespace App\Exports\UsersSheets;
 
 use App\Models\Semester;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithEvents;
@@ -17,9 +18,9 @@ class CollegistsExport implements FromCollection, WithTitle, WithMapping, WithHe
     protected $users;
     protected $semester;
 
-    public function __construct()
+    public function __construct(Collection|User $includedUsers)
     {
-        $this->users = User::canView()->orderBy('name')->get();
+        $this->users = $includedUsers;
         $this->semester = Semester::current();
     }
 
@@ -37,7 +38,7 @@ class CollegistsExport implements FromCollection, WithTitle, WithMapping, WithHe
     {
         return [
             'Név',
-            'Neptun kód',
+            'Neptun-kód',
             'Collegista státusz',
             'Státusz ('.$this->semester->tag.')',
             'E-mail',
@@ -90,7 +91,9 @@ class CollegistsExport implements FromCollection, WithTitle, WithMapping, WithHe
             $user->educationalInformation?->languageExamsAfterAcceptance?->map(function ($exam) {
                 return implode(", ", [__('role.'.$exam->language), $exam->level, $exam->type, $exam->date->format('Y-m')]);
             })->implode(" \n"),
-            ($user->educationalInformation?->alfonso_language ? __('role.'.$user->educationalInformation?->alfonso_language) . " " . $user->educationalInformation?->alfonso_desired_level : ""),
+            ($user->educationalInformation?->alfonso_language ?
+                __('role.'.$user->educationalInformation->alfonso_language) . " " . $user->educationalInformation->alfonso_desired_level
+                : ""),
             ($user->educationalInformation?->alfonsoCompleted() ?? false)
                 ? 'Igen'
                 : (($user->educationalInformation?->alfonsoCanBeCompleted() ?? true) ? "Folyamatban" : "Nem"),

@@ -25,9 +25,6 @@ use Illuminate\Support\Str;
  * @property string $wifi_password
  * @property User $user
  * @property WifiConnection[]|Collection $wifiConnections
- * @method $isActive
- * @method $setWifiCredentials
- * @method $resetPassword
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read int|null $wifi_connections_count
@@ -51,8 +48,8 @@ class InternetAccess extends Model
 
     protected $fillable = ['user_id', 'wifi_username', 'has_internet_until', 'wifi_password'];
 
-    protected $dates = [
-        'has_internet_until',
+    protected $casts = [
+        'has_internet_until' => 'datetime',
     ];
 
     protected const PASSWORD_LENGTH = 8;

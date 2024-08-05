@@ -13,33 +13,16 @@
     <link rel="stylesheet" href="{{ mix('css/welcome_page.css') }}">
     <link type="text/css" rel="stylesheet" href="{{ mix('css/materialize.css') }}" media="screen,projection" />
 
-    @if (config('app.debug'))
-        <!-- Scripts -->
-        <script type="text/javascript" src="{{ mix('js/jquery.min.js') }}"></script>
-        <script type="text/javascript" src="{{ mix('js/materialize.js') }}"></script>
-    @endif
+    <!-- Scripts -->
+    <script type="text/javascript" src="{{ mix('js/jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ mix('js/materialize.js') }}"></script>
 </head>
 
-<body class="{{ Cookie::get('theme') }}">
+<body>
+    <script>document.body.classList.add(localStorage.getItem('themeMode') || 'light');</script>
     @if (Route::has('login'))
     <header>
-        <div class="navbar-fixed">
-            <nav class="top-nav">
-                <div class="nav-wrapper">
-                    <div class="row">
-                        <ul class="right">
-                            @auth
-                            <li><a href="{{ url('/home') }}">@lang('general.home')</a></li>
-                            @else
-                            <li><a href="{{ route('login') }}">@lang('general.login')</a></li>
-                            <li><a href="{{ route('register') }}">@lang('general.register_collegist')</a></li>
-                            <li><a href="{{ route('register.guest') }}">@lang('general.register_guest')</a></li>
-                            @endauth
-                        </ul>
-                    </div>
-                </div>
-            </nav>
-        </div>
+        @include('layouts.navbar', ['fixed' => false])
     </header>
     @endif
     </header>
@@ -77,13 +60,13 @@
             @lang('main.open')</a><br class="mobile-break" />
     </div>
 
-    @if (config('app.debug'))
-        <script>
-            $(document).ready(function(){
-                $('.tooltipped').tooltip();
-            });
-        </script>
-    @endif
+    <script>
+        $(document).ready(function(){
+            $('.tooltipped').tooltip();
+            $('.sidenav').sidenav();
+            $('.collapsible').collapsible();
+        });
+    </script>
 </body>
 
 </html>

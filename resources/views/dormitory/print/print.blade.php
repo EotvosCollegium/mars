@@ -4,7 +4,7 @@
         <blockquote>
             <p>
             @lang('print.pdf_description')
-            @lang("print.pdf_maxsize", ['maxsize' => config('print.pdf_size_limit')/1000/1000])
+            @lang("print.pdf_maxsize", ['maxsize' => config('print.pdf_size_limit')/1000])
             @lang('print.costs',['one_sided'=>App\Models\PrintAccount::$COST['one_sided'], "two_sided" => App\Models\PrintAccount::$COST['two_sided']])
             </p><p>
             @lang('print.available_money'): <b class="coli-text text-orange"> {{ user()->printAccount->balance }}</b> HUF.
@@ -17,7 +17,7 @@
             @method('PUT')
             <div class="row">
                 <x-input.file l=8 xl=10 id="file_to_upload" accept=".pdf" required text="print.select_document"/>
-                <x-input.text l=4 xl=2  id="number_of_copies" type="number" min="1" value="1" required text="print.number_of_copies"/>
+                <x-input.text l=4 xl=2  id="number_of_copies" type="number" min="1" :value="1" required text="print.number_of_copies"/>
                 <x-input.checkbox s=8 xl=4 name="two_sided" checked text="print.twosided"/>
                 @if($free_pages>0) {{-- only show when user have active free pages --}}
                     <x-input.checkbox s=8 xl=4 name="use_free_pages" text="print.use_free_pages"/>

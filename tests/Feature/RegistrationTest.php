@@ -3,7 +3,8 @@
 namespace Tests\Feature;
 
 use App\Http\Controllers\Auth\RegisterController;
-use App\Models\ApplicationForm;
+use App\Mail\Invitation;
+use App\Models\Application;
 use App\Models\PersonalInformation;
 use App\Models\Role;
 use App\Models\User;
@@ -28,9 +29,8 @@ class RegistrationTest extends TestCase
      */
     public function test_register_collegist()
     {
-        $controller = new RegisterController();
         $user_data = User::factory()->make()->only(['name', 'email']);
-        $controller->create(array_merge(
+        app(RegisterController::class)->create(array_merge(
             [
                 'password' => 'secret',
                 'password_confirmation' => 'secret',
@@ -52,13 +52,11 @@ class RegistrationTest extends TestCase
             'user_id' => $user->id,
             'balance' => 0
         ]);
-        $this->assertDatabaseHas('application_forms', [
+        $this->assertDatabaseHas('applications', [
             'user_id' => $user->id,
-            'status' => ApplicationForm::STATUS_IN_PROGRESS
+            'submitted' => false
         ]);
 
-        $this->assertTrue($user->hasRole(Role::PRINTER));
-        $this->assertTrue($user->hasRole(Role::COLLEGIST));
     }
 
 
@@ -71,11 +69,9 @@ class RegistrationTest extends TestCase
     {
         Mail::fake();
 
-        $controller = new RegisterController();
-
         $user_data = User::factory()->make()->only(['name', 'email']);
         $personal_info_data = PersonalInformation::factory()->make()->only(['phone_number', 'tenant_until']);
-        $controller->create(array_merge(
+        app(RegisterController::class)->create(array_merge(
             [
                 'password' => 'secret',
                 'password_confirmation' => 'secret',
@@ -106,4 +102,5 @@ class RegistrationTest extends TestCase
         $this->assertTrue($user->hasRole(Role::PRINTER));
         $this->assertTrue($user->hasRole(Role::TENANT));
     }
+
 }

@@ -23,6 +23,7 @@ class GeneralAssemblySeeder extends Seeder
         $openQuestion = $openSitting->questions()->create([
             'title' => "I support the election of the new Students' Council.",
             'max_options' => 1,
+            'has_long_answers' => false,
             'opened_at' => now()
         ]);
         $openQuestion->options()->create([
@@ -39,6 +40,7 @@ class GeneralAssemblySeeder extends Seeder
         $openCheckboxQuestion = $openSitting->questions()->create([
             'title' => "Curatorium members",
             'max_options' => 3,
+            'has_long_answers' => false,
             'opened_at' => now()
         ]);
         $openCheckboxQuestion->options()->create([
@@ -61,8 +63,8 @@ class GeneralAssemblySeeder extends Seeder
         ]);
 
         foreach(User::collegists() as $collegist) {
-            $openQuestion->vote($collegist, [$openQuestion->options->random()]);
-            $openCheckboxQuestion->vote($collegist, [$openCheckboxQuestion->options->random()]);
+            $openQuestion->storeAnswers($collegist, [$openQuestion->options->random()]);
+            $openCheckboxQuestion->storeAnswers($collegist, $openCheckboxQuestion->options->random(2)->all());
         }
     }
 }

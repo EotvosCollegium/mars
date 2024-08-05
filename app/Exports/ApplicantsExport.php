@@ -8,6 +8,7 @@ use Maatwebsite\Excel\Concerns\WithDefaultStyles;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithTitle;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Style;
 
 class ApplicantsExport implements FromCollection, WithTitle, WithMapping, WithHeadings, ShouldAutoSize, WithDefaultStyles
@@ -26,6 +27,7 @@ class ApplicantsExport implements FromCollection, WithTitle, WithMapping, WithHe
 
     public function defaultStyles(Style $defaultStyle)
     {
+        // @phpstan-ignore-next-line
         return $defaultStyle->getAlignment()->setWrapText(true);
     }
 
@@ -38,7 +40,6 @@ class ApplicantsExport implements FromCollection, WithTitle, WithMapping, WithHe
     {
         return [
             'Név',
-            'Jelentkezés státusza',
             'E-mail',
             'Születési hely',
             'Születési idő',
@@ -47,7 +48,7 @@ class ApplicantsExport implements FromCollection, WithTitle, WithMapping, WithHe
             'Lakhely',
             'Érettségi éve',
             'Középiskola',
-            'Neptun kód',
+            'Neptun-kód',
             'Egyetemi e-mail',
             'Szak',
             'Kar',
@@ -66,7 +67,6 @@ class ApplicantsExport implements FromCollection, WithTitle, WithMapping, WithHe
 
         return [
             $user->name,
-            $user->application->status,
             $user->email,
             $user->personalInformation?->place_of_birth,
             $user->personalInformation?->date_of_birth,
@@ -83,7 +83,9 @@ class ApplicantsExport implements FromCollection, WithTitle, WithMapping, WithHe
             implode(",", $user->faculties->pluck('name')->toArray()),
             implode(",", $user->workshops->pluck('name')->toArray()),
             $user->isResident() ? 'Bentlakó' : 'Bejáró',
-            ($user->educationalInformation?->alfonso_language ? __('role.'.$user->educationalInformation?->alfonso_language) . " " . $user->educationalInformation?->alfonso_desired_level : ""),
+            ($user->educationalInformation?->alfonso_language ?
+                __('role.'.$user->educationalInformation->alfonso_language) . " " . $user->educationalInformation->alfonso_desired_level
+                : ""),
             implode(" \n", $application->question_1),
             $application->present ?? "Igen",
             $user->application->accommodation ? "Igen" : "Nem"

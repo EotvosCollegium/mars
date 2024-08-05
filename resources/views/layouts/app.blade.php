@@ -57,14 +57,18 @@
         z-index: 9999;
         background: url(/loading.gif) center no-repeat #fff;
     }
+    .dark .preloader {
+        filter: invert(100%);
+    }
     </style>
 
 </head>
 
 <div class="preloader"></div>
-<body class="{{ Cookie::get('theme') }}">
+<body>
+    <script>document.body.classList.add(localStorage.getItem('themeMode') || 'light');</script>
     <header>
-        @include('layouts.navbar')
+        @include('layouts.navbar', ['fixed' => true])
     </header>
     <div class="row">
         <div class="container">
@@ -89,19 +93,11 @@
             $('select').formSelect();
         });
         function toggleColorMode() {
-            var mode = (localStorage.getItem('mode') || 'dark') === 'dark' ? 'light' : 'dark';
-            localStorage.setItem('mode', mode);
-            if(localStorage.getItem('mode') === 'dark') {
-                document.querySelector('body').classList.add('dark');
-            } else {
-                document.querySelector('body').classList.remove('dark');
-            }
-
-            // Save as cookie
-            $.ajax({
-                type: "POST",
-                url: "{{ route('set-color-mode', [':mode']) }}".replace(':mode', mode),
-            });
+            const oldThemeMode = localStorage.getItem('themeMode') || 'light'; // default is light mode
+            const newThemeMode = oldThemeMode === 'dark' ? 'light' : 'dark';
+            localStorage.setItem('themeMode', newThemeMode);
+            document.body.classList.remove(oldThemeMode);
+            document.body.classList.add(newThemeMode);
         }
 
         // for our custom arrow dropdowns

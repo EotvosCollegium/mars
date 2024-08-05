@@ -37,20 +37,23 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class CommunityService extends Model
 {
     protected $fillable = ['requester_id', 'approver_id', 'description', 'approved', 'semester_id'];
+    protected $casts = [
+        'approved' => 'boolean',
+    ];
 
 
     /**
-     * @return User the requester of the CommunityService
+     * @return BelongsTo the requester of the CommunityService
      */
-    public function requester()
+    public function requester(): BelongsTo
     {
         return $this->belongsTo(\App\Models\User::class);
     }
 
     /**
-     * @return User the approver of the CommunityService
+     * @return BelongsTo the approver of the CommunityService
      */
-    public function approver()
+    public function approver(): BelongsTo
     {
         return $this->belongsTo(\App\Models\User::class);
     }
@@ -75,9 +78,8 @@ class CommunityService extends Model
         return Attribute::make(
             get: fn () => match ($this->approved) {
                 null =>  'függőben',
-                1 => 'jóváhagyott',
-                0 => 'elutasított',
-                default => throw new \Exception('Unexpected match value')
+                true => 'jóváhagyott',
+                false => 'elutasított',
             },
         );
     }

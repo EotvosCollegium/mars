@@ -31,12 +31,12 @@
 
 \vspace*{2em}
 
-\noindent{}Név: {{ $name }} \\
-Állandó lakcím: {{ $address }} \\
-Telefonszám: {{ $phone }} \\
-E-mail: {{ $email }} \\
-Születési hely és idő: {{ $place_and_of_birth }} \\
-Anyja neve: {{ $mothers_name }} \\
+\noindent{}Név: {{ \App\Utils\LatexSanitizer::sanitizeLatex($name) }} \\
+Állandó lakcím: {{ \App\Utils\LatexSanitizer::sanitizeLatex($address) }} \\
+Telefonszám: {{ \App\Utils\LatexSanitizer::sanitizeLatex($phone) }} \\
+E-mail: {{ \App\Utils\LatexSanitizer::sanitizeLatex($email) }} \\
+Születési hely és idő: {{ \App\Utils\LatexSanitizer::sanitizeLatex($place_and_of_birth) }} \\
+Anyja neve: {{ \App\Utils\LatexSanitizer::sanitizeLatex($mothers_name) }} \\
 Beköltözés dátuma: \\
 \\
 Megjegyzések:
@@ -50,7 +50,7 @@ előírásait.
 A fentieket tudomásul vettem, a szobát a leltár szerint átvettem.
 
 \vspace{2em}
-\noindent{}Budapest, {{ $date }}
+\noindent{}Budapest, {{ \App\Utils\LatexSanitizer::sanitizeLatex($date) }}
 
 \hfill\lotofdots
 

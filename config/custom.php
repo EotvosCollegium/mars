@@ -14,4 +14,6 @@ return [
 
     'semester_evaluation_deadline' => env('SEMESTER_EVALUATION_DEADLINE'),
 
+    // maximum accepted file size in kilobytes (also applies for profile pictures)
+    'general_file_size_limit' => env('GENERAL_FILE_SIZE_LIMIT', 10000),
 ];

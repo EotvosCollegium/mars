@@ -19,11 +19,13 @@
         @if($allowEmpty)
         <option value=''>{{is_string($allowEmpty) ? $allowEmpty : ""}}</option>
         @endif
+        @php
+        $value = (old($id) ?? $attributes->get('value')) ?? $default;
+        @endphp
         @foreach ($elements as $element)
             <option
                 value="{{ $element->id ?? $element }}"
-                @selected($default != null && (($element->id ?? ($element->name ?? $element)) == $default))
-                @selected(($element->id ?? ($element->name ?? $element)) == (old($id) ?? $attributes->get('value')))
+                @selected(($element->id ?? ($element->name ?? $element)) == $value)
                 >{{$formatter($element)}}</option>
         @endforeach
     </select>
@@ -42,20 +44,3 @@
 @if(!$onlyInput)
 </div>
 @endif
-
-@push('scripts')
-    <script>
-        // //Initialize materialize select
-        // var instances;
-        // $(document).ready(
-        // function() {
-        //     var elems = $('#{{ $id }}');
-        //     const options = [
-        //     @foreach ($elements as $element)
-        //         { name : '{{ $element->name ?? $element }}',  value : '{{ $element->id ?? $element }}'},
-        //     @endforeach
-        //     ];
-        //     instances = M.FormSelect.init(elems, options);
-        // });
-</script>
-@endpush

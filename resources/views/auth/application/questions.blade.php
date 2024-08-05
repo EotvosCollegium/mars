@@ -1,9 +1,5 @@
 @extends('auth.application.app')
 
-@section('questions-active')
-    active
-@endsection
-
 @section('form')
 
     <div class="card">
@@ -12,14 +8,14 @@
             <div class="card-content">
                 <div class="row">
                     <x-input.text s=12 id="graduation_average" text="application.graduation_average" type='number' step="0.01" min="0"
-                                  max="5" text="Érettségi átlaga" :value="$user->application->graduation_average"
+                                  text="Érettségi átlaga" :value="$user->application->graduation_average"
                                   required
                                   helper='Az összes érettségi tárgy hagyományos átlaga'/>
                     <div class="col s12">
                         @livewire('parent-child-form', [
                         'title' => "Van lezárt egyetemi félévem",
                         'name' => 'semester_average',
-                        'helper' => 'Hagyományos átlag a félév(ek)ben',
+                        'helper' => 'Hagyományos átlag a félév(ek)ben (tizedesponttal)',
                         'optional' => true,
                         'items' => $user->application->semester_average])
                     </div>
@@ -48,20 +44,21 @@
                         'items' => $user->application->foreign_studies])
                     </div>
                     <div class="input-field col s12">
-                        <p style="margin-bottom:10px"><label style="font-size: 1em">Megpályázni kívánt státusz</label>
-                        </p>
+                        <p style="margin-bottom:10px">Megpályázni kívánt státusz:</p>
                         <p>
-                            @php $checked = old('status') ?  old('status') == 'resident' : $user->isResident() @endphp
-                            <label>
-                                <input type="radio" name="status" value="resident"
+                            @php $checked = old('status') ?  old('status') == 'resident' : $user->application->applied_for_resident_status @endphp
+                            <label class="black-text">
+                                <input type="radio" name="status" value="resident" required
                                     {{ $checked ? 'checked' : '' }}>
                                 <span>@lang('role.resident')</span>
                             </label>
                         </p>
                         <p>
-                            @php $checked = old('status') ?  old('status') == 'extern' : $user->isExtern() @endphp
-                            <label>
-                                <input type="radio" name="status" value="extern"
+                            {{-- beware: the flag might be null, but must be false for this to be checked --}}
+                            @php $checked = old('status') ?  old('status') == 'extern'
+                                    : (false === $user->application->applied_for_resident_status) @endphp
+                            <label class="black-text">
+                                <input type="radio" name="status" value="extern" required
                                     {{ $checked ? 'checked' : '' }}>
                                 <span>@lang('role.extern')</span>
                             </label>
@@ -70,9 +67,29 @@
                         <blockquote class="error">A státusz kitöltése kötelező</blockquote>
                         @enderror
                     </div>
-                    <div class="input-field col s12"><p style="margin-bottom:10px"><label style="font-size: 1em">Honnan
-                                hallott a Collegiumról?</label></p>
-                        @foreach(\App\Models\ApplicationForm::QUESTION_1 as $answer)
+                    <div class="input-field col s12">
+                        <p style="margin-bottom:10px">
+                                Megpályázni kívánt műhely(ek):
+                        </p>
+                        <div class="row">
+                        @foreach ($workshops as $workshop)
+                            <div class="col s6">
+                                @php $checked = $user->application->appliedWorkshops->contains($workshop->id) @endphp
+                                <x-input.checkbox only_input id="workshop_{{$workshop->id}}" :text="$workshop->name" name="workshop[]"
+                                                  value="{{ $workshop->id }}" checked='{{$checked}}'/>
+                            </div>
+                        @endforeach
+                        </div>
+                        @error('workshop')
+                        <blockquote class="error">@lang('user.workshop_must_be_filled')</blockquote>
+                        @enderror
+                        <blockquote>
+                            Kérjük, jelentkezését csak olyan műhelyekbe adja be, amelyek munkájában szakmailag részt tud venni. A műhelyek egymástól függetlenül dönthetnek a meghallgatásáról.
+                        </blockquote>
+                    </div>
+                    <div class="input-field col s12">
+                        <p style="margin-bottom:10px">Honnan hallott a Collegiumról?</p>
+                        @foreach(\App\Models\Application::QUESTION_1 as $answer)
                             @if(in_array($answer, $user->application->question_1 ?? []) !== false)
                                 <p>
                                     <x-input.checkbox
@@ -112,12 +129,17 @@
                                       helper="Pl. diákönkormányzati tevékenység, önkéntesség, szervezeti tagság. (nem kötelező)"
                                       :value="$user->application->question_4"/>
                     <x-input.textarea id="present"
-                                      text="Amennyiben nem tud jelen lenni a felvételi teljes ideje alatt (vasárnap-szerda), kérjük itt indoklással jelezze!"
+                                      text="Amennyiben nem tud jelen lenni a felvételi teljes ideje alatt (kedd-péntek), kérjük itt indoklással jelezze!"
                                       :value="$user->application->present"  helper="Változás esetén értesítse a titkárságot!"/>
                     <x-input.checkbox id="accommodation"
                                       text="Igényel-e szállást a felvételi idejére?"
                                       :checked="$user->application->accommodation"/>
+                    <div class="col s12">
+                        <label>A szállással kapcsolatban figyelje a titkárság tájékoztatását. Az igénylés nem garantál szálláshelyet.</label>
+                    </div>
+
                 </div>
+
 
             </div>
             <div class="card-action">

@@ -13,13 +13,15 @@ class Text extends Input
      * Create a new text input instance.
      *
      * @param  string  $helper  helper message
+     * @param  ?string $value   pre-filled contents
      * @return void
      */
-    public function __construct($id, $withoutLabel = false, $text = null, $s = 12, $m = null, $l = null, $xl = null, $onlyInput = false, $helper = null)
+    public function __construct($id, $withoutLabel = false, $text = null, $s = 12, $m = null, $l = null, $xl = null, $onlyInput = false, $helper = null, ?string $value = '')
     {
         parent::__construct($id, $text, $s, $m, $l, $xl, $onlyInput);
         $this->helper = $helper;
         $this->withoutLabel = $withoutLabel;
+        $this->value = $value;
     }
 
     /**

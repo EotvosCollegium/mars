@@ -16,8 +16,13 @@ class Locale
      */
     public function handle($request, Closure $next)
     {
-        $locales = array_keys(config('app.locales'));
-        App::setLocale($request->cookie('locale', $request->getPreferredLanguage($locales)));
+        $appLocales = array_keys(config('app.locales'));
+        $acceptedByUser = $request->getLanguages();
+        $default = config('app.locale');
+
+        /* If the user speaks the site's main language, we should always select that, even if others have a higher priority. */
+        $selected = in_array($default, $acceptedByUser) ? $default : $request->getPreferredLanguage($appLocales);
+        App::setLocale($request->cookie('locale', $selected));
         return $next($request);
     }
 }

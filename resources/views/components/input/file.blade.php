@@ -12,6 +12,9 @@
     @error($id)
         <span class="helper-text" data-error="{{ $message }}"></span>
     @enderror
+    @if($helper ?? null)
+        <span class="helper-text">{{ $helper }}</span>
+    @endif
 </div>
 @if (!$onlyInput)
     </div>

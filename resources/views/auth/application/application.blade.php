@@ -1,5 +1,5 @@
 {{-- All the application's data for finalization and for the admission committes to show --}}
-@can('viewApplication', $user)
+@can('view', $user->application)
     <div class="card">
         <div class="card-content">
             <div class="row" style="margin-bottom: 0">
@@ -11,17 +11,69 @@
                     @endif
                 </div>
                 <div class="col s12 xl8">
-                    @can('editApplicationStatus', \App\Models\User::class)
-                        @if(!(user()->isAdmin() || $user->application->status != \App\Models\ApplicationForm::STATUS_IN_PROGRESS))
-                            <span class="right">
-                                @include('auth.application.status', ['status' => $user->application->status])
+
+                    <div class="right" style="margin:5px;width:150px">
+                        @can('viewUnfinished', \App\Models\Application::class)
+                            @if(!$user->application->submitted)
+                                <span class="new badge scale-transition red tag" style="display: block;text-transform: uppercase"
+                                      data-badge-caption="">
+                                Nincs véglegesítve
+                                </span>
+                                <div class="divider" style="margin: 5px"></div>
+                            @endif
+                        @endcan
+                        @if ($user->application->applied_for_resident_status)
+                            <span class="new badge scale-transition coli blue tag" style="display: block;"
+                                  data-badge-caption="">
+                                @lang('role.resident')
+                            </span>
+                        @elseif (!is_null($user->application->applied_for_resident_status))
+                            <span class="new badge scale-transition coli orange tag" style="display: block;"
+                                  data-badge-caption="">
+                                @lang('role.extern')
                             </span>
                         @else
-                            @livewire('application-status-update', ['application' => $user->application])
+                            <div class="center-align" style="margin:-5px;font-style:italic;color:red">hiányzó státusz</div>
                         @endif
-                    @endcan
+                        <div class="divider" style="margin: 5px"></div>
+                        @foreach($user->application->applicationWorkshops as $workshop)
+                            <span class="new badge {{ $workshop->workshop->color() }} scale-transition tag"
+                                  data-badge-caption=""
+                                  style="display: block;white-space: nowrap;overflow: hidden;text-overflow: ellipsis">
+                                {{$workshop->workshop->name}}
+                            </span>
+                            @if($user->application->submitted)
+                                <div
+                                    style="display: flex;flex-direction: column;align-items: center;justify-content: center;">
+                                    @can('editStatus', [\App\Models\Application::class, $workshop->workshop])
+                                        @livewire('application-status-update', ['application' => $user->application, 'workshop' => $workshop])
+                                    @else
+                                        @if(isset($application))
+                                            <label style="font-size: 1em">
+                                                @if($workshop->admitted)
+                                                    felvéve
+                                                @elseif($workshop->called_in)
+                                                    behívva
+                                                @else
+                                                    nincs behívva
+                                                @endif
+                                            </label>
+                                        @endif
+                                    @endcan
+                                </div>
+                            @endif
+                        @endforeach
+                    </div>
 
-                    <div class="card-title">{{ $user->name }}</div>
+                    <div class="card-title">
+                        @if(isset($application))
+                            <a href="{{route('admission.applicants.show', ['application' => $application->id])}}">
+                                {{ $user->name }}
+                            </a>
+                        @else
+                            {{ $user->name }}
+                        @endif
+                    </div>
                     <p style="margin-bottom: 5px"><a href="mailto:{{ $user->email }}">{{ $user->email }}</a></p>
                     <p style="margin-bottom: 5px">{{ $user->personalInformation?->phone_number }}</p>
                     <p style="margin-bottom: 5px">
@@ -33,31 +85,6 @@
                         @empty
                             <span style="font-style:italic;color:red">hiányzó szak</span>
                         @endforelse
-                    </p>
-                    <p style="margin-bottom: 5px">
-                        @if ($user->workshops->count() > 0)
-                            @include('user.workshop_tags', ['user' => $user, 'newline' => true])
-                        @else
-                            <span style="font-style:italic;color:red">hiányzó műhely</span>
-                        @endif
-                    </p>
-                    <p>
-                        @if ($user->isResident())
-                            <span class="new badge coli blue tag" style="float:none;padding:4px;margin:0 10px 0px 2px;"
-                                  data-badge-caption="">
-                            @lang('role.resident')
-                        </span>
-                        @endif
-                        @if ($user->isExtern())
-                            <span class="new badge coli orange tag"
-                                  style="float:none;padding:4px;margin:0 10px 0px 2px;"
-                                  data-badge-caption="">
-                            @lang('role.extern')
-                        </span>
-                        @endif
-                        @if(!$user->isResident() && !$user->isExtern())
-                            <span style="font-style:italic;color:red">hiányzó státusz</span>
-                        @endif
                     </p>
                 </div>
                 @if($expanded ?? true)
@@ -173,8 +200,10 @@
                                 <th scope="row">Nyelvvizsga</th>
                                 <td>
                                     @forelse ($user->educationalInformation?->languageExams?->sortBy('date') ?? [] as $exam)
-                                        <a href="/{{ $exam->path }}">
-                                            {{ __('role.'.$exam->language) }} - {{ $exam->level }}, {{ $exam->type }}, {{$exam->date->format('Y-m')}}
+                                        <a href="/{{ $exam->path }}" target="_blank">
+                                            {{ __('role.'.$exam->language) }} - {{ $exam->level }}
+                                            , {{ $exam->type }}
+                                            , {{$exam->date->format('Y-m')}}
                                         </a>
                                         <br>
                                     @empty
@@ -265,7 +294,8 @@
                                         @endif
                                         <div class="row" style="margin-bottom: 0; padding: 10px">
                                             <div class="col" style="margin-top: 5px">
-                                                <a href="{{ url($file->path) }}" target="_blank">{{ $file->name }}</a>
+                                                <a href="{{ url($file->path) }}"
+                                                   target="_blank">{{ $file->name }}</a>
                                             </div>
                                         </div>
                                     @empty

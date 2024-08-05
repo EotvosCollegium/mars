@@ -73,18 +73,16 @@ class Router extends Model
 
     /**
      * Check if the router is not reachable.
-     * @return Router
      */
-    public function isDown()
+    public function isDown(): bool
     {
         return $this->failed_for > 0;
     }
 
     /**
      * Check if the router is reachable.
-     * @return Router
      */
-    public function isUp()
+    public function isUp(): bool
     {
         return $this->failed_for == 0;
     }

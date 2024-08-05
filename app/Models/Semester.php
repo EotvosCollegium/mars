@@ -5,9 +5,16 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 use InvalidArgumentException;
+
+use App\Models\User;
+use App\Models\AnonymousQuestions\AnswerSheet;
+use App\Models\Question;
 
 /**
  * A semester is identified by a year and by it's either autumn or spring.
@@ -106,7 +113,7 @@ class Semester extends Model
     {
         $parts = explode(self::SEPARATOR, $tag);
 
-        return self::getOrCreate($parts[0], $parts[2]);
+        return self::getOrCreate((int)$parts[0], (int)$parts[2]);
     }
 
     /**
@@ -117,11 +124,19 @@ class Semester extends Model
         return $this->getStartDate()->format('Y.m.d') . '-' . $this->getEndDate()->format('Y.m.d');
     }
 
+    /**
+     * Returns whether this is an autumn semester
+     * (the first semester of the academic year).
+     */
     public function isAutumn(): bool
     {
         return $this->part == 1;
     }
 
+    /**
+     * Returns whether this is a spring semester
+     * (the second semester of the academic year).
+     */
     public function isSpring(): bool
     {
         return $this->part == 2;
@@ -153,9 +168,17 @@ class Semester extends Model
     }
 
     /**
+     * Whether the semester is in the past.
+     */
+    public function isClosed(): bool
+    {
+        return Carbon::today() > $this->getEndDate();
+    }
+
+    /**
      * Returns the users with any status in the semester.
      */
-    public function users()
+    public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'semester_status')->withPivot(['status', 'verified', 'comment']);
     }
@@ -163,7 +186,7 @@ class Semester extends Model
     /**
      * Returns the users with the specified status in the semester.
      */
-    public function usersWithStatus($status)
+    public function usersWithStatus($status): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'semester_status')
             ->wherePivot('status', '=', $status)
@@ -171,50 +194,20 @@ class Semester extends Model
     }
 
     /**
-     * Returns the users with active status in the semester.
-     */
-    public function activeUsers()
-    {
-        return $this->usersWithStatus(SemesterStatus::ACTIVE);
-    }
-
-    /**
-     * Decides if the given user with the given status exists in the semester.
-     *
-     * @param int $user user id
-     * @param string $status
-     * @return true if the given user exists
-     * @return false if the given user has another status or not attached to the semester
-     */
-    public function hasUserWith($user, $status): bool
-    {
-        return $this->usersWithStatus($status)->get()->contains($user);
-    }
-
-    /**
-     * Decides if the given user is active in the semester.
-     *
-     * @param int $user user id
-     * @param string $status
-     * @return true if the given user is active
-     * @return false if the given user is not active or not attached to the semester
-     */
-    public function isActive($user)
-    {
-        return $this->hasUserWith($user, SemesterStatus::ACTIVE);
-    }
-
-    /**
      * Returns the transactions made in the semester.
      */
-    public function transactions()
+    public function transactions(): HasMany
     {
-        return $this->hasMany('App\Models\Transaction', 'semester_id');
+        return $this->hasMany(Transaction::class, 'semester_id');
     }
 
-    public function communityServices()
+    /**
+     * Returns the community services made in the semester.
+     * @return HasMany
+     */
+    public function communityServices(): HasMany
     {
-        return $this->hasMany(\App\Models\CommunityService::class, 'semester_id');
+        return $this->hasMany(CommunityService::class, 'semester_id');
     }
 
     /**
@@ -230,9 +223,38 @@ class Semester extends Model
     /**
      * Returns the workshop balances in the semester.
      */
-    public function workshopBalances()
+    public function workshopBalances(): HasMany
     {
-        return $this->hasMany('App\Models\WorkshopBalance');
+        return $this->hasMany(WorkshopBalance::class);
+    }
+
+    /**
+     * Returns the anonymous answer sheets filled as part of the evaluation form
+     * in the semester.
+     */
+    public function answerSheets(): HasMany
+    {
+        return $this->hasMany(AnswerSheet::class);
+    }
+
+    /**
+     * Returns the anonymous questions forming part of
+     * the semester's evaluation form.
+     */
+    public function questions(): MorphMany
+    {
+        return $this->morphMany(Question::class, 'parent');
+    }
+
+    /**
+     * The questions which a given user has not yet answered.
+     * This returns a Collection.
+     */
+    public function questionsNotAnsweredBy(User $user)
+    {
+        return $this->questions()->whereDoesntHave('users', function ($query) use ($user) {
+            $query->where('id', $user->id);
+        })->get();
     }
 
     /**
@@ -246,10 +268,10 @@ class Semester extends Model
         if (!Cache::get('semester.current.' . $today)) {
             $now = Carbon::now();
             if ($now->month >= self::START_OF_SPRING_SEMESTER && $now->month <= self::END_OF_SPRING_SEMESTER) {
-                $part = "2";
+                $part = 2;
                 $year = $now->year - 1;
             } else {
-                $part = "1";
+                $part = 1;
                 // This assumes that the semester ends in the new year.
                 $year = $now->month <= self::END_OF_AUTUMN_SEMESTER ? $now->year - 1 : $now->year;
             }
@@ -320,9 +342,9 @@ class Semester extends Model
     /**
      * Gets or creates the semester.
      *
-     * @param int year
-     * @param int part (1,2)
-     * @return Semester|InvalidArgumentException
+     * @param int $year
+     * @param int $part (1,2)
+     * @return Semester
      */
     public static function getOrCreate($year, $part): Semester
     {

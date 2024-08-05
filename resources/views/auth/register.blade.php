@@ -1,20 +1,36 @@
 @extends('layouts.app')
-
-@php
-    $countries = require base_path('countries.php');
-@endphp
-
 @section('content')
 <div class="row">
     <div class="col s12 l8 xl6 offset-l2 offset-xl3">
         <div class="card">
             <div class="card-image">
                 <img src="/img/EC_building.jpg">
-                <span class="card-title">@lang('general.register')</span>
+                <span class="card-title">
+                    @if($user_type == \App\Models\Role::TENANT)
+                    @lang('general.register_guest')
+                    @else
+                    @lang('general.register_collegist')
+                    @endif
+                </span>
             </div>
             <div class="card-content">
                 @if($user_type == \App\Models\Role::COLLEGIST)
-                <blockquote><a href="{{route('register.guest')}}" style="text-decoration: underline">@lang('registration.information_tenant')</a></blockquote>
+                <blockquote lang="en">
+                    <a href="{{route('register.guest')}}" style="text-decoration: underline">@lang('registration.information_tenant', [], 'en')</a>
+                </blockquote>
+                <blockquote lang="hu">
+                    <a href="{{route('register.guest')}}" style="text-decoration: underline">@lang('registration.information_tenant', [], 'hu')</a>
+                </blockquote>
+                <blockquote>
+                    Ha már rendelkezel {{ config('app.name') }} fiókkal, <a href="{{ route('login') }}">belépést</a> követően adhatod le jelentkezésed.
+                </blockquote>
+                @else
+                <blockquote lang="hu">
+                    <a href="{{route('register')}}" style="text-decoration: underline">@lang('registration.information_collegist', [], 'hu')</a>
+                </blockquote>
+                <blockquote lang="en">
+                    <a href="{{route('register')}}" style="text-decoration: underline">@lang('registration.information_collegist', [], 'en')</a>
+                </blockquote>
                 @endif
                 @if($user_type == \App\Models\Role::TENANT || $application_open ?? false)
                 <form method="POST" action="{{ route('register') }}">
