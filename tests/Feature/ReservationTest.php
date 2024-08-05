@@ -52,8 +52,7 @@ class ReservationTest extends TestCase
             'default_reservation_duration' => 15,
             'is_default_compulsory' => false,
             'allowed_starting_minutes' => '0,15,30,45',
-            'out_of_order_from' => null,
-            'out_of_order_until' => null
+            'out_of_order' => false
         ];
 
         $anita = self::createSecretary();

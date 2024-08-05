@@ -16,8 +16,6 @@
                         <tr>
                             <th>@lang('reservations.item_status')</th>
                             <th>@lang('reservations.item_name')</th>
-                            <th>@lang('reservations.out_of_order_from')</th>
-                            <th>@lang('reservations.out_of_order_until')</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -34,12 +32,6 @@
                             </td>
                             <td>
                                 {{ $item->name }}
-                            </td>
-                            <td>
-                                {{ $item->out_of_order_from }}
-                            </td>
-                            <td>
-                                {{ $item->out_of_order_until }}
                             </td>
                         </tr>
                         @endforeach

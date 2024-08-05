@@ -22,8 +22,7 @@ return new class extends Migration
             $table->boolean('is_default_compulsory');
             // The minute endings of the possible starting times for a reservation.
             $table->set('allowed_starting_minutes', range(0, 59));
-            $table->datetime('out_of_order_from')->nullable();
-            $table->datetime('out_of_order_until')->nullable();
+            $table->boolean('out_of_order')->default(false);
             $table->timestamps();
         });
         Schema::create('reservation_groups', function (Blueprint $table) {
@@ -57,8 +56,6 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('reservable_item_id')->references('id')->on('reservable_items')
-                ->onDelete('cascade')->onUpdate('cascade');
-            $table->foreign('user_id')->references('id')->on('users')
                 ->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('user_id')->references('id')->on('users')
                 ->onDelete('cascade')->onUpdate('cascade');

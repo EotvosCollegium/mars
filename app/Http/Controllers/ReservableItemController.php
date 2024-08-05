@@ -149,8 +149,7 @@ class ReservableItemController extends Controller
                     }
                 },
             ],
-            'out_of_order_from' => 'nullable|date',
-            'out_of_order_until' => 'nullable|date'
+            'out_of_order' => 'nullable|boolean',
         ]);
 
         $validatedData = $validator->validate();

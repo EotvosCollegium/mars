@@ -24,8 +24,7 @@ class ReservableItem extends Model
         'default_reservation_duration',
         'is_default_compulsory',
         'allowed_starting_minutes',
-        'out_of_order_from',
-        'out_of_order_until'
+        'out_of_order'
     ];
 
     /**
@@ -49,17 +48,7 @@ class ReservableItem extends Model
      */
     public function isOutOfOrder(): bool
     {
-        if (is_null($this->out_of_order_from)) return false;
-        else {
-            $from = new Carbon($this->out_of_order_from);
-            $now = Carbon::now();
-            if ($now < $from) return false;
-            else if (is_null($this->out_of_order_until)) return true;
-            else {
-                $until = new Carbon($this->out_of_order_until);
-                return $now < $until;
-            }
-        }
+        return $this->out_of_order;
     }
 
     /**
