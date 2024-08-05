@@ -33,7 +33,7 @@
                     @endforeach
                     <div class="row">
                         <input type="text" name="user_type" id="user_type" value="{{ $user_type }}" readonly hidden>
-                        <x-input.text id='name' autofocus required autocomplete='name' text='user.name' />
+                        <x-input.text id='name' autofocus required autocomplete='name' text='user.full_name' />
                         <x-input.text id="email" type="email" text="user.email" required autocomplete="email" />
                         <x-input.text id="password" text="registration.password" type="password" required autocomplete="new-password" />
                         <x-input.text id="confirmpwd" text="registration.confirmpwd" name="password_confirmation" type="password" required autocomplete="new-password" />
