@@ -27,6 +27,9 @@ class ReservableItem extends Model
         'out_of_order'
     ];
 
+    public const ROOM = 'room';
+    public const WASHING_MACHINE = 'washing_machine';
+
     /**
      * @return HasMany The reservations that have been made for this particular item.
      */
@@ -64,6 +67,14 @@ class ReservableItem extends Model
                          ->where('reserved_until', '>', $now)
                          ->doesntExist();
         }
+    }
+
+    /**
+     * Returns whether this is a washing machine.
+     */
+    public function isWashingMachine(): bool
+    {
+        return self::WASHING_MACHINE == $this->type;
     }
 
     /**

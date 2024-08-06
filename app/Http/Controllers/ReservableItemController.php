@@ -29,98 +29,16 @@ class ReservableItemController extends Controller
             'items' => $items
         ]);
     }
-  /**
-   * Shows the details of a reservable item.
-   * Creates an ordered array of blocks to be displayed in a timetable
-   * for a given item and timespan.
-   * A block contains a "from" and "until" time (in Carbon instances)
-   * and a "reservation_id" if it belongs to a reservation
-   * (for a free span, it is null).
-   */
-    public static function listOfBlocks(ReservableItem $item, Carbon $from, Carbon $until): array {
-        $reservations = $item->reservationsInSlot($from, $until)->all();
-
-        $blocks = [];
-        $isForReservation = 0 < count($reservations) && $reservations[0]->reserved_from <= $from;
-        $currentStart = $from;
-        $i = 0;
-        while($i < count($reservations)) {
-            $block = [];
-            if ($isForReservation) {
-                $reservation = $reservations[$i];
-                $block['from'] = Carbon::make($reservation->reserved_from);
-                $block['until'] = Carbon::make($reservation->reserved_until);
-                $block['reservation_id'] = $reservation->id;
-                $blocks[] = $block;
-                $currentStart = $block['until'];
-                $isForReservation = false;
-                ++$i;
-            } else {
-                $currentEnd = Carbon::make($reservations[$i]->reserved_from);
-                if ($currentStart < $currentEnd) {
-                    $block['from'] = $currentStart;
-                    $block['until'] = $currentEnd;
-                    $block['reservation_id'] = null;
-                    $currentStart = $currentEnd;
-                    $blocks[] = $block;
-                }
-                $isForReservation = true;
-            }
-        }
-        // for the last block:
-        if ($currentStart < $until) {
-            // create a final free block
-            $block = [
-                'from' => $currentStart,
-                'until' => $until,
-                'reservation_id' => null
-            ];
-            $blocks[] = $block;
-        } else {
-            // cut the end if it is after $until
-            $blocks[count($blocks)-1]['until'] = $until;
-        }
-
-        // we also have to split blocks
-        // that spill through midnights
-        $splitBlocks = [];
-        $i = 0;
-        while ($i < count($blocks)) {
-            $block = $blocks[$i];
-
-            $midnightAfter = $block['from']->copy();
-            $midnightAfter->hour = 0;
-            $midnightAfter->minute = 0;
-            $midnightAfter->addDays(1);
-
-            if ($block['until'] <= $midnightAfter) {
-                $splitBlocks[] = $block;
-                ++$i;
-            } else {
-                $splitBlock = [
-                    'from' => $block['from'],
-                    'until' => $midnightAfter,
-                    'reservation_id' => $block['reservation_id']
-                ];
-                $splitBlocks[] = $splitBlock;
-                // that array won't be used for anything else anyway
-                $blocks[$i]['from'] = $midnightAfter;
-            }
-        }
-
-        return $splitBlocks;
-    }
 
     public function show(ReservableItem $item) {
         $this->authorize('viewAny', ReservableItem::class);
 
         $from = Carbon::today()->startOfWeek();
-        $until = $from->copy()->addDays(7);
+        $until = $from->copy()->addDays(6);
         return view('reservations.items.show', [
             'item' => $item,
             'from' => $from,
-            'until' => $until,
-            'blocks' => ReservableItemController::listOfBlocks($item, $from, $until)
+            'until' => $until
         ]);
     }
 

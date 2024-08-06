@@ -285,6 +285,7 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
         Route::resource('items', ReservableItemController::class)->only([
             'index', 'create', 'store', 'show', 'delete'
         ]);
+        Route::post('/items/{item}/report_fault', [ReservableItemController::class, 'reportFault'])->name('items.report_fault');
 
         Route::get('/for_item/{item}', [ReservationController::class, 'index'])->name('index');
         Route::get('/washing_machines', [ReservationController::class, 'indexForWashingMachines'])->name('index_for_washing_machines');
@@ -295,8 +296,8 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
         Route::post('/{reservation}', [ReservationController::class, 'update'])->name('update');
         Route::post('/{reservation}/delete', [ReservationController::class, 'delete'])->name('delete');
         Route::post('/{reservation}/verify', [ReservationController::class, 'verify'])->name('verify');
-        Route::post('/{reservation}/deleteAll', [ReservationController::class, 'deleteAll'])->name('deleteAll');
-        Route::post('/{reservation}/verifyAll', [ReservationController::class, 'verifyAll'])->name('verifyAll');
+        Route::post('/{reservation}/delete_all', [ReservationController::class, 'deleteAll'])->name('delete_all');
+        Route::post('/{reservation}/verify_all', [ReservationController::class, 'verifyAll'])->name('verify_all');
     });
 
     Route::get('/general_assemblies/{general_assembly}/presence_checks/create', [GeneralAssemblyPresenceCheckController::class, 'create'])

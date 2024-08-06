@@ -11,32 +11,7 @@
         <div class="card">
             <div class="card-content">
                 <span class="card-title">@lang('reservations.items')</span>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>@lang('reservations.item_status')</th>
-                            <th>@lang('reservations.item_name')</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($items as $item)
-                        <tr>
-                            <td>
-                                @if($item->isOutOfOrder())
-                                <span class="new badge grey" data-badge-caption="">@lang('reservations.out_of_order')</span>
-                                @elseif($item->isFree())
-                                <span class="new badge green" data-badge-caption="">@lang('reservations.is_free')</span>
-                                @else
-                                <span class="new badge red" data-badge-caption="">@lang('reservations.is_occupied')</span>
-                                @endif
-                            </td>
-                            <td>
-                                {{ $item->name }}
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                @include('reservations.item_table')
             </div>
         </div>
     </div>

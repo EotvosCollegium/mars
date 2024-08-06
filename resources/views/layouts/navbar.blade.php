@@ -43,16 +43,7 @@
         <!-- internet page -->
         <li><a class="waves-effect" href="{{ route('internet.index') }}"><i
                         class="material-icons left">wifi</i>@lang('internet.internet')</a></li>
-        <!-- faults page -->
-        @can('view', \App\Models\Fault::class)
-            <li><a class="waves-effect" href="{{ route('faults') }}"><i
-                            class="material-icons left">build</i>@lang('faults.faults')
-                    @can('update', \App\Models\Fault::class)
-                        @notification(\App\Models\Fault::class)
-                    @endif
-                </a>
-            </li>
-        @endif
+
         <!-- documents page -->
         @can('document.any')
             <li><a class="waves-effect" href="{{ route('documents') }}"><i class="material-icons left">assignment</i>Dokumentumok</a>
@@ -76,6 +67,35 @@
         <!-- collapsible modules -->
         <li class="no-padding">
             <ul class="collapsible collapsible-accordion">
+                <!-- dormitory module -->
+                <li class="@yield('dormitory_module')">
+                    <a class="collapsible-header waves-effect" style="padding-left:32px">
+                        <i class="material-icons left">domain</i>
+                        @lang('general.dormitory')
+                        <i class="material-icons right">arrow_drop_down</i>
+                    </a>
+                    <div class="collapsible-body">
+                        <ul>
+                            <!-- reservations -->
+                            @can('viewAny', \App\Models\ReservableItem::class)
+                                <li><a class="waves-effect" href="{{ route('reservations.index_for_washing_machines') }}"><i
+                                    class="material-icons left">local_laundry_service</i>@lang('reservations.washing_reservation')</a></li>
+                                <li><a class="waves-effect" href="{{ route('reservations.items.index', ['type' => 'room']) }}"><i
+                                    class="material-icons left">schedule</i>@lang('reservations.room_reservation')</a></li>
+                            @endcan
+                            <!-- faults page -->
+                            @can('view', \App\Models\Fault::class)
+                                <li><a class="waves-effect" href="{{ route('faults') }}"><i
+                                                class="material-icons left">build</i>@lang('faults.faults')
+                                        @can('update', \App\Models\Fault::class)
+                                            @notification(\App\Models\Fault::class)
+                                        @endif
+                                    </a>
+                                </li>
+                            @endcan
+                        </ul>
+                    </div>
+                </li>
                 <!-- students' council module -->
                 @if(user()->can('is-collegist') || user()->hasRole(\App\Models\Role::SECRETARY))
                     <li class="@yield('student_council_module')">

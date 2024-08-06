@@ -11,7 +11,16 @@
         <div class="card">
             <div class="card-content">
                 <span class="card-title">@lang('reservations.washing_machines')</span>
-                @include('reservations.timetable')
+
+                <blockquote>
+                    @lang('reservations.washing_machine_instructions')
+                </blockquote>
+                
+                @include('reservations.item_table')
+
+                @livewire('timetable', [
+                    'items' => $items
+                ])
             </div>
         </div>
     </div>

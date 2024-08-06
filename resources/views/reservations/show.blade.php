@@ -49,7 +49,7 @@
                     <x-input.button text="reservations.verify" class="green" />
                 </form>
                     @if($reservation->isRecurring())
-                    <form action="{{ route('reservations.verifyAll', $reservation->id) }}" method="POST">
+                    <form action="{{ route('reservations.verify_all', $reservation->id) }}" method="POST">
                         @csrf
                         <x-input.button text="reservations.verify_all" class="green" />
                     </form>
@@ -60,7 +60,7 @@
                     <x-input.button text="general.delete" class="red" />
                 </form>
                 @if($reservation->isRecurring())
-                <form action="{{ route('reservations.deleteAll', $reservation->id) }}" method="POST">
+                <form action="{{ route('reservations.delete_all', $reservation->id) }}" method="POST">
                     @csrf
                     <x-input.button text="reservations.delete_all" class="red" />
                 </form>

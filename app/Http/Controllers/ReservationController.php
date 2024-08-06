@@ -44,10 +44,7 @@ class ReservationController extends Controller
         return view('reservations.index_for_washing_machines', [
             'items' => $items->all(),
             'from' => $from,
-            'until' => $until,
-            'blocks' => $items->map(function (ReservableItem $item) use ($from, $until) {
-                return ReservableItemController::listOfBlocks($item, $from, $until);
-            })
+            'until' => $until
         ]);
     }
 
@@ -66,12 +63,15 @@ class ReservationController extends Controller
     /**
      * Returns a form for creating a reservation.
      */
-    public function create(ReservableItem $item)
+    public function create(Request $request, ReservableItem $item)
     {
         $this->authorize('requestReservation', $item);
 
         return view('reservations.edit', [
-            'item' => $item
+            'item' => $item,
+            // default values that might have been passed in the GET request
+            'default_from' => $request->from,
+            'default_until' => $request->until
         ]);
     }
 
@@ -105,13 +105,16 @@ class ReservationController extends Controller
             'title' => 'nullable|string|max:255',
             'note' => 'nullable|string|max:2047',
             'reserved_from' => 'required|date',
-            'reserved_until' => 'required|date',
+            'reserved_until' => [
+                Rule::excludeIf($item->isWashingMachine()),
+                'required', 'date'
+            ],
             'recurring' => 'in:on',
             'last_day' => 'exclude_unless:recurring,on|required|date',
             'frequency' => 'exclude_unless:recurring,on|required|numeric|min:1|max:65535'
         ]);
 
-        $validator->after(function ($validator) use ($request, $item) {
+        if (!$item->isWashingMachine()) $validator->after(function ($validator) use ($request, $item) {
             if ($request->reserved_from > $request->reserved_until) {
                 $validator->errors()->add('reserved_until',
                     'The reservation cannot end before it starts.');
@@ -127,6 +130,11 @@ class ReservationController extends Controller
         });
 
         $validatedData = $validator->validate();
+
+        if (isset($validatedData['recurring']) && $item->isWashingMachine()) {
+            return redirect()->back()
+                ->with('error', 'Recurring reservations are not allowed for washing machines.');
+        }
 
         if (isset($request->recurring)) {
             $newGroup = ReservationGroup::create([
@@ -156,10 +164,13 @@ class ReservationController extends Controller
             $newReservation = new Reservation();
             $newReservation->reservable_item_id = $item->id;
             $newReservation->user_id = user()->id;
-            $newReservation->title = $validatedData['title'];
+            $newReservation->title = $validatedData['title'] ?? null;
             $newReservation->note = $validatedData['note'];
             $newReservation->reserved_from = Carbon::make($validatedData['reserved_from']);
-            $newReservation->reserved_until = Carbon::make($validatedData['reserved_until']);
+            $newReservation->reserved_until = 
+                $item->isWashingMachine()
+                ? $newReservation->reserved_from->copy()->addHour()
+                : Carbon::make($validatedData['reserved_until']);
 
             $newReservation->verified = Auth::user()->can('reserveImmediately', $item);
 
@@ -199,7 +210,10 @@ class ReservationController extends Controller
             'title' => 'nullable|string|max:255',
             'note' => 'nullable|string|max:2047',
             'reserved_from' => 'required|date',
-            'reserved_until' => 'required|date',
+            'reserved_until' => [
+                Rule::excludeIf($reservation->reservableItem->isWashingMachine()),
+                'required', 'date'
+            ],
             'for_what' => [
                 Rule::excludeIf(!$reservation->isRecurring()),
                 'required',
@@ -212,7 +226,7 @@ class ReservationController extends Controller
             ]
         ]);
 
-        $validator->after(function ($validator) use ($request, $reservation) {
+        if (!$reservation->reservableItem->isWashingMachine()) $validator->after(function ($validator) use ($request, $reservation) {
             if ($request->reserved_from > $request->reserved_until) {
                 $validator->errors()->add('reserved_until',
                     'The reservation cannot end before it starts.');
@@ -229,12 +243,15 @@ class ReservationController extends Controller
         if (!$reservation->isRecurring()
             || self::THIS_ONLY == $validatedData['for_what']) {
             // we do not save it yet!
-            $reservation->title = $validatedData['title'];
+            $reservation->title = $validatedData['title'] ?? null;
             $reservation->note = $validatedData['note'];
             $reservation->reserved_from = Carbon::make($validatedData['reserved_from']);
-            $reservation->reserved_until = Carbon::make($validatedData['reserved_until']);
+            $reservation->reserved_until = 
+                $reservation->reservableItem->isWashingMachine()
+                ? $reservation->reserved_from->copy()->addHour()
+                : Carbon::make($validatedData['reserved_until']);
 
-            $reservation->verified = Auth::user()->can('reserveImmediately', $reservation->item);
+            $reservation->verified = Auth::user()->can('reserveImmediately', $reservation->reservableItem);
 
             ReservationController::abortConflictingReservation($reservation);
 

@@ -11,13 +11,22 @@
         <div class="card">
             <div class="card-content">
                 <span class="card-title">{{$item->name}}</span>
-                <p>Ez egy jó terem.</p>
+                
                 @can('requestReservation', $item)
-                    <a href="{{ route('reservations.create', $item) }}" class="btn-floating waves-effect waves-light right">
-                        <i class="material-icons">add</i>
+                    <blockquote>
+                        @if('washing_machine' == $item->type)
+                        @lang('reservations.washing_machine_instructions')
+                        @else
+                        @lang('reservations.room_instructions')
+                        @endif
+                    </blockquote>
+                    <a href="{{ route('reservations.create', $item) }}" class="btn waves-effect waves-light">
+                        @lang('reservations.new_reservation')
                     </a>
                 @endcan
-                @include('reservations.timetable')
+                @livewire('timetable', [
+                    'items' => [$item]
+                ])
             </div>
         </div>
     </div>
