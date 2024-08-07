@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use App\Models\ReservableItem;
 use App\Models\ReservationGroup;
 use App\Models\Reservation;
+use App\Models\ConflictException;
 use App\Mail\ReservationVerified;
 
 class ReservationController extends Controller
@@ -76,20 +77,19 @@ class ReservationController extends Controller
     }
 
     /**
-     * Aborts the request if there is already a reservation
+     * Returns a conflicting reservation if there is already one
      * which would conflict with the one given.
-     * Note: we assume that this reservation is not yet saved
+     * Note: we assume that the given reservation is not yet saved.
+     * Returns null if there is no conflict.
      */
-    public static function abortConflictingReservation(Reservation $newReservation)
+    private static function hasConflict(Reservation $newReservation): ?Reservation
     {
-        $conflictingReservations = $newReservation->reservableItem
+        $conflictingReservations = ReservableItem::find($newReservation->reservable_item_id)
             ->reservationsInSlot($newReservation->reserved_from, $newReservation->reserved_until);
 
-        if (!$conflictingReservations->empty()) {
-            abort(409, "Reservation already exists in the given interval:
-                {$conflictingReservations->first()->reserved_from},
-                {$conflictingReservations->first()->reserved_until}");
-        }
+        return ($conflictingReservations
+                    ->filter(fn($reservation) => $reservation->id != $newReservation->id)
+                    ->first());
     }
 
     /**
@@ -153,7 +153,7 @@ class ReservationController extends Controller
                 $newGroup->initializeFrom($request->reserved_from);
             } catch (ConflictException $e) {
                 $newGroup->delete();
-                abort(409, $e->getMessage());
+                return redirect()->back()->with('error', __('reservations.recurring_conflict') . ": {$e->getMessage()}");
             }
 
             return redirect()->route('reservations.show',
@@ -174,7 +174,14 @@ class ReservationController extends Controller
 
             $newReservation->verified = Auth::user()->can('reserveImmediately', $item);
 
-            ReservationController::abortConflictingReservation($newReservation);
+            $conflictingReservation = self::hasConflict($newReservation);
+            if ($conflictingReservation) {
+                return redirect()->back()->with('error',
+                    "Reservation already exists in the given interval:
+                    {$conflictingReservation->reserved_from},
+                    {$conflictingReservation->reserved_until}"
+                );
+            }
 
             // and finally:
             $newReservation->save();
@@ -253,7 +260,14 @@ class ReservationController extends Controller
 
             $reservation->verified = Auth::user()->can('reserveImmediately', $reservation->reservableItem);
 
-            ReservationController::abortConflictingReservation($reservation);
+            $conflictingReservation = self::hasConflict($reservation);
+            if ($conflictingReservation) {
+                return redirect()->back()->with('error',
+                    "Reservation already exists in the given interval:
+                    {$conflictingReservation->reserved_from},
+                    {$conflictingReservation->reserved_until}"
+                );
+            }
 
             // and finally:
             $reservation->save();
