@@ -30,6 +30,8 @@ class ReservableItem extends Model
     public const ROOM = 'room';
     public const WASHING_MACHINE = 'washing_machine';
 
+    public const MAX_WASHING_RESERVATIONS = 6;
+
     /**
      * @return HasMany The reservations that have been made for this particular item.
      */
@@ -94,5 +96,19 @@ class ReservableItem extends Model
                                          });
                           })->orderBy('reserved_from')
                           ->get();
+    }
+
+    /**
+     * The number of non-expired reservations of a user for the item.
+     * Used when inspecting whether someone has too many reservations
+     * for a washing machine.
+     */
+    public function numberOfValidReservations(User $user): int
+    {
+        if (!$this->isWashingMachine()) throw new \Exception('only for use with washing machines');
+        return $this->reservations()
+            ->where('user_id', $user->id)
+            ->where('reserved_until', '>', Carbon::now())
+            ->count();
     }
 }

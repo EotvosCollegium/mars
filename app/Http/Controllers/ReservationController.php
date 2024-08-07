@@ -68,6 +68,11 @@ class ReservationController extends Controller
     {
         $this->authorize('requestReservation', $item);
 
+        if ($item->isWashingMachine()
+            && ReservableItem::MAX_WASHING_RESERVATIONS <= $item->numberOfValidReservations(user())) {
+            return redirect()->back()->with('error', __('reservations.max_washing_reservations_reached'));
+        }
+
         return view('reservations.edit', [
             'item' => $item,
             // default values that might have been passed in the GET request
@@ -101,6 +106,11 @@ class ReservationController extends Controller
     {
         $this->authorize('requestReservation', $item);
 
+        if ($item->isWashingMachine()
+            && ReservableItem::MAX_WASHING_RESERVATIONS <= $item->numberOfValidReservations(user())) {
+            return redirect()->back()->with('error', __('reservations.max_washing_reservations_reached'));
+        }
+
         $validator = Validator::make($request->all(), [
             'title' => 'nullable|string|max:255',
             'note' => 'nullable|string|max:2047',
@@ -127,6 +137,12 @@ class ReservationController extends Controller
                 $validator->errors()->add('recurring',
                     'Recurring reservations are not supported for washing machines');
             }
+        }); else $validator->after(function ($validator) use ($request, $item) {
+            $from = Carbon::make($request->reserved_from);
+            // we only allow one-hour slots for washing machines
+            if (0 != $from->minute || 0 != $from->second) {
+                $validator->errors()->add('reserved_from', __('reservations.one_hour_slot_only'));
+            }
         });
 
         $validatedData = $validator->validate();
@@ -146,7 +162,7 @@ class ReservationController extends Controller
                 'default_until' => Carbon::make($validatedData['reserved_until']),
                 'default_note' => $validatedData['note'],
                 'last_day' => Carbon::make($validatedData['last_day']),
-                'verified' => Auth::user()->can('reserveImmediately', $item)
+                'verified' => false
             ]);
 
             try {
@@ -172,7 +188,7 @@ class ReservationController extends Controller
                 ? $newReservation->reserved_from->copy()->addHour()
                 : Carbon::make($validatedData['reserved_until']);
 
-            $newReservation->verified = Auth::user()->can('reserveImmediately', $item);
+            $newReservation->verified = $item->isWashingMachine();
 
             $conflictingReservation = self::hasConflict($newReservation);
             if ($conflictingReservation) {
@@ -185,9 +201,12 @@ class ReservationController extends Controller
 
             // and finally:
             $newReservation->save();
+            if ($item->isWashingMachine()) {
+                return redirect()->route('reservations.index_for_washing_machines');
+            } else {
+                return redirect()->route('reservations.items.show', $item);
+            }
         }
-
-        return redirect()->route('reservations.show', $newReservation);
     }
 
     /**
@@ -258,7 +277,7 @@ class ReservationController extends Controller
                 ? $reservation->reserved_from->copy()->addHour()
                 : Carbon::make($validatedData['reserved_until']);
 
-            $reservation->verified = Auth::user()->can('reserveImmediately', $reservation->reservableItem);
+            $reservation->verified = $reservation->reservableItem->isWashingMachine();
 
             $conflictingReservation = self::hasConflict($reservation);
             if ($conflictingReservation) {
@@ -357,13 +376,16 @@ class ReservationController extends Controller
     public function verifyAll(Reservation $reservation) {
         $this->authorize('administer', Reservation::class);
 
-        if ($reservation->verified || !$reservation->isRecurring()) {
-            abort(400); // TODO: check this out
+        if ($reservation->verified) {
+            return redirect()->back()->with('error', __('reservations.already_verified'));
+        } else if (!$reservation->isRecurring()) {
+            return redirect()->back()->with('error', 'Bad request for non-recurring reservation');
         } else {
             $reservation->group->setForAll(
                 verified: true
             );
 
+            if (user()->isNot($reservation->user))
             Mail::to($reservation->user)->queue(new ReservationVerified(
                 user()->name,
                 $reservation
