@@ -11,7 +11,12 @@
             <blockquote>
                 A pályázatnak az alábbiakat kell tartalmaznia:
                 <ul style="margin-left:20px;margin-top:0">
-                    <li style="list-style-type: circle !important">önéletrajz (hagyományos, leíró jellegű)</li>
+                    <li style="list-style-type: circle !important"><em>hagyományos, leíró jellegű</em> önéletrajz
+                        <i class="material-icons tooltipped" style="font-size: 1em; vertical-align: -0.2em; cursor: default"
+                           data-tooltip="teljes mondatokból álló, összefüggő szöveg (NEM Europass-jellegű)">
+                           info_outline
+                        </i>
+                    </li>
                     <li style="list-style-type: circle !important">elsőéves egyetemistaként:<br/>
                         szakfelvételi engedély/felvételi határozat (Neptun: Tanulmányok - Hivatalos
                         bejegyzések menüpont alatt letölthető)<br/>
