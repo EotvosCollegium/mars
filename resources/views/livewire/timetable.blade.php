@@ -51,6 +51,8 @@
                             @foreach($blocks[$i] as $block)
                                 @php
                                 $isReservation = !is_null($block['reservation_id']);
+                                $isDisabled = !$isReservation &&
+                                                ($item->isOutOfOrder() || $block['until'] < \Carbon\Carbon::now());
                                 // here, we assume that $from is a midnight date
                                 $dayOfWeek = floor($firstDay->diffInDays($block['from']));
                                 $startHourFloat = $block['from']->hour + ($block['from']->minute / 60.0);
@@ -60,7 +62,7 @@
                                 @endphp
                                 @if($isReservation)
                                 <a href="{{ route('reservations.show', App\Models\Reservation::find($block['reservation_id'])) }}">
-                                @else
+                                @elseif(!$isDisabled)
                                 {{-- default values as GET request parameters --}}
                                 <a href="{{ route('reservations.create', ['item' => $item])
                                             . "?from={$block['from']}&until={$block['until']}"
@@ -85,8 +87,10 @@
                                             'valign-wrapper', 'center-align',
                                             'red' => $isReservation && !$isOurs,
                                             'yellow' => $isOurs,
-                                            'green' => !$isReservation,
-                                            'darken-4' => !$isReservation || App\Models\Reservation::find($block['reservation_id'])->verified,
+                                            'green' => !$isReservation && !$isDisabled,
+                                            'grey' => $isDisabled,
+                                            'darken-4' => $isReservation && App\Models\Reservation::find($block['reservation_id'])->verified
+                                                            || !$isDisabled,
                                             'lighten-4' => $isReservation && !App\Models\Reservation::find($block['reservation_id'])->verified
                                     ])>
                                         @if(!is_null($reservation))

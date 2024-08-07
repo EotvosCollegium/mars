@@ -44,6 +44,7 @@
                 </table>
             </div>
             @can('modify', $reservation)
+            @if(\Carbon\Carbon::make($reservation->reserved_until) >= \Carbon\Carbon::now())
             <div class="card-action right-align">
                 <a href="{{ route('reservations.edit', $reservation) }}" class="btn waves-effect">
                     @lang('general.edit')
@@ -71,6 +72,7 @@
                 </form>
                 @endif
             </div>
+            @endif
             @endcan
         </div>
     </div>
