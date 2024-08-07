@@ -79,16 +79,17 @@ class Timetable extends Component
             $blocks[count($blocks)-1]['until'] = $until;
         }
 
-        // we also have to split blocks
-        // that spill through midnights;
-        // for washing machines, we even split them every hour
+        // We also have to split blocks
+        // that spill through midnights.
+        // For washing machines, we even split them every hour;
+        // for rooms, we only do so for free blocks.
         $splitBlocks = [];
         $i = 0;
         while ($i < count($blocks)) {
             $block = $blocks[$i];
 
             $splittingPointAfter = $block['from']->copy();
-            if ('washing_machine' == $item->type) {
+            if ('washing_machine' == $item->type || is_null($block['reservation_id'])) {
                 $splittingPointAfter->minute = 0;
                 $splittingPointAfter->addHours(1);
             } else {

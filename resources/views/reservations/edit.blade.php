@@ -75,12 +75,16 @@ if (isset($reservation)) {
 
                     <div class="row">
                         <x-input.text  id="reserved_from" type="datetime-local" without-label helper="{{ __('reservations.from') }}"
-                                       :value="isset($reservation) ? $reservation->reserved_from : $default_from" required/>
+                                       :value="isset($reservation) ? $reservation->reserved_from :
+                                               (old('reserved_from') ?? $default_from)"
+                                       required/>
 
                         {{-- we hide the end date for washing machines --}}
                         @if('washing_machine' != $item->type)
                         <x-input.text  id="reserved_until" type="datetime-local" without-label helper="{{ __('reservations.until') }}"
-                                       :value="isset($reservation) ? $reservation->reserved_until : $default_until" required/>
+                                       :value="isset($reservation) ? $reservation->reserved_until :
+                                               (old('reserved_until') ?? $default_until)"
+                                       required/>
                         @endif
                     </div>
                     <div class="row">
