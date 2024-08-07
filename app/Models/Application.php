@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 
 /**
@@ -18,6 +19,8 @@ use Illuminate\Support\Collection;
  * @property Collection $files
  * @property boolean $submitted
  * @property string $graduation_average
+ * @property boolean $applied_for_resident_status
+ * @property boolean $admitted_for_resident_status
  * @property array $semester_average
  * @property array $language_exam
  * @property array $competition
@@ -63,11 +66,13 @@ use Illuminate\Support\Collection;
 class Application extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
     protected $fillable = [
         'user_id',
         'submitted',
         'applied_for_resident_status',
+        'admitted_for_resident_status',
         'graduation_average',
         'semester_average',
         'language_exam',
@@ -85,7 +90,8 @@ class Application extends Model
 
     protected $casts = [
         'submitted' => 'bool',
-        'applied_for_resident_status' => 'bool'
+        'applied_for_resident_status' => 'bool',
+        'admitted_for_resident_status' => 'bool'
     ];
 
     public const QUESTION_1 = [

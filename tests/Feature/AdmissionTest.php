@@ -5,6 +5,7 @@ namespace Feature;
 use App\Http\Controllers\Auth\AdmissionController;
 use App\Http\Controllers\Auth\ApplicationController;
 use App\Models\Application;
+use App\Models\ApplicationWorkshop;
 use App\Models\Faculty;
 use App\Models\PeriodicEvent;
 use App\Models\Role;
@@ -298,79 +299,96 @@ class AdmissionTest extends TestCase
         $this->assertDontSeeUnsubmitted();
     }
 
+    /**
+     * Test the admin finalization
+     *
+     * @return void
+     */
+    public function test_finalize()
+    {
+        $user = User::factory()->create(['verified' => true]);
+        $user->addRole(Role::firstWhere('name', Role::SYS_ADMIN));
+        //to test that these roles gets deleted
+        $user->addRole(Role::firstWhere('name', Role::APPLICATION_COMMITTEE_MEMBER));
+        $user->addRole(Role::firstWhere('name', Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER));
+
+        $this->actingAs($user);
+
+        $aurelion = Workshop::firstWhere('name', Workshop::AURELION)->id;
+        $info = Workshop::firstWhere('name', Workshop::INFORMATIKA)->id;
+        $maths = Workshop::firstWhere('name', Workshop::MATEMATIKA)->id;
+
+        //data should be deleted
+        $applicant_in_progress = User::factory()->create(['verified' => false]);
+        $applicant_in_progress->application()->create(['submitted' => false]);
+
+        //data should be deleted
+        $applicant_not_admitted = User::factory()->create(['verified' => false]);
+        $applicant_not_admitted->application()->create(['submitted' => true, 'admitted_for_resident_status' => true]); // even if this is true
+        $applicant_not_admitted->application->applicationWorkshops()->create([
+            'workshop_id' => $aurelion,
+            'called_in' => true,
+            'admitted' => false
+        ]);
 
 
-    //    /**
-    //     * Test the admin finalization
-    //     *
-    //     * @return void
-    //     */
-    //    public function test_cannot_finalize()
-    //    {
-    //        $user = User::factory()->create();
-    //        $user->addRole(Role::firstWhere('name', Role::SYS_ADMIN));
-    //        $this->actingAs($user);
-    //
-    //        $applicant_in_progress = User::factory()->create(['verified' => false]);
-    //        $applicant_in_progress->application->update(['submitted' => false]);
-    //
-    //        $applicant_submitted = User::factory()->create(['verified' => false]);
-    //        $applicant_submitted->application->update(['submitted' => true]);
-    ////
-    ////        $applicant_called_in = User::factory()->create(['verified' => false]);
-    ////        $applicant_called_in->application->update(['status' => Application::STATUS_CALLED_IN]);
-    ////
-    ////        $applicant_accepted = User::factory()->create(['verified' => false]);
-    ////        $applicant_accepted->application->update(['status' => Application::STATUS_ACCEPTED]);
-    ////
-    ////        $applicant_banished = User::factory()->create(['verified' => false]);
-    ////        $applicant_banished->application->update(['status' => Application::STATUS_BANISHED]);
-    //
-    //        $response = $this->post('/application/finalize');
-    //        $response->assertStatus(302);
-    //        $response->assertSessionHas('error', 'Még vannak feldolgozatlan jelentkezések!');
-    //    }
+        // should be admitted to aurelion as extern
+        $applicant_admitted_extern = User::factory()->create(['verified' => false]);
+        $applicant_admitted_extern->application()->create(['submitted' => true, 'admitted_for_resident_status' => false]);
+        $applicant_admitted_extern->application->applicationWorkshops()->create([
+            'workshop_id' => $aurelion,
+            'called_in' => true,
+            'admitted' => true
+        ]);
 
-    //    /**
-    //     * Test the admin finalization
-    //     *
-    //     * @return void
-    //     */
-    //    public function test_finalize()
-    //    {
-    //        $user = User::factory()->create(['verified' => true]);
-    //        $user->addRole(Role::firstWhere('name', Role::SYS_ADMIN));
-    //        $user->addRole(Role::firstWhere('name', Role::APPLICATION_COMMITTEE_MEMBER));
-    //        $user->addRole(Role::firstWhere('name', Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER));
-    //        Config::set('custom.application_deadline', now()->subWeeks(3));
-    //        $this->actingAs($user);
-    //
-    //        Application::query()->delete();
-    //        $applicant_in_progress = User::factory()->create(['verified' => false]);
-    //        $applicant_in_progress->application->update(['status' => Application::STATUS_IN_PROGRESS]);
-    //
-    //        $applicant_accepted = User::factory()->create(['verified' => false]);
-    //        $applicant_accepted->application->update(['status' => Application::STATUS_ACCEPTED]);
-    //
-    //        $applicant_banished = User::factory()->create(['verified' => false]);
-    //        $applicant_banished->application->update(['status' => Application::STATUS_BANISHED]);
-    //
-    //
-    //        $response = $this->post('/application/finalize');
-    //        $response->assertStatus(302);
-    //        $response->assertSessionHas('message', 'Sikeresen jóváhagyta az elfogadott jelentkezőket');
-    //
-    //        $applicant_accepted->refresh();
-    //        $this->assertTrue($applicant_accepted->verified == 1);
-    //        $this->assertNull(User::find($applicant_banished->id));
-    //        $this->assertNull(User::find($applicant_in_progress->id));
-    //
-    //        $this->assertTrue(Application::count() == 0);
-    //
-    //        $user->refresh();
-    //        $this->assertTrue($user->hasRole(Role::firstWhere('name', Role::SYS_ADMIN)));
-    //        $this->assertFalse($user->hasRole(Role::firstWhere('name', Role::APPLICATION_COMMITTEE_MEMBER)));
-    //        $this->assertFalse($user->hasRole(Role::firstWhere('name', Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER)));
-    //    }
+        // should be admitted to aurelion and maths as resident
+        $applicant_admitted_resident = User::factory()->create(['verified' => false]);
+        $applicant_admitted_resident->application()->create(['submitted' => true, 'admitted_for_resident_status' => true]);
+        $applicant_admitted_resident->application->applicationWorkshops()->create([
+                'workshop_id' => $aurelion,
+                'called_in' => true,
+                'admitted' => true
+        ]);
+        $applicant_admitted_resident->application->applicationWorkshops()->create([
+                'workshop_id' => $info,
+                'called_in' => true,
+                'admitted' => false
+        ]);
+        $applicant_admitted_resident->application->applicationWorkshops()->create([
+                'workshop_id' => $maths,
+                'called_in' => false, // even if this is false
+                'admitted' => true
+        ]);
 
+
+        $response = $this->post(route('admission.finalize'));
+        $response->assertStatus(302);
+        $response->assertSessionHas('message', 'Sikeresen jóváhagyta az elfogadott jelentkezőket és törölte a fel nem vett jelentkezőket.');
+
+
+        $applicant_admitted_extern->refresh();
+        $applicant_admitted_resident->refresh();
+
+        $this->assertTrue($applicant_admitted_extern->verified == 1);
+        $this->assertTrue($applicant_admitted_extern->hasRole([Role::COLLEGIST => Role::EXTERN]));
+        $this->assertTrue($applicant_admitted_extern->workshops->contains($aurelion));
+        $this->assertTrue($applicant_admitted_extern->workshops->count() == 1);
+        $this->assertTrue($applicant_admitted_resident->verified == 1);
+        $this->assertTrue($applicant_admitted_resident->hasRole([Role::COLLEGIST => Role::RESIDENT]));
+        $this->assertTrue($applicant_admitted_resident->workshops->contains($aurelion));
+        $this->assertTrue($applicant_admitted_resident->workshops->contains($maths));
+        $this->assertTrue($applicant_admitted_resident->workshops->count() == 2);
+
+
+        $this->assertNull(User::withoutGlobalScope('verified')->find($applicant_in_progress->id));
+        $this->assertNull(User::withoutGlobalScope('verified')->find($applicant_not_admitted->id));
+
+        $this->assertTrue(Application::count() == 0);
+        $this->assertTrue(ApplicationWorkshop::count() == 0);
+
+        $user->refresh();
+        $this->assertTrue($user->hasRole(Role::firstWhere('name', Role::SYS_ADMIN)));
+        $this->assertFalse($user->hasRole(Role::firstWhere('name', Role::APPLICATION_COMMITTEE_MEMBER)));
+        $this->assertFalse($user->hasRole(Role::firstWhere('name', Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER)));
+    }
 }

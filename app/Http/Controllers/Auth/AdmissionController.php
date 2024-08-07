@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Exports\ApplicantsExport;
 use App\Http\Controllers\Controller;
 use App\Models\Application;
+use App\Models\ApplicationWorkshop;
 use App\Models\Semester;
 use App\Models\User;
 use App\Models\RoleUser;
@@ -172,47 +173,46 @@ class AdmissionController extends Controller
      */
     public function finalize(): RedirectResponse
     {
-        //        $this->authorize('finalizeApplicationProcess', User::class);
-        //        Cache::forget('collegists');
-        //        $not_handled_applicants = User::query()->withoutGlobalScope('verified')
-        //            ->where('verified', 0)
-        //            ->whereHas('application', function ($query) {
-        //                $query->where('submitted', true);
-        //            })
-        //            ->count();
-        //        if ($not_handled_applicants > 0) {
-        //            return redirect()->back()->with('error', 'Még vannak feldolgozatlan jelentkezések!');
-        //        }
-        //        DB::transaction(function () {
-        //            User::query()->withoutGlobalScope('verified')
-        //                ->where('verified', 0)
-        //                ->whereHas('application', function ($query) {
-        //                    $query->where('status', Application::STATUS_ACCEPTED);
-        //                })
-        //                ->update(['verified' => true]);
-        //            $usersToDelete = User::query()->withoutGlobalScope('verified')
-        //                ->where('verified', 0)->whereHas('application');
-        //            foreach ($usersToDelete->get() as $user) {
-        //                if ($user->profilePicture!=null) {
-        //                    Storage::delete($user->profilePicture->path);
-        //                    $user->profilePicture()->delete();
-        //                }
-        //            }
-        //            $files = File::where('application_id', '!=', null);
-        //            foreach ($files->get() as $file) {
-        //                Storage::delete($file->path);
-        //            }
-        //            $files->delete();
-        //            Application::query()->delete();
-        //            $usersToDelete->forceDelete();
-        //
-        //            RoleUser::where('role_id', Role::get(Role::APPLICATION_COMMITTEE_MEMBER)->id)->delete();
-        //            RoleUser::where('role_id', Role::get(Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER)->id)->delete();
-        //        });
-        //
-        //        Cache::clear();
-        // return back()->with('message', 'Sikeresen jóváhagyta az elfogadott jelentkezőket');
-        return back()->with('error', 'Még nincs implementálva.');
+        $this->authorize('finalize', Application::class);
+        Cache::forget('collegists');
+        DB::transaction(function () {
+            $admitted_applications = Application::query()
+                ->whereHas('applicationWorkshops', function ($query) {
+                    $query->where('admitted', true);
+                })->get();
+            $not_admitted_applications = Application::whereNotIn('id', $admitted_applications->pluck('id'))->get();
+            // admit users
+            foreach ($admitted_applications as $application) {
+                $application->user->update(['verified' => true]);
+                if($application->admitted_for_resident_status) {
+                    $application->user->setResident();
+                } else {
+                    $application->user->setExtern();
+                }
+                $application->user->workshops()->sync($application->applicationWorkshops()->where('admitted', true)->pluck('workshop_id'));
+            }
+            // delete data for not admitted users
+            $files = File::query()
+                ->whereIn('application_id', $not_admitted_applications->pluck('id')) // application files
+                ->orWhereIn('user_id', $not_admitted_applications->pluck('user_id')); // profile pictures
+            foreach ($files->get() as $file) {
+                Storage::delete($file->path);
+            }
+            $files->delete();
+            // soft deletes application, keep them for future reference
+            // (see https://github.com/EotvosCollegium/mars/issues/332#issuecomment-2014058021)
+            Application::whereIn('id', $admitted_applications->pluck('id'))->delete();
+            Application::whereNotIn('id', $admitted_applications->pluck('id'))->forceDelete();
+            ApplicationWorkshop::query()->delete();
+
+            User::query()->withoutGlobalScope('verified')->whereIn('id', $not_admitted_applications->pluck('user_id'))->forceDelete();
+
+            RoleUser::where('role_id', Role::get(Role::APPLICATION_COMMITTEE_MEMBER)->id)->delete();
+            RoleUser::where('role_id', Role::get(Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER)->id)->delete();
+        });
+
+        Cache::clear();
+        return back()->with('message', 'Sikeresen jóváhagyta az elfogadott jelentkezőket és törölte a fel nem vett jelentkezőket.');
     }
 
     /**
