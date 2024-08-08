@@ -11,7 +11,7 @@
             <div class="row">
                 <div class="col">
                     Hogyha a felvételi eljárás befejeződött, akkor a felvett jelentkezőket itt lehet
-                    jóváhagyni.
+                    jóváhagyni. A felvettek státusza a {{ $semester->tag }} szemeszterre automatikusan aktív lesz.
                     <blockquote>Figyelem, újrafelvételiző collegisták esetén a felhasználók adatai a lentiek alapján
                         felülíródnak. Ha továbbra se nyerték el a bentlakó státuszt, akkor felvett bejáró hallgatóként
                         kell szerepelniük a listában.

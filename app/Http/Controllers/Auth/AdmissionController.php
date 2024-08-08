@@ -174,6 +174,7 @@ class AdmissionController extends Controller
         $admitted = Application::query()->with(['user', 'applicationWorkshops'])->admitted()->get()->sortBy('user.name');
         $not_admitted = Application::query()->whereNotIn('id', $admitted->pluck('id'))->get();
         return view('auth.admission.finalize', [
+            'semester' => $this->semester(),
             'admitted_applications' => $admitted,
             'users_to_delete' => User::query()
                 ->withoutGlobalScope('verified')
@@ -198,8 +199,6 @@ class AdmissionController extends Controller
         if(!$this->semester()) {
             throw new \InvalidArgumentException('No semester can be retrieved from the application periodic event.');
         }
-        //TODO set semester status
-        //TODO set wifi access
         DB::transaction(function () {
             $admitted_applications = Application::query()->admitted()->get();
             $not_admitted_applications = Application::query()->whereNotIn('id', $admitted_applications->pluck('id'))->get();
