@@ -168,6 +168,7 @@ class AdmissionController extends Controller
             }
         }
         if ($request->has('file')) {
+            $this->authorize('editStatus', $application);
             $this->storeFile($request, $application->user);
             foreach ($application->committeeMembers() as $user) {
                 Mail::to($user)->queue(new ApplicationFileUploaded($user, $request->get('name'), $application));
