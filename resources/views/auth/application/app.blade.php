@@ -43,7 +43,7 @@
                         <li>A jelentkezés véglegesítéséhez Neptun-kódjának megadása is szükséges.
                             Egyes karokon ezek létrehozása elhúzódhat, így szíves türelmét kérjük.
                             Amennyiben ez 08.06. 23:59-ig sem történik meg, kérjük, jelezze a
-                            <a href="mailto:{{ config('mail.sys_admin_mail') }}">Rendszergazdáknak</a>,
+                            <a href="mailto:{{ config('mail.sys_admin_mail') }}">rendszergazdáknak</a>,
                             akik lehetőséget fognak biztosítani a Neptun-kód nélküli jelentkezésre.</li>
 
                         <li><strong>Amennyiben az Informatikai Műhelybe (is) jelentkezik,</strong> a személyes felvételit
@@ -53,6 +53,11 @@
                             Ha a jelentkezését már nagyrészt kitöltötte, akkor kérjük, hogy <a
                                 href="https://forms.office.com/e/SseYJFgHg2">a linkelt kérdőívben</a> jelezze, hogy kéri a
                                 feladatsort.</li>
+
+                        <li><strong style="color:red;">Amennyiben lakhatása még nem biztosított,
+                            javasoljuk a szociális kollégiumokba történő jelentkezést is.</strong><br />
+                            A szociális kollégiumi felvételi az ittenitől teljesen függetlenül zajlik;
+                            részletek <a href="https://www.elte.hu/kollegiumi-jelentkezes">az ELTE honlapján</a> olvashatók.</li>
                     </ul>
 
                     <p>Amennyiben bármi kérdése lenne a felvételivel kapcsolatban, kérjük, írjon a
@@ -77,6 +82,11 @@
                         <a href="https://forms.office.com/e/SseYJFgHg2">a linkelt kérdőívben</a>
                         jelezze, hogy kéri a feladatsort.</p>
                     @endif
+
+                    <p style="margin: 10px 0;"><strong style="color:red;">Amennyiben lakhatása még nem biztosított,
+                        javasoljuk a szociális kollégiumokba történő jelentkezést is.</strong><br />
+                        A szociális kollégiumi felvételi az ittenitől teljesen függetlenül zajlik;
+                        részletek <a href="https://www.elte.hu/kollegiumi-jelentkezes">az ELTE honlapján</a> olvashatók.</p>
 
                     <p>A felvételire behívottak névsora és a további teendők a
                         <a href="https://eotvos.elte.hu/felveteli">Collegium honlapján</a> lesznek majd elérhetőek.
