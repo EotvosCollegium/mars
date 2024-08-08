@@ -142,25 +142,26 @@ class AdmissionController extends Controller
     }
 
     /**
-     * Edit an application's note.
+     * Edit an application.
      * @param Request $request
      * @param Application $application
      * @return RedirectResponse
      * @throws AuthorizationException
      */
-    public function updateNote(Request $request, Application $application): RedirectResponse
+    public function update(Request $request, Application $application): RedirectResponse
     {
         $this->authorize('view', $application);
         if (user()->id == $application->user_id) {
             return redirect()->back()->with('error', 'You cannot modify the internal note of yourself.');
         }
-
-        $newStatus = $request->input('status_'.$application->user->id);
         if ($request->has('note')) {
+            $request->validate([
+                'note' => 'string',
+            ]);
             $application->update(['note' => $request->input('note')]);
-        } elseif ($newStatus) {
-            $this->authorize('editStatus', $application);
-            $application->update(['status' => $newStatus]);
+        }
+        if ($request->has('file')) {
+            $this->storeFile($request, $application->user);
         }
         return redirect()->back();
     }
