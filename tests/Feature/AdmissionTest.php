@@ -10,6 +10,7 @@ use App\Models\Faculty;
 use App\Models\PeriodicEvent;
 use App\Models\Role;
 use App\Models\Semester;
+use App\Models\SemesterStatus;
 use App\Models\User;
 use App\Models\Workshop;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -38,6 +39,7 @@ class AdmissionTest extends TestCase
             'event_model' => ApplicationController::class,
             'start_date' => now()->subWeeks(2),
             'end_date' => now()->addWeeks(2),
+            'semester_id' => Semester::current()->id
         ]);
 
     }
@@ -360,25 +362,35 @@ class AdmissionTest extends TestCase
                 'admitted' => true
         ]);
 
+        //user data should not be deleted
+        $already_collegist = User::factory()->create(['verified' => true]);
+        $already_collegist->application()->create(['submitted' => true]);
+        $already_collegist->setExtern();
 
+        //Send request
         $response = $this->post(route('admission.finalize'));
         $response->assertStatus(302);
         $response->assertSessionHas('message', 'Sikeresen jóváhagyta az elfogadott jelentkezőket és törölte a fel nem vett jelentkezőket.');
 
-
         $applicant_admitted_extern->refresh();
         $applicant_admitted_resident->refresh();
+        $already_collegist->refresh();
 
         $this->assertTrue($applicant_admitted_extern->verified == 1);
         $this->assertTrue($applicant_admitted_extern->hasRole([Role::COLLEGIST => Role::EXTERN]));
         $this->assertTrue($applicant_admitted_extern->workshops->contains($aurelion));
-        $this->assertTrue($applicant_admitted_extern->workshops->count() == 1);
+        $this->assertEquals(1, $applicant_admitted_extern->workshops->count());
+        $this->assertEquals(SemesterStatus::ACTIVE, $applicant_admitted_extern->getStatus()->status);
+
         $this->assertTrue($applicant_admitted_resident->verified == 1);
         $this->assertTrue($applicant_admitted_resident->hasRole([Role::COLLEGIST => Role::RESIDENT]));
         $this->assertTrue($applicant_admitted_resident->workshops->contains($aurelion));
         $this->assertTrue($applicant_admitted_resident->workshops->contains($maths));
-        $this->assertTrue($applicant_admitted_resident->workshops->count() == 2);
+        $this->assertEquals(2, $applicant_admitted_resident->workshops->count());
+        $this->assertEquals(SemesterStatus::ACTIVE, $applicant_admitted_resident->getStatus()->status);
 
+        $this->assertTrue($already_collegist->verified == 1);
+        $this->assertTrue($already_collegist->hasRole([Role::COLLEGIST => Role::EXTERN]));
 
         $this->assertNull(User::withoutGlobalScope('verified')->find($applicant_in_progress->id));
         $this->assertNull(User::withoutGlobalScope('verified')->find($applicant_not_admitted->id));
@@ -387,8 +399,8 @@ class AdmissionTest extends TestCase
         $this->assertTrue(ApplicationWorkshop::count() == 0);
 
         $user->refresh();
-        $this->assertTrue($user->hasRole(Role::firstWhere('name', Role::SYS_ADMIN)));
-        $this->assertFalse($user->hasRole(Role::firstWhere('name', Role::APPLICATION_COMMITTEE_MEMBER)));
-        $this->assertFalse($user->hasRole(Role::firstWhere('name', Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER)));
+        $this->assertTrue($user->hasRole(Role::get(Role::SYS_ADMIN)));
+        $this->assertFalse($user->hasRole(Role::get(Role::APPLICATION_COMMITTEE_MEMBER)));
+        $this->assertFalse($user->hasRole(Role::get(Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER)));
     }
 }

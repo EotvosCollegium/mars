@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Utils\DataCompresser;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -131,6 +132,7 @@ class Application extends Model
         return $this->hasMany(ApplicationWorkshop::class);
     }
 
+
     /**
      * The Workshop models that the user applied for.
      * @return HasManyThrough
@@ -148,6 +150,14 @@ class Application extends Model
     }
 
     /**
+     * The Workshop models that the user admitted to.
+     */
+    public function admittedWorkshops(): HasManyThrough
+    {
+        return $this->appliedWorkshops()->where('application_workshops.admitted', true);
+    }
+
+    /**
      * Uploaded files
      * @return HasMany
      */
@@ -156,11 +166,43 @@ class Application extends Model
         return $this->hasMany('App\Models\File');
     }
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | Local scopes
+    |--------------------------------------------------------------------------
+    */
+
+    /**
+     * Scope a query to only include applications admitted to any workshop.
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeAdmitted(Builder $query): Builder
+    {
+        return $query->whereHas('applicationWorkshops', function ($query) {
+            $query->where('admitted', true);
+        });
+    }
+
+
     /*
     |--------------------------------------------------------------------------
     | Accessors & Mutators
     |--------------------------------------------------------------------------
     */
+
+    /**
+     * Get a bool whether the applicant has been admitted to any workshops.
+     *
+     * @return Attribute
+     */
+    protected function admitted(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->applicationWorkshops()->where('admitted', true)->exists(),
+        );
+    }
 
     /**
      * Get/set the application's semester_average attribute.

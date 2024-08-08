@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Application;
 use App\Models\ApplicationWorkshop;
 use App\Models\Semester;
+use App\Models\SemesterStatus;
 use App\Models\User;
 use App\Models\RoleUser;
 use App\Models\File;
@@ -16,6 +17,7 @@ use App\Utils\ApplicationHandler;
 use App\Utils\HasPeriodicEvent;
 use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -166,6 +168,25 @@ class AdmissionController extends Controller
         return redirect()->back();
     }
 
+    public function indexFinalize()
+    {
+        $this->authorize('finalize', Application::class);
+        $admitted = Application::query()->with(['user', 'applicationWorkshops'])->admitted()->get()->sortBy('user.name');
+        $not_admitted = Application::query()->whereNotIn('id', $admitted->pluck('id'))->get();
+        return view('auth.admission.finalize', [
+            'admitted_applications' => $admitted,
+            'users_to_delete' => User::query()
+                ->withoutGlobalScope('verified')
+                ->with('application')
+                ->whereIn('id', $not_admitted->pluck('user_id'))
+                //ignore users with any existing role
+                ->whereDoesntHave('roles')
+                ->orderBy('name')
+                ->get()
+        ]);
+    }
+
+
     /**
      * Accept and delete applciations.
      * @return RedirectResponse
@@ -174,13 +195,14 @@ class AdmissionController extends Controller
     public function finalize(): RedirectResponse
     {
         $this->authorize('finalize', Application::class);
-        Cache::forget('collegists');
+        if(!$this->semester()) {
+            throw new \InvalidArgumentException('No semester can be retrieved from the application periodic event.');
+        }
+        //TODO set semester status
+        //TODO set wifi access
         DB::transaction(function () {
-            $admitted_applications = Application::query()
-                ->whereHas('applicationWorkshops', function ($query) {
-                    $query->where('admitted', true);
-                })->get();
-            $not_admitted_applications = Application::whereNotIn('id', $admitted_applications->pluck('id'))->get();
+            $admitted_applications = Application::query()->admitted()->get();
+            $not_admitted_applications = Application::query()->whereNotIn('id', $admitted_applications->pluck('id'))->get();
             // admit users
             foreach ($admitted_applications as $application) {
                 $application->user->update(['verified' => true]);
@@ -189,7 +211,9 @@ class AdmissionController extends Controller
                 } else {
                     $application->user->setExtern();
                 }
-                $application->user->workshops()->sync($application->applicationWorkshops()->where('admitted', true)->pluck('workshop_id'));
+                $application->user->workshops()->sync($application->admittedWorkshops);
+                $application->user->setStatusFor($this->semester(), SemesterStatus::ACTIVE);
+                $application->user->internetAccess->extendInternetAccess($this->semester()->getStartDate()->addMonth());
             }
             // delete data for not admitted users
             $files = File::query()
@@ -205,7 +229,12 @@ class AdmissionController extends Controller
             Application::whereNotIn('id', $admitted_applications->pluck('id'))->forceDelete();
             ApplicationWorkshop::query()->delete();
 
-            User::query()->withoutGlobalScope('verified')->whereIn('id', $not_admitted_applications->pluck('user_id'))->forceDelete();
+            // Note: users with a not submitted applications will also be deleted
+            User::query()->withoutGlobalScope('verified')
+                ->whereIn('id', $not_admitted_applications->pluck('user_id'))
+                //ignore users with any existing role
+                ->whereDoesntHave('roles')
+                ->forceDelete();
 
             RoleUser::where('role_id', Role::get(Role::APPLICATION_COMMITTEE_MEMBER)->id)->delete();
             RoleUser::where('role_id', Role::get(Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER)->id)->delete();

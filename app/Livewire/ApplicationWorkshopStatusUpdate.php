@@ -7,7 +7,7 @@ use App\Models\ApplicationWorkshop;
 use Carbon\Carbon;
 use Livewire\Component;
 
-class ApplicationStatusUpdate extends Component
+class ApplicationWorkshopStatusUpdate extends Component
 {
     public Application $application;
     public ApplicationWorkshop $workshop;
@@ -61,6 +61,6 @@ class ApplicationStatusUpdate extends Component
      */
     public function render()
     {
-        return view('auth.application.status_update_component');
+        return view('auth.application.workshop_status_update_component');
     }
 }
