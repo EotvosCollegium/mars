@@ -168,7 +168,10 @@ class AdmissionController extends Controller
         return redirect()->back();
     }
 
-    public function indexFinalize()
+    /**
+     * Show the finalize page with final names and statistics
+     */
+    public function indexFinalize(): View
     {
         $this->authorize('finalize', Application::class);
         $admitted = Application::query()->with(['user', 'applicationWorkshops'])->admitted()->get()->sortBy('user.name');
