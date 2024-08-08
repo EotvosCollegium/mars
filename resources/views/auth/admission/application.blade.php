@@ -29,6 +29,7 @@
     <div class="card">
         <form method="POST"
               action="{{route('admission.applicants.update', ['application' => $user->application->id])}}">
+            @csrf
             <div class="card-content">
                 <div class="row">
                     @csrf

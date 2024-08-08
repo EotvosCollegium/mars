@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Exports\ApplicantsExport;
 use App\Http\Controllers\Controller;
+use App\Mail\ApplicationFileUploaded;
+use App\Mail\ApplicationNoteChanged;
 use App\Models\Application;
 use App\Models\Semester;
 use App\Models\User;
@@ -18,6 +20,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Cache;
@@ -158,10 +161,17 @@ class AdmissionController extends Controller
             $request->validate([
                 'note' => 'string',
             ]);
+            $oldValue = $application->note;
             $application->update(['note' => $request->input('note')]);
+            foreach ($application->committeeMembers() as $user) {
+                Mail::to($user)->queue(new ApplicationNoteChanged($user, user(), $application, $oldValue));
+            }
         }
         if ($request->has('file')) {
             $this->storeFile($request, $application->user);
+            foreach ($application->committeeMembers() as $user) {
+                Mail::to($user)->queue(new ApplicationFileUploaded($user, $request->get('name'), $application));
+            }
         }
         return redirect()->back();
     }
