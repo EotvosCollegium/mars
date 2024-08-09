@@ -14,7 +14,6 @@ class ApplicationNoteChanged extends Mailable
     use Queueable;
     use SerializesModels;
 
-    public User $recipient;
     public User $modifier;
     public Application $application;
     public ?string $oldValue;
@@ -24,9 +23,8 @@ class ApplicationNoteChanged extends Mailable
      *
      * @return void
      */
-    public function __construct(User $recipient, User $modifier, Application $application, ?string $oldValue)
+    public function __construct(User $modifier, Application $application, ?string $oldValue)
     {
-        $this->recipient = $recipient;
         $this->modifier = $modifier;
         $this->application = $application;
         $this->oldValue = $oldValue;

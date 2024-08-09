@@ -163,16 +163,12 @@ class AdmissionController extends Controller
             ]);
             $oldValue = $application->note;
             $application->update(['note' => $request->input('note')]);
-            foreach ($application->committeeMembers() as $user) {
-                Mail::to($user)->queue(new ApplicationNoteChanged($user, user(), $application, $oldValue));
-            }
+            Mail::bcc($application->committeeMembers())->queue(new ApplicationNoteChanged(user(), $application, $oldValue));
         }
         if ($request->has('file')) {
             $this->authorize('editStatus', $application);
             $this->storeFile($request, $application->user);
-            foreach ($application->committeeMembers() as $user) {
-                Mail::to($user)->queue(new ApplicationFileUploaded($user, $request->get('name'), $application));
-            }
+            Mail::bcc($application->committeeMembers())->queue(new ApplicationFileUploaded($user, $request->get('name'), $application));
         }
         return redirect()->back();
     }

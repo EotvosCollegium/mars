@@ -13,7 +13,6 @@ class ApplicationFileUploaded extends Mailable
     use Queueable;
     use SerializesModels;
 
-    public User $recipient;
     public Application $application;
     public string $fileName;
 
@@ -22,9 +21,8 @@ class ApplicationFileUploaded extends Mailable
      *
      * @return void
      */
-    public function __construct(User $recipient, string $fileName, Application $application)
+    public function __construct(string $fileName, Application $application)
     {
-        $this->recipient = $recipient;
         $this->application = $application;
         $this->fileName = $fileName;
     }

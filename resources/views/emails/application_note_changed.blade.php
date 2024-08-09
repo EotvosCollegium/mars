@@ -1,5 +1,5 @@
 @component('mail::message')
-    <h1>@lang('mail.dear') {{ $recipient->name }}!</h1>
+    <h1>@lang('mail.dear') Felvételiztető!</h1>
     <p>
         {{ $modifier->name }} módosította {{ $application->user->name }} felvételi adatlapjához tartozó megjegyzést.
     </p>
