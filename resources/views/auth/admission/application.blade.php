@@ -15,10 +15,8 @@
             <div class="card-content">
                 <div class="card-title">Utólagos fájlfeltöltés</div>
                 @csrf
+                <blockquote>Az új fájlról a felvételiztető bizottság tagjai értesítést kapnak.</blockquote>
                 <div class="row">
-                    <div class="col">
-                        <blockquote>Az új fájlról a felvételiztető bizottság tagjai értesítést kapnak.</blockquote>
-                    </div>
                     <x-input.file s=12 m=6 id="file" accept=".pdf,.jpg,.png,.jpeg" text="general.browse"
                                   helper=".pdf,.jpg,.png,.jpeg fájlok tölthetőek fel, maximum {{config('custom.general_file_size_limit')/1000}} MB-os méretig."
                                   required/>
