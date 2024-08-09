@@ -166,7 +166,7 @@ class AdmissionController extends Controller
             Mail::bcc($application->committeeMembers())->queue(new ApplicationNoteChanged(user(), $application, $oldValue));
         }
         if ($request->has('file')) {
-            $this->authorize('editStatus', $application);
+            $this->authorize('editStatus');
             $this->storeFile($request, $application->user);
             Mail::bcc($application->committeeMembers())->queue(new ApplicationFileUploaded($request->get('name'), $application));
         }
