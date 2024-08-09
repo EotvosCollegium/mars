@@ -34,7 +34,7 @@
                         @else
                             <div class="center-align" style="margin:-5px;font-style:italic;color:red">hiányzó státusz</div>
                         @endif
-                        @can('editStatus', [\App\Models\Application::class])
+                        @can('finalize', \App\Models\Application::class)
                             @livewire('application-role-status-update', ['application' => $user->application])
                         @endcan
                         <div class="divider" style="margin: 5px"></div>

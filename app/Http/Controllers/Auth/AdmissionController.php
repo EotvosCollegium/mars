@@ -174,17 +174,15 @@ class AdmissionController extends Controller
     public function indexFinalize(): View
     {
         $this->authorize('finalize', Application::class);
-        $admitted = Application::query()->with(['user', 'applicationWorkshops'])->admitted()->get()->sortBy('user.name');
-        $not_admitted = Application::query()->whereNotIn('id', $admitted->pluck('id'))->get();
+        if(!($this->getDeadline() < now())) {
+            throw new \InvalidArgumentException('The application deadline has not passed yet.');
+        }
+        [$admitted, $not_admitted, $users_to_delete] = $this->getApplications();
         return view('auth.admission.finalize', [
             'semester' => $this->semester(),
             'admitted_applications' => $admitted,
-            'users_to_delete' => User::query()
-                ->withoutGlobalScope('verified')
+            'users_to_delete' => $users_to_delete
                 ->with('application')
-                ->whereIn('id', $not_admitted->pluck('user_id'))
-                //ignore users with any existing role
-                ->whereDoesntHave('roles')
                 ->orderBy('name')
                 ->get()
         ]);
@@ -199,14 +197,16 @@ class AdmissionController extends Controller
     public function finalize(): RedirectResponse
     {
         $this->authorize('finalize', Application::class);
+        if(!($this->getDeadline() < now())) {
+            throw new \InvalidArgumentException('The application deadline has not passed yet.');
+        }
         if(!$this->semester()) {
             throw new \InvalidArgumentException('No semester can be retrieved from the application periodic event.');
         }
         DB::transaction(function () {
-            $admitted_applications = Application::query()->admitted()->get();
-            $not_admitted_applications = Application::query()->whereNotIn('id', $admitted_applications->pluck('id'))->get();
+            [$admitted, $not_admitted, $users_to_delete] = $this->getApplications();
             // admit users
-            foreach ($admitted_applications as $application) {
+            foreach ($admitted as $application) {
                 $application->user->update(['verified' => true]);
                 if($application->admitted_for_resident_status) {
                     $application->user->setResident();
@@ -219,31 +219,27 @@ class AdmissionController extends Controller
             }
             // delete data for not admitted users
             $files = File::query()
-                ->whereIn('application_id', $not_admitted_applications->pluck('id')) // application files
-                ->orWhereIn('user_id', $not_admitted_applications->pluck('user_id')); // profile pictures
+                ->whereIn('application_id', $not_admitted->pluck('id')) // application files
+                ->orWhereIn('user_id', $not_admitted->pluck('user_id')); // profile pictures
             foreach ($files->get() as $file) {
                 Storage::delete($file->path);
             }
             $files->delete();
             // soft deletes application, keep them for future reference
             // (see https://github.com/EotvosCollegium/mars/issues/332#issuecomment-2014058021)
-            Application::whereIn('id', $admitted_applications->pluck('id'))->delete();
-            Application::whereNotIn('id', $admitted_applications->pluck('id'))->forceDelete();
+            Application::whereIn('id', $admitted->pluck('id'))->delete();
+            Application::whereNotIn('id', $admitted->pluck('id'))->forceDelete();
             ApplicationWorkshop::query()->delete();
 
-            // Note: users with a not submitted applications will also be deleted
-            User::query()->withoutGlobalScope('verified')
-                ->whereIn('id', $not_admitted_applications->pluck('user_id'))
-                //ignore users with any existing role
-                ->whereDoesntHave('roles')
-                ->forceDelete();
+            // Note: users with not submitted applications will also be deleted
+           $users_to_delete->forceDelete();
 
             RoleUser::where('role_id', Role::get(Role::APPLICATION_COMMITTEE_MEMBER)->id)->delete();
             RoleUser::where('role_id', Role::get(Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER)->id)->delete();
         });
 
         Cache::clear();
-        return back()->with('message', 'Sikeresen jóváhagyta az elfogadott jelentkezőket és törölte a fel nem vett jelentkezőket.');
+        return back()->with('message', __('general.successful_modification'));
     }
 
     /**
@@ -283,5 +279,18 @@ class AdmissionController extends Controller
             return $user->roleWorkshops->concat($user->applicationCommitteWorkshops);
         }
         return Workshop::all();
+    }
+
+    private function getApplications()
+    {
+        $admitted = Application::query()->with(['user', 'applicationWorkshops'])->admitted()->get()->sortBy('user.name');
+        $not_admitted = Application::query()->whereNotIn('id', $admitted->pluck('id'))->get();
+        $users_to_delete_query = User::query()
+            ->withoutGlobalScope('verified')
+            ->whereIn('id', $not_admitted->pluck('user_id'))
+            //ignore users with any existing role
+            ->whereDoesntHave('roles');
+
+        return [$admitted, $not_admitted, $users_to_delete_query];
     }
 }

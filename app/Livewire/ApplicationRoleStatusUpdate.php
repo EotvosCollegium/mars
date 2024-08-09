@@ -29,6 +29,7 @@ class ApplicationRoleStatusUpdate extends Component
      */
     public function switchResidentRole()
     {
+        $this->authorize('finalize', Application::class);
         $this->application->update(['admitted_for_resident_status' => !$this->application->admitted_for_resident_status]);
         $this->lastUpdated = Carbon::now();
     }

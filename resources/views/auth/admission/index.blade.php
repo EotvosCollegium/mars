@@ -48,10 +48,9 @@
             <blockquote>
                 @can('editStatus', \App\Models\Application::class)
                     <p>A behívott/felvett státusz a jelentkezők számára nem nyilvános.</p>
-                @endcan
-                @can('finalize', \App\Models\Application::class)
-                    <p>{{$applicationDeadline?->addWeeks(1)?->format('Y. m. d.')}} után lehet a lap alján felvenni a
-                        kiválasztott jelentkezőket, ezzel véglegesíteni a felvételit.</p>
+                    @can('finalize', \App\Models\Application::class)
+                        <p>Felvettek esetén a megjelölt bentlakó/bejáró státusz alatti csúszkán lehet beállítani a végleges státuszt.</p>
+                    @endcan
                 @endcan
             </blockquote>
 
@@ -73,9 +72,11 @@
     <hr>
     <h6>Összesen: <b class="right">{{$applications->count()}} jelentkező</b></h6>
     @can('finalize', \App\Models\Application::class)
-        <a href="{{ route('admission.finalize.index') }}">
-            <x-input.button class="right" text="Véglegesítés megtekintése"/>
-        </a>
+        @if($applicationDeadline && $applicationDeadline < now()))
+            <a href="{{ route('admission.finalize.index') }}">
+                <x-input.button class="right" text="Véglegesítés megtekintése"/>
+            </a>
+        @endif
     @endcan
     @can('viewAll', \App\Models\Application::class)
         <div class="fixed-action-btn">

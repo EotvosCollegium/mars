@@ -12,10 +12,6 @@
                 <div class="col">
                     Hogyha a felvételi eljárás befejeződött, akkor a felvett jelentkezőket itt lehet
                     jóváhagyni. A felvettek státusza a {{ $semester->tag }} szemeszterre automatikusan aktív lesz.
-                    <blockquote>Figyelem, újrafelvételiző collegisták esetén a felhasználók adatai a lentiek alapján
-                        felülíródnak. Ha továbbra se nyerték el a bentlakó státuszt, akkor felvett bejáró hallgatóként
-                        kell szerepelniük a listában.
-                    </blockquote>
                 </div>
                 <div class="col" style="width: 100%">
                     <table>
@@ -58,7 +54,7 @@
             </div>
             <div class="row">
                 <div class="col">
-                    <blockquote>Ezzel együtt minden más felvételiző elutasításra, anyagai törlésre, valamint az összes
+                    <blockquote>Ezzel együtt minden más felvételiző (az újrafelvételizők mellőzésével) elutasításra, anyagai törlésre, valamint az összes
                         felvételihez kapcsolódó (felvételiztető) jog elvételre kerül. Az alábbi felhasználók kerülnek törlésre:</blockquote>
                     @foreach($users_to_delete as $user)
                         <a href="{{route('admission.applicants.show', ['application' => $user->application->id])}}">

@@ -32,6 +32,7 @@ class ApplicationWorkshopStatusUpdate extends Component
      */
     public function callIn($workshop)
     {
+        $this->authorize('editStatus', [\App\Models\Application::class, $this->workshop->workshop]);
         $this->application->applicationWorkshops()->where('workshop_id', $workshop)->update(['called_in' => !$this->workshop->called_in]);
         $this->lastUpdated = Carbon::now();
     }
@@ -42,6 +43,7 @@ class ApplicationWorkshopStatusUpdate extends Component
      */
     public function admit($workshop)
     {
+        $this->authorize('editStatus', [\App\Models\Application::class, $this->workshop->workshop]);
         $this->application->applicationWorkshops()->where('workshop_id', $workshop)->update(['admitted' => !$this->workshop->admitted]);
         $this->lastUpdated = Carbon::now();
     }
