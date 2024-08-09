@@ -232,7 +232,7 @@ class AdmissionController extends Controller
             ApplicationWorkshop::query()->delete();
 
             // Note: users with not submitted applications will also be deleted
-           $users_to_delete->forceDelete();
+            $users_to_delete->forceDelete();
 
             RoleUser::where('role_id', Role::get(Role::APPLICATION_COMMITTEE_MEMBER)->id)->delete();
             RoleUser::where('role_id', Role::get(Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER)->id)->delete();
