@@ -11,16 +11,16 @@ class Confirmation extends Mailable
     use Queueable;
     use SerializesModels;
 
-    public $recipent;
+    public $recipient;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($recipent)
+    public function __construct($recipient)
     {
-        $this->recipent = $recipent;
+        $this->recipient = $recipient;
     }
 
     /**

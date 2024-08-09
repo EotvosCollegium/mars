@@ -11,7 +11,7 @@ class AnonymousFeedback extends Mailable
     use Queueable;
     use SerializesModels;
 
-    public $recipent;
+    public $recipient;
     public $feedback;
 
     /**
@@ -19,9 +19,9 @@ class AnonymousFeedback extends Mailable
      *
      * @return void
      */
-    public function __construct($recipent, $feedback)
+    public function __construct($recipient, $feedback)
     {
-        $this->recipent = $recipent;
+        $this->recipient = $recipient;
         $this->feedback = $feedback;
     }
 
