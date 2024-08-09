@@ -8,7 +8,7 @@
 
 @section('content')
     @include('auth.application.application', ['user' => $user, 'expanded' => true, 'admin' => $admin ?? false])
-    @can('editStatus', $user->application)
+    @can('editStatus', \App\Models\Application::class)
     <div class="card">
         <form method="POST" action="{{ route('admission.applicants.update', ['application' => $user->application]) }}"
               enctype='multipart/form-data'>
