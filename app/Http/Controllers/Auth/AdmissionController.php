@@ -281,6 +281,10 @@ class AdmissionController extends Controller
         return Workshop::all();
     }
 
+    /**
+     * Helper function to get admittted, not admitted applications and users to delete.
+     * @return array
+     */
     private function getApplications()
     {
         $admitted = Application::query()->with(['user', 'applicationWorkshops'])->admitted()->get()->sortBy('user.name');

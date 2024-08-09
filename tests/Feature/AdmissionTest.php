@@ -38,7 +38,7 @@ class AdmissionTest extends TestCase
         PeriodicEvent::create([
             'event_model' => ApplicationController::class,
             'start_date' => now()->subWeeks(2),
-            'end_date' => now()->addWeeks(2),
+            'end_date' => now()->subDay(),
             'semester_id' => Semester::current()->id
         ]);
 
@@ -370,7 +370,7 @@ class AdmissionTest extends TestCase
         //Send request
         $response = $this->post(route('admission.finalize'));
         $response->assertStatus(302);
-        $response->assertSessionHas('message', 'Sikeresen jóváhagyta az elfogadott jelentkezőket és törölte a fel nem vett jelentkezőket.');
+        $response->assertSessionHas('message', __('general.successful_modification'));
 
         $applicant_admitted_extern->refresh();
         $applicant_admitted_resident->refresh();
