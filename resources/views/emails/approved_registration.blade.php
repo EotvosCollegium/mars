@@ -1,5 +1,5 @@
 @component('mail::message')
-<h1>@lang('mail.dear') {{ $recipent }}!</h1>
+<h1>@lang('mail.dear') {{ $recipient }}!</h1>
 <p>
 @lang('mail.approved_registration')<br>
 </p>
