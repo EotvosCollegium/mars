@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Exports\ApplicantsExport;
 use App\Http\Controllers\Controller;
+use App\Mail\ApplicationFileUploaded;
+use App\Mail\ApplicationNoteChanged;
 use App\Models\Application;
 use App\Models\Semester;
 use App\Models\User;
@@ -18,6 +20,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Cache;
@@ -142,25 +145,30 @@ class AdmissionController extends Controller
     }
 
     /**
-     * Edit an application's note.
+     * Edit an application.
      * @param Request $request
      * @param Application $application
      * @return RedirectResponse
      * @throws AuthorizationException
      */
-    public function updateNote(Request $request, Application $application): RedirectResponse
+    public function update(Request $request, Application $application): RedirectResponse
     {
         $this->authorize('view', $application);
         if (user()->id == $application->user_id) {
             return redirect()->back()->with('error', 'You cannot modify the internal note of yourself.');
         }
-
-        $newStatus = $request->input('status_'.$application->user->id);
         if ($request->has('note')) {
+            $request->validate([
+                'note' => 'string',
+            ]);
+            $oldValue = $application->note;
             $application->update(['note' => $request->input('note')]);
-        } elseif ($newStatus) {
+            Mail::bcc($application->committeeMembers())->queue(new ApplicationNoteChanged(user(), $application, $oldValue));
+        }
+        if ($request->has('file')) {
             $this->authorize('editStatus', $application);
-            $application->update(['status' => $newStatus]);
+            $this->storeFile($request, $application->user);
+            Mail::bcc($application->committeeMembers())->queue(new ApplicationFileUploaded($request->get('name'), $application));
         }
         return redirect()->back();
     }
