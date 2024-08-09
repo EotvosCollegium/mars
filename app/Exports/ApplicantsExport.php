@@ -81,7 +81,9 @@ class ApplicantsExport implements FromCollection, WithTitle, WithMapping, WithHe
                 return $studyLine->getNameWithYear();
             })->implode(', '),
             implode(",", $user->faculties->pluck('name')->toArray()),
-            implode(",", $user->workshops->pluck('name')->toArray()),
+            $application->applicationWorkshops->map(function ($workshop) {
+                return $workshop->workshop->name;
+            })->implode(","),
             $user->isResident() ? 'Bentlakó' : 'Bejáró',
             ($user->educationalInformation?->alfonso_language ?
                 __('role.'.$user->educationalInformation->alfonso_language) . " " . $user->educationalInformation->alfonso_desired_level
