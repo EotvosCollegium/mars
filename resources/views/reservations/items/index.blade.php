@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-<a href="#!" class="breadcrumb">@lang('reservations.items')</a>
+<a href="#!" class="breadcrumb">@lang('reservations.room_reservations')</a>
 @endsection
 
 @section('content')
@@ -10,10 +10,10 @@
     <div class="col s12">
         <div class="card">
             <div class="card-content">
-                <span class="card-title">@lang('reservations.items')</span>
+                <span class="card-title">@lang('reservations.room_reservations')</span>
 
                 <blockquote>
-                    @lang('reservations.item_index_instructions')
+                    @lang('reservations.room_index_instructions')
                 </blockquote>
 
                 @include('reservations.item_table')

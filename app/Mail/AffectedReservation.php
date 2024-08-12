@@ -6,6 +6,8 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
+use App\Models\ReservableItem;
+
 /**
  * This is sent to users who have active reservations
  * for an item that has been just tagged
@@ -16,19 +18,15 @@ class AffectedReservation extends Mailable
     use Queueable;
     use SerializesModels;
 
-    public bool $outOfOrder;
-    public string $itemName;
-    public string $itemType;
+    public ReservableItem $item;
     public string $recipient;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(bool $outOfOrder, string $itemName, string $itemType, string $recipient)
+    public function __construct(ReservableItem $item, string $recipient)
     {
-        $this->outOfOrder = $outOfOrder;
-        $this->itemName = $itemName;
-        $this->itemType = $itemType;
+        $this->item = $item;
         $this->recipient = $recipient;
     }
 
@@ -37,7 +35,7 @@ class AffectedReservation extends Mailable
      */
     private function isForWashingMachine(): bool
     {
-        return \App\Models\ReservableItem::WASHING_MACHINE == $this->itemType;
+        return $this->item->isWashingMachine();
     }
 
     /**
@@ -45,16 +43,16 @@ class AffectedReservation extends Mailable
      */
     public function makeSubject(): string
     {
-        if ($this->outOfOrder) {
+        if ($this->item->out_of_order) {
             return
                 $this->isForWashingMachine()
-                ? 'Hibás mosógép'
-                : 'Használhatatlan terem';
+                ? __('reservations.faulty_washing_machine')
+                : __('reservations.faulty_room');
         } else {
             return
-                'Javított ' .
-                ($this->isForWashingMachine()
-                 ? 'mosógép' : 'terem');
+                $this->isForWashingMachine()
+                ? __('reservations.repaired_washing_machine')
+                : __('reservations.repaired_room');
         }
     }
 

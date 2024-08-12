@@ -1,12 +1,18 @@
 @component('mail::message')
     <h1>@lang('mail.dear') {{ $recipient }}!</h1>
     <p>
-        @if($outOfOrder)
-        @lang('reservations.became_faulty')
+        @if($item->out_of_order)
+        @lang('reservations.has_become_faulty')
         @else
         @lang('reservations.got_repaired')
         @endif
-        {{ ' ' . $itemName . '.' }}
+        <a href="{{
+                $item->isWashingMachine()
+                ? route('reservations.index_for_washing_machines')
+                : route('reservations.show', $item)
+            }}">
+            {{ ' ' . $item->name . '.' }}
+        </a>
     </p>
     <p>
         @lang('reservations.check_reservations')

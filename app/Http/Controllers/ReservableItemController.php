@@ -124,9 +124,7 @@ class ReservableItemController extends Controller
 
         foreach ($item->usersWithActiveReservation as $toNotify) {
             Mail::to($toNotify)->send(new AffectedReservation(
-                $outOfOrder,
-                $item->name,
-                $item->type,
+                $item,
                 $toNotify->name
             ));
         }

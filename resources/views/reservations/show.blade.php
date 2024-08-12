@@ -4,7 +4,7 @@
 <a href="{{route('reservations.items.index')}}" class="breadcrumb" style="cursor: pointer">@lang('reservations.reservations')</a>
 @if($reservation->reservableItem->isWashingMachine())
 <a href="{{route('reservations.index_for_washing_machines')}}"
-    class="breadcrumb" style="cursor: pointer">@lang('reservations.washing_machines')</a>
+    class="breadcrumb" style="cursor: pointer">@lang('reservations.washing_reservations')</a>
 @else
 <a href="{{route('reservations.items.show', $reservation->reservableItem)}}"
   class="breadcrumb" style="cursor: pointer">{{ $reservation->reservableItem->name }}</a>
@@ -22,7 +22,11 @@
 
                 <table>
                     <tr>
-                        <th>@lang('reservations.item')</th>
+                        <th>
+                            @lang('reservations.'
+                                . ($reservation->reservableItem->isWashingMachine() ? 'washing_machine' : 'room')
+                            )
+                        </th>
                         <td>{{$reservation->reservableItem->name}}</td>
                     </tr>
                     <tr>
@@ -72,7 +76,7 @@
                         @if($reservation->isRecurring())
                             <form style="display:inline;" action="{{ route('reservations.delete_all', $reservation->id) }}" method="POST">
                                 @csrf
-                                <button type="submit" class="waves-effect btn red">@lang('reservations.delete_all')</button>
+                                <button type="submit" class="waves-effect btn red">@lang('general.delete_all')</button>
                             </form>
                         @endif
                     </div>
