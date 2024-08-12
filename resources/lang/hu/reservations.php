@@ -3,26 +3,32 @@
 return [
     'all' => 'Minden foglalásra',
     'all_after' => 'Erre és minden későbbi foglalásra',
+    'already_exists' => 'A megadott idősávban már létezik egy foglalás:',
     'already_verified' => 'Ezt a foglalást már jóváhagyták.',
+    'bad_for_non-recurring' => 'Nem ismétlődő foglaláshoz ez érvénytelen kérés.',
     'check_reservations' => 'Kérjük, ennek megfelelően tervezze újra foglalásait.',
     'has_become_faulty' =>
         'Az alábbi objektum (amihez létezik foglalása) elromlott vagy használhatatlanná vált:',
     'create' => 'Új foglalás', // page title in breadcrumb
     'editing_past_reservations' => 'Múltbeli foglalásokat nem lehet szerkeszteni.',
+    'end_before_start' => 'A kezdeti dátum nem lehet a befejezési dátum előtt.',
     'faulty_room' => 'Használhatatlan terem',
     'faulty_washing_machine' => 'A mosógép meghibásodott',
     'frequency' => 'Gyakoriság (napokban)',
     'from' => 'Kezdet',
     'got_repaired' =>
         'Az alábbi objektum (amihez létezik foglalása) újra használhatóvá vált:',
+    'in_past' => 'Az idősáv nem lehet múltbeli.',
     'is_free' => 'Szabad',
     'is_occupied' => 'Foglalt',
     'item_name' => 'Név',
     'item_out_of_order' => 'Ez az objektum jelenleg nem működik.',
     'item_status' => 'Státusz',
     'last_day' => 'Utolsó nap',
+    'last_day_before_first' => 'Az utolsó nap nem lehet az első időpont előtt.',
     'max_washing_reservations_reached' => 
         'Nincs több aktív foglalási lehetőséged mosógépekre. Törölj vagy helyezz át egy meglévőt.',
+    'no_recurring_for_washing_machines' => 'Mosógépekre nem engedélyezettek az ismétlődő foglalások.',
     'note' => 'Megjegyzés',
     'one_hour_slot_only' => 'Mosógépeket csak egész órától egész óráig, egy órára lehet lefoglalni.',
     'out_of_order' => 'Nem működik',

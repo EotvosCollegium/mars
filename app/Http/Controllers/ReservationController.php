@@ -151,16 +151,16 @@ class ReservationController extends Controller
         if (!$item->isWashingMachine()) $validator->after(function ($validator) use ($request, $item) {
             if ($request->reserved_from > $request->reserved_until) {
                 $validator->errors()->add('reserved_until',
-                    'The reservation cannot end before it starts.');
+                    __('reservations.end_before_start'));
             }
             if (Carbon::make($request->reserved_until) < Carbon::now()) {
-                $validator->errors()->add('reserved_until', 'The reservation cannot be in the past.');
+                $validator->errors()->add('reserved_until', __('reservations.in_past'));
             }
             if (isset($request->recurring)
                        && Carbon::make($request->reserved_from)
-                         > Carbon::make($request->last_day)) {
+                         > Carbon::make($request->last_day)->addDay()) {
                 $validator->errors()->add('last_day',
-                    'The last day cannot be before the first.');
+                    __('reservations.last_day_before_first'));
             }
         }); else $validator->after(function ($validator) use ($request, $item) {
             $from = Carbon::make($request->reserved_from);
@@ -169,7 +169,7 @@ class ReservationController extends Controller
                 $validator->errors()->add('reserved_from', __('reservations.one_hour_slot_only'));
             }
             if (Carbon::make($request->reserved_from)->addHour() < Carbon::now()) {
-                $validator->errors()->add('reserved_from', 'The reservation cannot be in the past.');
+                $validator->errors()->add('reserved_from', __('reservations.in_past'));
             }
         });
 
@@ -177,7 +177,7 @@ class ReservationController extends Controller
 
         if (isset($validatedData['recurring']) && $item->isWashingMachine()) {
             return redirect()->back()
-                ->with('error', 'Recurring reservations are not allowed for washing machines.');
+                ->with('error', __('reservations.no_recurring_for_washing_machines'));
         }
 
         if (isset($request->recurring)) {
@@ -221,8 +221,8 @@ class ReservationController extends Controller
             $conflictingReservation = self::hasConflict($newReservation);
             if ($conflictingReservation) {
                 return redirect()->back()->with('error',
-                    "Reservation already exists in the given interval:
-                    {$conflictingReservation->reserved_from},
+                    __('reservations.already_exists') .
+                    "{$conflictingReservation->reserved_from},
                     {$conflictingReservation->reserved_until}"
                 );
             }
@@ -295,13 +295,13 @@ class ReservationController extends Controller
         if (!$reservation->reservableItem->isWashingMachine()) $validator->after(function ($validator) use ($request, $reservation) {
             if ($request->reserved_from > $request->reserved_until) {
                 $validator->errors()->add('reserved_until',
-                    'The reservation cannot end before it starts.');
+                    __('reservations.end_before_start'));
             }
-            if ($reservation->isRecurring()
+            if ($reservation->isRecurring() && self::THIS_ONLY != $request->for_what
                        && Carbon::make($request->reserved_from)
-                         > Carbon::make($request->last_day)) {
+                         > Carbon::make($request->last_day)->addDay()) {
                 $validator->errors()->add('last_day',
-                    'The last day cannot be before the beginning.');
+                    __('reservations.last_day_before_first'));
             }
         });
 
@@ -323,9 +323,9 @@ class ReservationController extends Controller
             $conflictingReservation = self::hasConflict($reservation);
             if ($conflictingReservation) {
                 return redirect()->back()->with('error',
-                    "Reservation already exists in the given interval:
-                    {$conflictingReservation->reserved_from},
-                    {$conflictingReservation->reserved_until}"
+                    __('reservations.already_exists') .
+                    "{$conflictingReservation->reserved_from},
+                     {$conflictingReservation->reserved_until}"
                 );
             }
 
@@ -349,8 +349,7 @@ class ReservationController extends Controller
                 // for now:
                 $defaultItem = null; $user = null;
 
-                $verified = user()->can('reserveImmediately', $reservation->reservableItem)
-                    || $reservation->group->verified
+                $verified = $reservation->group->verified
                         && is_null($defaultFrom) && is_null($defaultUntil);
 
                 if (self::ALL_AFTER == $validatedData['for_what']) {
@@ -420,7 +419,7 @@ class ReservationController extends Controller
         if ($reservation->verified) {
             return redirect()->back()->with('error', __('reservations.already_verified'));
         } else if (!$reservation->isRecurring()) {
-            return redirect()->back()->with('error', 'Bad request for non-recurring reservation');
+            return redirect()->back()->with('error', __('reservations.bad_for_non-recurring'));
         } else {
             $reservation->group->setForAll(
                 verified: true
