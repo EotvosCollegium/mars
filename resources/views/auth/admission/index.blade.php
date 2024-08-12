@@ -72,7 +72,7 @@
     <hr>
     <h6>Összesen: <b class="right">{{$applications->count()}} jelentkező</b></h6>
     @can('finalize', \App\Models\Application::class)
-        @if($applicationDeadline && $applicationDeadline < now()))
+        @if($applicationDeadline && $applicationDeadline < now())
             <a href="{{ route('admission.finalize.index') }}">
                 <x-input.button class="right" text="Véglegesítés megtekintése"/>
             </a>
