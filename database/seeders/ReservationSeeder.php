@@ -50,7 +50,7 @@ class ReservationSeeder extends Seeder
                     if (!random_int(0,2)) {
                         Reservation::create([
                             'reservable_item_id' => $machine->id,
-                            'user_id' => User::all()->random()->id,
+                            'user_id' => User::where('verified', true)->inRandomOrder()->first()->id,
                             'verified' => true,
                             'reserved_from' => Carbon::today()->add($day, 'day')->add($hour, 'hour'),
                             'reserved_until' => Carbon::today()->add($day, 'day')->add($hour+1, 'hour'),
@@ -59,6 +59,8 @@ class ReservationSeeder extends Seeder
                 }
             }
         }
+
+        $faker = \Faker\Factory::create('hu_HU');
 
         foreach($rooms as $room) {
             $reservations = [];
@@ -77,7 +79,8 @@ class ReservationSeeder extends Seeder
                         ->add($minute+$duration, 'minute');
                 $new_one = Reservation::create([
                     'reservable_item_id' => $room->id,
-                    'user_id' => User::all()->random()->id,
+                    'user_id' => User::where('verified', true)->inRandomOrder()->first()->id,
+                    'title' => $faker->realText(10),
                     'verified' => random_int(0,1),
                     'reserved_from'
                         => $reserved_from,
