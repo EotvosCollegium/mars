@@ -48,35 +48,35 @@
                 </table>
             </div>
             @can('modify', $reservation)
-            @if(\Carbon\Carbon::make($reservation->reserved_until) >= \Carbon\Carbon::now())
-            <div class="card-action right-align">
-                <a href="{{ route('reservations.edit', $reservation) }}" class="btn waves-effect">
-                    @lang('general.edit')
-                </a>
-                @if (!$reservation->verified && user()->can('administer', App\Models\Reservation::class))
-                <form action="{{ route('reservations.verify', $reservation->id) }}" method="POST">
-                    @csrf
-                    <x-input.button text="reservations.verify" class="green" />
-                </form>
-                    @if($reservation->isRecurring())
-                    <form action="{{ route('reservations.verify_all', $reservation->id) }}" method="POST">
-                        @csrf
-                        <x-input.button text="reservations.verify_all" class="green" />
-                    </form>
-                    @endif
+                @if(\Carbon\Carbon::make($reservation->reserved_until) >= \Carbon\Carbon::now())
+                    <div class="card-action right-align">
+                        <a href="{{ route('reservations.edit', $reservation) }}" class="btn waves-effect">
+                            @lang('general.edit')
+                        </a>
+                        @if (!$reservation->verified && user()->can('administer', App\Models\Reservation::class))
+                            <form style="display:inline;" action="{{ route('reservations.verify', $reservation->id) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="waves-effect btn green">@lang('reservations.verify')</button>
+                            </form>
+                            @if($reservation->isRecurring())
+                                <form style="display:inline;" action="{{ route('reservations.verify_all', $reservation->id) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="waves-effect btn green">@lang('reservations.verify_all')</button>
+                                </form>
+                            @endif
+                        @endif
+                        <form style="display:inline;" action="{{ route('reservations.delete', $reservation->id) }}" method="POST">
+                            @csrf
+                            <button type="submit" class="waves-effect btn red">@lang('general.delete')</button>
+                        </form>
+                        @if($reservation->isRecurring())
+                            <form style="display:inline;" action="{{ route('reservations.delete_all', $reservation->id) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="waves-effect btn red">@lang('reservations.delete_all')</button>
+                            </form>
+                        @endif
+                    </div>
                 @endif
-                <form action="{{ route('reservations.delete', $reservation->id) }}" method="POST">
-                    @csrf
-                    <x-input.button text="general.delete" class="red" />
-                </form>
-                @if($reservation->isRecurring())
-                <form action="{{ route('reservations.delete_all', $reservation->id) }}" method="POST">
-                    @csrf
-                    <x-input.button text="reservations.delete_all" class="red" />
-                </form>
-                @endif
-            </div>
-            @endif
             @endcan
         </div>
     </div>
