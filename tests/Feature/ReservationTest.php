@@ -53,8 +53,10 @@ class ReservationTest extends TestCase
         ];
 
         $anita = self::createSecretary();
-        $response = $this->followingRedirects()->actingAs($anita)->post(route('reservations.items.store'),
-                                                            $itemInput);
+        $response = $this->followingRedirects()->actingAs($anita)->post(
+            route('reservations.items.store'),
+            $itemInput
+        );
         $response->assertStatus(200);
         $response->assertSeeText($itemInput['name']);
 
@@ -67,7 +69,8 @@ class ReservationTest extends TestCase
             'note' => null
         ];
         $response = $this->followingRedirects()->actingAs($user)->post(
-            route('reservations.store', $item), $input
+            route('reservations.store', $item),
+            $input
         );
         $response->assertStatus(200);
         $response->assertSeeText($input['title']);

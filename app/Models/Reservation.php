@@ -66,7 +66,7 @@ class Reservation extends Model
         if ($this == $that
                 || $this->reservable_item_id != $that->reservable_item_id) {
             return false;
-        } else if ($this->reserved_from < $that->reserved_from) {
+        } elseif ($this->reserved_from < $that->reserved_from) {
             return $this->reserved_until > $that->reserved_from;
         } else {
             return $this->reserved_from < $that->reserved_until;

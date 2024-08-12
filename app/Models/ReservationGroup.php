@@ -12,7 +12,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 use App\Models\Reservation;
 
-class ConflictException extends \Exception {}
+class ConflictException extends \Exception
+{
+}
 
 class ReservationGroup extends Model
 {
@@ -100,7 +102,9 @@ class ReservationGroup extends Model
      */
     public function initializeFrom(Carbon|string $firstDay): void
     {
-        if (is_string($firstDay)) $firstDay = Carbon::make($firstDay);
+        if (is_string($firstDay)) {
+            $firstDay = Carbon::make($firstDay);
+        }
         $this->reserveInInterval($firstDay, $this->last_day);
     }
 
@@ -120,7 +124,8 @@ class ReservationGroup extends Model
         return $this->reservations->map(
             function (Reservation $reservation) {
                 return Carbon::make($reservation->reserved_from);
-            })->max();
+            }
+        )->max();
     }
 
     /**
@@ -133,7 +138,9 @@ class ReservationGroup extends Model
      */
     public function setLastDay(Carbon|string $newLastDay): void
     {
-        if (is_string($newLastDay)) $newLastDay = Carbon::make($newLastDay);
+        if (is_string($newLastDay)) {
+            $newLastDay = Carbon::make($newLastDay);
+        }
         $oldLastDay = Carbon::make($this->last_day);
         if ($oldLastDay < $newLastDay) {
             $fromDay = $this->dateOfLast()
@@ -182,17 +189,22 @@ class ReservationGroup extends Model
         // if either one gets changed, we have to do the same things
         if (is_null($defaultFrom) && !is_null($defaultUntil)) {
             $defaultFrom = Carbon::make($this->default_from);
-        } else if (!is_null($defaultFrom) && is_null($defaultUntil)) {
+        } elseif (!is_null($defaultFrom) && is_null($defaultUntil)) {
             $defaultUntil = Carbon::make($this->default_until);
         }
 
-        DB::transaction(function ()
-            use ($firstReservation, $defaultItem,
-                $user, $defaultTitle,
-                $defaultFrom, $defaultUntil,
-                $defaultNote, $verified) {
+        DB::transaction(function () use (
+            $firstReservation,
+            $defaultItem,
+            $user,
+            $defaultTitle,
+            $defaultFrom,
+            $defaultUntil,
+            $defaultNote,
+            $verified
+        ) {
             $allAfter = $this->reservations()
-                ->where('reserved_from', '>=',$firstReservation->reserved_from)
+                ->where('reserved_from', '>=', $firstReservation->reserved_from)
                 ->get();
             foreach($allAfter as $reservation) {
                 // the item has to be set now;
@@ -227,7 +239,9 @@ class ReservationGroup extends Model
                     $reservation->reserved_until = $newUntil;
                 }
 
-                if (!is_null($user)) $reservation->user_id = $user->id;
+                if (!is_null($user)) {
+                    $reservation->user_id = $user->id;
+                }
                 if (!is_null($defaultTitle) && $this->default_title == $reservation->title) {
                     // if it has been custom, it won't be changed
                     $reservation->title = $defaultTitle;
@@ -236,16 +250,28 @@ class ReservationGroup extends Model
                     // same here
                     $reservation->note = $defaultNote;
                 }
-                if (!is_null($verified)) $reservation->verified = $verified;
+                if (!is_null($verified)) {
+                    $reservation->verified = $verified;
+                }
 
                 $reservation->save();
             }
 
-            if (isset($defaultItem)) $this->default_item = $defaultItem->id;
-            if (isset($user)) $this->user_id = $user->id;
-            if (isset($defaultTitle)) $this->default_title = $defaultTitle;
-            if (isset($defaultNote)) $this->default_note = $defaultNote;
-            if (isset($verified)) $this->verified = $verified;
+            if (isset($defaultItem)) {
+                $this->default_item = $defaultItem->id;
+            }
+            if (isset($user)) {
+                $this->user_id = $user->id;
+            }
+            if (isset($defaultTitle)) {
+                $this->default_title = $defaultTitle;
+            }
+            if (isset($defaultNote)) {
+                $this->default_note = $defaultNote;
+            }
+            if (isset($verified)) {
+                $this->verified = $verified;
+            }
             $this->save();
         });
     }
@@ -261,8 +287,13 @@ class ReservationGroup extends Model
     ) {
         $this->setForAllAfter(
             $this->firstReservation(),
-            $defaultItem, $user, $defaultTitle, $defaultFrom, $defaultUntil,
-            $defaultNote, $verified
+            $defaultItem,
+            $user,
+            $defaultTitle,
+            $defaultFrom,
+            $defaultUntil,
+            $defaultNote,
+            $verified
         );
     }
 }

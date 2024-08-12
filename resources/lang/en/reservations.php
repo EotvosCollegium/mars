@@ -26,7 +26,7 @@ return [
     'item_status' => 'Status',
     'last_day' => 'Last day',
     'last_day_before_first' => 'The last day cannot be before the first.',
-    'max_washing_reservations_reached' => 
+    'max_washing_reservations_reached' =>
         'You have reached the maximum amount of active reservations for washing machines.',
     'no_recurring_for_washing_machines' => 'Recurring reservations are not allowed for washing machines.',
     'note' => 'Note',

@@ -26,7 +26,7 @@ return [
     'item_status' => 'Státusz',
     'last_day' => 'Utolsó nap',
     'last_day_before_first' => 'Az utolsó nap nem lehet az első időpont előtt.',
-    'max_washing_reservations_reached' => 
+    'max_washing_reservations_reached' =>
         'Nincs több aktív foglalási lehetőséged mosógépekre. Törölj vagy helyezz át egy meglévőt.',
     'no_recurring_for_washing_machines' => 'Mosógépekre nem engedélyezettek az ismétlődő foglalások.',
     'note' => 'Megjegyzés',

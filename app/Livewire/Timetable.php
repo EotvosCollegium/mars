@@ -76,7 +76,7 @@ class Timetable extends Component
             $blocks[] = $block;
         } else {
             // cut the end if it is after $until
-            $blocks[count($blocks)-1]['until'] = $until;
+            $blocks[count($blocks) - 1]['until'] = $until;
         }
 
         // We also have to split blocks
@@ -141,7 +141,7 @@ class Timetable extends Component
     public function mount(ReservableItem $item)
     {
         $this->item = $item;
-        
+
         $this->firstDay = Carbon::today();
         $this->lastDay = Carbon::today()->addDays(2);
 

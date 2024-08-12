@@ -13,7 +13,8 @@ use App\Models\Reservation;
 
 class ReservationVerified extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     /** The name of the one who has approved the reservation. */
     public string $approver;

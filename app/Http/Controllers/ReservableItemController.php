@@ -17,15 +17,16 @@ use App\Mail\ReportReservableItemFault;
 
 class ReservableItemController extends Controller
 {
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
         $this->authorize('viewAny', ReservableItem::class);
 
         $type = $request->type;
         if (is_null($type)) {
             $items = ReservableItem::all();
-        } else if ('washing_machine' == $type) {
+        } elseif ('washing_machine' == $type) {
             $items = ReservableItem::where('type', 'washing_machine')->get();
-        } else if ('room' == $type) {
+        } elseif ('room' == $type) {
             $items = ReservableItem::where('type', 'room')->get();
         } else {
             abort(400, "Unknown reservable item type: $type");
@@ -35,7 +36,8 @@ class ReservableItemController extends Controller
         ]);
     }
 
-    public function show(ReservableItem $item) {
+    public function show(ReservableItem $item)
+    {
         $this->authorize('viewAny', ReservableItem::class);
 
         $from = Carbon::today()->startOfWeek();
@@ -47,13 +49,15 @@ class ReservableItemController extends Controller
         ]);
     }
 
-    public function create() {
+    public function create()
+    {
         $this->authorize('administer', ReservableItem::class);
 
         abort(500, 'create not implemented yet');
     }
 
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         $this->authorize('administer', ReservableItem::class);
 
         $validator = Validator::make($request->all(), [
@@ -69,7 +73,8 @@ class ReservableItemController extends Controller
         return redirect()->route('reservations.items.show', $newItem);
     }
 
-    public function delete(ReservableItem $item) {
+    public function delete(ReservableItem $item)
+    {
         $this->authorize('administer', ReservableItem::class);
 
         $item->delete();
@@ -80,16 +85,19 @@ class ReservableItemController extends Controller
      * Sends admins and staff an email notification
      * about an allegedly faulty item.
      */
-    public function reportFault(ReservableItem $item) {
+    public function reportFault(ReservableItem $item)
+    {
         $this->authorize('requestReservation', $item);
 
         $thoseToNotify = User::withRole(Role::SYS_ADMIN)->get()
             ->concat(User::withRole(Role::STAFF)->get());
         foreach ($thoseToNotify as $toNotify) {
-            Mail::to($toNotify)->send(new ReportReservableItemFault(
-                $item,
-                $toNotify->name,
-                user()->name)
+            Mail::to($toNotify)->send(
+                new ReportReservableItemFault(
+                    $item,
+                    $toNotify->name,
+                    user()->name
+                )
             );
         }
 

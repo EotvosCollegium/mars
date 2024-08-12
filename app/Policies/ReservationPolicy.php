@@ -11,7 +11,8 @@ class ReservationPolicy
 {
     use HandlesAuthorization;
 
-    public function administer(User $user): bool {
+    public function administer(User $user): bool
+    {
         return $user->isAdmin()
             || $user->hasRole([
                 Role::SECRETARY,
@@ -20,14 +21,16 @@ class ReservationPolicy
             ]);
     }
 
-    public function view(User $user, Reservation $reservation): bool {
+    public function view(User $user, Reservation $reservation): bool
+    {
         return $this->administer($user)
             || $user->isCollegist()
             || $user->hasRole(Role::WORKSHOP_LEADER)
             || $reservation->reservableItem->type == 'washing_machine';
     }
 
-    public function modify(User $user, Reservation $reservation): bool {
+    public function modify(User $user, Reservation $reservation): bool
+    {
         return $this->administer($user)
             || (isset($reservation->user) && $reservation->user->id == $user->id);
     }

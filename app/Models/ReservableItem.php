@@ -67,8 +67,9 @@ class ReservableItem extends Model
      */
     public function isFree(): bool
     {
-        if ($this->isOutOfOrder()) return false;
-        else {
+        if ($this->isOutOfOrder()) {
+            return false;
+        } else {
             $now = Carbon::now();
             return Reservation::where('reservable_item_id', $this->id)
                          ->where('reserved_from', '<=', $now)
@@ -89,17 +90,18 @@ class ReservableItem extends Model
      * Returns an array of reservations in a given time interval
      * (those that do not only touch it with their endpoints).
      */
-    public function reservationsInSlot(Carbon $from, Carbon $until) {
+    public function reservationsInSlot(Carbon $from, Carbon $until)
+    {
         return Reservation::where('reservable_item_id', $this->id)
                           ->where(function (Builder $query) use ($from, $until) {
-                            return $query->where(function (Builder $query) use ($from, $until) {
-                                           return $query->where('reserved_from', '>=', $from)
-                                                        ->where('reserved_from', '<', $until);
-                                         })
-                                         ->orWhere(function (Builder $query) use ($from) {
-                                            return $query->where('reserved_from', '<=', $from)
-                                                         ->where('reserved_until', '>', $from);
-                                         });
+                              return $query->where(function (Builder $query) use ($from, $until) {
+                                  return $query->where('reserved_from', '>=', $from)
+                                               ->where('reserved_from', '<', $until);
+                              })
+                                           ->orWhere(function (Builder $query) use ($from) {
+                                               return $query->where('reserved_from', '<=', $from)
+                                                            ->where('reserved_until', '>', $from);
+                                           });
                           })->orderBy('reserved_from')
                           ->get();
     }
@@ -111,7 +113,9 @@ class ReservableItem extends Model
      */
     public function numberOfValidReservations(User $user): int
     {
-        if (!$this->isWashingMachine()) throw new \Exception('only for use with washing machines');
+        if (!$this->isWashingMachine()) {
+            throw new \Exception('only for use with washing machines');
+        }
         return $this->reservations()
             ->where('user_id', $user->id)
             ->where('reserved_until', '>', Carbon::now())

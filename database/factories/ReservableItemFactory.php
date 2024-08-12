@@ -11,7 +11,6 @@ use Carbon\Carbon;
  */
 class ReservableItemFactory extends Factory
 {
-
     /**
      * Define the model's default state.
      * Note: this only generates rooms,
