@@ -169,7 +169,11 @@ class UserPolicy
         }
 
         if ($role->name == Role::APPLICATION_COMMITTEE_MEMBER) {
-            return $user->hasRole([Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR]);
+            return $user->hasRole([
+                Role::WORKSHOP_LEADER,
+                Role::WORKSHOP_ADMINISTRATOR,
+                Role::STUDENT_COUNCIL => [Role::PRESIDENT, Role::SCIENCE_VICE_PRESIDENT]
+            ]);
         }
 
         if ($role->name == Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER) {
@@ -204,7 +208,10 @@ class UserPolicy
         }
 
         if ($role->name == Role::APPLICATION_COMMITTEE_MEMBER) {
-            return $user->roleWorkshops->contains($object->id);
+            return $user->roleWorkshops->contains($object->id)
+                    || $user->hasRole([
+                        Role::STUDENT_COUNCIL => [Role::PRESIDENT, Role::SCIENCE_VICE_PRESIDENT]
+                    ]);
         }
 
         if ($role->name == Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER) {

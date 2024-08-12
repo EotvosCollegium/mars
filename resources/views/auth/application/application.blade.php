@@ -11,8 +11,7 @@
                     @endif
                 </div>
                 <div class="col s12 xl8">
-
-                    <div class="right" style="margin:5px;width:150px">
+                    <div class="right" style="margin:5px;width:160px">
                         @can('viewUnfinished', \App\Models\Application::class)
                             @if(!$user->application->submitted)
                                 <span class="new badge scale-transition red tag" style="display: block;text-transform: uppercase"
@@ -35,6 +34,9 @@
                         @else
                             <div class="center-align" style="margin:-5px;font-style:italic;color:red">hiányzó státusz</div>
                         @endif
+                        @can('finalize', \App\Models\Application::class)
+                            @livewire('application-role-status-update', ['application' => $user->application])
+                        @endcan
                         <div class="divider" style="margin: 5px"></div>
                         @foreach($user->application->applicationWorkshops as $workshop)
                             <span class="new badge {{ $workshop->workshop->color() }} scale-transition tag"
@@ -46,7 +48,7 @@
                                 <div
                                     style="display: flex;flex-direction: column;align-items: center;justify-content: center;">
                                     @can('editStatus', [\App\Models\Application::class, $workshop->workshop])
-                                        @livewire('application-status-update', ['application' => $user->application, 'workshop' => $workshop])
+                                        @livewire('application-workshop-status-update', ['application' => $user->application, 'workshop' => $workshop])
                                     @else
                                         @if(isset($application))
                                             <label style="font-size: 1em">

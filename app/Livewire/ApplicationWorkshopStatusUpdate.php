@@ -7,7 +7,7 @@ use App\Models\ApplicationWorkshop;
 use Carbon\Carbon;
 use Livewire\Component;
 
-class ApplicationStatusUpdate extends Component
+class ApplicationWorkshopStatusUpdate extends Component
 {
     public Application $application;
     public ApplicationWorkshop $workshop;
@@ -32,6 +32,7 @@ class ApplicationStatusUpdate extends Component
      */
     public function callIn($workshop)
     {
+        $this->authorize('editStatus', [\App\Models\Application::class, $this->workshop->workshop]);
         $this->application->applicationWorkshops()->where('workshop_id', $workshop)->update(['called_in' => !$this->workshop->called_in]);
         $this->lastUpdated = Carbon::now();
     }
@@ -42,6 +43,7 @@ class ApplicationStatusUpdate extends Component
      */
     public function admit($workshop)
     {
+        $this->authorize('editStatus', [\App\Models\Application::class, $this->workshop->workshop]);
         $this->application->applicationWorkshops()->where('workshop_id', $workshop)->update(['admitted' => !$this->workshop->admitted]);
         $this->lastUpdated = Carbon::now();
     }
@@ -61,6 +63,6 @@ class ApplicationStatusUpdate extends Component
      */
     public function render()
     {
-        return view('auth.application.status_update_component');
+        return view('auth.application.workshop_status_update_component');
     }
 }

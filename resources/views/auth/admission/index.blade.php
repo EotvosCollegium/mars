@@ -48,10 +48,9 @@
             <blockquote>
                 @can('editStatus', \App\Models\Application::class)
                     <p>A behívott/felvett státusz a jelentkezők számára nem nyilvános.</p>
-                @endcan
-                @can('finalize', \App\Models\Application::class)
-                    <p>{{$applicationDeadline?->addWeeks(1)?->format('Y. m. d.')}} után lehet a lap alján felvenni a
-                        kiválasztott jelentkezőket, ezzel véglegesíteni a felvételit.</p>
+                    @can('finalize', \App\Models\Application::class)
+                        <p>Felvettek esetén a megjelölt bentlakó/bejáró státusz alatti csúszkán lehet beállítani a végleges státuszt.</p>
+                    @endcan
                 @endcan
             </blockquote>
 
@@ -73,26 +72,10 @@
     <hr>
     <h6>Összesen: <b class="right">{{$applications->count()}} jelentkező</b></h6>
     @can('finalize', \App\Models\Application::class)
-        @if($applicationDeadline?->addWeeks(1) < now())
-            <div class="card" style="margin-top:20px">
-                <div class="card-content">
-                    <div class="row" style="margin:0">
-                        <form id="finalize-application-process" method="POST"
-                              action="{{route('admission.finalize')}}">
-                            @csrf
-                            <div class="col">
-                                Hogyha a felvételi eljárás befejeződött, akkor a felvett jelentkezőket itt lehet
-                                jóváhagyni.
-                                Ezzel együtt minden más felvételiző elutasításra, anyagai törlésre, valamint az összes
-                                felvételihez kapcsolódó (felvételiztető) jog elvételre kerül.
-                                A "Véglegesítve" és "Behívva" státuszú jelentkezőket előbb el kell utasítani, vagy fel
-                                kell venni.
-                            </div>
-                            <x-input.button class="red right" text="Felvételi lezárása"/>
-                        </form>
-                    </div>
-                </div>
-            </div>
+        @if($applicationDeadline && $applicationDeadline < now())
+            <a href="{{ route('admission.finalize.index') }}">
+                <x-input.button class="right" text="Véglegesítés megtekintése"/>
+            </a>
         @endif
     @endcan
     @can('viewAll', \App\Models\Application::class)

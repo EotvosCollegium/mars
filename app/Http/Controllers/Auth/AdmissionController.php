@@ -4,8 +4,12 @@ namespace App\Http\Controllers\Auth;
 
 use App\Exports\ApplicantsExport;
 use App\Http\Controllers\Controller;
+use App\Mail\ApplicationFileUploaded;
+use App\Mail\ApplicationNoteChanged;
 use App\Models\Application;
+use App\Models\ApplicationWorkshop;
 use App\Models\Semester;
+use App\Models\SemesterStatus;
 use App\Models\User;
 use App\Models\RoleUser;
 use App\Models\File;
@@ -15,9 +19,11 @@ use App\Utils\ApplicationHandler;
 use App\Utils\HasPeriodicEvent;
 use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Cache;
@@ -142,28 +148,54 @@ class AdmissionController extends Controller
     }
 
     /**
-     * Edit an application's note.
+     * Edit an application.
      * @param Request $request
      * @param Application $application
      * @return RedirectResponse
      * @throws AuthorizationException
      */
-    public function updateNote(Request $request, Application $application): RedirectResponse
+    public function update(Request $request, Application $application): RedirectResponse
     {
         $this->authorize('view', $application);
         if (user()->id == $application->user_id) {
             return redirect()->back()->with('error', 'You cannot modify the internal note of yourself.');
         }
-
-        $newStatus = $request->input('status_'.$application->user->id);
         if ($request->has('note')) {
+            $request->validate([
+                'note' => 'string',
+            ]);
+            $oldValue = $application->note;
             $application->update(['note' => $request->input('note')]);
-        } elseif ($newStatus) {
-            $this->authorize('editStatus', $application);
-            $application->update(['status' => $newStatus]);
+            Mail::bcc($application->committeeMembers())->queue(new ApplicationNoteChanged(user(), $application, $oldValue));
+        }
+        if ($request->has('file')) {
+            $this->authorize('editStatus', Application::class);
+            $this->storeFile($request, $application->user);
+            Mail::bcc($application->committeeMembers())->queue(new ApplicationFileUploaded($request->get('name'), $application));
         }
         return redirect()->back();
     }
+
+    /**
+     * Show the finalize page with final names and statistics
+     */
+    public function indexFinalize(): View
+    {
+        $this->authorize('finalize', Application::class);
+        if(!($this->getDeadline() < now())) {
+            throw new \InvalidArgumentException('The application deadline has not passed yet.');
+        }
+        [$admitted, $not_admitted, $users_to_delete] = $this->getApplications();
+        return view('auth.admission.finalize', [
+            'semester' => $this->semester(),
+            'admitted_applications' => $admitted,
+            'users_to_delete' => $users_to_delete
+                ->with('application')
+                ->orderBy('name')
+                ->get()
+        ]);
+    }
+
 
     /**
      * Accept and delete applciations.
@@ -172,47 +204,50 @@ class AdmissionController extends Controller
      */
     public function finalize(): RedirectResponse
     {
-        //        $this->authorize('finalizeApplicationProcess', User::class);
-        //        Cache::forget('collegists');
-        //        $not_handled_applicants = User::query()->withoutGlobalScope('verified')
-        //            ->where('verified', 0)
-        //            ->whereHas('application', function ($query) {
-        //                $query->where('submitted', true);
-        //            })
-        //            ->count();
-        //        if ($not_handled_applicants > 0) {
-        //            return redirect()->back()->with('error', 'Még vannak feldolgozatlan jelentkezések!');
-        //        }
-        //        DB::transaction(function () {
-        //            User::query()->withoutGlobalScope('verified')
-        //                ->where('verified', 0)
-        //                ->whereHas('application', function ($query) {
-        //                    $query->where('status', Application::STATUS_ACCEPTED);
-        //                })
-        //                ->update(['verified' => true]);
-        //            $usersToDelete = User::query()->withoutGlobalScope('verified')
-        //                ->where('verified', 0)->whereHas('application');
-        //            foreach ($usersToDelete->get() as $user) {
-        //                if ($user->profilePicture!=null) {
-        //                    Storage::delete($user->profilePicture->path);
-        //                    $user->profilePicture()->delete();
-        //                }
-        //            }
-        //            $files = File::where('application_id', '!=', null);
-        //            foreach ($files->get() as $file) {
-        //                Storage::delete($file->path);
-        //            }
-        //            $files->delete();
-        //            Application::query()->delete();
-        //            $usersToDelete->forceDelete();
-        //
-        //            RoleUser::where('role_id', Role::get(Role::APPLICATION_COMMITTEE_MEMBER)->id)->delete();
-        //            RoleUser::where('role_id', Role::get(Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER)->id)->delete();
-        //        });
-        //
-        //        Cache::clear();
-        // return back()->with('message', 'Sikeresen jóváhagyta az elfogadott jelentkezőket');
-        return back()->with('error', 'Még nincs implementálva.');
+        $this->authorize('finalize', Application::class);
+        if(!($this->getDeadline() < now())) {
+            throw new \InvalidArgumentException('The application deadline has not passed yet.');
+        }
+        if(!$this->semester()) {
+            throw new \InvalidArgumentException('No semester can be retrieved from the application periodic event.');
+        }
+        DB::transaction(function () {
+            [$admitted, $not_admitted, $users_to_delete] = $this->getApplications();
+            // admit users
+            foreach ($admitted as $application) {
+                $application->user->update(['verified' => true]);
+                if($application->admitted_for_resident_status) {
+                    $application->user->setResident();
+                } else {
+                    $application->user->setExtern();
+                }
+                $application->user->workshops()->sync($application->admittedWorkshops);
+                $application->user->setStatusFor($this->semester(), SemesterStatus::ACTIVE);
+                $application->user->internetAccess->extendInternetAccess($this->semester()->getStartDate()->addMonth());
+            }
+            // delete data for not admitted users
+            $files = File::query()
+                ->whereIn('application_id', $not_admitted->pluck('id')) // application files
+                ->orWhereIn('user_id', $not_admitted->pluck('user_id')); // profile pictures
+            foreach ($files->get() as $file) {
+                Storage::delete($file->path);
+            }
+            $files->delete();
+            // soft deletes application, keep them for future reference
+            // (see https://github.com/EotvosCollegium/mars/issues/332#issuecomment-2014058021)
+            Application::whereIn('id', $admitted->pluck('id'))->delete();
+            Application::whereNotIn('id', $admitted->pluck('id'))->forceDelete();
+            ApplicationWorkshop::query()->delete();
+
+            // Note: users with not submitted applications will also be deleted
+            $users_to_delete->forceDelete();
+
+            RoleUser::where('role_id', Role::get(Role::APPLICATION_COMMITTEE_MEMBER)->id)->delete();
+            RoleUser::where('role_id', Role::get(Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER)->id)->delete();
+        });
+
+        Cache::clear();
+        return back()->with('message', __('general.successful_modification'));
     }
 
     /**
@@ -252,5 +287,22 @@ class AdmissionController extends Controller
             return $user->roleWorkshops->concat($user->applicationCommitteWorkshops);
         }
         return Workshop::all();
+    }
+
+    /**
+     * Helper function to get admittted, not admitted applications and users to delete.
+     * @return array
+     */
+    private function getApplications()
+    {
+        $admitted = Application::query()->with(['user', 'applicationWorkshops'])->admitted()->get()->sortBy('user.name');
+        $not_admitted = Application::query()->whereNotIn('id', $admitted->pluck('id'))->get();
+        $users_to_delete_query = User::query()
+            ->withoutGlobalScope('verified')
+            ->whereIn('id', $not_admitted->pluck('user_id'))
+            //ignore users with any existing role
+            ->whereDoesntHave('roles');
+
+        return [$admitted, $not_admitted, $users_to_delete_query];
     }
 }
