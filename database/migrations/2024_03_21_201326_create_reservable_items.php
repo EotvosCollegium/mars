@@ -17,11 +17,6 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->enum('type', ['washing_machine', 'room']);
-            // The default duration offered for a reservation (in minutes).
-            $table->smallInteger('default_reservation_duration');
-            $table->boolean('is_default_compulsory');
-            // The minute endings of the possible starting times for a reservation.
-            $table->set('allowed_starting_minutes', range(0, 59));
             $table->boolean('out_of_order')->default(false);
             $table->timestamps();
         });

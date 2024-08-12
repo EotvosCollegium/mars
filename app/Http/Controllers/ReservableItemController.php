@@ -59,19 +59,6 @@ class ReservableItemController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'type' => Rule::in(["washing_machine", "room"]),
-            'default_reservation_duration' => 'required|numeric|min:1|max:65535',
-            'is_default_compulsory' => 'required|boolean',
-            'allowed_starting_minutes' => [
-                'required',
-                function (string $attribute, mixed $value, \Closure $fail) {
-                    $minutes = explode(',', $value);
-                    foreach ($minutes as $minute) {
-                        if (!is_numeric($minute) || intval($minute) < 0 || intval($minute) > 59) {
-                            $fail("Invalid \"allowed starting minutes\" list (there is a value that is either not numeric or is not between 0 and 59).");
-                        }
-                    }
-                },
-            ],
             'out_of_order' => 'nullable|boolean',
         ]);
 

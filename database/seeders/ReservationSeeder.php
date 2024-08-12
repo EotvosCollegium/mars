@@ -26,17 +26,11 @@ class ReservationSeeder extends Seeder
         $washing_machines = [
             ReservableItem::create([
                 "name" => "The machine on the left",
-                "type" => "washing_machine",
-                "default_reservation_duration" => 60,
-                "is_default_compulsory" => true,
-                "allowed_starting_minutes" => "0"
+                "type" => "washing_machine"
             ]),
             ReservableItem::create([
                 "name" => "The machine on the right",
-                "type" => "washing_machine",
-                "default_reservation_duration" => 60,
-                "is_default_compulsory" => true,
-                "allowed_starting_minutes" => "0"
+                "type" => "washing_machine"
             ]),
         ];
 
