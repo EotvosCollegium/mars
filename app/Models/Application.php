@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
+use Matrix\Builder;
 
 /**
  * App\Models\Application
@@ -399,5 +400,22 @@ class Application extends Model
                 $this->applicationWorkshops()->where('workshop_id', $workshop->id)->delete();
             }
         }
+    }
+
+    /**
+     * Return a list of users in the committee:
+     * workshop leaders/administrators/committee members and aggregated committee members
+     * @return \Illuminate\Database\Eloquent\Collection|Collection
+     */
+    public function committeeMembers()
+    {
+        return User::query()
+            ->whereHas('roles', function ($query) {
+                $query
+                    ->whereIn('name', [Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR, Role::APPLICATION_COMMITTEE_MEMBER])
+                    ->whereIn('workshop_id', $this->appliedWorkshops->pluck('id'));
+            })->orWhereHas('roles', function ($query) {
+                $query->where('name', Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER);
+            })->get();
     }
 }

@@ -184,7 +184,7 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
 
     Route::get('/applicants', [AdmissionController::class, 'index'])->name('admission.applicants.index');
     Route::get('/applicants/{application}', [AdmissionController::class, 'show'])->name('admission.applicants.show');
-    Route::post('/applicants/{application}', [AdmissionController::class, 'updateNote'])->name('admission.applicants.update_note');
+    Route::post('/applicants/{application}', [AdmissionController::class, 'update'])->name('admission.applicants.update');
 
     /** Faults */
     Route::get('/faults', [FaultController::class, 'index'])->name('faults');
