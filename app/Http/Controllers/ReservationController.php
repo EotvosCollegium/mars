@@ -244,7 +244,7 @@ class ReservationController extends Controller
     {
         $this->authorize('modify', $reservation);
 
-        if ($item->isOutOfOrder()) {
+        if ($reservation->reservableItem->isOutOfOrder()) {
             return redirect()->back()->with('error', __('reservations.item_out_of_order'));
         } elseif (Carbon::make($reservation->reserved_until) < Carbon::now()) {
             return redirect()->back()->with('error', __('reservations.editing_past_reservations'));
@@ -266,7 +266,7 @@ class ReservationController extends Controller
     {
         $this->authorize('modify', $reservation);
 
-        if ($item->isOutOfOrder()) {
+        if ($reservation->reservableItem->isOutOfOrder()) {
             return redirect()->back()->with('error', __('reservations.item_out_of_order'));
         } elseif (Carbon::make($reservation->reserved_until) < Carbon::now()) {
             return redirect()->back()->with('error', __('reservations.editing_past_reservations'));

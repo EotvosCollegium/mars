@@ -86,12 +86,12 @@
                                             'timetable-block',
                                             'valign-wrapper', 'center-align',
                                             'red' => $isReservation && !$isOurs,
-                                            'yellow' => $isOurs,
+                                            'orange' => $isOurs,
                                             'green' => !$isReservation && !$isDisabled,
                                             'grey' => $isDisabled,
                                             'darken-4' => $isReservation && App\Models\Reservation::find($block['reservation_id'])->verified
-                                                            || !$isDisabled,
-                                            'lighten-4' => $isReservation && !App\Models\Reservation::find($block['reservation_id'])->verified
+                                                            || !$isReservation && !$isDisabled,
+                                            'lighten-2' => $isReservation && !App\Models\Reservation::find($block['reservation_id'])->verified
                                     ])>
                                         @if(!is_null($reservation))
                                         {{$reservation->displayName()}}

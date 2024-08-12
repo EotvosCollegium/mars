@@ -78,15 +78,20 @@ class Reservation extends Model
      */
     public function displayName(): string
     {
-        if ($this->reservableItem->type == 'washing_machine') {
+        if ($this->reservableItem->isWashingMachine()) {
             if (!is_null($this->user)) {
                 return $this->user->name;
             }
         } else {
-            if (!is_null($this->title)) {
-                return $this->title;
-            }
+            return (
+                isset($this->title)
+                ? $this->title
+                : $this->user
+            ) . (
+                $this->verified
+                ? ''
+                : (' (' . __('reservations.unverified') . ')')
+            );
         }
-        return "";
     }
 }

@@ -26,6 +26,10 @@
                         <td>{{$reservation->reservableItem->name}}</td>
                     </tr>
                     <tr>
+                        <th>@lang('reservations.title')</th>
+                        <td>{{$reservation->title}}</td>
+                    </tr>
+                    <tr>
                         <th>@lang('general.user')</th>
                         <td>{{is_null($reservation->user) ? "" : $reservation->user->name}}</td>
                     </tr>
