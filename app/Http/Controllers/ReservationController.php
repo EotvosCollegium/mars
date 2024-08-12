@@ -184,7 +184,7 @@ class ReservationController extends Controller
             $newGroup = ReservationGroup::create([
                 'default_item' => $item->id,
                 'user_id' => user()->id,
-                'frequency' => $validatedData['frequency'],
+                'frequency' => intval($validatedData['frequency']),
                 'default_title' => $validatedData['title'],
                 'default_from' => Carbon::make($validatedData['reserved_from']),
                 'default_until' => Carbon::make($validatedData['reserved_until']),
@@ -396,7 +396,7 @@ class ReservationController extends Controller
     public function verify(Reservation $reservation) {
         $this->authorize('administer', Reservation::class);
         if ($reservation->verified) {
-            abort(400); // TODO: check this out
+            return redirect()->back()->with('error', __('reservations.already_verified'));
         } else {
             $reservation->verified = true;
             $reservation->save();
@@ -410,7 +410,7 @@ class ReservationController extends Controller
         }
     }
 
-        /**
+    /**
      * Enables a user with administrative rights to approve
      * all the reservations of a group.
      */
