@@ -20,10 +20,23 @@
                         @lang('reservations.room_instructions')
                         @endif
                     </blockquote>
-                    <a href="{{ route('reservations.create', $item) }}" class="btn waves-effect waves-light">
-                        @lang('reservations.new_reservation')
-                    </a>
                 @endcan
+
+                @can('administer', \App\Models\ReservableItem::class)
+                    <div>
+                        <form method="POST"
+                            action="{{ route('reservations.items.toggle_out_of_order', ['item' => $item]) }}"
+                            enctype='multipart/form-data'>
+                            @csrf
+                            <x-input.button @class([
+                                'red' => !$item->out_of_order,
+                                'green' => $item->out_of_order
+                            ])
+                                text="{{'reservations.' . ($item->out_of_order ? 'set_fixed' : 'set_out_of_order')}}" />
+                        </form>
+                    </div>
+                @endcan
+
                 @livewire('timetable', [
                     'items' => [$item]
                 ])

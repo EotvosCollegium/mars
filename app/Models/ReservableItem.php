@@ -49,6 +49,15 @@ class ReservableItem extends Model
     }
 
     /**
+     * The users who currently have a reservation for this item.
+     */
+    public function usersWithActiveReservation(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, Reservation::class, 'reservable_item_id', 'user_id')
+            ->wherePivot('reserved_until', '>', Carbon::now());
+    }
+
+    /**
      * @return bool Returns whether the item is currently out of order.
      */
     public function isOutOfOrder(): bool

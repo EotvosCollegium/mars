@@ -23,24 +23,26 @@
                 @endif
             </td>
             <td style="text-align: right;">
-                @if('room' == $item->type)
-                <a href="{{route('reservations.items.show', ['item' => $item])}}">
+                @if('room' == $item->type || user()->can('administer', \App\Models\ReservableItem::class))
+                <a href="{{ route('reservations.items.show', ['item' => $item]) }}">
                 @endif
                     {{ $item->name }}
-                @if('room' == $item->type)
+                @if('room' == $item->type || user()->can('administer', \App\Models\ReservableItem::class))
                 </a>
                 @endif
             </td>
-            @if('washing_machine' == $item->type)
             <td>
                 <form method="POST"
                   action="{{ route('reservations.items.report_fault', ['item' => $item]) }}"
                   enctype='multipart/form-data'>
                     @csrf
-                    <x-input.button floating class="right btn-small coli blue" icon="build" />
+                    <x-input.button floating @class([
+                        'right', 'btn-small',
+                        'red' => !$item->out_of_order,
+                        'green' => $item->out_of_order
+                    ]) icon="build" />
                 </form>
             </td>
-            @endif
         </tr>
         @endforeach
     </tbody>

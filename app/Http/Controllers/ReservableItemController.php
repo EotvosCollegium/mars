@@ -3,12 +3,17 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
 use Carbon\Carbon;
 
 use App\Models\ReservableItem;
+use App\Models\Role;
+use App\Models\User;
+use App\Mail\AffectedReservation;
+use App\Mail\ReportReservableItemFault;
 
 class ReservableItemController extends Controller
 {
@@ -82,5 +87,50 @@ class ReservableItemController extends Controller
 
         $item->delete();
         return redirect(route('reservations.items.index'));
+    }
+
+    /**
+     * Sends admins and staff an email notification
+     * about an allegedly faulty item.
+     */
+    public function reportFault(ReservableItem $item) {
+        $this->authorize('requestReservation', $item);
+
+        $thoseToNotify = User::withRole(Role::SYS_ADMIN)->get()
+            ->concat(User::withRole(Role::STAFF)->get());
+        foreach ($thoseToNotify as $toNotify) {
+            Mail::to($toNotify)->send(new ReportReservableItemFault(
+                $item,
+                $toNotify->name,
+                user()->name)
+            );
+        }
+
+        return redirect()->back()->with('message', __('mail.email_sent'));
+    }
+
+    /**
+     * Allows an administrator or staff member to set an item to be out of order
+     * (potentially after verifying a fault notice),
+     * or to set it back.
+     */
+    public function toggleOutOfOrder(ReservableItem $item)
+    {
+        $this->authorize('administer', ReservableItem::class);
+
+        $outOfOrder = !($item->out_of_order);
+        $item->out_of_order = $outOfOrder;
+        $item->save();
+
+        foreach ($item->usersWithActiveReservation as $toNotify) {
+            Mail::to($toNotify)->send(new AffectedReservation(
+                $outOfOrder,
+                $item->name,
+                $item->type,
+                $toNotify->name
+            ));
+        }
+
+        return redirect()->back()->with('message', __('general.successful_modification'));
     }
 }

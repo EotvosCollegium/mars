@@ -11,6 +11,11 @@
         <div class="card">
             <div class="card-content">
                 <span class="card-title">@lang('reservations.items')</span>
+
+                <blockquote>
+                    @lang('reservations.item_index_instructions')
+                </blockquote>
+
                 @include('reservations.item_table')
             </div>
         </div>

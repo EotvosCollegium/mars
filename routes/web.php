@@ -286,6 +286,7 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
             'index', 'create', 'store', 'show', 'delete'
         ]);
         Route::post('/items/{item}/report_fault', [ReservableItemController::class, 'reportFault'])->name('items.report_fault');
+        Route::post('/items/{item}/toggle_out_of_order', [ReservableItemController::class, 'toggleOutOfOrder'])->name('items.toggle_out_of_order');
 
         Route::get('/for_item/{item}', [ReservationController::class, 'index'])->name('index');
         Route::get('/washing_machines', [ReservationController::class, 'indexForWashingMachines'])->name('index_for_washing_machines');
