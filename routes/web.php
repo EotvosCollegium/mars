@@ -179,6 +179,7 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
     /** Admission and applicants handling */
     Route::post('/admission/period/update', [AdmissionController::class, 'updateApplicationPeriod'])->name('admission.period.update');
     Route::get('/admission/export', [AdmissionController::class, 'export'])->name('admission.export');
+    Route::get('/admission/finalize', [AdmissionController::class, 'indexFinalize'])->name('admission.finalize.index');
     Route::post('/admission/finalize', [AdmissionController::class, 'finalize'])->name('admission.finalize');
 
     Route::get('/applicants', [AdmissionController::class, 'index'])->name('admission.applicants.index');
