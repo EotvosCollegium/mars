@@ -19,57 +19,6 @@
 
     <!-- Styles -->
     <style>
-        .light {
-            --md-sys-color-primary: #b38f2f;
-            --md-sys-color-on-primary: rgb(255 255 255);
-            --md-sys-color-primary-container: rgb(192 155 58);
-            --md-sys-color-on-primary-container: rgb(27 18 0);
-            --md-sys-color-secondary: rgb(36, 40, 81);
-            --md-sys-color-surface-tint: rgb(83 92 139);
-            --md-sys-color-on-secondary: rgb(255 255 255);
-            --md-sys-color-secondary-container: rgb(47 56 101);
-            --md-sys-color-on-secondary-container: rgb(255 255 255);
-            --md-sys-color-tertiary: rgb(47 13 49);
-            --md-sys-color-on-tertiary: rgb(255 255 255);
-            --md-sys-color-tertiary-container: rgb(83 46 83);
-            --md-sys-color-on-tertiary-container: rgb(241 190 236);
-            --md-sys-color-error: rgb(186 26 26);
-            --md-sys-color-on-error: rgb(255 255 255);
-            --md-sys-color-error-container: rgb(255 218 214);
-            --md-sys-color-on-error-container: rgb(65 0 2);
-            --md-sys-color-background: rgb(251 248 253);
-            --md-sys-color-on-background: rgb(27 27 31);
-            --md-sys-color-surface: rgb(251 248 253);
-            --md-sys-color-on-surface: rgb(27 27 31);
-            --md-sys-color-surface-variant: rgb(227 225 236);
-            --md-sys-color-on-surface-variant: rgb(70 70 79);
-            --md-sys-color-outline: rgb(118 118 128);
-            --md-sys-color-outline-variant: rgb(198 197 208);
-            --md-sys-color-shadow: rgb(0 0 0);
-            --md-sys-color-scrim: rgb(0 0 0);
-            --md-sys-color-inverse-surface: rgb(48 48 52);
-            --md-sys-color-inverse-on-surface: rgb(243 240 244);
-            --md-sys-color-inverse-primary: rgb(187 196 249);
-            --md-sys-color-primary-fixed: rgb(222 225 255);
-            --md-sys-color-on-primary-fixed: rgb(14 23 67);
-            --md-sys-color-primary-fixed-dim: rgb(187 196 249);
-            --md-sys-color-on-primary-fixed-variant: rgb(59 68 113);
-            --md-sys-color-secondary-fixed: rgb(255 223 151);
-            --md-sys-color-on-secondary-fixed: rgb(37 26 0);
-            --md-sys-color-secondary-fixed-dim: rgb(234 194 93);
-            --md-sys-color-on-secondary-fixed-variant: rgb(90 68 0);
-            --md-sys-color-tertiary-fixed: rgb(255 214 249);
-            --md-sys-color-on-tertiary-fixed: rgb(48 13 49);
-            --md-sys-color-tertiary-fixed-dim: rgb(233 183 228);
-            --md-sys-color-on-tertiary-fixed-variant: rgb(96 57 95);
-            --md-sys-color-surface-dim: rgb(220 217 221);
-            --md-sys-color-surface-bright: rgb(251 248 253);
-            --md-sys-color-surface-container-lowest: rgb(255 255 255);
-            --md-sys-color-surface-container-low: rgb(245 242 247);
-            --md-sys-color-surface-container: rgb(240 237 241);
-            --md-sys-color-surface-container-high: rgb(234 231 236);
-            --md-sys-color-surface-container-highest: rgb(228 225 230);
-        }
             /*.light {*/
         /*    --md-sys-color-primary: #b38f2f;*/
         /*    --md-sys-color-on-primary: #fff;*/
@@ -135,17 +84,17 @@
 
 
 
-        }
+        /*} */
 
 
 
     </style>
     <link type="text/css" rel="stylesheet" href="{{ mix('css/materialize.css') }}" media="screen,projection" />
+    <link type="text/css" rel="stylesheet" href="{{ mix('css/tabulator_materialize.css') }}" media="screen,projection" />
     <link type="text/css" rel="stylesheet" href="{{ mix('css/app.css') }}" media="screen,projection" >
     @livewireStyles
 
     <!-- Scripts -->
-
 
     <script type="text/javascript" src="{{ mix('js/jquery.min.js') }}"></script>
     <script type="text/javascript" src="{{ mix('js/tabulator.min.js') }}" defer></script>
@@ -166,8 +115,7 @@
                     // Disable the submit button of the current form
                     $(this).find(':submit').prop('disabled', true);
                 });
-                document.documentElement.setAttribute('theme', 'dark');
-
+                document.documentElement.setAttribute('theme', 'light');
             }
         );
 
@@ -176,11 +124,10 @@
 </head>
 
 <body>
-    <script>document.body.classList.add(localStorage.getItem('themeMode') || 'light');</script>
     <header>
         @include('layouts.navbar')
     </header>
-        <div class="container">
+        <div class="container" style="padding-bottom: 20px;">
             <div class="row">
             <div class="col s12 m12 l11 offset-xl2 offset-l3">
                 @yield('content')
@@ -205,8 +152,7 @@
             const oldThemeMode = localStorage.getItem('themeMode') || 'light'; // default is light mode
             const newThemeMode = oldThemeMode === 'dark' ? 'light' : 'dark';
             localStorage.setItem('themeMode', newThemeMode);
-            document.body.classList.remove(oldThemeMode);
-            document.body.classList.add(newThemeMode);
+            document.documentElement.setAttribute('theme', newThemeMode);
         }
 
         // for our custom arrow dropdowns

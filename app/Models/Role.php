@@ -128,7 +128,6 @@ class Role extends Model
         self::BOARD_OF_TRUSTEES_MEMBER,
         self::ETHICS_COMMISSIONER,
         self::ALUMNI,
-
     ];
 
     protected $fillable = [

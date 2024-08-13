@@ -20,9 +20,9 @@ mix.copy([
    .sass('resources/sass/materialize.scss', 'public/css/', {
         additionalData: '$isDebug: ' + process.env.APP_DEBUG + ';'
     })
+    .sass('resources/sass/tabulator/tabulator_materialize.scss', 'public/css/') // copy from node modules after updating tabulator
    // Add common styles here
    .styles([
-      'resources/css/tabulator_materialize.min.css', // This might cause problems if it gets ouf of sync with the JS
       //'resources/css/cookieconsent.min.css',
       'resources/css/fonts.css'
    ], 'public/css/app.css')

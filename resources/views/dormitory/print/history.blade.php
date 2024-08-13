@@ -9,7 +9,7 @@
                 var data = cell.getRow().getData();
                 if(data.state == '@lang('print.'.App\Models\PrintJob::QUEUED)'){
                     return $(
-                    "<button type=\"button\" class=\"btn waves-effect btn-fixed-height  primary\">@lang('print.cancel_job')</button>"
+                    "<button type=\"button\" class=\"btn filled waves-effect btn-fixed-height\">@lang('print.cancel_job')</button>"
                     ).click(function() {
                         $.ajax({
                             type: "POST",
