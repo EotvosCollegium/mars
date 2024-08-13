@@ -65,6 +65,7 @@ blockquote {
     border-left: 5px solid var(--md-sys-color-primary) !important;
     &.error {
         color: var(--md-sys-color-primary);
+        background-color: transparent;
     }
 }
 
