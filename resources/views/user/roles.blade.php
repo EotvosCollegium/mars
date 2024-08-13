@@ -27,9 +27,32 @@
                         <div class="col s4" style="padding-top: 15px">@lang('role.'.$role->name)</div>
                         <div class="col s6">
                             @if($role->has_objects)
-                                <x-input.select only-input without_label :elements="$role->objects" :formatter="function($o) { return $o->translatedName; }" id="{{$role->name}}_object" name="object_id"/>
+                                @php
+                                $objects_to_assign = $role->objects->filter(function ($object) use ($user, $role) {
+                                    return user()->can('updatePermission', [$user, $role, $object]);
+                                })
+                                @endphp
+                                <x-input.select
+                                    only-input
+                                    without_label
+                                    :elements="$objects_to_assign"
+                                    :formatter="function($o) { return $o->translatedName; }"
+                                    id="{{$role->name}}_object"
+                                    name="object_id"
+                                />
                             @elseif($role->has_workshops)
-                                <x-input.select only-input without_label :elements="\App\Models\Workshop::all()" id="{{$role->name}}_workshop" name="workshop_id"/>
+                                @php
+                                    $workshops_to_assign = \App\Models\Workshop::all()->filter(function ($workshop) use ($user, $role) {
+                                        return user()->can('updatePermission', [$user, $role, $workshop]);
+                                    })
+                                @endphp
+                                <x-input.select
+                                    only-input
+                                    without_label
+                                    :elements="$workshops_to_assign"
+                                    id="{{$role->name}}_workshop"
+                                    name="workshop_id"
+                                />
                             @endif
                         </div>
                         <div class="col s2">
