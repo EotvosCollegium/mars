@@ -91,8 +91,8 @@ class ApplicantsExport implements FromCollection, WithTitle, WithMapping, WithHe
                 __('role.'.$user->educationalInformation->alfonso_language) . " " . $user->educationalInformation->alfonso_desired_level
                 : ""),
             implode(" \n", $application->question_1),
-            $application->present ?? "Igen",
-            $user->application->accommodation ? "Igen" : "Nem"
+            $application->present ?? true,
+            $user->application->accommodation
         ];
     }
 }
