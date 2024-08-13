@@ -80,12 +80,14 @@ class AlfonsoTest extends TestCase
             'year_of_acceptance' => Semester::current()->year,
         ]);
         StudyLine::factory()->for($educationalInfo)->create(['type' => 'bachelor', 'start' => Semester::current()->id, 'end' => null]);
-        LanguageExam::factory()->for($educationalInfo)->create([
+        LanguageExam::factory()->for($educationalInfo)->create(
+            [
             'date' => self::dateBefore($educationalInfo->year_of_acceptance), //before
             'level' => 'B2',
             'language' => 'en']
         );
-        LanguageExam::factory()->for($educationalInfo)->create([
+        LanguageExam::factory()->for($educationalInfo)->create(
+            [
             'date' => self::dateAfter($educationalInfo->year_of_acceptance), //after
             'level' => 'B2',
             'language' => 'fr']
