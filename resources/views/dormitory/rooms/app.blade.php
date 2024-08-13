@@ -190,17 +190,15 @@
                         <text transform="matrix(1 0 0 1 431.327 268.8032)" class="st8">WC</text>
                     </g>
                 </svg>
-                <div class="row">
-                    <div style="vertical-align: top">
-                        <x-input.text s=9  id="nameInput" text="Keress névre vagy szobaszámra" type="text" />
-                        <x-input.button s=3 id="nameSubmit" class="right primary" text="Keresés" />
-                    </div>
+                <div class="row" style="align-items: center">
+                    <x-input.text s=9  id="nameInput" placeholder=" " text="Keress névre vagy szobaszámra" type="text" />
+                    <x-input.button s=3 id="nameSubmit" class="right primary" text="Keresés" />
+                    @can('updateAny', \App\Models\Room::class)
+                        <div class="col center s12">
+                            <x-input.button class="primary" text="Szobabeosztás szerkesztése" :href="route('rooms.modify')"/>
+                        </div>
+                    @endcan
                 </div>
-                @can('updateAny', \App\Models\Room::class)
-                <div class="center row">
-                    <x-input.button class="primary" text="Szobabeosztás szerkesztése" :href="route('rooms.modify')"/>
-                </div>
-                @endcan
             </div>
         </div>
     </div>
