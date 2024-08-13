@@ -59,7 +59,12 @@ class StudyLine extends Model
         'other' => 'Egyéb'
     ];
 
-    public function startSemester()
+    public function educationalInformation(): BelongsTo
+    {
+        return $this->belongsTo(EducationalInformation::class);
+    }
+
+    public function startSemester(): BelongsTo
     {
         return $this->belongsTo(Semester::class, 'start');
     }

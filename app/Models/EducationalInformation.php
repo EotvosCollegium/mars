@@ -117,7 +117,7 @@ class EducationalInformation extends Model
     public function languageExamsBeforeAcceptance()
     {
         $acceptanceDate = Carbon::createFromDate($this->year_of_acceptance, 9, 1);
-        return $this->languageExams()->where('date', '<=', $acceptanceDate);
+        return $this->languageExams()->where('date', '<', $acceptanceDate);
     }
 
     /**
@@ -178,7 +178,7 @@ class EducationalInformation extends Model
             }
         }
         // @phpstan-ignore-next-line
-        else if ($entryLevel->count() == 1) {
+        elseif ($entryLevel->count() == 1) {
             foreach ($entryLevel as $exam) {
                 unset($requirements[$exam->language]);
             }
