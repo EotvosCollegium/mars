@@ -206,7 +206,7 @@ class Application extends Model
 
 
     /**
-     * Get a bool whether the applicant has been admitted to any workshops.
+     * Get a bool whether the applicant has been called in by any workshops.
      *
      * @return Attribute
      */
