@@ -70,14 +70,17 @@ class AdmissionController extends Controller
     }
 
     /**
+     * Return the index view of the applicants or download the list as an Excel file.
+     * Applies the status filter and the workshop filter.
+     *
      * @param Request $request
-     * @return View
      * @throws AuthorizationException
      */
-    public function index(Request $request): View
+    public function index(Request $request)
     {
         $request->validate([
             'status_filter' => 'in:everybody,unsubmitted,submitted,called_in,admitted',
+            'return_excel' => 'nullable|boolean'
         ]);
         $authUser = $request->user();
         $this->authorize('viewSome', Application::class);
@@ -85,12 +88,9 @@ class AdmissionController extends Controller
         $applications = Application::query();
         $accessible_workshops = $this->getAccessibleWorkshops($authUser);
         $filtered_workshop = $this->getFilteredWorkshop($request);
-        $status_filter = $request->input('status_filter');
-        if(!isset($status_filter)) {
-            $status_filter = 'submitted';
-        }
-
+        $status_filter = $request->input('status_filter') ?? 'submitted';
         $should_show_unsubmitted = $status_filter == 'everybody' || $status_filter == 'unsubmitted';
+
         if ($authUser->cannot('viewUnfinished', Application::class) && $should_show_unsubmitted) {
             abort(403, 'You are not authorized to access unsubmitted applications.');
         }
@@ -123,6 +123,11 @@ class AdmissionController extends Controller
         }
 
         $applications = $applications->with('user.educationalInformation')->distinct()->get()->sortBy('user.name');
+
+        if($request->input('return_excel')) {
+            return Excel::download(new ApplicantsExport($applications), 'felveteli.xlsx');
+        }
+
         return view('auth.admission.index', [
             'applications' => $applications,
             'workshop' => $request->input('workshop'), //filtered workshop
@@ -250,20 +255,6 @@ class AdmissionController extends Controller
         return back()->with('message', __('general.successful_modification'));
     }
 
-    /**
-     * Export all applications to excel
-     */
-    public function export()
-    {
-        $this->authorize('viewAll', Application::class);
-
-        $applications = Application::with('user')
-                ->where('submitted', true)
-                ->get();
-
-        return Excel::download(new ApplicantsExport($applications), 'felveteli.xlsx');
-
-    }
 
     /**
      * @param Request $request

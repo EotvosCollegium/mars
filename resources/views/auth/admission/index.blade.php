@@ -80,7 +80,10 @@
     @endcan
     @can('viewAll', \App\Models\Application::class)
         <div class="fixed-action-btn">
-            <a href="{{ route('admission.export') }}" class="btn-floating btn-large">
+            <a href="{{ route('admission.applicants.index', [
+                    'status_filter' => $status_filter,
+                    'workshop' => $workshop,
+                    'return_excel' => true]) }}" class="btn-floating btn-large">
                 <i class="large material-icons">file_download</i>
             </a>
         </div>
