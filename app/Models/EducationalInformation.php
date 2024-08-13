@@ -7,6 +7,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+use App\Models\Semester;
+
+/**
+ * Either B2 or C1.
+ */
+enum LanguageExamLevel {
+    case B2; case C1;
+}
+
 /**
  * App\Models\EducationalInformation
  *
@@ -75,6 +84,14 @@ class EducationalInformation extends Model
     }
 
     /**
+     * The first semester of the user in the college.
+     */
+    public function firstSemester(): Semester
+    {
+        return Semester::where('year', $this->year_of_acceptance)->where('part', 1)->first();
+    }
+
+    /**
      * The educational programs that belong to the educational information.
      */
     public function studyLines(): HasMany
@@ -103,6 +120,39 @@ class EducationalInformation extends Model
         return $this->languageExams()->where('date', '<=', $acceptanceDate);
     }
 
+    /**
+     * Whether the user is a senior (i.e. currently has a PhD study line).
+     */
+    public function isSenior(): bool
+    {
+        return $this->studyLines()->currentlyEnrolled()->where('type', 'phd')->exists();
+    }
+
+    /**
+     * Whether the user is exempted from the start
+     * (this includes seniors and those who have been admitted during their masters' studies).
+     */
+    public function alfonsoExempted()
+    {
+        return $this->isSenior()
+            || $this->studyLines()->where(function ($query) {
+                $query->where('type', 'bachelor')->orWhere('type', 'ot');
+            })->whereHas('startSemester', function ($query) {
+                $query->where('year', '<', $this->firstSemester()->year)
+                      ->orWhere(function ($query) {
+                        $query->where('year', '=', $this->firstSemester()->year)
+                              ->where('part', '<=', $this->firstSemester()->part);
+                      });
+            })->where(function ($query) {
+                $query->whereHas('endSemester', function ($query) {
+                    $query->where('year', '>', $this->firstSemester()->year)
+                        ->orWhere(function ($query) {
+                            $query->where('year', '=', $this->firstSemester()->year)
+                                ->where('part', '>=', $this->firstSemester()->part);
+                        });
+                })->orWhereNull('end');
+            })->doesntExist();
+    }
 
     /**
      * @return array [language => required level] based on the entry level exams
@@ -114,21 +164,21 @@ class EducationalInformation extends Model
         $requirements = [];
         # default requirements without any language exams
         foreach (array_keys(config('app.alfonso_languages')) as $language) {
-            $requirements[$language] = "B2";
+            $requirements[$language] = LanguageExamLevel::B2;
         }
 
         // @phpstan-ignore-next-line
         if ($entryLevel->count() >= 2) {
             foreach ($entryLevel as $exam) {
                 if (!in_array($exam->level, ["C1", "C2"])) {
-                    $requirements[$exam->language] = "C1";
+                    $requirements[$exam->language] = LanguageExamLevel::C1;
                 } else {
                     unset($requirements[$exam->language]);
                 }
             }
         }
         // @phpstan-ignore-next-line
-        if ($entryLevel->count() == 1) {
+        else if ($entryLevel->count() == 1) {
             foreach ($entryLevel as $exam) {
                 unset($requirements[$exam->language]);
             }
@@ -141,6 +191,7 @@ class EducationalInformation extends Model
      */
     public function alfonsoCompleted(): bool
     {
+        if ($this->alfonsoExempted()) return true;
         foreach ($this->alfonsoRequirements() as $language => $level) {
             if ($this->checkIfPassed($language, $level)) {
                 return true;
@@ -161,12 +212,13 @@ class EducationalInformation extends Model
     /**
      * @return bool check if a language exam is passed at least in the given level
      */
-    private function checkIfPassed($language, $level): bool
+    private function checkIfPassed($language, LanguageExamLevel $level): bool
     {
-        if ($level == "B2") {
+        if ($level == LanguageExamLevel::B2) {
             $deadline = Carbon::createFromDate($this->year_of_acceptance + 3, 9, 1);
             $levels = ["B2", "C1", "C2"];
         } else {
+            // for language teachers, this is actually 3 years; see rulebook
             $deadline = Carbon::createFromDate($this->year_of_acceptance + 2, 9, 1);
             $levels = ["C1", "C2"];
         }

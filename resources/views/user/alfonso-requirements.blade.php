@@ -13,28 +13,32 @@
 </blockquote>
 @endif
 
-<p>Az <a href="https://eotvos.elte.hu/collegium/mukodes/szabalyzatok">
-    ALFONSÓ program 2. § (4)</a>
-    szerint {{ $enrollmentYear + 3}} szeptemberéig kell elérned a B2 szintet a(z) {{ implode(", ", array_map(fn($k) => __('role.'.$k), $b2)) }} nyelvek egyikéből
-    @if(count($c1) == 1)
-    , vagy {{ $enrollmentYear + 2}} szeptemberéig kell elérned a C1 szintet a(z) {{ implode(", ", array_map(fn($k) => __('role.'.$k), $c1)) }} nyelvből
-    @elseif(count($c1) > 1)
-    , vagy {{ $enrollmentYear + 2}} szeptemberéig kell elérned a C1 szintet a(z) {{ implode(", ", array_map(fn($k) => __('role.'.$k), $c1)) }} nyelvek egyikéből
-    @endif
-    .
-</p>
-
-<p>A követelményeket
-    @if($user->educationalInformation->alfonsoCompleted())
-        <span class="green-text">teljesítetted</span>.
-    @else
-        @if($user->educationalInformation->alfonsoCanBeCompleted())
-            <span class="coli-text text-orange">még nem teljesítetted</span>.
-        @else
-            <span class="red-text">nem teljesítetted</span>.
+@if($user->educationalInformation->alfonsoExempted())
+    <p>Mivel szenior vagy mesterszak alatt felvételt nyert hallgató vagy, nem kell részt venned az ALFONSÓ-programban.</p>
+@else
+    <p>Az <a href="https://eotvos.elte.hu/collegium/mukodes/szabalyzatok">
+        ALFONSÓ program 2. § (4)</a>
+        szerint {{ $enrollmentYear + 3 }} szeptemberéig kell elérned a B2 szintet a(z) {{ implode(", ", array_map(fn($k) => __('role.'.$k), $b2)) }} nyelvek egyikéből
+        @if(count($c1) == 1)
+        , vagy {{ $enrollmentYear + 2}} szeptemberéig kell elérned a C1 szintet a(z) {{ implode(", ", array_map(fn($k) => __('role.'.$k), $c1)) }} nyelvből
+        @elseif(count($c1) > 1)
+        , vagy {{ $enrollmentYear + 2}} szeptemberéig kell elérned a C1 szintet a(z) {{ implode(", ", array_map(fn($k) => __('role.'.$k), $c1)) }} nyelvek egyikéből
         @endif
-    @endif
-</p>
+        .
+    </p>
+    <p>
 
+            A követelményeket
+            @if($user->educationalInformation->alfonsoCompleted())
+                <span class="green-text">teljesítetted</span>.
+            @else
+                @if($user->educationalInformation->alfonsoCanBeCompleted())
+                    <span class="coli-text text-orange">még nem teljesítetted</span>.
+                @else
+                    <span class="red-text">nem teljesítetted</span>.
+                @endif
+            @endif
+    </p>
+@endif
 
 
