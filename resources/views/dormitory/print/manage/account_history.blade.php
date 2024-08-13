@@ -11,6 +11,10 @@ $(document).ready(function() {
         ajaxFiltering: true,
         placeholder: "@lang('general.nothing_to_show')",
         headerSort: false,
+        tableBuilt: function() {
+            // Add "input-field" class to header filter divs
+            $('.tabulator-header-filter').addClass('input-field');
+        },
         columns: [
             {
                 title: "Felhasználó",

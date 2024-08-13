@@ -49,6 +49,10 @@
                 placeholder: "@lang('internet.nothing_to_show')",
                 headerSort: false,
                 columnMinWidth:200,
+                tableBuilt: function() {
+                    // Add "input-field" class to header filter divs
+                    $('.tabulator-header-filter').addClass('input-field');
+                },
                 columns: [{
                         title: "@lang('internet.created_at')",
                         field: "created_at",

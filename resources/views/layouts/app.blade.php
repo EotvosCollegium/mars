@@ -89,8 +89,8 @@
 
 
     </style>
-    <link type="text/css" rel="stylesheet" href="{{ mix('css/materialize.css') }}" media="screen,projection" />
     <link type="text/css" rel="stylesheet" href="{{ mix('css/tabulator_materialize.css') }}" media="screen,projection" />
+    <link type="text/css" rel="stylesheet" href="{{ mix('css/materialize.css') }}" media="screen,projection" />
     <link type="text/css" rel="stylesheet" href="{{ mix('css/app.css') }}" media="screen,projection" >
     @livewireStyles
 

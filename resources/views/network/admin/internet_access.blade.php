@@ -60,7 +60,7 @@
                     value = 'Nincs hozzáférés'
                 }
                 const data = cell.getRow().getData();
-                return $("<input type=\"text\" class=\"datepicker\" value=\"" + value + "\"/>")
+                return $("<input type='text' class='datepicker' value='" + value + "'/>")
                     .on('change', function () {
                         if (this.value) {
                             const value = moment(this.value + " 23:59", "YYYY. MM. DD. HH:mm").format("YYYY-MM-DD HH:mm");
@@ -111,6 +111,11 @@
                 ajaxFiltering: true,
                 layout: "fitColumns",
                 placeholder: "No Data Set",
+                tableBuilt: function() {
+                    // Add "input-field" class to header filter divs
+                    $('.tabulator-header-filter').addClass('input-field');
+                    M.Datepicker.init($('.datepicker'));
+                },
                 columns: [
                     {
                         title: "Felhasználó",

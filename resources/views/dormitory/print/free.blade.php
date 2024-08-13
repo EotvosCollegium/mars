@@ -26,6 +26,10 @@
             headerSort: false,
             ajaxURL: "{{ $route }}", //set url for ajax request
             placeholder: "@lang('print.no_free_pages')",
+            tableBuilt: function() {
+                // Add "input-field" class to header filter divs
+                $('.tabulator-header-filter').addClass('input-field');
+            },
             columns: [
                 @can('viewAny', App\Models\FreePages::class)
                 {

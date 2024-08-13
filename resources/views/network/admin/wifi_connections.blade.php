@@ -21,6 +21,10 @@
             ajaxFiltering: true,
             layout: "fitColumns",
             placeholder: "No Data Set",
+            tableBuilt: function() {
+                // Add "input-field" class to header filter divs
+                $('.tabulator-header-filter').addClass('input-field');
+            },
             columns: [
                 {
                     title: "@lang('internet.wifi_user')",
