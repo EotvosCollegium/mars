@@ -9,7 +9,7 @@
             'name' => $id
         ])}}
         >
-        @if(!$withoutPlaceholder)
+        @if(!$withoutPlaceholder && count($elements) != 1)
         <option
             value=""
             disabled="true"
