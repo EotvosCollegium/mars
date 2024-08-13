@@ -158,6 +158,18 @@ class Application extends Model
     */
 
     /**
+     * Get a bool whether the applicant has been called in by any workshops.
+     *
+     * @return Attribute
+     */
+    protected function calledIn(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->applicationWorkshops()->where('called_in', true)->exists(),
+        );
+    }
+
+    /**
      * Get/set the application's semester_average attribute.
      *
      * @return Attribute
