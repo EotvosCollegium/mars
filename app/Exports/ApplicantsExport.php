@@ -41,6 +41,8 @@ class ApplicantsExport implements FromCollection, WithTitle, WithMapping, WithHe
         return [
             'Név',
             'E-mail',
+            'Behívott',
+            'Felvett',
             'Születési hely',
             'Születési idő',
             'Anyja neve',
@@ -68,6 +70,8 @@ class ApplicantsExport implements FromCollection, WithTitle, WithMapping, WithHe
         return [
             $user->name,
             $user->email,
+            $application->calledIn,
+            $application->admitted,
             $user->personalInformation?->place_of_birth,
             $user->personalInformation?->date_of_birth,
             $user->personalInformation?->mothers_name,
@@ -82,13 +86,13 @@ class ApplicantsExport implements FromCollection, WithTitle, WithMapping, WithHe
             })->implode(', '),
             implode(",", $user->faculties->pluck('name')->toArray()),
             $application->appliedWorkshops()->implode('name', ','),
-            $user->isResident() ? 'Bentlakó' : 'Bejáró',
+            $application->applied_for_resident_status ? 'Bentlakó' : 'Bejáró',
             ($user->educationalInformation?->alfonso_language ?
                 __('role.'.$user->educationalInformation->alfonso_language) . " " . $user->educationalInformation->alfonso_desired_level
                 : ""),
             implode(" \n", $application->question_1),
-            $application->present ?? "Igen",
-            $user->application->accommodation ? "Igen" : "Nem"
+            $application->present ?? true,
+            $application->accommodation
         ];
     }
 }

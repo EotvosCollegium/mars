@@ -1099,7 +1099,11 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public static function notificationCount(): int
     {
-        return self::withoutGlobalScope('verified')->where('verified', false)->count();
+        return self::withoutGlobalScope('verified')
+            ->whereHas('roles', function ($q) {
+                $q->where('role_id', Role::get(Role::TENANT));
+            })
+            ->where('verified', false)->count();
     }
 
     /*
