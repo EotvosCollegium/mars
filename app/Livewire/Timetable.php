@@ -148,6 +148,11 @@ class Timetable extends Component
         $this->calculateBlocks();
     }
 
+    /**
+     * The view to render the component with.
+     *
+     * @return \Illuminate\View\View
+     */
     public function render()
     {
         return view('livewire.timetable', [

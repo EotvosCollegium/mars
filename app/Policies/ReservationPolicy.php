@@ -11,6 +11,10 @@ class ReservationPolicy
 {
     use HandlesAuthorization;
 
+    /**
+     * Determine if the user has administrative rights
+     * (e.g. can approve reservations or delete any of them).
+     */
     public function administer(User $user): bool
     {
         return $user->isAdmin()
@@ -21,6 +25,10 @@ class ReservationPolicy
             ]);
     }
 
+    /**
+     * Determine whether the user can view the details
+     * of a given reservation.
+     */
     public function view(User $user, Reservation $reservation): bool
     {
         return $this->administer($user)
@@ -29,6 +37,10 @@ class ReservationPolicy
             || $reservation->reservableItem->isWashingMachine();
     }
 
+    /**
+     * Determine if a given reservation can be
+     * modified or deleted by the user.
+     */
     public function modify(User $user, Reservation $reservation): bool
     {
         return $this->administer($user)

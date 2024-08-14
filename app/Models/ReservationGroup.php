@@ -12,16 +12,26 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 use App\Models\Reservation;
 
+/** Thrown in transactions when there is a conflict somewhere. */
 class ConflictException extends \Exception
 {
 }
 
+/**
+ * Groups recurring reservations into one single item
+ * which is easier to manage.
+ */
 class ReservationGroup extends Model
 {
     use HasFactory;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = [
-        'default_item',
+        'group_item',
         'user_id',
         'frequency',
         'group_title',
@@ -43,9 +53,9 @@ class ReservationGroup extends Model
     /**
      * The default item to which the group belongs.
      */
-    public function defaultItem(): BelongsTo
+    public function groupItem(): BelongsTo
     {
-        return $this->belongsTo(ReservableItem::class, 'default_item');
+        return $this->belongsTo(ReservableItem::class, 'group_item');
     }
 
     /**
@@ -59,31 +69,31 @@ class ReservationGroup extends Model
      */
     private function reserveInInterval(Carbon $firstDay, Carbon $lastDay): void
     {
-        $defaultFrom = Carbon::make($this->default_from);
-        $defaultUntil = Carbon::make($this->default_until);
-        $defaultDuration = $defaultFrom->diffInMinutes($defaultUntil);
+        $groupFrom = Carbon::make($this->group_from);
+        $groupUntil = Carbon::make($this->group_until);
+        $defaultDuration = $groupFrom->diffInMinutes($groupUntil);
 
         $currentStart = $firstDay;
-        $currentStart->hour = $defaultFrom->hour;
-        $currentStart->minute = $defaultFrom->minute;
+        $currentStart->hour = $groupFrom->hour;
+        $currentStart->minute = $groupFrom->minute;
 
-        $lastDay->hour = $defaultFrom->hour;
-        $lastDay->minute = $defaultFrom->minute;
+        $lastDay->hour = $groupFrom->hour;
+        $lastDay->minute = $groupFrom->minute;
 
         DB::transaction(function () use ($currentStart, $lastDay, $defaultDuration) {
             while ($currentStart <= $lastDay) {
                 $currentEnd = $currentStart->copy()->addMinutes($defaultDuration);
-                if (!$this->defaultItem->reservationsInSlot($currentStart, $currentEnd)
+                if (!$this->groupItem->reservationsInSlot($currentStart, $currentEnd)
                         ->isEmpty()) {
                     throw new ConflictException("conflict on $currentStart");
                 } else {
                     Reservation::create([
-                        'reservable_item_id' => $this->default_item,
+                        'reservable_item_id' => $this->group_item,
                         'user_id' => $this->user_id,
                         'group_id' => $this->id,
                         'verified' => $this->verified,
-                        'title' => $this->default_title,
-                        'note' => $this->default_note,
+                        'title' => $this->group_title,
+                        'note' => $this->group_note,
                         'reserved_from' => $currentStart,
                         'reserved_until' => $currentEnd
                     ]);
@@ -147,9 +157,9 @@ class ReservationGroup extends Model
                 ->addDays($this->frequency);
             $this->reserveInInterval($fromDay, $newLastDay);
         } else {
-            $defaultFrom = Carbon::make($this->default_from);
-            $newLastDay->hour = $defaultFrom->hour;
-            $newLastDay->minute = $defaultFrom->minute;
+            $groupFrom = Carbon::make($this->group_from);
+            $newLastDay->hour = $groupFrom->hour;
+            $newLastDay->minute = $groupFrom->minute;
             $this->reservations()
                 ->where('reserved_from', '>', $newLastDay)
                 ->delete();
@@ -162,22 +172,23 @@ class ReservationGroup extends Model
     /**
      * Edit the default parameters and set them
      * for all reservations after a given one.
+     *
      * If something is null, it does not get changed.
-     * If default_from or default_until changes,
+     * If group_from or group_until changes,
      * a ConflictException is thrown if there would be a conflict;
      * then, nothing is done to the database.
      * The reservation must belong to the group;
-     * $defaultFrom and $defaultUntil must be both null or neither.
+     * $groupFrom and $groupUntil must be both null or neither.
      * (Otherwise, an InvalidArgumentException is thrown.)
      */
     public function setForAllAfter(
         Reservation $firstReservation,
-        ?ReservableItem $defaultItem = null,
+        ?ReservableItem $groupItem = null,
         ?User $user = null,
-        ?string $defaultTitle = null,
-        ?Carbon $defaultFrom = null,
-        ?Carbon $defaultUntil = null,
-        ?string $defaultNote = null,
+        ?string $groupTitle = null,
+        ?Carbon $groupFrom = null,
+        ?Carbon $groupUntil = null,
+        ?string $groupNote = null,
         ?bool $verified = null
     ) {
         if ($firstReservation->group_id != $this->id) {
@@ -187,20 +198,20 @@ class ReservationGroup extends Model
         }
 
         // if either one gets changed, we have to do the same things
-        if (is_null($defaultFrom) && !is_null($defaultUntil)) {
-            $defaultFrom = Carbon::make($this->default_from);
-        } elseif (!is_null($defaultFrom) && is_null($defaultUntil)) {
-            $defaultUntil = Carbon::make($this->default_until);
+        if (is_null($groupFrom) && !is_null($groupUntil)) {
+            $groupFrom = Carbon::make($this->group_from);
+        } elseif (!is_null($groupFrom) && is_null($groupUntil)) {
+            $groupUntil = Carbon::make($this->group_until);
         }
 
         DB::transaction(function () use (
             $firstReservation,
-            $defaultItem,
+            $groupItem,
             $user,
-            $defaultTitle,
-            $defaultFrom,
-            $defaultUntil,
-            $defaultNote,
+            $groupTitle,
+            $groupFrom,
+            $groupUntil,
+            $groupNote,
             $verified
         ) {
             $allAfter = $this->reservations()
@@ -209,20 +220,20 @@ class ReservationGroup extends Model
             foreach($allAfter as $reservation) {
                 // the item has to be set now;
                 // we are going to use it
-                if (!is_null($defaultItem)) {
+                if (!is_null($groupItem)) {
                     // now, it will change the item even if it has been custom
-                    $reservation->reservable_item_id = $defaultItem->id;
+                    $reservation->reservable_item_id = $groupItem->id;
                     $reservation->save();
                     $reservation->refresh();
                 }
 
-                if (!is_null($defaultFrom)) {
+                if (!is_null($groupFrom)) {
                     $newFrom = Carbon::make($reservation->reserved_from);
-                    $newFrom->hour = $defaultFrom->hour;
-                    $newFrom->minute = $defaultFrom->minute;
+                    $newFrom->hour = $groupFrom->hour;
+                    $newFrom->minute = $groupFrom->minute;
                     $newUntil = Carbon::make($reservation->reserved_until);
-                    $newUntil->hour = $defaultUntil->hour;
-                    $newUntil->minute = $defaultUntil->minute;
+                    $newUntil->hour = $groupUntil->hour;
+                    $newUntil->minute = $groupUntil->minute;
 
                     $others = $reservation->reservableItem
                         ->reservationsInSlot($newFrom, $newUntil)
@@ -242,13 +253,13 @@ class ReservationGroup extends Model
                 if (!is_null($user)) {
                     $reservation->user_id = $user->id;
                 }
-                if (!is_null($defaultTitle) && $this->default_title == $reservation->title) {
+                if (!is_null($groupTitle) && $this->group_title == $reservation->title) {
                     // if it has been custom, it won't be changed
-                    $reservation->title = $defaultTitle;
+                    $reservation->title = $groupTitle;
                 }
-                if (!is_null($defaultNote) && $this->default_note == $reservation->note) {
+                if (!is_null($groupNote) && $this->group_note == $reservation->note) {
                     // same here
-                    $reservation->note = $defaultNote;
+                    $reservation->note = $groupNote;
                 }
                 if (!is_null($verified)) {
                     $reservation->verified = $verified;
@@ -257,17 +268,17 @@ class ReservationGroup extends Model
                 $reservation->save();
             }
 
-            if (isset($defaultItem)) {
-                $this->default_item = $defaultItem->id;
+            if (isset($groupItem)) {
+                $this->group_item = $groupItem->id;
             }
             if (isset($user)) {
                 $this->user_id = $user->id;
             }
-            if (isset($defaultTitle)) {
-                $this->default_title = $defaultTitle;
+            if (isset($groupTitle)) {
+                $this->group_title = $groupTitle;
             }
-            if (isset($defaultNote)) {
-                $this->default_note = $defaultNote;
+            if (isset($groupNote)) {
+                $this->group_note = $groupNote;
             }
             if (isset($verified)) {
                 $this->verified = $verified;
@@ -276,23 +287,34 @@ class ReservationGroup extends Model
         });
     }
 
+    /**
+     * Edit the default parameters and set them for all reservations too.
+     * Actually calls setForAllAfter with $this->firstReservation().
+     *
+     * If something is null, it does not get changed.
+     * If group_from or group_until changes,
+     * a ConflictException is thrown if there would be a conflict;
+     * then, nothing is done to the database.
+     *  $groupFrom and $groupUntil must be both null or neither.
+     * (Otherwise, an InvalidArgumentException is thrown.)
+     */
     public function setForAll(
-        ?ReservableItem $defaultItem = null,
+        ?ReservableItem $groupItem = null,
         ?User $user = null,
-        ?string $defaultTitle = null,
-        ?Carbon $defaultFrom = null,
-        ?Carbon $defaultUntil = null,
-        ?string $defaultNote = null,
+        ?string $groupTitle = null,
+        ?Carbon $groupFrom = null,
+        ?Carbon $groupUntil = null,
+        ?string $groupNote = null,
         ?bool $verified = null
     ) {
         $this->setForAllAfter(
             $this->firstReservation(),
-            $defaultItem,
+            $groupItem,
             $user,
-            $defaultTitle,
-            $defaultFrom,
-            $defaultUntil,
-            $defaultNote,
+            $groupTitle,
+            $groupFrom,
+            $groupUntil,
+            $groupNote,
             $verified
         );
     }

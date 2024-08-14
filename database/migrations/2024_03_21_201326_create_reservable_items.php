@@ -25,14 +25,14 @@ return new class () extends Migration {
             $table->date('last_day');
             $table->boolean('verified');
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('default_item');
+            $table->unsignedBigInteger('group_item');
             $table->time('group_from');
             $table->time('group_until');
             $table->string('group_title')->nullable();
             $table->text('group_note')->nullable();
             $table->timestamps();
 
-            $table->foreign('default_item')->references('id')->on('reservable_items')
+            $table->foreign('group_item')->references('id')->on('reservable_items')
                 ->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('user_id')->references('id')->on('users')
                 ->onDelete('cascade')->onUpdate('cascade');

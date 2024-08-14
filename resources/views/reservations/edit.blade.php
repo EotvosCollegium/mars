@@ -58,11 +58,11 @@ if (isset($reservation)) {
                         </div>
                         @elseif($reservation->isRecurring())
 
-                        <x-input.radio name="for_what" value="this_only" :text="__('reservations.this_only')"
+                        <x-input.radio name="for_what" value="edit_this_only" :text="__('reservations.edit_this_only')"
                             onchange="document.getElementById('last_day').disabled = (this.value == 'edit_this_only');" />
-                        <x-input.radio name="for_what" value="all_after" :text="__('reservations.all_after')"
+                        <x-input.radio name="for_what" value="edit_all_after" :text="__('reservations.edit_all_after')"
                             onchange="document.getElementById('last_day').disabled = (this.value == 'edit_this_only');" />
-                        <x-input.radio name="for_what" value="all" :text="__('reservations.all')"
+                        <x-input.radio name="for_what" value="edit_all" :text="__('reservations.edit_all')"
                             onchange="document.getElementById('last_day').disabled = (this.value == 'edit_this_only');" />
 
                         <div class="row">
@@ -80,14 +80,14 @@ if (isset($reservation)) {
                     <div class="row">
                         <x-input.text  id="reserved_from" type="datetime-local" without-label helper="{{ __('reservations.from') }}"
                                        :value="isset($reservation) ? $reservation->reserved_from :
-                                               (old('reserved_from') ?? $default_from)"
+                                               (old('reserved_from') ?? $group_from)"
                                        required/>
 
                         {{-- we hide the end date for washing machines --}}
                         @if(!$item->isWashingMachine())
                         <x-input.text  id="reserved_until" type="datetime-local" without-label helper="{{ __('reservations.until') }}"
                                        :value="isset($reservation) ? $reservation->reserved_until :
-                                               (old('reserved_until') ?? $default_until)"
+                                               (old('reserved_until') ?? $group_until)"
                                        required/>
                         @endif
                     </div>

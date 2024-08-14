@@ -1,15 +1,14 @@
 <?php
 
 return [
-    'all' => 'Minden foglalásra',
-    'edit_all_after' => 'Erre és minden későbbi foglalásra',
     'already_exists' => 'A megadott idősávban már létezik egy foglalás:',
     'already_verified' => 'Ezt a foglalást már jóváhagyták.',
     'bad_for_non-recurring' => 'Nem ismétlődő foglaláshoz ez érvénytelen kérés.',
     'check_reservations' => 'Kérjük, ennek megfelelően tervezze újra foglalásait.',
-    'has_become_faulty' =>
-        'Az alábbi objektum (amihez létezik foglalása) elromlott vagy használhatatlanná vált:',
     'create' => 'Új foglalás', // page title in breadcrumb
+    'edit_all' => 'Minden foglalásra',
+    'edit_all_after' => 'Erre és minden későbbi foglalásra',
+    'edit_this_only' => 'Csak erre a foglalásra',
     'editing_past_reservations' => 'Múltbeli foglalásokat nem lehet szerkeszteni.',
     'faulty_room' => 'Használhatatlan terem',
     'faulty_washing_machine' => 'A mosógép meghibásodott',
@@ -18,6 +17,8 @@ return [
     'got_repaired' =>
         'Az alábbi objektum (amihez létezik foglalása) újra használhatóvá vált:',
     'has_approved_your_reservation' => 'jóváhagyta a foglalásodat.',
+    'has_become_faulty' =>
+        'Az alábbi objektum (amihez létezik foglalása) elromlott vagy használhatatlanná vált:',
     'is_free' => 'Szabad',
     'is_occupied' => 'Foglalt',
     'item_name' => 'Név',
@@ -27,6 +28,7 @@ return [
     'max_washing_reservations_reached' =>
         'Nincs több aktív foglalási lehetőséged mosógépekre. Törölj vagy helyezz át egy meglévőt.',
     'no_recurring_for_washing_machines' => 'Mosógépekre nem engedélyezettek az ismétlődő foglalások.',
+    'not_a_recurring_reservation' => 'A foglalás nem ismétlődő.',
     'note' => 'Megjegyzés',
     'one_hour_slot_only' => 'Mosógépeket csak egész órától egész óráig, egy órára lehet lefoglalni.',
     'out_of_order' => 'Nem működik',
@@ -46,7 +48,6 @@ return [
     'room_reservations' => 'Teremfoglalás',
     'set_fixed' => 'Visszaállítás javítottnak',
     'set_out_of_order' => 'Beállítás üzemen kívülinek',
-    'edit_this_only' => 'Csak erre a foglalásra',
     'title' => 'Név',
     'until' => 'Vég',
     'unverified' => 'még nincs jóváhagyva', // as a status

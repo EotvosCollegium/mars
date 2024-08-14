@@ -18,6 +18,11 @@ use App\Mail\ReportReservableItemFault;
 
 class ReservableItemController extends Controller
 {
+    /**
+     * Lists all reservable items
+     * of the requested type
+     * (or both if there is none given).
+     */
     public function index(Request $request)
     {
         $this->authorize('viewAny', ReservableItem::class);
@@ -40,7 +45,8 @@ class ReservableItemController extends Controller
     }
 
     /**
-     * Lists reservations for all washing machines.
+     * Lists all washing machines
+     * and the reservations for them in a timetable.
      */
     public function indexForWashingMachines()
     {
@@ -52,6 +58,10 @@ class ReservableItemController extends Controller
         ]);
     }
 
+    /**
+     * Shows the details of a given item,
+     * along with the corresponding timetable.
+     */
     public function show(ReservableItem $item)
     {
         $this->authorize('viewAny', ReservableItem::class);
@@ -61,6 +71,9 @@ class ReservableItemController extends Controller
         ]);
     }
 
+    /**
+     * Returns the item creation page.
+     */
     public function create()
     {
         $this->authorize('administer', ReservableItem::class);
@@ -68,6 +81,9 @@ class ReservableItemController extends Controller
         abort(500, 'create not implemented yet');
     }
 
+    /**
+     * Stores a new item.
+     */
     public function store(Request $request)
     {
         $this->authorize('administer', ReservableItem::class);
@@ -85,6 +101,9 @@ class ReservableItemController extends Controller
         return redirect()->route('reservations.items.show', $newItem);
     }
 
+    /**
+     * Deletes an item.
+     */
     public function delete(ReservableItem $item)
     {
         $this->authorize('administer', ReservableItem::class);

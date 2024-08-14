@@ -1,15 +1,14 @@
 <?php
 
 return [
-    'all' => 'For all reservations',
-    'edit_all_after' => 'For this reservation and all after this one',
     'already_exists' => 'Reservation already exists in the given interval:',
     'already_verified' => 'This reservation has already been verified.',
     'bad_for_non-recurring' => 'Bad request for non-recurring reservation.',
     'check_reservations' => 'Please organize your reservations accordingly.',
-    'has_become_faulty' =>
-        'The following reservable item (for which you have a reservation) has become faulty or unusable:',
     'create' => 'New reservation', // page title in breadcrumb
+    'edit_all' => 'For all reservations',
+    'edit_all_after' => 'For this reservation and all after this one',
+    'edit_this_only' => 'For this reservation only',
     'editing_past_reservations' => 'You cannot edit reservations that are already in the past.',
     'faulty_room' => 'Unusable room',
     'faulty_washing_machine' => 'Faulty washing machine',
@@ -18,6 +17,8 @@ return [
     'got_repaired' =>
         'The following reservable item (for which you have a reservation) has become usable again',
     'has_approved_your_reservation' => 'has approved your reservation.',
+    'has_become_faulty' =>
+        'The following reservable item (for which you have a reservation) has become faulty or unusable:',
     'is_free' => 'Free',
     'is_occupied' => 'Occupied',
     'item_name' => 'Name',
@@ -27,6 +28,7 @@ return [
     'max_washing_reservations_reached' =>
         'You have reached the maximum amount of active reservations for washing machines.',
     'no_recurring_for_washing_machines' => 'Recurring reservations are not allowed for washing machines.',
+    'not_a_recurring_reservation' => 'Not a recurring reservation.',
     'note' => 'Note',
     'one_hour_slot_only' => 'For washing machines, only one-hour slots can be reserved.',
     'out_of_order' => 'Out of order',
@@ -46,7 +48,6 @@ return [
     'room_reservations' => 'Room reservations',
     'set_fixed' => 'Set fixed',
     'set_out_of_order' => 'Set out of order',
-    'edit_this_only' => 'For this reservation only',
     'title' => 'Title',
     'until' => 'Until',
     'unverified' => 'not yet verified', // as a status

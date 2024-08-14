@@ -160,7 +160,7 @@ class ReservationController extends Controller
 
         if ($item->isRoom() && isset($request->recurring)) {
             $newGroup = ReservationGroup::create([
-                'default_item' => $item->id,
+                'group_item' => $item->id,
                 'user_id' => user()->id,
                 'frequency' => intval($validatedData['frequency']),
                 'group_title' => $validatedData['title'],
@@ -315,47 +315,47 @@ class ReservationController extends Controller
             $reservation->save();
         } else {
             try {
-                $defaultTitle =
+                $groupTitle =
                 ($validatedData['title'] != $reservation->title)
                 ? $validatedData['title'] : null;
-                $defaultFrom =
+                $groupFrom =
                 Carbon::make($validatedData['reserved_from']) != Carbon::make($reservation->reserved_from)
                 ? Carbon::make($validatedData['reserved_from']) : null;
-                $defaultUntil =
+                $groupUntil =
                     Carbon::make($validatedData['reserved_until']) != Carbon::make($reservation->reserved_until)
                     ? Carbon::make($validatedData['reserved_until']) : null;
-                $defaultNote =
+                $groupNote =
                     $validatedData['note'] != $reservation->note
                     ? $validatedData['note'] : null;
 
                 // for now:
-                $defaultItem = null;
+                $groupItem = null;
                 $user = null;
 
                 $verified = $reservation->group->verified
-                        && is_null($defaultFrom) && is_null($defaultUntil);
+                        && is_null($groupFrom) && is_null($groupUntil);
 
                 if (self::EDIT_ALL_AFTER == $validatedData['for_what']) {
                     $reservation->group->setForAllAfter(
                         firstReservation: $reservation,
-                        defaultItem: $defaultItem,
+                        groupItem: $groupItem,
                         user: $user,
                         // ?int $frequency = null, // it cannot be set for now
-                        defaultTitle: $defaultTitle,
-                        defaultFrom: $defaultFrom,
-                        defaultUntil: $defaultUntil,
-                        defaultNote: $defaultNote,
+                        groupTitle: $groupTitle,
+                        groupFrom: $groupFrom,
+                        groupUntil: $groupUntil,
+                        groupNote: $groupNote,
                         verified: $verified
                     );
                 } else { // self::EDIT_ALL== $validatedData['for_what']
                     $reservation->group->setForAll(
-                        defaultItem: $defaultItem,
+                        groupItem: $groupItem,
                         user: $user,
                         // ?int $frequency = null, // it cannot be set for now
-                        defaultTitle: $defaultTitle,
-                        defaultFrom: $defaultFrom,
-                        defaultUntil: $defaultUntil,
-                        defaultNote: $defaultNote,
+                        groupTitle: $groupTitle,
+                        groupFrom: $groupFrom,
+                        groupUntil: $groupUntil,
+                        groupNote: $groupNote,
                         verified: $verified
                     );
                 }
@@ -444,7 +444,7 @@ class ReservationController extends Controller
         $this->authorize('modify', $reservation);
 
         if (!$reservation->isRecurring()) {
-            abort(400); // TODO: check this out
+            return redirect()->back()->with('error', __('reservations.not_a_recurring_reservation'));
         }
 
         $reservation->group->delete();
