@@ -9,7 +9,7 @@ if (isset($reservation)) {
 @section('title')
 <a href="{{route('reservations.items.index')}}" class="breadcrumb" style="cursor: pointer">@lang('reservations.reservations')</a>
 @if($item->isWashingMachine())
-<a href="{{route('reservations.index_for_washing_machines')}}"
+<a href="{{route('reservations.items.index_for_washing_machines')}}"
     class="breadcrumb" style="cursor: pointer">@lang('reservations.washing_reservations')</a>
 @else
 <a href="{{route('reservations.items.show', $item)}}"
@@ -43,7 +43,7 @@ if (isset($reservation)) {
                         <div s="6">{{ (isset($reservation) && !is_null($reservation->user)) ? $reservation->user->name : '' }}
                     </div>
 
-                    @if('washing_machine' != $item->type)
+                    @if(!$item->isWashingMachine())
                         @if(!isset($reservation))
                         <div class="row">
                             <x-input.checkbox s=12 name="recurring" :text="__('reservations.recurring')"
@@ -59,11 +59,11 @@ if (isset($reservation)) {
                         @elseif($reservation->isRecurring())
 
                         <x-input.radio name="for_what" value="this_only" :text="__('reservations.this_only')"
-                            onchange="document.getElementById('last_day').disabled = (this.value == 'this_only');" />
+                            onchange="document.getElementById('last_day').disabled = (this.value == 'edit_this_only');" />
                         <x-input.radio name="for_what" value="all_after" :text="__('reservations.all_after')"
-                            onchange="document.getElementById('last_day').disabled = (this.value == 'this_only');" />
+                            onchange="document.getElementById('last_day').disabled = (this.value == 'edit_this_only');" />
                         <x-input.radio name="for_what" value="all" :text="__('reservations.all')"
-                            onchange="document.getElementById('last_day').disabled = (this.value == 'this_only');" />
+                            onchange="document.getElementById('last_day').disabled = (this.value == 'edit_this_only');" />
 
                         <div class="row">
                             <x-input.datepicker disabled s=12 id='last_day' :text="__('reservations.last_day')"
@@ -84,7 +84,7 @@ if (isset($reservation)) {
                                        required/>
 
                         {{-- we hide the end date for washing machines --}}
-                        @if('washing_machine' != $item->type)
+                        @if(!$item->isWashingMachine())
                         <x-input.text  id="reserved_until" type="datetime-local" without-label helper="{{ __('reservations.until') }}"
                                        :value="isset($reservation) ? $reservation->reserved_until :
                                                (old('reserved_until') ?? $default_until)"

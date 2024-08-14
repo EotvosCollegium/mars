@@ -8,7 +8,7 @@
         @endif
         <a href="{{
                 $item->isWashingMachine()
-                ? route('reservations.index_for_washing_machines')
+                ? route('reservations.items.index_for_washing_machines')
                 : route('reservations.show', $item)
             }}">
             {{ ' ' . $item->name . '.' }}

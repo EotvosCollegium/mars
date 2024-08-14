@@ -18,7 +18,7 @@ class CreateWorkshopsTable extends Migration
             $table->tinyIncrements('id');
             $table->text('name');
         });
-        foreach (Workshop::ALL as $key => $workshop) {
+        foreach (Workshop::ALLas $key => $workshop) {
             DB::table('workshops')->insert(['name' => $workshop]);
         }
     }

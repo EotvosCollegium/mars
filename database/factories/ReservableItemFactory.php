@@ -22,7 +22,7 @@ class ReservableItemFactory extends Factory
     {
         return [
             'name' => $this->faker->realText(10),
-            'type' => 'room',
+            'type' => \App\Enums\ReservableItemType::ROOM,
             'out_of_order' => $this->faker->boolean(30)
         ];
     }

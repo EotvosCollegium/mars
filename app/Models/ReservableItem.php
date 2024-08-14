@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 use Carbon\Carbon;
 
+use App\Enums\ReservableItemType;
 use App\Models\Reservation;
 
 // ReservableItem -> reservable_items
@@ -23,9 +24,6 @@ class ReservableItem extends Model
         'type',
         'out_of_order'
     ];
-
-    public const ROOM = 'room';
-    public const WASHING_MACHINE = 'washing_machine';
 
     public const MAX_WASHING_RESERVATIONS = 6;
 
@@ -83,7 +81,15 @@ class ReservableItem extends Model
      */
     public function isWashingMachine(): bool
     {
-        return self::WASHING_MACHINE == $this->type;
+        return ReservableItemType::WASHING_MACHINE == $this->type;
+    }
+
+    /**
+     * Returns whether this is a room.
+     */
+    public function isRoom(): bool
+    {
+        return ReservableItemType::ROOM == $this->type;
     }
 
     /**

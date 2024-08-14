@@ -70,6 +70,8 @@ return [
         'question_1' => "\"Honnan hallott a Collegiumról?\" question",
         'question_1_other' => "\"Honnan hallott a Collegiumról?\" question's other value",
         'question_2' => "\"Miért kíván a Collegium tagja lenni?\" question",
+        'reserved_from' => 'start date',
+        'reserved_until' => 'end date'
     ],
     'before' => 'The :attribute must be a date before :date.',
     'before_or_equal' => 'The :attribute must be a date before or equal to :date.',
@@ -174,4 +176,12 @@ return [
     'uploaded' => 'The :attribute failed to upload.',
     'url' => 'The :attribute format is invalid.',
     'uuid' => 'The :attribute must be a valid UUID.',
+    'values' => [
+        'reserved_from' => [
+            'now' => 'the current time'
+        ],
+        'reserved_until' => [
+            'now' => 'the current time'
+        ]
+    ]
 ];

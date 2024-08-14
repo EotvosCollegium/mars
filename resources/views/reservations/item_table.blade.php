@@ -23,11 +23,11 @@
                 @endif
             </td>
             <td style="text-align: right;">
-                @if('room' == $item->type || user()->can('administer', \App\Models\ReservableItem::class))
+                @if($item->isRoom() || user()->can('administer', \App\Models\ReservableItem::class))
                 <a href="{{ route('reservations.items.show', ['item' => $item]) }}">
                 @endif
                     {{ $item->name }}
-                @if('room' == $item->type || user()->can('administer', \App\Models\ReservableItem::class))
+                @if($item->isRoom() || user()->can('administer', \App\Models\ReservableItem::class))
                 </a>
                 @endif
             </td>

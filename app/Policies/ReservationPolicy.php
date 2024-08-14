@@ -26,7 +26,7 @@ class ReservationPolicy
         return $this->administer($user)
             || $user->isCollegist()
             || $user->hasRole(Role::WORKSHOP_LEADER)
-            || $reservation->reservableItem->type == 'washing_machine';
+            || $reservation->reservableItem->isWashingMachine();
     }
 
     public function modify(User $user, Reservation $reservation): bool

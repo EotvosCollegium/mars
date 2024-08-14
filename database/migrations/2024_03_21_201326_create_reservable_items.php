@@ -26,10 +26,10 @@ return new class () extends Migration {
             $table->boolean('verified');
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('default_item');
-            $table->time('default_from');
-            $table->time('default_until');
-            $table->string('default_title')->nullable();
-            $table->text('default_note')->nullable();
+            $table->time('group_from');
+            $table->time('group_until');
+            $table->string('group_title')->nullable();
+            $table->text('group_note')->nullable();
             $table->timestamps();
 
             $table->foreign('default_item')->references('id')->on('reservable_items')

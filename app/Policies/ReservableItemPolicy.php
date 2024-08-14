@@ -33,7 +33,7 @@ class ReservableItemPolicy
     public function reserveImmediately(User $user, ReservableItem $item): bool
     {
         return $this->administer($user)
-            || $item->type == 'washing_machine';
+            || $item->isWashingMachine();
     }
 
     /**

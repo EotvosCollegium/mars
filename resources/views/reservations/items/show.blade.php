@@ -14,7 +14,7 @@
                 
                 @can('requestReservation', $item)
                     <blockquote>
-                        @if('washing_machine' == $item->type)
+                        @if($item->isWashingMachine())
                         @lang('reservations.washing_instructions')
                         @else
                         @lang('reservations.room_instructions')

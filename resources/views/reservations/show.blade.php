@@ -3,7 +3,7 @@
 @section('title')
 <a href="{{route('reservations.items.index')}}" class="breadcrumb" style="cursor: pointer">@lang('reservations.reservations')</a>
 @if($reservation->reservableItem->isWashingMachine())
-<a href="{{route('reservations.index_for_washing_machines')}}"
+<a href="{{route('reservations.items.index_for_washing_machines')}}"
     class="breadcrumb" style="cursor: pointer">@lang('reservations.washing_reservations')</a>
 @else
 <a href="{{route('reservations.items.show', $reservation->reservableItem)}}"

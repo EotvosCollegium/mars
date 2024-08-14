@@ -12,6 +12,7 @@ use Illuminate\Database\Query\Builder;
 
 use Carbon\Carbon;
 
+use App\Enums\ReservableItemType;
 use App\Models\User;
 use App\Models\ReservableItem;
 use App\Models\ReservationGroup;
@@ -33,23 +34,6 @@ class ReservationController extends Controller
                          ->orderBy('reserved_from')
                          ->get()
         );
-    }
-
-    /**
-     * Lists reservations for all washing machines.
-     */
-    public function indexForWashingMachines()
-    {
-        $this->authorize('viewAny', ReservableItem::class);
-
-        $items = ReservableItem::where('type', 'washing_machine')->get();
-        $from = Carbon::today()->startOfWeek();
-        $until = $from->copy()->addDays(7);
-        return view('reservations.index_for_washing_machines', [
-            'items' => $items->all(),
-            'from' => $from,
-            'until' => $until
-        ]);
     }
 
     /**
@@ -75,7 +59,7 @@ class ReservationController extends Controller
                 ->whereExists(function (Builder $query) {
                     $query->select(DB::raw(1))
                           ->from('reservable_items')
-                          ->where('type', ReservableItem::WASHING_MACHINE)
+                          ->where('type', ReservableItemType::WASHING_MACHINE)
                           ->where('out_of_order', false)
                           ->whereColumn('reservable_items.id', 'reservations.reservable_item_id');
                 })->count();
@@ -97,8 +81,8 @@ class ReservationController extends Controller
             return view('reservations.edit', [
                 'item' => $item,
                 // default values that might have been passed in the GET request
-                'default_from' => $request->from,
-                'default_until' => $request->until
+                'group_from' => $request->from,
+                'group_until' => $request->until
             ]);
         }
     }
@@ -111,8 +95,9 @@ class ReservationController extends Controller
      */
     private static function hasConflict(Reservation $newReservation): ?Reservation
     {
-        $conflictingReservations = ReservableItem::find($newReservation->reservable_item_id)
-            ->reservationsInSlot($newReservation->reserved_from, $newReservation->reserved_until);
+        $conflictingReservations = $newReservation->reservableItem->reservationsInSlot(
+            $newReservation->reserved_from, $newReservation->reserved_until
+        );
 
         return ($conflictingReservations
                     ->filter(fn ($reservation) => $reservation->id != $newReservation->id)
@@ -141,62 +126,44 @@ class ReservationController extends Controller
             'reserved_from' => 'required|date',
             'reserved_until' => [
                 Rule::excludeIf($item->isWashingMachine()),
-                'required', 'date'
+                'required', 'date', 'after:reserved_from', 'after:now'
             ],
             'recurring' => 'in:on',
             'last_day' => 'exclude_unless:recurring,on|required|date',
             'frequency' => 'exclude_unless:recurring,on|required|numeric|min:1|max:65535'
         ]);
 
-        if (!$item->isWashingMachine()) {
-            $validator->after(function ($validator) use ($request, $item) {
-                if ($request->reserved_from > $request->reserved_until) {
-                    $validator->errors()->add(
-                        'reserved_until',
-                        __('reservations.end_before_start')
-                    );
-                }
-                if (Carbon::make($request->reserved_until) < Carbon::now()) {
-                    $validator->errors()->add('reserved_until', __('reservations.in_past'));
-                }
-                if (isset($request->recurring)
-                           && Carbon::make($request->reserved_from)
-                             > Carbon::make($request->last_day)->addDay()) {
-                    $validator->errors()->add(
-                        'last_day',
-                        __('reservations.last_day_before_first')
-                    );
-                }
-            });
-        } else {
+        $validator->sometimes('last_day',
+            'after_or_equal:' . Carbon::make($request->reserved_from)->setHour(0)->setMinute(0)->setSecond(0),
+            fn($input) => !$item->isWashingMachine() && isset($input->recurring)
+        );
+
+        $validator->sometimes('reserved_from',
+            'after_or_equal:' . Carbon::now()->setMinute(0)->setSecond(0),
+            fn($input) => $item->isWashingMachine()
+        );
+
+        if ($item->isWashingMachine()) {
             $validator->after(function ($validator) use ($request, $item) {
                 $from = Carbon::make($request->reserved_from);
                 // we only allow one-hour slots for washing machines
                 if (0 != $from->minute || 0 != $from->second) {
                     $validator->errors()->add('reserved_from', __('reservations.one_hour_slot_only'));
                 }
-                if (Carbon::make($request->reserved_from)->addHour() < Carbon::now()) {
-                    $validator->errors()->add('reserved_from', __('reservations.in_past'));
-                }
             });
         }
 
         $validatedData = $validator->validate();
 
-        if (isset($validatedData['recurring']) && $item->isWashingMachine()) {
-            return redirect()->back()
-                ->with('error', __('reservations.no_recurring_for_washing_machines'));
-        }
-
-        if (isset($request->recurring)) {
+        if ($item->isRoom() && isset($request->recurring)) {
             $newGroup = ReservationGroup::create([
                 'default_item' => $item->id,
                 'user_id' => user()->id,
                 'frequency' => intval($validatedData['frequency']),
-                'default_title' => $validatedData['title'],
-                'default_from' => Carbon::make($validatedData['reserved_from']),
-                'default_until' => Carbon::make($validatedData['reserved_until']),
-                'default_note' => $validatedData['note'],
+                'group_title' => $validatedData['title'],
+                'group_from' => Carbon::make($validatedData['reserved_from']),
+                'group_until' => Carbon::make($validatedData['reserved_until']),
+                'group_note' => $validatedData['note'],
                 'last_day' => Carbon::make($validatedData['last_day']),
                 'verified' => false
             ]);
@@ -231,7 +198,7 @@ class ReservationController extends Controller
             if ($conflictingReservation) {
                 return redirect()->back()->with(
                     'error',
-                    __('reservations.already_exists') .
+                    __('reservations.already_exists') . ' ' .
                     "{$conflictingReservation->reserved_from},
                     {$conflictingReservation->reserved_until}"
                 );
@@ -240,7 +207,7 @@ class ReservationController extends Controller
             // and finally:
             $newReservation->save();
             if ($item->isWashingMachine()) {
-                return redirect()->route('reservations.index_for_washing_machines');
+                return redirect()->route('reservations.items.index_for_washing_machines');
             } else {
                 return redirect()->route('reservations.items.show', $item);
             }
@@ -265,9 +232,9 @@ class ReservationController extends Controller
         ]);
     }
 
-    public const THIS_ONLY = 'this_only';
-    public const ALL_AFTER = 'all_after';
-    public const ALL = 'all';
+    public const EDIT_THIS_ONLY = 'edit_this_only';
+    public const EDIT_ALL_AFTER = 'edit_all_after';
+    public const EDIT_ALL= 'edit_all';
 
     /**
      * Updates a reservation with an edited version.
@@ -276,7 +243,9 @@ class ReservationController extends Controller
     {
         $this->authorize('modify', $reservation);
 
-        if ($reservation->reservableItem->isOutOfOrder()) {
+        $item = $reservation->reservableItem;
+
+        if ($item->isOutOfOrder()) {
             return redirect()->back()->with('error', __('reservations.item_out_of_order'));
         } elseif (Carbon::make($reservation->reserved_until) < Carbon::now()) {
             return redirect()->back()->with('error', __('reservations.editing_past_reservations'));
@@ -287,44 +256,35 @@ class ReservationController extends Controller
             'note' => 'nullable|string|max:2047',
             'reserved_from' => 'required|date',
             'reserved_until' => [
-                Rule::excludeIf($reservation->reservableItem->isWashingMachine()),
-                'required', 'date'
+                Rule::excludeIf($item->isWashingMachine()),
+                'required', 'date', 'after:reserved_from', 'after:now'
             ],
             'for_what' => [
                 Rule::excludeIf(!$reservation->isRecurring()),
                 'required',
-                Rule::in([self::THIS_ONLY, self::ALL_AFTER, self::ALL])
+                Rule::in([self::EDIT_THIS_ONLY, self::EDIT_ALL_AFTER, self::EDIT_ALL])
             ],
             'last_day' => [
                 Rule::excludeIf(!$reservation->isRecurring()
-                                || self::THIS_ONLY == $request->for_what),
+                                || self::EDIT_THIS_ONLY == $request->for_what),
                 'required', 'date'
             ]
         ]);
 
-        if (!$reservation->reservableItem->isWashingMachine()) {
-            $validator->after(function ($validator) use ($request, $reservation) {
-                if ($request->reserved_from > $request->reserved_until) {
-                    $validator->errors()->add(
-                        'reserved_until',
-                        __('reservations.end_before_start')
-                    );
-                }
-                if ($reservation->isRecurring() && self::THIS_ONLY != $request->for_what
-                           && Carbon::make($request->reserved_from)
-                             > Carbon::make($request->last_day)->addDay()) {
-                    $validator->errors()->add(
-                        'last_day',
-                        __('reservations.last_day_before_first')
-                    );
-                }
-            });
-        }
+        $validator->sometimes('last_day',
+            'after_or_equal:' . Carbon::make($request->reserved_from)->setHour(0)->setMinute(0)->setSecond(0),
+            fn($input) => !$item->isWashingMachine() && $reservation->isRecurring() && self::EDIT_THIS_ONLY != $input->for_what
+        );
+
+        $validator->sometimes('reserved_from',
+            'after_or_equal:' . Carbon::now()->setMinute(0)->setSecond(0),
+            fn($input) => $item->isWashingMachine()
+        );
 
         $validatedData = $validator->validate();
 
         if (!$reservation->isRecurring()
-            || self::THIS_ONLY == $validatedData['for_what']) {
+            || self::EDIT_THIS_ONLY == $validatedData['for_what']) {
             // we do not save it yet!
             $reservation->title = $validatedData['title'] ?? null;
             $reservation->note = $validatedData['note'];
@@ -340,7 +300,7 @@ class ReservationController extends Controller
             if ($conflictingReservation) {
                 return redirect()->back()->with(
                     'error',
-                    __('reservations.already_exists') .
+                    __('reservations.already_exists') . ' ' .
                     "{$conflictingReservation->reserved_from},
                      {$conflictingReservation->reserved_until}"
                 );
@@ -370,7 +330,7 @@ class ReservationController extends Controller
                 $verified = $reservation->group->verified
                         && is_null($defaultFrom) && is_null($defaultUntil);
 
-                if (self::ALL_AFTER == $validatedData['for_what']) {
+                if (self::EDIT_ALL_AFTER == $validatedData['for_what']) {
                     $reservation->group->setForAllAfter(
                         firstReservation: $reservation,
                         defaultItem: $defaultItem,
@@ -382,7 +342,7 @@ class ReservationController extends Controller
                         defaultNote: $defaultNote,
                         verified: $verified
                     );
-                } else { // self::ALL == $validatedData['for_what']
+                } else { // self::EDIT_ALL== $validatedData['for_what']
                     $reservation->group->setForAll(
                         defaultItem: $defaultItem,
                         user: $user,
@@ -465,7 +425,7 @@ class ReservationController extends Controller
 
         $reservation->delete();
         if ($reservation->reservableItem->isWashingMachine()) {
-            return redirect()->route('reservations.index_for_washing_machines');
+            return redirect()->route('reservations.items.index_for_washing_machines');
         } else {
             return redirect()->route('reservations.items.show', $reservation->reservableItem);
         }

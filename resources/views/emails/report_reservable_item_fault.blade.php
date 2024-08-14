@@ -4,12 +4,12 @@
         {{ $reporter }} az imént jelezte, hogy
         a(z) {{ $item->name }} nevű
         {{ 
-            \App\Models\ReservableItem::WASHING_MACHINE == $item->type
+            $item->isWashingMachine()
             ? 'mosógép'
             : 'terem' }}
         @if($item->out_of_order)
         javításra került.
-        @elseif(\App\Models\ReservableItem::WASHING_MACHINE == $item->type)
+        @elseif($item->isWashingMachine())
         elromlott.
         @else
         használhatatlannak tűnik.

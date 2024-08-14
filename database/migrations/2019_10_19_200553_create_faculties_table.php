@@ -18,7 +18,7 @@ class CreateFacultiesTable extends Migration
             $table->tinyIncrements('id');
             $table->text('name');
         });
-        foreach (Faculty::ALL as $key => $faculty) {
+        foreach (Faculty::ALLas $key => $faculty) {
             DB::table('faculties')->insert(['name' => $faculty]);
         }
     }

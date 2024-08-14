@@ -24,10 +24,10 @@ class ReservationGroup extends Model
         'default_item',
         'user_id',
         'frequency',
-        'default_title',
-        'default_from',
-        'default_until',
-        'default_note',
+        'group_title',
+        'group_from',
+        'group_until',
+        'group_note',
         'last_day',
         'verified'
     ];

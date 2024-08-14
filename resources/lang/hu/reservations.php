@@ -2,7 +2,7 @@
 
 return [
     'all' => 'Minden foglalásra',
-    'all_after' => 'Erre és minden későbbi foglalásra',
+    'edit_all_after' => 'Erre és minden későbbi foglalásra',
     'already_exists' => 'A megadott idősávban már létezik egy foglalás:',
     'already_verified' => 'Ezt a foglalást már jóváhagyták.',
     'bad_for_non-recurring' => 'Nem ismétlődő foglaláshoz ez érvénytelen kérés.',
@@ -11,21 +11,19 @@ return [
         'Az alábbi objektum (amihez létezik foglalása) elromlott vagy használhatatlanná vált:',
     'create' => 'Új foglalás', // page title in breadcrumb
     'editing_past_reservations' => 'Múltbeli foglalásokat nem lehet szerkeszteni.',
-    'end_before_start' => 'A kezdeti dátum nem lehet a befejezési dátum előtt.',
     'faulty_room' => 'Használhatatlan terem',
     'faulty_washing_machine' => 'A mosógép meghibásodott',
     'frequency' => 'Gyakoriság (napokban)',
     'from' => 'Kezdet',
     'got_repaired' =>
         'Az alábbi objektum (amihez létezik foglalása) újra használhatóvá vált:',
-    'in_past' => 'Az idősáv nem lehet múltbeli.',
+    'has_approved_your_reservation' => 'jóváhagyta a foglalásodat.',
     'is_free' => 'Szabad',
     'is_occupied' => 'Foglalt',
     'item_name' => 'Név',
     'item_out_of_order' => 'Ez az objektum jelenleg nem működik.',
     'item_status' => 'Státusz',
     'last_day' => 'Utolsó nap',
-    'last_day_before_first' => 'Az utolsó nap nem lehet az első időpont előtt.',
     'max_washing_reservations_reached' =>
         'Nincs több aktív foglalási lehetőséged mosógépekre. Törölj vagy helyezz át egy meglévőt.',
     'no_recurring_for_washing_machines' => 'Mosógépekre nem engedélyezettek az ismétlődő foglalások.',
@@ -48,7 +46,7 @@ return [
     'room_reservations' => 'Teremfoglalás',
     'set_fixed' => 'Visszaállítás javítottnak',
     'set_out_of_order' => 'Beállítás üzemen kívülinek',
-    'this_only' => 'Csak erre a foglalásra',
+    'edit_this_only' => 'Csak erre a foglalásra',
     'title' => 'Név',
     'until' => 'Vég',
     'unverified' => 'még nincs jóváhagyva', // as a status

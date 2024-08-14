@@ -9,6 +9,7 @@ use Illuminate\Validation\Rule;
 
 use Carbon\Carbon;
 
+use App\Enums\ReservableItemType;
 use App\Models\ReservableItem;
 use App\Models\Role;
 use App\Models\User;
@@ -21,18 +22,33 @@ class ReservableItemController extends Controller
     {
         $this->authorize('viewAny', ReservableItem::class);
 
-        $type = $request->type;
-        if (is_null($type)) {
+        $validatedData = $request->validate([
+            'type' => [
+                'nullable',
+                Rule::enum(ReservableItemType::class)
+            ]
+        ]);
+
+        if (!array_key_exists('type', $validatedData)) {
             $items = ReservableItem::all();
-        } elseif ('washing_machine' == $type) {
-            $items = ReservableItem::where('type', 'washing_machine')->get();
-        } elseif ('room' == $type) {
-            $items = ReservableItem::where('type', 'room')->get();
         } else {
-            abort(400, "Unknown reservable item type: $type");
+            $items = ReservableItem::where('type', $validatedData['type'])->get();
         }
         return view('reservations.items.index', [
             'items' => $items
+        ]);
+    }
+
+    /**
+     * Lists reservations for all washing machines.
+     */
+    public function indexForWashingMachines()
+    {
+        $this->authorize('viewAny', ReservableItem::class);
+
+        $items = ReservableItem::where('type', ReservableItemType::WASHING_MACHINE)->get();
+        return view('reservations.items.index_for_washing_machines', [
+            'items' => $items->all()
         ]);
     }
 
@@ -40,12 +56,8 @@ class ReservableItemController extends Controller
     {
         $this->authorize('viewAny', ReservableItem::class);
 
-        $from = Carbon::today()->startOfWeek();
-        $until = $from->copy()->addDays(6);
         return view('reservations.items.show', [
             'item' => $item,
-            'from' => $from,
-            'until' => $until
         ]);
     }
 
@@ -113,9 +125,7 @@ class ReservableItemController extends Controller
     {
         $this->authorize('administer', ReservableItem::class);
 
-        $outOfOrder = !($item->out_of_order);
-        $item->out_of_order = $outOfOrder;
-        $item->save();
+        $item->update(['out_of_order' => !$item->out_of_order]);
 
         foreach ($item->usersWithActiveReservation as $toNotify) {
             Mail::to($toNotify)->send(new AffectedReservation(

@@ -86,7 +86,7 @@ class Reservation extends Model
             return (
                 isset($this->title)
                 ? $this->title
-                : $this->user
+                : $this->user->name
             ) . (
                 $this->verified
                 ? ''

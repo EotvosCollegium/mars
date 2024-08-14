@@ -89,7 +89,7 @@ class Timetable extends Component
             $block = $blocks[$i];
 
             $splittingPointAfter = $block['from']->copy();
-            if ('washing_machine' == $item->type || is_null($block['reservation_id'])) {
+            if ($item->isWashingMachine() || is_null($block['reservation_id'])) {
                 $splittingPointAfter->minute = 0;
                 $splittingPointAfter->addHours(1);
             } else {
