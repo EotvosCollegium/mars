@@ -32,7 +32,7 @@ class ReservationTest extends TestCase
      */
     public static function createSecretary(): User
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['verified' => true]);
         $user->addRole(Role::where('name', Role::SECRETARY)->first());
         return $user;
     }

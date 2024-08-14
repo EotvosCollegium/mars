@@ -28,7 +28,7 @@ class ReservationGroup extends Model
     /**
      * The attributes that are mass assignable.
      *
-     * @var array
+     * @var array<int, string>
      */
     protected $fillable = [
         'group_item',
@@ -115,7 +115,7 @@ class ReservationGroup extends Model
         if (is_string($firstDay)) {
             $firstDay = Carbon::make($firstDay);
         }
-        $this->reserveInInterval($firstDay, $this->last_day);
+        $this->reserveInInterval($firstDay, Carbon::make($this->last_day));
     }
 
     /** The earliest reservation belonging to the group. */
@@ -192,7 +192,7 @@ class ReservationGroup extends Model
         ?bool $verified = null
     ) {
         if ($firstReservation->group_id != $this->id) {
-            throw new InvalidArgumentException(
+            throw new \InvalidArgumentException(
                 'reservation does not belong to the group'
             );
         }

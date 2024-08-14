@@ -79,9 +79,7 @@ class Reservation extends Model
     public function displayName(): string
     {
         if ($this->reservableItem->isWashingMachine()) {
-            if (!is_null($this->user)) {
-                return $this->user->name;
-            }
+            return $this->user->name;
         } else {
             return (
                 isset($this->title)

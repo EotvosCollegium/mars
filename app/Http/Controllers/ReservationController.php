@@ -96,8 +96,8 @@ class ReservationController extends Controller
     private static function hasConflict(Reservation $newReservation): ?Reservation
     {
         $conflictingReservations = $newReservation->reservableItem->reservationsInSlot(
-            $newReservation->reserved_from,
-            $newReservation->reserved_until
+            Carbon::make($newReservation->reserved_from),
+            Carbon::make($newReservation->reserved_until)
         );
 
         return ($conflictingReservations
@@ -147,7 +147,7 @@ class ReservationController extends Controller
         );
 
         if ($item->isWashingMachine()) {
-            $validator->after(function ($validator) use ($request, $item) {
+            $validator->after(function ($validator) use ($request) {
                 $from = Carbon::make($request->reserved_from);
                 // we only allow one-hour slots for washing machines
                 if (0 != $from->minute || 0 != $from->second) {
@@ -189,11 +189,12 @@ class ReservationController extends Controller
             $newReservation->user_id = user()->id;
             $newReservation->title = $validatedData['title'] ?? null;
             $newReservation->note = $validatedData['note'];
-            $newReservation->reserved_from = Carbon::make($validatedData['reserved_from']);
+            $newReservation->reserved_from = $validatedData['reserved_from'];
             $newReservation->reserved_until =
                 $item->isWashingMachine()
-                ? $newReservation->reserved_from->copy()->addHour()
+                ? Carbon::make($validatedData['reserved_from'])->addHour()
                 : Carbon::make($validatedData['reserved_until']);
+
 
             $newReservation->verified = $item->isWashingMachine();
 
@@ -293,10 +294,10 @@ class ReservationController extends Controller
             // we do not save it yet!
             $reservation->title = $validatedData['title'] ?? null;
             $reservation->note = $validatedData['note'];
-            $reservation->reserved_from = Carbon::make($validatedData['reserved_from']);
+            $reservation->reserved_from = $validatedData['reserved_from'];
             $reservation->reserved_until =
                 $reservation->reservableItem->isWashingMachine()
-                ? $reservation->reserved_from->copy()->addHour()
+                ? Carbon::make($validatedData['reserved_from'])->addHour()
                 : Carbon::make($validatedData['reserved_until']);
 
             $reservation->verified = $reservation->reservableItem->isWashingMachine();

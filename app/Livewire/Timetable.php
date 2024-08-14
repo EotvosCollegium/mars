@@ -138,9 +138,9 @@ class Timetable extends Component
     /**
      * Gets the data from the @livewire parameters and sets the component properties.
      */
-    public function mount(ReservableItem $item)
+    public function mount(array $items)
     {
-        $this->item = $item;
+        $this->items = $items;
 
         $this->firstDay = Carbon::today();
         $this->lastDay = Carbon::today()->addDays(2);
