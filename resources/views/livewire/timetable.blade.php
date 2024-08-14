@@ -1,42 +1,60 @@
+@php
+// if there is only one item:
+if (!isset($items)) {
+    $items = [$item];
+    $blocks = [$blocks];
+}
+
+$itemCount = count($items);
+
+// these are percentages
+$dayCount = $firstDay->diffInDays($lastDay)+1;
+$columnWidth = 100.0 / ($dayCount * $itemCount);
+@endphp
+
 <div>
     {{-- navigation buttons --}}
     <div class="row">
         <div class="col s6 left-align">
-            <x-input.button floating wire:click="step(-3)" icon="chevron_left" />
+            <x-input.button floating wire:click="step({{ -1 * $dayCount }})" icon="chevron_left" />
         </div>
         <div class="col s6 right-align">
-            <x-input.button floating wire:click="step(3)" icon="chevron_right" />
+            <x-input.button floating wire:click="step({{ $dayCount }})" icon="chevron_right" />
         </div>
     </div>
 
-    @php
-    // if there is only one item:
-    if (!isset($items)) {
-        $items = [$item];
-        $blocks = [$blocks];
-    }
-
-    $itemCount = count($items);
-
-    // these are percentages
-    $dayCount = $firstDay->diffInDays($lastDay)+1;
-    $columnWidth = 100.0 / ($dayCount * $itemCount);
-    @endphp
+    <p>{{ count($blocks[1]) }}</p>
 
     <table>
         <thead>
-            <th style="width:5%;"></th>
-            @php $day = $firstDay->copy(); @endphp
-            @for($i = 0; $i < $dayCount; ++$i)
-            <th style="text-align: center; width: {{95.0 / $dayCount}}%;" colspan="{{$itemCount}}"
-                @if($day->isToday())
-                class="coli blue white-text"
-                @endif
-            >
-                {{$day->format('m.d. (l)');}}
-            </th>
-            @php $day->addDay(); @endphp
-            @endfor
+            <tr>
+                <th style="width:5%;"></th>
+                @php $day = $firstDay->copy(); @endphp
+
+                @for($i = 0; $i < $dayCount; ++$i)
+                <th style="text-align: center; width: {{95.0 / $dayCount}}%;" colspan="{{$itemCount}}"
+                    @if($day->isToday())
+                    class="coli blue white-text"
+                    @endif
+                >
+                    {{$day->format('m.d. (l)');}}
+                </th>
+                @php $day->addDay(); @endphp
+                @endfor
+            </tr>
+            @if($displayItemNames)
+            <tr>
+                <th style="width:5%;"></th>
+
+                @for($i = 0; $i < $dayCount; ++$i)
+                @for($j = 0; $j < $itemCount; ++$j)
+                <th style="text-align: center; width: {{95.0 / ($dayCount * $itemCount)}}%;">
+                    {{ $items[$j]->name }}
+                </th>
+                @endfor
+                @endfor
+            </tr>
+            @endif
         </thead>
         <tbody>
             <tr>

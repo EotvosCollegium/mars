@@ -38,7 +38,8 @@
                 @endcan
 
                 @livewire('timetable', [
-                    'items' => [$item]
+                    'items' => [$item],
+                    'days' => 3
                 ])
             </div>
         </div>

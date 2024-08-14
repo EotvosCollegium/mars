@@ -19,7 +19,8 @@
                 @include('reservations.item_table')
 
                 @livewire('timetable', [
-                    'items' => $items
+                    'items' => $items,
+                    'days' => 3
                 ])
             </div>
         </div>

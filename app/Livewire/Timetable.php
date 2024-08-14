@@ -25,6 +25,10 @@ class Timetable extends Component
      * The last day of the span displayed (inclusive).
      */
     public Carbon $lastDay;
+    /**
+     * Whether item names should be displayed in the header.
+     */
+    public bool $displayItemNames;
 
     /**
      * Contains the "blocks" (rectangles) to be displayed in the timetable.
@@ -130,25 +134,32 @@ class Timetable extends Component
      */
     private function calculateBlocks(): void
     {
-        $from = Carbon::createMidnightDate($this->firstDay->year, $this->firstDay->month, $this->firstDay->day);
-        $until = Carbon::createMidnightDate($this->lastDay->year, $this->lastDay->month, $this->lastDay->day);
-        // because this is not inclusive:
-        $until->addDay();
-
-        $this->blocks = array_map(function (ReservableItem $item) use ($from, $until) {
-            return self::listOfBlocks($item, $from, $until);
-        }, $this->items);
+        // we can safely assume these are midnight dates
+        $this->blocks = array_map(
+            fn (ReservableItem $item) =>
+                self::listOfBlocks($item, $this->firstDay, $this->lastDay->copy()->addDay()),
+            $this->items);
     }
 
     /**
      * Gets the data from the @livewire parameters and sets the component properties.
+     * The first parameter contains the items to be displayed,
+     * the second the number of days to be displayed at once
+     * (which must be positive).
+     * The third, optional parameter sets
+     * whether item names should be displayed
+     * (it is by default false).
      */
-    public function mount(array $items)
+    public function mount(array $items, int $days, bool $displayItemNames = false)
     {
+        if ($days < 1) throw new \InvalidArgumentException;
+
         $this->items = $items;
 
         $this->firstDay = Carbon::today();
-        $this->lastDay = Carbon::today()->addDays(2);
+        $this->lastDay = $this->firstDay->copy()->addDays($days - 1);
+
+        $this->displayItemNames = $displayItemNames;
 
         $this->calculateBlocks();
     }
