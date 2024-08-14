@@ -84,9 +84,9 @@ class EducationalInformation extends Model
     }
 
     /**
-     * The first semester of the user in the college.
+     * The first semester of the user in the college, immediately after admittance.
      */
-    public function firstSemester(): Semester
+    public function admittanceSemester(): Semester
     {
         return Semester::where('year', $this->year_of_acceptance)->where('part', 1)->first();
     }
@@ -129,29 +129,45 @@ class EducationalInformation extends Model
     }
 
     /**
+     * Whether the user had neither bachelor nor teacher studies
+     * when admitted
+     * (so that they are exempt from alfonso requirements).
+     */
+    private function isMasterAdmittee(): bool
+    {
+        return
+            // there is no study line that:
+            $this->studyLines()
+                // is bachelor or teacher
+                ->where(function ($query) {$query->where('type', 'bachelor')->orWhere('type', 'ot');})
+                ->whereHas('startSemester', function ($query) {
+                    // the start semester is before or equal to the admittance semester
+                    $query->where('year', '<', $this->admittanceSemester()->year)
+                        ->orWhere(function ($query) {
+                            $query->where('year', '=', $this->admittanceSemester()->year)
+                                ->where('part', '<=', $this->admittanceSemester()->part);
+                        });
+                })->where(function ($query) {
+                    // the end semester is either after/equal to the admittance semester
+                    // or null
+                    $query->whereHas('endSemester', function ($query) {
+                        $query->where('year', '>', $this->admittanceSemester()->year)
+                            ->orWhere(function ($query) {
+                                $query->where('year', '=', $this->admittanceSemester()->year)
+                                    ->where('part', '>=', $this->admittanceSemester()->part);
+                            });
+                    })->orWhereNull('end');
+            })->doesntExist();
+    }
+
+    /**
      * Whether the user is exempted from the start
      * (this includes seniors and those who have been admitted during their masters' studies).
      */
-    public function alfonsoExempted()
+    public function alfonsoExempted(): bool
     {
         return $this->isSenior()
-            || $this->studyLines()->where(function ($query) {
-                $query->where('type', 'bachelor')->orWhere('type', 'ot');
-            })->whereHas('startSemester', function ($query) {
-                $query->where('year', '<', $this->firstSemester()->year)
-                      ->orWhere(function ($query) {
-                        $query->where('year', '=', $this->firstSemester()->year)
-                              ->where('part', '<=', $this->firstSemester()->part);
-                      });
-            })->where(function ($query) {
-                $query->whereHas('endSemester', function ($query) {
-                    $query->where('year', '>', $this->firstSemester()->year)
-                        ->orWhere(function ($query) {
-                            $query->where('year', '=', $this->firstSemester()->year)
-                                ->where('part', '>=', $this->firstSemester()->part);
-                        });
-                })->orWhereNull('end');
-            })->doesntExist();
+            || $this->isMasterAdmittee();
     }
 
     /**
