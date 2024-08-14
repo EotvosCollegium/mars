@@ -59,21 +59,33 @@ class StudyLine extends Model
         'other' => 'Egyéb'
     ];
 
+    /**
+     * The EducationalInformation model to which the study line is attached.
+     */
     public function educationalInformation(): BelongsTo
     {
         return $this->belongsTo(EducationalInformation::class);
     }
 
+    /**
+     * The first semester of studies.
+     */
     public function startSemester(): BelongsTo
     {
         return $this->belongsTo(Semester::class, 'start');
     }
 
+    /**
+     * The last semester of studies, if it has been finished (null otherwise).
+     */
     public function endSemester(): BelongsTo
     {
         return $this->belongsTo(Semester::class, 'end');
     }
 
+    /**
+     * The prettified name with all important information (without semester names).
+     */
     public function getName(): string
     {
         $name = $this->name;
@@ -87,6 +99,10 @@ class StudyLine extends Model
         return $name;
     }
 
+    /**
+     * The prettified name with all important information
+     * (with the names of the first and last semesters).
+     */
     public function getNameWithYear(): string
     {
         $name = $this->getName();
