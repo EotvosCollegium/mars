@@ -96,7 +96,8 @@ class ReservationController extends Controller
     private static function hasConflict(Reservation $newReservation): ?Reservation
     {
         $conflictingReservations = $newReservation->reservableItem->reservationsInSlot(
-            $newReservation->reserved_from, $newReservation->reserved_until
+            $newReservation->reserved_from,
+            $newReservation->reserved_until
         );
 
         return ($conflictingReservations
@@ -133,14 +134,16 @@ class ReservationController extends Controller
             'frequency' => 'exclude_unless:recurring,on|required|numeric|min:1|max:65535'
         ]);
 
-        $validator->sometimes('last_day',
+        $validator->sometimes(
+            'last_day',
             'after_or_equal:' . Carbon::make($request->reserved_from)->setHour(0)->setMinute(0)->setSecond(0),
-            fn($input) => !$item->isWashingMachine() && isset($input->recurring)
+            fn ($input) => !$item->isWashingMachine() && isset($input->recurring)
         );
 
-        $validator->sometimes('reserved_from',
+        $validator->sometimes(
+            'reserved_from',
             'after_or_equal:' . Carbon::now()->setMinute(0)->setSecond(0),
-            fn($input) => $item->isWashingMachine()
+            fn ($input) => $item->isWashingMachine()
         );
 
         if ($item->isWashingMachine()) {
@@ -234,7 +237,7 @@ class ReservationController extends Controller
 
     public const EDIT_THIS_ONLY = 'edit_this_only';
     public const EDIT_ALL_AFTER = 'edit_all_after';
-    public const EDIT_ALL= 'edit_all';
+    public const EDIT_ALL = 'edit_all';
 
     /**
      * Updates a reservation with an edited version.
@@ -271,14 +274,16 @@ class ReservationController extends Controller
             ]
         ]);
 
-        $validator->sometimes('last_day',
+        $validator->sometimes(
+            'last_day',
             'after_or_equal:' . Carbon::make($request->reserved_from)->setHour(0)->setMinute(0)->setSecond(0),
-            fn($input) => !$item->isWashingMachine() && $reservation->isRecurring() && self::EDIT_THIS_ONLY != $input->for_what
+            fn ($input) => !$item->isWashingMachine() && $reservation->isRecurring() && self::EDIT_THIS_ONLY != $input->for_what
         );
 
-        $validator->sometimes('reserved_from',
+        $validator->sometimes(
+            'reserved_from',
             'after_or_equal:' . Carbon::now()->setMinute(0)->setSecond(0),
-            fn($input) => $item->isWashingMachine()
+            fn ($input) => $item->isWashingMachine()
         );
 
         $validatedData = $validator->validate();
