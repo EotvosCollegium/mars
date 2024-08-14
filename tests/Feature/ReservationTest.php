@@ -5,7 +5,9 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use Carbon\Carbon;
 
+use App\Enums\ReservableItemType;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\ReservableItem;
@@ -48,7 +50,7 @@ class ReservationTest extends TestCase
 
         $itemInput = [
             'name' => 'újgörög',
-            'type' => 'room',
+            'type' => ReservableItemType::ROOM,
             'out_of_order' => false
         ];
 
@@ -64,8 +66,8 @@ class ReservationTest extends TestCase
 
         $input = [
             'title' => 'My little film club',
-            'reserved_from' => '2024-05-17 10:00:00',
-            'reserved_until' => '2024-05-17 10:05:00',
+            'reserved_from' => Carbon::now()->addMinutes(2),
+            'reserved_until' => Carbon::now()->addMinutes(62),
             'note' => null
         ];
         $response = $this->followingRedirects()->actingAs($user)->post(
