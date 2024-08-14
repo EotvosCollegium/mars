@@ -2,7 +2,6 @@
 // if there is only one item:
 if (!isset($items)) {
     $items = [$item];
-    $blocks = [$blocks];
 }
 
 $itemCount = count($items);
@@ -22,8 +21,6 @@ $columnWidth = 100.0 / ($dayCount * $itemCount);
             <x-input.button floating wire:click="step({{ $dayCount }})" icon="chevron_right" />
         </div>
     </div>
-
-    <p>{{ count($blocks[1]) }}</p>
 
     <table>
         <thead>
@@ -66,7 +63,7 @@ $columnWidth = 100.0 / ($dayCount * $itemCount);
                             @php
                             $item = $items[$i];
                             @endphp
-                            @foreach($blocks[$i] as $block)
+                            @foreach($this->blocks[$i] as $block)
                                 @php
                                 $isReservation = !is_null($block['reservation_id']);
                                 $isDisabled = !$isReservation &&

@@ -31,9 +31,20 @@ class Timetable extends Component
     public bool $displayItemNames;
 
     /**
-     * Contains the "blocks" (rectangles) to be displayed in the timetable.
+     * Contains the "blocks" (rectangles) to be displayed in a timetable
+     * for all items in the currently set timespan.
+     * A block contains a "from" and "until" time (in Carbon instances)
+     * and a "reservation_id" if it belongs to a reservation
+     * (for a free span, it is null).
+     * It is a computed property.
      */
-    private array $blocks;
+    public function getBlocksProperty(): array
+    {
+        return array_map(
+            fn (ReservableItem $item) =>
+                self::listOfBlocks($item, $this->firstDay, $this->lastDay->copy()->addDay()),
+            $this->items);
+    }
 
     /**
      * Generates an ordered array of blocks for the given item in the given timespan.
@@ -126,22 +137,6 @@ class Timetable extends Component
     }
 
     /**
-     * Sets $this->blocks to be an ordered array of blocks to be displayed in a timetable
-     * for all items in the currently set timespan.
-     * A block contains a "from" and "until" time (in Carbon instances)
-     * and a "reservation_id" if it belongs to a reservation
-     * (for a free span, it is null).
-     */
-    private function calculateBlocks(): void
-    {
-        // we can safely assume these are midnight dates
-        $this->blocks = array_map(
-            fn (ReservableItem $item) =>
-                self::listOfBlocks($item, $this->firstDay, $this->lastDay->copy()->addDay()),
-            $this->items);
-    }
-
-    /**
      * Gets the data from the @livewire parameters and sets the component properties.
      * The first parameter contains the items to be displayed,
      * the second the number of days to be displayed at once
@@ -160,8 +155,6 @@ class Timetable extends Component
         $this->lastDay = $this->firstDay->copy()->addDays($days - 1);
 
         $this->displayItemNames = $displayItemNames;
-
-        $this->calculateBlocks();
     }
 
     /**
@@ -171,11 +164,7 @@ class Timetable extends Component
      */
     public function render()
     {
-        return view('livewire.timetable', [
-            'firstDay' => $this->firstDay,
-            'lastDay' => $this->lastDay,
-            'blocks' => $this->blocks,
-        ]);
+        return view('livewire.timetable');
     }
 
     /**
@@ -186,7 +175,5 @@ class Timetable extends Component
     {
         $this->firstDay->addDays($days);
         $this->lastDay->addDays($days);
-
-        $this->calculateBlocks();
     }
 }
