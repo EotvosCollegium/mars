@@ -112,7 +112,9 @@ $columnWidth = 100.0 / ($dayCount * $itemCount);
                                         {{$reservation->displayName()}}
                                         @endif
                                     </div>
+                                @if($isReservation || !$isDisabled)
                                 </a>
+                                @endif
                             @endforeach
                         @endfor
                     </div>
