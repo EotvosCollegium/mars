@@ -22,7 +22,7 @@ class CreateRolesTable extends Migration
         });
 
         // Adding roles
-        foreach (Role::ALLas $key => $role) {
+        foreach (Role::ALL as $key => $role) {
             DB::table('roles')->insert(['name' => $role]);
         }
     }
