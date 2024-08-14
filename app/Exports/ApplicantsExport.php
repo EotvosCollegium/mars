@@ -86,13 +86,13 @@ class ApplicantsExport implements FromCollection, WithTitle, WithMapping, WithHe
             })->implode(', '),
             implode(",", $user->faculties->pluck('name')->toArray()),
             $application->appliedWorkshops()->implode('name', ','),
-            $user->isResident() ? 'Bentlakó' : 'Bejáró',
+            $application->applied_for_resident_status ? 'Bentlakó' : 'Bejáró',
             ($user->educationalInformation?->alfonso_language ?
                 __('role.'.$user->educationalInformation->alfonso_language) . " " . $user->educationalInformation->alfonso_desired_level
                 : ""),
             implode(" \n", $application->question_1),
             $application->present ?? true,
-            $user->application->accommodation
+            $application->accommodation
         ];
     }
 }
