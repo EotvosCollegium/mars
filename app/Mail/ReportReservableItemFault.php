@@ -36,7 +36,7 @@ class ReportReservableItemFault extends Mailable
      */
     private function isForWashingMachine(): bool
     {
-        return \App\Enums\ReservableItemType::WASHING_MACHINE == $this->item->type;
+        return \App\Enums\ReservableItemType::WASHING_MACHINE->value == $this->item->type;
     }
 
     /**

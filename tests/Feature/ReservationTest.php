@@ -50,7 +50,7 @@ class ReservationTest extends TestCase
 
         $itemInput = [
             'name' => 'újgörög',
-            'type' => ReservableItemType::ROOM,
+            'type' => ReservableItemType::ROOM->value,
             'out_of_order' => false
         ];
 

@@ -81,7 +81,7 @@ class ReservableItem extends Model
      */
     public function isWashingMachine(): bool
     {
-        return ReservableItemType::WASHING_MACHINE == $this->type;
+        return ReservableItemType::WASHING_MACHINE->value == $this->type;
     }
 
     /**
@@ -89,7 +89,7 @@ class ReservableItem extends Model
      */
     public function isRoom(): bool
     {
-        return ReservableItemType::ROOM == $this->type;
+        return ReservableItemType::ROOM->value == $this->type;
     }
 
     /**
