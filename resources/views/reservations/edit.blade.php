@@ -37,11 +37,11 @@ if (isset($reservation)) {
                 <div class="card-content">
                     <span class="card-title">
                         @lang(isset($reservation) ? 'reservations.edit' : 'reservations.create')
+                        ({{ $item->name }})
                     </span>
-                    <div class="row">
-                        <div s="6">{{ $item->name }}</div>
-                        <div s="6">{{ (isset($reservation) && !is_null($reservation->user)) ? $reservation->user->name : '' }}
-                    </div>
+                    <blockquote>
+                        @lang('reservations.one_hour_slot_only')
+                    </blockquote>
 
                     @if(!$item->isWashingMachine())
                         @if(!isset($reservation))
@@ -81,6 +81,8 @@ if (isset($reservation)) {
                         <x-input.text  id="reserved_from" type="datetime-local" without-label helper="{{ __('reservations.from') }}"
                                        :value="isset($reservation) ? $reservation->reserved_from :
                                                (old('reserved_from') ?? $group_from)"
+                                       {{-- only integer hours should be given for washing machines --}}
+                                       :step="$item->isWashingMachine() ? 3600 : 60"
                                        required/>
 
                         {{-- we hide the end date for washing machines --}}
