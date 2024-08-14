@@ -43,24 +43,25 @@ class Timetable extends Component
         $currentStart = $from;
         $i = 0;
         while($i < count($reservations)) {
-            $block = [];
             if ($isForReservation) {
                 $reservation = $reservations[$i];
-                $block['from'] = Carbon::make($reservation->reserved_from);
-                $block['until'] = Carbon::make($reservation->reserved_until);
-                $block['reservation_id'] = $reservation->id;
-                $blocks[] = $block;
-                $currentStart = $block['until'];
+                $blocks[] = [
+                    'from' => Carbon::make($reservation->reserved_from),
+                    'until' => Carbon::make($reservation->reserved_until),
+                    'reservation_id' => $reservation->id
+                ];
+                $currentStart = Carbon::make($reservation->reserved_until);
                 $isForReservation = false;
                 ++$i;
             } else {
                 $currentEnd = Carbon::make($reservations[$i]->reserved_from);
                 if ($currentStart < $currentEnd) {
-                    $block['from'] = $currentStart;
-                    $block['until'] = $currentEnd;
-                    $block['reservation_id'] = null;
+                    $blocks[] = [
+                        'from' => $currentStart,
+                        'until' => $currentEnd,
+                        'reservation_id' => null
+                    ];
                     $currentStart = $currentEnd;
-                    $blocks[] = $block;
                 }
                 $isForReservation = true;
             }
@@ -68,28 +69,33 @@ class Timetable extends Component
         // for the last block:
         if ($currentStart < $until) {
             // create a final free block
-            $block = [
+            $blocks[] = [
                 'from' => $currentStart,
                 'until' => $until,
                 'reservation_id' => null
             ];
-            $blocks[] = $block;
         } else {
             // cut the end if it is after $until
             $blocks[count($blocks) - 1]['until'] = $until;
         }
 
-        // We also have to split blocks
-        // that spill through midnights.
-        // For washing machines, we even split them every hour;
-        // for rooms, we only do so for free blocks.
-        $splitBlocks = [];
+        return self::splitBlocks($blocks);
+    }
+
+    /**
+     * Takes a list of blocks created previously
+     * and splits those that spill through midnights.
+     * Free blocks also get split every hour.
+     */
+    private static function splitBlocks(array $blocks): array
+    {
+        $result = [];
         $i = 0;
         while ($i < count($blocks)) {
             $block = $blocks[$i];
 
             $splittingPointAfter = $block['from']->copy();
-            if ($item->isWashingMachine() || is_null($block['reservation_id'])) {
+            if (is_null($block['reservation_id'])) {
                 $splittingPointAfter->minute = 0;
                 $splittingPointAfter->addHours(1);
             } else {
@@ -99,21 +105,20 @@ class Timetable extends Component
             }
 
             if ($block['until'] <= $splittingPointAfter) {
-                $splitBlocks[] = $block;
+                $result[] = $block;
                 ++$i;
             } else {
-                $splitBlock = [
+                $result[] = [
                     'from' => $block['from'],
                     'until' => $splittingPointAfter,
                     'reservation_id' => $block['reservation_id']
                 ];
-                $splitBlocks[] = $splitBlock;
                 // that array won't be used for anything else anyway
                 $blocks[$i]['from'] = $splittingPointAfter;
             }
         }
 
-        return $splitBlocks;
+        return $result;
     }
 
     /**
