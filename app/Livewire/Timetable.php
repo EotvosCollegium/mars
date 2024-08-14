@@ -43,7 +43,8 @@ class Timetable extends Component
         return array_map(
             fn (ReservableItem $item) =>
                 self::listOfBlocks($item, $this->firstDay, $this->lastDay->copy()->addDay()),
-            $this->items);
+            $this->items
+        );
     }
 
     /**
@@ -147,7 +148,9 @@ class Timetable extends Component
      */
     public function mount(array $items, int $days, bool $displayItemNames = false)
     {
-        if ($days < 1) throw new \InvalidArgumentException;
+        if ($days < 1) {
+            throw new \InvalidArgumentException();
+        }
 
         $this->items = $items;
 
