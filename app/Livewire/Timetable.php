@@ -82,6 +82,8 @@ class Timetable extends Component
                 $isForReservation = true;
             }
         }
+        // for the first block:
+        $blocks[0]['from'] = $from;
         // for the last block:
         if ($currentStart < $until) {
             // create a final free block
