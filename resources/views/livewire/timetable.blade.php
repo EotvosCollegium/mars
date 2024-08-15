@@ -71,27 +71,27 @@ $columnWidth = 100.0 / ($dayCount * $itemCount);
                             @endphp
                             @foreach($this->blocks[$i] as $block)
                                 @php
-                                $isReservation = !is_null($block['reservation_id']);
+                                $isReservation = !$block->isFree();
                                 $isDisabled = !$isReservation &&
-                                                ($item->isOutOfOrder() || $block['until'] < \Carbon\Carbon::now());
+                                                ($item->isOutOfOrder() || $block->getUntil() < \Carbon\Carbon::now());
                                 // here, we assume that $from is a midnight date
-                                $dayOfWeek = floor($firstDay->diffInDays($block['from']));
-                                $startHourFloat = $block['from']->hour + ($block['from']->minute / 60.0);
-                                $endHourFloat = $block['until']->isMidnight()
+                                $dayOfWeek = floor($firstDay->diffInDays($block->getFrom()));
+                                $startHourFloat = $block->getFrom()->hour + ($block->getFrom()->minute / 60.0);
+                                $endHourFloat = $block->getUntil()->isMidnight()
                                                 ? 24.0
-                                                : ($block['until']->hour + ($block['until']->minute / 60.0));
+                                                : ($block->getUntil()->hour + ($block->getUntil()->minute / 60.0));
                                 @endphp
                                 @if($isReservation)
-                                <a href="{{ route('reservations.show', App\Models\Reservation::find($block['reservation_id'])) }}">
+                                <a href="{{ route('reservations.show', $block->reservation()) }}">
                                 @elseif(!$isDisabled)
                                 {{-- default values as GET request parameters --}}
                                 <a href="{{ route('reservations.create', ['item' => $item])
-                                            . "?from={$block['from']}&until={$block['until']}"
+                                            . "?from={$block->getFrom()}&until={$block->getUntil()}"
                                 }}">
                                 @endif
                                     @php
                                     if ($isReservation) {
-                                        $reservation = \App\Models\Reservation::find($block['reservation_id']);
+                                        $reservation = $block->reservation();
                                         $isOurs = $reservation->user?->is(user());
                                     } else {
                                         $reservation = null;
@@ -110,9 +110,9 @@ $columnWidth = 100.0 / ($dayCount * $itemCount);
                                             'orange' => $isOurs,
                                             'green' => !$isReservation && !$isDisabled,
                                             'grey' => $isDisabled,
-                                            'darken-4' => $isReservation && App\Models\Reservation::find($block['reservation_id'])->verified
+                                            'darken-4' => $isReservation && $reservation->verified
                                                             || !$isReservation && !$isDisabled,
-                                            'lighten-2' => $isReservation && !App\Models\Reservation::find($block['reservation_id'])->verified
+                                            'lighten-2' => $isReservation && !$reservation->verified
                                     ])>
                                         @if(!is_null($reservation))
                                         {{$reservation->displayName()}}

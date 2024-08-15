@@ -35,11 +35,12 @@ if (isset($reservation)) {
                         @lang(isset($reservation) ? 'reservations.edit' : 'reservations.create')
                         ({{ $item->name }})
                     </span>
-                    <blockquote>
-                        @lang('reservations.one_hour_slot_only')
-                    </blockquote>
 
-                    @if(!$item->isWashingMachine())
+                    @if($item->isWashingMachine())
+                        <blockquote>
+                            @lang('reservations.one_hour_slot_only')
+                        </blockquote>
+                    @else
                         @if(!isset($reservation))
                         <div class="row">
                             <x-input.checkbox s=12 name="recurring" :text="__('reservations.recurring')"

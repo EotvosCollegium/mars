@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -80,8 +81,10 @@ class ReservationGroup extends Model
         DB::transaction(function () use ($currentStart, $lastDay, $defaultDuration) {
             while ($currentStart <= $lastDay) {
                 $currentEnd = $currentStart->copy()->addMinutes($defaultDuration);
-                if (!$this->groupItem->reservationsInSlot($currentStart, $currentEnd)
-                        ->isEmpty()) {
+                if (!$this->groupItem->reservationsInSlot(
+                    CarbonImmutable::make($currentStart),
+                    CarbonImmutable::make($currentEnd)
+                )->isEmpty()) {
                     throw new ConflictException("conflict on $currentStart");
                 } else {
                     Reservation::create([
@@ -233,8 +236,10 @@ class ReservationGroup extends Model
                     $newUntil->minute = $groupUntil->minute;
 
                     $others = $reservation->reservableItem
-                        ->reservationsInSlot($newFrom, $newUntil)
-                        ->filter(function (Reservation $other) use ($reservation) {
+                        ->reservationsInSlot(
+                            CarbonImmutable::make($newFrom),
+                            CarbonImmutable::make($newUntil)
+                        )->filter(function (Reservation $other) use ($reservation) {
                             return $other->id != $reservation->id;
                         });
                     if (!$others->isEmpty()) {
