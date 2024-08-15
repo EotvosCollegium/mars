@@ -17,7 +17,7 @@ use App\Models\User;
 use App\Models\ReservableItem;
 use App\Models\ReservationGroup;
 use App\Models\Reservation;
-use App\Models\ConflictException;
+use App\Exceptions\ConflictException;
 use App\Mail\ReservationVerified;
 
 class ReservationController extends Controller
