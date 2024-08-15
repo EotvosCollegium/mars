@@ -34,8 +34,9 @@ class Block
      */
     public function __construct(CarbonImmutable $from, CarbonImmutable $until, ?int $reservation_id)
     {
-        if ($from >= $until) throw new \InvalidArgumentException('start date of block before end date');
-        else {
+        if ($from >= $until) {
+            throw new \InvalidArgumentException('start date of block before end date');
+        } else {
             $this->from = $from;
             $this->until = $until;
             $this->reservation_id = $reservation_id;
@@ -48,8 +49,11 @@ class Block
      */
     public function setFrom(CarbonImmutable $from): void
     {
-        if ($from >= $this->until) throw new \InvalidArgumentException('new start date is not earlier than current end date');
-        else $this->from = $from;
+        if ($from >= $this->until) {
+            throw new \InvalidArgumentException('new start date is not earlier than current end date');
+        } else {
+            $this->from = $from;
+        }
     }
     /**
      * Setter for the end date.
@@ -57,35 +61,53 @@ class Block
      */
     public function setUntil(CarbonImmutable $until): void
     {
-        if ($until <= $this->from) throw new \InvalidArgumentException('new end date is not later than current start date');
-        else $this->until = $until;
+        if ($until <= $this->from) {
+            throw new \InvalidArgumentException('new end date is not later than current start date');
+        } else {
+            $this->until = $until;
+        }
     }
     /**
      * Returns the start date.
      */
-    public function getFrom(): CarbonImmutable {return $this->from;}
+    public function getFrom(): CarbonImmutable
+    {
+        return $this->from;
+    }
     /**
      * Returns the end date.
      */
-    public function getUntil(): CarbonImmutable {return $this->until;}
+    public function getUntil(): CarbonImmutable
+    {
+        return $this->until;
+    }
     /**
      * Returns the reservation id.
      */
-    public function getReservationId(): ?int {return $this->reservation_id;}
+    public function getReservationId(): ?int
+    {
+        return $this->reservation_id;
+    }
     /**
      * The reservation the block belongs to (or null if none).
      * Throws if the id is not null and not valid.
      */
     public function reservation(): ?Reservation
     {
-        if (is_null($this->reservation_id)) return null;
-        else return Reservation::findOrFail($this->reservation_id);
+        if (is_null($this->reservation_id)) {
+            return null;
+        } else {
+            return Reservation::findOrFail($this->reservation_id);
+        }
     }
     /**
      * Whether this is a free block
      * (i.e. it does not belong to a reservation, but represents a free interval).
      */
-    public function isFree(): bool {return is_null($this->reservation_id);}
+    public function isFree(): bool
+    {
+        return is_null($this->reservation_id);
+    }
 
     /**
      * Sets the given date as the new end date
