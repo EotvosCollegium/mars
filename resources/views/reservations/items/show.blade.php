@@ -1,7 +1,10 @@
 @extends('layouts.app')
 
 @section('title')
-<a href="#!" class="breadcrumb">{{$item->name}}</a>
+<a href="{{route('reservations.items.index', ['type' => $item->type])}}"
+    class="breadcrumb" style="cursor: pointer">@lang("reservations.{$item->type}_reservations")</a>
+<a href="#!"
+    class="breadcrumb" style="cursor: pointer">{{ $item->name }}</a>
 @endsection
 
 @section('content')
@@ -14,28 +17,33 @@
                 
                 @can('requestReservation', $item)
                     <blockquote>
-                        @if($item->isWashingMachine())
-                        @lang('reservations.washing_instructions')
-                        @else
-                        @lang('reservations.room_instructions')
-                        @endif
+                        @lang("reservations.{$item->type}_reservation_instructions")
                     </blockquote>
                 @endcan
 
-                @can('administer', \App\Models\ReservableItem::class)
-                    <div>
-                        <form method="POST"
-                            action="{{ route('reservations.items.toggle_out_of_order', ['item' => $item]) }}"
-                            enctype='multipart/form-data'>
-                            @csrf
-                            <x-input.button @class([
-                                'red' => !$item->out_of_order,
-                                'green' => $item->out_of_order
-                            ])
-                                text="{{'reservations.' . ($item->out_of_order ? 'set_fixed' : 'set_out_of_order')}}" />
-                        </form>
-                    </div>
-                @endcan
+                <div>
+                    <form method="POST"
+                        action="{{
+                            route(
+                                user()->can('administer', \App\Models\ReservableItem::class)
+                                ? 'reservations.items.toggle_out_of_order' : 'reservations.items.report_fault',
+                                ['item' => $item]
+                            )
+                            }}"
+                        enctype='multipart/form-data'>
+                        @csrf
+                        <x-input.button @class([
+                            'red' => !$item->out_of_order,
+                            'green' => $item->out_of_order
+                        ])
+                            text="{{'reservations.' . (
+                                user()->can('administer', \App\Models\ReservableItem::class)
+                                ? ($item->out_of_order ? 'set_fixed' : 'set_out_of_order')
+                                : ($item->out_of_order ? 'report_fix' : 'report_fault')
+                            )}}"
+                        />
+                    </form>
+                </div>
 
                 @livewire('timetable', [
                     'items' => [$item],

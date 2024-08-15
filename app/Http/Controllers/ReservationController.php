@@ -208,7 +208,7 @@ class ReservationController extends Controller
             // and finally:
             $newReservation->save();
             if ($item->isWashingMachine()) {
-                return redirect()->route('reservations.items.index_for_washing_machines');
+                return redirect()->route('reservations.items.index', ['type' => ReservableItemType::WASHING_MACHINE]);
             } else {
                 return redirect()->route('reservations.items.show', $item);
             }
@@ -428,7 +428,7 @@ class ReservationController extends Controller
 
         $reservation->delete();
         if ($reservation->reservableItem->isWashingMachine()) {
-            return redirect()->route('reservations.items.index_for_washing_machines');
+            return redirect()->route('reservations.items.index', ['type' => ReservableItemType::WASHING_MACHINE]);
         } else {
             return redirect()->route('reservations.items.show', $reservation->reservableItem);
         }

@@ -23,13 +23,9 @@
                 @endif
             </td>
             <td style="text-align: right;">
-                @if($item->isRoom() || user()->can('administer', \App\Models\ReservableItem::class))
                 <a href="{{ route('reservations.items.show', ['item' => $item]) }}">
-                @endif
                     {{ $item->name }}
-                @if($item->isRoom() || user()->can('administer', \App\Models\ReservableItem::class))
                 </a>
-                @endif
             </td>
             <td>
                 <form method="POST"

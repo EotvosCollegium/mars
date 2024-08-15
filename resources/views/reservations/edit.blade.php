@@ -7,16 +7,12 @@ if (isset($reservation)) {
 @endphp
 
 @section('title')
-<a href="{{route('reservations.items.index')}}" class="breadcrumb" style="cursor: pointer">@lang('reservations.reservations')</a>
-@if($item->isWashingMachine())
-<a href="{{route('reservations.items.index_for_washing_machines')}}"
-    class="breadcrumb" style="cursor: pointer">@lang('reservations.washing_reservations')</a>
-@else
+<a href="{{route('reservations.items.index', ['type' => $item->type])}}"
+    class="breadcrumb" style="cursor: pointer">@lang("reservations.{$item->type}_reservations")</a>
 <a href="{{route('reservations.items.show', $item)}}"
   class="breadcrumb" style="cursor: pointer">
   {{ isset($reservation) ? $reservation->reservableItem->name : $item->name }}
 </a>
-@endif
 <a href="#!" class="breadcrumb">
     {{ isset($reservation) ? $reservation->displayName() : __('reservations.create') }}
 </a>

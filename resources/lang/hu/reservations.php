@@ -36,15 +36,19 @@ return [
     'recurring_conflict' => 'Az egyik ismétlődő időpont ütközik egy meglévő foglalással', // this will have a colon after it
     'repaired_room' => 'A terem újra használható',
     'repaired_washing_machine' => 'A mosógép javítva',
+    'report_fault' => 'Hiba bejelentése',
+    'report_fix' => 'Javítás bejelentése',
     'reservation_verified' => 'Foglalás jóváhagyva', // an e-mail subject
     'reservations' => 'Foglalások',
     'room' => 'Terem',
+    'rooms' => 'Termek',
     'room_index_instructions' => 'Ha egy terem használhatatlannak tűnik (pl. festés miatt),
         jelezze a rendszergazdáknak a jobb oldalon levő gombbal.<br />
         Ha újra használható, nyomja meg ugyanazt a gombot.',
-    'room_instructions' =>
-        'Foglaláshoz kattintson egy olyan zöld téglalapra, ami nagyjából illeszkedik a foglalni kívánt idősávhoz.<br />
-         A pontos kezdési és befejezési dátumot ezután állíthatja be.',
+    'room_reservation_instructions' =>
+        'Foglaláshoz kattintson egy olyan zöld téglalapra, ami nagyjából illeszkedik a foglalni kívánt idősávhoz.
+         A pontos kezdési és befejezési dátumot ezután állíthatja be.<br />
+         Egy terem részletes foglaltsági táblájáért kattintson a terem nevére.',
     'room_reservations' => 'Teremfoglalás',
     'set_fixed' => 'Visszaállítás javítottnak',
     'set_out_of_order' => 'Beállítás üzemen kívülinek',
@@ -53,12 +57,13 @@ return [
     'unverified' => 'még nincs jóváhagyva', // as a status
     'verify' => 'Jóváhagyás',
     'verify_all' => 'Az összes jóváhagyása',
-    'washing_instructions' =>
-        'Mosás foglalásához kattintson a megfelelő zöld téglalapra.
-         Egyszerre legfeljebb 6 aktív foglalása lehet.<br />
-         Ha egy gép elromlott,
-         jelezze a rendszergazdáknak a jobb oldalon levő gombbal.
-         Ha megjavították azóta, nyomja meg ugyanazt a gombot.',
     'washing_machine' => 'Mosógép',
-    'washing_reservations' => 'Mosófüzet'
+    'washing_machines' => 'Mosógépek',
+    'washing_machine_index_instructions' => 'Ha egy mosógép elromlott,
+        jelezze a rendszergazdáknak a jobb oldalon levő gombbal.<br />
+        Ha újra használható, nyomja meg ugyanazt a gombot.',
+    'washing_machine_reservation_instructions' =>
+        'Mosás foglalásához kattintson a megfelelő zöld téglalapra.<br />
+         Egyszerre legfeljebb 6 aktív foglalása lehet. Hibajelentésre az oldal alján van lehetőség.',
+    'washing_machine_reservations' => 'Mosófüzet'
 ];

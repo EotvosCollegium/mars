@@ -8,7 +8,7 @@
         @endif
         <a href="{{
                 $item->isWashingMachine()
-                ? route('reservations.items.index_for_washing_machines')
+                ? route('reservations.items.index', ['type' => \App\Enums\ReservableItemType::WASHING_MACHINE])
                 : route('reservations.show', $item)
             }}">
             {{ ' ' . $item->name . '.' }}

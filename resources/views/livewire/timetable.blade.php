@@ -46,7 +46,13 @@ $columnWidth = 100.0 / ($dayCount * $itemCount);
                 @for($i = 0; $i < $dayCount; ++$i)
                 @for($j = 0; $j < $itemCount; ++$j)
                 <th style="text-align: center; width: {{95.0 / ($dayCount * $itemCount)}}%;">
-                    {{ $items[$j]->name }}
+                    @if($items[$j]->out_of_order)
+                    <s>
+                    @endif
+                        <a href="{{ route('reservations.items.show', $items[$j]) }}">{{ $items[$j]->name }}</a>
+                    @if($items[$j]->out_of_order)
+                    </s>
+                    @endif
                 </th>
                 @endfor
                 @endfor

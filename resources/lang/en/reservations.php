@@ -36,15 +36,19 @@ return [
     'recurring_conflict' => 'There is a conflict for one of the recurring events', // this will have a colon after it
     'repaired_room' => 'Room usable again',
     'repaired_washing_machine' => 'Washing machine repaired',
+    'report_fault' => 'Report fault',
+    'report_fix' => 'Report fix',
     'reservation_verified' => 'Reservation verified', // an e-mail subject
     'reservations' => 'Reservations',
     'room' => 'Room',
+    'rooms' => 'Rooms',
     'room_index_instructions' => 'If a room seems to be unusable (e.g. because of renovation),
         please notify the admins with the button next to its name.
         If it is usable again, click the same button.',
-    'room_instructions' =>
-        'To make a reservation, click a green rectangle approximately corresponding to the wished time window.<br />
-         You can then set the exact starting and ending times.',
+    'room_reservation_instructions' =>
+        'To make a reservation, click a green rectangle approximately corresponding to the wished time window.
+         You can then set the exact starting and ending times.<br />
+         For a detailed timetable of a specific room, click the name of that room.',
     'room_reservations' => 'Room reservations',
     'set_fixed' => 'Set fixed',
     'set_out_of_order' => 'Set out of order',
@@ -53,11 +57,13 @@ return [
     'unverified' => 'not yet verified', // as a status
     'verify' => 'Verify',
     'verify_all' => 'Verify all',
-    'washing_instructions' =>
-        'To reserve a slot, click the green rectangle representing it.
-         You can have at most 6 active reservations.<br />
-         If a machine seems to be faulty, please notify the admins with the button next to its name.
-         If it has been repaired, click the same button.',
     'washing_machine' => 'Washing machine',
-    'washing_reservations' => 'Washing reservations'
+    'washing_machines' => 'Washing machines',
+    'washing_machine_index_instructions' => 'If a machine has become faulty,
+        please notify the admins with the button next to its name.
+        If it is usable again, click the same button.',
+    'washing_machine_reservation_instructions' =>
+        'To reserve a slot, click the green rectangle representing it.<br />
+         You can have at most 6 active reservations. To report a fault, scroll down to the bottom of the page.',
+    'washing_machine_reservations' => 'Washing reservations'
 ];

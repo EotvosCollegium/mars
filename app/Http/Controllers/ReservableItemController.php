@@ -29,32 +29,15 @@ class ReservableItemController extends Controller
 
         $validatedData = $request->validate([
             'type' => [
-                'nullable',
+                'required',
                 Rule::enum(ReservableItemType::class)
             ]
         ]);
 
-        if (!array_key_exists('type', $validatedData)) {
-            $items = ReservableItem::all();
-        } else {
-            $items = ReservableItem::where('type', $validatedData['type'])->get();
-        }
+        $items = ReservableItem::where('type', $validatedData['type'])->get();
         return view('reservations.items.index', [
-            'items' => $items
-        ]);
-    }
-
-    /**
-     * Lists all washing machines
-     * and the reservations for them in a timetable.
-     */
-    public function indexForWashingMachines()
-    {
-        $this->authorize('viewAny', ReservableItem::class);
-
-        $items = ReservableItem::where('type', ReservableItemType::WASHING_MACHINE)->get();
-        return view('reservations.items.index_for_washing_machines', [
-            'items' => $items->all()
+            'items' => $items,
+            'type' => $validatedData['type']
         ]);
     }
 

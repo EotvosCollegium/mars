@@ -78,8 +78,8 @@
                         <ul>
                             <!-- reservations -->
                             @can('viewAny', \App\Models\ReservableItem::class)
-                                <li><a class="waves-effect" href="{{ route('reservations.items.index_for_washing_machines') }}"><i
-                                    class="material-icons left">local_laundry_service</i>@lang('reservations.washing_reservations')</a></li>
+                                <li><a class="waves-effect" href="{{ route('reservations.items.index', ['type' => \App\Enums\ReservableItemType::WASHING_MACHINE]) }}"><i
+                                    class="material-icons left">local_laundry_service</i>@lang('reservations.washing_machine_reservations')</a></li>
                                 <li><a class="waves-effect" href="{{ route('reservations.items.index', ['type' => \App\Enums\ReservableItemType::ROOM]) }}"><i
                                     class="material-icons left">schedule</i>@lang('reservations.room_reservations')</a></li>
                             @endcan

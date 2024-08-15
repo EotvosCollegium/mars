@@ -1,11 +1,9 @@
 @extends('layouts.app')
 
 @section('title')
-<a href="{{route('reservations.items.index')}}" class="breadcrumb" style="cursor: pointer">@lang('reservations.reservations')</a>
-@if($reservation->reservableItem->isWashingMachine())
-<a href="{{route('reservations.items.index_for_washing_machines')}}"
-    class="breadcrumb" style="cursor: pointer">@lang('reservations.washing_reservations')</a>
-@else
+<a href="{{route('reservations.items.index', ['type' => $reservation->reservableItem->type])}}"
+    class="breadcrumb" style="cursor: pointer">@lang("reservations.{$reservation->reservableItem->type}_reservations")</a>
+@if(!$reservation->reservableItem->isWashingMachine())
 <a href="{{route('reservations.items.show', $reservation->reservableItem)}}"
   class="breadcrumb" style="cursor: pointer">{{ $reservation->reservableItem->name }}</a>
 @endif
@@ -23,9 +21,7 @@
                 <table>
                     <tr>
                         <th>
-                            @lang('reservations.'
-                                . ($reservation->reservableItem->isWashingMachine() ? 'washing_machine' : 'room')
-                            )
+                            @lang("reservations.{$reservation->reservableItem->type}")
                         </th>
                         <td>{{$reservation->reservableItem->name}}</td>
                     </tr>
