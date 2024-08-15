@@ -12,10 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 use App\Models\Reservation;
 
-/** Thrown in transactions when there is a conflict somewhere. */
-class ConflictException extends \Exception
-{
-}
+use App\Exceptions\ConflictException;
 
 /**
  * Groups recurring reservations into one single item

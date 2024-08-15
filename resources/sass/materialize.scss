@@ -1,5 +1,3 @@
-$isDebug: true;
-
 //custom color
 $coli: (
     "blue": if($isDebug == "true", #5e1a10, #242851),

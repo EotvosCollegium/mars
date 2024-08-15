@@ -53,16 +53,13 @@ class ReservationController extends Controller
      */
     private static function reachedMaximumForWashingMachines(User $user): bool
     {
-        return ReservableItem::MAX_WASHING_RESERVATIONS
-          <= Reservation::where('user_id', $user->id)
-                ->where('reserved_until', '>', Carbon::now())
-                ->whereExists(function (Builder $query) {
-                    $query->select(DB::raw(1))
-                          ->from('reservable_items')
-                          ->where('type', ReservableItemType::WASHING_MACHINE)
-                          ->where('out_of_order', false)
-                          ->whereColumn('reservable_items.id', 'reservations.reservable_item_id');
-                })->count();
+        return $user->reservations()
+            ->where('reserved_until', '>', Carbon::now())
+            ->whereHas('reservableItem', function ($query) {
+                $query->where('type', ReservableItemType::WASHING_MACHINE)
+                    ->where('out_of_order', false);
+            })
+            ->count() >= ReservableItem::MAX_WASHING_RESERVATIONS;
     }
 
     /**
