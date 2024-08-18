@@ -3,14 +3,15 @@
 namespace App\Models;
 
 use App\Utils\DataCompresser;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
-use Matrix\Builder;
 
 /**
  * App\Models\Application
@@ -19,6 +20,8 @@ use Matrix\Builder;
  * @property Collection $files
  * @property boolean $submitted
  * @property string $graduation_average
+ * @property boolean $applied_for_resident_status
+ * @property boolean $admitted_for_resident_status
  * @property array $semester_average
  * @property array $language_exam
  * @property array $competition
@@ -64,11 +67,13 @@ use Matrix\Builder;
 class Application extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
     protected $fillable = [
         'user_id',
         'submitted',
         'applied_for_resident_status',
+        'admitted_for_resident_status',
         'graduation_average',
         'semester_average',
         'language_exam',
@@ -86,7 +91,8 @@ class Application extends Model
 
     protected $casts = [
         'submitted' => 'bool',
-        'applied_for_resident_status' => 'bool'
+        'applied_for_resident_status' => 'bool',
+        'admitted_for_resident_status' => 'bool'
     ];
 
     public const QUESTION_1 = [
@@ -126,6 +132,7 @@ class Application extends Model
         return $this->hasMany(ApplicationWorkshop::class);
     }
 
+
     /**
      * The Workshop models that the user applied for.
      * @return HasManyThrough
@@ -143,6 +150,14 @@ class Application extends Model
     }
 
     /**
+     * The Workshop models that the user admitted to.
+     */
+    public function admittedWorkshops(): HasManyThrough
+    {
+        return $this->appliedWorkshops()->where('application_workshops.admitted', true);
+    }
+
+    /**
      * Uploaded files
      * @return HasMany
      */
@@ -151,11 +166,44 @@ class Application extends Model
         return $this->hasMany('App\Models\File');
     }
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | Local scopes
+    |--------------------------------------------------------------------------
+    */
+
+    /**
+     * Scope a query to only include applications admitted to any workshop.
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeAdmitted(Builder $query): Builder
+    {
+        return $query->whereHas('applicationWorkshops', function ($query) {
+            $query->where('admitted', true);
+        });
+    }
+
+
     /*
     |--------------------------------------------------------------------------
     | Accessors & Mutators
     |--------------------------------------------------------------------------
     */
+
+    /**
+     * Get a bool whether the applicant has been admitted to any workshops.
+     *
+     * @return Attribute
+     */
+    protected function admitted(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->applicationWorkshops()->where('admitted', true)->exists(),
+        );
+    }
+
 
     /**
      * Get a bool whether the applicant has been called in by any workshops.
