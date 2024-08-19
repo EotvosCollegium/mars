@@ -84,14 +84,6 @@ class EducationalInformation extends Model
     }
 
     /**
-     * The first semester of the user in the college, immediately after admittance.
-     */
-    public function admittanceSemester(): Semester
-    {
-        return Semester::where('year', $this->year_of_acceptance)->where('part', 1)->first();
-    }
-
-    /**
      * The educational programs that belong to the educational information.
      */
     public function studyLines(): HasMany
@@ -141,21 +133,18 @@ class EducationalInformation extends Model
                 // is bachelor or teacher
                 ->where(function ($query) {$query->where('type', 'bachelor')->orWhere('type', 'ot');})
                 ->whereHas('startSemester', function ($query) {
-                    // the start semester is before or equal to the admittance semester
-                    $query->where('year', '<', $this->admittanceSemester()->year)
+                    // here, we assume that the admittance semester is always an autumn semester
+                    $query->where('year', '<', $this->year_of_acceptance)
                         ->orWhere(function ($query) {
-                            $query->where('year', '=', $this->admittanceSemester()->year)
-                                ->where('part', '<=', $this->admittanceSemester()->part);
+                            $query->where('year', '=', $this->year_of_acceptance)
+                                ->where('part', '=', 1);
                         });
                 })->where(function ($query) {
                     // the end semester is either after/equal to the admittance semester
                     // or null
+                    // here, we also assume that the admittance semester is always an autumn semester
                     $query->whereHas('endSemester', function ($query) {
-                        $query->where('year', '>', $this->admittanceSemester()->year)
-                            ->orWhere(function ($query) {
-                                $query->where('year', '=', $this->admittanceSemester()->year)
-                                    ->where('part', '>=', $this->admittanceSemester()->part);
-                            });
+                        $query->where('year', '>=', $this->year_of_acceptance);
                     })->orWhereNull('end');
             })->doesntExist();
     }
