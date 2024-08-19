@@ -314,9 +314,18 @@ class ReservationController extends Controller
             $reservation->save();
         } else {
             try {
+                $group = $reservation->group;
+
+                // the last day has to be modified first
+                // because otherwise, the new reservations might not get the new dates etc.
+                if ($validatedData['last_day'] != $reservation->group->last_day) {
+                    $group->setLastDay($validatedData['last_day']);
+                }
+                $group->refresh();
+
                 $groupTitle =
-                ($validatedData['title'] != $reservation->title)
-                ? $validatedData['title'] : null;
+                    ($validatedData['title'] != $group->group_title)
+                    ? $validatedData['title'] : null;
                 $groupFrom =
                 Carbon::make($validatedData['reserved_from']) != Carbon::make($reservation->reserved_from)
                 ? Carbon::make($validatedData['reserved_from']) : null;
@@ -331,11 +340,11 @@ class ReservationController extends Controller
                 $groupItem = null;
                 $user = null;
 
-                $verified = $reservation->group->verified
+                $verified = $group->verified
                         && is_null($groupFrom) && is_null($groupUntil);
 
                 if (self::EDIT_ALL_AFTER == $validatedData['for_what']) {
-                    $reservation->group->setForAllAfter(
+                    $group->setForAllAfter(
                         firstReservation: $reservation,
                         groupItem: $groupItem,
                         user: $user,
@@ -347,7 +356,7 @@ class ReservationController extends Controller
                         verified: $verified
                     );
                 } else { // self::EDIT_ALL== $validatedData['for_what']
-                    $reservation->group->setForAll(
+                    $group->setForAll(
                         groupItem: $groupItem,
                         user: $user,
                         // ?int $frequency = null, // it cannot be set for now
@@ -357,11 +366,6 @@ class ReservationController extends Controller
                         groupNote: $groupNote,
                         verified: $verified
                     );
-                }
-
-                // and for the last day:
-                if ($validatedData['last_day'] != $reservation->group->last_day) {
-                    $reservation->group->setLastDay($validatedData['last_day']);
                 }
             } catch (ConflictException $e) {
                 abort(409, $e->getMessage());
@@ -446,7 +450,9 @@ class ReservationController extends Controller
             return redirect()->back()->with('error', __('reservations.not_a_recurring_reservation'));
         }
 
-        $reservation->group->delete();
+        $group = $reservation->group;
+        $group->reservations()->delete();
+        $group->delete();
         return redirect()->route('reservations.items.show', $reservation->reservableItem);
     }
 }

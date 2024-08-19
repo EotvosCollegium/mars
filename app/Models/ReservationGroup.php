@@ -214,6 +214,14 @@ class ReservationGroup extends Model
             $groupNote,
             $verified
         ) {
+            // detach all of them before the given reservation
+            $allBefore = $this->reservations()
+                ->where('reserved_from', '<', $firstReservation->reserved_from)
+                ->get();
+            foreach($allBefore as $reservation) {
+                $reservation->update(['group_id' => null]);
+            }
+
             $allAfter = $this->reservations()
                 ->where('reserved_from', '>=', $firstReservation->reserved_from)
                 ->get();
@@ -239,8 +247,8 @@ class ReservationGroup extends Model
                         ->reservationsInSlot(
                             CarbonImmutable::make($newFrom),
                             CarbonImmutable::make($newUntil)
-                        )->filter(function (Reservation $other) use ($reservation) {
-                            return $other->id != $reservation->id;
+                        )->filter(function (Reservation $other) {
+                            return $other->group_id != $this->id;
                         });
                     if (!$others->isEmpty()) {
                         throw new ConflictException(
@@ -255,12 +263,10 @@ class ReservationGroup extends Model
                 if (!is_null($user)) {
                     $reservation->user_id = $user->id;
                 }
-                if (!is_null($groupTitle) && $this->group_title == $reservation->title) {
-                    // if it has been custom, it won't be changed
+                if (!is_null($groupTitle)) {
                     $reservation->title = $groupTitle;
                 }
-                if (!is_null($groupNote) && $this->group_note == $reservation->note) {
-                    // same here
+                if (!is_null($groupNote)) {
                     $reservation->note = $groupNote;
                 }
                 if (!is_null($verified)) {

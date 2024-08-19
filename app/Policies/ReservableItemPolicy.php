@@ -34,25 +34,17 @@ class ReservableItemPolicy
     }
 
     /**
-     * Returns whether someone can reserve the item
-     * without verification.
-     */
-    public function reserveImmediately(User $user, ReservableItem $item): bool
-    {
-        return $this->administer($user)
-            || $item->isWashingMachine();
-    }
-
-    /**
      * Returns whether the user can request a reservation
      * for the given item
      * (but that might need to be approved by someone).
      */
     public function requestReservation(User $user, ReservableItem $item): bool
     {
-        return $this->administer($user)
-            || $item->isWashingMachine()
-            || $user->isCollegist()
-            || $user->hasRole([Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR]);
+        if ($this->administer($user)) return true;
+        elseif ($item->isWashingMachine()) {
+            return $user->hasRole([Role::COLLEGIST, Role::TENANT]);
+        } else {
+            return $user->hasRole([Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR, Role::STUDENT_COUNCIL]);
+        }
     }
 }
