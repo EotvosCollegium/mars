@@ -747,7 +747,6 @@ class User extends Authenticatable implements HasLocalePreference
     {
         $role = Role::collegist();
         $object = $role->getObject($objectName);
-        $this->removeRole($role);
         $this->addRole($role, $object);
 
         Cache::forget('collegists');
