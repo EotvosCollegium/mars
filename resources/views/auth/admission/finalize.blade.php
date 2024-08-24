@@ -63,12 +63,12 @@
                     @endforeach
                 </div>
                 <div class="col">
-                    <blockquote>A művelet végrehajtása előtt ajánlott biztonsági mentést készíteni az adatbázisról.</blockquote>
-                    <form id="finalize-application-process" method="POST"
+                    <blockquote>A művelet végrehajtása előtt ajánlott biztonsági mentést készíteni az adatbázisról. A lezárást célszerű parancssoron keresztül, a szerveren végrehajtani.</blockquote>
+                    <!--<form id="finalize-application-process" method="POST"
                           action="{{route('admission.finalize')}}">
                         @csrf
                         <x-input.button class="red" text="A felvételi lezárása"/>
-                    </form>
+                    </form>-->
                 </div>
             </div>
         </div>
