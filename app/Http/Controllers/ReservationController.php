@@ -15,6 +15,7 @@ use Carbon\CarbonImmutable;
 
 use App\Enums\ReservableItemType;
 use App\Models\User;
+use App\Models\Role;
 use App\Models\ReservableItem;
 use App\Models\ReservationGroup;
 use App\Models\Reservation;
@@ -104,6 +105,25 @@ class ReservationController extends Controller
     }
 
     /**
+     * Notifies the secretary and staff on a new or modified reservation that needs to be verified.
+     * Does nothing if the user is a secretary or staff member themselves.
+     */
+    private static function notifyOnVerifiableReservation(Reservation $reservation)
+    {
+        if (!user()->hasRole([Role::SECRETARY, Role::STAFF])) {
+            foreach(User::withRole(Role::SECRETARY)->get()->concat(User::withRole(Role::STAFF)->get())
+                    as $toNotify) {
+                Mail::to($toNotify)->send(
+                    new \App\Mail\ReservationRequested(
+                        $reservation,
+                        $toNotify->name
+                    )
+                );
+            }
+        }
+    }
+
+    /**
      * Stores a reservation based on
      * a ReservableItem provided separately
      * and the data in the request.
@@ -176,10 +196,12 @@ class ReservationController extends Controller
                 return redirect()->back()->with('error', __('reservations.recurring_conflict') . ": {$e->getMessage()}");
             }
 
+            self::notifyOnVerifiableReservation($newGroup->firstReservation());
+
             return redirect()->route(
-                'reservations.show',
-                $newGroup->firstReservation()
-            );
+                    'reservations.show',
+                    $newGroup->firstReservation()
+                )->with('message', __('reservations.verifiers_notified'));
         } else {
             // we do not save it yet!
             $newReservation = new Reservation();
@@ -209,9 +231,12 @@ class ReservationController extends Controller
             // and finally:
             $newReservation->save();
             if ($item->isWashingMachine()) {
-                return redirect()->route('reservations.items.index', ['type' => ReservableItemType::WASHING_MACHINE]);
+                return redirect()->route('reservations.items.index', ['type' => ReservableItemType::WASHING_MACHINE])
+                    ->with('message', __('general.successful_modification'));
             } else {
-                return redirect()->route('reservations.items.show', $item);
+                self::notifyOnVerifiableReservation($newReservation);
+                return redirect()->route('reservations.items.show', $item)
+                    ->with('message', __('reservations.verifiers_notified'));
             }
         }
     }
@@ -309,9 +334,6 @@ class ReservationController extends Controller
                      {$conflictingReservation->reserved_until}"
                 );
             }
-
-            // and finally:
-            $reservation->save();
         } else {
             try {
                 $group = $reservation->group;
@@ -372,7 +394,14 @@ class ReservationController extends Controller
             }
         }
 
-        return redirect()->route('reservations.show', $reservation);
+        if ($reservation->verified) {
+            return redirect()->route('reservations.show', $reservation)
+                ->with('message', __('general.successful_modification'));
+        } else {
+            self::notifyOnVerifiableReservation($reservation);
+            return redirect()->route('reservations.show', $reservation)
+                ->with('message', __('reservations.verifiers_notified'));
+        }
     }
 
     /**

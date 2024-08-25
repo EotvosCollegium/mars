@@ -55,6 +55,8 @@ return [
     'title' => 'Title',
     'until' => 'Until',
     'unverified' => 'not yet verified', // as a status
+    'verifiers_notified' =>
+        'The secretary and staff have been notified. Please wait until they approve your reservation.',
     'verify' => 'Verify',
     'verify_all' => 'Verify all',
     'washing_machine' => 'Washing machine',

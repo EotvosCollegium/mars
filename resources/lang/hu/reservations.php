@@ -55,6 +55,8 @@ return [
     'title' => 'Név',
     'until' => 'Vég',
     'unverified' => 'még nincs jóváhagyva', // as a status
+    'verifiers_notified' =>
+        'Értesítettük a titkárságot és a gondnokságot. Kérjük, várjon, amíg valamelyikük jóváhagyja a foglalást.',
     'verify' => 'Jóváhagyás',
     'verify_all' => 'Az összes jóváhagyása',
     'washing_machine' => 'Mosógép',
