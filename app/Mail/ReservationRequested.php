@@ -13,7 +13,8 @@ use App\Models\Reservation;
 
 class ReservationRequested extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     public Reservation $reservation;
     public string $recipient;

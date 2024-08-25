@@ -199,9 +199,9 @@ class ReservationController extends Controller
             self::notifyOnVerifiableReservation($newGroup->firstReservation());
 
             return redirect()->route(
-                    'reservations.show',
-                    $newGroup->firstReservation()
-                )->with('message', __('reservations.verifiers_notified'));
+                'reservations.show',
+                $newGroup->firstReservation()
+            )->with('message', __('reservations.verifiers_notified'));
         } else {
             // we do not save it yet!
             $newReservation = new Reservation();
