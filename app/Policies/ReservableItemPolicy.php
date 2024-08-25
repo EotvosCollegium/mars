@@ -40,8 +40,9 @@ class ReservableItemPolicy
      */
     public function requestReservation(User $user, ReservableItem $item): bool
     {
-        if ($this->administer($user)) return true;
-        elseif ($item->isWashingMachine()) {
+        if ($this->administer($user)) {
+            return true;
+        } elseif ($item->isWashingMachine()) {
             return $user->hasRole([Role::COLLEGIST, Role::TENANT]);
         } else {
             return $user->hasRole([Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR, Role::STUDENT_COUNCIL]);
