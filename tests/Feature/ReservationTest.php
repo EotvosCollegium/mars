@@ -138,7 +138,7 @@ class ReservationTest extends TestCase
             $input
         );
         $reservation->refresh();
-        $this->assertEquals($now->addMinutes(63), $reservation->reserved_until);
+        $this->assertEquals("{$now->addMinutes(63)}", $reservation->reserved_until);
         $response->assertSeeText($input['title']);
         $this->assertEquals(0, $reservation->verified);
 
@@ -423,8 +423,8 @@ class ReservationTest extends TestCase
         );
 
         $group->refresh();
-        $this->assertEquals('My great film club', $group->group_title);
         $reservations = $group->reservations()->orderBy('reserved_from')->get()->all();
+        $this->assertEquals('My great film club', $group->group_title);
         $this->assertEquals(1, $group->verified);
         $response->assertSeeText($input['title']);
 
@@ -451,7 +451,7 @@ class ReservationTest extends TestCase
 
 
         // and finally editing the second one and all of them after it
-        // TODO: the first one does not get detached! (Google Calendar makes them a separate group)
+        // NOTE: the first one does not get detached! (Google Calendar makes them a separate group)
         $firstReservation = $reservations[0]; // we will need this later
         $input = [
             'title' => 'Film club reloaded',

@@ -315,15 +315,19 @@ class ReservationController extends Controller
         if (!$reservation->isRecurring()
             || self::EDIT_THIS_ONLY == $validatedData['for_what']) {
             // we do not save it yet!
-            $reservation->title = $validatedData['title'] ?? null;
+
+            $reservation->verified = $reservation->reservableItem->isWashingMachine()
+                || ($reservation->verified
+                    && $reservation->reserved_from == "{$validatedData['reserved_from']}"
+                    && $reservation->reserved_until == "{$validatedData['reserved_until']}");
+
+            $reservation->title = $validatedData['title'];
             $reservation->note = $validatedData['note'];
             $reservation->reserved_from = $validatedData['reserved_from'];
             $reservation->reserved_until =
                 $reservation->reservableItem->isWashingMachine()
                 ? Carbon::make($validatedData['reserved_from'])->addHour()
                 : Carbon::make($validatedData['reserved_until']);
-
-            $reservation->verified = $reservation->reservableItem->isWashingMachine();
 
             $conflictingReservation = self::hasConflict($reservation);
             if ($conflictingReservation) {
@@ -334,6 +338,8 @@ class ReservationController extends Controller
                      {$conflictingReservation->reserved_until}"
                 );
             }
+            // and finally:
+            $reservation->save();
         } else {
             try {
                 $group = $reservation->group;
@@ -394,6 +400,7 @@ class ReservationController extends Controller
             }
         }
 
+        $reservation->refresh();
         if ($reservation->verified) {
             return redirect()->route('reservations.show', $reservation)
                 ->with('message', __('general.successful_modification'));
