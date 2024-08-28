@@ -16,9 +16,13 @@ return [
     'from' => 'Kezdet',
     'got_repaired' =>
         'Az alábbi objektum (amihez létezik foglalása) újra használhatóvá vált:',
-    'has_approved_your_reservation' => 'jóváhagyta a foglalásodat.',
+    'has_approved_your_reservation' => 'jóváhagyta a foglalását.',
     'has_become_faulty' =>
         'Az alábbi objektum (amihez létezik foglalása) elromlott vagy használhatatlanná vált:',
+    'has_deleted_your_reservation' =>
+        '<strong>törölte</strong> a foglalását.',
+    'has_rejected_your_reservation' =>
+        '<strong>elutasította</strong> a foglalását.',
     'is_free' => 'Szabad',
     'is_occupied' => 'Foglalt',
     'item_name' => 'Név',
@@ -38,7 +42,9 @@ return [
     'repaired_washing_machine' => 'A mosógép javítva',
     'report_fault' => 'Hiba bejelentése',
     'report_fix' => 'Javítás bejelentése',
-    'reservation_verified' => 'Foglalás jóváhagyva', // an e-mail subject
+    'reservation_deleted' => 'Foglalás törölve', // an e-mail subject
+    'reservation_rejected' => 'Foglalás elutasítva', // an e-mail subject too
+    'reservation_verified' => 'Foglalás jóváhagyva', // an e-mail subject too
     'reservations' => 'Foglalások',
     'room' => 'Terem',
     'rooms' => 'Termek',

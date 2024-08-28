@@ -20,6 +20,7 @@ use App\Models\ReservableItem;
 use App\Models\ReservationGroup;
 use App\Models\Reservation;
 use App\Exceptions\ConflictException;
+use App\Mail\ReservationDeleted;
 use App\Mail\ReservationVerified;
 
 class ReservationController extends Controller
@@ -469,7 +470,17 @@ class ReservationController extends Controller
     {
         $this->authorize('modify', $reservation);
 
+        // NOTE: this might cause problems if the deletion is unsuccessful
+        // but the message has already got out.
+        if ($reservation->user->id != user()->id) {
+            Mail::to($reservation->user)->queue(new ReservationDeleted(
+                user()->name,
+                $reservation
+            ));
+        }
+
         $reservation->delete();
+
         if ($reservation->reservableItem->isWashingMachine()) {
             return redirect()->route('reservations.items.index', ['type' => ReservableItemType::WASHING_MACHINE]);
         } else {
@@ -488,9 +499,19 @@ class ReservationController extends Controller
             return redirect()->back()->with('error', __('reservations.not_a_recurring_reservation'));
         }
 
+        // NOTE: this might cause problems if the deletion is unsuccessful
+        // but the message has already got out.
+        if ($reservation->user->id != user()->id) {
+            Mail::to($reservation->user)->queue(new ReservationDeleted(
+                user()->name,
+                $reservation
+            ));
+        }
+
         $group = $reservation->group;
         $group->reservations()->delete();
         $group->delete();
+
         return redirect()->route('reservations.items.show', $reservation->reservableItem);
     }
 }

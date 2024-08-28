@@ -19,6 +19,9 @@ return [
     'has_approved_your_reservation' => 'has approved your reservation.',
     'has_become_faulty' =>
         'The following reservable item (for which you have a reservation) has become faulty or unusable:',
+    'has_deleted_your_reservation' => 'has <strong>deleted</strong> your reservation.',
+    'has_rejected_your_reservation' =>
+        'has <strong>rejected</strong> your reservation.',
     'is_free' => 'Free',
     'is_occupied' => 'Occupied',
     'item_name' => 'Name',
@@ -38,7 +41,9 @@ return [
     'repaired_washing_machine' => 'Washing machine repaired',
     'report_fault' => 'Report fault',
     'report_fix' => 'Report fix',
-    'reservation_verified' => 'Reservation verified', // an e-mail subject
+    'reservation_deleted' => 'Reservation deleted', // an e-mail subject
+    'reservation_rejected' => 'Reservation rejected', // an e-mail subject too
+    'reservation_verified' => 'Reservation verified', // an e-mail subject too
     'reservations' => 'Reservations',
     'room' => 'Room',
     'rooms' => 'Rooms',
