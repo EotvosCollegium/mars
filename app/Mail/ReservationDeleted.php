@@ -45,7 +45,7 @@ class ReservationDeleted extends Mailable
     public function envelope()
     {
         return new Envelope(
-            subject: 
+            subject:
                 $this->reservation->verified
                 ? __('reservations.reservation_deleted')
                 : __('reservations.reservation_rejected'),

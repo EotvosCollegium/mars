@@ -202,8 +202,10 @@ class ReservationController extends Controller
             return redirect()->route(
                 'reservations.show',
                 $newGroup->firstReservation()
-            )->with('message',
-                $newGroup->verified ? __('general.successful_modification') : __('reservations.verifiers_notified'));
+            )->with(
+                'message',
+                $newGroup->verified ? __('general.successful_modification') : __('reservations.verifiers_notified')
+            );
         } else {
             // we do not save it yet!
             $newReservation = new Reservation();
@@ -238,8 +240,10 @@ class ReservationController extends Controller
             } else {
                 self::notifyOnVerifiableReservation($newReservation);
                 return redirect()->route('reservations.items.show', $item)
-                    ->with('message',
-                        $newReservation->verified ? __('general.successful_modification') : __('reservations.verifiers_notified'));
+                    ->with(
+                        'message',
+                        $newReservation->verified ? __('general.successful_modification') : __('reservations.verifiers_notified')
+                    );
             }
         }
     }
