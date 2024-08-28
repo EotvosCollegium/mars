@@ -46,7 +46,8 @@ return [
         jelezze a rendszergazdáknak a jobb oldalon levő gombbal.<br />
         Ha újra használható, nyomja meg ugyanazt a gombot.',
     'room_reservation_instructions' =>
-        'Foglaláshoz kattintson egy olyan zöld téglalapra, ami nagyjából illeszkedik a foglalni kívánt idősávhoz.
+        'Foglalást csak műhelytitkárok, műhelyvezetők és választmányi tagok kérvényezhetnek.
+         Foglaláshoz kattintson egy olyan zöld téglalapra, ami nagyjából illeszkedik a foglalni kívánt idősávhoz.
          A pontos kezdési és befejezési dátumot ezután állíthatja be.<br />
          Egy terem részletes foglaltsági táblájáért kattintson a terem nevére.',
     'room_reservations' => 'Teremfoglalás',

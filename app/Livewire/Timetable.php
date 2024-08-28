@@ -35,7 +35,7 @@ class Block
     public function __construct(CarbonImmutable $from, CarbonImmutable $until, ?int $reservation_id)
     {
         if ($from >= $until) {
-            throw new \InvalidArgumentException('start date of block before end date');
+            throw new \InvalidArgumentException("start date of block not earlier than end date: $from, $until");
         } else {
             $this->from = $from;
             $this->until = $until;
@@ -50,7 +50,7 @@ class Block
     public function setFrom(CarbonImmutable $from): void
     {
         if ($from >= $this->until) {
-            throw new \InvalidArgumentException('new start date is not earlier than current end date');
+            throw new \InvalidArgumentException("new start date is not earlier than current end date: $from, {$this->until}");
         } else {
             $this->from = $from;
         }
@@ -62,7 +62,7 @@ class Block
     public function setUntil(CarbonImmutable $until): void
     {
         if ($until <= $this->from) {
-            throw new \InvalidArgumentException('new end date is not later than current start date');
+            throw new \InvalidArgumentException("new end date is not later than current start date: {$this->from}, $until");
         } else {
             $this->until = $until;
         }
@@ -124,7 +124,7 @@ class Block
             $this->setUntil($middle);
             return $newBlock;
         } catch (\InvalidArgumentException) {
-            throw new \InvalidArgumentException('given date not inside the block\'s interval');
+            throw new \InvalidArgumentException("given date not inside the block's interval: {$this->from}, $middle, {$this->until}");
         }
     }
 }

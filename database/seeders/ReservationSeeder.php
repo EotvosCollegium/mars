@@ -62,7 +62,7 @@ class ReservationSeeder extends Seeder
                 $day = random_int(0, 13);
                 $hour = random_int(0, 23);
                 $minute = random_int(0, 60);
-                $duration = random_int(0, 180);
+                $duration = random_int(1, 180);  // it must not be 0!
                 $reserved_from
                     = Carbon::today()->add($day, 'day')
                         ->add($hour, 'hour')

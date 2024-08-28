@@ -46,7 +46,8 @@ return [
         please notify the admins with the button next to its name.
         If it is usable again, click the same button.',
     'room_reservation_instructions' =>
-        'To make a reservation, click a green rectangle approximately corresponding to the wished time window.
+        'Only workshop administrators, workshop leaders and Students\' Council members can request reservations.
+         To make a reservation, click a green rectangle approximately corresponding to the wished time window.
          You can then set the exact starting and ending times.<br />
          For a detailed timetable of a specific room, click the name of that room.',
     'room_reservations' => 'Room reservations',

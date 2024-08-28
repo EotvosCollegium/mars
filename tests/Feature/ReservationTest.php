@@ -190,6 +190,15 @@ class ReservationTest extends TestCase
         $this->assertTrue(Reservation::where('title', $input['title'])->doesntExist());
         $response->assertDontSeeText($input['title']);
 
+        // with reserved_until equal to reserved_from
+        $input['reserved_from'] = $input['reserved_until'];
+        $response = $this->followingRedirects()->actingAs($user)->post(
+            route('reservations.store', $room),
+            $input
+        );
+        $this->assertTrue(Reservation::where('title', $input['title'])->doesntExist());
+        $response->assertDontSeeText($input['title']);
+
         // and when the item is out of order:
         $anita = self::createSecretary();
         $response = $this->followingRedirects()->actingAs($anita)->post(
