@@ -48,4 +48,21 @@ class ReservableItemPolicy
             return $user->hasRole([Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR, Role::STUDENT_COUNCIL]);
         }
     }
+
+    /**
+     * Returns whether the reservation becomes automatically verified.
+     */
+    public function autoVerify(User $user, ReservableItem $item): bool
+    {
+        if ($item->isWashingMachine()) {
+            return $this->requestReservation($user, $item);
+        } else {
+            // admins not!
+            return $user->hasRole([
+                Role::SECRETARY,
+                Role::STAFF,
+                Role::DIRECTOR
+            ]);
+        }
+    }
 }

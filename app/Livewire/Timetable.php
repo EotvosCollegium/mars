@@ -174,10 +174,16 @@ class Timetable extends Component
      */
     private static function listOfBlocks(ReservableItem $item, CarbonImmutable $from, CarbonImmutable $until): array
     {
-        $reservations = $item->reservationsInSlot($from, $until)->all();
+        // for some reason, filtering messes up the indices; hence the use of array_values
+        $reservations = array_values(
+            $item->reservationsInSlot($from, $until)
+            ->filter(fn (Reservation $reservation) => user()->can('view', $reservation))
+            ->all()
+        );
 
         $blocks = [];
         $isForReservation = 0 < count($reservations) && $reservations[0]->reserved_from <= $from;
+
         $currentStart = $from;
         $i = 0;
         while($i < count($reservations)) {

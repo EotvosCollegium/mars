@@ -83,7 +83,7 @@ $columnWidth = 100.0 / ($dayCount * $itemCount);
                                 @endphp
                                 @if($isReservation)
                                 <a href="{{ route('reservations.show', $block->reservation()) }}">
-                                @elseif(!$isDisabled)
+                                @elseif(!$isDisabled && user()->can('requestReservation', $item))
                                 {{-- default values as GET request parameters --}}
                                 <a href="{{ route('reservations.create', ['item' => $item])
                                             . "?from={$block->getFrom()}&until={$block->getUntil()}"
@@ -118,7 +118,7 @@ $columnWidth = 100.0 / ($dayCount * $itemCount);
                                         {{$reservation->displayName()}}
                                         @endif
                                     </div>
-                                @if($isReservation || !$isDisabled)
+                                @if($isReservation || (!$isDisabled && user()->can('requestReservation', $item)))
                                 </a>
                                 @endif
                             @endforeach

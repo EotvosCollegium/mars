@@ -94,7 +94,7 @@ class ReservableItem extends Model
     }
 
     /**
-     * Returns an array of reservations in a given time interval
+     * Returns a query of reservations in a given time interval
      * (those that do not only touch it with their endpoints).
      */
     public function reservationsInSlot(CarbonImmutable $from, CarbonImmutable $until)
@@ -105,10 +105,10 @@ class ReservableItem extends Model
                                   return $query->where('reserved_from', '>=', $from)
                                                ->where('reserved_from', '<', $until);
                               })
-                                           ->orWhere(function (Builder $query) use ($from) {
-                                               return $query->where('reserved_from', '<=', $from)
-                                                            ->where('reserved_until', '>', $from);
-                                           });
+                              ->orWhere(function (Builder $query) use ($from) {
+                                  return $query->where('reserved_from', '<=', $from)
+                                              ->where('reserved_until', '>', $from);
+                              });
                           })->orderBy('reserved_from')
                           ->get();
     }

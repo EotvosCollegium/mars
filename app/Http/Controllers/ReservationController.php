@@ -186,7 +186,7 @@ class ReservationController extends Controller
                 'group_until' => Carbon::make($validatedData['reserved_until']),
                 'group_note' => $validatedData['note'],
                 'last_day' => Carbon::make($validatedData['last_day']),
-                'verified' => false
+                'verified' => user()->can('autoVerify', $item)
             ]);
 
             try {
@@ -201,7 +201,8 @@ class ReservationController extends Controller
             return redirect()->route(
                 'reservations.show',
                 $newGroup->firstReservation()
-            )->with('message', __('reservations.verifiers_notified'));
+            )->with('message',
+                $newGroup->verified ? __('general.successful_modification') : __('reservations.verifiers_notified'));
         } else {
             // we do not save it yet!
             $newReservation = new Reservation();
@@ -216,7 +217,7 @@ class ReservationController extends Controller
                 : Carbon::make($validatedData['reserved_until']);
 
 
-            $newReservation->verified = $item->isWashingMachine();
+            $newReservation->verified = user()->can('autoVerify', $item);
 
             $conflictingReservation = self::hasConflict($newReservation);
             if ($conflictingReservation) {
@@ -236,7 +237,8 @@ class ReservationController extends Controller
             } else {
                 self::notifyOnVerifiableReservation($newReservation);
                 return redirect()->route('reservations.items.show', $item)
-                    ->with('message', __('reservations.verifiers_notified'));
+                    ->with('message',
+                        $newReservation->verified ? __('general.successful_modification') : __('reservations.verifiers_notified'));
             }
         }
     }
@@ -316,7 +318,7 @@ class ReservationController extends Controller
             || self::EDIT_THIS_ONLY == $validatedData['for_what']) {
             // we do not save it yet!
 
-            $reservation->verified = $reservation->reservableItem->isWashingMachine()
+            $reservation->verified = user()->can('autoVerify', $reservation->reservableItem)
                 || ($reservation->verified
                     && $reservation->reserved_from == "{$validatedData['reserved_from']}"
                     && $reservation->reserved_until == "{$validatedData['reserved_until']}");
@@ -368,8 +370,8 @@ class ReservationController extends Controller
                 $groupItem = null;
                 $user = null;
 
-                $verified = $group->verified
-                        && is_null($groupFrom) && is_null($groupUntil);
+                $verified = user()->can('autoVerify', $reservation->reservableItem)
+                    || $group->verified && is_null($groupFrom) && is_null($groupUntil);
 
                 if (self::EDIT_ALL_AFTER == $validatedData['for_what']) {
                     $group->setForAllAfter(

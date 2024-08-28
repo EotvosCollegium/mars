@@ -26,15 +26,17 @@ class ReservationPolicy
     }
 
     /**
-     * Determine whether the user can view the details
-     * of a given reservation.
+     * Determine whether the user can view a given reservation
+     * (either the block in the timetable or the details).
      */
     public function view(User $user, Reservation $reservation): bool
     {
         return $this->administer($user)
-            || $user->isCollegist()
-            || $user->hasRole(Role::WORKSHOP_LEADER)
-            || $reservation->reservableItem->isWashingMachine();
+            || $user->can('requestReservation', $reservation->reservableItem)
+            || $reservation->reservableItem->isWashingMachine()
+            || $user->id == $reservation->user->id
+            || ($reservation->verified &&
+                    ($user->isCollegist() || $user->hasRole(Role::WORKSHOP_LEADER)));
     }
 
     /**
@@ -44,6 +46,6 @@ class ReservationPolicy
     public function modify(User $user, Reservation $reservation): bool
     {
         return $this->administer($user)
-            || (isset($reservation->user) && $reservation->user->id == $user->id);
+            || ($reservation->user->id == $user->id);
     }
 }
