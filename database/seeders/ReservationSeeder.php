@@ -42,7 +42,7 @@ class ReservationSeeder extends Seeder
             // for today and the next 14 days
             for ($day = 0; $day < 14; ++$day) {
                 for ($hour = 0; $hour < 24; ++$hour) {
-                    if (!random_int(0, 2)) {
+                    if (!rand(0, 2)) {
                         Reservation::create([
                             'reservable_item_id' => $machine->id,
                             'user_id' => User::where('verified', true)->inRandomOrder()->first()->id,
@@ -63,10 +63,10 @@ class ReservationSeeder extends Seeder
             // first some recurring ones
             for ($i = 0; $i < 10; ++$i) {
                 $user = User::where('verified', true)->inRandomOrder()->first();
-                $group_from = Carbon::today()->addDays(random_int(0, 5))
-                    ->addHours(random_int(0, 23))
-                    ->addMinutes(random_int(0, 59));
-                $group_until = $group_from->copy()->addMinutes(random_int(1, 180));
+                $group_from = Carbon::today()->addDays(rand(0, 5))
+                    ->addHours(rand(0, 23))
+                    ->addMinutes(rand(0, 59));
+                $group_until = $group_from->copy()->addMinutes(rand(1, 180));
                 $new_group = ReservationGroup::create([
                     'group_item' => $room->id,
                     'user_id' => $user->id,
@@ -75,7 +75,7 @@ class ReservationSeeder extends Seeder
                     'group_from' => $group_from,
                     'group_until' => $group_until,
                     'last_day' => $group_from->copy()
-                                    ->setHour(0)->setMinute(0)->addWeeks(random_int(1, 4)),
+                                    ->setHour(0)->setMinute(0)->addWeeks(rand(1, 4)),
                     'verified' => $faker->boolean(70)
                 ]);
 
@@ -88,10 +88,10 @@ class ReservationSeeder extends Seeder
             }
 
             for ($i = 0; $i < 30; ++$i) {
-                $day = random_int(0, 13);
-                $hour = random_int(0, 23);
-                $minute = random_int(0, 60);
-                $duration = random_int(1, 180);  // it must not be 0!
+                $day = rand(0, 13);
+                $hour = rand(0, 23);
+                $minute = rand(0, 60);
+                $duration = rand(1, 180);  // it must not be 0!
                 $reserved_from
                     = Carbon::today()->add($day, 'day')
                         ->add($hour, 'hour')
@@ -104,7 +104,7 @@ class ReservationSeeder extends Seeder
                     'reservable_item_id' => $room->id,
                     'user_id' => User::where('verified', true)->inRandomOrder()->first()->id,
                     'title' => $faker->realText(10),
-                    'verified' => random_int(0, 1),
+                    'verified' => rand(0, 1),
                     'reserved_from'
                         => $reserved_from,
                     'reserved_until'
