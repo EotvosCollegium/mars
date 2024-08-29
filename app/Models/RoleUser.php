@@ -83,14 +83,10 @@ class RoleUser extends Pivot
         return Attribute::make(
             get: function (): string {
                 if ($this->object_id) {
-                    return Cache::remember($this->object_id.'_object_translated_name', 86400, function () {
-                        return $this->object->translatedName;
-                    });
+                    return $this->object->translatedName;
                 }
                 if ($this->workshop_id) {
-                    return Cache::remember($this->workshop_id.'_workshop_name', 86400, function () {
-                        return $this->workshop->name;
-                    });
+                    return $this->workshop->name;
                 }
                 return '';
             }
