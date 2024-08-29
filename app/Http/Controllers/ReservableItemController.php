@@ -86,7 +86,7 @@ class ReservableItemController extends Controller
 
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'type' => Rule::in([ReservableItem::WASHING_MACHINE, ReservableItem::ROOM]),
+            'type' => Rule::in([ReservableItemType::WASHING_MACHINE->value, ReservableItemType::ROOM->value]),
             'out_of_order' => 'nullable|boolean',
         ]);
 
