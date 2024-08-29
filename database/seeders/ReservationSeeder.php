@@ -8,6 +8,7 @@ use Illuminate\Database\Seeder;
 
 use App\Models\ReservableItem;
 use App\Models\Reservation;
+use App\Models\ReservationGroup;
 use App\Models\User;
 
 class ReservationSeeder extends Seeder
@@ -58,7 +59,35 @@ class ReservationSeeder extends Seeder
 
         foreach($rooms as $room) {
             $reservations = [];
-            for ($i = 0; $i < 50; ++$i) {
+
+            // first some recurring ones
+            for ($i = 0; $i < 10; ++$i) {
+                $user = User::where('verified', true)->inRandomOrder()->first();
+                $group_from = Carbon::today()->addDays(random_int(0, 5))
+                    ->addHours(random_int(0, 23))
+                    ->addMinutes(random_int(0, 59));
+                $group_until = $group_from->copy()->addMinutes(random_int(1, 180));
+                $new_group = ReservationGroup::create([
+                    'group_item' => $room->id,
+                    'user_id' => $user->id,
+                    'frequency' => $faker->boolean(90) ? 7 : 1,
+                    'group_title' => $faker->realText(10),
+                    'group_from' => $group_from,
+                    'group_until' => $group_until,
+                    'last_day' => $group_from->copy()
+                                    ->setHour(0)->setMinute(0)->addWeeks(random_int(1, 4)),
+                    'verified' => $faker->boolean(70)
+                ]);
+
+                try {
+                    $new_group->initializeFrom($group_from);
+                    $reservations = array_merge($reservations, $new_group->reservations->all());
+                } catch (\App\Exceptions\ConflictException $e) {
+                    $new_group->delete();
+                }
+            }
+
+            for ($i = 0; $i < 30; ++$i) {
                 $day = random_int(0, 13);
                 $hour = random_int(0, 23);
                 $minute = random_int(0, 60);
