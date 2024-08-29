@@ -57,6 +57,9 @@ return [
          Foglaláshoz kattintson egy olyan zöld téglalapra, ami nagyjából illeszkedik a foglalni kívánt idősávhoz.
          A pontos kezdési és befejezési dátumot ezután állíthatja be.<br />
          Egy terem részletes foglaltsági táblájáért kattintson a terem nevére.',
+    'room_reservation_not_open' =>
+         'Átmenetileg csak a titkárság, az igazgató és a gondnokság tud foglalni.
+          Jelzünk, ha megnyílik a felület diáktisztviselőknek is.',
     'room_reservations' => 'Teremfoglalás',
     'set_fixed' => 'Visszaállítás javítottnak',
     'set_out_of_order' => 'Beállítás üzemen kívülinek',

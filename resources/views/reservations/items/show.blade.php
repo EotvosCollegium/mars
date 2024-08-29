@@ -19,7 +19,11 @@
                     <blockquote>
                         @lang("reservations.{$item->type}_reservation_instructions")
                     </blockquote>
-                @endcan
+                @elseif($item->isRoom() && !config('custom.room_reservation_open'))
+                    <blockquote>
+                        @lang("reservations.room_reservation_not_open")
+                    </blockquote>
+                @endif
 
                 <div>
                     <form method="POST"

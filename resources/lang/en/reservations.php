@@ -56,6 +56,8 @@ return [
          To make a reservation, click a green rectangle approximately corresponding to the wished time window.
          You can then set the exact starting and ending times.<br />
          For a detailed timetable of a specific room, click the name of that room.',
+    'room_reservation_not_open' =>
+        'Currently, only the secretariat and some other authorized people can make reservations.',
     'room_reservations' => 'Room reservations',
     'set_fixed' => 'Set fixed',
     'set_out_of_order' => 'Set out of order',

@@ -47,7 +47,8 @@ class ReservableItemPolicy
         } elseif ($item->isWashingMachine()) {
             return $user->hasRole([Role::COLLEGIST, Role::TENANT]);
         } else {
-            return $user->hasRole([Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR, Role::STUDENT_COUNCIL]);
+            return config('custom.room_reservation_open')
+                && $user->hasRole([Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR, Role::STUDENT_COUNCIL]);
         }
     }
 

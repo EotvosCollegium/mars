@@ -54,7 +54,7 @@ class ReservationPolicy
             return false;
         } else {
             return $this->administer($user)
-            || ($reservation->user->id == $user->id);
+            || (config('custom.room_reservation_open') && $reservation->user->id == $user->id);
         }
     }
 }
