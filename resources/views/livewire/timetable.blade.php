@@ -16,6 +16,7 @@ $columnWidth = 100.0 / ($dayCount * $itemCount);
     {{-- navigation buttons --}}
     @if($isPrintVersion)
     <div class="navbuttons">
+        <div>{{$firstDay->isoFormat('MM.DD.')}} – {{$lastDay->isoFormat('MM.DD.')}}</div>
         <x-input.button wire:click="step(-7)" text="Egy héttel előbb" />
         <x-input.button wire:click="step(7)" text="Egy héttel később" />
     </div>
@@ -121,8 +122,13 @@ $columnWidth = 100.0 / ($dayCount * $itemCount);
                                     $top = ($startHourFloat - $firstHour) * 100.0 / $rowCount;
                                     $height = ($endHourFloat - $startHourFloat) * 100.0 / $rowCount;
                                     $display = 'block';
-                                    if ($top < 0) $top = 0;
-                                    else if ($top >= 100.0) $display = 'none';
+                                    if ($top < 0) {
+                                        $height += $top;
+                                        $top = 0;
+                                        if ($height < 0) $display = 'none';
+                                    } else if ($top >= 100.0) {
+                                        $display = 'none';
+                                    }
                                     if ($top + $height > 100.0) $height = 100.0 - $top;
                                     @endphp
                                     <div style="position: absolute;
@@ -144,6 +150,13 @@ $columnWidth = 100.0 / ($dayCount * $itemCount);
                                     ])>
                                         @if(!is_null($reservation))
                                             {{$reservation->displayName()}}
+                                            @if($isPrintVersion)
+                                                (
+                                                    {{ $block->getFrom()->isoFormat('HH:mm') }}
+                                                    –
+                                                    {{ $block->getUntil()->isoFormat('HH:mm') }}
+                                                )
+                                            @endif
                                         @endif
                                     </div>
                                 @if($isReservation || (!$isDisabled && user()->can('requestReservation', $item)))
