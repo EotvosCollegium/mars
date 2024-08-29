@@ -192,20 +192,22 @@ class Timetable extends Component
     /**
      * Generates an ordered array of blocks for the given item in the given timespan.
      */
-    private static function listOfBlocks
-        (ReservableItem $item, CarbonImmutable $from, CarbonImmutable $until, bool $isPrintVersion): array
+    private static function listOfBlocks(ReservableItem $item, CarbonImmutable $from, CarbonImmutable $until, bool $isPrintVersion): array
     {
         // for some reason, filtering messes up the indices; hence the use of array_values
         $reservations = array_values(
             $item->reservationsInSlot($from, $until)
             ->filter(function (Reservation $reservation) use ($isPrintVersion) {
-                if (!user()->can('view', $reservation)) return false;
-                else if ($isPrintVersion) {
+                if (!user()->can('view', $reservation)) {
+                    return false;
+                } elseif ($isPrintVersion) {
                     return $reservation->verified
                         && $reservation->isRecurring()
                         && (7 == $reservation->group->frequency
                             || 1 == $reservation->group->frequency);
-                } else return true;
+                } else {
+                    return true;
+                }
             })
             ->all()
         );
@@ -303,10 +305,14 @@ class Timetable extends Component
      * whether item names should be displayed
      * (it is by default false).
      */
-    public function mount
-        (array $items, int $days, int $firstHour = 0, int $lastHour = 24,
-            bool $displayItemNames = false, bool $isPrintVersion = false)
-    {
+    public function mount(
+        array $items,
+        int $days,
+        int $firstHour = 0,
+        int $lastHour = 24,
+        bool $displayItemNames = false,
+        bool $isPrintVersion = false
+    ) {
         if ($days < 1) {
             throw new \InvalidArgumentException();
         }
