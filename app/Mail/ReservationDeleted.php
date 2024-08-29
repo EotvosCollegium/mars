@@ -61,9 +61,9 @@ class ReservationDeleted extends Mailable
     {
         return new Envelope(
             subject:
-                $this->reservationArray['verified']
-                ? __('reservations.reservation_deleted')
-                : __('reservations.reservation_rejected'),
+                __('reservations.' . ($this->reservationArray['verified']
+                                        ? 'reservation_deleted'
+                                        : 'reservation_rejected')),
         );
     }
 

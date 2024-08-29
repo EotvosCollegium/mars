@@ -474,7 +474,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function reservableItems(): BelongsToMany
     {
-        return $this->belongsToMany(ReservableItem::class, Reservation::class, 'user_id', 'reservable_item_id');
+        return $this->belongsToMany(ReservableItem::class, 'reservations', 'user_id', 'reservable_item_id');
     }
 
     /*
