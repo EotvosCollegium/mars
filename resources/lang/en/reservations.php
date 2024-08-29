@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'all_affected' => 'This affects the entire recurring reservation.', // in mailable ReservationDeleted
     'already_exists' => 'Reservation already exists in the given interval:',
     'already_verified' => 'This reservation has already been verified.',
     'bad_for_non-recurring' => 'Bad request for non-recurring reservation.',
@@ -25,7 +26,6 @@ return [
     'is_free' => 'Free',
     'is_occupied' => 'Occupied',
     'item_name' => 'Name',
-    'item_out_of_order' => 'This item is currently out of order.',
     'item_status' => 'Status',
     'last_day' => 'Last day',
     'max_washing_reservations_reached' =>
@@ -34,6 +34,7 @@ return [
     'not_a_recurring_reservation' => 'Not a recurring reservation.',
     'note' => 'Note',
     'one_hour_slot_only' => 'For washing machines, only one-hour slots can be reserved.',
+    'only_this_affected' => 'This only affects this specific session.', // in mailable ReservationDeleted
     'out_of_order' => 'Out of order',
     'recurring' => 'Recurring reservation',
     'recurring_conflict' => 'There is a conflict for one of the recurring events', // this will have a colon after it

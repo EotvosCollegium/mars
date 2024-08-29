@@ -40,7 +40,9 @@ class ReservableItemPolicy
      */
     public function requestReservation(User $user, ReservableItem $item): bool
     {
-        if ($this->administer($user)) {
+        if ($item->isOutOfOrder()) {
+            return false;
+        } elseif ($this->administer($user)) {
             return true;
         } elseif ($item->isWashingMachine()) {
             return $user->hasRole([Role::COLLEGIST, Role::TENANT]);

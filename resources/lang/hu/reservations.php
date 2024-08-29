@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'all_affected' => 'Ez a teljes ismétlődő foglalást érinti.', // in mailable ReservationDeleted
     'already_exists' => 'A megadott idősávban már létezik egy foglalás:',
     'already_verified' => 'Ezt a foglalást már jóváhagyták.',
     'bad_for_non-recurring' => 'Nem ismétlődő foglaláshoz ez érvénytelen kérés.',
@@ -26,7 +27,6 @@ return [
     'is_free' => 'Szabad',
     'is_occupied' => 'Foglalt',
     'item_name' => 'Név',
-    'item_out_of_order' => 'Ez az objektum jelenleg nem működik.',
     'item_status' => 'Státusz',
     'last_day' => 'Utolsó nap',
     'max_washing_reservations_reached' =>
@@ -35,6 +35,7 @@ return [
     'not_a_recurring_reservation' => 'A foglalás nem ismétlődő.',
     'note' => 'Megjegyzés',
     'one_hour_slot_only' => 'Mosógépeket csak egész órától egész óráig, egy órára lehet lefoglalni.',
+    'only_this_affected' => 'Ez csak ezt az egy alkalmat érinti.', // in mailable ReservationDeleted
     'out_of_order' => 'Nem működik',
     'recurring' => 'Ismétlődő foglalás',
     'recurring_conflict' => 'Az egyik ismétlődő időpont ütközik egy meglévő foglalással', // this will have a colon after it

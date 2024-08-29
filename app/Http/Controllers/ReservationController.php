@@ -72,9 +72,7 @@ class ReservationController extends Controller
     {
         $this->authorize('requestReservation', $item);
 
-        if ($item->isOutOfOrder()) {
-            return redirect()->back()->with('error', __('reservations.item_out_of_order'));
-        } elseif ($item->isWashingMachine()
+        if ($item->isWashingMachine()
             && self::reachedMaximumForWashingMachines(user())) {
             return redirect()->back()->with('error', __('reservations.max_washing_reservations_reached'));
         } else {
@@ -112,8 +110,10 @@ class ReservationController extends Controller
     private static function notifyOnVerifiableReservation(Reservation $reservation)
     {
         if (!user()->hasRole([Role::SECRETARY, Role::STAFF])) {
-            foreach(User::withRole(Role::SECRETARY)->get()->concat(User::withRole(Role::STAFF)->get())
-                    as $toNotify) {
+            $thoseToNotify = User::whereHas('roles', function ($query) {
+                $query->whereIn('name', [Role::SECRETARY, Role::STAFF]);
+            })->get();
+            foreach ($thoseToNotify as $toNotify) {
                 Mail::to($toNotify)->send(
                     new \App\Mail\ReservationRequested(
                         $reservation,
@@ -133,9 +133,7 @@ class ReservationController extends Controller
     {
         $this->authorize('requestReservation', $item);
 
-        if ($item->isOutOfOrder()) {
-            return redirect()->back()->with('error', __('reservations.item_out_of_order'));
-        } elseif ($item->isWashingMachine()
+        if ($item->isWashingMachine()
             && self::reachedMaximumForWashingMachines(user())) {
             return redirect()->back()->with('error', __('reservations.max_washing_reservations_reached'));
         }
@@ -253,13 +251,8 @@ class ReservationController extends Controller
      */
     public function edit(Reservation $reservation)
     {
+        // this also makes some other checks
         $this->authorize('modify', $reservation);
-
-        if ($reservation->reservableItem->isOutOfOrder()) {
-            return redirect()->back()->with('error', __('reservations.item_out_of_order'));
-        } elseif (Carbon::make($reservation->reserved_until) < Carbon::now()) {
-            return redirect()->back()->with('error', __('reservations.editing_past_reservations'));
-        }
 
         return view('reservations.edit', [
             'reservation' => $reservation
@@ -275,15 +268,10 @@ class ReservationController extends Controller
      */
     public function update(Reservation $reservation, Request $request)
     {
+        // this also makes some other checks
         $this->authorize('modify', $reservation);
 
         $item = $reservation->reservableItem;
-
-        if ($item->isOutOfOrder()) {
-            return redirect()->back()->with('error', __('reservations.item_out_of_order'));
-        } elseif (Carbon::make($reservation->reserved_until) < Carbon::now()) {
-            return redirect()->back()->with('error', __('reservations.editing_past_reservations'));
-        }
 
         $validator = Validator::make($request->all(), [
             'title' => 'nullable|string|max:255',
@@ -474,16 +462,21 @@ class ReservationController extends Controller
     {
         $this->authorize('modify', $reservation);
 
-        // NOTE: this might cause problems if the deletion is unsuccessful
-        // but the message has already got out.
+        // we will need these for the mailable
+        $ownerName = $reservation->user->name;
+        $itemName = $reservation->reservableItem->name;
+        $reservationArray = $reservation->toArray();
+
+        $reservation->delete();
+
         if ($reservation->user->id != user()->id) {
             Mail::to($reservation->user)->queue(new ReservationDeleted(
                 user()->name,
-                $reservation
+                $ownerName,
+                $itemName,
+                $reservationArray
             ));
         }
-
-        $reservation->delete();
 
         if ($reservation->reservableItem->isWashingMachine()) {
             return redirect()->route('reservations.items.index', ['type' => ReservableItemType::WASHING_MACHINE]);
@@ -503,18 +496,24 @@ class ReservationController extends Controller
             return redirect()->back()->with('error', __('reservations.not_a_recurring_reservation'));
         }
 
-        // NOTE: this might cause problems if the deletion is unsuccessful
-        // but the message has already got out.
-        if ($reservation->user->id != user()->id) {
-            Mail::to($reservation->user)->queue(new ReservationDeleted(
-                user()->name,
-                $reservation
-            ));
-        }
+        // we will need these for the mailable
+        $ownerName = $reservation->user->name;
+        $itemName = $reservation->reservableItem->name;
+        $reservationArray = $reservation->toArray();
 
         $group = $reservation->group;
         $group->reservations()->delete();
         $group->delete();
+
+        if ($reservation->user->id != user()->id) {
+            Mail::to($reservation->user)->queue(new ReservationDeleted(
+                user()->name,
+                $ownerName,
+                $itemName,
+                $reservationArray,
+                isForAll: true
+            ));
+        }
 
         return redirect()->route('reservations.items.show', $reservation->reservableItem);
     }

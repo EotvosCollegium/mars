@@ -23,18 +23,33 @@ class ReservationDeleted extends Mailable
 
     /** The name of the one who has approved the reservation. */
     public string $deleter;
-    /** The reservation in question. */
-    public Reservation $reservation;
+    /** The name of the owner of the reservation (so the addressee). */
+    public string $owner;
+    /** The name of the item to which the reservation had belonged. */
+    public string $itemName;
+    /** The reservation in question, converted to an array
+     *  (as it has probably been deleted, so the original model could not be used). */
+    public array $reservationArray;
+    /** Whether this had affected only one reservation or an entire group. */
+    public bool $isForAll;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(string $deleter, Reservation $reservation)
-    {
+    public function __construct(
+        string $deleter,
+        string $owner,
+        string $itemName,
+        array $reservationArray,
+        bool $isForAll = false
+    ) {
         $this->deleter = $deleter;
-        $this->reservation = $reservation;
+        $this->owner = $owner;
+        $this->itemName = $itemName;
+        $this->reservationArray = $reservationArray;
+        $this->isForAll = $isForAll;
     }
 
     /**
@@ -46,7 +61,7 @@ class ReservationDeleted extends Mailable
     {
         return new Envelope(
             subject:
-                $this->reservation->verified
+                $this->reservationArray['verified']
                 ? __('reservations.reservation_deleted')
                 : __('reservations.reservation_rejected'),
         );

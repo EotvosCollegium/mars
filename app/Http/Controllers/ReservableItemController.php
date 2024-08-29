@@ -86,7 +86,7 @@ class ReservableItemController extends Controller
 
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'type' => Rule::in(["washing_machine", "room"]),
+            'type' => Rule::in([ReservableItem::WASHING_MACHINE, ReservableItem::ROOM]),
             'out_of_order' => 'nullable|boolean',
         ]);
 
@@ -119,7 +119,7 @@ class ReservableItemController extends Controller
         $thoseToNotify = User::withRole(Role::SYS_ADMIN)->get()
             ->concat(User::withRole(Role::STAFF)->get());
         foreach ($thoseToNotify as $toNotify) {
-            Mail::to($toNotify)->send(
+            Mail::to($toNotify)->queue(
                 new ReportReservableItemFault(
                     $item,
                     $toNotify->name,
@@ -143,7 +143,7 @@ class ReservableItemController extends Controller
         $item->update(['out_of_order' => !$item->out_of_order]);
 
         foreach ($item->usersWithActiveReservation as $toNotify) {
-            Mail::to($toNotify)->send(new AffectedReservation(
+            Mail::to($toNotify)->queue(new AffectedReservation(
                 $item,
                 $toNotify->name
             ));
