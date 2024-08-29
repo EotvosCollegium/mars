@@ -5,6 +5,7 @@ if (!isset($items)) {
 }
 
 $itemCount = count($items);
+$rowCount = $lastHour - $firstHour;
 
 // these are percentages
 $dayCount = $firstDay->diffInDays($lastDay)+1;
@@ -13,14 +14,28 @@ $columnWidth = 100.0 / ($dayCount * $itemCount);
 
 <div>
     {{-- navigation buttons --}}
+    @if($isPrintVersion)
+    <div class="navbuttons">
+        <x-input.button wire:click="step(-7)" text="Egy héttel előbb" />
+        <x-input.button wire:click="step(7)" text="Egy héttel később" />
+    </div>
+    @else
     <div class="row">
-        <div class="col s6 left-align">
+        <div class="col s4 left-align">
             <x-input.button floating wire:click="step({{ -1 * $dayCount }})" icon="chevron_left" />
         </div>
-        <div class="col s6 right-align">
+        <div class="col s4 center-align">
+            @if(1 == $itemCount)
+            <a href="{{ route('reservations.items.show_print_version', $items[0]) }}" type="submit" class="waves-effect btn-floating grey">
+                <i class="material-icons">print</i>
+            </a>
+            @endif
+        </div>
+        <div class="col s4 right-align">
             <x-input.button floating wire:click="step({{ $dayCount }})" icon="chevron_right" />
         </div>
     </div>
+    @endif
 
     <table>
         <thead>
@@ -34,7 +49,11 @@ $columnWidth = 100.0 / ($dayCount * $itemCount);
                     class="coli blue white-text"
                     @endif
                 >
-                    {{$day->format('m.d. (l)');}}
+                    @if($isPrintVersion)
+                    {{$day->isoFormat('dddd')}}
+                    @else
+                    {{$day->isoFormat('MM.DD. (dddd)');}}
+                    @endif
                 </th>
                 @php $day->addDay(); @endphp
                 @endfor
@@ -61,10 +80,10 @@ $columnWidth = 100.0 / ($dayCount * $itemCount);
         </thead>
         <tbody>
             <tr>
-                <th>0:00</th>
-                <td rowspan="24" colspan="{{$dayCount*$itemCount}}" style="padding:0;">
+                <th style="padding: 0;">{{$firstHour}}:00</th>
+                <td rowspan="{{$rowCount}}" colspan="{{$dayCount*$itemCount}}" style="padding:0;">
                     {{-- the panel itself --}}
-                    <div style="position: relative; height: 2000px; margin: 0;">
+                    <div style="position: relative; height: {{$isPrintVersion ? '650px' : '1000px'}}; margin: 0;">
                         @for($i = 0; $i < $itemCount; ++$i)
                             @php
                             $item = $items[$i];
@@ -97,12 +116,21 @@ $columnWidth = 100.0 / ($dayCount * $itemCount);
                                         $reservation = null;
                                         $isOurs = null;
                                     }
+
+                                    // we have to calculate this relatively to the first and last hours
+                                    $top = ($startHourFloat - $firstHour) * 100.0 / $rowCount;
+                                    $height = ($endHourFloat - $startHourFloat) * 100.0 / $rowCount;
+                                    $display = 'block';
+                                    if ($top < 0) $top = 0;
+                                    else if ($top >= 100.0) $display = 'none';
+                                    if ($top + $height > 100.0) $height = 100.0 - $top;
                                     @endphp
                                     <div style="position: absolute;
                                                 left: {{($dayOfWeek * $itemCount + $i) * $columnWidth}}%;
                                                 width: {{$columnWidth}}%;
-                                                top: {{$startHourFloat * 100.0 / 24.0}}%;
-                                                height: {{($endHourFloat - $startHourFloat) * 100.0 / 24.0}}%;"
+                                                display: {{$display}};
+                                                top: {{$top}}%;
+                                                height: {{$height}}%;"
                                         @class([
                                             'timetable-block',
                                             'valign-wrapper', 'center-align',
@@ -115,7 +143,7 @@ $columnWidth = 100.0 / ($dayCount * $itemCount);
                                             'lighten-2' => $isReservation && !$reservation->verified
                                     ])>
                                         @if(!is_null($reservation))
-                                        {{$reservation->displayName()}}
+                                            {{$reservation->displayName()}}
                                         @endif
                                     </div>
                                 @if($isReservation || (!$isDisabled && user()->can('requestReservation', $item)))
@@ -126,9 +154,9 @@ $columnWidth = 100.0 / ($dayCount * $itemCount);
                     </div>
                 </td>
             </tr>
-            @for($hour = 1; $hour < 24; ++$hour)
+            @for($hour = $firstHour + 1; $hour < $lastHour; ++$hour)
             <tr>
-                <th>{{$hour}}:00</th>
+                <th style="padding: 0;">{{$hour}}:00</th>
             </tr>
             @endfor
         </tbody>

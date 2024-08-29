@@ -148,9 +148,24 @@ class Timetable extends Component
      */
     public Carbon $lastDay;
     /**
+     * The first hour to be displayed in the table, inclusive (defaults to 0).
+     */
+    public int $firstHour;
+    /**
+     * The last hour to be displayed in the table, exclusive (defaults to 24).
+     */
+    public int $lastHour;
+    /**
      * Whether item names should be displayed in the header.
      */
     public bool $displayItemNames;
+    /**
+     * Whether the timetable is intended to be printed.
+     * Only displays recurring, 1/7-day-frequency reservations
+     * and hides unverified ones
+     * if true.
+     */
+    public bool $isPrintVersion;
 
     /**
      * Contains the "blocks" (rectangles) to be displayed in a timetable
@@ -164,7 +179,12 @@ class Timetable extends Component
     {
         return array_map(
             fn (ReservableItem $item) =>
-                self::listOfBlocks($item, CarbonImmutable::make($this->firstDay), CarbonImmutable::make($this->lastDay->copy()->addDay())),
+                self::listOfBlocks(
+                    $item,
+                    CarbonImmutable::make($this->firstDay),
+                    CarbonImmutable::make($this->lastDay->copy()->addDay()),
+                    $this->isPrintVersion
+                ),
             $this->items
         );
     }
@@ -172,12 +192,21 @@ class Timetable extends Component
     /**
      * Generates an ordered array of blocks for the given item in the given timespan.
      */
-    private static function listOfBlocks(ReservableItem $item, CarbonImmutable $from, CarbonImmutable $until): array
+    private static function listOfBlocks
+        (ReservableItem $item, CarbonImmutable $from, CarbonImmutable $until, bool $isPrintVersion): array
     {
         // for some reason, filtering messes up the indices; hence the use of array_values
         $reservations = array_values(
             $item->reservationsInSlot($from, $until)
-            ->filter(fn (Reservation $reservation) => user()->can('view', $reservation))
+            ->filter(function (Reservation $reservation) use ($isPrintVersion) {
+                if (!user()->can('view', $reservation)) return false;
+                else if ($isPrintVersion) {
+                    return $reservation->verified
+                        && $reservation->isRecurring()
+                        && (7 == $reservation->group->frequency
+                            || 1 == $reservation->group->frequency);
+                } else return true;
+            })
             ->all()
         );
 
@@ -274,7 +303,9 @@ class Timetable extends Component
      * whether item names should be displayed
      * (it is by default false).
      */
-    public function mount(array $items, int $days, bool $displayItemNames = false)
+    public function mount
+        (array $items, int $days, int $firstHour = 0, int $lastHour = 24,
+            bool $displayItemNames = false, bool $isPrintVersion = false)
     {
         if ($days < 1) {
             throw new \InvalidArgumentException();
@@ -282,10 +313,18 @@ class Timetable extends Component
 
         $this->items = $items;
 
-        $this->firstDay = Carbon::today();
+        if ($isPrintVersion) {
+            // we will choose a Monday
+            $this->firstDay = Carbon::today()->startOfWeek();
+        } else {
+            $this->firstDay = Carbon::today();
+        }
         $this->lastDay = $this->firstDay->copy()->addDays($days - 1);
 
+        $this->firstHour = $firstHour;
+        $this->lastHour = $lastHour;
         $this->displayItemNames = $displayItemNames;
+        $this->isPrintVersion = $isPrintVersion;
     }
 
     /**

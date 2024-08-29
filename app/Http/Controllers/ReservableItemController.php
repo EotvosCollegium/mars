@@ -55,6 +55,19 @@ class ReservableItemController extends Controller
     }
 
     /**
+     * Shows the timetable for a given item
+     * in an easily printable format.
+     */
+    public function showPrintVersion(ReservableItem $item)
+    {
+        $this->authorize('viewAny', ReservableItem::class);
+
+        return view('reservations.items.show_print_version', [
+            'item' => $item,
+        ]);
+    }
+
+    /**
      * Returns the item creation page.
      */
     public function create()
