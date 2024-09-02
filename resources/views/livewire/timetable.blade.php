@@ -10,6 +10,9 @@ $rowCount = $lastHour - $firstHour;
 // these are percentages
 $dayCount = $firstDay->diffInDays($lastDay)+1;
 $columnWidth = 100.0 / ($dayCount * $itemCount);
+
+// the height of the colorful part itself
+$absoluteHeight = $isPrintVersion ? '650px' : '1000px';
 @endphp
 
 <div>
@@ -38,10 +41,10 @@ $columnWidth = 100.0 / ($dayCount * $itemCount);
     </div>
     @endif
 
-    <table>
+    <table style="table-layout: fixed;">
         <thead>
             <tr>
-                <th style="width:5%;"></th>
+                <th style="width: 50px;"></th>
                 @php $day = $firstDay->copy(); @endphp
 
                 @for($i = 0; $i < $dayCount; ++$i)
@@ -61,7 +64,7 @@ $columnWidth = 100.0 / ($dayCount * $itemCount);
             </tr>
             @if($displayItemNames)
             <tr>
-                <th style="width:5%;"></th>
+                <th></th>
 
                 @for($i = 0; $i < $dayCount; ++$i)
                 @for($j = 0; $j < $itemCount; ++$j)
@@ -81,10 +84,21 @@ $columnWidth = 100.0 / ($dayCount * $itemCount);
         </thead>
         <tbody>
             <tr>
-                <th style="padding: 0;">{{$firstHour}}:00</th>
-                <td rowspan="{{$rowCount}}" colspan="{{$dayCount*$itemCount}}" style="padding:0;">
+                <th class="timetable-hour-column">
+                    {{-- we do this with absolute positioning
+                         so as not to depend on the height of table rows --}}
+                    <div style="position: relative; height: {{$absoluteHeight}}; width: 100%;">
+                        @for($hour = $firstHour; $hour < $lastHour; ++$hour)
+                        <div class="timetable-hour"
+                            style="position: absolute; top: {{($hour - $firstHour) * 100.0 / $rowCount}}%; width: 100%;">
+                            {{$hour}}:00
+                        </div>
+                        @endfor
+                    </div>
+                </th>
+                <td colspan="{{$dayCount*$itemCount}}" style="padding:0">
                     {{-- the panel itself --}}
-                    <div style="position: relative; height: {{$isPrintVersion ? '650px' : '1000px'}}; margin: 0;">
+                    <div style="position: relative; height: {{$absoluteHeight}}; margin: 0;">
                         @for($i = 0; $i < $itemCount; ++$i)
                             @php
                             $item = $items[$i];
@@ -167,11 +181,6 @@ $columnWidth = 100.0 / ($dayCount * $itemCount);
                     </div>
                 </td>
             </tr>
-            @for($hour = $firstHour + 1; $hour < $lastHour; ++$hour)
-            <tr>
-                <th style="padding: 0;">{{$hour}}:00</th>
-            </tr>
-            @endfor
         </tbody>
     </table>
 </div>

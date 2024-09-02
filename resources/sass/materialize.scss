@@ -287,6 +287,20 @@ body.dark a.btn {
     padding: 3px;
 }
 
+// for the th containing the hours with absolute positioning
+.timetable-hour-column {
+    padding: 0;
+    height: 1px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.timetable-hour {
+    text-align: right;
+    padding-right: 5px;
+    border-top: solid 1px black;
+    box-sizing: border-box;
+}
+
 @mixin column-count($ct) {
     -webkit-column-count: $ct;
     -moz-column-count: $ct;
