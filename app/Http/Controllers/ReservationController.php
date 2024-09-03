@@ -192,7 +192,7 @@ class ReservationController extends Controller
                 $newGroup->initializeFrom($request->reserved_from);
             } catch (ConflictException $e) {
                 $newGroup->delete();
-                return redirect()->back()->with('error', __('reservations.recurring_conflict') . ": {$e->getMessage()}");
+                return redirect()->back()->withInput($request->input())->with('error', __('reservations.recurring_conflict') . ": {$e->getMessage()}");
             }
 
             self::notifyOnVerifiableReservation($newGroup->firstReservation());
@@ -316,7 +316,7 @@ class ReservationController extends Controller
                     && $reservation->reserved_from == "{$validatedData['reserved_from']}"
                     && $reservation->reserved_until == "{$validatedData['reserved_until']}");
 
-            $reservation->title = $validatedData['title'];
+            $reservation->title = $validatedData['title'] ?? null;
             $reservation->note = $validatedData['note'];
             $reservation->reserved_from = $validatedData['reserved_from'];
             $reservation->reserved_until =

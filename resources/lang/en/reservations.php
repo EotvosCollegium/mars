@@ -7,6 +7,7 @@ return [
     'bad_for_non-recurring' => 'Bad request for non-recurring reservation.',
     'check_reservations' => 'Please organize your reservations accordingly.',
     'create' => 'New reservation', // page title in breadcrumb
+    'edit' => 'Edit reservation', // a page title
     'edit_all' => 'For all reservations',
     'edit_all_after' => 'For this reservation and all after this one',
     'edit_this_only' => 'For this reservation only',
@@ -33,6 +34,7 @@ return [
     'no_recurring_for_washing_machines' => 'Recurring reservations are not allowed for washing machines.',
     'not_a_recurring_reservation' => 'Not a recurring reservation.',
     'note' => 'Note',
+    'note_disclaimer' => 'Notes can be seen by anyone who can view the timetable.',
     'one_hour_slot_only' => 'For washing machines, only one-hour slots can be reserved.',
     'only_this_affected' => 'This only affects this specific session.', // in mailable ReservationDeleted
     'out_of_order' => 'Out of order',

@@ -58,7 +58,7 @@ class ReservableItemPolicy
     public function autoVerify(User $user, ReservableItem $item): bool
     {
         if ($item->isWashingMachine()) {
-            return $this->requestReservation($user, $item);
+            return $user->hasRole([Role::COLLEGIST, Role::TENANT]);
         } else {
             // admins not!
             return $user->hasRole([
@@ -66,6 +66,19 @@ class ReservableItemPolicy
                 Role::STAFF,
                 Role::DIRECTOR
             ]);
+        }
+    }
+
+    /**
+     * Returns whether someone is allowed to send a fault report
+     * (or a "fixed" report).
+     */
+    public function reportFault(User $user, ReservableItem $item): bool
+    {
+        if ($this->administer($user)) {
+            return true;
+        } else {
+            return $user->hasRole([Role::COLLEGIST, Role::TENANT]);
         }
     }
 }

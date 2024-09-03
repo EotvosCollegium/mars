@@ -50,8 +50,13 @@ if (isset($reservation)) {
                                 "/>
                         </div>
                         <div class="row">
+                            @if('on' == old('recurring'))
+                            <x-input.text s=6 id='frequency' type="number" :text="__('reservations.frequency')" />
+                            <x-input.datepicker s=6 id='last_day' :text="__('reservations.last_day')" />
+                            @else
                             <x-input.text disabled s=6 id='frequency' type="number" :text="__('reservations.frequency')" />
                             <x-input.datepicker disabled s=6 id='last_day' :text="__('reservations.last_day')" />
+                            @endif
                         </div>
                         @elseif($reservation->isRecurring())
 
@@ -70,7 +75,7 @@ if (isset($reservation)) {
 
                         <div class="row">
                             <x-input.text s="12" type="text" text="reservations.title" id="title"
-                                            :value="isset($reservation) ? $reservation->title : ''" maxlength="127"/>
+                                            :value="isset($reservation) ? $reservation->title : old('title')" maxlength="127"/>
                         </div>
                     @endif {{-- if not washing machine --}}                    
 
@@ -91,8 +96,9 @@ if (isset($reservation)) {
                         @endif
                     </div>
                     <div class="row">
-                    <x-input.textarea id="note" text="{{ __('reservations.note') }}"
-                                      :value="isset($reservation) ? $reservation->note : ''"/>
+                        <blockquote>@lang('reservations.note_disclaimer')</blockquote>
+                        <x-input.textarea id="note" text="{{ __('reservations.note') }}"
+                                        :value="isset($reservation) ? $reservation->note : old('note')"/>
                     </div>
                 </div>
                 <div class="card-action">

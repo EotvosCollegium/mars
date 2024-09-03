@@ -27,18 +27,20 @@
                     {{ $item->name }}
                 </a>
             </td>
-            <td>
-                <form method="POST"
-                  action="{{ route('reservations.items.report_fault', ['item' => $item]) }}"
-                  enctype='multipart/form-data'>
-                    @csrf
-                    <x-input.button floating @class([
-                        'right', 'btn-small',
-                        'red' => !$item->out_of_order,
-                        'green' => $item->out_of_order
-                    ]) icon="build" />
-                </form>
-            </td>
+            @can('reportFault', $item)
+                <td>
+                    <form method="POST"
+                    action="{{ route('reservations.items.report_fault', ['item' => $item]) }}"
+                    enctype='multipart/form-data'>
+                        @csrf
+                        <x-input.button floating @class([
+                            'right', 'btn-small',
+                            'red' => !$item->out_of_order,
+                            'green' => $item->out_of_order
+                        ]) icon="build" />
+                    </form>
+                </td>
+            @endcan
         </tr>
         @endforeach
     </tbody>

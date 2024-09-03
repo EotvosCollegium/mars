@@ -114,7 +114,7 @@ class ReservableItemController extends Controller
      */
     public function reportFault(ReservableItem $item)
     {
-        $this->authorize('requestReservation', $item);
+        $this->authorize('reportFault', $item);
 
         $thoseToNotify = User::withRole(Role::SYS_ADMIN)->get()
             ->concat(User::withRole(Role::STAFF)->get());

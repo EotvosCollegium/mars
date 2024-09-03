@@ -7,6 +7,7 @@ return [
     'bad_for_non-recurring' => 'Nem ismétlődő foglaláshoz ez érvénytelen kérés.',
     'check_reservations' => 'Kérjük, ennek megfelelően tervezze újra foglalásait.',
     'create' => 'Új foglalás', // page title in breadcrumb
+    'edit' => 'Foglalás szerkesztése', // a page title
     'edit_all' => 'Minden foglalásra',
     'edit_all_after' => 'Erre és minden későbbi foglalásra',
     'edit_this_only' => 'Csak erre a foglalásra',
@@ -34,6 +35,7 @@ return [
     'no_recurring_for_washing_machines' => 'Mosógépekre nem engedélyezettek az ismétlődő foglalások.',
     'not_a_recurring_reservation' => 'A foglalás nem ismétlődő.',
     'note' => 'Megjegyzés',
+    'note_disclaimer' => 'A megjegyzéseket mások is látják.',
     'one_hour_slot_only' => 'Mosógépeket csak egész órától egész óráig, egy órára lehet lefoglalni.',
     'only_this_affected' => 'Ez csak ezt az egy alkalmat érinti.', // in mailable ReservationDeleted
     'out_of_order' => 'Nem működik',

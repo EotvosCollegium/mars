@@ -48,9 +48,7 @@ class ReservationPolicy
     {
         // no one should be able to modify reservations
         // that are in the past
-        // or those belonging to an out-of-order item
-        if ($reservation->reservableItem->isOutOfOrder()
-            || Carbon::make($reservation->reserved_until) < Carbon::now()) {
+        if (Carbon::make($reservation->reserved_until) < Carbon::now()) {
             return false;
         } else {
             return $this->administer($user)
