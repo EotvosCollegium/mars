@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use Livewire\Attributes\On;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 
@@ -347,9 +348,21 @@ class Timetable extends Component
      * Moves the selected interval with the given amount of days
      * (positive if towards the future).
      */
-    public function step(int $days)
+    public function step(int $days): void
     {
         $this->firstDay->addDays($days);
         $this->lastDay->addDays($days);
+    }
+
+    /**
+     * Runs when the event 'first-day-updated'
+     * is dispatched by the separate first_day_picker component.
+     */
+    #[On('first-day-updated')]
+    public function firstDayUpdated(string $firstDay): void
+    {
+        $oldFirstDay = $this->firstDay;
+        $this->firstDay = Carbon::make($firstDay);
+        $this->lastDay->addDays($oldFirstDay->diffInDays($this->firstDay));
     }
 }

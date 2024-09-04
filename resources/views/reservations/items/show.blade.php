@@ -49,6 +49,8 @@
                     </form>
                 </div>
 
+                @include('reservations.first_day_picker')
+
                 @livewire('timetable', [
                     'items' => [$item],
                     'days' => 3

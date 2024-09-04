@@ -14,6 +14,7 @@ return [
     'choose_option' => 'Choose an option...',
     'comment' => 'Comment',
     'contacts' => 'Contacts',
+    'date' => 'Date',
     'debug_descr' => 'The site is under maintenance. Some features (e.g., printing) may not work as expected, so we recommend you come back later.',
     'delete' => 'Delete',
     'delete_all' => 'Delete all',
