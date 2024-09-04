@@ -33,8 +33,9 @@ class ReservableItemController extends Controller
         ]);
 
         if (!\App\Policies\ReservableItemPolicy::canViewType(
-                user(),
-                ReservableItemType::from($validatedData['type']))) {
+            user(),
+            ReservableItemType::from($validatedData['type'])
+        )) {
             abort(403);
         }
 

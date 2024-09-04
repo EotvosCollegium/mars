@@ -32,13 +32,16 @@ class ReservationPolicy
      */
     public function view(User $user, Reservation $reservation): bool
     {
-        if ($user->can('view', $reservation->reservableItem)) return false;
-        else return self::administer($user)
-            || $user->can('requestReservation', $reservation->reservableItem)
-            || $reservation->reservableItem->isWashingMachine()
-            || $user->id == $reservation->user->id
-            || ($reservation->verified &&
-                    ($user->isCollegist() || $user->hasRole(Role::WORKSHOP_LEADER)));
+        if ($user->can('view', $reservation->reservableItem)) {
+            return false;
+        } else {
+            return self::administer($user)
+                || $user->can('requestReservation', $reservation->reservableItem)
+                || $reservation->reservableItem->isWashingMachine()
+                || $user->id == $reservation->user->id
+                || ($reservation->verified &&
+                        ($user->isCollegist() || $user->hasRole(Role::WORKSHOP_LEADER)));
+        }
     }
 
     /**
@@ -47,7 +50,9 @@ class ReservationPolicy
      */
     public function modify(User $user, Reservation $reservation): bool
     {
-        if (!$this->view($user, $reservation)) return false;
+        if (!$this->view($user, $reservation)) {
+            return false;
+        }
         // no one should be able to modify reservations
         // that are in the past
         // or have already begun
