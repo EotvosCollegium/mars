@@ -91,9 +91,9 @@ class ReservableItemPolicy
         } else {
             switch ($type) {
                 case ReservableItemType::WASHING_MACHINE:
-                    return $user->hasRole([Role::COLLEGIST, Role::TENANT]);
+                    return $user->hasRole([Role::COLLEGIST, Role::TENANT, Role::RECEPTIONIST]);
                 case ReservableItemType::ROOM:
-                    return $user->hasRole([Role::COLLEGIST]);
+                    return $user->hasRole([Role::COLLEGIST, Role::RECEPTIONIST]);
                 default:
                     throw new \Exception("unknown ReservableItemType");
             }

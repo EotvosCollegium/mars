@@ -56,6 +56,12 @@ return new class () extends Migration {
 
             $table->index(['reservable_item_id', 'reserved_from']);
         });
+
+        // The receptionist will only be able to see timetables.
+        DB::table('roles')->updateOrInsert(
+            ['name' => 'receptionist'],
+            ['has_workshops' => 0, 'has_objects' => 0]
+        );
     }
 
     /**
@@ -68,5 +74,7 @@ return new class () extends Migration {
         Schema::dropIfExists('reservations');
         Schema::dropIfExists('reservation_groups');
         Schema::dropIfExists('reservable_items');
+
+        // We don't delete the role; it is useful if we run the migration again.
     }
 };

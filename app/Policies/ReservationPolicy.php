@@ -32,16 +32,9 @@ class ReservationPolicy
      */
     public function view(User $user, Reservation $reservation): bool
     {
-        if (!$user->can('view', $reservation->reservableItem)) {
-            return false;
-        } else {
-            return self::administer($user)
-                || $user->can('requestReservation', $reservation->reservableItem)
-                || $reservation->reservableItem->isWashingMachine()
-                || $user->id == $reservation->user->id
-                || ($reservation->verified &&
-                        ($user->isCollegist() || $user->hasRole(Role::WORKSHOP_LEADER)));
-        }
+        return self::administer($user)
+            || $user->id == $reservation->user->id
+            || ($reservation->verified && $user->can('view', $reservation->reservableItem));
     }
 
     /**
