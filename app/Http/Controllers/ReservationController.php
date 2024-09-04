@@ -26,20 +26,6 @@ use App\Mail\ReservationVerified;
 class ReservationController extends Controller
 {
     /**
-     * Lists reservations for a given item.
-     */
-    public function index(ReservableItem $item)
-    {
-        $this->authorize('viewAny', ReservableItem::class);
-
-        return response()->json(
-            Reservation::where('reservable_item_id', $item->id)
-                         ->orderBy('reserved_from')
-                         ->get()
-        );
-    }
-
-    /**
      * Lists the details of a reservation.
      */
     public function show(Reservation $reservation)

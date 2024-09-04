@@ -13,18 +13,10 @@ class ReservableItemPolicy
     use HandlesAuthorization;
 
     /**
-     * Returns whether the user can view any reservable items.
-     */
-    public function viewAny(User $user): bool
-    {
-        return true; // anyone logged in
-    }
-
-    /**
      * Returns whether the user has administrative rights
      * (e.g. can create, modify or delete reservable items).
      */
-    public function administer(User $user): bool
+    public static function administer(User $user): bool
     {
         return $user->isAdmin()
             || $user->hasRole([
@@ -38,10 +30,11 @@ class ReservableItemPolicy
      * Returns whether the user can request a reservation
      * for a given type of items in general
      * (not counting if it is out of order etc.).
+     * Note: `canViewType` calls this too.
      */
-    public function canRequestReservationForType(User $user, ReservableItemType $type): bool
+    public static function canRequestReservationForType(User $user, ReservableItemType $type): bool
     {
-        if ($this->administer($user)) {
+        if (self::administer($user)) {
             return true;
         } else {
             switch ($type) {
@@ -88,15 +81,30 @@ class ReservableItemPolicy
     }
 
     /**
-     * Returns whether someone is allowed to send a fault report
-     * (or a "fixed" report).
+     * Returns whether the user can view
+     * a given type of reservable items.
      */
-    public function reportFault(User $user, ReservableItem $item): bool
+    public static function canViewType(User $user, ReservableItemType $type): bool
     {
-        if ($this->administer($user)) {
+        if (self::canRequestReservationForType($user, $type)) {
             return true;
         } else {
-            return $user->hasRole([Role::COLLEGIST, Role::TENANT]);
+            switch ($type) {
+                case ReservableItemType::WASHING_MACHINE:
+                    return $user->hasRole([Role::COLLEGIST, Role::TENANT]);
+                case ReservableItemType::ROOM:
+                    return $user->hasRole([Role::COLLEGIST]);
+                default:
+                    throw new \Exception("unknown ReservableItemType");
+            }
         }
+    }
+
+    /**
+     * Returns whether the user can view a given item.
+     */
+    public function view(User $user, ReservableItem $item): bool
+    {
+        return self::canViewType($user, ReservableItemType::from($item->type));
     }
 }

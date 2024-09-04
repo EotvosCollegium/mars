@@ -25,14 +25,18 @@ class ReservableItemController extends Controller
      */
     public function index(Request $request)
     {
-        $this->authorize('viewAny', ReservableItem::class);
-
         $validatedData = $request->validate([
             'type' => [
                 'required',
                 Rule::enum(ReservableItemType::class)
             ]
         ]);
+
+        if (!\App\Policies\ReservableItemPolicy::canViewType(
+                user(),
+                ReservableItemType::from($validatedData['type']))) {
+            abort(403);
+        }
 
         $items = ReservableItem::where('type', $validatedData['type'])->get();
         return view('reservations.items.index', [
@@ -47,7 +51,7 @@ class ReservableItemController extends Controller
      */
     public function show(ReservableItem $item)
     {
-        $this->authorize('viewAny', ReservableItem::class);
+        $this->authorize('view', $item);
 
         return view('reservations.items.show', [
             'item' => $item,
@@ -60,7 +64,7 @@ class ReservableItemController extends Controller
      */
     public function showPrintVersion(ReservableItem $item)
     {
-        $this->authorize('viewAny', ReservableItem::class);
+        $this->authorize('view', $item);
 
         return view('reservations.items.show_print_version', [
             'item' => $item,
@@ -114,7 +118,7 @@ class ReservableItemController extends Controller
      */
     public function reportFault(ReservableItem $item)
     {
-        $this->authorize('reportFault', $item);
+        $this->authorize('view', $item);
 
         $thoseToNotify = User::withRole(Role::SYS_ADMIN)->get()
             ->concat(User::withRole(Role::STAFF)->get());
