@@ -43,14 +43,16 @@ class ReservableItemPolicy
     {
         if ($this->administer($user)) {
             return true;
-        } else switch ($type) {
-            case ReservableItemType::WASHING_MACHINE:
-                return $user->hasRole([Role::COLLEGIST, Role::TENANT]);
-            case ReservableItemType::ROOM:
-                return config('custom.room_reservation_open')
-                    && $user->hasRole([Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR, Role::STUDENT_COUNCIL]);
-            default:
-                throw new \Exception("unknown ReservableItemType");
+        } else {
+            switch ($type) {
+                case ReservableItemType::WASHING_MACHINE:
+                    return $user->hasRole([Role::COLLEGIST, Role::TENANT]);
+                case ReservableItemType::ROOM:
+                    return config('custom.room_reservation_open')
+                        && $user->hasRole([Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR, Role::STUDENT_COUNCIL]);
+                default:
+                    throw new \Exception("unknown ReservableItemType");
+            }
         }
     }
 
