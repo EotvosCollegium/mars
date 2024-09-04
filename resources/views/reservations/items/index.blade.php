@@ -16,9 +16,18 @@ $isForWashingMachine = \App\Enums\ReservableItemType::WASHING_MACHINE->value == 
             <div class="card-content">
                 <span class="card-title">@lang("reservations.{$type}_reservations")</span>
 
-                <blockquote>
-                    @lang("reservations.{$type}_reservation_instructions")
-                </blockquote>
+                @if((new \App\Policies\ReservableItemPolicy())->canRequestReservationForType(
+                        user(),
+                        \App\Enums\ReservableItemType::from($type)
+                ))
+                    <blockquote>
+                        @lang("reservations.{$type}_reservation_instructions")
+                    </blockquote>
+                @elseif(!config('custom.room_reservation_open'))
+                    <blockquote>
+                        @lang("reservations.room_reservation_not_open")
+                    </blockquote>
+                @endif
 
                 @livewire('timetable', [
                     'items' => $items->all(),

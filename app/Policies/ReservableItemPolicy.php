@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\ReservableItem;
+use App\Enums\ReservableItemType;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class ReservableItemPolicy
@@ -35,6 +36,26 @@ class ReservableItemPolicy
 
     /**
      * Returns whether the user can request a reservation
+     * for a given type of items in general
+     * (not counting if it is out of order etc.).
+     */
+    public function canRequestReservationForType(User $user, ReservableItemType $type): bool
+    {
+        if ($this->administer($user)) {
+            return true;
+        } else switch ($type) {
+            case ReservableItemType::WASHING_MACHINE:
+                return $user->hasRole([Role::COLLEGIST, Role::TENANT]);
+            case ReservableItemType::ROOM:
+                return config('custom.room_reservation_open')
+                    && $user->hasRole([Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR, Role::STUDENT_COUNCIL]);
+            default:
+                throw new \Exception("unknown ReservableItemType");
+        }
+    }
+
+    /**
+     * Returns whether the user can request a reservation
      * for the given item
      * (but that might need to be approved by someone).
      */
@@ -42,13 +63,8 @@ class ReservableItemPolicy
     {
         if ($item->isOutOfOrder()) {
             return false;
-        } elseif ($this->administer($user)) {
-            return true;
-        } elseif ($item->isWashingMachine()) {
-            return $user->hasRole([Role::COLLEGIST, Role::TENANT]);
         } else {
-            return config('custom.room_reservation_open')
-                && $user->hasRole([Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR, Role::STUDENT_COUNCIL]);
+            return self::canRequestReservationForType($user, ReservableItemType::from($item->type));
         }
     }
 
