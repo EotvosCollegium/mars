@@ -58,10 +58,11 @@ return [
         'Foglalást csak műhelytitkárok, műhelyvezetők és választmányi tagok kérvényezhetnek.
          Foglaláshoz kattintson egy olyan zöld téglalapra, ami nagyjából illeszkedik a foglalni kívánt idősávhoz.
          A pontos kezdési és befejezési dátumot ezután állíthatja be.<br />
-         Egy terem részletes foglaltsági táblájáért kattintson a terem nevére.',
+         Egy terem részletes foglaltsági táblájáért kattintson a terem nevére.
+         Konkrét napot a táblázat fölötti dátumra kattintva választhat.',
     'room_reservation_not_open' =>
          'Átmenetileg csak a titkárság, az igazgató és a gondnokság tud foglalni.
-          Jelzünk, ha megnyílik a felület diáktisztviselőknek is.',
+          Jelzünk, ha megnyílik a felület más tisztviselőknek is.',
     'room_reservations' => 'Teremfoglalás',
     'set_fixed' => 'Visszaállítás javítottnak',
     'set_out_of_order' => 'Beállítás üzemen kívülinek',
@@ -79,6 +80,7 @@ return [
         Ha újra használható, nyomja meg ugyanazt a gombot.',
     'washing_machine_reservation_instructions' =>
         'Mosás foglalásához kattintson a megfelelő zöld téglalapra.<br />
-         Egyszerre legfeljebb 6 aktív foglalása lehet. Hibajelentésre az oldal alján van lehetőség.',
+         Egyszerre legfeljebb 6 aktív foglalása lehet. Hibajelentésre az oldal alján van lehetőség.<br />
+         Konkrét napot a táblázat fölötti dátumra kattintva választhat.',
     'washing_machine_reservations' => 'Mosófüzet'
 ];

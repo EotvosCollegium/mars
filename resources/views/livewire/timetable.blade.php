@@ -53,7 +53,8 @@ $absoluteHeight = $isPrintVersion ? '650px' : '1000px';
         </div>
         <div class="col s4 center-align" wire:ignore>
             <input type="text" class="datepicker validate" id="firstDay" value="{{$firstDay->format('Y-m-d')}}"
-                   style="border: none; box-shadow: none; text-align: center; font-size: 1.2em; cursor: pointer" >
+                    style="color:#b38f2f; text-decoration: underline; border: none; box-shadow: none;
+                    text-align: center; font-size: 1.2em; cursor: pointer" >
         </div>
         <div class="col s4 right-align">
             <x-input.button floating onclick="stepDays({{ $dayCount }})" icon="chevron_right" />

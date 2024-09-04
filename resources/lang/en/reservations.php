@@ -57,7 +57,8 @@ return [
         'Only workshop administrators, workshop leaders and Students\' Council members can request reservations.
          To make a reservation, click a green rectangle approximately corresponding to the wished time window.
          You can then set the exact starting and ending times.<br />
-         For a detailed timetable of a specific room, click the name of that room.',
+         For a detailed timetable of a specific room, click the name of that room.
+         You can choose a specific day by clicking the date above the table.',
     'room_reservation_not_open' =>
         'Currently, only the secretariat and some other authorized people can make reservations.',
     'room_reservations' => 'Room reservations',
@@ -67,7 +68,7 @@ return [
     'until' => 'Until',
     'unverified' => 'not yet verified', // as a status
     'verifiers_notified' =>
-        'The secretary and staff have been notified. Please wait until they approve your reservation.',
+        'The secretariat and staff have been notified. Please wait until they approve your reservation.',
     'verify' => 'Verify',
     'verify_all' => 'Verify all',
     'washing_machine' => 'Washing machine',
@@ -77,6 +78,7 @@ return [
         If it is usable again, click the same button.',
     'washing_machine_reservation_instructions' =>
         'To reserve a slot, click the green rectangle representing it.<br />
-         You can have at most 6 active reservations. To report a fault, scroll down to the bottom of the page.',
+         You can have at most 6 active reservations. To report a fault, scroll down to the bottom of the page.<br />
+         You can choose a specific day by clicking the date above the table.',
     'washing_machine_reservations' => 'Washing reservations'
 ];
