@@ -77,16 +77,14 @@
                     <div class="collapsible-body">
                         <ul>
                             <!-- reservations -->
-                            @can('viewAny', \App\Models\ReservableItem::class)
-                                @if(\App\Policies\ReservableItemPolicy::canViewType(user(), \App\Enums\ReservableItemType::WASHING_MACHINE))
+                            @if(\App\Policies\ReservableItemPolicy::canViewType(user(), \App\Enums\ReservableItemType::WASHING_MACHINE))
                                 <li><a class="waves-effect" href="{{ route('reservations.items.index', ['type' => \App\Enums\ReservableItemType::WASHING_MACHINE]) }}"><i
                                     class="material-icons left">local_laundry_service</i>@lang('reservations.washing_machine_reservations')</a></li>
-                                @endif
-                                @if(\App\Policies\ReservableItemPolicy::canViewType(user(), \App\Enums\ReservableItemType::ROOM))
+                            @endif
+                            @if(\App\Policies\ReservableItemPolicy::canViewType(user(), \App\Enums\ReservableItemType::ROOM))
                                 <li><a class="waves-effect" href="{{ route('reservations.items.index', ['type' => \App\Enums\ReservableItemType::ROOM]) }}"><i
                                     class="material-icons left">schedule</i>@lang('reservations.room_reservations')</a></li>
-                                @endif
-                            @endcan
+                            @endif
                             <!-- faults page -->
                             @can('view', \App\Models\Fault::class)
                                 <li><a class="waves-effect" href="{{ route('faults') }}"><i

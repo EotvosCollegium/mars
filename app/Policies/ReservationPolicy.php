@@ -32,7 +32,7 @@ class ReservationPolicy
      */
     public function view(User $user, Reservation $reservation): bool
     {
-        if ($user->can('view', $reservation->reservableItem)) {
+        if (!$user->can('view', $reservation->reservableItem)) {
             return false;
         } else {
             return self::administer($user)
