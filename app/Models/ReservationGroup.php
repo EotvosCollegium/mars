@@ -173,9 +173,7 @@ class ReservationGroup extends Model
      * If group_from or group_until changes,
      * a ConflictException is thrown if there would be a conflict;
      * then, nothing is done to the database.
-     * The reservation must belong to the group;
-     * $groupFrom and $groupUntil must be both null or neither.
-     * (Otherwise, an InvalidArgumentException is thrown.)
+     * The reservation must belong to the group.
      */
     public function setForAllAfter(
         Reservation $firstReservation,
@@ -200,13 +198,18 @@ class ReservationGroup extends Model
             $groupUntil = Carbon::make($this->group_until);
         }
 
+        $groupDuration = null;
+        if (!is_null($groupFrom)) {
+            $groupDuration = $groupFrom->diffInMinutes($groupUntil);
+        }
+
         DB::transaction(function () use (
             $firstReservation,
             $groupItem,
             $user,
             $groupTitle,
             $groupFrom,
-            $groupUntil,
+            $groupDuration,
             $groupNote,
             $verified
         ) {
@@ -235,9 +238,7 @@ class ReservationGroup extends Model
                     $newFrom = Carbon::make($reservation->reserved_from);
                     $newFrom->hour = $groupFrom->hour;
                     $newFrom->minute = $groupFrom->minute;
-                    $newUntil = Carbon::make($reservation->reserved_until);
-                    $newUntil->hour = $groupUntil->hour;
-                    $newUntil->minute = $groupUntil->minute;
+                    $newUntil = $newFrom->copy()->addMinutes($groupDuration);
 
                     $others = $reservation->reservableItem
                         ->reservationsInSlot(

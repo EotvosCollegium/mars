@@ -353,7 +353,7 @@ class ReservationTest extends TestCase
             'note' => null,
             'recurring' => 'on',
             'frequency' => 2,
-            'last_day' => $now->addDays(4)->setHour(0)->setMinute(0)
+            'last_day' => $now->addMinutes(2)->addDays(4)->setHour(0)->setMinute(0)
         ];
         $response = $this->followingRedirects()->actingAs($user)->post(
             route('reservations.store', $item),
@@ -376,7 +376,7 @@ class ReservationTest extends TestCase
             'reserved_from' => $now->addMinutes(3),
             'reserved_until' => $now->addMinutes(63),
             'note' => null,
-            'last_day' => $now->addDays(6)->setHour(0)->setMinute(0),
+            'last_day' => $now->addMinutes(2)->addDays(6)->setHour(0)->setMinute(0),
             'for_what' => ReservationController::EDIT_ALL
         ];
 
@@ -423,7 +423,7 @@ class ReservationTest extends TestCase
             'reserved_from' => $now->addDays(4)->addMinutes(4),
             'reserved_until' => $now->addDays(4)->addMinutes(64),
             'note' => null,
-            'last_day' => $now->addDays(6)->setHour(0)->setMinute(0),
+            'last_day' => $now->addDays(6)->addMinutes(4)->setHour(0)->setMinute(0),
             'for_what' => ReservationController::EDIT_THIS_ONLY
         ];
         $response = $this->followingRedirects()->actingAs($user)->post(
@@ -467,7 +467,7 @@ class ReservationTest extends TestCase
             'reserved_from' => $now->addDays(2)->addMinutes(5),
             'reserved_until' => $now->addDays(2)->addMinutes(65),
             'note' => null,
-            'last_day' => $now->addDays(6)->setHour(0)->setMinute(0),
+            'last_day' => $now->addDays(6)->addMinutes(5)->setHour(0)->setMinute(0),
             'for_what' => ReservationController::EDIT_ALL_AFTER
         ];
         $response = $this->followingRedirects()->actingAs($user)->post(
