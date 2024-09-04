@@ -510,7 +510,7 @@ class ReservationTest extends TestCase
 
     /**
      * Tests what happens when a later reservation of a group
-     * conlicts with an existing one.
+     * conlicts with an existing reservation.
      */
     public function test_group_conflicts(): void
     {
@@ -544,7 +544,8 @@ class ReservationTest extends TestCase
             'note' => null,
             'recurring' => 'on',
             'frequency' => 7,
-            'last_day' => $now->addDays(7)->setHour(0)->setMinute(0)
+            // important if those 3 hours stretch through midnight
+            'last_day' => $now->addHour(3)->addDays(7)->setHour(0)->setMinute(0)
         ];
         $response = $this->actingAs($user)->post(
             route('reservations.store', $room),
