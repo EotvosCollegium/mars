@@ -49,12 +49,13 @@
                     </form>
                 </div>
 
-                @include('reservations.first_day_picker')
-
                 @livewire('timetable', [
                     'items' => [$item],
                     'days' => 3
                 ])
+            </div>
+            <div class="card-action">
+                <x-input.button floating href="{{ route('reservations.items.show_print_version', $item) }}" icon="print" class="right" />
             </div>
         </div>
     </div>

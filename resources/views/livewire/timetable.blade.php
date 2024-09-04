@@ -15,6 +15,29 @@ $columnWidth = 100.0 / ($dayCount * $itemCount);
 $absoluteHeight = $isPrintVersion ? '650px' : '1000px';
 @endphp
 
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var elem = document.getElementById('firstDay');
+        M.Datepicker.init(elem, {
+            format: 'yyyy-mm-dd',
+            firstDay: 1,
+            showClearBtn: false,
+            onClose: () => @this.firstDayUpdated(elem.value)
+        });
+
+        window.stepDays = function(days) {
+            @this.step(days);
+            const elem = document.getElementById('firstDay');
+            let date = new Date(elem.value);
+            date.setDate(date.getDate() + days);
+            // HACK: This is the easiest way to get yyyy-mm-dd.
+            elem.value = date.toISOString().slice(0, 10);
+        };
+    });
+</script>
+@endpush
+
 <div>
     {{-- navigation buttons --}}
     @if($isPrintVersion)
@@ -26,23 +49,21 @@ $absoluteHeight = $isPrintVersion ? '650px' : '1000px';
     @else
     <div class="row">
         <div class="col s4 left-align">
-            <x-input.button floating wire:click="step({{ -1 * $dayCount }})" icon="chevron_left" />
+            <x-input.button floating onclick="stepDays({{ -1 * $dayCount }})" icon="chevron_left" />
         </div>
-        <div class="col s4 center-align">
-            @if(1 == $itemCount)
-            <a href="{{ route('reservations.items.show_print_version', $items[0]) }}" type="submit" class="waves-effect btn-floating grey">
-                <i class="material-icons">print</i>
-            </a>
-            @endif
+        <div class="col s4 center-align" wire:ignore>
+            <input type="text" class="datepicker validate" id="firstDay" value="{{$firstDay->format('Y-m-d')}}"
+                   style="border: none; box-shadow: none; text-align: center; font-size: 1.2em; cursor: pointer" >
         </div>
         <div class="col s4 right-align">
-            <x-input.button floating wire:click="step({{ $dayCount }})" icon="chevron_right" />
+            <x-input.button floating onclick="stepDays({{ $dayCount }})" icon="chevron_right" />
         </div>
     </div>
     @endif
 
     <table style="table-layout: fixed;">
         <thead>
+            @if($isPrintVersion || $dayCount > 1)
             <tr>
                 <th style="width: 50px;"></th>
                 @php $day = $firstDay->copy(); @endphp
@@ -62,6 +83,7 @@ $absoluteHeight = $isPrintVersion ? '650px' : '1000px';
                 @php $day->addDay(); @endphp
                 @endfor
             </tr>
+            @endif
             @if($displayItemNames)
             <tr>
                 <th></th>

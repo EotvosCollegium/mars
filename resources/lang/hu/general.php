@@ -14,7 +14,6 @@ return [
     'choose_option' => 'Válassz...',
     'comment' => 'Megjegyzés',
     'contacts' => 'Elérhetőségek',
-    'date' => 'Dátum',
     'debug_descr' => 'Az oldal karbantartás alatt van. Néhány funkció (pl. nyomtatás) nem működik megfelelően. Látogass vissza később.',
     'delete' => 'Törlés',
     'delete_all' => 'Az összes törlése',

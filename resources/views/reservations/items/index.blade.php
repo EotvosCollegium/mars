@@ -20,8 +20,6 @@ $isForWashingMachine = \App\Enums\ReservableItemType::WASHING_MACHINE->value == 
                     @lang("reservations.{$type}_reservation_instructions")
                 </blockquote>
 
-                @include('reservations.first_day_picker')
-
                 @livewire('timetable', [
                     'items' => $items->all(),
                     'days' => $isForWashingMachine ? 3 : 1,
