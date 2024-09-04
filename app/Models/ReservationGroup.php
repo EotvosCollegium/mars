@@ -121,11 +121,7 @@ class ReservationGroup extends Model
     /** The earliest reservation belonging to the group. */
     public function firstReservation(): Reservation
     {
-        $dateOfFirst = Reservation::where('group_id', $this->id)
-                         ->min('reserved_from');
-        return Reservation::where('group_id', $this->id)
-                         ->where('reserved_from', $dateOfFirst)
-                         ->first();
+        return $this->reservations()->orderBy('reserved_from')->first();
     }
 
     /** The starting date of the last reservation. */
@@ -296,8 +292,8 @@ class ReservationGroup extends Model
     }
 
     /**
-     * Edit the default parameters and set them for all reservations too.
-     * Actually calls setForAllAfter with $this->firstReservation().
+     * Edit the default parameters and set them for all reservations
+     * that have not begun yet.
      *
      * If something is null, it does not get changed.
      * If group_from or group_until changes,
@@ -314,16 +310,26 @@ class ReservationGroup extends Model
         ?Carbon $groupUntil = null,
         ?string $groupNote = null,
         ?bool $verified = null
-    ) {
-        $this->setForAllAfter(
-            $this->firstReservation(),
-            $groupItem,
-            $user,
-            $groupTitle,
-            $groupFrom,
-            $groupUntil,
-            $groupNote,
-            $verified
-        );
+    ): void {
+        // we look for the first reservation
+        // that has not yet begun
+        $firstReservation = $this->reservations()
+            ->where('reserved_from', '>=', Carbon::now())
+            ->orderBy('reserved_from')
+            ->first();
+        if (is_null($firstReservation)) {
+            throw new \Exception('all reservations are in the past');
+        } else {
+            $this->setForAllAfter(
+                $firstReservation,
+                $groupItem,
+                $user,
+                $groupTitle,
+                $groupFrom,
+                $groupUntil,
+                $groupNote,
+                $verified
+            );
+        }
     }
 }

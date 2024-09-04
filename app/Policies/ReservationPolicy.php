@@ -48,7 +48,8 @@ class ReservationPolicy
     {
         // no one should be able to modify reservations
         // that are in the past
-        if (Carbon::make($reservation->reserved_until) < Carbon::now()) {
+        // or have already begun
+        if (Carbon::make($reservation->reserved_from) < Carbon::now()) {
             return false;
         } else {
             return $this->administer($user)
