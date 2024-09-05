@@ -13,7 +13,7 @@ use App\Enums\ReservableItemType;
 use App\Models\Reservations\ReservableItem;
 use App\Models\Role;
 use App\Models\User;
-use App\Mail\AffectedReservation;
+use App\Mail\Reservations\ReservationAffected;
 use App\Mail\Reservations\ReportReservableItemFault;
 
 class ReservableItemController extends \App\Http\Controllers\Controller
@@ -147,7 +147,7 @@ class ReservableItemController extends \App\Http\Controllers\Controller
         $item->update(['out_of_order' => !$item->out_of_order]);
 
         foreach ($item->usersWithActiveReservation as $toNotify) {
-            Mail::to($toNotify)->queue(new AffectedReservation(
+            Mail::to($toNotify)->queue(new ReservationAffected(
                 $item,
                 $toNotify->name
             ));

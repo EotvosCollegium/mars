@@ -100,7 +100,7 @@ class ReservationController extends \App\Http\Controllers\Controller
                 $query->whereIn('name', [Role::SECRETARY, Role::STAFF]);
             })->get();
             foreach ($thoseToNotify as $toNotify) {
-                Mail::to($toNotify)->send(
+                Mail::to($toNotify)->queue(
                     new \App\Mail\Reservations\ReservationRequested(
                         $reservation,
                         $toNotify->name

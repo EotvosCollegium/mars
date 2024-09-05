@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Mail;
+namespace App\Mail\Reservations;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
@@ -13,7 +13,7 @@ use App\Models\Reservations\ReservableItem;
  * for an item that has been just tagged
  * as out-of-order or as functioning.
  */
-class AffectedReservation extends Mailable
+class ReservationAffected extends Mailable
 {
     use Queueable;
     use SerializesModels;
@@ -63,7 +63,7 @@ class AffectedReservation extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.affected_reservation')
+        return $this->markdown('emails.reservations.reservation_affected')
             ->subject($this->makeSubject());
     }
 }
