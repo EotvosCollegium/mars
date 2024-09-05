@@ -14,7 +14,7 @@ if (isset($reservation)) {
   {{ isset($reservation) ? $reservation->reservableItem->name : $item->name }}
 </a>
 <a href="#!" class="breadcrumb">
-    {{ isset($reservation) ? $reservation->displayName() : __('reservations.create') }}
+    {{ isset($reservation) ? $reservation->title : __('reservations.create') }}
 </a>
 @endsection
 
@@ -32,8 +32,12 @@ if (isset($reservation)) {
                 @csrf
                 <div class="card-content">
                     <span class="card-title">
-                        @lang(isset($reservation) ? 'reservations.edit' : 'reservations.create')
-                        ({{ $item->name }})
+                        @if(isset($reservation))
+                            @lang('reservations.edit')
+                        @else
+                            @lang('reservations.create')
+                            ({{ $item->name }})
+                        @endif
                     </span>
 
                     @if($item->isWashingMachine())

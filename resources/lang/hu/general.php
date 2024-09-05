@@ -33,6 +33,7 @@ return [
     'logout' => 'Kijelentkezés',
     'mars_descr' => 'Az Eötvös József Collegium informatikai rendszere',
     'members' => 'Tagok',
+    'no' => 'Nem',
     'note' => 'Megjegyzés',
     'nothing_to_show' => 'Nincs adat',
     'optional_field' => 'Nem kötelező',
@@ -63,4 +64,5 @@ return [
     'user' => 'Felhasználó',
     'users' => 'Felhasználók',
     'validation_errors' => 'Helytelen adatok',
+    'yes' => 'Igen',
 ];

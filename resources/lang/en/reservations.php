@@ -15,6 +15,7 @@ return [
     'faulty_room' => 'Unusable room',
     'faulty_washing_machine' => 'Faulty washing machine',
     'frequency' => 'Frequency (in days)',
+    'frequency_comment' => '-day cycle',
     'from' => 'From',
     'got_repaired' =>
         'The following reservable item (for which you have a reservation) has become usable again',
@@ -26,6 +27,8 @@ return [
         'has <strong>rejected</strong> your reservation.',
     'is_free' => 'Free',
     'is_occupied' => 'Occupied',
+    'is_recurring' => 'Is recurring?',
+    'is_verified' => 'Is verified?',
     'item_name' => 'Name',
     'item_status' => 'Status',
     'last_day' => 'Last day',

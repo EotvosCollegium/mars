@@ -7,7 +7,7 @@
 <a href="{{route('reservations.items.show', $reservation->reservableItem)}}"
   class="breadcrumb" style="cursor: pointer">{{ $reservation->reservableItem->name }}</a>
 @endif
-<a href="#!" class="breadcrumb">{{ $reservation->displayName() }}</a>
+<a href="#!" class="breadcrumb">{{ $reservation->title }}</a>
 @endsection
 
 @section('content')
@@ -16,7 +16,7 @@
     <div class="col s12">
         <div class="card">
             <div class="card-content">
-                <span class="card-title">{{ $reservation->displayName() }}</span>
+                <span class="card-title">{{ $reservation->title }}</span>
 
                 <table>
                     <tr>
@@ -45,6 +45,24 @@
                         <th>@lang('general.note')</th>
                         <td>{{$reservation->note}}</td>
                     </tr>
+                    <tr>
+                        <th>@lang('reservations.is_recurring')</th>
+                        <td>
+                            {{$reservation->isRecurring()
+                                ? ("{$reservation->group->frequency}" . __('reservations.frequency_comment'))
+                                : __('general.no')}}
+                        </td>
+                    </tr>
+                    @can('administer', \App\Models\Reservation::class)
+                    <tr>
+                        <th>@lang('reservations.is_verified')</th>
+                        <td>
+                            {{$reservation->verified
+                                ? __('general.yes')
+                                : __('general.no')}}
+                        </td>
+                    </tr>
+                    @endcan
                 </table>
             </div>
             @can('modify', $reservation)

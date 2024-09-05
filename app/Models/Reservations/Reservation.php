@@ -85,9 +85,13 @@ class Reservation extends Model
                 ? $this->title
                 : $this->user->name
             ) . (
+                $this->isRecurring()
+                ? " ({$this->group->frequency}" . __('reservations.frequency_comment') . ")"
+                : ""
+            ) . (
                 $this->verified
-                ? ''
-                : (' (' . __('reservations.unverified') . ')')
+                ? ""
+                : (" (" . __('reservations.unverified'). ")")
             );
         }
     }

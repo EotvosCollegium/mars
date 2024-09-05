@@ -33,6 +33,7 @@ return [
     'logout' => 'Logout',
     'mars_descr' => 'Eötvös József Collegium\'s unified IT system',
     'members' => 'Members',
+    'no' => 'No',
     'note' => 'Note',
     'nothing_to_show' => 'Nothing to show',
     'optional_field' => 'Not required',
@@ -63,4 +64,5 @@ return [
     'user' => 'User',
     'users' => 'Users',
     'validation_errors' => 'Validation errors',
+    'yes' => 'Yes',
 ];

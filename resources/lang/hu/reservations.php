@@ -15,6 +15,7 @@ return [
     'faulty_room' => 'Használhatatlan terem',
     'faulty_washing_machine' => 'A mosógép meghibásodott',
     'frequency' => 'Gyakoriság (napokban)',
+    'frequency_comment' => ' naponta',
     'from' => 'Kezdet',
     'got_repaired' =>
         'Az alábbi objektum (amihez létezik foglalása) újra használhatóvá vált:',
@@ -27,6 +28,8 @@ return [
         '<strong>elutasította</strong> a foglalását.',
     'is_free' => 'Szabad',
     'is_occupied' => 'Foglalt',
+    'is_recurring' => 'Ismétlődő?',
+    'is_verified' => 'Jóváhagyva?',
     'item_name' => 'Név',
     'item_status' => 'Státusz',
     'last_day' => 'Utolsó nap',
