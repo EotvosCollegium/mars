@@ -187,8 +187,7 @@ class ReservationGroup extends Model
         ?int $groupDuration = null,
         ?string $groupNote = null,
         ?bool $verified = null
-    ): void
-    {
+    ): void {
         // the item has to be set now;
         // we are going to use it
         if (!is_null($groupItem)) {
