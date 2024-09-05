@@ -78,7 +78,7 @@ class ReservableItemController extends \App\Http\Controllers\Controller
     {
         $this->authorize('administer', ReservableItem::class);
 
-        abort(500, 'create not implemented yet');
+        abort(501, 'create not implemented yet');
     }
 
     /**
@@ -120,8 +120,7 @@ class ReservableItemController extends \App\Http\Controllers\Controller
     {
         $this->authorize('view', $item);
 
-        $thoseToNotify = User::withRole(Role::SYS_ADMIN)->get()
-            ->concat(User::withRole(Role::STAFF)->get());
+        $thoseToNotify = User::whereIn('role_id', [Role::SYS_ADMIN, Role::STAFF])->get();
         foreach ($thoseToNotify as $toNotify) {
             Mail::to($toNotify)->queue(
                 new ReportReservableItemFault(

@@ -166,27 +166,27 @@ class ReservationController extends \App\Http\Controllers\Controller
      */
     private static function handleNewRecurringReservation(ReservableItem $item, array $validatedData): Reservation
     {
-        $newGroup = ReservationGroup::create([
-            'group_item' => $item->id,
-            'user_id' => user()->id,
-            'frequency' => intval($validatedData['frequency']),
-            'group_title' => $validatedData['title'],
-            'group_from' => Carbon::make($validatedData['reserved_from']),
-            'group_until' => Carbon::make($validatedData['reserved_until']),
-            'group_note' => $validatedData['note'],
-            'last_day' => Carbon::make($validatedData['last_day']),
-            'verified' => user()->can('autoVerify', $item)
-        ]);
+        return DB::transaction(function () use ($item, $validatedData) {
+            $newGroup = ReservationGroup::create([
+                'group_item' => $item->id,
+                'user_id' => user()->id,
+                'frequency' => intval($validatedData['frequency']),
+                'group_title' => $validatedData['title'],
+                'group_from' => Carbon::make($validatedData['reserved_from']),
+                'group_until' => Carbon::make($validatedData['reserved_until']),
+                'group_note' => $validatedData['note'],
+                'last_day' => Carbon::make($validatedData['last_day']),
+                'verified' => user()->can('autoVerify', $item)
+            ]);
 
-        try {
-            $newGroup->initializeFrom($validatedData['reserved_from']);
-        } catch (ReservationConflictException $e) {
-            $newGroup->delete();
-            throw $e;
-        }
-
-        $firstReservation = $newGroup->firstReservation();
-        return $firstReservation;
+            try {
+                $newGroup->initializeFrom($validatedData['reserved_from']);
+            } catch (ReservationConflictException $e) {
+                $newGroup->delete();
+                throw $e;
+            }
+            return $newGroup->firstReservation();
+        });
     }
 
     /**
@@ -566,9 +566,11 @@ class ReservationController extends \App\Http\Controllers\Controller
         $itemName = $reservation->reservableItem->name;
         $reservationArray = $reservation->toArray();
 
-        $group = $reservation->group;
-        $group->reservations()->delete();
-        $group->delete();
+        DB::transaction(function () use ($reservation) {
+            $group = $reservation->group;
+            $group->reservations()->delete();
+            $group->delete();
+        });
 
         if ($reservation->user->id != user()->id) {
             Mail::to($reservation->user)->queue(new ReservationDeleted(

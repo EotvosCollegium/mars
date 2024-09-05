@@ -419,7 +419,6 @@ class ReservationTest extends TestCase
 
 
         // let's verify the group
-        $anita = self::createSecretary();
         $response = $this->followingRedirects()->actingAs($anita)->post(
             route('reservations.verify_all', $reservations[2])
         );

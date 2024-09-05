@@ -45,14 +45,10 @@ class ReportReservableItemFault extends Mailable
     public function makeSubject(): string
     {
         if ($this->item->out_of_order) {
-            return
-                'Javított ' .
-                ($this->isForWashingMachine()
-                 ? 'mosógép' : 'terem')
-                 . ' jelentve';
+            $itemType = $this->isForWashingMachine() ? 'mosógép' : 'terem';
+            return 'Javított ' . $itemType . ' jelentve';
         } else {
-            return
-                $this->isForWashingMachine()
+            return $this->isForWashingMachine()
                 ? 'Hibás mosógép jelentve'
                 : 'Használhatatlan terem jelentve';
         }
