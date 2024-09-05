@@ -184,7 +184,7 @@ class ReservationGroup extends Model
         ?User $user = null,
         ?string $groupTitle = null,
         ?Carbon $groupFrom = null,
-        ?int $groupDuration = null,
+        ?float $groupDuration = null,
         ?string $groupNote = null,
         ?bool $verified = null
     ): void {
