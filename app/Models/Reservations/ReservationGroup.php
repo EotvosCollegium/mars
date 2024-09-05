@@ -81,11 +81,14 @@ class ReservationGroup extends Model
         DB::transaction(function () use ($currentStart, $lastDay, $defaultDuration) {
             while ($currentStart <= $lastDay) {
                 $currentEnd = $currentStart->copy()->addMinutes($defaultDuration);
-                if (!$this->groupItem->reservationsInSlot(
+                $other = $this->groupItem->reservationsInSlot(
                     CarbonImmutable::make($currentStart),
                     CarbonImmutable::make($currentEnd)
-                )->isEmpty()) {
-                    throw new ReservationConflictException("conflict on $currentStart");
+                )->first();
+                if (!is_null($other)) {
+                    throw new ReservationConflictException(
+                        __('reservations.recurring_conflict') . " {$other->reserved_from}, {$other->reserved_until}"
+                    );
                 } else {
                     Reservation::create([
                         'reservable_item_id' => $this->group_item,
@@ -174,6 +177,8 @@ class ReservationGroup extends Model
      * a ReservationConflictException is thrown if there would be a conflict;
      * then, nothing is done to the database.
      * The reservation must belong to the group.
+     * $groupFrom and $groupUntil must either both be null or neither of them;
+     * otherwise, an InvalidArgumentException is thrown.
      */
     public function setForAllAfter(
         Reservation $firstReservation,
@@ -191,11 +196,12 @@ class ReservationGroup extends Model
             );
         }
 
-        // if either one gets changed, we have to do the same things
-        if (is_null($groupFrom) && !is_null($groupUntil)) {
-            $groupFrom = Carbon::make($this->group_from);
-        } elseif (!is_null($groupFrom) && is_null($groupUntil)) {
-            $groupUntil = Carbon::make($this->group_until);
+        if (is_null($groupFrom) xor (is_null($groupUntil))) {
+            throw new \InvalidArgumentException(
+                is_null($groupFrom)
+                ? '$groupFrom was null but $groupUntil was not'
+                : '$groupUntil was null but $groupFrom was not'
+            );
         }
 
         $groupDuration = null;
@@ -235,21 +241,21 @@ class ReservationGroup extends Model
                 }
 
                 if (!is_null($groupFrom)) {
-                    $newFrom = Carbon::make($reservation->reserved_from);
-                    $newFrom->hour = $groupFrom->hour;
-                    $newFrom->minute = $groupFrom->minute;
+                    $newFrom = Carbon::make($reservation->reserved_from)
+                                ->setHour($groupFrom->hour)
+                                ->setMinute($groupFrom->minute);
                     $newUntil = $newFrom->copy()->addMinutes($groupDuration);
 
-                    $others = $reservation->reservableItem
+                    $other = $reservation->reservableItem
                         ->reservationsInSlot(
                             CarbonImmutable::make($newFrom),
                             CarbonImmutable::make($newUntil)
                         )->filter(function (Reservation $other) {
                             return $other->group_id != $this->id;
-                        });
-                    if (!$others->isEmpty()) {
+                        })->first();
+                    if (!is_null($other)) {
                         throw new ReservationConflictException(
-                            "conflict on $newFrom"
+                            __('reservations.recurring_conflict') . " {$other->reserved_from}, {$other->reserved_until}"
                         );
                     }
 

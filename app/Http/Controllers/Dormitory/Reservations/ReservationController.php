@@ -111,19 +111,11 @@ class ReservationController extends \App\Http\Controllers\Controller
     }
 
     /**
-     * Stores a reservation based on
-     * a ReservableItem provided separately
-     * and the data in the request.
+     * An auxiliary function for `store`;
+     * validates the request and returns the validated data.
      */
-    public function store(ReservableItem $item, Request $request)
+    private static function validateNewReservation(ReservableItem $item, Request $request): array
     {
-        $this->authorize('requestReservation', $item);
-
-        if ($item->isWashingMachine()
-            && self::reachedMaximumForWashingMachines(user())) {
-            return redirect()->back()->with('error', __('reservations.max_washing_reservations_reached'));
-        }
-
         $validator = Validator::make($request->all(), [
             'title' => 'nullable|string|max:255',
             'note' => 'nullable|string|max:2047',
@@ -159,77 +151,120 @@ class ReservationController extends \App\Http\Controllers\Controller
             });
         }
 
-        $validatedData = $validator->validate();
+        return $validator->validate();
+    }
 
-        if ($item->isRoom() && isset($request->recurring)) {
-            $newGroup = ReservationGroup::create([
-                'group_item' => $item->id,
-                'user_id' => user()->id,
-                'frequency' => intval($validatedData['frequency']),
-                'group_title' => $validatedData['title'],
-                'group_from' => Carbon::make($validatedData['reserved_from']),
-                'group_until' => Carbon::make($validatedData['reserved_until']),
-                'group_note' => $validatedData['note'],
-                'last_day' => Carbon::make($validatedData['last_day']),
-                'verified' => user()->can('autoVerify', $item)
-            ]);
+    /**
+     * An auxiliary function for `store`.
+     * Handles validated data which we know to belong to
+     * a new recurring reservation.
+     * Returns the first reservation of the new group.
+     * If there has been a conflict,
+     * it throws a ReservationConflictException
+     * with the error message to show to the user
+     * and does nothing to the database.
+     */
+    private static function handleNewRecurringReservation(ReservableItem $item, array $validatedData): Reservation
+    {
+        $newGroup = ReservationGroup::create([
+            'group_item' => $item->id,
+            'user_id' => user()->id,
+            'frequency' => intval($validatedData['frequency']),
+            'group_title' => $validatedData['title'],
+            'group_from' => Carbon::make($validatedData['reserved_from']),
+            'group_until' => Carbon::make($validatedData['reserved_until']),
+            'group_note' => $validatedData['note'],
+            'last_day' => Carbon::make($validatedData['last_day']),
+            'verified' => user()->can('autoVerify', $item)
+        ]);
 
-            try {
-                $newGroup->initializeFrom($request->reserved_from);
-            } catch (ReservationConflictException $e) {
-                $newGroup->delete();
-                return redirect()->back()->withInput($request->input())->with('error', __('reservations.recurring_conflict') . ": {$e->getMessage()}");
-            }
-
-            self::notifyOnVerifiableReservation($newGroup->firstReservation());
-
-            return redirect()->route(
-                'reservations.show',
-                $newGroup->firstReservation()
-            )->with(
-                'message',
-                $newGroup->verified ? __('general.successful_modification') : __('reservations.verifiers_notified')
-            );
-        } else {
-            // we do not save it yet!
-            $newReservation = new Reservation();
-            $newReservation->reservable_item_id = $item->id;
-            $newReservation->user_id = user()->id;
-            $newReservation->title = $validatedData['title'] ?? null;
-            $newReservation->note = $validatedData['note'];
-            $newReservation->reserved_from = $validatedData['reserved_from'];
-            $newReservation->reserved_until =
-                $item->isWashingMachine()
-                ? Carbon::make($validatedData['reserved_from'])->addHour()
-                : Carbon::make($validatedData['reserved_until']);
-
-
-            $newReservation->verified = user()->can('autoVerify', $item);
-
-            $conflictingReservation = self::hasConflict($newReservation);
-            if ($conflictingReservation) {
-                return redirect()->back()->with(
-                    'error',
-                    __('reservations.already_exists') . ' ' .
-                    "{$conflictingReservation->reserved_from},
-                    {$conflictingReservation->reserved_until}"
-                );
-            }
-
-            // and finally:
-            $newReservation->save();
-            if ($item->isWashingMachine()) {
-                return redirect()->route('reservations.items.index', ['type' => ReservableItemType::WASHING_MACHINE])
-                    ->with('message', __('general.successful_modification'));
-            } else {
-                self::notifyOnVerifiableReservation($newReservation);
-                return redirect()->route('reservations.items.show', $item)
-                    ->with(
-                        'message',
-                        $newReservation->verified ? __('general.successful_modification') : __('reservations.verifiers_notified')
-                    );
-            }
+        try {
+            $newGroup->initializeFrom($validatedData['reserved_from']);
+        } catch (ReservationConflictException $e) {
+            $newGroup->delete();
+            throw $e;
         }
+
+        $firstReservation = $newGroup->firstReservation();
+        return $firstReservation;
+    }
+
+    /**
+     * An auxiliary function for `store`.
+     * Handles validated data which we know to belong to
+     * a new non-recurring reservation;
+     * then returns the new reservation.
+     * If there has been a conflict,
+     * it throws a ReservationConflictException
+     * with the error message to show to the user
+     * and does nothing to the database.
+     */
+    private static function handleNewSingleReservation(ReservableItem $item, array $validatedData): Reservation
+    {
+        // we do not save it yet!
+        $newReservation = new Reservation();
+        $newReservation->reservable_item_id = $item->id;
+        $newReservation->user_id = user()->id;
+        $newReservation->title = $validatedData['title'] ?? null;
+        $newReservation->note = $validatedData['note'];
+        $newReservation->reserved_from = $validatedData['reserved_from'];
+        $newReservation->reserved_until =
+            $item->isWashingMachine()
+            ? Carbon::make($validatedData['reserved_from'])->addHour()
+            : Carbon::make($validatedData['reserved_until']);
+
+
+        $newReservation->verified = user()->can('autoVerify', $item);
+
+        $conflictingReservation = self::hasConflict($newReservation);
+        if ($conflictingReservation) {
+            throw new ReservationConflictException(__('reservations.already_exists') . ' ' .
+                "{$conflictingReservation->reserved_from},
+                {$conflictingReservation->reserved_until}");
+        }
+
+        // and finally:
+        $newReservation->save();
+        return $newReservation;
+    }
+
+    /**
+     * Stores a reservation based on
+     * a ReservableItem provided separately
+     * and the data in the request.
+     */
+    public function store(ReservableItem $item, Request $request)
+    {
+        $this->authorize('requestReservation', $item);
+
+        if ($item->isWashingMachine()
+            && self::reachedMaximumForWashingMachines(user())) {
+            return redirect()->back()->with('error', __('reservations.max_washing_reservations_reached'));
+        }
+
+        $validatedData = self::validateNewReservation($item, $request);
+
+        try {
+            if ($item->isRoom() && isset($request->recurring)) {
+                $reservation = self::handleNewRecurringReservation($item, $validatedData);
+            } else {
+                $reservation = self::handleNewSingleReservation($item, $validatedData);
+            }
+        } catch (ReservationConflictException $e) {
+            return redirect()->back()->withInput($validatedData)->with('error', $e->getMessage());
+        }
+
+        if (!$reservation->verified) {
+            self::notifyOnVerifiableReservation($reservation);
+        }
+
+        return redirect()->route(
+            'reservations.show',
+            $reservation
+        )->with(
+            'message',
+            $reservation->verified ? __('general.successful_modification') : __('reservations.verifiers_notified')
+        );
     }
 
     /**
@@ -250,13 +285,12 @@ class ReservationController extends \App\Http\Controllers\Controller
     public const EDIT_ALL = 'edit_all';
 
     /**
-     * Updates a reservation with an edited version.
+     * An auxiliary function for `update`;
+     * validates the request and returns the validated data
+     * in an array.
      */
-    public function update(Reservation $reservation, Request $request)
+    private static function validateModifiedReservation(Reservation $reservation, Request $request): array
     {
-        // this also makes some other checks
-        $this->authorize('modify', $reservation);
-
         $item = $reservation->reservableItem;
 
         $validator = Validator::make($request->all(), [
@@ -291,105 +325,149 @@ class ReservationController extends \App\Http\Controllers\Controller
             fn ($input) => $item->isWashingMachine()
         );
 
-        $validatedData = $validator->validate();
+        return $validator->validate();
+    }
 
-        if (!$reservation->isRecurring()
-            || self::EDIT_THIS_ONLY == $validatedData['for_what']) {
-            // we do not save it yet!
+    /**
+     * An auxiliary function for `update`.
+     * Handles a request which we know to modify a group
+     * (with option EDIT_ALL or EDIT_ALL_AFTER),
+     * but does not yet reply to the request.
+     * Throws a ReservationConflictException
+     * with the error message to show to the user
+     * if there has been a conflict.
+     */
+    private static function handleModifiedGroup(Reservation $reservation, array $validatedData): void
+    {
+        $group = $reservation->group;
 
-            $reservation->verified = user()->can('autoVerify', $reservation->reservableItem)
-                || ($reservation->verified
-                    && $reservation->reserved_from == "{$validatedData['reserved_from']}"
-                    && $reservation->reserved_until == "{$validatedData['reserved_until']}");
+        // the last day has to be modified first
+        // because otherwise, the new reservations might not get the new dates etc.
+        if ($validatedData['last_day'] != $reservation->group->last_day) {
+            $group->setLastDay($validatedData['last_day']);
+        }
+        $group->refresh();
 
-            $reservation->title = $validatedData['title'] ?? null;
-            $reservation->note = $validatedData['note'];
-            $reservation->reserved_from = $validatedData['reserved_from'];
-            $reservation->reserved_until =
-                $reservation->reservableItem->isWashingMachine()
-                ? Carbon::make($validatedData['reserved_from'])->addHour()
-                : Carbon::make($validatedData['reserved_until']);
+        $groupTitle =
+            ($validatedData['title'] != $group->group_title)
+            ? $validatedData['title'] : null;
+        
+        $groupFrom = Carbon::make($validatedData['reserved_from']);
+        $groupUntil = Carbon::make($validatedData['reserved_until']);
+        if (Carbon::make($validatedData['reserved_from']) == Carbon::make($reservation->reserved_from)
+                && Carbon::make($validatedData['reserved_until']) == Carbon::make($reservation->reserved_until)) {
+            $groupFrom = null; $groupUntil = null;
+        }
 
-            $conflictingReservation = self::hasConflict($reservation);
-            if ($conflictingReservation) {
-                return redirect()->back()->with(
-                    'error',
-                    __('reservations.already_exists') . ' ' .
-                    "{$conflictingReservation->reserved_from},
-                     {$conflictingReservation->reserved_until}"
-                );
+        $groupNote =
+            $validatedData['note'] != $reservation->note
+            ? $validatedData['note'] : null;
+
+        // for now:
+        $groupItem = null;
+        $user = null;
+
+        $verified = user()->can('autoVerify', $reservation->reservableItem)
+            || $group->verified && is_null($groupFrom) && is_null($groupUntil);
+
+        // this is the part which can throw
+        if (self::EDIT_ALL_AFTER == $validatedData['for_what']) {
+            $group->setForAllAfter(
+                firstReservation: $reservation,
+                groupItem: $groupItem,
+                user: $user,
+                // ?int $frequency = null, // it cannot be set for now
+                groupTitle: $groupTitle,
+                groupFrom: $groupFrom,
+                groupUntil: $groupUntil,
+                groupNote: $groupNote,
+                verified: $verified
+            );
+        } else { // self::EDIT_ALL== $validatedData['for_what']
+            $group->setForAll(
+                groupItem: $groupItem,
+                user: $user,
+                // ?int $frequency = null, // it cannot be set for now
+                groupTitle: $groupTitle,
+                groupFrom: $groupFrom,
+                groupUntil: $groupUntil,
+                groupNote: $groupNote,
+                verified: $verified
+            );
+        }
+    }
+
+    /**
+     * An auxiliary function for `update`.
+     * Handles a request which we know to modify only one reservation
+     * (either a standalone one or a  member of a group with option EDIT_THIS_ONLY),
+     * but does not yet reply to the request.
+     * Throws a ReservationConflictException
+     * with the error message to show to the user
+     * if there has been a conflict.
+     */
+    private static function handleModifiedSingleReservation(Reservation $reservation, array $validatedData): void
+    {
+        // we do not save it yet!
+
+        $reservation->verified = user()->can('autoVerify', $reservation->reservableItem)
+            || ($reservation->verified
+                && $reservation->reserved_from == "{$validatedData['reserved_from']}"
+                && $reservation->reserved_until == "{$validatedData['reserved_until']}");
+
+        $reservation->title = $validatedData['title'] ?? null;
+        $reservation->note = $validatedData['note'];
+        $reservation->reserved_from = $validatedData['reserved_from'];
+        $reservation->reserved_until =
+            $reservation->reservableItem->isWashingMachine()
+            ? Carbon::make($validatedData['reserved_from'])->addHour()
+            : Carbon::make($validatedData['reserved_until']);
+
+        $conflictingReservation = self::hasConflict($reservation);
+        if ($conflictingReservation) {
+            throw new ReservationConflictException(
+                __('reservations.already_exists') . ' ' .
+                "{$conflictingReservation->reserved_from},
+                    {$conflictingReservation->reserved_until}"
+            );
+        }
+        // and finally:
+        $reservation->save();
+    }
+
+    /**
+     * Updates a reservation with an edited version.
+     */
+    public function update(Reservation $reservation, Request $request)
+    {
+        // this also makes some other checks
+        $this->authorize('modify', $reservation);
+
+        $validatedData = self::validateModifiedReservation($reservation, $request);
+
+        try {
+            if ($reservation->isRecurring()
+                    && self::EDIT_THIS_ONLY != $validatedData['for_what']) {
+                self::handleModifiedGroup($reservation, $validatedData);
+            } else {
+                self::handleModifiedSingleReservation($reservation, $validatedData);
             }
-            // and finally:
-            $reservation->save();
-        } else {
-            try {
-                $group = $reservation->group;
-
-                // the last day has to be modified first
-                // because otherwise, the new reservations might not get the new dates etc.
-                if ($validatedData['last_day'] != $reservation->group->last_day) {
-                    $group->setLastDay($validatedData['last_day']);
-                }
-                $group->refresh();
-
-                $groupTitle =
-                    ($validatedData['title'] != $group->group_title)
-                    ? $validatedData['title'] : null;
-                $groupFrom =
-                Carbon::make($validatedData['reserved_from']) != Carbon::make($reservation->reserved_from)
-                ? Carbon::make($validatedData['reserved_from']) : null;
-                $groupUntil =
-                    Carbon::make($validatedData['reserved_until']) != Carbon::make($reservation->reserved_until)
-                    ? Carbon::make($validatedData['reserved_until']) : null;
-                $groupNote =
-                    $validatedData['note'] != $reservation->note
-                    ? $validatedData['note'] : null;
-
-                // for now:
-                $groupItem = null;
-                $user = null;
-
-                $verified = user()->can('autoVerify', $reservation->reservableItem)
-                    || $group->verified && is_null($groupFrom) && is_null($groupUntil);
-
-                if (self::EDIT_ALL_AFTER == $validatedData['for_what']) {
-                    $group->setForAllAfter(
-                        firstReservation: $reservation,
-                        groupItem: $groupItem,
-                        user: $user,
-                        // ?int $frequency = null, // it cannot be set for now
-                        groupTitle: $groupTitle,
-                        groupFrom: $groupFrom,
-                        groupUntil: $groupUntil,
-                        groupNote: $groupNote,
-                        verified: $verified
-                    );
-                } else { // self::EDIT_ALL== $validatedData['for_what']
-                    $group->setForAll(
-                        groupItem: $groupItem,
-                        user: $user,
-                        // ?int $frequency = null, // it cannot be set for now
-                        groupTitle: $groupTitle,
-                        groupFrom: $groupFrom,
-                        groupUntil: $groupUntil,
-                        groupNote: $groupNote,
-                        verified: $verified
-                    );
-                }
-            } catch (ReservationConflictException $e) {
-                abort(409, $e->getMessage());
-            }
+        } catch (ReservationConflictException $e) {
+            return redirect()->back()->withInput($validatedData)->with('error', $e->getMessage());
         }
 
         $reservation->refresh();
-        if ($reservation->verified) {
-            return redirect()->route('reservations.show', $reservation)
-                ->with('message', __('general.successful_modification'));
-        } else {
+        if (!$reservation->verified) {
             self::notifyOnVerifiableReservation($reservation);
-            return redirect()->route('reservations.show', $reservation)
-                ->with('message', __('reservations.verifiers_notified'));
         }
+
+        return redirect()->route(
+            'reservations.show',
+            $reservation
+        )->with(
+            'message',
+            $reservation->verified ? __('general.successful_modification') : __('reservations.verifiers_notified')
+        );
     }
 
     /**

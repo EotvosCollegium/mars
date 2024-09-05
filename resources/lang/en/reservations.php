@@ -39,7 +39,7 @@ return [
     'only_this_affected' => 'This only affects this specific session.', // in mailable ReservationDeleted
     'out_of_order' => 'Out of order',
     'recurring' => 'Recurring reservation',
-    'recurring_conflict' => 'There is a conflict for one of the recurring events', // this will have a colon after it
+    'recurring_conflict' => 'There is a conflict for one of the recurring events:',
     'repaired_room' => 'Room usable again',
     'repaired_washing_machine' => 'Washing machine repaired',
     'report_fault' => 'Report fault',

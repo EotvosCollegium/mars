@@ -40,7 +40,7 @@ return [
     'only_this_affected' => 'Ez csak ezt az egy alkalmat érinti.', // in mailable ReservationDeleted
     'out_of_order' => 'Nem működik',
     'recurring' => 'Ismétlődő foglalás',
-    'recurring_conflict' => 'Az egyik ismétlődő időpont ütközik egy meglévő foglalással', // this will have a colon after it
+    'recurring_conflict' => 'Az egyik ismétlődő időpont ütközik egy meglévő foglalással:',
     'repaired_room' => 'A terem újra használható',
     'repaired_washing_machine' => 'A mosógép javítva',
     'report_fault' => 'Hiba bejelentése',
