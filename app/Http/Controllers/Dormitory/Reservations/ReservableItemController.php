@@ -14,7 +14,7 @@ use App\Models\Reservations\ReservableItem;
 use App\Models\Role;
 use App\Models\User;
 use App\Mail\AffectedReservation;
-use App\Mail\ReportReservableItemFault;
+use App\Mail\Reservations\ReportReservableItemFault;
 
 class ReservableItemController extends \App\Http\Controllers\Controller
 {

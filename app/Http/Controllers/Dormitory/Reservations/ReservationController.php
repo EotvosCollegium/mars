@@ -20,8 +20,8 @@ use App\Models\Reservations\ReservableItem;
 use App\Models\Reservations\ReservationGroup;
 use App\Models\Reservations\Reservation;
 use App\Exceptions\ReservationConflictException;
-use App\Mail\ReservationDeleted;
-use App\Mail\ReservationVerified;
+use App\Mail\Reservations\ReservationDeleted;
+use App\Mail\Reservations\ReservationVerified;
 
 class ReservationController extends \App\Http\Controllers\Controller
 {
@@ -101,7 +101,7 @@ class ReservationController extends \App\Http\Controllers\Controller
             })->get();
             foreach ($thoseToNotify as $toNotify) {
                 Mail::to($toNotify)->send(
-                    new \App\Mail\ReservationRequested(
+                    new \App\Mail\Reservations\ReservationRequested(
                         $reservation,
                         $toNotify->name
                     )

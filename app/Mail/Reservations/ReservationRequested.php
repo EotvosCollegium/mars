@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Mail;
+namespace App\Mail\Reservations;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -44,7 +44,7 @@ class ReservationRequested extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'emails.reservation_requested',
+            markdown: 'emails.reservations.reservation_requested',
         );
     }
 }

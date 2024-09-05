@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Mail;
+namespace App\Mail\Reservations;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -75,7 +75,7 @@ class ReservationDeleted extends Mailable
     public function content()
     {
         return new Content(
-            markdown: 'emails.reservation_deleted'
+            markdown: 'emails.reservations.reservation_deleted'
         );
     }
 

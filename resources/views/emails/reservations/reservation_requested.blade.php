@@ -10,7 +10,7 @@
     <h1>@lang('mail.dear') {{ $recipient }}!</h1>
     <p>
         {{ $reservation->user->name }} az imént kérvényezett egy
-        {{ $reservation->isRecurring() ? "ismétlődő" : "egyszeri" }}
+        {{ $reservation->isRecurring() ? "{$reservation->group->frequency} naponta ismétlődő" : "egyszeri" }}
         foglalást
         a(z) {{ $reservation->reservableItem->name }} nevű terembe
         "{{ $reservation->title }}" néven,

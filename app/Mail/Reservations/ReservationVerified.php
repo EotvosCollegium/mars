@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Mail;
+namespace App\Mail\Reservations;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -52,7 +52,7 @@ class ReservationVerified extends Mailable
     public function content()
     {
         return new Content(
-            markdown: 'emails.reservation_verified'
+            markdown: 'emails.reservations.reservation_verified'
         );
     }
 

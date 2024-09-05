@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Mail;
+namespace App\Mail\Reservations;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
@@ -65,7 +65,7 @@ class ReportReservableItemFault extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.report_reservable_item_fault')
+        return $this->markdown('emails.reservations.report_reservable_item_fault')
             ->subject($this->makeSubject());
     }
 }
