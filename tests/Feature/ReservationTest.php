@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
@@ -14,6 +15,11 @@ use App\Models\Reservations\ReservableItem;
 use App\Models\Reservations\Reservation;
 use App\Models\Reservations\ReservationGroup;
 use App\Models\Workshop;
+use App\Mail\Reservations\ReportReservableItemFault;
+use App\Mail\Reservations\ReservationAffected;
+use App\Mail\Reservations\ReservationDeleted;
+use App\Mail\Reservations\ReservationRequested;
+use App\Mail\Reservations\ReservationVerified;
 use App\Http\Controllers\Dormitory\Reservations\ReservationController;
 
 class ReservationTest extends TestCase
@@ -116,6 +122,7 @@ class ReservationTest extends TestCase
         );
         $this->assertTrue(Reservation::where('title', $input['title'])->exists());
         $response->assertSeeText($input['title']);
+        Mail::assertQueued(ReservationRequested::class);
 
         $reservation = Reservation::where('title', $input['title'])->first();
         $this->assertEquals(0, $reservation->verified);
@@ -126,6 +133,7 @@ class ReservationTest extends TestCase
         );
         $reservation->refresh();
         $this->assertEquals(1, $reservation->verified);
+        Mail::assertQueued(ReservationVerified::class);
 
         $input = [
             'title' => 'A',
@@ -141,6 +149,7 @@ class ReservationTest extends TestCase
         $this->assertEquals("{$now->addMinutes(63)}", $reservation->reserved_until);
         $response->assertSeeText($input['title']);
         $this->assertEquals(0, $reservation->verified);
+        Mail::assertQueued(ReservationRequested::class);
 
         $response = $this->actingAs($user)->post(
             route('reservations.delete', $reservation)
@@ -245,8 +254,10 @@ class ReservationTest extends TestCase
             route('reservations.store', $room),
             $input
         );
-        $this->assertTrue(Reservation::where('title', $input['title'])->exists());
+        $reservation = Reservation::where('title', $input['title'])->first();
+        $this->assertNotNull($reservation);
         $response->assertSeeText($input['title']);
+        $this->assertEquals(0, $reservation->verified);
 
         $input = [
             'title' => 'Usurpers\' Conference',
@@ -364,6 +375,7 @@ class ReservationTest extends TestCase
         $group = ReservationGroup::where('group_title', $input['title'])->first();
         $this->assertEquals(3, $group->reservations()->count());
         $this->assertEquals(0, $group->verified);
+        Mail::assertQueued(ReservationRequested::class);
 
         $frequency = $input['frequency']; // we are going to need this later
 
@@ -391,6 +403,7 @@ class ReservationTest extends TestCase
         $reservations = $group->reservations()->orderBy('reserved_from')->get()->all();
         $this->assertEquals(0, $group->verified);
         $response->assertSeeText($input['title']);
+        Mail::assertQueued(ReservationRequested::class);
 
         $i = 0;
         foreach ($reservations as $reservation) {
@@ -413,6 +426,7 @@ class ReservationTest extends TestCase
         $group->refresh();
         $this->assertEquals(1, $group->verified);
         $this->assertTrue($group->reservations()->where('verified', false)->doesntExist());
+        Mail::assertQueued(ReservationVerified::class);
 
 
 
@@ -455,6 +469,7 @@ class ReservationTest extends TestCase
         $this->assertEquals("{$input['reserved_from']}", $reservation->reserved_from);
         $this->assertEquals("{$input['reserved_until']}", $reservation->reserved_until);
         $this->assertEquals(0, $reservation->verified);
+        Mail::assertQueued(ReservationRequested::class);
 
 
 
@@ -478,6 +493,7 @@ class ReservationTest extends TestCase
         $group->refresh();
         $this->assertEquals($input['title'], $group->group_title);
         $response->assertSeeText($input['title']);
+        Mail::assertQueued(ReservationRequested::class);
 
         // now the first one should not even have remained in the group,
         // and it must be the only one to have remained verified
@@ -501,11 +517,12 @@ class ReservationTest extends TestCase
 
 
         // and finally, deletion
-        $response = $this->actingAs($user)->post(
+        $response = $this->actingAs($anita)->post(
             route('reservations.delete_all', $reservations[1])
         );
         $this->assertTrue(Reservation::where('id', $group->id)->doesntExist());
         $this->assertEquals(1, Reservation::count()); // only the first one should have remained
+        Mail::assertQueued(ReservationDeleted::class);
     }
 
     /**
@@ -532,7 +549,10 @@ class ReservationTest extends TestCase
             route('reservations.store', $room),
             $input
         );
-        $this->assertTrue(Reservation::where('title', $input['title'])->exists());
+        $reservation = Reservation::where('title', $input['title'])->first();
+        $this->assertNotNull($reservation);
+        $this->assertEquals(0, $reservation->verified);
+
 
 
         // and now the conflicting group
@@ -581,6 +601,8 @@ class ReservationTest extends TestCase
         $this->assertEquals($input['note'], $reservation->note);
         // it has to be automatically verified
         $this->assertEquals(1, $reservation->verified);
+        // and no mail should be sent
+        Mail::assertNotQueued(ReservationRequested::class);
 
         $response = $this->actingAs($user)->post(
             route('reservations.delete', $reservation)
