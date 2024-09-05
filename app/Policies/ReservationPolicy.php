@@ -16,7 +16,7 @@ class ReservationPolicy
      * Determine if the user has administrative rights
      * (e.g. can approve reservations or delete any of them).
      */
-    public static function administer(User $user): bool
+    public function administer(User $user): bool
     {
         return $user->isAdmin()
             || $user->hasRole([
@@ -32,7 +32,7 @@ class ReservationPolicy
      */
     public function view(User $user, Reservation $reservation): bool
     {
-        return self::administer($user)
+        return $this->administer($user)
             || $user->id == $reservation->user->id
             || ($reservation->verified && $user->can('view', $reservation->reservableItem));
     }
@@ -52,7 +52,7 @@ class ReservationPolicy
         elseif (Carbon::make($reservation->reserved_from) < Carbon::now()) {
             return false;
         } else {
-            return self::administer($user)
+            return $this->administer($user)
             || (config('custom.room_reservation_open') && $reservation->user->id == $user->id);
         }
     }

@@ -32,17 +32,16 @@ class ReservableItemController extends \App\Http\Controllers\Controller
             ]
         ]);
 
-        if (!\App\Policies\ReservableItemPolicy::canViewType(
-            user(),
-            ReservableItemType::from($validatedData['type'])
-        )) {
-            abort(403);
-        }
+        $stringType = $validatedData['type'];
+        $this->authorize('requestReservationForType', [
+            ReservableItem::class,
+            ReservableItemType::from($stringType)
+        ]);
 
-        $items = ReservableItem::where('type', $validatedData['type'])->get();
+        $items = ReservableItem::where('type', $stringType)->get();
         return view('dormitory.reservations.items.index', [
             'items' => $items,
-            'type' => $validatedData['type']
+            'type' => $stringType
         ]);
     }
 

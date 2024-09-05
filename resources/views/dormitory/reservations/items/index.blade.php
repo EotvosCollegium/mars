@@ -16,10 +16,10 @@ $isForWashingMachine = \App\Enums\ReservableItemType::WASHING_MACHINE->value == 
             <div class="card-content">
                 <span class="card-title">@lang("reservations.{$type}_reservations")</span>
 
-                @if(\App\Policies\ReservableItemPolicy::canRequestReservationForType(
-                        user(),
-                        \App\Enums\ReservableItemType::from($type)
-                ))
+                @can('requestReservationForType', [
+                    \App\Models\Reservations\ReservableItem::class,
+                    \App\Enums\ReservableItemType::from($type)
+                ])
                     <blockquote>
                         @lang("reservations.{$type}_reservation_instructions")
                     </blockquote>
