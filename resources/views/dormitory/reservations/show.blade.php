@@ -53,7 +53,7 @@
                         <a href="{{ route('reservations.edit', $reservation) }}" class="btn waves-effect">
                             @lang('general.edit')
                         </a>
-                        @if (!$reservation->verified && user()->can('administer', App\Models\Reservation::class))
+                        @if (!$reservation->verified && user()->can('administer', App\Models\Reservations\Reservation::class))
                             <form style="display:inline;" action="{{ route('reservations.verify', $reservation->id) }}" method="POST">
                                 @csrf
                                 <button type="submit" class="waves-effect btn green">@lang('reservations.verify')</button>

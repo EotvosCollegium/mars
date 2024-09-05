@@ -6,9 +6,9 @@ use Carbon\Carbon;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-use App\Models\ReservableItem;
-use App\Models\Reservation;
-use App\Models\ReservationGroup;
+use App\Models\Reservations\ReservableItem;
+use App\Models\Reservations\Reservation;
+use App\Models\Reservations\ReservationGroup;
 use App\Models\User;
 
 class ReservationSeeder extends Seeder
@@ -82,7 +82,7 @@ class ReservationSeeder extends Seeder
                 try {
                     $new_group->initializeFrom($group_from);
                     $reservations = array_merge($reservations, $new_group->reservations->all());
-                } catch (\App\Exceptions\ConflictException $e) {
+                } catch (\App\Exceptions\ReservationConflictException $e) {
                     $new_group->delete();
                 }
             }

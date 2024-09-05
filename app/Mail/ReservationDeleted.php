@@ -9,7 +9,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-use App\Models\Reservation;
+use App\Models\Reservations\Reservation;
 
 /**
  * A Mailable sent to a user

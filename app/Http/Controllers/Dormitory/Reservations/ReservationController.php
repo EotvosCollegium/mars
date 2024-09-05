@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Dormitory\Reservations;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -16,14 +16,14 @@ use Carbon\CarbonImmutable;
 use App\Enums\ReservableItemType;
 use App\Models\User;
 use App\Models\Role;
-use App\Models\ReservableItem;
-use App\Models\ReservationGroup;
-use App\Models\Reservation;
-use App\Exceptions\ConflictException;
+use App\Models\Reservations\ReservableItem;
+use App\Models\Reservations\ReservationGroup;
+use App\Models\Reservations\Reservation;
+use App\Exceptions\ReservationConflictException;
 use App\Mail\ReservationDeleted;
 use App\Mail\ReservationVerified;
 
-class ReservationController extends Controller
+class ReservationController extends \App\Http\Controllers\Controller
 {
     /**
      * Lists the details of a reservation.
@@ -32,7 +32,7 @@ class ReservationController extends Controller
     {
         $this->authorize('view', $reservation);
 
-        return view('reservations.show', [
+        return view('dormitory.reservations.show', [
             'reservation' => $reservation
         ]);
     }
@@ -62,7 +62,7 @@ class ReservationController extends Controller
             && self::reachedMaximumForWashingMachines(user())) {
             return redirect()->back()->with('error', __('reservations.max_washing_reservations_reached'));
         } else {
-            return view('reservations.edit', [
+            return view('dormitory.reservations.edit', [
                 'item' => $item,
                 // default values that might have been passed in the GET request
                 'group_from' => $request->from,
@@ -176,7 +176,7 @@ class ReservationController extends Controller
 
             try {
                 $newGroup->initializeFrom($request->reserved_from);
-            } catch (ConflictException $e) {
+            } catch (ReservationConflictException $e) {
                 $newGroup->delete();
                 return redirect()->back()->withInput($request->input())->with('error', __('reservations.recurring_conflict') . ": {$e->getMessage()}");
             }
@@ -240,7 +240,7 @@ class ReservationController extends Controller
         // this also makes some other checks
         $this->authorize('modify', $reservation);
 
-        return view('reservations.edit', [
+        return view('dormitory.reservations.edit', [
             'reservation' => $reservation
         ]);
     }
@@ -376,7 +376,7 @@ class ReservationController extends Controller
                         verified: $verified
                     );
                 }
-            } catch (ConflictException $e) {
+            } catch (ReservationConflictException $e) {
                 abort(409, $e->getMessage());
             }
         }

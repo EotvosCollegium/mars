@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Reservations;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,7 +13,7 @@ use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 
 use App\Enums\ReservableItemType;
-use App\Models\Reservation;
+use App\Models\User;
 
 // ReservableItem -> reservable_items
 class ReservableItem extends Model

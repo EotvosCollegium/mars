@@ -7,8 +7,8 @@ use Livewire\Attributes\On;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 
-use App\Models\ReservableItem;
-use App\Models\Reservation;
+use App\Models\Reservations\ReservableItem;
+use App\Models\Reservations\Reservation;
 
 /**
  * A helper class representing a rectangle in the timetable,

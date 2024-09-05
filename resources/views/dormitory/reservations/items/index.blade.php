@@ -49,7 +49,7 @@ $isForWashingMachine = \App\Enums\ReservableItemType::WASHING_MACHINE->value == 
                     @lang("reservations.{$type}_index_instructions")
                 </blockquote>
 
-                @include('reservations.item_table')
+                @include('dormitory.reservations.item_table')
             </div>
         </div>
     </div>

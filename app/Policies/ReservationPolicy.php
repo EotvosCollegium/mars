@@ -4,7 +4,7 @@ namespace App\Policies;
 
 use App\Models\User;
 use App\Models\Role;
-use App\Models\Reservation;
+use App\Models\Reservations\Reservation;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Carbon\Carbon;
 

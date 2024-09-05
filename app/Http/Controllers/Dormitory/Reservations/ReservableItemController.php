@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Dormitory\Reservations;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -10,13 +10,13 @@ use Illuminate\Validation\Rule;
 use Carbon\Carbon;
 
 use App\Enums\ReservableItemType;
-use App\Models\ReservableItem;
+use App\Models\Reservations\ReservableItem;
 use App\Models\Role;
 use App\Models\User;
 use App\Mail\AffectedReservation;
 use App\Mail\ReportReservableItemFault;
 
-class ReservableItemController extends Controller
+class ReservableItemController extends \App\Http\Controllers\Controller
 {
     /**
      * Lists all reservable items
@@ -40,7 +40,7 @@ class ReservableItemController extends Controller
         }
 
         $items = ReservableItem::where('type', $validatedData['type'])->get();
-        return view('reservations.items.index', [
+        return view('dormitory.reservations.items.index', [
             'items' => $items,
             'type' => $validatedData['type']
         ]);
@@ -54,7 +54,7 @@ class ReservableItemController extends Controller
     {
         $this->authorize('view', $item);
 
-        return view('reservations.items.show', [
+        return view('dormitory.reservations.items.show', [
             'item' => $item,
         ]);
     }
@@ -67,7 +67,7 @@ class ReservableItemController extends Controller
     {
         $this->authorize('view', $item);
 
-        return view('reservations.items.show_print_version', [
+        return view('dormitory.reservations.items.show_print_version', [
             'item' => $item,
         ]);
     }

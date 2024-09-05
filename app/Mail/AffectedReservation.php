@@ -6,7 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-use App\Models\ReservableItem;
+use App\Models\Reservations\ReservableItem;
 
 /**
  * This is sent to users who have active reservations

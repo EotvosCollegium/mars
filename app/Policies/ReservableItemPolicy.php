@@ -4,7 +4,7 @@ namespace App\Policies;
 
 use App\Models\User;
 use App\Models\Role;
-use App\Models\ReservableItem;
+use App\Models\Reservations\ReservableItem;
 use App\Enums\ReservableItemType;
 use Illuminate\Auth\Access\HandlesAuthorization;
 

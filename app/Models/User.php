@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Mail\Invitation;
 use App\Models\GeneralAssemblies\PresenceCheck;
 use App\Models\Internet\InternetAccess;
+use App\Models\Reservations\ReservableItem;
+use App\Models\Reservations\Reservation;
 use App\Utils\HasRoles;
 use App\Utils\NotificationCounter;
 use Carbon\Carbon;

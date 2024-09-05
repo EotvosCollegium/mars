@@ -29,7 +29,7 @@
                     <form method="POST"
                         action="{{
                             route(
-                                user()->can('administer', \App\Models\ReservableItem::class)
+                                user()->can('administer', \App\Models\Reservations\ReservableItem::class)
                                 ? 'reservations.items.toggle_out_of_order' : 'reservations.items.report_fault',
                                 ['item' => $item]
                             )
@@ -41,7 +41,7 @@
                             'green' => $item->out_of_order
                         ])
                             text="{{'reservations.' . (
-                                user()->can('administer', \App\Models\ReservableItem::class)
+                                user()->can('administer', \App\Models\Reservations\ReservableItem::class)
                                 ? ($item->out_of_order ? 'set_fixed' : 'set_out_of_order')
                                 : ($item->out_of_order ? 'report_fix' : 'report_fault')
                             )}}"

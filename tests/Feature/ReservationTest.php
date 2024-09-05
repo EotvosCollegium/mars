@@ -10,11 +10,11 @@ use Carbon\CarbonImmutable;
 use App\Enums\ReservableItemType;
 use App\Models\User;
 use App\Models\Role;
-use App\Models\ReservableItem;
-use App\Models\Reservation;
-use App\Models\ReservationGroup;
+use App\Models\Reservations\ReservableItem;
+use App\Models\Reservations\Reservation;
+use App\Models\Reservations\ReservationGroup;
 use App\Models\Workshop;
-use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\Dormitory\Reservations\ReservationController;
 
 class ReservationTest extends TestCase
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Reservations;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,9 +11,9 @@ use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-use App\Models\Reservation;
+use App\Models\User;
 
-use App\Exceptions\ConflictException;
+use App\Exceptions\ReservationConflictException;
 
 /**
  * Groups recurring reservations into one single item
@@ -62,7 +62,7 @@ class ReservationGroup extends Model
      * The first one is always the one beginning on the first day;
      * the last one is the one beginning on the 'last' day
      * (or the one before if there is none on that date).
-     * If there is a conflict, it throws a ConflictException
+     * If there is a conflict, it throws a ReservationConflictException
      * and does nothing to the database.
      */
     private function reserveInInterval(Carbon $firstDay, Carbon $lastDay): void
@@ -85,7 +85,7 @@ class ReservationGroup extends Model
                     CarbonImmutable::make($currentStart),
                     CarbonImmutable::make($currentEnd)
                 )->isEmpty()) {
-                    throw new ConflictException("conflict on $currentStart");
+                    throw new ReservationConflictException("conflict on $currentStart");
                 } else {
                     Reservation::create([
                         'reservable_item_id' => $this->group_item,
@@ -107,7 +107,7 @@ class ReservationGroup extends Model
     /**
      * Creates the reservations of the group, from the given date.
      * Should be run after creation.
-     * If there is a conflict, it throws a ConflictException
+     * If there is a conflict, it throws a ReservationConflictException
      * and does nothing to the database.
      */
     public function initializeFrom(Carbon|string $firstDay): void
@@ -139,7 +139,7 @@ class ReservationGroup extends Model
      * and creates or deletes member reservations accordingly.
      * Throws InvalidArgumentException if $newLastDay is earlier than the first day
      * (so if there would be no reservations left).
-     * Throws ConflictException if there would be a conflict;
+     * Throws a ReservationConflictException if there would be a conflict;
      * in that case, no change to the database is made.
      */
     public function setLastDay(Carbon|string $newLastDay): void
@@ -171,7 +171,7 @@ class ReservationGroup extends Model
      *
      * If something is null, it does not get changed.
      * If group_from or group_until changes,
-     * a ConflictException is thrown if there would be a conflict;
+     * a ReservationConflictException is thrown if there would be a conflict;
      * then, nothing is done to the database.
      * The reservation must belong to the group.
      */
@@ -248,7 +248,7 @@ class ReservationGroup extends Model
                             return $other->group_id != $this->id;
                         });
                     if (!$others->isEmpty()) {
-                        throw new ConflictException(
+                        throw new ReservationConflictException(
                             "conflict on $newFrom"
                         );
                     }
@@ -298,7 +298,7 @@ class ReservationGroup extends Model
      *
      * If something is null, it does not get changed.
      * If group_from or group_until changes,
-     * a ConflictException is thrown if there would be a conflict;
+     * a ReservationConflictException is thrown if there would be a conflict;
      * then, nothing is done to the database.
      *  $groupFrom and $groupUntil must be both null or neither.
      * (Otherwise, an InvalidArgumentException is thrown.)
