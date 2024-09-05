@@ -351,12 +351,13 @@ class ReservationController extends \App\Http\Controllers\Controller
         $groupTitle =
             ($validatedData['title'] != $group->group_title)
             ? $validatedData['title'] : null;
-        
+
         $groupFrom = Carbon::make($validatedData['reserved_from']);
         $groupUntil = Carbon::make($validatedData['reserved_until']);
         if (Carbon::make($validatedData['reserved_from']) == Carbon::make($reservation->reserved_from)
                 && Carbon::make($validatedData['reserved_until']) == Carbon::make($reservation->reserved_until)) {
-            $groupFrom = null; $groupUntil = null;
+            $groupFrom = null;
+            $groupUntil = null;
         }
 
         $groupNote =
