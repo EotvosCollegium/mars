@@ -167,6 +167,76 @@ class ReservationGroup extends Model
         $this->save();
     }
 
+    /**
+     * An auxiliary function for `setForAllAfter`.
+     * Sets the desired attributes on a given member reservation
+     * of the group.
+     * The rules on the parameters are similar
+     * to those for `setForAllAfter`;
+     * except that the duration is used instead of a $groupUntil parameter.
+     * If group_from or group_until changes,
+     * a ReservationConflictException is thrown if there would be a conflict;
+     * then, nothing is done to the database.
+     */
+    private function setForReservation(
+        Reservation $actualReservation,
+        ?ReservableItem $groupItem = null,
+        ?User $user = null,
+        ?string $groupTitle = null,
+        ?Carbon $groupFrom = null,
+        ?int $groupDuration = null,
+        ?string $groupNote = null,
+        ?bool $verified = null
+    ): void
+    {
+        // the item has to be set now;
+        // we are going to use it
+        if (!is_null($groupItem)) {
+            // now, it will change the item even if it has been custom
+            $actualReservation->reservable_item_id = $groupItem->id;
+            $actualReservation->save();
+            $actualReservation->refresh();
+        }
+
+        if (!is_null($groupFrom)) {
+            $newFrom = Carbon::make($actualReservation->reserved_from)
+                        ->setHour($groupFrom->hour)
+                        ->setMinute($groupFrom->minute);
+            $newUntil = $newFrom->copy()->addMinutes($groupDuration);
+
+            $other = $actualReservation->reservableItem
+                ->reservationsInSlot(
+                    CarbonImmutable::make($newFrom),
+                    CarbonImmutable::make($newUntil)
+                )->filter(function (Reservation $other) {
+                    return $other->group_id != $this->id;
+                })->first();
+            if (!is_null($other)) {
+                throw new ReservationConflictException(
+                    __('reservations.recurring_conflict') . " {$other->reserved_from}, {$other->reserved_until}"
+                );
+            }
+
+            $actualReservation->reserved_from = $newFrom;
+            $actualReservation->reserved_until = $newUntil;
+        }
+
+        if (!is_null($user)) {
+            $actualReservation->user_id = $user->id;
+        }
+        if (!is_null($groupTitle)) {
+            $actualReservation->title = $groupTitle;
+        }
+        if (!is_null($groupNote)) {
+            $actualReservation->note = $groupNote;
+        }
+        if (!is_null($verified)) {
+            $actualReservation->verified = $verified;
+        }
+
+        $actualReservation->save();
+    }
+
 
     /**
      * Edit the default parameters and set them
@@ -231,52 +301,16 @@ class ReservationGroup extends Model
                 ->where('reserved_from', '>=', $firstReservation->reserved_from)
                 ->get();
             foreach($allAfter as $reservation) {
-                // the item has to be set now;
-                // we are going to use it
-                if (!is_null($groupItem)) {
-                    // now, it will change the item even if it has been custom
-                    $reservation->reservable_item_id = $groupItem->id;
-                    $reservation->save();
-                    $reservation->refresh();
-                }
-
-                if (!is_null($groupFrom)) {
-                    $newFrom = Carbon::make($reservation->reserved_from)
-                                ->setHour($groupFrom->hour)
-                                ->setMinute($groupFrom->minute);
-                    $newUntil = $newFrom->copy()->addMinutes($groupDuration);
-
-                    $other = $reservation->reservableItem
-                        ->reservationsInSlot(
-                            CarbonImmutable::make($newFrom),
-                            CarbonImmutable::make($newUntil)
-                        )->filter(function (Reservation $other) {
-                            return $other->group_id != $this->id;
-                        })->first();
-                    if (!is_null($other)) {
-                        throw new ReservationConflictException(
-                            __('reservations.recurring_conflict') . " {$other->reserved_from}, {$other->reserved_until}"
-                        );
-                    }
-
-                    $reservation->reserved_from = $newFrom;
-                    $reservation->reserved_until = $newUntil;
-                }
-
-                if (!is_null($user)) {
-                    $reservation->user_id = $user->id;
-                }
-                if (!is_null($groupTitle)) {
-                    $reservation->title = $groupTitle;
-                }
-                if (!is_null($groupNote)) {
-                    $reservation->note = $groupNote;
-                }
-                if (!is_null($verified)) {
-                    $reservation->verified = $verified;
-                }
-
-                $reservation->save();
+                $this->setForReservation(
+                    actualReservation: $reservation,
+                    groupItem: $groupItem,
+                    user: $user,
+                    groupTitle: $groupTitle,
+                    groupFrom: $groupFrom,
+                    groupDuration: $groupDuration,
+                    groupNote: $groupNote,
+                    verified: $verified
+                );
             }
 
             if (isset($groupItem)) {
