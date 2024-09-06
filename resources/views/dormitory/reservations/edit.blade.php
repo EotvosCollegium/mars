@@ -13,9 +13,11 @@ if (isset($reservation)) {
   class="breadcrumb" style="cursor: pointer">
   {{ isset($reservation) ? $reservation->reservableItem->name : $item->name }}
 </a>
+@if(!isset($reservation) || !empty($reservation->title))
 <a href="#!" class="breadcrumb">
     {{ isset($reservation) ? $reservation->title : __('reservations.create') }}
 </a>
+@endif
 @endsection
 
 @section('content')

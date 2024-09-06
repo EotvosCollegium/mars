@@ -7,7 +7,9 @@
 <a href="{{route('reservations.items.show', $reservation->reservableItem)}}"
   class="breadcrumb" style="cursor: pointer">{{ $reservation->reservableItem->name }}</a>
 @endif
+@if(!empty($reservation->title))
 <a href="#!" class="breadcrumb">{{ $reservation->title }}</a>
+@endif
 @endsection
 
 @section('content')
@@ -25,10 +27,12 @@
                         </th>
                         <td>{{$reservation->reservableItem->name}}</td>
                     </tr>
-                    <tr>
-                        <th>@lang('reservations.title')</th>
-                        <td>{{$reservation->title}}</td>
-                    </tr>
+                    @if($reservation->title)
+                        <tr>
+                            <th>@lang('reservations.title')</th>
+                            <td>{{$reservation->title}}</td>
+                        </tr>
+                    @endif
                     <tr>
                         <th>@lang('general.user')</th>
                         <td>{{is_null($reservation->user) ? "" : $reservation->user->name}}</td>
@@ -45,24 +49,26 @@
                         <th>@lang('general.note')</th>
                         <td>{{$reservation->note}}</td>
                     </tr>
-                    <tr>
-                        <th>@lang('reservations.is_recurring')</th>
-                        <td>
-                            {{$reservation->isRecurring()
-                                ? ("{$reservation->group->frequency}" . __('reservations.frequency_comment'))
-                                : __('general.no')}}
-                        </td>
-                    </tr>
-                    @can('administer', \App\Models\Reservation::class)
-                    <tr>
-                        <th>@lang('reservations.is_verified')</th>
-                        <td>
-                            {{$reservation->verified
-                                ? __('general.yes')
-                                : __('general.no')}}
-                        </td>
-                    </tr>
-                    @endcan
+                    @if($reservation->reservableItem->isRoom())
+                        <tr>
+                            <th>@lang('reservations.is_recurring')</th>
+                            <td>
+                                {{$reservation->isRecurring()
+                                    ? ("{$reservation->group->frequency}" . __('reservations.frequency_comment'))
+                                    : __('general.no')}}
+                            </td>
+                        </tr>
+                        @can('administer', \App\Models\Reservation::class)
+                        <tr>
+                            <th>@lang('reservations.is_verified')</th>
+                            <td>
+                                {{$reservation->verified
+                                    ? __('general.yes')
+                                    : __('general.no')}}
+                            </td>
+                        </tr>
+                        @endcan
+                    @endif
                 </table>
             </div>
             @can('modify', $reservation)
