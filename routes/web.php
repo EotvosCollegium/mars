@@ -38,6 +38,8 @@ use App\Http\Controllers\StudentsCouncil\GeneralAssemblyController;
 use App\Http\Controllers\StudentsCouncil\GeneralAssemblyPresenceCheckController;
 use App\Http\Controllers\StudentsCouncil\GeneralAssemblyQuestionController;
 use App\Http\Controllers\StudentsCouncil\MrAndMissController;
+use App\Http\Controllers\Dormitory\Reservations\ReservableItemController;
+use App\Http\Controllers\Dormitory\Reservations\ReservationController;
 use App\Http\Middleware\LogRequests;
 use App\Http\Middleware\OnlyHungarian;
 use App\Http\Middleware\EnsureVerified;
@@ -278,6 +280,26 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
                 ->name('general_assemblies.questions.votes.store')
                 ->withoutMiddleware(LogRequests::class)
                 ->scopeBindings();
+
+    Route::prefix('reservations')->name('reservations.')->group(function () {
+        Route::resource('items', ReservableItemController::class)->only([
+            'index', 'create', 'store', 'show', 'delete'
+        ]);
+        Route::post('/items/{item}/report_fault', [ReservableItemController::class, 'reportFault'])->name('items.report_fault');
+        Route::post('/items/{item}/toggle_out_of_order', [ReservableItemController::class, 'toggleOutOfOrder'])->name('items.toggle_out_of_order');
+        Route::get('/items/{item}/print', [ReservableItemController::class, 'showPrintVersion'])->name('items.show_print_version');
+
+        Route::get('/for_item/{item}', [ReservationController::class, 'index'])->name('index');
+        Route::get('/{reservation}', [ReservationController::class, 'show'])->name('show');
+        Route::get('/create/for_item/{item}', [ReservationController::class, 'create'])->name('create');
+        Route::post('/for_item/{item}', [ReservationController::class, 'store'])->name('store');
+        Route::get('/{reservation}/edit', [ReservationController::class, 'edit'])->name('edit');
+        Route::post('/{reservation}', [ReservationController::class, 'update'])->name('update');
+        Route::post('/{reservation}/delete', [ReservationController::class, 'delete'])->name('delete');
+        Route::post('/{reservation}/verify', [ReservationController::class, 'verify'])->name('verify');
+        Route::post('/{reservation}/delete_all', [ReservationController::class, 'deleteAll'])->name('delete_all');
+        Route::post('/{reservation}/verify_all', [ReservationController::class, 'verifyAll'])->name('verify_all');
+    });
 
     Route::get('/general_assemblies/{general_assembly}/presence_checks/create', [GeneralAssemblyPresenceCheckController::class, 'create'])
                 ->name('general_assemblies.presence_checks.create');

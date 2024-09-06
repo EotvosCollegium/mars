@@ -70,6 +70,8 @@ return [
         'question_1' => "\"Honnan hallott a Collegiumról?\" kérdés",
         'question_1_other' => "\"Honnan hallott a Collegiumról?\" kérdés egyéb mezője",
         'question_2' => "\"Miért kíván a Collegium tagja lenni?\" kérdés",
+        'reserved_from' => 'kezdési dátum',
+        'reserved_until' => 'befejezési dátum'
     ],
     'before' => 'A(z) :attribute :date előtti dátum kell, hogy legyen!',
     'before_or_equal' => 'A(z) :attribute nem lehet későbbi dátum, mint :date!',
@@ -174,4 +176,12 @@ return [
     'uploaded' => 'A(z) :attribute feltöltése sikertelen.',
     'url' => 'A(z) :attribute érvénytelen link.',
     'uuid' => ':attribute érvényes UUID-val kell rendelkezzen.',
+    'values' => [
+        'reserved_from' => [
+            'now' => 'az aktuális idő'
+        ],
+        'reserved_until' => [
+            'now' => 'az aktuális idő'
+        ]
+    ]
 ];

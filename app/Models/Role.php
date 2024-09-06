@@ -50,6 +50,7 @@ class Role extends Model
     public const BOARD_OF_TRUSTEES_MEMBER = 'board-of-trustees-member';
     public const ETHICS_COMMISSIONER = 'ethics-commissioner';
     public const ALUMNI = 'alumni';
+    public const RECEPTIONIST = 'receptionist';
 
     //Students' Committe role's objects
     public const PRESIDENT = 'president';
@@ -128,7 +129,7 @@ class Role extends Model
         self::BOARD_OF_TRUSTEES_MEMBER,
         self::ETHICS_COMMISSIONER,
         self::ALUMNI,
-
+        self::RECEPTIONIST
     ];
 
     protected $fillable = [
@@ -314,6 +315,7 @@ class Role extends Model
             self::BOARD_OF_TRUSTEES_MEMBER => 'deep-orange darken-1',
             self::ETHICS_COMMISSIONER => 'green lighten-2',
             self::ALUMNI => 'grey darken-1',
+            self::RECEPTIONIST => 'brown',
             default => 'grey',
         };
     }
