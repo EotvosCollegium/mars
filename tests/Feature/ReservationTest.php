@@ -818,4 +818,49 @@ class ReservationTest extends TestCase
         );
         $response->assertStatus(403);
     }
+
+    /**
+     * Testing fault reporting and status toggling functionality.
+     */
+    public function test_fault_report(): void
+    {
+        $anita = self::createSecretary();
+        $collegist = self::createCollegist();
+        $now = CarbonImmutable::now();
+
+        foreach([ReservableItemType::WASHING_MACHINE, ReservableItemType::ROOM] as $type) {
+            foreach([1, 0] as $outOfOrder) {
+                $item = ReservableItem::factory()->create([
+                    'name' => 'item',
+                    'type' => $type->value,
+                    'out_of_order' => $outOfOrder
+                ]);
+                // an existing reservation for testing notifications
+                Reservation::create([
+                    'reservable_item_id' => $item->id,
+                    'user_id' => $collegist->id,
+                    'reserved_from' => $now->addHours(2),
+                    'reserved_until' => $now->addHours(3),
+                    'verified' => 1
+                ]);
+
+                $response = $this->actingAs($collegist)->followingRedirects()->post(
+                    route('reservations.items.report_fault', $item)
+                );
+                $response->assertStatus(200);
+                $item->refresh();
+                $this->assertEquals($outOfOrder, $item->out_of_order); // it must have remained
+                Mail::assertQueued(ReportReservableItemFault::class);
+
+                $response = $this->actingAs($anita)->followingRedirects()->post(
+                    route('reservations.items.toggle_out_of_order', $item)
+                );
+                $response->assertStatus(200);
+                $item->refresh();
+                $negateOutOfOrder = $outOfOrder ? 0 : 1;
+                $this->assertEquals($negateOutOfOrder, $item->out_of_order); // it must have changed
+                Mail::assertQueued(ReservationAffected::class);
+            }
+        }
+    }
 }
