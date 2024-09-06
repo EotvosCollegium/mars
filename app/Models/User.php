@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Mail\Invitation;
 use App\Models\GeneralAssemblies\PresenceCheck;
 use App\Models\Internet\InternetAccess;
+use App\Models\Reservations\ReservableItem;
+use App\Models\Reservations\Reservation;
 use App\Utils\HasRoles;
 use App\Utils\NotificationCounter;
 use Carbon\Carbon;
@@ -459,6 +461,22 @@ class User extends Authenticatable implements HasLocalePreference
     public function presenceChecks(): BelongsToMany
     {
         return $this->belongsToMany(PresenceCheck::class);
+    }
+
+    /**
+     * @return HasMany The reservations the user has made.
+     */
+    public function reservations(): HasMany
+    {
+        return $this->hasMany(Reservation::class);
+    }
+
+    /**
+     * @return BelongsToMany The reservable items which the user has ever reserved.
+     */
+    public function reservableItems(): BelongsToMany
+    {
+        return $this->belongsToMany(ReservableItem::class, 'reservations', 'user_id', 'reservable_item_id');
     }
 
     /*

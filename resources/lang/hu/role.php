@@ -38,6 +38,7 @@ return [
     'president' => 'Elnök',
     'printer' => 'Nyomtató',
     'reception' => 'Porta',
+    'receptionist' => 'Portás',
     'resident' => 'Bentlakó',
     'role_attached' => 'Új jogosultság: :role',
     'role_detached' => 'Eltávolított jogosultság: :role',
