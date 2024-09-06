@@ -120,7 +120,9 @@ class ReservableItemController extends \App\Http\Controllers\Controller
     {
         $this->authorize('view', $item);
 
-        $thoseToNotify = User::whereIn('role_id', [Role::SYS_ADMIN, Role::STAFF])->get();
+        $thoseToNotify = User::whereHas('roles', function ($query) {
+            $query->whereIn('name', [Role::SYS_ADMIN, Role::STAFF]);
+        })->get();
         foreach ($thoseToNotify as $toNotify) {
             Mail::to($toNotify)->queue(
                 new ReportReservableItemFault(
