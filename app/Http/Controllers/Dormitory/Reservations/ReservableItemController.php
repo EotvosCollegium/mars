@@ -33,7 +33,7 @@ class ReservableItemController extends \App\Http\Controllers\Controller
         ]);
 
         $stringType = $validatedData['type'];
-        $this->authorize('requestReservationForType', [
+        $this->authorize('viewType', [
             ReservableItem::class,
             ReservableItemType::from($stringType)
         ]);
