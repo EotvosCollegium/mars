@@ -22,9 +22,9 @@ class ParentChildForm extends Component
      * @param array $items
      * @param bool $optional
      */
-    public function mount($items = [''], $optional = false)
+    public function mount(?array $items, bool $optional = false): void
     {
-        if (count($items) == 0) {
+        if (is_null($items) || count($items) == 0) {
             $items = [''];
         }
         $this->items = $items;
