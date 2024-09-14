@@ -8,8 +8,8 @@
         <form method="POST" action="{{ route($route_base . '.income.add') }}">
             @csrf
             <div class="row">
-                <x-input.text m=6 l=6 id="comment" required text="Megjegyzés" />
-                <x-input.text type="number" m=6 l=6 id="amount" min=0 required text="Összeg" />
+                <x-input.text m=6 l=6 id="income-comment" name="comment" required text="Megjegyzés" />
+                <x-input.text type="number" m=6 l=6 id="income-amount" name="amount" min=0 required text="Összeg" />
             </div>
             <x-input.button floating class="btn-large right" icon="payments" />
         </form>
