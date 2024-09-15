@@ -7,7 +7,7 @@
             <th style="max-width: 30%;">@lang('reservations.item_status')</th>
             <th style="text-align: right;">@lang('reservations.item_name')</th>
             {{-- for fault report buttons --}}
-            <th style="max-width: 10%;"></th>
+            <th style="width: 250px;"></th>
         </tr>
     </thead>
     <tbody>
@@ -32,11 +32,11 @@
                 action="{{ route('reservations.items.report_fault', ['item' => $item]) }}"
                 enctype='multipart/form-data'>
                     @csrf
-                    <x-input.button floating @class([
-                        'right', 'btn-small',
-                        'red' => !$item->out_of_order,
-                        'green' => $item->out_of_order
-                    ]) icon="build" />
+                    <x-input.button @class([
+                        'right',
+                        'coli' => !$item->out_of_order,
+                        'blue' => !$item->out_of_order,
+                    ]) :text="__($item->out_of_order ? 'reservations.report_fix' : 'reservations.report_fault')" />
                 </form>
             </td>
         </tr>
