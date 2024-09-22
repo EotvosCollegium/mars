@@ -147,7 +147,7 @@ class ReservableItemController extends \App\Http\Controllers\Controller
 
         $item->update(['out_of_order' => !$item->out_of_order]);
 
-        foreach ($item->usersWithActiveReservation as $toNotify) {
+        foreach ($item->usersWithActiveReservation()->get() as $toNotify) {
             Mail::to($toNotify)->queue(new ReservationAffected(
                 $item,
                 $toNotify->name
