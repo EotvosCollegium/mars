@@ -225,6 +225,7 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
     Route::post('/economic_committee/mark_as_paid/{user}', [EconomicController::class, 'markAsPaid'])->name('economic_committee.pay');
     Route::post('/economic_committee/to_checkout', [EconomicController::class, 'toCheckout'])->name('economic_committee.to_checkout');
 
+    Route::post('/admission/kktnetreg/period/update', [EconomicController::class, 'updatePaymentPeriod'])->name('kktnetreg.period.update');
     Route::get('/economic_committee/kktnetreg', [EconomicController::class, 'indexKKTNetreg'])->name('kktnetreg');
     Route::post('/economic_committee/kktnetreg/pay', [EconomicController::class, 'payKKTNetreg'])->name('kktnetreg.pay');
     Route::get('/economic_committee/calculate_workshop_balance', [EconomicController::class, 'calculateWorkshopBalance'])->name('economic_committee.workshop_balance');

@@ -118,24 +118,6 @@ class AdminInternetControllerTest extends TestCase
     }
 
     /**
-     * Test that an admin can extend an internet access to the default value.
-     */
-    public function test_extend_internet_access_default(): void
-    {
-        $date = InternetAccess::getInternetDeadline();
-        $response = $this->actingAs($this->admin)->post(route('internet.internet_accesses.extend', $this->user->internetAccess));
-
-        $response->assertStatus(200);
-
-        $this->assertDatabaseHas('internet_accesses', [
-            'user_id' => $this->user->id,
-            'has_internet_until' => $date,
-        ]);
-
-        $response->assertSee($date->format('Y-m-d'));
-    }
-
-    /**
      * Test that an admin can revoke an internet access.
      */
 

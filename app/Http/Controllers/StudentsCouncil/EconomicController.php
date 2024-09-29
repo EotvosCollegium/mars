@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers\StudentsCouncil;
 
+use App\Events\KKTNetregPeriodStart;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Network\InternetController;
 use App\Models\Checkout;
+use App\Models\Internet\InternetAccess;
 use App\Models\PaymentType;
+use App\Models\PeriodicEvent;
 use App\Models\Role;
 use App\Models\RoleObject;
 use App\Models\Semester;
@@ -13,16 +16,24 @@ use App\Models\Transaction;
 use App\Models\User;
 use App\Models\WorkshopBalance;
 use App\Utils\CheckoutHandler;
+use App\Utils\PeriodicEventController;
 use Carbon\Carbon;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
-class EconomicController extends Controller
+class EconomicController extends PeriodicEventController
 {
     use CheckoutHandler;
+
+    public function __construct()
+    {
+        parent::__construct(PeriodicEvent::KKT_NETREG_PAYMENT_PERIOD);
+    }
 
     /**
      * Return the route base for the checkout of the students council.
@@ -30,6 +41,35 @@ class EconomicController extends Controller
     public static function routeBase(): string
     {
         return 'economic_committee';
+    }
+
+    /**
+     * Update the PeriodicEvent for the payments.
+     *
+     * @param Request $request
+     * @return RedirectResponse
+     * @throws AuthorizationException
+     */
+    public function updatePaymentPeriod(Request $request): RedirectResponse
+    {
+        $this->authorize('administrate', Checkout::studentsCouncil());
+        if($this->periodicEvent()) {
+            throw new \Exception('Már meglévő periódus módosítása nem lehetséges.');
+        }
+
+        $request->validate([
+            'semester_id' => 'required|exists:semesters,id',
+            'end_date' => 'required|date|after:now'
+        ]);
+
+        $semester = Semester::find($request->semester_id);
+        $startDate = Carbon::parse(now());
+        $endDate = Carbon::parse($request->end_date);
+
+        $this->updatePeriodicEvent($semester, $startDate, $endDate);
+        InternetAccess::resetInternetAccessPeriod($endDate);
+
+        return back()->with('message', __('general.successful_modification'));
     }
 
     /**
@@ -51,7 +91,9 @@ class EconomicController extends Controller
         return view(
             'student-council.economic-committee.app',
             array_merge($this->getData($this->checkout()), [
-                'users_not_paid' => User::hasToPayKKTNetreg()->get()
+                'users_not_paid' => User::hasToPayKKTNetreg()->get(),
+                'periodicEvent' => $this->periodicEvent(),
+                'isPaymentPeriod' => $this->isActive()
             ])
         );
     }
@@ -107,9 +149,9 @@ class EconomicController extends Controller
 
         WorkshopBalance::generateBalances(Semester::current());
 
-        $new_expiry_date = $payer->internetAccess->extendInternetAccess();
+        $payer->internetAccess->update(['netreg_paid' => true, 'has_internet_until' => null]);
 
-        return [$kkt, $netreg, $new_expiry_date];
+        return [$kkt, $netreg];
     }
 
     /**
@@ -128,21 +170,13 @@ class EconomicController extends Controller
 
         $payer = User::findOrFail($request->user_id);
         // the current user will be the receiver
-        [$kkt, $netreg, $new_internet_expire_date]
-            = self::payKKTNetregLogic($payer, Auth::user(), $request->kkt, $request->netreg);
-
-        $internet_expiration_message = null;
-        if ($new_internet_expire_date !== null) {
-            $internet_expiration_message = __('internet.expiration_extended', [
-                'new_date' => Carbon::parse($new_internet_expire_date)->format('Y-m-d'),
-            ]);
-        }
+        [$kkt, $netreg] = self::payKKTNetregLogic($payer, Auth::user(), $request->kkt, $request->netreg);
 
         Mail::to($payer)->queue(new \App\Mail\Transactions(
             $payer->name,
             [$kkt, $netreg],
             "Tranzakció létrehozva",
-            $internet_expiration_message
+            "Az internet hozzáférésed meg lett hosszabbítva."
         ));
 
         return redirect()->back()->with('message', __('general.successfully_added'));
