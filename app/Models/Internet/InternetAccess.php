@@ -128,7 +128,7 @@ class InternetAccess extends Model
     }
 
     /**
-     * @param string|Carbon|null $newDate
+     * @param Carbon $newDate
      * @return Carbon
      */
     public function extendInternetAccess(Carbon $newDate): Carbon
