@@ -70,7 +70,7 @@ class SemesterEvaluationController extends PeriodicEventController
         $this->authorize('fillOrManage', SemesterEvaluation::class);
 
         return view('secretariat.evaluation-form.app', [
-            'phd' => user()->educationalInformation->studyLines()->currentlyEnrolled()->where('type', 'phd')->exists(),
+            'phd' => user()->educationalInformation->isSenior(),
             'user' => user(),
             'faculties' => Faculty::all(),
             'workshops' => Workshop::all(),

@@ -7,8 +7,8 @@ return [
         'two_sided' => env('PRINT_COST_TWOSIDED'),
     ],
 
-    // Maximum accepted PDF size in byte.
-    'pdf_size_limit' => env('PRINT_MAX_FILE_SIZE', 5000000),
+    // maximum accepted PDF size in kilobytes
+    'pdf_size_limit' => env('PRINT_MAX_FILE_SIZE', 10000),
 
     'printer_name' => env('PRINTER_NAME', 'ujbela'),
 

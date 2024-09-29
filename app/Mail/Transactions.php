@@ -11,7 +11,7 @@ class Transactions extends Mailable
     use Queueable;
     use SerializesModels;
 
-    public $recipent;
+    public $recipient;
     public $title;
     public $transactions;
     public $additional_message;
@@ -21,10 +21,10 @@ class Transactions extends Mailable
      *
      * @return void
      */
-    public function __construct($recipent, $transactions, $title, $additional_message = null)
+    public function __construct($recipient, $transactions, $title, $additional_message = null)
     {
         $this->title = $title;
-        $this->recipent = $recipent;
+        $this->recipient = $recipient;
         $this->transactions = $transactions;
         $this->additional_message = $additional_message;
     }

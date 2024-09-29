@@ -1,9 +1,4 @@
 @extends('auth.application.app')
-
-@section('educational-active')
-    active
-@endsection
-
 @section('form')
 
     <div class="card">

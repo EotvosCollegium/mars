@@ -42,7 +42,7 @@ class StatusesExport implements FromCollection, WithTitle, WithMapping, WithHead
 
         return array_merge([
             'Név',
-            'Neptun kód',
+            'Neptun-kód',
             'Collegiumi felvétel éve',
         ], $semesters);
     }

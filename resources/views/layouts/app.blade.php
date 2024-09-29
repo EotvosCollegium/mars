@@ -57,6 +57,9 @@
         z-index: 9999;
         background: url(/loading.gif) center no-repeat #fff;
     }
+    .dark .preloader {
+        filter: invert(100%);
+    }
     </style>
 
 </head>
@@ -65,7 +68,7 @@
 <body>
     <script>document.body.classList.add(localStorage.getItem('themeMode') || 'light');</script>
     <header>
-        @include('layouts.navbar')
+        @include('layouts.navbar', ['fixed' => true])
     </header>
     <div class="row">
         <div class="container">

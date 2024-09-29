@@ -136,7 +136,7 @@ class UserPolicy
         }
 
         if ($role->name == Role::TENANT) {
-            return $user->hasRole([Role::STAFF, Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS]);
+            return $user->hasRole([Role::STAFF]);
         }
 
         if ($role->name == Role::COLLEGIST) {
@@ -169,7 +169,11 @@ class UserPolicy
         }
 
         if ($role->name == Role::APPLICATION_COMMITTEE_MEMBER) {
-            return $user->hasRole([Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR]);
+            return $user->hasRole([
+                Role::WORKSHOP_LEADER,
+                Role::WORKSHOP_ADMINISTRATOR,
+                Role::STUDENT_COUNCIL => [Role::PRESIDENT, Role::SCIENCE_VICE_PRESIDENT]
+            ]);
         }
 
         if ($role->name == Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER) {
@@ -196,7 +200,7 @@ class UserPolicy
     public function updatePermission(User $user, User $target, Role $role, Workshop|RoleObject $object = null): bool
     {
         if ($role->name == Role::TENANT) {
-            return $user->hasRole([Role::STAFF, Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS]);
+            return $user->hasRole([Role::STAFF]);
         }
 
         if ($role->name == Role::COLLEGIST) {
@@ -204,7 +208,10 @@ class UserPolicy
         }
 
         if ($role->name == Role::APPLICATION_COMMITTEE_MEMBER) {
-            return $user->roleWorkshops->contains($object->id);
+            return $user->roleWorkshops->contains($object->id)
+                    || $user->hasRole([
+                        Role::STUDENT_COUNCIL => [Role::PRESIDENT, Role::SCIENCE_VICE_PRESIDENT]
+                    ]);
         }
 
         if ($role->name == Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER) {
@@ -241,16 +248,16 @@ class UserPolicy
             if ($user->hasRole(Role::STUDENT_COUNCIL_SECRETARY)) {
                 return true;
             }
-            if ($object->name == Role::PRESIDENT) {
+            if ($object?->name == Role::PRESIDENT) {
                 return false;
             }
             if ($user->hasRole([Role::STUDENT_COUNCIL => Role::PRESIDENT])) {
                 return true;
             }
-            if ($object->name == Role::KKT_HANDLER) {
+            if ($object?->name == Role::KKT_HANDLER) {
                 return $user->hasRole([Role::STUDENT_COUNCIL => Role::ECONOMIC_VICE_PRESIDENT]);
             }
-            if (in_array($object->name, Role::COMMITTEE_MEMBERS) || in_array($object->name, Role::COMMITTEE_REFERENTS)) {
+            if (in_array($object?->name, Role::COMMITTEE_MEMBERS) || in_array($object?->name, Role::COMMITTEE_REFERENTS)) {
                 $committee = preg_split("~-~", $object->name)[0];
                 return $user->hasRole([Role::STUDENT_COUNCIL => $committee . "-leader"]);
             }

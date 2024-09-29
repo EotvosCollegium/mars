@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
         $this->call(TransactionSeeder::class);
         $this->call(EpistolaSeeder::class);
         $this->call(GeneralAssemblySeeder::class);
+        $this->call(ReservationSeeder::class);
         $this->call(AnonymousQuestionSeeder::class);
 
         config(['mail.driver' => env('MAIL_DRIVER')]);

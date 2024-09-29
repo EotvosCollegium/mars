@@ -2,12 +2,13 @@
 
 namespace App\Policies;
 
-use App\Models\ApplicationForm;
+use App\Models\Application;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Workshop;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class ApplicationFormPolicy
+class ApplicationPolicy
 {
     use HandlesAuthorization;
 
@@ -26,24 +27,21 @@ class ApplicationFormPolicy
 
     /**
      * @param User $user
-     * @param ApplicationForm $target
+     * @param Application $target
      * @return bool
      */
-    public function view(User $user, ApplicationForm $target): bool
+    public function view(User $user, Application $target): bool
     {
-        if ($user->id == $target->user_id) {
+        if ($user->id == $target->user_id || $user->can('viewAll', Application::class)) {
             return true;
-        }
-        if ($user->can('viewAll', ApplicationForm::class)) {
-            return true;
-        }
-
-        return $target->user->workshops
+        } else {
+            return $target->appliedWorkshops
                 ->intersect($user->applicationCommitteWorkshops)
                 ->count() > 0
-            || $target->user->workshops
+            || $target->appliedWorkshops
                 ->intersect($user->roleWorkshops)
                 ->count() > 0;
+        }
     }
 
     /**
@@ -67,8 +65,20 @@ class ApplicationFormPolicy
      * @param User $user
      * @return bool
      */
-    public function editStatus(User $user): bool
+    public function editStatus(User $user, ?Workshop $workshop = null): bool
     {
+        if ($workshop) {
+            if($user->hasRole([
+                Role::SECRETARY,
+                Role::DIRECTOR,
+                Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS
+            ])) {
+                return true;
+            }
+            if($user->hasRole(Role::WORKSHOP_LEADER)) {
+                return $user->roleWorkshops->contains($workshop);
+            }
+        }
         return $user->hasRole([
             Role::SECRETARY,
             Role::DIRECTOR,

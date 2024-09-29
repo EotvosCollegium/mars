@@ -42,8 +42,11 @@ class UsersTableSeeder extends Seeder
         $collegist->printAccount()->save(PrintAccount::factory()->make(['user_id' => $collegist->id]));
         $collegist->personalInformation()->save(PersonalInformation::factory()->make(['user_id' => $collegist->id]));
 
-        User::factory()->count(50)->create()->each(function ($user) {
+        User::factory(['verified' => true])->count(50)->create()->each(function ($user) {
             $this->createCollegist($user);
+        });
+        User::factory(['verified' => false])->count(50)->create()->each(function ($user) {
+            $this->createApplicant($user);
         });
 
         //generate tenants
@@ -63,6 +66,11 @@ class UsersTableSeeder extends Seeder
         });
     }
 
+    /**
+     * Creates a new user with admin role
+     * and predefined credentials.
+     * It also becomes a collegist with random data.
+     */
     private function createSuperUser()
     {
         $user = User::create([
@@ -90,6 +98,10 @@ class UsersTableSeeder extends Seeder
         Checkout::query()->update(['handler_id' => $user->id]);
     }
 
+    /**
+     * Takes a generated user and makes it a collegist
+     * with random data.
+     */
     private function createCollegist($user)
     {
         MacAddress::factory()->count($user->id % 5)->create(['user_id' => $user->id]);
@@ -103,17 +115,13 @@ class UsersTableSeeder extends Seeder
                 )
             ]
         );
-        $user->educationalInformation()->save(EducationalInformation::factory()->make(['user_id' => $user->id]));
-        StudyLine::factory()->count(rand(1, 2))->create(['educational_information_id' => $user->educationalInformation->id]);
+        $this->attachEducationalInformation($user);
+        $this->attachFaculties($user);
+
         $user->roles()->attach(Role::get(Role::PRINTER)->id);
         $wifi_username = $user->internetAccess->setWifiCredentials();
         WifiConnection::factory($user->id % 5)->create(['wifi_username' => $wifi_username]);
-        for ($x = 0; $x < rand(1, 3); $x++) {
-            $faculty = rand(1, count(Faculty::ALL));
-            if ($user->faculties()->where('faculty_users.faculty_id', $faculty)->count() == 0) {
-                $user->faculties()->attach($faculty);
-            }
-        }
+        $this->attachStudyLines($user);
         for ($x = 0; $x < rand(1, 3); $x++) {
             $workshop = rand(1, count(Workshop::ALL));
             if ($user->workshops()->where('workshop_users.workshop_id', $workshop)->count() == 0) {
@@ -122,6 +130,33 @@ class UsersTableSeeder extends Seeder
         }
     }
 
+    /**
+     * Takes a generated user and makes it an applicant.
+     * @param $user
+     * @return void
+     */
+    private function createApplicant($user)
+    {
+        $submitted = rand(0, 1);
+        if ($submitted) {
+            $appliedForResidentStatus = collect([false, true])->random();
+            $this->attachEducationalInformation($user);
+            $this->attachFaculties($user);
+            $this->attachStudyLines($user);
+        } else {
+            $appliedForResidentStatus = collect([false, true, null])->random();
+        }
+        $user->application()->create([
+            'submitted' => $submitted,
+            'applied_for_resident_status' => $appliedForResidentStatus
+        ]);
+        $workshop = Workshop::get()->random(rand(1, 3));
+        $user->application->syncAppliedWorkshops($workshop->pluck('id')->toArray());
+    }
+
+    /**
+     * Takes a generated user and makes it a tenant.
+     */
     private function createTenant($user)
     {
         $user->roles()->attach(Role::get(Role::TENANT)->id);
@@ -130,6 +165,10 @@ class UsersTableSeeder extends Seeder
         MacAddress::factory()->count($user->id % 5)->create(['user_id' => $user->id]);
     }
 
+    /**
+     * Creates a new user with staff role
+     * and predefined credentials.
+     */
     private function createStaff()
     {
         $user = User::create([
@@ -139,5 +178,40 @@ class UsersTableSeeder extends Seeder
             'verified' => true,
         ]);
         $user->roles()->attach(Role::get(Role::STAFF)->id);
+    }
+
+    /**
+     * Attaches educational information to a user.
+     * @param User $user
+     * @return void
+     */
+    private function attachEducationalInformation(User $user)
+    {
+        $user->educationalInformation()->save(EducationalInformation::factory()->make(['user_id' => $user->id]));
+    }
+
+    /**
+     * Attaches study lines to a user.
+     * @param User $user
+     * @return void
+     */
+    private function attachStudyLines(User $user)
+    {
+        StudyLine::factory()->count(rand(1, 2))->create(['educational_information_id' => $user->educationalInformation->id]);
+    }
+
+    /**
+     * Attaches faculties to a user.
+     * @param User $user
+     * @return void
+     */
+    private function attachFaculties(User $user)
+    {
+        for ($x = 0; $x < rand(1, 3); $x++) {
+            $faculty = rand(1, count(Faculty::ALL));
+            if ($user->faculties()->where('faculty_users.faculty_id', $faculty)->count() == 0) {
+                $user->faculties()->attach($faculty);
+            }
+        }
     }
 }

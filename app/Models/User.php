@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Mail\Invitation;
 use App\Models\GeneralAssemblies\PresenceCheck;
 use App\Models\Internet\InternetAccess;
+use App\Models\Reservations\ReservableItem;
+use App\Models\Reservations\Reservation;
 use App\Utils\HasRoles;
 use App\Utils\NotificationCounter;
 use Carbon\Carbon;
@@ -40,7 +42,7 @@ use Illuminate\Support\Facades\Mail;
  * @property PersonalInformation|null $personalInformation
  * @property EducationalInformation|null $educationalInformation
  * @property File|null $profilePicture
- * @property ApplicationForm|null $application
+ * @property Application|null $application
  * @property Workshop[]|Collection $workshops
  * @property Faculty[]|Collection $faculties
  * @property ImportItem[]|Collection $importItems
@@ -252,7 +254,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function application(): HasOne
     {
-        return $this->hasOne(ApplicationForm::class);
+        return $this->hasOne(Application::class);
     }
 
     /**
@@ -459,6 +461,22 @@ class User extends Authenticatable implements HasLocalePreference
     public function presenceChecks(): BelongsToMany
     {
         return $this->belongsToMany(PresenceCheck::class);
+    }
+
+    /**
+     * @return HasMany The reservations the user has made.
+     */
+    public function reservations(): HasMany
+    {
+        return $this->hasMany(Reservation::class);
+    }
+
+    /**
+     * @return BelongsToMany The reservable items which the user has ever reserved.
+     */
+    public function reservableItems(): BelongsToMany
+    {
+        return $this->belongsToMany(ReservableItem::class, 'reservations', 'user_id', 'reservable_item_id');
     }
 
     /*
@@ -762,7 +780,6 @@ class User extends Authenticatable implements HasLocalePreference
     {
         $role = Role::collegist();
         $object = $role->getObject($objectName);
-        $this->removeRole($role);
         $this->addRole($role, $object);
 
         Cache::forget('collegists');
@@ -1114,7 +1131,11 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public static function notificationCount(): int
     {
-        return self::withoutGlobalScope('verified')->where('verified', false)->count();
+        return self::withoutGlobalScope('verified')
+            ->whereHas('roles', function ($q) {
+                $q->where('role_id', Role::get(Role::TENANT));
+            })
+            ->where('verified', false)->count();
     }
 
     /*

@@ -6,6 +6,7 @@ use App\Exports\UsersExport;
 use App\Http\Controllers\Controller;
 use App\Models\EducationalInformation;
 use App\Models\Faculty;
+use App\Models\LanguageExam;
 use App\Models\Role;
 use App\Models\Semester;
 use App\Models\StudyLine;
@@ -60,7 +61,7 @@ class UserController extends Controller
         session()->put('section', 'profile_picture');
 
         $request->validate([
-            'picture' => 'required|mimes:jpg,jpeg,png,gif',
+            'picture' => 'required|mimes:jpg,jpeg,png,gif|max:' . config('custom.general_file_size_limit'),
         ]);
         $path = $request->file('picture')->store('avatars');
         $old_profile = $user->profilePicture;
@@ -86,8 +87,8 @@ class UserController extends Controller
 
         $profile = $user->profilePicture;
         if ($profile) {
-            Storage::delete($profile->path);
             $profile->delete();
+            Storage::delete($profile->path);
         }
         return redirect()->back()->with('message', __('general.successful_modification'));
     }
@@ -156,17 +157,27 @@ class UserController extends Controller
             'year_of_graduation' => 'required|integer|between:1895,' . date('Y'),
             'year_of_acceptance' => 'required|integer|between:1895,' . date('Y'),
             'high_school' => 'required|string|max:255',
-            'neptun' => 'required|string|size:6',
+            'neptun' => [
+                ($user->application) ? 'nullable' : 'required',
+                'string',
+                'size:6'
+            ],
             'faculty' => 'array',
             'faculty.*' => 'exists:faculties,id',
-            'workshop' => 'array',
+            'workshop' => 'nullable|array',
             'workshop.*' => 'exists:workshops,id',
             'study_lines' => 'array',
             'study_lines.*.name' => 'required|string|max:255',
             'study_lines.*.level' => ['required', Rule::in(array_keys(StudyLine::TYPES))],
             'study_lines.*.minor' => 'nullable|string|max:255',
             'study_lines.*.start' => 'required',
-            'email' => ['required', 'string', 'email', 'max:255', new SameOrUnique($user, EducationalInformation::class)],
+            'email' => [
+                ($user->application) ? 'nullable' : 'required',
+                'string',
+                'email',
+                'max:255',
+                new SameOrUnique($user, EducationalInformation::class)
+            ],
             'research_topics' => ['nullable', 'string', 'max:1000'],
             'extra_information' => ['nullable', 'string', 'max:1500'],
         ]);
@@ -180,6 +191,13 @@ class UserController extends Controller
             'research_topics',
             'extra_information'
         ]);
+
+        // whether Neptun code is unique (only checked if not null)
+        if (!is_null($request->neptun)
+              && EducationalInformation::where('neptun', $request->neptun)->where('user_id', '<>', $user->id)->exists()) {
+            return redirect()->back()->with('error', 'A megadott Neptun-kód már létezik! Ha a kód az Öné, lépjen be a korábbi fiókjával.');
+        }
+
         DB::transaction(function () use ($user, $request, $educational_data) {
             if (!$user->hasEducationalInformation()) {
                 $user->educationalInformation()->create($educational_data);
@@ -258,7 +276,7 @@ class UserController extends Controller
         session()->put('section', 'alfonso');
 
         $validator = Validator::make($request->all(), [
-            'file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2000',
+            'file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:' . config('custom.general_file_size_limit'),
             'language' => ['required', Rule::in(array_merge(array_keys(config('app.alfonso_languages')), ['other']))],
             'level' => ['nullable', Rule::in(['A1', 'A2', 'B1', 'B2', 'C1', 'C2'])],
             'type' => 'required|string|max:255',
@@ -278,6 +296,28 @@ class UserController extends Controller
 
         return redirect()->back()->with('message', __('general.successful_modification'));
     }
+
+    /**
+     * Remove a language exam for the user.
+     * @param Request $request
+     * @param User $user
+     * @param LanguageExam $exam
+     * @return RedirectResponse
+     */
+    public function deleteLanguageExam(Request $request, User $user, LanguageExam $exam)
+    {
+        $this->authorize('view', $user);
+        if ($exam->educationalInformation->user->isNot($user)) {
+            abort(400, 'The language exam does not belong to the given user.');
+        }
+
+        $exam->delete();
+        Storage::delete($exam->path);
+
+        session()->put('section', 'alfonso');
+        return redirect()->back()->with('message', __('general.successful_modification'));
+    }
+
 
     /**
      * Updates tenant until date of a user.
@@ -410,9 +450,6 @@ class UserController extends Controller
      */
     public function showTenantUpdate()
     {
-        if (!user()->needsUpdateTenantUntil()) {
-            return redirect('/');
-        }
         return view('user.update_tenant_status');
     }
 
@@ -426,11 +463,9 @@ class UserController extends Controller
         }
         $user = user();
         $user->personalInformation()->update(['tenant_until' => null]);
-        $user->update(['verified' => false]);
         $user->removeRole(Role::get(Role::TENANT));
-        $user->setExtern();
         $user->application()->create();
         Cache::forget('collegists');
-        return back();
+        return redirect(route('application'));
     }
 }

@@ -6,7 +6,7 @@
         {{$attributes->whereDoesntStartWith('value')->merge([
             'name' => $id,
             'class' => "materialize-textarea validate"
-        ])}}>{{old($id) ?? $attributes->get('value')}}</textarea>
+        ])}}>{{old($id, $value ?? '')}}</textarea>
     <label for="{{$id}}">{{$label}}</label>
     @if($helper ?? null)
     <span class="helper-text">{{ $helper }}</span>
