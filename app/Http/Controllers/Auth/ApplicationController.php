@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Exports\ApplicantsExport;
+use App\Models\Application;
 use App\Models\ApplicationForm;
 use App\Models\Faculty;
 use App\Models\File;
@@ -12,6 +13,7 @@ use App\Models\RoleUser;
 use App\Models\Semester;
 use App\Models\User;
 use App\Models\Workshop;
+use App\Utils\ApplicationHandler;
 use App\Utils\PeriodicEventController;
 use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -28,6 +30,8 @@ use Maatwebsite\Excel\Facades\Excel;
  */
 class ApplicationController extends PeriodicEventController
 {
+    use ApplicationHandler;
+
     private const EDUCATIONAL_ROUTE = 'educational';
     private const QUESTIONS_ROUTE = 'questions';
     private const FILES_ROUTE = 'files';
@@ -45,7 +49,7 @@ class ApplicationController extends PeriodicEventController
      */
     public function updateApplicationPeriod(Request $request): RedirectResponse
     {
-        $this->authorize('finalize', ApplicationForm::class);
+        $this->authorize('finalize', Application::class);
 
         $request->validate([
             'semester_id' => 'required|exists:semesters,id',
@@ -108,7 +112,6 @@ class ApplicationController extends PeriodicEventController
     /**
      * @param Request $request
      * @return RedirectResponse
-     * @throws AuthenticationException
      */
     public function store(Request $request): RedirectResponse
     {
