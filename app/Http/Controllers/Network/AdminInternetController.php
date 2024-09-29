@@ -25,9 +25,7 @@ class AdminInternetController extends Controller
     {
         $this->authorize('handleAny', InternetAccess::class);
 
-        return view('network.admin.app', [
-            'activation_date' => InternetAccess::getInternetDeadline()->format('Y-m-d H:i'),
-        ]);
+        return view('network.admin.app');
     }
 
     /**
@@ -46,7 +44,7 @@ class AdminInternetController extends Controller
                 ->select('internet_accesses.*')
                 ->with('user')
         )
-            ->sortable(['auto_approved_mac_slots', 'has_internet_until', 'user.name'])
+            ->sortable(['auto_approved_mac_slots', 'has_internet_until', 'user.name', 'netreg_paid'])
             ->filterable(['auto_approved_mac_slots', 'has_internet_until', 'user.name'])
             ->paginate();
 
@@ -84,10 +82,10 @@ class AdminInternetController extends Controller
         $this->authorize('extend', $internetAccess);
 
         $request->validate([
-            'has_internet_until' => 'nullable|date',
+            'has_internet_until' => 'date',
         ]);
 
-        return $internetAccess->extendInternetAccess($request->get('has_internet_until'));
+        return $internetAccess->extendInternetAccess(Carbon::parse($request->get('has_internet_until')));
     }
 
     /**

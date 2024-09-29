@@ -22,6 +22,7 @@ use Illuminate\Support\Str;
  * @property mixed $user_id
  * @property string $wifi_username
  * @property Carbon $has_internet_until
+ * @property boolean $netreg_paid
  * @property string $wifi_password
  * @property User $user
  * @property WifiConnection[]|Collection $wifiConnections
@@ -46,10 +47,17 @@ class InternetAccess extends Model
 {
     protected $primaryKey = 'user_id';
 
-    protected $fillable = ['user_id', 'wifi_username', 'has_internet_until', 'wifi_password'];
+    protected $fillable = [
+        'user_id',
+        'wifi_username',
+        'has_internet_until', // custom value, usually for guests
+        'netreg_paid', // whether the collegist paid for current period
+        'wifi_password',
+    ];
 
     protected $casts = [
         'has_internet_until' => 'datetime',
+        'netreg_paid' => 'boolean'
     ];
 
     protected const PASSWORD_LENGTH = 8;
@@ -92,7 +100,7 @@ class InternetAccess extends Model
      */
     public function isActive(): bool
     {
-        return $this->has_internet_until != null && $this->has_internet_until > date('Y-m-d');
+        return $this->has_internet_until != null ? $this->has_internet_until > date('Y-m-d') : $this->netreg_paid;
     }
 
     /**
@@ -123,25 +131,26 @@ class InternetAccess extends Model
      * @param string|Carbon|null $newDate
      * @return Carbon
      */
-    public function extendInternetAccess(Carbon|string $newDate = null): Carbon
+    public function extendInternetAccess(Carbon $newDate): Carbon
     {
-        if ($newDate != null) {
-            $newDate = Carbon::parse($newDate);
-        } else {
-            $newDate = InternetAccess::getInternetDeadline();
-        }
         $this->update(['has_internet_until' => $newDate]);
 
         return $newDate;
     }
 
     /**
-     * Get the current date until the internet accesses should be set.
-     * @return \Carbon\Carbon
+     * Reset's all collegists 'netreg_paid' field and sets the 'has_internet_until' instead to a new date.
+     * @param Carbon $newDate
+     * @return void
      */
-    public static function getInternetDeadline(): \Carbon\Carbon
+    public static function resetInternetAccessPeriod(Carbon $newDate): void
     {
-        return Semester::next()->getStartDate()->addMonth();
+        $collegists = User::collegists()->pluck('id');
+
+        InternetAccess::whereIn('user_id', $collegists)->update([
+            'netreg_paid' => false,
+            'has_internet_until' => $newDate
+        ]);
     }
 
     /**

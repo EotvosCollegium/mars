@@ -1,8 +1,6 @@
 <span class="card-title">Internetelérés</span>
 <blockquote>
-    <p>Az aktuális internetelérés határidő: <span class="coli-text text-orange">{{ $activation_date }}</span></p>
-    <p>Collegisták esetén a Netreg befizetésekor automatikusan beállítja a rendszer a hozzáférésüket eddig a
-        dátumig.</p>
+    <p>Collegisták esetén a Netreg befizetésekor automatikusan beállítja a rendszer a hozzáférésüket a következő periódusig.</p>
     <p>Vendégek esetén belépéskor meg kell adniuk a kiköltözés dátumát, amihez szinkronizáljuk az internet
         hozzáférésüket. Ha egy volt colis kér netet, csak adj neki vendég jogosultságot, és első belépéskor be tudja
         állítani már a netet magának.</p>
@@ -16,21 +14,7 @@
 <script type="text/javascript" src="{{ mix('js/moment.min.js') }}"></script>
 <script type="application/javascript">
     $(document).ready(function () {
-            var activation_date = new Date("{{ $activation_date }}");
             var now = new Date();
-            var extendAction = function (cell, formatterParams, onRendered) {
-                var data = cell.getRow().getData();
-                var active = (new Date(data.has_internet_until))
-                onRendered(function () {
-                    $('.tooltipped').tooltip();
-                });
-                return $(`<button class="btn-floating tooltipped" style="margin-right: 10px" data-position="top" data-tooltip="Meghosszabbít: {{$activation_date}}">
-                            <i class="material-icons">update</i></button>
-                        `)
-                    .click(function () {
-                        sendExtendRequest(cell, data.user_id, "{{ $activation_date }}");
-                    }).toggle(data.has_internet_until == null || active < activation_date)[0];
-            };
 
             var revokeAction = function (cell, formatterParams, onRendered) {
                 var data = cell.getRow().getData();
@@ -57,7 +41,7 @@
                 if (value) {
                     value = moment(value).format("YYYY. MM. DD. HH:mm");
                 } else {
-                    value = 'Nincs hozzáférés'
+                    value = 'N/A'
                 }
                 const data = cell.getRow().getData();
                 return $("<input type=\"text\" class=\"datepicker\" value=\"" + value + "\"/>")
@@ -134,13 +118,17 @@
                         minWidth: 150,
                     },
                     {
-                        title: "Internetelérés",
+                        title: "Netreg fizetett",
+                        field: "netreg_paid",
+                        minWidth: 50,
+                    },
+                    {
+                        title: "Egyéni hozzáférés eddig",
                         field: "has_internet_until",
                         sorter: "datetime",
                         formatter: dateFormatter,
                         minWidth: 50,
                     },
-                    {title: "", field: "state", headerSort: false, formatter: extendAction, width: 80},
                     {title: "", field: "state", headerSort: false, formatter: revokeAction, width: 80},
                 ],
                 ajaxResponse: function (url, params, response) {
