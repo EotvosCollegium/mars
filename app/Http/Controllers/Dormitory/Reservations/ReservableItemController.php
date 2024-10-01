@@ -114,11 +114,16 @@ class ReservableItemController extends \App\Http\Controllers\Controller
 
     /**
      * Sends admins and staff an email notification
-     * about an allegedly faulty item.
+     * about an allegedly faulty item,
+     * with a message provided in a modal dialog.
      */
-    public function reportFault(ReservableItem $item)
+    public function reportFault(ReservableItem $item, Request $request)
     {
         $this->authorize('view', $item);
+
+        $validatedData = $request->validate([
+            'message' => 'nullable|max:2047'
+        ]);
 
         $thoseToNotify = User::whereHas('roles', function ($query) {
             $query->whereIn('name', [Role::SYS_ADMIN, Role::STAFF]);
@@ -128,7 +133,8 @@ class ReservableItemController extends \App\Http\Controllers\Controller
                 new ReportReservableItemFault(
                     $item,
                     $toNotify->name,
-                    user()->name
+                    user()->name,
+                    $validatedData['message']
                 )
             );
         }

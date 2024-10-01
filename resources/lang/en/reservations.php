@@ -7,6 +7,7 @@ return [
     'bad_for_non-recurring' => 'Bad request for non-recurring reservation.',
     'check_reservations' => 'Please organize your reservations accordingly.',
     'create' => 'New reservation', // page title in breadcrumb
+    'describe_what_happened' => 'Describe what happened in a few sentences.',   // when reporting a fault
     'edit' => 'Edit reservation', // a page title
     'edit_all' => 'For all reservations',
     'edit_all_after' => 'For this reservation and all after this one',

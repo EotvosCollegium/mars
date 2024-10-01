@@ -20,15 +20,17 @@ class ReportReservableItemFault extends Mailable
     public ReservableItem $item;
     public string $recipient;
     public string $reporter;
+    public ?string $message; // this is an explanation of the problem provided via a modal dialog
 
     /**
      * Create a new message instance.
      */
-    public function __construct(ReservableItem $item, string $recipient, string $reporter)
+    public function __construct(ReservableItem $item, string $recipient, string $reporter, ?string $message)
     {
         $this->item = $item;
         $this->recipient = $recipient;
         $this->reporter = $reporter;
+        $this->message = $message;
     }
 
     /**
