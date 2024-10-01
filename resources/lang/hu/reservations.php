@@ -7,6 +7,7 @@ return [
     'bad_for_non-recurring' => 'Nem ismétlődő foglaláshoz ez érvénytelen kérés.',
     'check_reservations' => 'Kérjük, ennek megfelelően tervezze újra foglalásait.',
     'create' => 'Új foglalás', // page title in breadcrumb
+    'describe_what_happened' => 'Pár mondatban írja le, mi történt.',   // when reporting a fault
     'edit' => 'Foglalás szerkesztése', // a page title
     'edit_all' => 'Minden foglalásra',
     'edit_all_after' => 'Erre és minden későbbi foglalásra',
