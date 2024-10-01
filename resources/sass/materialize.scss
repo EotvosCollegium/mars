@@ -307,7 +307,7 @@ body.dark a.btn {
 
 // for footers of modal dialogs
 .modal .modal-footer {
-    height: unset;
+    height: auto;
 }
 
 @mixin column-count($ct) {
