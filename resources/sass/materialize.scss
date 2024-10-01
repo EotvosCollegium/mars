@@ -39,6 +39,10 @@ i.material-icons {
 .card a {
     text-decoration: underline;
 }
+/* but not a-based buttons */
+.card a.btn {
+    text-decoration: none;
+}
 
 blockquote {
     margin: 20px 0;
@@ -299,6 +303,11 @@ body.dark a.btn {
     padding-right: 5px;
     border-top: solid 1px black;
     box-sizing: border-box;
+}
+
+// for footers of modal dialogs
+.modal .modal-footer {
+    height: unset;
 }
 
 @mixin column-count($ct) {

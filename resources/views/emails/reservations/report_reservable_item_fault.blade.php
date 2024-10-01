@@ -14,6 +14,10 @@
         @else
         használhatatlannak tűnik.
         @endif
+    </p>
+    <p>A probléma részletes leírása:</p>
+    <blockquote>{{ $message }}</blockquote>
+    <p>
         Kérjük, ellenőrizze, hogy valóban ez-e a helyzet;
         ha igen, <a href="{{ route('reservations.items.show', ['item' => $item]) }}">jelölje meg itt</a>.
     </p>
