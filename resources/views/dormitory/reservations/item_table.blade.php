@@ -49,7 +49,8 @@
                     <div id="fault-reporting-modal-{{ $item->id }}" class="modal">
                         <div class="modal-content">
                             <h4>{{ __($item->out_of_order ? 'reservations.report_fix' : 'reservations.report_fault') }}</h4>
-                            <x-input.textarea id="message"
+                            <x-input.textarea id="fault-message-{{ $item->id }}"
+                                      name="message"
                                       :text="__('general.description')"
                                       :helper="__('reservations.describe_what_happened')"/>
                         </div>
