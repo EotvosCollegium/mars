@@ -18,6 +18,7 @@ services:
   mars_dev:
     container_name: mars_dev
     image: mars_image:latest
+    pull_policy: never
     build:
       context: .
     depends_on:
