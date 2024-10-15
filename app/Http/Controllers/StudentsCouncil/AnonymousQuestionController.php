@@ -2,33 +2,28 @@
 
 namespace App\Http\Controllers\StudentsCouncil;
 
+use App\Models\PeriodicEvent;
+use App\Utils\PeriodicEventController;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 
 use App\Models\AnonymousQuestions\AnswerSheet;
 use App\Models\Semester;
 use App\Models\Question;
 use App\Models\QuestionOption;
-use App\Utils\HasPeriodicEvent;
 use App\Exports\UsersSheets\AnonymousQuestionsExport;
 
 /**
  * Controls actions related to anonymous questions.
  */
-class AnonymousQuestionController extends Controller
+class AnonymousQuestionController extends PeriodicEventController
 {
-    use HasPeriodicEvent;
-    /**
-     * This will use the same periodic event as SemesterEvaluationController.
-     */
     public function __construct()
     {
-        $this->underlyingControllerName =
-            \App\Http\Controllers\Secretariat\SemesterEvaluationController::class;
+        //use the same period as the Semester Evaluation.
+        parent::__construct(PeriodicEvent::SEMESTER_EVALUATION_PERIOD);
     }
 
     /**

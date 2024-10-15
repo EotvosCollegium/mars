@@ -8,6 +8,7 @@ use App\Mail\ApplicationFileUploaded;
 use App\Mail\ApplicationNoteChanged;
 use App\Models\Application;
 use App\Models\ApplicationWorkshop;
+use App\Models\PeriodicEvent;
 use App\Models\Semester;
 use App\Models\SemesterStatus;
 use App\Models\User;
@@ -16,7 +17,7 @@ use App\Models\File;
 use App\Models\Role;
 use App\Models\Workshop;
 use App\Utils\ApplicationHandler;
-use App\Utils\HasPeriodicEvent;
+use App\Utils\PeriodicEventController;
 use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Builder;
@@ -33,15 +34,13 @@ use Maatwebsite\Excel\Facades\Excel;
 /**
  * Controller handling the admittance and administrative process.
  */
-class AdmissionController extends Controller
+class AdmissionController extends PeriodicEventController
 {
     use ApplicationHandler;
-    use HasPeriodicEvent;
 
     public function __construct()
     {
-        $this->underlyingControllerName =
-            \App\Http\Controllers\Auth\ApplicationController::class;
+        parent::__construct(PeriodicEvent::APPLICATION_PERIOD);
     }
 
     /**

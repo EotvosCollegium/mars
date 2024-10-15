@@ -2,16 +2,9 @@
 
 namespace App\Http\Controllers\Secretariat;
 
-use App\Http\Controllers\Controller;
-use App\Jobs\PeriodicEventsProcessor;
-use App\Mail\EvaluationFormAvailable;
-use App\Mail\EvaluationFormAvailableDetails;
-use App\Mail\EvaluationFormClosed;
-use App\Mail\EvaluationFormReminder;
-use App\Mail\StatusDeactivated;
 use App\Models\Faculty;
 use App\Models\GeneralAssemblies\GeneralAssembly;
-use App\Models\Question;
+use App\Models\PeriodicEvent;
 use App\Models\Role;
 use App\Models\RoleUser;
 use App\Models\Semester;
@@ -19,20 +12,22 @@ use App\Models\SemesterEvaluation;
 use App\Models\SemesterStatus;
 use App\Models\User;
 use App\Models\Workshop;
-use App\Utils\HasPeriodicEvent;
+use App\Utils\PeriodicEventController;
 use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
-class SemesterEvaluationController extends Controller
+class SemesterEvaluationController extends PeriodicEventController
 {
-    use HasPeriodicEvent;
+    public function __construct()
+    {
+        parent::__construct(PeriodicEvent::SEMESTER_EVALUATION_PERIOD);
+    }
 
     /**
      * Update the PeriodicEvent for the evaluation form.
@@ -67,72 +62,10 @@ class SemesterEvaluationController extends Controller
     }
 
     /**
-     * Send email that the form is available.
-     * @return void
-     */
-    public function handlePeriodicEventStart(): void
-    {
-        Mail::to(config('contacts.mail_membra'))->queue(new EvaluationFormAvailable($this->getDeadline()));
-        if (User::secretary()) {
-            Mail::to(User::secretary())->queue(new EvaluationFormAvailableDetails(User::secretary()->name, $this->getDeadline()));
-        }
-        if (User::president()) {
-            Mail::to(User::president())->queue(new EvaluationFormAvailableDetails(User::president()->name, $this->getDeadline()));
-        }
-    }
-
-    /**
-     * Send reminder that the form is available.
-     * @param int $daysBeforeEnd
-     * @return void
-     */
-    public function handlePeriodicEventReminder(int $daysBeforeEnd): void
-    {
-        if($daysBeforeEnd < 3) {
-            $userCount = $this->usersHaventFilledOutTheForm()->count();
-            Mail::to(config('contacts.mail_membra'))->queue(new EvaluationFormReminder($userCount, $this->getDeadline()));
-        }
-    }
-
-    /**
-     * Send email about results and deactivate collegists who did not fill out the form.
-     */
-    public function handlePeriodicEventEnd()
-    {
-        $users = $this->usersHaventFilledOutTheForm();
-        $users_names = $users->pluck('name')->toArray();
-
-        if (User::secretary()) {
-            Mail::to(User::secretary())->queue(new EvaluationFormClosed(User::secretary()->name, $users_names));
-        }
-        if (User::president()) {
-            Mail::to(User::president())->queue(new EvaluationFormClosed(User::president()->name, $users_names));
-        }
-        if (User::director()) {
-            Mail::to(User::director())->queue(new EvaluationFormClosed(User::director()->name, $users_names));
-        }
-        foreach (User::workshopLeaders() as $user) {
-            Mail::to($user)->queue(new EvaluationFormClosed($user->name));
-        }
-
-
-        foreach ($users as $user) {
-            try {
-                Mail::to($user)->queue(new StatusDeactivated($user->name));
-                RoleUser::withoutEvents(function () use ($user) {
-                    self::deactivateCollegist($user);
-                });
-            } catch (\Exception $e) {
-                Log::error('Error deactivating collegist: ' . $user->name . ' - ' . $e->getMessage());
-            }
-        }
-    }
-
-    /**
      * Show the evaluation form.
      * @throws AuthenticationException|AuthorizationException
      */
-    public function show()
+    public function show(): View
     {
         $this->authorize('fillOrManage', SemesterEvaluation::class);
 
@@ -141,12 +74,12 @@ class SemesterEvaluationController extends Controller
             'user' => user(),
             'faculties' => Faculty::all(),
             'workshops' => Workshop::all(),
-            'evaluation' => user()->semesterEvaluations()->where('semester_id', Semester::current()->id)->first(),
+            'evaluation' => user()->semesterEvaluations()->where('semester_id', self::semester()->id)->first(),
             'general_assemblies' => GeneralAssembly::all()->sortByDesc('closed_at')->take(2),
-            'community_services' => user()->communityServiceRequests()->where('semester_id', Semester::current()->id)->get(),
+            'community_services' => user()->communityServiceRequests()->where('semester_id', self::semester()->id)->get(),
             'position_roles' => user()->roles()->whereIn('name', Role::STUDENT_POSTION_ROLES)->get(),
             'periodicEvent' => $this->periodicEvent(),
-            'users_havent_filled_out' => user()->can('manage', SemesterEvaluation::class) ? $this->usersHaventFilledOutTheForm() : null,
+            'users_havent_filled_out' => user()->can('manage', SemesterEvaluation::class) ? User::doesntHaveStatusFor(self::semester()->succ())->get() : null,
         ]);
     }
 
@@ -154,7 +87,7 @@ class SemesterEvaluationController extends Controller
      * Update form information.
      * @throws \Exception
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $this->authorize('fill', SemesterEvaluation::class);
 
@@ -221,7 +154,10 @@ class SemesterEvaluationController extends Controller
                     ]
                 ));
                 if ($request->next_status == Role::ALUMNI) {
-                    self::deactivateCollegist($user);
+                    RoleUser::withoutEvents(function () use ($user) {
+                        $user->removeRole(Role::collegist());
+                        $user->addRole(Role::alumni());
+                    });
                     return redirect()->route('home')->with('message', __('general.successful_modification'));
                 } else {
                     if (!isset($request->next_status)) {
@@ -238,25 +174,5 @@ class SemesterEvaluationController extends Controller
         }
 
         return back()->with('message', __('general.successful_modification'))->with('section', $request->section);
-    }
-
-    /**
-     * @return User[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection
-     */
-    public function usersHaventFilledOutTheForm()
-    {
-        return User::withRole(Role::COLLEGIST)->verified()->whereDoesntHave('semesterStatuses', function ($query) {
-            $query->where('semester_id', $this->semester()?->succ()?->id);
-        })->get();
-    }
-
-    /**
-     * Deactivate a collegist and set alumni role.
-     * @param User $user
-     */
-    public static function deactivateCollegist(User $user)
-    {
-        $user->removeRole(Role::collegist());
-        $user->addRole(Role::alumni());
     }
 }
