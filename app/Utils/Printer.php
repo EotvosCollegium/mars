@@ -41,19 +41,29 @@ class Printer
 
         // If using free pages, check the amount that can be used
         if ($this->use_free_pages) {
+            $this->pages *= $this->number_of_copies;
+
             $this->calculateFreePagePool();
+
+            if ($this->pages > 0) {
+                return back()->withInput()->with('error', __('print.no_balance'));
+            }
+
+            // Print document
+            return $this->printDocument();
+        } else {
+
+            // Calculate cost
+            $this->cost = PrintAccount::getCost($this->pages, $this->is_two_sided, $this->number_of_copies);
+
+            // Check balance
+            if (!$this->print_account->hasEnoughMoney($this->cost)) {
+                return back()->withInput()->with('error', __('print.no_balance'));
+            }
+
+            // Print document
+            return $this->printDocument();
         }
-
-        // Calculate cost
-        $this->cost = PrintAccount::getCost($this->pages, $this->is_two_sided, $this->number_of_copies);
-
-        // Check balance
-        if (!$this->print_account->hasEnoughMoney($this->cost)) {
-            return back()->withInput()->with('error', __('print.no_balance'));
-        }
-
-        // Print document
-        return $this->printDocument();
     }
 
     /**

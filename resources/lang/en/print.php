@@ -43,6 +43,7 @@ return [
     'number_of_copies' => 'Number of copies',
     'number_of_printed_documents' => 'Number of printed documents',
     'options' => 'Printing options',
+    'payment_methods_cannot_be_mixed' => 'A print job can be either free or paid as they cannot be mixed.',
     'pdf_description' => 'Only .pdf files can be printed.',
     'pdf_maxsize' => 'The maximum file size is :maxsize MB.',
     'print' => 'Print',

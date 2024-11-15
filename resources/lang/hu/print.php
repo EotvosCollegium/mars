@@ -43,6 +43,7 @@ return [
     'number_of_copies' => 'Példányszám',
     'number_of_printed_documents' => 'Nyomtatott dokumentumok száma',
     'options' => 'Beállítások',
+    'payment_methods_cannot_be_mixed' => 'Egy nyomtatás vagy ingyenes vagy fizetős lehet, nem keverhető.',
     'pdf_description' => 'Csak .pdf fájl nyomtatható.',
     'pdf_maxsize' => 'A fájl mérete legfeljebb :maxsize MB lehet.',
     'print' => 'Nyomtatás',
