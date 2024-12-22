@@ -1,11 +1,11 @@
 // https://aka.ms/devcontainer.json
 {
-	"name": "Existing Docker Compose (Extend)",
+	"name": "Mars development",
 	"dockerComposeFile": [
 		"../docker-compose.yml"
 	],
-	"service": "laravel.test",
-	"workspaceFolder": "/var/www/html",
+	"service": "mars_dev",
+	"workspaceFolder": "/workspace/mars",
 	"settings": {},
 	"extensions": [
 		// "mikestead.dotenv",
@@ -14,8 +14,8 @@
 		// "onecentlin.laravel5-snippets",
 		// "onecentlin.laravel-blade"
 	],
-	"remoteUser": "sail",
-	"postCreateCommand": "chown -R 1000:1000 /var/www/html"
+	"remoteUser": "ubuntu",
+	"postCreateCommand": "make build"
 	// "forwardPorts": [],
 	// "runServices": [],
 	// "shutdownAction": "none",
