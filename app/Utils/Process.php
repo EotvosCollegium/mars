@@ -7,6 +7,7 @@ use Symfony\Component\Process\Process as SymfonyProcess;
 
 class Process extends SymfonyProcess
 {
+
     /**
      * Run the process. If the app is in debug mode, the process will not be executed.
      *
@@ -14,10 +15,18 @@ class Process extends SymfonyProcess
      * @param array $env
      * @return int
      */
-    public function run(?callable $callback = null, array $env = []): int
+    public function run(?callable $callback = null, array $env = [], bool $log = true): int
     {
         if (config('app.debug') === false || config('commands.run_in_debug') === true) {
-            return parent::run($callback, $env);
+            $return_value = parent::run($callback, $env);
+            if($log) {
+                if($return_value === 0) {
+                    Log::info("Command: " . $this->getCommandLine() . " executed successfully.");
+                } else {
+                    Log::error("Command: " . $this->getCommandLine() . " failed with error code: " . $return_value . "\nWith output: " . $this->getOutput() . " and error output: " . $this->getErrorOutput());
+                }
+            }
+            return $return_value;
         }
         Log::info("Process not executed in debug mode.");
         return 0;

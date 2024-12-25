@@ -18,7 +18,7 @@ class Commands
         }
 
         $process = Process::fromShellCommandline(config('commands.ping') . " $router->ip -c 1 | grep 'error\|unreachable'");
-        $process->run();
+        $process->run($log = false);
         $result = $process->getOutput(debugOutput: rand(1, 10) > 9 ? "error" : '');
         return $result;
     }
