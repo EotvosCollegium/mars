@@ -13,7 +13,7 @@ class Commands
 {
     public static function pingRouter($router)
     {
-        if (preg_match('/[a-zA-Z]/', $router->ip)) {
+        if (!preg_match('^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])$', $router->ip)) {
             throw new \InvalidArgumentException("Invalid IP address: " . $router->ip);
         }
 
