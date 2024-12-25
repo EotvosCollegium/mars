@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Semester;
 use App\Models\Checkout;
 use App\Models\Faculty;
 use App\Models\FreePages;
@@ -27,6 +28,8 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
+        Semester::current(); // generate current semester if still not exists
+
         $this->createSuperUser();
         $this->createStaff();
 
