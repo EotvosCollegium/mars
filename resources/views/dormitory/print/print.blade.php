@@ -10,6 +10,9 @@
             @lang('print.available_money'): <b class="coli-text text-orange"> {{ user()->printAccount->balance }}</b> HUF.
             @lang('print.upload_money')
             </p>
+            <p>
+            @lang('print.payment_methods_cannot_be_mixed')
+            </p>
         </blockquote>
         <form class="form-horizontal" role="form" method="POST" action="{{ route('print.print') }}"
             enctype="multipart/form-data">

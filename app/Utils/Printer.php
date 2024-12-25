@@ -18,7 +18,7 @@ class Printer
     private $number_of_copies;
     private $use_free_pages;
     private $print_account;
-    private $free_page_pool = [];
+    private $free_page_update = [];
     private $cost = 0;
 
     public function __construct($filename, $path, $use_free_pages = false, $is_two_sided = true, $number_of_copies = 1)
@@ -41,49 +41,52 @@ class Printer
 
         // If using free pages, check the amount that can be used
         if ($this->use_free_pages) {
-            $this->calculateFreePagePool();
+
+            if (!$this->planFreePageUsage()) {
+                return back()->withInput()->with('error', __('print.no_balance'));
+            }
+
+            // Print document
+            return $this->printDocument();
+        } else {
+
+            // Calculate cost
+            $this->cost = PrintAccount::getCost($this->pages, $this->is_two_sided, $this->number_of_copies);
+
+            // Check balance
+            if (!$this->print_account->hasEnoughMoney($this->cost)) {
+                return back()->withInput()->with('error', __('print.no_balance'));
+            }
+
+            // Print document
+            return $this->printDocument();
         }
-
-        // Calculate cost
-        $this->cost = PrintAccount::getCost($this->pages, $this->is_two_sided, $this->number_of_copies);
-
-        // Check balance
-        if (!$this->print_account->hasEnoughMoney($this->cost)) {
-            return back()->withInput()->with('error', __('print.no_balance'));
-        }
-
-        // Print document
-        return $this->printDocument();
     }
 
     /**
      * Only calculating the values here to see how many pages can be covered free of charge.
      */
-    private function calculateFreePagePool()
+    private function planFreePageUsage()
     {
-        $this->free_page_pool = [];
-        $available_pages = 0;
+        $requested_pages = $this->number_of_copies * $this->pages;
+        $this->free_page_update = [];
+        $deducted_pages = 0;
         $all_pages = user()->freePages
             ->where('deadline', '>', Carbon::now())
             ->sortBy('deadline');
 
         foreach ($all_pages as $key => $free_page) {
-            if ($available_pages + $free_page->amount >= $this->pages) {
-                $this->free_page_pool[] = [
-                    'page' => $free_page,
-                    'new_amount' => $free_page->amount - ($this->pages - $available_pages)
-                ];
-                $available_pages = $this->pages;
+            $deduce_from_current = min($requested_pages - $deducted_pages, $free_page->amount);
+            $this->free_page_update[] = [
+                'page' => $free_page,
+                'new_amount' => $free_page->amount - $deduce_from_current
+            ];
+            $deducted_pages += $deduce_from_current;
+            if($deducted_pages == $requested_pages) {
                 break;
             }
-            $this->free_page_pool[] = [
-                'page' => $free_page,
-                'new_amount' => 0
-            ];
-            $available_pages += $free_page->amount;
         }
-
-        $this->pages -= $available_pages;
+        return $deducted_pages == $requested_pages;
     }
 
     private function printDocument()
@@ -95,7 +98,7 @@ class Printer
 
         // Update print account history
         $this->print_account->update(['last_modified_by' => user()->id]);
-        foreach ($this->free_page_pool as $fp) {
+        foreach ($this->free_page_update as $fp) {
             $fp['page']->update([
                 'amount' => $fp['new_amount'],
                 'last_modified_by' => user()->id
