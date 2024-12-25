@@ -13,6 +13,7 @@ class PrintJobFactory extends Factory
     public function definition()
     {
         return [
+            'printer_id' => 1,
             'filename' => $this->faker->text,
             'state' => $this->faker->randomElement(PrintJobStatus::cases()),
             'job_id' => $this->faker->randomNumber,
