@@ -127,22 +127,24 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
     });
 
     /** Printing */
-    Route::get('/printer', [PrinterController::class, 'index'])->name('printer.index');
-    Route::get('/printer/admin', [PrinterController::class, 'adminIndex'])->name('printer.index.admin');
-    Route::put('/printer/{printer}', [PrinterController::class, 'update'])->name('printer.update');
+    Route::prefix('print')->name('print.')->group(function(){
+        Route::get('/', [PrinterController::class, 'index'])->name('index');
+        Route::get('/admin', [PrinterController::class, 'adminIndex'])->name('index.admin');
+        Route::put('/{printer}', [PrinterController::class, 'update'])->name('update');
 
-    Route::get('/print-job', [PrintJobController::class, 'index'])->name('print-job.index');
-    Route::get('/print-job/admin', [PrintJobController::class, 'adminIndex'])->name('print-job.index.admin');
-    Route::post('print-job', [PrintJobController::class, 'store'])->name('print-job.store');
-    Route::put('/print-job/{job}', [PrintJobController::class, 'update'])->name('print-job.update');
+        Route::get('/print-job', [PrintJobController::class, 'index'])->name('print-job.index');
+        Route::get('/print-job/admin', [PrintJobController::class, 'adminIndex'])->name('print-job.index.admin');
+        Route::post('print-job', [PrintJobController::class, 'store'])->name('print-job.store');
+        Route::put('/print-job/{job}', [PrintJobController::class, 'update'])->name('print-job.update');
 
-    Route::get('/free-pages', [FreePagesController::class, 'index'])->name('free-pages.index');
-    Route::post('/free-pages', [FreePagesController::class, 'store'])->name('free-pages.store');
-    Route::get('/free-pages/admin', [FreePagesController::class, 'adminIndex'])->name('free-pages.index.admin');
+        Route::get('/free-pages', [FreePagesController::class, 'index'])->name('free-pages.index');
+        Route::post('/free-pages', [FreePagesController::class, 'store'])->name('free-pages.store');
+        Route::get('/free-pages/admin', [FreePagesController::class, 'adminIndex'])->name('free-pages.index.admin');
 
-    Route::put('/print-account', [PrintAccountController::class, 'update'])->name('print-account.update');
+        Route::put('/print-account', [PrintAccountController::class, 'update'])->name('print-account.update');
 
-    Route::get('/print-account-history', [PrintAccountHistoryController::class, 'index'])->name('print-account-history.index');
+        Route::get('/print-account-history', [PrintAccountHistoryController::class, 'index'])->name('print-account-history.index');
+    });    
 
     Route::prefix('internet')->name('internet.')->group(function () {
         Route::get('/', [InternetController::class, 'index'])->name('index');

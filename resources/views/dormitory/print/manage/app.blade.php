@@ -30,10 +30,10 @@
         </div>
     </div>
     <div class="col s12">
-        @include("dormitory.print.free", ['route' => route('free-pages.index.admin'), 'admin' => true])
+        @include("dormitory.print.free", ['route' => route('print.free-pages.index.admin'), 'admin' => true])
     </div>
     <div class="col s12">
-        @include("dormitory.print.history", ['route' => route('print-job.index.admin'), 'admin' => true])
+        @include("dormitory.print.history", ['route' => route('print.print-job.index.admin'), 'admin' => true])
     </div>
 </div>
 

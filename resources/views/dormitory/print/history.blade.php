@@ -13,7 +13,7 @@
                     ).click(function() {
                         $.ajax({
                             type: "PUT",
-                            url: "{{ route('print-job.update', [':job', 'state' => 'CANCELLED']) }}".replace(':job', data.id),
+                            url: "{{ route('print.print-job.update', [':job', 'state' => 'CANCELLED']) }}".replace(':job', data.id),
                             success: function() {
                                 cell.getTable().setPage(cell.getTable().getPage());
                             },

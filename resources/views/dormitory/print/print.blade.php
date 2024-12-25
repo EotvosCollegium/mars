@@ -23,7 +23,7 @@
             @lang('print.payment_methods_cannot_be_mixed')
             </p>
         </blockquote>
-        <form class="form-horizontal" role="form" method="POST" action="{{ route('print-job.store') }}" enctype="multipart/form-data">
+        <form class="form-horizontal" role="form" method="POST" action="{{ route('print.print-job.store') }}" enctype="multipart/form-data">
             @csrf
             <div class="row">
                 <x-input.file l=8 xl=10 id="file" accept=".pdf" required text="print.select_document"/>
@@ -50,7 +50,7 @@
                 </blockquote>
             </div>
             @if($printer->paper_out_at != null && $user->can('handleAny', \App\Models\PrintAccount::class))
-                <form method="POST" action="{{ route('printer.update', ['printer' => $printer->id]) }}">
+                <form method="POST" action="{{ route('print.update', ['printer' => $printer->id]) }}">
                     @method('PUT')
                     @csrf
                     <x-input.button l=3 class="right coli blue" text="Papír újratöltve"/>
@@ -58,7 +58,7 @@
                     <input name="no_paper" value="0" type="hidden" />
                 </form>
             @else
-                <form method="POST" action="{{ route('printer.update', ['printer' => $printer->id]) }}">
+                <form method="POST" action="{{ route('print.update', ['printer' => $printer->id]) }}">
                     @method('PUT')
                     @csrf
                     <x-input.button l=3 class="right coli blue" text="print.no_paper" />

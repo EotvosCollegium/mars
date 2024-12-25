@@ -37,7 +37,7 @@
     @if(Auth::user()?->verified)
         <!-- print page -->
         @can('use', \App\Models\PrintAccount::class)
-        <li><a class="waves-effect" href="{{ route('printer.index') }}"><i class="material-icons left">local_printshop</i>@lang('print.print')</a></li>
+        <li><a class="waves-effect" href="{{ route('print.index') }}"><i class="material-icons left">local_printshop</i>@lang('print.print')</a></li>
         @endif
         <!-- internet page -->
         <li><a class="waves-effect" href="{{ route('internet.index') }}"><i
@@ -171,7 +171,7 @@
                             <!-- print admin -->
                             @can('handleAny', \App\Models\PrintAccount::class)
                             <li>
-                                <a class="waves-effect" href="{{ route('printer.index.admin') }}">
+                                <a class="waves-effect" href="{{ route('print.index.admin') }}">
                                     <i class="material-icons left">local_printshop</i>Nyomtatás
                                 </a>
                             </li>

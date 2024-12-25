@@ -4,7 +4,7 @@
         <blockquote>
         @lang('print.how_transfer_works')
         </blockquote>
-        <form method="POST" action="{{ route('print-account.update') }}">
+        <form method="POST" action="{{ route('print.print-account.update') }}">
             @csrf
             @method('PUT')
             <div class="row">

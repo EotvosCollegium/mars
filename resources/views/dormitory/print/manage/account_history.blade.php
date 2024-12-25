@@ -6,7 +6,7 @@ $(document).ready(function() {
         paginationSize: 20,
         layout: "fitColumns",
         pagination: "remote", //enable remote pagination
-        ajaxURL: "{{ route('print-account-history.index') }}", //set url for ajax request
+        ajaxURL: "{{ route('print.print-account-history.index') }}", //set url for ajax request
         ajaxSorting: true,
         ajaxFiltering: true,
         placeholder: "@lang('general.nothing_to_show')",
