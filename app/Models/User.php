@@ -1092,15 +1092,6 @@ class User extends Authenticatable implements HasLocalePreference
     {
         return self::withRole(Role::STAFF)->first();
     }
-
-    /**
-     * @return array|Collection|User[] the users with printer role
-     */
-    public static function printers(): Collection|array
-    {
-        return self::withRole(Role::PRINTER)->get();
-    }
-
     /**
      * @return array|Collection|User[] the users with printer role
      */

@@ -24,9 +24,7 @@
                                 <x-input.button :href="route('documents.register-statement.download')" text="letöltés" />
                             </td>
                             <td>
-                                @can('print.print')
                                 <x-input.button :href="route('documents.register-statement.print')" class="coli blue" text="nyomtatás" />
-                                @endcan
                             </td>
                         </tr>
                         @endcan
@@ -40,9 +38,7 @@
                                 <x-input.button :href="route('documents.import.download')" text="nyomtatás" />
                             </td>
                             <td>
-                                @can('print.print')
                                 <x-input.button :href="route('documents.import.print')" class="coli blue" text="document.print" />
-                                @endcan
                             </td>
                         </tr>
                         @endcan

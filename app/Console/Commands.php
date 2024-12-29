@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Utils\Process;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -10,84 +11,23 @@ use Illuminate\Support\Facades\Log;
  */
 class Commands
 {
-    private static function isDebugMode()
-    {
-        return config('app.debug');
-    }
-
-    public static function getCompletedPrintingJobs()
-    {
-        $command = config('commands.lpstat') . " " . config('print.stat_additional_args') . " -W completed -o " . config('print.printer_name') . " | awk '{print $1}'";
-        if (self::isDebugMode()) {
-            $result = [0];
-        } else {
-            $result = [];
-            exec($command, $result);
-        }
-        Log::info([$command, $result]);
-        return $result;
-    }
-
-    public static function print($command)
-    {
-        if (self::isDebugMode()) {
-            $job_id = 0;
-            $result = "request id is " . config('print.printer_name') . "-" . $job_id . " (1 file(s))";
-        } else {
-            $result = exec($command);
-        }
-        Log::info([$command, $result]);
-        return $result;
-    }
-
-    public static function cancelPrintJob(string $jobID)
-    {
-        $command = config('commands.cancel') . " " . $jobID;
-        if (self::isDebugMode()) {
-            // cancel(1) exits with status code 0 if it succeeds
-            $result = ['output' => '', 'exit_code' => 0];
-        } else {
-            $output = exec($command, $result, $exit_code);
-            $result = ['output' => $output, 'exit_code' => $exit_code];
-        }
-        Log::info([$command, $result]);
-        return $result;
-    }
-
-    public static function getPages($path)
-    {
-        $command = config('commands.pdfinfo') . " " . $path . " | grep '^Pages' | awk '{print $2}' 2>&1";
-        if (self::isDebugMode()) {
-            $result = rand(1, 10);
-        } else {
-            $result = exec($command);
-        }
-        Log::info([$command, $result]);
-        return $result;
-    }
-
     public static function pingRouter($router)
     {
-        if (self::isDebugMode()) {
-            $result = rand(1, 10) > 9 ? "error" : '';
-        } else {
-            // This happens too often to log.
-            $command = config('commands.ping') . " " . $router->ip . " -c 1 | grep 'error\|unreachable'";
-            $result = exec($command);
+        if (!filter_var($router->ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+            throw new \InvalidArgumentException("Invalid IP address: " . $router->ip);
         }
+
+        $process = Process::fromShellCommandline(config('commands.ping') . " $router->ip -c 1 | grep 'error\|unreachable'");
+        $process->run($log = false);
+        $result = $process->getOutput(debugOutput: rand(1, 10) > 9 ? "error" : '');
         return $result;
     }
 
     public static function latexToPdf($path, $outputDir)
     {
-        if (self::isDebugMode()) {
-            $result = "ok";
-        } else {
-            $command = config('commands.pdflatex') . " " . "-interaction=nonstopmode -output-dir " . $outputDir . " " . $path . " 2>&1";
-            Log::info($command);
-            $result = exec($command);
-            Log::info($result);
-        }
+        $process = new Process([config('commands.pdflatex'), '-interaction=nonstopmode', '-output-dir', $outputDir, $path]);
+        $process->run();
+        $result = $process->getOutput(debugOutput: 'ok');
         return $result;
     }
 }

@@ -16,9 +16,6 @@ class PrintJobPolicy
         if ($user->isAdmin()) {
             return true;
         }
-        if (!$user->hasRole(Role::PRINTER)) {
-            return false;
-        }
     }
 
     /**

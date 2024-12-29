@@ -2,8 +2,16 @@
 
 namespace App\Models;
 
+use App\Enums\PrinterCancelResult;
+use App\Enums\PrintJobStatus;
+use App\Utils\Process;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Illuminate\Support\Facades\DB;
+use Log;
 
 /**
  * App\Models\PrintJob
@@ -37,46 +45,121 @@ class PrintJob extends Model
 {
     use HasFactory;
 
-    protected $table = 'print_jobs';
-    protected $primaryKey = 'id';
-    public $incrementing = true;
     public $timestamps = true;
 
-    public const QUEUED = 'QUEUED';
-    public const ERROR = 'ERROR';
-    public const CANCELLED = 'CANCELLED';
-    public const SUCCESS = 'SUCCESS';
-    public const STATES = [
-        self::QUEUED,
-        self::ERROR,
-        self::CANCELLED,
-        self::SUCCESS,
+    protected $fillable = [
+        'user_id',
+        'state',
+        'job_id',
+        'cost',
+        'printer_id',
+        'used_free_pages',
+        'filename',
     ];
 
-    protected $fillable = [
-        'filename', 'filepath', 'user_id', 'state', 'job_id', 'cost',
+    protected $casts = [
+        'state' => PrintJobStatus::class,
+        'used_free_pages' => 'boolean',
     ];
 
     public function user()
     {
-        return $this->belongsTo('App\Models\User');
+        return $this->belongsTo(User::class);
     }
 
-    public static function translateStates(): \Closure
+    /**
+     * `Printer` which this `PrintJob` was sent to.
+     * @return BelongsTo
+     */
+    public function printer()
     {
-        return function ($data) {
-            $data->state = __('print.'.strtoupper($data->state));
-
-            return $data;
-        };
+        return $this->belongsTo(Printer::class);
     }
 
-    public static function addCurrencyTag(): \Closure
+    /**
+     * `PrintAccount` which is related to this `PrintJob` through the `User`.
+     * The `PrintJob` and the `PrintAccount` both belong to the `User`, in this sense this relationship is articifial.
+     * Trying to fix the decision made for the database a few years ago.
+     * @return HasOneThrough
+     */
+    public function printAccount()
     {
-        return function ($data) {
-            $data->cost = "{$data->cost} HUF";
+        return $this->hasOneThrough(
+            PrintAccount::class,
+            User::class,
+            'id', // Foreign key on users
+            'user_id', // Foreign key on print_accounts
+            'user_id', // Local key on print_jobs
+            'id', // Local key on users
+        );
+    }
 
-            return $data;
-        };
+    /**
+     * Attribute for the translated cost.
+     */
+    public function translatedCost(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->used_free_pages ? "$this->cost ingyenes oldal" : "$this->cost HUF"
+        );
+    }
+
+    /**
+     * Attribute for the translated state.
+     */
+    public function translatedState(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => __("print." . strtoupper($this->state->value))
+        );
+    }
+
+    /**
+     * Attemts to cancel the given `PrintJob`. Returns wether it was successful.
+     * @param PrintJob $this
+     * @return PrinterCancelResult
+     */
+    public function cancel()
+    {
+        return DB::transaction(function () {
+            $printer = $this->printer;
+            $process = new Process([config('commands.cancel'), $this->job_id, '-h', "$printer->ip:$printer->port"]);
+            $process->run();
+            $result = ['output' => $process->getOutput(), 'exit_code' => $process->getExitCode()];
+
+            if ($result['exit_code'] == 0) {
+                $this->update([
+                    'state' => PrintJobStatus::CANCELLED,
+                ]);
+                $printAccount = $this->printAccount;
+                $printAccount->last_modified_by = user()->id;
+
+                if ($this->used_free_pages) {
+                    $pages = $printAccount->availableFreePages()->first();
+                    $pages->update([
+                        'last_modified_by' => user()->id,
+                        'amount' => $pages->amount + $this->cost,
+                    ]);
+                } else {
+                    $printAccount->balance += $this->cost;
+                }
+
+                $this->save();
+                return PrinterCancelResult::Success;
+            }
+            if (strpos($result['output'], "already canceled") !== false) {
+                $this->update([
+                    'state' => PrintJobStatus::CANCELLED,
+                ]);
+                return PrinterCancelResult::AlreadyCancelled;
+            }
+            if (strpos($result['output'], "already completed") !== false) {
+                $this->update([
+                    'state' => PrintJobStatus::SUCCESS,
+                ]);
+                return PrinterCancelResult::AlreadyCompleted;
+            }
+            return PrinterCancelResult::CannotCancel;
+        });
     }
 }
