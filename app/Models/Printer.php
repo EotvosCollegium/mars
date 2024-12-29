@@ -85,8 +85,8 @@ class Printer extends Model
         try {
             $process = new Process([
                 'lp',
-                '-d', $this->name,
                 '-h', "$this->ip:$this->port",
+                '-d', $this->name,
                 ($twoSided ? '-o sides=two-sided-long-edge' : ''),
                  '-n', $copies,
                  $path
@@ -120,7 +120,7 @@ class Printer extends Model
     public function getCompletedPrintJobs()
     {
         try {
-            $process = Process::fromShellCommandline(config('commands.lpstat') . " -W completed -o $this->name -h $this->ip:$this->port | awk '{print $1}'");
+            $process = Process::fromShellCommandline(config('commands.lpstat') . " -h $this->ip:$this->port -W completed -o $this->name | awk '{print $1}'");
             $process->run();
             $result = explode("\n", $process->getOutput());
             return $result;
