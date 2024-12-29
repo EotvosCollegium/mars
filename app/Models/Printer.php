@@ -102,7 +102,7 @@ class Printer extends Model
                     . print_r($result, true));
                 throw new PrinterException($result);
             }
-            $jobId = intval($matches[1]);
+            $jobId = $matches[1];
         } catch (\Exception $e) {
             Log::error("Printing error at line: " . __FILE__ . ":" . __LINE__ . " (in function " . __FUNCTION__ . "). " . $e->getMessage());
             throw new PrinterException($e->getMessage(), $e->getCode(), $e->getPrevious());
