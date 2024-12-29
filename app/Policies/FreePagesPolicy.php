@@ -16,10 +16,6 @@ class FreePagesPolicy
         if ($user->isAdmin()) {
             return true;
         }
-
-        if (!$user->hasRole(Role::PRINTER)) {
-            return false;
-        }
     }
 
     public function create(User $user)

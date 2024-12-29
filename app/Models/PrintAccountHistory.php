@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 // Note: the elements of this class should no be changed manually.
-// Triggers are set up in the database (see migration).
+// Observers for updating entries are set up.
 /**
  * App\Models\PrintAccountHistory
  *
@@ -47,11 +47,11 @@ class PrintAccountHistory extends Model
 
     public function user()
     {
-        return $this->belongsTo('App\Models\User', 'user_id');
+        return $this->belongsTo(User::class);
     }
 
     public function modifier()
     {
-        return $this->belongsTo('App\Models\User', 'modified_by');
+        return $this->belongsTo(User::class, 'modified_by');
     }
 }

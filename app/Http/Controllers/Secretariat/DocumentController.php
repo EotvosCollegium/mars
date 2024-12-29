@@ -158,7 +158,7 @@ class DocumentController extends Controller
         // TODO: figure out result
         Commands::latexToPdf($pathTex, $outputDir);
 
-        if (config('app.debug')) {
+        if (config('app.debug') && !config('commands.run_in_debug')) {
             return $pathTex;
         } else {
             return $pathPdf;

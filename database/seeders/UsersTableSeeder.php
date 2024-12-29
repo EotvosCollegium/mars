@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Semester;
 use App\Models\Checkout;
 use App\Models\Faculty;
 use App\Models\FreePages;
@@ -27,6 +28,8 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
+        Semester::current(); // generate current semester if still not exists
+
         $this->createSuperUser();
         $this->createStaff();
 
@@ -118,7 +121,6 @@ class UsersTableSeeder extends Seeder
         $this->attachEducationalInformation($user);
         $this->attachFaculties($user);
 
-        $user->roles()->attach(Role::get(Role::PRINTER)->id);
         $wifi_username = $user->internetAccess->setWifiCredentials();
         WifiConnection::factory($user->id % 5)->create(['wifi_username' => $wifi_username]);
         $this->attachStudyLines($user);
