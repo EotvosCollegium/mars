@@ -121,7 +121,7 @@ class Printer extends Model
     {
         try {
             $process = Process::fromShellCommandline(config('commands.lpstat') . " -h $this->ip:$this->port -W completed -o $this->name | awk '{print $1}'");
-            $process->run($log = false);
+            $process->run(log: false);
             $result = explode("\n", $process->getOutput());
             return $result;
         } catch (\Exception $e) {
