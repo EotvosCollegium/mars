@@ -112,8 +112,8 @@ class PrintAccountController extends Controller
         // Only admins can modify accounts
         $this->authorize('modify', $printAccount);
 
-        if ($amount < 0 && $printAccount->balance < $amount) {
-            $this->returnNoBalance();
+        if ($amount < 0 && $printAccount->balance < abs($amount)) {
+            return $this->returnNoBalance();
         }
 
         $printAccount->update([

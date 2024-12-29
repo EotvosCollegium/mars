@@ -134,7 +134,7 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
 
         Route::get('/print-job', [PrintJobController::class, 'index'])->name('print-job.index');
         Route::get('/print-job/admin', [PrintJobController::class, 'adminIndex'])->name('print-job.index.admin');
-        Route::post('print-job', [PrintJobController::class, 'store'])->name('print-job.store');
+        Route::post('/print-job', [PrintJobController::class, 'store'])->name('print-job.store');
         Route::put('/print-job/{job}', [PrintJobController::class, 'update'])->name('print-job.update');
 
         Route::get('/free-pages', [FreePagesController::class, 'index'])->name('free-pages.index');
