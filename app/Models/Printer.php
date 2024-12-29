@@ -136,7 +136,7 @@ class Printer extends Model
     public function updateCompletedPrintJobs()
     {
         return DB::transaction(function () {
-            PrintJob::whereIn(
+            PrintJob::where('state', PrintJobStatus::QUEUED)->whereIn(
                 'job_id',
                 $this->getCompletedPrintJobs()
             )->update(['state' => PrintJobStatus::SUCCESS]);
