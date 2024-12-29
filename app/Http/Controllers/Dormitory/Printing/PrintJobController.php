@@ -96,9 +96,8 @@ class PrintJobController extends Controller
         $printer = Printer::firstWhere('name', config('print.printer_name'));
 
         $path = $file->store('', 'printing');
-        $path = Storage::disk('printing')->path($path);
         $originalName = $file->getClientOriginalName();
-        $pageNumber = PrinterHelper::getDocumentPageNumber($path);
+        $pageNumber = PrinterHelper::getDocumentPageNumber(Storage::disk('printing')->path($path));
 
         /** @var PrintAccount */
         $printAccount = user()->printAccount;
@@ -115,14 +114,14 @@ class PrintJobController extends Controller
         $printAccount->updateHistory($useFreePages, $cost);
 
         try {
-            $printJob = $printer->createPrintJob($useFreePages, $cost, $path, $originalName, $twoSided, $copyNumber);
+            $printJob = $printer->createPrintJob($useFreePages, $cost, Storage::disk('printing')->path($path), $originalName, $twoSided, $copyNumber);
             Log::info("User $printAccount->user_id started print job a document for $cost. Job ID: $printJob->job_id. Used free pages: $useFreePages. File: $originalName");
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error("Error while creating print job: " . $e->getMessage());
             return back()->with('error', __('print.error_printing'));
         } finally {
-            Storage::delete($path);
+            Storage::disk('printing')->delete($path);
         }
 
         DB::commit();
