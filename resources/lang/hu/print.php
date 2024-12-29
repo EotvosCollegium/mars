@@ -17,7 +17,6 @@ return [
     'cancel_job' => 'Megszakítás',
     'cannot_cancel' => 'Nem lehetett megszakítani a nyomtatást',
     'changed_balance' => 'Megváltozott nyomtatási egyenleg',
-    'changed_balance_descr' => ':modifier módosította a nyomtatási egyenleged ennyivel: :amount Ft. Az új egyenleged :balance Ft.',
     'confirm_cancel' => 'Biztos, hogy meg szeretnéd szakítani a dokumentum nyomtatását?',
     'cost' => 'Költség',
     'costs' => 'Az egyoldalas nyomtatás díja :one_sided, a kétoldalasé :two_sided Ft.',
@@ -45,6 +44,7 @@ return [
     'number_of_copies' => 'Példányszám',
     'number_of_printed_documents' => 'Nyomtatott dokumentumok száma',
     'options' => 'Beállítások',
+    'others_balance_changed_descr' => ':modifier módosította :holder-name egyenlegét :amount Ft-tal.',
     'payment_methods_cannot_be_mixed' => 'Egy nyomtatás vagy ingyenes vagy fizetős lehet, nem keverhető.',
     'pdf_description' => 'Csak .pdf fájl nyomtatható.',
     'pdf_maxsize' => 'A fájl mérete legfeljebb :maxsize MB lehet.',
@@ -63,4 +63,5 @@ return [
     'upload_money' => 'Pénzt feltölteni a rendszergazdáknál tudsz.',
     'use_free_pages' => 'Ingyenes oldalak használata',
     'user' => 'Felhasználó',
+    'your_balance_changed_descr' => ':modifier módosította a nyomtatási egyenleged :amount Ft-tal. Az új egyenleged :balance Ft.',
 ];

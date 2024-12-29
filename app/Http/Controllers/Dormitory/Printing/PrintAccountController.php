@@ -92,8 +92,10 @@ class PrintAccountController extends Controller
 
         DB::commit();
 
-        Mail::to($printAccount->user)->queue(new ChangedPrintBalance($printAccount->user, -$amount, user()->name));
-        Mail::to($otherAccount->user)->queue(new ChangedPrintBalance($otherAccount->user, $amount, user()->name));
+        Mail::to($printAccount->user)->queue(new ChangedPrintBalance($printAccount->user, $printAccount->user, -$amount, user()->name));
+        Mail::to($otherAccount->user)->queue(new ChangedPrintBalance($otherAccount->user, $printAccount->user, -$amount, user()->name));
+        Mail::to($printAccount->user)->queue(new ChangedPrintBalance($printAccount->user, $otherAccount->user, $amount, user()->name));
+        Mail::to($otherAccount->user)->queue(new ChangedPrintBalance($otherAccount->user, $otherAccount->user, $amount, user()->name));
 
         return redirect()->back()->with('message', __('general.successful_transaction'));
     }
@@ -119,8 +121,6 @@ class PrintAccountController extends Controller
             'last_modified_by' => user()->id,
         ]);
 
-        Mail::to($printAccount->user)->queue(new ChangedPrintBalance($printAccount->user, $amount, user()->name));
-
         $adminCheckout = Checkout::admin();
         Transaction::create([
             'checkout_id' => $adminCheckout->id,
@@ -134,6 +134,13 @@ class PrintAccountController extends Controller
         ]);
 
         DB::commit();
+
+        Mail::to(user())->queue(new ChangedPrintBalance(user(), $printAccount->user, $amount, user()->name));
+
+        //Do not send duplicate emails
+        if($printAccount->user->id !== user()->id) {
+            Mail::to($printAccount->user)->queue(new ChangedPrintBalance($printAccount->user, $printAccount->user, $amount, user()->name));
+        }
 
         return redirect()->back()->with('message', __('general.successful_modification'));
     }

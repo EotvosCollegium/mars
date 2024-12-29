@@ -15,7 +15,6 @@ return [
     'cancel' => 'Cancel',
     'cancel_job' => 'Abort',
     'changed_balance' => 'Modified print balance',
-    'changed_balance_descr' => ':modifier have been added :amount HUF to your print balance. Your new balance is :balance HUF.',
     'confirm_cancel' => 'Are you sure you wish to abort printing this document?',
     'cost' => 'Cost',
     'costs' => 'One-sided printing costs :one_sided, and two-sided printing costs :two_sided HUF.',
@@ -43,6 +42,7 @@ return [
     'number_of_copies' => 'Number of copies',
     'number_of_printed_documents' => 'Number of printed documents',
     'options' => 'Printing options',
+    'others_balance_changed_descr' => ':modifier has changed the print balance of :holder-name by HUF :amount.',
     'payment_methods_cannot_be_mixed' => 'A print job can be either free or paid as they cannot be mixed.',
     'pdf_description' => 'Only .pdf files can be printed.',
     'pdf_maxsize' => 'The maximum file size is :maxsize MB.',
@@ -61,4 +61,5 @@ return [
     'upload_money' => 'You can upload money to your account at the system admins.',
     'use_free_pages' => 'Use free pages',
     'user' => 'User',
+    'your_balance_changed_descr' => ':modifier has changed your print balance by HUF :amount. The new balance is HUF :balance.',
 ];
