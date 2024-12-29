@@ -96,8 +96,9 @@ class PrintJobController extends Controller
         $printer = Printer::firstWhere('name', config('print.printer_name'));
 
         $path = $file->store('', 'printing');
+        $path = Storage::disk('printing')->path($path);
         $originalName = $file->getClientOriginalName();
-        $pageNumber = PrinterHelper::getDocumentPageNumber(Storage::disk('printing')->path($path));
+        $pageNumber = PrinterHelper::getDocumentPageNumber($path);
 
         /** @var PrintAccount */
         $printAccount = user()->printAccount;
