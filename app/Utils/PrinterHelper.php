@@ -52,11 +52,9 @@ class PrinterHelper
      * @param mixed $twoSided
      * @return int|float
      */
-    public static function getFreePagesNeeded(int $pages, $copies, $twoSided)
+    public static function getFreePagesNeeded(int $pages, int $copies, bool $twoSided)
     {
-        $pageTypesNeeded = self::getPageTypesNeeded($pages, $twoSided);
-
-        return ($pageTypesNeeded['one_sided'] + $pageTypesNeeded['two_sided']) * $copies;
+        return $pages * $copies; //We are charging for each of the printed sides of paper
     }
 
     /**

@@ -20,7 +20,7 @@ class Process extends SymfonyProcess
             $return_value = parent::run($callback, $env);
             if($log) {
                 if($return_value === 0) {
-                    Log::info("Command: " . $this->getCommandLine() . " executed successfully.");
+                    Log::info("Command: " . $this->getCommandLine() . " executed successfully. With output: " . $this->getOutput() . " and error output: " . $this->getErrorOutput());
                 } else {
                     Log::error("Command: " . $this->getCommandLine() . " failed with error code: " . $return_value . "\nWith output: " . $this->getOutput() . " and error output: " . $this->getErrorOutput());
                 }

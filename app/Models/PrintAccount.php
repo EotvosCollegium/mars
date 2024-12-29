@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Utils\PrinterHelper;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
