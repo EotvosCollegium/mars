@@ -20,17 +20,17 @@ class PrintControllerTest extends TestCase
 
         $response = $this->get('/print');
         $response->assertStatus(200);
-        $response = $this->get('/print/free_pages');
+        $response = $this->get('/print/free-pages');
         $response->assertStatus(200);
-        $response = $this->get('/print/print_job');
+        $response = $this->get('/print/print-job');
         $response->assertStatus(200);
-        $response = $this->get('/print/free_pages/admin');
+        $response = $this->get('/print/free-pages/admin');
         $response->assertStatus(403);
-        $response = $this->get('/print/print_job/admin');
+        $response = $this->get('/print/print-job/admin');
         $response->assertStatus(403);
         $response = $this->get('/print/admin');
         $response->assertStatus(403);
-        $response = $this->get('/print-account_history');
+        $response = $this->get('/print-account-history');
         $response->assertStatus(200);
 
         $response = $this->post('/print-account-update', []);
@@ -54,17 +54,17 @@ class PrintControllerTest extends TestCase
 
         $response = $this->get('/print');
         $response->assertStatus(200);
-        $response = $this->get('/print/free_pages');
+        $response = $this->get('/print/free-pages');
         $response->assertStatus(200);
-        $response = $this->get('/print/print_job');
+        $response = $this->get('/print/print-job');
         $response->assertStatus(200);
-        $response = $this->get('/print/free_pages/admin');
+        $response = $this->get('/print/free-pages/admin');
         $response->assertStatus(403);
-        $response = $this->get('/print/print_job/admin');
+        $response = $this->get('/print/print-job/admin');
         $response->assertStatus(403);
         $response = $this->get('/print/admin');
         $response->assertStatus(403);
-        $response = $this->get('/print-account_history');
+        $response = $this->get('/print-account-history');
         $response->assertStatus(200);
 
         $response = $this->post('/print-account-update', []);
@@ -89,17 +89,17 @@ class PrintControllerTest extends TestCase
 
         $response = $this->get('/print');
         $response->assertStatus(200);
-        $response = $this->get('/print/free_pages');
+        $response = $this->get('/print/free-pages');
         $response->assertStatus(200);
-        $response = $this->get('/print/print_job');
+        $response = $this->get('/print/print-job');
         $response->assertStatus(200);
-        $response = $this->get('/print/free_pages/admin');
+        $response = $this->get('/print/free-pages/admin');
         $response->assertStatus(200);
-        $response = $this->get('/print/print_job/admin');
+        $response = $this->get('/print/print-job/admin');
         $response->assertStatus(200);
         $response = $this->get('/print/admin');
         $response->assertStatus(200);
-        $response = $this->get('/print-account_history');
+        $response = $this->get('/print-account-history');
         $response->assertStatus(200);
 
         $response = $this->post('/print-account-update', []);
