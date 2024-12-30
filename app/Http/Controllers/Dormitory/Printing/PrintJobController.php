@@ -121,7 +121,11 @@ class PrintJobController extends Controller
             Log::error("Error while creating print job: " . $e->getMessage());
             return back()->with('error', __('print.error_printing'));
         } finally {
-            Storage::disk('printing')->delete($path);
+            /*
+             * Let's keep around the documents for easier troubleshooting
+             * TODO: clean up after an interval (e.g. 7 days)
+             */
+            // Storage::disk('printing')->delete($path);
         }
 
         DB::commit();
