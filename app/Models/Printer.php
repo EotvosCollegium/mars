@@ -87,9 +87,9 @@ class Printer extends Model
                 'lp',
                 '-h', "$this->ip:$this->port",
                 '-d', $this->name,
-                ($twoSided ? '-o sides=two-sided-long-edge' : ''),
-                 '-n', $copies,
-                 $path
+                '-o', ($twoSided ? 'sides=two-sided-long-edge' : 'sides=one-sided'),
+                '-n', $copies,
+                $path
             ]);
             $process->run();
             if (!$process->isSuccessful()) {
