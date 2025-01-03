@@ -7,7 +7,7 @@ RUN apt-get update \
     && apt-get upgrade -y \
     && apt-get install -y curl tar xz-utils iputils-ping composer poppler-utils cups-client cm-super \
                           libzip-dev libpng-dev libonig-dev libcurl4-openssl-dev libxml2-dev \
-                          php8.3-cli php8.3-mysql php8.3-zip php8.3-gd php8.3-mbstring php8.3-curl php8.3-xml php8.3-bcmath \
+                          php8.3-cli php8.3-mysql php8.3-zip php8.3-gd php8.3-mbstring php8.3-curl php8.3-xml php8.3-bcmath php8.3-imagick \
                           texlive-latex-base texlive-latex-extra texlive-lang-european \
                           make \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
