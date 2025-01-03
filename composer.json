@@ -10,7 +10,7 @@
     "require": {
         "php": "^8.2",
         "graham-campbell/markdown": "^15.0",
-        "intervention/image": "^2.5",
+        "intervention/image": "^3.10",
         "laravel/framework": "^11.0",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^4.0",
