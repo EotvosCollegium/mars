@@ -17,13 +17,13 @@ class CreateSemesterTable extends Migration
             // Eloquent does not support composite primary keys, so let's just add one there.
             $table->smallIncrements('id');
             $table->unsignedInteger('year');
-            $table->set('part', \App\Models\Semester::PARTS);
+            $table->set('part', [1, 2]);
         });
 
         Schema::create('semester_status', function (Blueprint $table) {
             $table->unsignedBigInteger('user_id');
             $table->unsignedSmallInteger('semester_id');
-            $table->set('status', \App\Models\SemesterStatus::STATUSES)->default(\App\Models\SemesterStatus::ACTIVE);
+            $table->set('status', ['ACTIVE','INACTIVE','DEACTIVATED','PASSIVE','PENDING'])->nullable();
             $table->text('comment')->nullable();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

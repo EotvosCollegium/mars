@@ -4,10 +4,6 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-use App\Models\User;
-use App\Models\GeneralAssemblies\GeneralAssembly;
-use App\Models\Question;
-
 return new class () extends Migration {
     /**
      * Run the migrations.
@@ -24,7 +20,7 @@ return new class () extends Migration {
         });
         Schema::create('questions', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(GeneralAssembly::class)->onDelete('cascade');
+            $table->foreignId('sitting_id')->onDelete('cascade');
             $table->string('title');
             $table->integer('max_options')->default(1);
             $table->char('passcode', 8);
@@ -33,13 +29,13 @@ return new class () extends Migration {
         });
         Schema::create('question_options', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Question::class)->onDelete('cascade');
+            $table->foreignId('question_id')->onDelete('cascade');
             $table->string('title');
             $table->integer('votes')->default(0);
         });
         Schema::create('question_user', function (Blueprint $table) {
-            $table->foreignIdFor(Question::class)->onDelete('cascade');
-            $table->foreignIdFor(User::class)->onDelete('cascade');
+            $table->foreignId('question_id')->onDelete('cascade');
+            $table->foreignId('user_id')->onDelete('cascade');
             $table->timestamps();
             $table->unique(['question_id', 'user_id']);
         });

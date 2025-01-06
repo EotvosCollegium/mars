@@ -1,8 +1,5 @@
 <?php
 
-use App\Models\Checkout;
-use App\Models\Role;
-use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -19,9 +16,16 @@ return new class () extends Migration {
             $table->foreignId('handler_id')->nullable()->references('id')->on('users');
         });
 
-        Checkout::studentsCouncil()->update([
-            'handler_id' => User::withRole(Role::studentsCouncil(), Role::ECONOMIC_VICE_PRESIDENT)->first()?->id
-        ]);
+        $student_council_role_id = DB::table('roles')->where('name', 'student-council')->first()->id;
+        $economic_vice_president_object_id = DB::table('role_objects')->where('role_id', $student_council_role_id)->where('name', 'economic-vice-president')->first()->id;
+
+        $economic_vice_president_user = DB::table('role_users')->where('role_id', $student_council_role_id)->where('object_id', $economic_vice_president_object_id);
+
+        if($economic_vice_president_user->exists()) {
+            DB::table('checkouts')->where('name', 'VALASZTMANY')->update([
+                'handler_id' => $economic_vice_president_user->first()->id
+            ]);
+        }
     }
 
     /**

@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Faculty;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -18,8 +17,8 @@ class CreateFacultiesTable extends Migration
             $table->tinyIncrements('id');
             $table->text('name');
         });
-        foreach (Faculty::ALL as $key => $faculty) {
-            DB::table('faculties')->insert(['name' => $faculty]);
+        foreach (['Állam- és Jogtudományi Kar', 'Bárczi Gusztáv Gyógypedagógiai Kar', 'Bölcsészettudományi Kar', 'Informatikai Kar', 'Gazdaságtudományi Kar', 'Pedagógiai és Pszichológiai Kar', 'Tanító- és Óvóképző Kar', 'Társadalomtudományi Kar', 'Természettudományi Kar'] as $faculty_name) {
+            DB::table('faculties')->insert(['name' => $faculty_name]);
         }
     }
 

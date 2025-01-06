@@ -37,8 +37,7 @@
     @if(Auth::user()?->verified)
         <!-- print page -->
         @can('use', \App\Models\PrintAccount::class)
-            <li><a class="waves-effect" href="{{ route('print') }}"><i
-                            class="material-icons left">local_printshop</i>@lang('print.print')</a></li>
+        <li><a class="waves-effect" href="{{ route('print.index') }}"><i class="material-icons left">local_printshop</i>@lang('print.print')</a></li>
         @endif
         <!-- internet page -->
         <li><a class="waves-effect" href="{{ route('internet.index') }}"><i
@@ -160,23 +159,23 @@
                     </li>
                 @endif
                 @if(Auth::user()->isAdmin() || Auth::user()->isCollegist())
-                    {{-- Sysadmin module --}}
-                    <li class="@yield('admin_module')">
-                        <a class="collapsible-header waves-effect" style="padding-left:32px">
-                            <i class="material-icons left">admin_panel_settings</i>
-                            Rendszergazda
-                            <i class="material-icons right">arrow_drop_down</i>
-                        </a>
-                        <div class="collapsible-body">
-                            <ul>
-                                <!-- print admin -->
-                                @can('handleAny', \App\Models\PrintAccount::class)
-                                    <li>
-                                        <a class="waves-effect" href="{{ route('print.manage') }}">
-                                            <i class="material-icons left">local_printshop</i>Nyomtatás
-                                        </a>
-                                    </li>
-                                @endcan
+                {{-- Sysadmin module --}}
+                <li class="@yield('admin_module')">
+                    <a class="collapsible-header waves-effect" style="padding-left:32px">
+                        <i class="material-icons left">admin_panel_settings</i>
+                        Rendszergazda
+                        <i class="material-icons right">arrow_drop_down</i>
+                    </a>
+                    <div class="collapsible-body">
+                        <ul>
+                            <!-- print admin -->
+                            @can('handleAny', \App\Models\PrintAccount::class)
+                            <li>
+                                <a class="waves-effect" href="{{ route('print.index.admin') }}">
+                                    <i class="material-icons left">local_printshop</i>Nyomtatás
+                                </a>
+                            </li>
+                            @endcan
 
                                 <!-- internet admin -->
                                 @can('handleAny', \App\Models\Internet\InternetAccess::class)

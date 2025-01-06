@@ -6,7 +6,7 @@ $(document).ready(function() {
         paginationSize: 20,
         layout: "fitColumns",
         pagination: "remote", //enable remote pagination
-        ajaxURL: "{{ route('print.account_history') }}", //set url for ajax request
+        ajaxURL: "{{ route('print.print-account-history.index') }}", //set url for ajax request
         ajaxSorting: true,
         ajaxFiltering: true,
         placeholder: "@lang('general.nothing_to_show')",
@@ -14,7 +14,7 @@ $(document).ready(function() {
         columns: [
             {
                 title: "Felhasználó",
-                field: "user_name",
+                field: "user.name",
                 sorter: "string",
                 headerFilter: 'input',
                 minWidth:200
@@ -39,7 +39,7 @@ $(document).ready(function() {
             },
             {
                 title: "Módosító",
-                field: "modifier_name",
+                field: "modifier.name",
                 sorter: "string",
                 headerFilter: 'input',
                 minWidth:180

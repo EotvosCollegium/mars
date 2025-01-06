@@ -24,7 +24,7 @@ class CreatePrintAccountHistoryTable extends Migration
             $table->integer('free_page_change');
             $table->date('deadline_change')->nullable();
             $table->unsignedBigInteger('modified_by');
-            $table->timestamp('modified_at');
+            $table->timestamp('modified_at')->useCurrent()->useCurrentOnUpdate();
         });
         // This triggers is changed in fix_trigger migrations.
         //        DB::unprepared('

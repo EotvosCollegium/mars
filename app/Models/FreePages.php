@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Model to keep track of the users' free pages.
@@ -51,23 +53,73 @@ class FreePages extends Model
         'comment',
     ];
 
-    public function user()
+    protected $casts = [
+        'deadline' => 'date',
+    ];
+
+    /**
+     * The user this free pages entry belongs to.
+     * @return BelongsTo
+     */
+    public function user(): BelongsTo
     {
-        return $this->belongsTo('App\Models\User');
+        return $this->belongsTo(User::class);
     }
 
+    /**
+     * The print account this free pages entry belongs to.
+     * @return BelongsTo
+     */
     public function printAccount()
     {
-        return $this->belongsTo('App\Models\PrintAccount', 'user_id', 'user_id');
+        return $this->belongsTo(PrintAccount::class, 'user_id', 'user_id');
     }
 
-    public function available()
+    /**
+     * Wether the free pages are still available.
+     * @return bool
+     */
+    protected function available(): Attribute
     {
-        return $this->deadline > date('Y-m-d');
+        return Attribute::make(
+            get: fn () => now()->isBefore($this->deadline)
+        );
     }
 
-    public function lastModifiedBy()
+    /**
+     * The user who last modified this free pages entry.
+     * @return BelongsTo
+     */
+    public function modifier(): BelongsTo
     {
-        return User::find($this->last_modified_by);
+        return $this->belongsTo(User::class, 'last_modified_by');
+    }
+
+
+    /**
+     * Returns the amount of pages that can be subtracted from the free pages.
+     * If the amount is greater than the available pages, only the available pages are subtracted.
+     * @param int $amount
+     * @return int
+     */
+    public function calculateSubtractablePages(int $amount)
+    {
+        return min($amount, $this->amount);
+    }
+
+    /**
+     * Subtracts the given amount of pages from the free pages.
+     * If the amount is greater than the available pages, only the available pages are subtracted.
+     * @param int $amount
+     */
+    public function subtractPages(int $amount)
+    {
+        if ($amount <= 0 || $amount > $this->amount) {
+            throw new \InvalidArgumentException("Amount must be greater than 0 and less than or equal to the available pages.");
+        }
+        $this->update([
+            'last_modified_by' => user()->id,
+            'amount' => $this->amount - $amount,
+        ]);
     }
 }

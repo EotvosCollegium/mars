@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Internet\InternetAccess;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -18,12 +17,7 @@ class SetWifiToTwo extends Migration
             $table->smallInteger('wifi_connection_limit')->default(2)->change();
         });
 
-        $internetAccesses = InternetAccess::all();
-        foreach ($internetAccesses as $internetAccesses) {
-            $internetAccesses->update([
-                'wifi_connection_limit' => 2,
-            ]);
-        }
+        DB::table('internet_accesses')->update(['wifi_connection_limit' => 2]);
     }
 
     /**

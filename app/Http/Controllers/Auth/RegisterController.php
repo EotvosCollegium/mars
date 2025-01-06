@@ -112,8 +112,6 @@ class RegisterController extends Controller
                 'password' => Hash::make($data['password']),
             ]);
 
-            $user->roles()->attach(Role::get(Role::PRINTER)->id);
-
             if ($data['user_type'] == Role::TENANT) {
                 $user->roles()->attach(Role::get(Role::TENANT));
                 $user->personalInformation()->create([
