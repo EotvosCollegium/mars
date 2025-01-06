@@ -16,7 +16,7 @@ class SetWifiToTwo extends Migration
         Schema::table('internet_accesses', function (Blueprint $table) {
             $table->smallInteger('wifi_connection_limit')->default(2)->change();
         });
-        
+
         DB::table('internet_accesses')->update(['wifi_connection_limit' => 2]);
     }
 

@@ -19,14 +19,18 @@ return new class () extends Migration {
             $table->foreignId('user_id');
             $table->unique(['general_assembly_id', 'user_id']);
             $table->timestamps();
-            
+
             $table->index(['user_id'], 'general_assembly_user_user_id_foreign');
 
-            $table->foreign('general_assembly_id',
-                'c_general_assembly_user_general_assembly_id_foreign')
+            $table->foreign(
+                'general_assembly_id',
+                'c_general_assembly_user_general_assembly_id_foreign'
+            )
                 ->references('id')->on('general_assemblies')->cascadeOnDelete();
-            $table->foreign('user_id',
-                'c_general_assembly_user_user_id_foreign')
+            $table->foreign(
+                'user_id',
+                'c_general_assembly_user_user_id_foreign'
+            )
                 ->references('id')->on('users')->cascadeOnDelete();
         });
     }

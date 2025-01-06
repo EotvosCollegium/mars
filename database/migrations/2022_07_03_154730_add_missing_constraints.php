@@ -14,7 +14,7 @@ class AddMissingConstraints extends Migration
     public function up()
     {
         $user_ids = DB::table('users')->select('id');
-        
+
         DB::table('transactions')->whereNotIn('receiver_id', $user_ids)->update(['receiver_id' => null]);
         DB::table('transactions')->whereNotIn('payer_id', $user_ids)->update(['payer_id' => null]);
 
