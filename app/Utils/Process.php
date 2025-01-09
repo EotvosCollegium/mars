@@ -49,7 +49,6 @@ class Process extends SymfonyProcess
     /**
      * Get the exit code of the process.
      *
-     * @param string $debugOutput
      * @return int|null
      */
     public function getExitCode(): ?int

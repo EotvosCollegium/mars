@@ -69,7 +69,7 @@ class PrintAccount extends Model
 
     /**
      * The free pages which are currently available. Sorts the free pages by their deadline.
-     * @return Collection
+     * @return Collection|FreePages[]
      */
     public function availableFreePages()
     {
@@ -131,7 +131,7 @@ class PrintAccount extends Model
             $availableFreePages = $this->availableFreePages()->where('amount', '>', 0);
 
             // Subtract the pages from the free pages pool, as many free pages as necessary
-            /** @var FreePages */
+            /** @var FreePages $freePages */
             foreach ($availableFreePages as $freePages) {
                 $subtractablePages = $freePages->calculateSubtractablePages($freePagesToSubtract);
                 $freePages->subtractPages($subtractablePages);
