@@ -313,7 +313,7 @@ class Role extends Model
             self::ETHICS_COMMISSIONER => 'green lighten-2',
             self::ALUMNI => 'grey darken-1',
             self::RECEPTIONIST => 'brown',
-            self::SENIOR => 'teal', 
+            self::SENIOR => 'teal',
             default => 'grey',
         };
     }

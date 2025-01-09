@@ -495,7 +495,8 @@ class User extends Authenticatable implements HasLocalePreference
         return $query->where('users.verified', 1);
     }
 
-    public function isSenior(): bool {
+    public function isSenior(): bool
+    {
         return $this->hasRole(Role::SENIOR);
     }
 
