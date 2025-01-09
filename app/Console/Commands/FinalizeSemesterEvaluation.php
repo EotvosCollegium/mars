@@ -31,7 +31,7 @@ class FinalizeSemesterEvaluation extends Command
         $year = $this->argument('year');
         $part = $this->argument('part');
 
-        
+
         $semester = Semester::where('year', $year)->where('part', $part)->first();
 
         App::setLocale('hu');

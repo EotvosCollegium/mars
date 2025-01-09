@@ -97,7 +97,8 @@ class SemesterEvaluationController extends Controller
     /**
      * Send email about results and deactivate collegists who did not fill out the form.
      */
-    public static function finalize($semester){
+    public static function finalize($semester)
+    {
         $users = SemesterEvaluationController::usersHaventFilledOutTheForm($semester);
         $users_names = $users->pluck('name')->toArray();
 
