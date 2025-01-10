@@ -139,7 +139,7 @@ class UserPolicy
             return $user->hasRole([Role::STAFF]);
         }
 
-        if ($role->name == Role::COLLEGIST) {
+        if ($role->name == Role::COLLEGIST || $role->name == Role::ALUMNI || $role->name == Role::SENIOR) {
             return $user->hasRole([Role::SECRETARY, Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS]);
         }
 
@@ -203,7 +203,7 @@ class UserPolicy
             return $user->hasRole([Role::STAFF]);
         }
 
-        if ($role->name == Role::COLLEGIST) {
+        if ($role->name == Role::COLLEGIST || $role->name == Role::ALUMNI || $role->name == Role::SENIOR) {
             return $user->hasRole([Role::SECRETARY, Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS]);
         }
 

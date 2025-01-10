@@ -6,6 +6,9 @@ use App\Enums\PrintJobStatus;
 use App\Models\Printer;
 use App\Models\PrintJob;
 use App\Utils\Process;
+use Illuminate\Contracts\Container\BindingResolutionException;
+use Psr\Container\NotFoundExceptionInterface;
+use Psr\Container\ContainerExceptionInterface;
 
 class PrinterHelper
 {
@@ -48,9 +51,9 @@ class PrinterHelper
     /**
      * Returns the number of free pages needed to print with given configuration.
      * @param int $pages
-     * @param mixed $copies
-     * @param mixed $twoSided
-     * @return int|float
+     * @param int $copies
+     * @param bool $twoSided
+     * @return int
      */
     public static function getFreePagesNeeded(int $pages, int $copies, bool $twoSided)
     {

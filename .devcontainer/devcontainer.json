@@ -6,14 +6,16 @@
 	],
 	"service": "mars_dev",
 	"workspaceFolder": "/workspace/mars",
-	"settings": {},
-	"extensions": [
-		// "mikestead.dotenv",
-		// "amiralizadeh9480.laravel-extra-intellisense",
-		// "ryannaddy.laravel-artisan",
-		// "onecentlin.laravel5-snippets",
-		// "onecentlin.laravel-blade"
-	],
+	"customizations": {
+		"vscode": {
+			"settings": {
+				"php-cs-fixer.executablePath": "${workspaceFolder}/vendor/bin/php-cs-fixer"
+			},
+			"extensions": [
+				"junstyle.php-cs-fixer"
+			]
+		}
+	},
 	"remoteUser": "ubuntu",
 	"postCreateCommand": "make build"
 	// "forwardPorts": [],

@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Internet\MacAddress;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -19,7 +18,7 @@ class CreateMacAddressesTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->string('mac_address', 17);
             $table->text('comment');
-            $table->enum('state', MacAddress::STATES)->default(MacAddress::REQUESTED);
+            $table->enum('state', ['APPROVED','REJECTED','REQUESTED'])->default('REQUESTED');
             $table->timestamps();
 
             $table->foreign('user_id')

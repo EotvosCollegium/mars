@@ -76,6 +76,7 @@ return [
     'study_line_level' => 'Képzési szint',
     'study_line_minor' => 'Minor / Specializáció',
     'study_line_start' => 'Képzés kezdete',
+    'study_line_training_code' => 'Képzési kód',
     'surname' => 'vezetéknév',
     'szlavisztika_muhely' => 'Szlavisztika műhely',
     'tanito_eso_vokepzo_kar' => 'Tanító- és Óvóképző Kar',

@@ -105,8 +105,6 @@ class EconomicController extends Controller
             'moved_to_checkout' => null,
         ]);
 
-        WorkshopBalance::generateBalances(Semester::current());
-
         $new_expiry_date = $payer->internetAccess->extendInternetAccess();
 
         return [$kkt, $netreg, $new_expiry_date];

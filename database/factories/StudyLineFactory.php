@@ -23,6 +23,7 @@ class StudyLineFactory extends Factory
         return [
             'educational_information_id' => \App\Models\EducationalInformation::factory()->create()->id,
             'name' => $this->faker->jobTitle,
+            'training_code' => $this->faker->boolean ? $this->faker->lexify("???-???_??????") : null,
             'type' => $this->faker->randomElement(array_keys(\App\Models\StudyLine::TYPES)),
             'start' => Semester::current()->id,
         ];

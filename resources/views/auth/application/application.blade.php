@@ -164,7 +164,7 @@
                                 <th scope="row">Szak(ok)</th>
                                 <td>
                                     @forelse($user->educationalInformation?->studyLines ?? [] as $studyLine)
-                                        {{ $studyLine->getName() }}
+                                        {{ $studyLine->getNameWithYear() }}
                                         <br>
                                     @empty
                                         <span style="font-style:italic;color:red">hiányzó szak</span>

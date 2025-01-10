@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Fault;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -19,7 +18,7 @@ class CreateFaultsTable extends Migration
             $table->unsignedBigInteger('reporter_id');
             $table->string('location');
             $table->string('description');
-            $table->enum('status', Fault::STATES);
+            $table->enum('status', ['UNSEEN','SEEN','DONE','WONT_FIX']);
             $table->timestamps();
         });
     }

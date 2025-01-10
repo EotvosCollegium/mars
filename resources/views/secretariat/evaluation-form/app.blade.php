@@ -53,54 +53,52 @@
             </div>
         </div>
     </div>
-    @if(!$phd)
-        <div class="row">
-            <div class="col s12">
-                <div class="card" id="alfonso">
-                    <div class="card-content">
-                        <div class="card-title">Alfonsó</div>
-                        @include('user.alfonso-language-exams', ['user' => $user])
-                        <div class="row">
-                            <div class="col">
-                                <div class="divider" style="margin:10px"></div>
-                            </div>
+    <div class="row">
+        <div class="col s12">
+            <div class="card" id="alfonso">
+                <div class="card-content">
+                    <div class="card-title">Alfonsó</div>
+                    @include('user.alfonso-language-exams', ['user' => $user])
+                    <div class="row">
+                        <div class="col">
+                            <div class="divider" style="margin:10px"></div>
                         </div>
-                        @include('user.alfonso', ['user' => $user])
-                        @include('user.alfonso-requirements', ['user' => $user, 'evaluation' => true])
-                        <form method="POST" action="">
-                            @csrf
-                            <div class="row">
-                                <input type="hidden" name="section" value="alfonso"/>
-                                <x-input.text l=10 id="alfonso_note" :value="$evaluation?->alfonso_note"
-                                              text="Megjegyzés, helyesbítés, egyéni elbírálás"/>
-                                <x-input.button l=2 class="right" text="general.save"/>
-                            </div>
-                        </form>
                     </div>
+                    @include('user.alfonso', ['user' => $user])
+                    @include('user.alfonso-requirements', ['user' => $user, 'evaluation' => true])
+                    <form method="POST" action="">
+                        @csrf
+                        <div class="row">
+                            <input type="hidden" name="section" value="alfonso"/>
+                            <x-input.text l=10 id="alfonso_note" :value="$evaluation?->alfonso_note"
+                                            text="Megjegyzés, helyesbítés, egyéni elbírálás"/>
+                            <x-input.button l=2 class="right" text="general.save"/>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col s12">
-                <div class="card" id="courses">
-                    <div class="card-content">
-                        <div class="card-title">EC-s kurzusok ({{\App\Models\Semester::current()->tag}})</div>
-                        @include('secretariat.evaluation-form.courses')
-                    </div>
+    </div>
+    <div class="row">
+        <div class="col s12">
+            <div class="card" id="courses">
+                <div class="card-content">
+                    <div class="card-title">EC-s kurzusok ({{\App\Models\Semester::current()->tag}})</div>
+                    @include('secretariat.evaluation-form.courses')
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col s12">
-                <div class="card" id="avg">
-                    <div class="card-content">
-                        <div class="card-title">Átlag</div>
-                        @include('secretariat.evaluation-form.avg')
-                    </div>
+    </div>
+    <div class="row">
+        <div class="col s12">
+            <div class="card" id="avg">
+                <div class="card-content">
+                    <div class="card-title">Átlag</div>
+                    @include('secretariat.evaluation-form.avg')
                 </div>
             </div>
         </div>
-    @endif
+    </div>
     <div class="row">
         <div class="col s12">
             <div class="card" id="general_assembly">

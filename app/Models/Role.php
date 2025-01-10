@@ -51,6 +51,7 @@ class Role extends Model
     public const ETHICS_COMMISSIONER = 'ethics-commissioner';
     public const ALUMNI = 'alumni';
     public const RECEPTIONIST = 'receptionist';
+    public const SENIOR = 'senior';
 
     //Students' Committe role's objects
     public const PRESIDENT = 'president';
@@ -111,6 +112,7 @@ class Role extends Model
     public const ALL = [
         self::SYS_ADMIN,
         self::COLLEGIST,
+        self::SENIOR,
         self::TENANT,
         self::WORKSHOP_ADMINISTRATOR,
         self::WORKSHOP_LEADER,
@@ -311,6 +313,7 @@ class Role extends Model
             self::ETHICS_COMMISSIONER => 'green lighten-2',
             self::ALUMNI => 'grey darken-1',
             self::RECEPTIONIST => 'brown',
+            self::SENIOR => 'teal',
             default => 'grey',
         };
     }

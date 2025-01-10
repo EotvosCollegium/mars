@@ -89,7 +89,7 @@ class SemesterEvaluationController extends Controller
     public function handlePeriodicEventReminder(int $daysBeforeEnd): void
     {
         if($daysBeforeEnd < 3) {
-            $userCount = $this->usersHaventFilledOutTheForm()->count();
+            $userCount = SemesterEvaluationController::usersHaventFilledOutTheForm($this->semester())->count();
             Mail::to(config('contacts.mail_membra'))->queue(new EvaluationFormReminder($userCount, $this->getDeadline()));
         }
     }
@@ -97,9 +97,9 @@ class SemesterEvaluationController extends Controller
     /**
      * Send email about results and deactivate collegists who did not fill out the form.
      */
-    public function handlePeriodicEventEnd()
+    public static function finalize($semester)
     {
-        $users = $this->usersHaventFilledOutTheForm();
+        $users = SemesterEvaluationController::usersHaventFilledOutTheForm($semester);
         $users_names = $users->pluck('name')->toArray();
 
         if (User::secretary()) {
@@ -137,7 +137,6 @@ class SemesterEvaluationController extends Controller
         $this->authorize('fillOrManage', SemesterEvaluation::class);
 
         return view('secretariat.evaluation-form.app', [
-            'phd' => user()->educationalInformation->isSenior(),
             'user' => user(),
             'faculties' => Faculty::all(),
             'workshops' => Workshop::all(),
@@ -146,7 +145,7 @@ class SemesterEvaluationController extends Controller
             'community_services' => user()->communityServiceRequests()->where('semester_id', Semester::current()->id)->get(),
             'position_roles' => user()->roles()->whereIn('name', Role::STUDENT_POSTION_ROLES)->get(),
             'periodicEvent' => $this->periodicEvent(),
-            'users_havent_filled_out' => user()->can('manage', SemesterEvaluation::class) ? $this->usersHaventFilledOutTheForm() : null,
+            'users_havent_filled_out' => user()->can('manage', SemesterEvaluation::class) ? SemesterEvaluationController::usersHaventFilledOutTheForm($this->semester()) : null,
         ]);
     }
 
@@ -243,11 +242,17 @@ class SemesterEvaluationController extends Controller
     /**
      * @return User[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection
      */
-    public function usersHaventFilledOutTheForm()
+    public static function usersHaventFilledOutTheForm($semester)
     {
-        return User::withRole(Role::COLLEGIST)->verified()->whereDoesntHave('semesterStatuses', function ($query) {
-            $query->where('semester_id', $this->semester()?->succ()?->id);
-        })->get();
+        return User::withRole(Role::COLLEGIST)
+            ->whereDoesntHave('roles', function ($query) {
+                $query->where('name', Role::SENIOR);
+            })
+            ->verified()
+            ->whereDoesntHave('semesterStatuses', function ($query) use ($semester) {
+                $query->where('semester_id', $semester?->succ()?->id);
+            })
+            ->get();
     }
 
     /**

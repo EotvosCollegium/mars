@@ -49,7 +49,7 @@ class Printer extends Model
      * @param string $originalName
      * @param bool $twoSided
      * @param int $copyNumber
-     * @return Model
+     * @return PrintJob
      * @throws AuthenticationException
      * @throws PrinterException
      * @throws MassAssignmentException
@@ -73,13 +73,13 @@ class Printer extends Model
      * @param bool $twoSided
      * @param int $copies
      * @param string $path
-     * @return int The `jobId` belonging to the printjob
+     * @return string The `jobId` belonging to the printjob
      * @throws PrinterException If the printing fails
      */
     public function print(bool $twoSided, int $copies, string $path)
     {
         if (config('app.debug')) {
-            return -1;
+            return "not_submitted";
         }
         $jobId = null;
         try {
@@ -135,7 +135,7 @@ class Printer extends Model
      */
     public function updateCompletedPrintJobs()
     {
-        return DB::transaction(function () {
+        DB::transaction(function () {
             PrintJob::where('state', PrintJobStatus::QUEUED)->whereIn(
                 'job_id',
                 $this->getCompletedPrintJobs()

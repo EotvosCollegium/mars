@@ -1,7 +1,5 @@
 <?php
 
-use App\Models\EducationalInformation;
-use App\Models\Semester;
 use App\Utils\DataCompresser;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -17,20 +15,22 @@ return new class () extends Migration {
     {
         Schema::create('study_lines', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(EducationalInformation::class);
+            $table->foreignId('educational_information_id');
             $table->string('name');
             $table->enum('type', ['bachelor', 'master', 'phd', 'ot', 'other'])->nullable();
-            $table->foreignIdFor(Semester::class, 'start')->nullable();
-            $table->foreignIdFor(Semester::class, 'end')->nullable();
+            $table->unsignedBigInteger('start')->nullable();
+            $table->unsignedBigInteger('end')->nullable();
             $table->timestamps();
         });
 
-
-        foreach(EducationalInformation::all() as $data) {
+        foreach(DB::table('educational_information')->get() as $data) {
             foreach(DataCompresser::decompressData($data->program) as $program) {
-                $data->studyLines()->create([
-                    'name' => $program
-                ]);
+                DB::table('study_lines')->insert(
+                    [
+                        'educational_information_id' => $data->id,
+                        'name' => $program
+                    ]
+                );
             }
         }
 

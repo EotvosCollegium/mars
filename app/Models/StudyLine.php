@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $name
  * @property string $minor
  * @property string $type
+ * @property string $training_code
  * @property Semester $startSemester
  * @property ?Semester $endSemester
  * @property int $id
@@ -47,6 +48,7 @@ class StudyLine extends Model
         'name',
         'minor',
         'type',
+        'training_code',
         'start',
         'end'
     ];
@@ -108,6 +110,9 @@ class StudyLine extends Model
         $name = $this->getName();
         if ($this->start) {
             $name .= ' (' . $this->startSemester->tag . ' - ' . $this->endSemester?->tag . ')';
+        }
+        if ($this->training_code) {
+            $name .= ' - ' . $this->training_code;
         }
         return $name;
     }

@@ -277,7 +277,7 @@ class Semester extends Model
             }
             $current = Semester::getOrCreate($year, $part);
 
-            Cache::put('semester.current.' . $today, $current, Carbon::tomorrow());
+            Cache::put('semester.current.' . $today, $current, $seconds = 10);
         }
 
         return Cache::get('semester.current.' . $today);

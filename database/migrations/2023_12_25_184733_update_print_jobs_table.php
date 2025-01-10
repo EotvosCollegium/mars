@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Printer;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +14,7 @@ return new class () extends Migration {
     public function up()
     {
         Schema::table('print_jobs', function (Blueprint $table) {
-            $table->foreignIdFor(Printer::class)->nullable()->after('user_id')->constrained();
+            $table->foreignId('printer_id')->nullable()->after('user_id')->constrained();
             $table->boolean('used_free_pages')->default(false)->after('cost');
             $table->dropColumn('filepath');
         });
@@ -23,7 +22,7 @@ return new class () extends Migration {
             'printer_id' => DB::table('printers')->first()->id
         ]);
         Schema::table('print_jobs', function (Blueprint $table) {
-            $table->foreignIdFor(Printer::class)->nullable(false)->change();
+            $table->foreignId('printer_id')->nullable(false)->change();
         });
     }
 

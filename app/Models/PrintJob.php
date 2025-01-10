@@ -62,6 +62,10 @@ class PrintJob extends Model
         'used_free_pages' => 'boolean',
     ];
 
+    /**
+     * `User` that sent this `PrintJob`.
+     * @return BelongsTo
+     */
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -116,7 +120,6 @@ class PrintJob extends Model
 
     /**
      * Attemts to cancel the given `PrintJob`. Returns wether it was successful.
-     * @param PrintJob $this
      * @return PrinterCancelResult
      */
     public function cancel()

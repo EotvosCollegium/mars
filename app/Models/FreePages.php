@@ -77,7 +77,7 @@ class FreePages extends Model
 
     /**
      * Wether the free pages are still available.
-     * @return bool
+     * @return Attribute
      */
     protected function available(): Attribute
     {
