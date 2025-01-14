@@ -2,10 +2,16 @@
 
 namespace App\Console\Commands;
 
+use App\Mail\StatusDeactivated;
+use App\Models\RoleUser;
+use App\Models\Role;
+use App\Models\Semester;
 use Illuminate\Console\Command;
 use App\Http\Controllers\Secretariat\SemesterEvaluationController;
 use Illuminate\Support\Facades\App;
-use App\Models\Semester;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class FinalizeSemesterEvaluation extends Command
 {

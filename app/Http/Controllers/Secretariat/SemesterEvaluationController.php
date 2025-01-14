@@ -176,6 +176,14 @@ class SemesterEvaluationController extends PeriodicEventController
         return back()->with('message', __('general.successful_modification'))->with('section', $request->section);
     }
 
+    /**
+     * Return the list of users who haven't filled out the form.
+     * It is calculated based on the students who haven't set their status for the next semester.
+     * Seniors are ignored.
+     *
+     * @param Semester $semester
+     * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection
+     */
     public static function usersHaventFilledOutTheForm(Semester $semester)
     {
         return User::doesntHaveStatusFor($semester->succ())
