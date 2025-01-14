@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\SemesterEvaluationPeriodEnd;
+use App\Http\Controllers\Secretariat\SemesterEvaluationController;
 use App\Mail\EvaluationFormClosed;
 use App\Mail\StatusDeactivated;
 use App\Models\Role;
@@ -20,7 +21,7 @@ class SemesterEvaluationPeriodEndListener
     public function handle(SemesterEvaluationPeriodEnd $event): void
     {
         // users who do not have status for the following semester did not fill the form
-        $users = User::doesntHaveStatusFor($event->periodicEvent->semester->succ())->get();
+        $users = SemesterEvaluationController::usersHaventFilledOutTheForm($event->periodicEvent->semester);
         $users_names = $users->pluck('name')->toArray();
 
         if (User::secretary()) {
@@ -34,21 +35,6 @@ class SemesterEvaluationPeriodEndListener
         }
         foreach (User::workshopLeaders() as $user) {
             Mail::to($user)->queue(new EvaluationFormClosed($user->name));
-        }
-
-        foreach ($users as $user) {
-            try {
-                //deactivate collegist, give them alumni role.
-                DB::transaction(function () use ($user) {
-                    RoleUser::withoutEvents(function () use ($user) {
-                        $user->removeRole(Role::collegist());
-                        $user->addRole(Role::alumni());
-                    });
-                    Mail::to($user)->queue(new StatusDeactivated($user->name));
-                });
-            } catch (\Exception $e) {
-                Log::error('Error deactivating collegist: ' . $user->name . ' - ' . $e->getMessage());
-            }
         }
     }
 }

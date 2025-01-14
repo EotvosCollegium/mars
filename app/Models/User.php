@@ -67,6 +67,7 @@ use Illuminate\Support\Facades\Mail;
  * @method Builder|static currentTenant()
  * @method Builder|static hasToPayKKTNetregInSemester(int $semester_id)
  * @method Builder|static semestersWhere(string $status)
+ * @method Builder|static doesntHaveStatusFor(Semester $semester)
  * @property string $email
  * @property \Illuminate\Support\Carbon|null $email_verified_at
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -565,7 +566,9 @@ class User extends Authenticatable implements HasLocalePreference
     public function scopeDoesntHaveStatusFor(Builder $query, Semester $semester)
     {
         /** @var Builder|static $query */
-        return $query->withRole(Role::COLLEGIST)->whereDoesntHave('semesterStatuses', function ($query) use ($semester) {
+        return $query
+            ->withRole(Role::COLLEGIST)
+            ->whereDoesntHave('semesterStatuses', function ($query) use ($semester) {
             $query->where('semester_id', $semester->id);
         });
     }

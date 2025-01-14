@@ -78,7 +78,8 @@ class SemesterEvaluationController extends PeriodicEventController
             'community_services' => user()->communityServiceRequests()->where('semester_id', self::semester()?->id)->get(),
             'position_roles' => user()->roles()->whereIn('name', Role::STUDENT_POSTION_ROLES)->get(),
             'periodicEvent' => $this->periodicEvent(),
-            'users_havent_filled_out' => user()->can('manage', SemesterEvaluation::class) && self::semester() ? SemesterEvaluationController::usersHaventFilledOutTheForm(self::semester()) : null,
+            'users_havent_filled_out' => user()->can('manage', SemesterEvaluation::class) && self::semester() ?
+                self::usersHaventFilledOutTheForm(self::semester()) : null,
         ]);
     }
 
@@ -173,5 +174,13 @@ class SemesterEvaluationController extends PeriodicEventController
         }
 
         return back()->with('message', __('general.successful_modification'))->with('section', $request->section);
+    }
+
+    public static function usersHaventFilledOutTheForm(Semester $semester)
+    {
+        return User::doesntHaveStatusFor($semester->succ())
+            ->whereDoesntHave('roles', function ($query) {
+                $query->where('name', Role::SENIOR); # seniors are ignored
+            })->get();
     }
 }
