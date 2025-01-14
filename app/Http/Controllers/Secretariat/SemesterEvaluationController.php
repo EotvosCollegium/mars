@@ -74,12 +74,12 @@ class SemesterEvaluationController extends PeriodicEventController
             'user' => user(),
             'faculties' => Faculty::all(),
             'workshops' => Workshop::all(),
-            'evaluation' => user()->semesterEvaluations()->where('semester_id', self::semester()->id)->first(),
+            'evaluation' => user()->semesterEvaluations()->where('semester_id', self::semester()?->id)->first(),
             'general_assemblies' => GeneralAssembly::all()->sortByDesc('closed_at')->take(2),
-            'community_services' => user()->communityServiceRequests()->where('semester_id', self::semester()->id)->get(),
+            'community_services' => user()->communityServiceRequests()->where('semester_id', self::semester()?->id)->get(),
             'position_roles' => user()->roles()->whereIn('name', Role::STUDENT_POSTION_ROLES)->get(),
             'periodicEvent' => $this->periodicEvent(),
-            'users_havent_filled_out' => user()->can('manage', SemesterEvaluation::class) ? User::doesntHaveStatusFor(self::semester()->succ())->get() : null,
+            'users_havent_filled_out' => user()->can('manage', SemesterEvaluation::class) && self::semester() ? User::doesntHaveStatusFor(self::semester()->succ())->get() : null,
         ]);
     }
 

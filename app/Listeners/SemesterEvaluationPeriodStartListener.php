@@ -21,6 +21,9 @@ class SemesterEvaluationPeriodStartListener
         if (User::secretary()) {
             Mail::to(User::secretary())->queue(new EvaluationFormAvailableDetails(User::secretary()->name, $event->periodicEvent->deadline()));
         }
+        if (User::director()) {
+            Mail::to(User::director())->queue(new EvaluationFormAvailableDetails(User::director()->name, $event->periodicEvent->deadline()));
+        }
         if (User::president()) {
             Mail::to(User::president())->queue(new EvaluationFormAvailableDetails(User::president()->name, $event->periodicEvent->deadline()));
         }

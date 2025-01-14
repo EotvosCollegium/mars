@@ -386,7 +386,7 @@ class User extends Authenticatable implements HasLocalePreference
     }
 
     /**
-     * Returns the semesters where the user has any status. The relation uses a SemesterStatus pivot class.
+     * Returns the semester evaluations of the user.
      * @return HasMany
      */
     public function semesterEvaluations(): HasMany
