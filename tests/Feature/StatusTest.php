@@ -43,11 +43,16 @@ class StatusTest extends TestCase
     {
         $this->user->setCollegist(Role::RESIDENT);
         //no status set for next semester
-        (new SemesterEvaluationPeriodEndListener())->handle(new SemesterEvaluationPeriodEnd($this->periodicEvent));
+
+        Artisan::call('app:finalize-semester-evaluation', [
+            'year' => Semester::current()->year, 'part' => Semester::current()->part
+        ]);
 
         $this->assertFalse($this->user->hasRole(Role::COLLEGIST));
         $this->assertTrue($this->user->hasRole(Role::ALUMNI));
         $this->assertTrue($this->user->isCollegist());
+
+
     }
 
     /**
@@ -59,7 +64,9 @@ class StatusTest extends TestCase
         $this->user->setResident();
         $this->user->setStatusFor(Semester::next(), SemesterStatus::ACTIVE);
 
-        $this->periodicEvent->handleEnd();
+        Artisan::call('app:finalize-semester-evaluation', [
+            'year' => Semester::current()->year, 'part' => Semester::current()->part
+        ]);
 
         $this->assertTrue($this->user->isActive(Semester::next()));
         $this->assertFalse($this->user->hasRole(Role::ALUMNI));
