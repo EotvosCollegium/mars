@@ -569,8 +569,8 @@ class User extends Authenticatable implements HasLocalePreference
         return $query
             ->withRole(Role::COLLEGIST)
             ->whereDoesntHave('semesterStatuses', function ($query) use ($semester) {
-            $query->where('semester_id', $semester->id);
-        });
+                $query->where('semester_id', $semester->id);
+            });
     }
 
     /**
