@@ -1,21 +1,23 @@
 // https://aka.ms/devcontainer.json
 {
-	"name": "Existing Docker Compose (Extend)",
+	"name": "Mars development",
 	"dockerComposeFile": [
 		"../docker-compose.yml"
 	],
-	"service": "laravel.test",
-	"workspaceFolder": "/var/www/html",
-	"settings": {},
-	"extensions": [
-		// "mikestead.dotenv",
-		// "amiralizadeh9480.laravel-extra-intellisense",
-		// "ryannaddy.laravel-artisan",
-		// "onecentlin.laravel5-snippets",
-		// "onecentlin.laravel-blade"
-	],
-	"remoteUser": "sail",
-	"postCreateCommand": "chown -R 1000:1000 /var/www/html"
+	"service": "mars_dev",
+	"workspaceFolder": "/workspace/mars",
+	"customizations": {
+		"vscode": {
+			"settings": {
+				"php-cs-fixer.executablePath": "${workspaceFolder}/vendor/bin/php-cs-fixer"
+			},
+			"extensions": [
+				"junstyle.php-cs-fixer"
+			]
+		}
+	},
+	"remoteUser": "ubuntu",
+	"postCreateCommand": "make build"
 	// "forwardPorts": [],
 	// "runServices": [],
 	// "shutdownAction": "none",

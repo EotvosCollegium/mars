@@ -142,6 +142,7 @@ class MacAddressControllerTest extends TestCase
         $this->assertDatabaseMissing('mac_addresses', [
             'user_id' => $this->user->id,
             'mac_address' => '01:23:45:67:89:AB',
+            'deleted_at' => null,
         ]);
     }
 
@@ -183,6 +184,7 @@ class MacAddressControllerTest extends TestCase
         $this->assertDatabaseMissing('mac_addresses', [
             'user_id' => $this->user->id,
             'mac_address' => '01:23:45:67:89:AB',
+            'deleted_at' => null,
         ]);
     }
 }

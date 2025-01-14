@@ -45,6 +45,7 @@ return [
     'roles' => 'Roles',
     'science-vice-president' => 'Scientific vice president',
     'secretary' => 'Secretary',
+    'senior' => 'Senior',
     'sp' => 'Spanish',
     'sport-committee' => 'Sport Committee',
     'sport-leader' => 'Sport committee leader',

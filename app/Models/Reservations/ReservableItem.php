@@ -47,10 +47,12 @@ class ReservableItem extends Model
     /**
      * The users who currently have a reservation for this item.
      */
-    public function usersWithActiveReservation(): BelongsToMany
+    public function usersWithActiveReservation()
     {
-        return $this->belongsToMany(User::class, Reservation::class, 'reservable_item_id', 'user_id')
-            ->wherePivot('reserved_until', '>', Carbon::now());
+        return User::whereHas('reservations', function ($query) {
+            $query->where('reservable_item_id', $this->id)
+                ->where('reserved_until', '>', Carbon::now());
+        });
     }
 
     /**

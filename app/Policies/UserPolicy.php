@@ -35,7 +35,7 @@ class UserPolicy
             Role::SECRETARY,
             Role::DIRECTOR,
             Role::STUDENT_COUNCIL_SECRETARY,
-            Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS,
+            Role::STUDENT_COUNCIL => array_merge(Role::STUDENT_COUNCIL_LEADERS, Role::COMMITTEE_LEADERS),
         ]);
     }
 
@@ -68,7 +68,7 @@ class UserPolicy
                 Role::WORKSHOP_ADMINISTRATOR,
                 Role::WORKSHOP_LEADER,
                 Role::STUDENT_COUNCIL_SECRETARY,
-                Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS,
+                Role::STUDENT_COUNCIL => array_merge(Role::STUDENT_COUNCIL_LEADERS, Role::COMMITTEE_LEADERS),
             ]);
     }
 
@@ -102,7 +102,7 @@ class UserPolicy
                 return $user->hasRole([
                     Role::SECRETARY,
                     Role::DIRECTOR,
-                    Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS,
+                    Role::STUDENT_COUNCIL => array_merge(Role::STUDENT_COUNCIL_LEADERS, Role::COMMITTEE_LEADERS),
                     Role::STUDENT_COUNCIL_SECRETARY,
                 ]);
             })) || $target->workshops
@@ -139,7 +139,7 @@ class UserPolicy
             return $user->hasRole([Role::STAFF]);
         }
 
-        if ($role->name == Role::COLLEGIST) {
+        if ($role->name == Role::COLLEGIST || $role->name == Role::ALUMNI || $role->name == Role::SENIOR) {
             return $user->hasRole([Role::SECRETARY, Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS]);
         }
 
@@ -203,7 +203,7 @@ class UserPolicy
             return $user->hasRole([Role::STAFF]);
         }
 
-        if ($role->name == Role::COLLEGIST) {
+        if ($role->name == Role::COLLEGIST || $role->name == Role::ALUMNI || $role->name == Role::SENIOR) {
             return $user->hasRole([Role::SECRETARY, Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS]);
         }
 

@@ -845,7 +845,8 @@ class ReservationTest extends TestCase
                 ]);
 
                 $response = $this->actingAs($collegist)->followingRedirects()->post(
-                    route('reservations.items.report_fault', $item)
+                    route('reservations.items.report_fault', $item),
+                    ['message' => null]
                 );
                 $response->assertStatus(200);
                 $item->refresh();

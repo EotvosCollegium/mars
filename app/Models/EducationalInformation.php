@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 use App\Models\Semester;
+use App\Models\Role;
 
 /**
  * Either B2 or C1.
@@ -113,11 +114,11 @@ class EducationalInformation extends Model
     }
 
     /**
-     * Whether the user is a senior (i.e. currently has a PhD study line).
+     * Whether the user is a senior
      */
     public function isSenior(): bool
     {
-        return $this->studyLines()->currentlyEnrolled()->where('type', 'phd')->exists();
+        return $this->user->isSenior();
     }
 
     /**

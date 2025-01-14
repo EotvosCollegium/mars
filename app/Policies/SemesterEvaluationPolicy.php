@@ -20,7 +20,7 @@ class SemesterEvaluationPolicy
      */
     public function fill(User $user): Response|bool
     {
-        if(!$user->isCollegist(alumni: false)) {
+        if(!$user->isCollegist(alumni: false) || $user->hasRole(Role::SENIOR)) {
             return false;
         }
         if(!app(SemesterEvaluationController::class)->isActive()) {

@@ -169,6 +169,7 @@ class UserController extends Controller
             'study_lines' => 'array',
             'study_lines.*.name' => 'required|string|max:255',
             'study_lines.*.level' => ['required', Rule::in(array_keys(StudyLine::TYPES))],
+            'study_lines.*.training_code' => 'string|max:255',
             'study_lines.*.minor' => 'nullable|string|max:255',
             'study_lines.*.start' => 'required',
             'email' => [
@@ -209,7 +210,6 @@ class UserController extends Controller
 
             if ($request->has('workshop')) {
                 $user->workshops()->sync($request->input('workshop'));
-                WorkshopBalance::generateBalances(Semester::current());
             }
 
             if ($request->has('faculty')) {
@@ -223,6 +223,7 @@ class UserController extends Controller
                         'name' => $studyLine["name"],
                         'type' => $studyLine["level"],
                         'minor' => $studyLine["minor"] ?? null,
+                        'training_code' => $studyLine["training_code"],
                         'start' => $studyLine["start"],
                         'end' => $studyLine["end"] ?? null,
                     ]);

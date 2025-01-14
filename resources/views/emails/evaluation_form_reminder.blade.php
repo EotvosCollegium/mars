@@ -6,6 +6,9 @@
     <p>
         A kérdőív segítségével tudja a Tanári Kar értékelni a félévet, így kitöltése kötelező.
     </p>
+    <p>
+        A kérdőív senior hallgatók számára nem elérhető, a seniori beszámoló ettől függetlenül kerül lebonyolításra.
+    </p>
     @component('mail::button', ['url' => route('secretariat.evaluation.show')])
         Kitöltés
     @endcomponent

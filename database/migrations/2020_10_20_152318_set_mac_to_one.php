@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Internet\InternetAccess;
 use Illuminate\Database\Migrations\Migration;
 
 class SetMacToOne extends Migration
@@ -12,12 +11,9 @@ class SetMacToOne extends Migration
      */
     public function up()
     {
-        $internet_accesses = InternetAccess::all();
-        foreach ($internet_accesses as $internet_access) {
-            $internet_access->update([
-                'auto_approved_mac_slots' => 1,
-            ]);
-        }
+        DB::table('internet_accesses')->update([
+            'auto_approved_mac_slots' => 1,
+        ]);
     }
 
     /**

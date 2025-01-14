@@ -70,7 +70,6 @@ class SemesterEvaluationController extends PeriodicEventController
         $this->authorize('fillOrManage', SemesterEvaluation::class);
 
         return view('secretariat.evaluation-form.app', [
-            'phd' => user()->educationalInformation->isSenior(),
             'user' => user(),
             'faculties' => Faculty::all(),
             'workshops' => Workshop::all(),
@@ -79,7 +78,7 @@ class SemesterEvaluationController extends PeriodicEventController
             'community_services' => user()->communityServiceRequests()->where('semester_id', self::semester()?->id)->get(),
             'position_roles' => user()->roles()->whereIn('name', Role::STUDENT_POSTION_ROLES)->get(),
             'periodicEvent' => $this->periodicEvent(),
-            'users_havent_filled_out' => user()->can('manage', SemesterEvaluation::class) && self::semester() ? User::doesntHaveStatusFor(self::semester()->succ())->get() : null,
+            'users_havent_filled_out' => user()->can('manage', SemesterEvaluation::class) && self::semester() ? SemesterEvaluationController::usersHaventFilledOutTheForm(self::semester()) : null,
         ]);
     }
 

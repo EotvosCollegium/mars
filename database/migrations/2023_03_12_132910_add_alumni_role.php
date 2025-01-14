@@ -1,7 +1,5 @@
 <?php
 
-use App\Http\Controllers\Secretariat\SemesterEvaluationController;
-use App\Models\SemesterStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -23,14 +21,19 @@ return new class () extends Migration {
             ]);
         }
 
-        SemesterStatus::withoutEvents(function () {
-            foreach (SemesterStatus::where('status', 'DEACTIVATED')->get() as $semesterStatus) {
-                SemesterEvaluationController::deactivateCollegist($semesterStatus->user);
-            }
+        $collegist_role_id = DB::table('roles')->where('name', 'collegist')->first()->id;
+        $alumni_role_id = DB::table('roles')->where('name', 'alumni')->first()->id;
 
-            SemesterStatus::whereIn('status', ['PENDING', 'INACTIVE'])->update(['status' => 'PASSIVE']);
-            SemesterStatus::where('status', 'DEACTIVATED')->delete();
-        });
+        foreach(DB::table('semester_status')->where('status', 'DEACTIVATED')->get() as $semesterStatus) {
+            DB::table('role_users')->where('user_id', $semesterStatus->user_id)->where('role_id', $collegist_role_id)->delete();
+            DB::table('role_users')->insert([
+                'user_id' => $semesterStatus->user_id,
+                'role_id' => $alumni_role_id
+            ]);
+        }
+
+        DB::table('semester_status')->where('status', 'PENDING')->orWhere('status', 'INACTIVE')->update(['status' => 'PASSIVE']);
+        DB::table('semester_status')->where('status', 'DEACTIVATED')->delete();
     }
 
 

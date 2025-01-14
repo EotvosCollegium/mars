@@ -495,6 +495,11 @@ class User extends Authenticatable implements HasLocalePreference
         return $query->where('users.verified', 1);
     }
 
+    public function isSenior(): bool
+    {
+        return $this->hasRole(Role::SENIOR);
+    }
+
     /**
      * Scope a query to only include users whose data can be accessed by the given user.
      * @param Builder $query
@@ -783,7 +788,6 @@ class User extends Authenticatable implements HasLocalePreference
         $this->addRole($role, $object);
 
         Cache::forget('collegists');
-        WorkshopBalance::generateBalances(Semester::current());
     }
 
     /**
@@ -1107,15 +1111,6 @@ class User extends Authenticatable implements HasLocalePreference
     {
         return self::withRole(Role::STAFF)->first();
     }
-
-    /**
-     * @return array|Collection|User[] the users with printer role
-     */
-    public static function printers(): Collection|array
-    {
-        return self::withRole(Role::PRINTER)->get();
-    }
-
     /**
      * @return array|Collection|User[] the users with printer role
      */

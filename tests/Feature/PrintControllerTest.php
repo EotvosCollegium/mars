@@ -18,35 +18,29 @@ class PrintControllerTest extends TestCase
         $user->setVerified();
         $this->actingAs($user);
 
-        // The user is not allowed to see the page without the correct permissions.
-        // TODO: test this with freshly registered user.
         $response = $this->get('/print');
+        $response->assertStatus(200);
+        $response = $this->get('/print/free-pages');
+        $response->assertStatus(200);
+        $response = $this->get('/print/print-job');
+        $response->assertStatus(200);
+        $response = $this->get('/print/free-pages/admin');
         $response->assertStatus(403);
-        $response = $this->get('/print/free_pages/list');
+        $response = $this->get('/print/print-job/admin');
         $response->assertStatus(403);
-        $response = $this->get('/print/print_jobs/list');
+        $response = $this->get('/print/admin');
         $response->assertStatus(403);
-        $response = $this->get('/print/free_pages/list/all');
-        $response->assertStatus(403);
-        $response = $this->get('/print/print_jobs/list/all');
-        $response->assertStatus(403);
-        $response = $this->get('/print/manage');
-        $response->assertStatus(403);
-        $response = $this->get('/print/account_history');
+        $response = $this->get('/print/print-account-history');
         $response->assertStatus(403);
 
-        $response = $this->post('/print/modify_balance', []);
-        $response->assertStatus(403);
-        $response = $this->post('/print/add_free_pages', []);
-        $response->assertStatus(403);
-        $response = $this->post('/print/transfer_balance', []);
-        $response->assertStatus(403);
+        $response = $this->put('/print-account-update', []);
+        $response->assertStatus(302);
         // TODO: #514
         // $response = $this->post('/print/print_jobs/0/cancel', []);
         // $response->assertStatus(403);
 
-        $response = $this->put('/print/print', []);
-        $response->assertStatus(403);
+        $response = $this->post('/print/print-job', []);
+        $response->assertStatus(302);
     }
 
     /**
@@ -56,36 +50,30 @@ class PrintControllerTest extends TestCase
     {
         $user = User::factory()->create();
         $user->setVerified();
-        $user->roles()->attach(Role::get(Role::PRINTER)->id);
         $this->actingAs($user);
 
         $response = $this->get('/print');
         $response->assertStatus(200);
-        $response = $this->get('/print/free_pages/list');
+        $response = $this->get('/print/free-pages');
         $response->assertStatus(200);
-        $response = $this->get('/print/print_jobs/list');
+        $response = $this->get('/print/print-job');
         $response->assertStatus(200);
-        $response = $this->get('/print/free_pages/list/all');
+        $response = $this->get('/print/free-pages/admin');
         $response->assertStatus(403);
-        $response = $this->get('/print/print_jobs/list/all');
+        $response = $this->get('/print/print-job/admin');
         $response->assertStatus(403);
-        $response = $this->get('/print/manage');
+        $response = $this->get('/print/admin');
         $response->assertStatus(403);
-        $response = $this->get('/print/account_history');
+        $response = $this->get('/print/print-account-history');
         $response->assertStatus(403);
 
-        $response = $this->post('/print/modify_balance', []);
-        $response->assertStatus(403);
-        $response = $this->post('/print/add_free_pages', []);
-        $response->assertStatus(403);
-        $response = $this->post('/print/transfer_balance', []);
+        $response = $this->put('/print-account-update', []);
         $response->assertStatus(302);
         // TODO: #514
-        // $printJob = \App\Models\PrintJob::factory()->create(['user_id' => $user->id]);
-        // $response = $this->post('/print/print_jobs/' . $printJob->id . '/cancel', []);
-        // $response->assertStatus(200);
+        // $response = $this->post('/print/print_jobs/0/cancel', []);
+        // $response->assertStatus(403);
 
-        $response = $this->put('/print/print', []);
+        $response = $this->post('/print/print-job', []);
         $response->assertStatus(302);
     }
 
@@ -96,37 +84,31 @@ class PrintControllerTest extends TestCase
     {
         $user = User::factory()->create();
         $user->setVerified();
-        $user->roles()->attach(Role::get(Role::PRINTER)->id);
         $user->roles()->attach(Role::get(Role::SYS_ADMIN)->id);
         $this->actingAs($user);
 
         $response = $this->get('/print');
         $response->assertStatus(200);
-        $response = $this->get('/print/free_pages/list');
+        $response = $this->get('/print/free-pages');
         $response->assertStatus(200);
-        $response = $this->get('/print/print_jobs/list');
+        $response = $this->get('/print/print-job');
         $response->assertStatus(200);
-        $response = $this->get('/print/free_pages/list/all');
+        $response = $this->get('/print/free-pages/admin');
         $response->assertStatus(200);
-        $response = $this->get('/print/print_jobs/list/all');
+        $response = $this->get('/print/print-job/admin');
         $response->assertStatus(200);
-        $response = $this->get('/print/manage');
+        $response = $this->get('/print/admin');
         $response->assertStatus(200);
-        $response = $this->get('/print/account_history');
+        $response = $this->get('/print/print-account-history');
         $response->assertStatus(200);
 
-        $response = $this->post('/print/modify_balance', []);
-        $response->assertStatus(302);
-        $response = $this->post('/print/add_free_pages', []);
-        $response->assertStatus(302);
-        $response = $this->post('/print/transfer_balance', []);
+        $response = $this->put('/print-account-update', []);
         $response->assertStatus(302);
         // TODO: #514
-        // $printJob = \App\Models\PrintJob::factory()->create(['user_id' => $user->id]);
-        // $response = $this->post('/print/print_jobs/' . $printJob->id . '/cancel', []);
-        // $response->assertStatus(200);
+        // $response = $this->post('/print/print_jobs/0/cancel', []);
+        // $response->assertStatus(403);
 
-        $response = $this->put('/print/print', []);
+        $response = $this->post('/print/print-job', []);
         $response->assertStatus(302);
     }
 
@@ -136,44 +118,42 @@ class PrintControllerTest extends TestCase
 
         $sender = User::factory()->create();
         $sender->setVerified();
-        $sender->roles()->attach(Role::get(Role::PRINTER)->id);
         $this->actingAs($sender);
 
-        $reciever = User::factory()->create();
-        $reciever->setVerified();
-        $reciever->roles()->attach(Role::get(Role::PRINTER)->id);
+        $receiver = User::factory()->create();
+        $receiver->setVerified();
 
         // Setting initial valeus
         $this->assertEquals($sender->printAccount->balance, 0);
         $sender->printAccount->update(['last_modified_by' => $sender->id]);
         $sender->printAccount->increment('balance', 43);
         $this->assertEquals($sender->printAccount->balance, 43);
-        $this->assertEquals($reciever->printAccount->balance, 0);
+        $this->assertEquals($receiver->printAccount->balance, 0);
 
         // Simple transfer test
-        $response = $this->transfer($reciever, 10);
-        $this->assertCorrectTransfer($response, $sender, $reciever, 33, 10);
+        $response = $this->transfer($receiver, 10);
+        $this->assertCorrectTransfer($response, $sender, $receiver, 33, 10);
 
         // Transferring values over balance
-        $response = $this->transfer($reciever, 123);
-        $response = $this->transfer($reciever, 34);
-        $this->assertCorrectTransfer($response, $sender, $reciever, 33, 10);
+        $response = $this->transfer($receiver, 123);
+        $response = $this->transfer($receiver, 34);
+        $this->assertCorrectTransfer($response, $sender, $receiver, 33, 10);
 
         // Transferring nothing
-        $response = $this->transfer($reciever, 0);
-        $this->assertCorrectTransfer($response, $sender, $reciever, 33, 10);
+        $response = $this->transfer($receiver, 0);
+        $this->assertCorrectTransfer($response, $sender, $receiver, 33, 10);
 
         // Transferring negative values
-        $response = $this->transfer($reciever, -5);
-        $this->assertCorrectTransfer($response, $sender, $reciever, 33, 10);
+        $response = $this->transfer($receiver, -5);
+        $response->assertStatus(400);
 
         // Transferring all balance
-        $response = $this->transfer($reciever, 33);
-        $this->assertCorrectTransfer($response, $sender, $reciever, 0, 43);
+        $response = $this->transfer($receiver, 33);
+        $this->assertCorrectTransfer($response, $sender, $receiver, 0, 43);
 
         // Transferring with empty balance
-        $response = $this->transfer($reciever, 1);
-        $this->assertCorrectTransfer($response, $sender, $reciever, 0, 43);
+        $response = $this->transfer($receiver, 1);
+        $this->assertCorrectTransfer($response, $sender, $receiver, 0, 43);
     }
 
     public function testModifyBalance()
@@ -185,77 +165,79 @@ class PrintControllerTest extends TestCase
         $sender->roles()->attach(Role::firstWhere('name', Role::SYS_ADMIN)->id);
         $this->actingAs($sender);
 
-        $reciever = User::factory()->create();
-        $reciever->setVerified();
-        $reciever->roles()->attach(Role::firstWhere('name', Role::PRINTER)->id);
+        $receiver = User::factory()->create();
+        $receiver->setVerified();
 
         // Asserting initial valeus
         $this->assertEquals($sender->printAccount->balance, 0);
-        $this->assertEquals($reciever->printAccount->balance, 0);
+        $this->assertEquals($receiver->printAccount->balance, 0);
 
-        $response = $this->modify($reciever, 10);
-        $this->assertCorrectModification($response, $reciever, 10);
+        $response = $this->modify($receiver, 10);
+        $this->assertCorrectModification($response, $receiver, 10);
 
-        $response = $this->modify($reciever, 123);
-        $this->assertCorrectModification($response, $reciever, 133);
+        $response = $this->modify($receiver, 123);
+        $this->assertCorrectModification($response, $receiver, 133);
 
-        $response = $this->modify($reciever, -23);
-        $this->assertCorrectModification($response, $reciever, 110);
+        $response = $this->modify($receiver, -23);
+        $this->assertCorrectModification($response, $receiver, 110);
 
-        $response = $this->modify($reciever, 1);
-        $this->assertCorrectModification($response, $reciever, 111);
+        $response = $this->modify($receiver, 1);
+        $this->assertCorrectModification($response, $receiver, 111);
 
-        $response = $this->modify($reciever, 0);
-        $this->assertCorrectModification($response, $reciever, 111);
+        $response = $this->modify($receiver, 0);
+        $this->assertCorrectModification($response, $receiver, 111);
 
-        $response = $this->modify($reciever, -112);
-        $this->assertCorrectModification($response, $reciever, 111);
+        $response = $this->modify($receiver, -112);
+        $this->assertCorrectModification($response, $receiver, 111);
 
-        $response = $this->modify($reciever, -111);
-        $this->assertCorrectModification($response, $reciever, 0);
+        $response = $this->modify($receiver, -111);
+        $this->assertCorrectModification($response, $receiver, 0);
 
-        $response = $this->modify($reciever, -1);
-        $this->assertCorrectModification($response, $reciever, 0);
+        $response = $this->modify($receiver, -1);
+        $this->assertCorrectModification($response, $receiver, 0);
 
-        $response = $this->modify($reciever, 0);
-        $this->assertCorrectModification($response, $reciever, 0);
+        $response = $this->modify($receiver, 0);
+        $this->assertCorrectModification($response, $receiver, 0);
 
-        $response = $this->modify($reciever, 12);
-        $this->assertCorrectModification($response, $reciever, 12);
+        $response = $this->modify($receiver, 12);
+        $this->assertCorrectModification($response, $receiver, 12);
 
         //Sender is not affected
         $this->assertEquals($sender->printAccount->balance, 0);
     }
 
     // Helpers
-    private function transfer($reciever, $balance)
+    private function transfer($receiver, $balance)
     {
-        $response = $this->post('/print/transfer_balance', [
-            'user_to_send' => $reciever->id,
-            'balance' => $balance,
+        $response = $this->put('/print-account-update', [
+            'user' => user()->id,
+            'other_user' => $receiver->id,
+            'amount' => $balance,
         ]);
+
         return $response;
     }
-    private function assertCorrectTransfer($response, $sender, $reciever, $senderBalance, $receiverBalance)
+    private function assertCorrectTransfer($response, $sender, $receiver, $senderBalance, $receiverBalance)
     {
         $response->assertStatus(302);
-        $reciever = User::find($reciever->id); // We have to reload the reciever here.
-        $this->assertEquals($sender->printAccount->balance, $senderBalance);
-        $this->assertEquals($reciever->printAccount->balance, $receiverBalance);
+        $sender = User::find($sender->id); // We have to reload the sender here.
+        $receiver = User::find($receiver->id); // We have to reload the receiver here.
+        $this->assertEquals($senderBalance, $sender->printAccount->balance);
+        $this->assertEquals($receiverBalance, $receiver->printAccount->balance);
     }
 
-    private function modify($reciever, $balance)
+    private function modify($receiver, $balance)
     {
-        $response = $this->post('/print/modify_balance', [
-            'user_id_modify' => $reciever->id,
-            'balance' => $balance,
+        $response = $this->put('/print-account-update', [
+            'user' => $receiver->id,
+            'amount' => $balance,
         ]);
         return $response;
     }
-    private function assertCorrectModification($response, $reciever, $receiverBalance)
+    private function assertCorrectModification($response, $receiver, $receiverBalance)
     {
         $response->assertStatus(302);
-        $reciever = User::find($reciever->id); // We have to reload the reciever here.
-        $this->assertEquals($reciever->printAccount->balance, $receiverBalance);
+        $receiver = User::find($receiver->id); // We have to reload the receiver here.
+        $this->assertEquals($receiverBalance, $receiver->printAccount->balance);
     }
 }

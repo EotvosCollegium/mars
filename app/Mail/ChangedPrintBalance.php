@@ -12,6 +12,7 @@ class ChangedPrintBalance extends Mailable
     use SerializesModels;
 
     public $recipient; //User model
+    public $print_account_holder; //User model
     public $amount; //how much the balance has changed
     public $modifier; //modifier's name
 
@@ -20,9 +21,10 @@ class ChangedPrintBalance extends Mailable
      *
      * @return void
      */
-    public function __construct($recipient, $amount, $modifier)
+    public function __construct($recipient, $print_account_holder, $amount, $modifier)
     {
         $this->recipient = $recipient;
+        $this->print_account_holder = $print_account_holder;
         $this->amount = $amount;
         $this->modifier = $modifier;
     }

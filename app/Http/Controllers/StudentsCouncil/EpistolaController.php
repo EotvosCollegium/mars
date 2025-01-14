@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\EpistolaCollegii;
-use Image;
+use Intervention\Image\ImageManager;
 
 use App\Models\EpistolaNews;
 
@@ -95,9 +95,8 @@ class EpistolaController extends Controller
         //store and resize uploaded picture
         if ($request->picture_upload != null) {
             $path = $request->file('picture_upload')->store('', 'epistola');
-            Image::make(public_path('/img/epistola/' . $path))->resize(self::IMAGE_TARGET_SIZE, null, function ($constraint) {
-                $constraint->aspectRatio();
-            })->save();
+            $image = ImageManager::imagick()->read(public_path('/img/epistola/' . $path));
+            $image->scale(self::IMAGE_TARGET_SIZE)->save();
             $picture_path = config('app.url') . '/img/epistola/' . $path;
         }
         $values = $request->except(['picture_path', 'id']);

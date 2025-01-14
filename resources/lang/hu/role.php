@@ -45,6 +45,7 @@ return [
     'roles' => 'Jogosultságok',
     'science-vice-president' => 'Szakmai alelnök',
     'secretary' => 'Titkárság',
+    'senior' => 'Senior',
     'sp' => 'Spanyol',
     'sport-committee' => 'Sportbizottság',
     'sport-leader' => 'Sportbizottsági elnök',

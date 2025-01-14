@@ -1,7 +1,7 @@
 <div class="study_line" id="study_line_{{$index}}">
     <div class="row" style="margin:0">
         <x-input.text id="study_lines[{{ $index }}][name]"
-                        xl=6
+                        xl=4
                         text="user.study_line"
                         :value="$value?->name"
                         required />
@@ -11,8 +11,14 @@
                         :value="$value?->type"
                         :elements="App\View\Components\Input\Select::convertArray(\App\Models\StudyLine::TYPES)"
                         required />
+        <x-input.text id="study_lines[{{ $index }}][training_code]"
+                    xl=2 s=6
+                    text="user.study_line_training_code"
+                    :value="$value?->training_code"
+                    required
+                    helper="Pl. TTK-FIZIKA-NBHU"/>
         <x-input.text id="study_lines[{{ $index }}][minor]"
-                    xl=4 s=6
+                    xl=3 s=6
                     text="user.study_line_minor"
                     :value="$value?->minor"
 		    helper="Nem kötelező"
