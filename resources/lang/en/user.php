@@ -76,6 +76,7 @@ return [
     'study_line_level' => 'Level',
     'study_line_minor' => 'Minor/Specialization',
     'study_line_start' => 'Start',
+    'study_line_training_code' => 'Training Code',
     'surname' => 'Surname',
     'szlavisztika_muhely' => 'Szlavisztika műhely',
     'tanito_eso_vokepzo_kar' => 'Tanító- és Óvóképző Kar',

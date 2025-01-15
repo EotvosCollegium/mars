@@ -235,7 +235,8 @@ class ApplicationTest extends TestCase
             'study_lines' => [[
                 "name" => "Test study line",
                 "level" => "bachelor",
-                "start" => Semester::current()->id]],
+                "start" => Semester::current()->id,
+                "training_code" => "123456"]],
             'email' => 'study@email.com',
             'faculty' => [Faculty::first()->id],
         ]);

@@ -3,8 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-// Note: the elements of this class should no be changed manually.
+// Note: the elements of this class should not be changed manually.
 // Observers for updating entries are set up.
 /**
  * App\Models\PrintAccountHistory
@@ -45,11 +46,21 @@ class PrintAccountHistory extends Model
         'modified_at',
     ];
 
+
+    /**
+     * `User` whose balance is affected by this change.
+     * @return BelongsTo
+     */
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
+
+    /**
+     * `User` who initiated this change.
+     * @return BelongsTo
+     */
     public function modifier()
     {
         return $this->belongsTo(User::class, 'modified_by');

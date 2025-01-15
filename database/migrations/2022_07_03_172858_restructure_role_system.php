@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Role;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -53,37 +52,34 @@ class RestructureRoleSystem extends Migration
 
         foreach (array_keys(config('app.locales')) as $locale) {
             DB::table('role_objects')->insert([
-                'role_id' => Role::where('name', 'locale-admin')->first()->id,
+                'role_id' => DB::table('roles')->where('name', 'locale-admin')->first()->id,
                 'name' => $locale
             ]);
         }
 
-        foreach (array_merge(
-            Role::STUDENT_COUNCIL_LEADERS,
-            array_merge(Role::COMMITTEE_LEADERS, Role::COMMITTEE_MEMBERS)
-        ) as $role) {
+        foreach (['president', 'science-vice-president', 'economic-vice-president', 'cultural-leader', 'community-leader', 'communication-leader', 'sport-leader', 'cultural-member', 'community-member', 'communication-member', 'sport-member', 'kkt-handler'] as $role) {
             DB::table('role_objects')->insert([
-                'role_id' => Role::where('name', 'student-council')->first()->id,
+                'role_id' => DB::table('roles')->where('name', 'student-council')->first()->id,
                 'name' => $role
             ]);
         }
 
         DB::table('role_objects')->insert([
-            'role_id' => Role::where('name', 'collegist')->first()->id,
+            'role_id' => DB::table('roles')->where('name', 'collegist')->first()->id,
             'name' => 'resident'
         ]);
         DB::table('role_objects')->insert([
-            'role_id' => Role::where('name', 'collegist')->first()->id,
+            'role_id' => DB::table('roles')->where('name', 'collegist')->first()->id,
             'name' => 'extern'
         ]);
 
-        DB::table('role_users')->where('role_id', Role::where('name', 'collegist')->first()->id)
+        DB::table('role_users')->where('role_id', DB::table('roles')->where('name', 'collegist')->first()->id)
             ->where('object_id', 1) // resident
             ->update(['object_id' => DB::table('role_objects')->where('name', 'resident')->first()->id]);
-        DB::table('role_users')->where('role_id', Role::where('name', 'collegist')->first()->id)
+        DB::table('role_users')->where('role_id', DB::table('roles')->where('name', 'collegist')->first()->id)
             ->where('object_id', 2) // extern
             ->update(['object_id' => DB::table('role_objects')->where('name', 'extern')->first()->id]);
-        DB::table('role_users')->where('role_id', Role::where('name', 'collegist')->first()->id)
+        DB::table('role_users')->where('role_id', DB::table('roles')->where('name', 'collegist')->first()->id)
             ->whereNull('object_id')
             ->delete();
 
@@ -93,7 +89,7 @@ class RestructureRoleSystem extends Migration
         });
 
         //Set student council objects manually
-        DB::table('role_users')->where('role_id', Role::where('name', Role::STUDENT_COUNCIL)->first()->id)->delete();
+        DB::table('role_users')->where('role_id', DB::table('roles')->where('name', 'student-council')->first()->id)->delete();
     }
 
     /**

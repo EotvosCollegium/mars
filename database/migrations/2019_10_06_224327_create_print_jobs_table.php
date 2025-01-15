@@ -19,7 +19,7 @@ class CreatePrintJobsTable extends Migration
             $table->text('filename');
             $table->text('filepath');
             $table->unsignedBigInteger('user_id')->nullable();
-            $table->set('state', array_map(fn ($state) => $state->value, PrintJobStatus::cases()));
+            $table->set('state', ['QUEUED', 'ERROR', 'CANCELLED', 'SUCCESS']);
             $table->unsignedBigInteger('job_id');
             $table->unsignedInteger('cost');
             $table->timestamps();

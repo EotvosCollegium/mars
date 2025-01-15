@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use App\Models\EducationalInformation;
+use App\Models\Role;
 use App\Models\User;
 use App\Models\LanguageExam;
 use App\Models\LanguageExamLevel;
@@ -203,6 +204,7 @@ class AlfonsoTest extends TestCase
         $educationalInfo = EducationalInformation::factory()->for($user)->create([
             'year_of_acceptance' => Semester::current()->year,
         ]);
+        $user->addRole(Role::get(Role::SENIOR));
         StudyLine::factory()->for($educationalInfo)->create(['type' => 'phd', 'start' => Semester::current()->id, 'end' => null]);
         $this->assertTrue($user->educationalInformation->isSenior());
         $this->assertTrue($user->educationalInformation->alfonsoExempted());

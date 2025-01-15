@@ -179,6 +179,7 @@ class PrintJobController extends Controller
         $paginator = TabulatorPaginator::from($printJobs)->sortable($columns)->filterable($columns)->paginate();
 
         // Process the data before showing it in a table.
+        // @phpstan-ignore-next-line
         $paginator->getCollection()->append([
             'translated_cost',
             'translated_state',
