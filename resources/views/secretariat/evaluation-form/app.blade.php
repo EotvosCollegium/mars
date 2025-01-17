@@ -21,7 +21,7 @@
                 <p>A kérvényeket a <a href="mailto:{{ config('mail.secretary_email')}}"> titkárság</a> számára küldd el
                     időben.</p>
                 <p>A kérdőív kitöltése bármikor abbahagyható, és a határidőig később folytatható.</p>
-                <p>A válaszaidhoz a Tanári Kar, a Választmány elnöke és szakmai alelnöke, a titkárság, az igazgató és a
+                <p>A válaszaidhoz a Tanári Kar, a Választmány elnöke és szakmai alelnöke, a CHÖK-titkár, a titkárság, az igazgató és a
                     rendszergazdák férnek hozzá.</p>
                 <p>A kitöltés határideje: <i class="coli-text text-orange">{{ $periodicEvent->deadline() }}</i>.</p>
             </blockquote>
