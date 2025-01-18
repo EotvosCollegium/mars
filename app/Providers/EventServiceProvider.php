@@ -5,7 +5,6 @@ namespace App\Providers;
 use App\Listeners\MailGate;
 use App\Models\FreePages;
 use App\Models\GeneralAssemblies\GeneralAssembly;
-use App\Models\PeriodicEvent;
 use App\Models\PrintAccount;
 use App\Models\RoleUser;
 use App\Models\SemesterStatus;

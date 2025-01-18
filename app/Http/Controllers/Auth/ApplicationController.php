@@ -2,24 +2,34 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
+use App\Exports\ApplicantsExport;
+use App\Models\Application;
+use App\Models\ApplicationForm;
 use App\Models\Faculty;
+use App\Models\File;
+use App\Models\PeriodicEvent;
 use App\Models\Role;
+use App\Models\RoleUser;
+use App\Models\Semester;
 use App\Models\User;
 use App\Models\Workshop;
-use App\Utils\HasPeriodicEvent;
 use App\Utils\ApplicationHandler;
-use Illuminate\Auth\AuthenticationException;
+use App\Utils\PeriodicEventController;
+use Carbon\Carbon;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use Maatwebsite\Excel\Facades\Excel;
 
 /**
  * Controller handling the applicantion process.
  */
-class ApplicationController extends Controller
+class ApplicationController extends PeriodicEventController
 {
-    use HasPeriodicEvent;
     use ApplicationHandler;
 
     private const EDUCATIONAL_ROUTE = 'educational';
@@ -28,7 +38,35 @@ class ApplicationController extends Controller
     private const DELETE_FILE_ROUTE = 'files.delete';
     private const SUBMIT_ROUTE = 'submit';
 
+    public function __construct()
+    {
+        parent::__construct(PeriodicEvent::APPLICATION_PERIOD);
+    }
 
+    /**
+     * Update the PeriodicEvent connected to the applications.
+     * @throws AuthorizationException
+     */
+    public function updateApplicationPeriod(Request $request): RedirectResponse
+    {
+        $this->authorize('finalize', Application::class);
+
+        $request->validate([
+            'semester_id' => 'required|exists:semesters,id',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after:now|after:start_date',
+            'extended_end_date' => 'nullable|date|after:end_date',
+        ]);
+
+        $this->updatePeriodicEvent(
+            Semester::find($request->semester_id),
+            Carbon::parse($request->start_date),
+            Carbon::parse($request->end_date),
+            $request->extended_end_date ? Carbon::parse($request->extended_end_date) : null
+        );
+
+        return back()->with('message', __('general.successful_modification'));
+    }
 
     /**
      * Return the view based on the request's page parameter.
@@ -74,7 +112,6 @@ class ApplicationController extends Controller
     /**
      * @param Request $request
      * @return RedirectResponse
-     * @throws AuthenticationException
      */
     public function store(Request $request): RedirectResponse
     {

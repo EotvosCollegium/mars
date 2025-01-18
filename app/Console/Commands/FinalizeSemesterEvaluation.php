@@ -2,10 +2,16 @@
 
 namespace App\Console\Commands;
 
+use App\Mail\StatusDeactivated;
+use App\Models\RoleUser;
+use App\Models\Role;
+use App\Models\Semester;
 use Illuminate\Console\Command;
 use App\Http\Controllers\Secretariat\SemesterEvaluationController;
 use Illuminate\Support\Facades\App;
-use App\Models\Semester;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class FinalizeSemesterEvaluation extends Command
 {
@@ -34,7 +40,22 @@ class FinalizeSemesterEvaluation extends Command
 
         $semester = Semester::where('year', $year)->where('part', $part)->first();
 
-        App::setLocale('hu');
-        app(SemesterEvaluationController::class)->finalize($semester);
+        $users = SemesterEvaluationController::usersHaventFilledOutTheForm($semester);
+        $users_names = $users->pluck('name')->toArray();
+
+        foreach ($users as $user) {
+            try {
+                //deactivate collegist, give them alumni role.
+                DB::transaction(function () use ($user) {
+                    RoleUser::withoutEvents(function () use ($user) {
+                        $user->removeRole(Role::collegist());
+                        $user->addRole(Role::alumni());
+                    });
+                    Mail::to($user)->queue(new StatusDeactivated($user->name));
+                });
+            } catch (\Exception $e) {
+                Log::error('Error deactivating collegist: ' . $user->name . ' - ' . $e->getMessage());
+            }
+        }
     }
 }

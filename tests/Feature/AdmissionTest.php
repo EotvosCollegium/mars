@@ -36,7 +36,7 @@ class AdmissionTest extends TestCase
         parent::setUp();
         //open application period
         PeriodicEvent::create([
-            'event_model' => ApplicationController::class,
+            'event_name' => PeriodicEvent::APPLICATION_PERIOD,
             'start_date' => now()->subWeeks(2),
             'end_date' => now()->subDay(),
             'semester_id' => Semester::current()->id

@@ -2,19 +2,23 @@
 
 namespace Tests\Feature;
 
-use App\Http\Controllers\Secretariat\SemesterEvaluationController;
+use App\Events\SemesterEvaluationPeriodEnd;
+use App\Listeners\SemesterEvaluationPeriodEndListener;
 use App\Models\PeriodicEvent;
 use App\Models\Role;
 use App\Models\Semester;
 use App\Models\SemesterStatus;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 class StatusTest extends TestCase
 {
     use RefreshDatabase;
+    protected PeriodicEvent $periodicEvent;
 
     /**
      * Set up the tests
@@ -23,8 +27,8 @@ class StatusTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        PeriodicEvent::create([
-            'event_model' => SemesterEvaluationController::class,
+        $this->periodicEvent = PeriodicEvent::create([
+            'event_name' => PeriodicEvent::SEMESTER_EVALUATION_PERIOD,
             'start_date' => now(),
             'end_date' => now()->addDays(1),
             'semester_id' => Semester::current()->id,
@@ -38,16 +42,18 @@ class StatusTest extends TestCase
      */
     public function test_set_collegist_to_alumni()
     {
-        Mail::fake();
+        $this->user->setCollegist(Role::RESIDENT);
+        //no status set for next semester
 
-        $user = User::factory()->create(['verified' => true]);
-        $user->setCollegist(Role::RESIDENT);
+        Artisan::call('app:finalize-semester-evaluation', [
+            'year' => Semester::current()->year, 'part' => Semester::current()->part
+        ]);
 
-        app(SemesterEvaluationController::class)->finalize(Semester::current());
+        $this->assertFalse($this->user->hasRole(Role::COLLEGIST));
+        $this->assertTrue($this->user->hasRole(Role::ALUMNI));
+        $this->assertTrue($this->user->isCollegist());
 
-        $this->assertFalse($user->hasRole(Role::COLLEGIST));
-        $this->assertTrue($user->hasRole(Role::ALUMNI));
-        $this->assertTrue($user->isCollegist());
+
     }
 
     /**
@@ -56,15 +62,14 @@ class StatusTest extends TestCase
      */
     public function test_set_collegist_to_active()
     {
-        Mail::fake();
+        $this->user->setResident();
+        $this->user->setStatusFor(Semester::next(), SemesterStatus::ACTIVE);
 
-        $user = User::factory()->create(['verified' => true]);
-        $user->setCollegist(Role::RESIDENT);
-        $user->setStatusFor(Semester::next(), SemesterStatus::ACTIVE);
+        Artisan::call('app:finalize-semester-evaluation', [
+            'year' => Semester::current()->year, 'part' => Semester::current()->part
+        ]);
 
-        app(SemesterEvaluationController::class)->handlePeriodicEventEnd();
-
-        $this->assertTrue($user->isActive(Semester::next()));
-        $this->assertFalse($user->hasRole(Role::ALUMNI));
+        $this->assertTrue($this->user->isActive(Semester::next()));
+        $this->assertFalse($this->user->hasRole(Role::ALUMNI));
     }
 }

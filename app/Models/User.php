@@ -67,6 +67,7 @@ use Illuminate\Support\Facades\Mail;
  * @method Builder|static currentTenant()
  * @method Builder|static hasToPayKKTNetregInSemester(int $semester_id)
  * @method Builder|static semestersWhere(string $status)
+ * @method Builder|static doesntHaveStatusFor(Semester $semester)
  * @property string $email
  * @property \Illuminate\Support\Carbon|null $email_verified_at
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -386,7 +387,7 @@ class User extends Authenticatable implements HasLocalePreference
     }
 
     /**
-     * Returns the semesters where the user has any status. The relation uses a SemesterStatus pivot class.
+     * Returns the semester evaluations of the user.
      * @return HasMany
      */
     public function semesterEvaluations(): HasMany
@@ -544,7 +545,7 @@ class User extends Authenticatable implements HasLocalePreference
      * Scope a query to only include active users in the given semester.
      *
      * @param Builder $query
-     * @param int $semester_id
+     * @param int|null $semester_id
      * @return Builder
      */
     public function scopeActive(Builder $query, ?int $semester_id = null): Builder
@@ -553,6 +554,23 @@ class User extends Authenticatable implements HasLocalePreference
             $q->where('status', SemesterStatus::ACTIVE)
                 ->where('id', $semester_id ?? Semester::current()->id);
         });
+    }
+
+    /**
+     * Scope a query to only include collegists who do not have any status set for the given semester.
+     *
+     * @param Builder $query
+     * @param Semester $semester
+     * @return Builder
+     */
+    public function scopeDoesntHaveStatusFor(Builder $query, Semester $semester)
+    {
+        /** @var Builder|static $query */
+        return $query
+            ->withRole(Role::COLLEGIST)
+            ->whereDoesntHave('semesterStatuses', function ($query) use ($semester) {
+                $query->where('semester_id', $semester->id);
+            });
     }
 
     /**

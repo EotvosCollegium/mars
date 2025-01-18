@@ -2,21 +2,24 @@
 
 namespace App\Http\Controllers\StudentsCouncil;
 
-use App\Http\Controllers\Controller;
 use App\Models\MrAndMissCategory;
 use App\Models\MrAndMissVote;
+use App\Models\PeriodicEvent;
 use App\Models\Semester;
 use App\Models\User;
-use App\Utils\HasPeriodicEvent;
+use App\Utils\PeriodicEventController;
 use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class MrAndMissController extends Controller
+class MrAndMissController extends PeriodicEventController
 {
-    use HasPeriodicEvent;
+    public function __construct()
+    {
+        parent::__construct(PeriodicEvent::MR_AND_MISS_VOTING_PERIOD);
+    }
 
     /**
      * Show the page for voting.

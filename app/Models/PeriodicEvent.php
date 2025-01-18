@@ -2,23 +2,27 @@
 
 namespace App\Models;
 
+use App\Events\SemesterEvaluationPeriodEnd;
+use App\Events\SemesterEvaluationPeriodReminder;
+use App\Events\SemesterEvaluationPeriodStart;
 use App\Jobs\PeriodicEventsProcessor;
-use App\Utils\HasPeriodicEvent;
+use App\Utils\PeriodicEventController;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Log;
 
 /**
  * A PeriodicEvent is connected to a feature that is active for a certain period of time.
- * It is connected to the user of the HasPeriodicEvent trait with the `event_model` attribute.
- * @warning PeriodicEvents should only be modified by the HasPeriodicEvent trait.
+ * It is connected to the `$periodicEventName` defined in PeriodicEventController, stored as the `event_name` attribute.
+ * @warning PeriodicEvents should only be modified by a PeriodicEventController.
  * @warning Do not attach other models to PeriodicEvents, use the connected Semester ids instead.
- * @see HasPeriodicEvent
+ * @see PeriodicEventController
  * @see PeriodicEventsProcessor
  *
  * @property int $id
- * @property string $event_model
+ * @property string $event_name
  * @property int|null $semester_id
  * @property Carbon $start_date
  * @property string|null $start_handled
@@ -46,8 +50,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class PeriodicEvent extends Model
 {
+    public const SEMESTER_EVALUATION_PERIOD = "SEMESTER_EVALUATION_PERIOD";
+    public const APPLICATION_PERIOD = "APPLICATION_PERIOD";
+    public const KKT_NETREG_PAYMENT_PERIOD = "KKT_NETREG_PAYMENT_PERIOD";
+    public const MR_AND_MISS_VOTING_PERIOD = "MR_AND_MISS_VOTING_PERIOD";
+
     protected $fillable = [
-        'event_model',
+        'event_name',
         'start_date',
         'start_handled',
         'end_date',
@@ -112,13 +121,19 @@ class PeriodicEvent extends Model
         return $this->extended_end_date != null;
     }
 
+
     /**
      * Handle the start of the PeriodicEvent.
      */
     public function handleStart(): void
     {
-        //Get the corresponding controller and call its start method
-        app($this->event_model)->handlePeriodicEventStart();
+        switch ($this->event_name) {
+            case self::SEMESTER_EVALUATION_PERIOD:
+                event(new SemesterEvaluationPeriodStart($this));
+                break;
+            default:
+                Log::debug("No event handler defined for ". $this->event_name . "'s start time");
+        }
 
         $this->start_handled = now();
         $this->save(['timestamps' => false]); // save without updating timestamps
@@ -129,8 +144,13 @@ class PeriodicEvent extends Model
      */
     public function handleEnd(): void
     {
-        //Get the corresponding controller and call its start method
-        app($this->event_model)->handlePeriodicEventEnd();
+        switch ($this->event_name) {
+            case self::SEMESTER_EVALUATION_PERIOD:
+                event(new SemesterEvaluationPeriodEnd($this));
+                break;
+            default:
+                Log::debug("No event handler defined for ". $this->event_name . "'s end time");
+        }
 
         $this->end_handled = now();
         $this->save(['timestamps' => false]); // save without updating timestamps
@@ -141,10 +161,13 @@ class PeriodicEvent extends Model
      */
     public function handleReminder(): void
     {
-        $days_left = (int)$this->endDate()->diffInDays(now()) * (-1);
-
-        //Get the corresponding controller and call its start method
-        app($this->event_model)->handlePeriodicEventReminder($days_left);
+        switch ($this->event_name) {
+            case self::SEMESTER_EVALUATION_PERIOD:
+                event(new SemesterEvaluationPeriodReminder($this));
+                break;
+            default:
+                Log::debug("No event handler defined for ". $this->event_name . "'s reminder");
+        }
     }
 
 

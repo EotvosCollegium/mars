@@ -27,17 +27,17 @@ class PeriodicEventsProcessor implements ShouldQueue
             try {
                 if ($event->startDate()->isPast() && !$event->start_handled) {
                     $event->handleStart();
-                    Log::info('Periodic event started: ' . $event->event_model);
+                    Log::info('Periodic event started: ' . $event->event_name);
                 } elseif ($event->isActive()) {
                     $event->handleReminder();
-                    Log::info('Periodic event reminder: ' . $event->event_model);
+                    Log::info('Periodic event reminder: ' . $event->event_name);
                 }
                 if ($event->endDate()->isPast() && !$event->end_handled) {
                     $event->handleEnd();
-                    Log::info('Periodic event ended: ' . $event->event_model);
+                    Log::info('Periodic event ended: ' . $event->event_name);
                 }
             } catch (\Exception $e) {
-                Log::error('Error processing periodic event: ' . $event->event_model . ' - ' . $e->getMessage());
+                Log::error('Error processing periodic event: ' . $event->event_name . ' - ' . $e->getMessage());
             }
         }
     }
