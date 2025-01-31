@@ -19,9 +19,6 @@ class NotifyAboutEvaluation
     public function handle(Request $request, Closure $next)
     {
         $user = $request->user();
-        // this is non-static, but actually, the controller contains nothing;
-        // so it will be to construct an instance,
-        // and app(...) does this
         $semesterEvaluationControllerInstance = app(SemesterEvaluationController::class);
         if (
             $user
