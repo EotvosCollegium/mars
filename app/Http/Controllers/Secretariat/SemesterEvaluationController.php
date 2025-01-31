@@ -136,13 +136,19 @@ class SemesterEvaluationController extends Controller
     {
         $this->authorize('fillOrManage', SemesterEvaluation::class);
 
+        if(!$this->isActive()) {
+            return view('secretariat.evaluation-form.app', [
+                'users_havent_filled_out' => user()->can('manage', SemesterEvaluation::class) ? ($this->semester() ? SemesterEvaluationController::usersHaventFilledOutTheForm($this->semester()) : []) : null,
+                'periodicEvent' => $this->periodicEvent(),
+            ]);
+        }
         return view('secretariat.evaluation-form.app', [
             'user' => user(),
             'faculties' => Faculty::all(),
             'workshops' => Workshop::all(),
-            'evaluation' => user()->semesterEvaluations()->where('semester_id', Semester::current()->id)->first(),
+            'evaluation' => user()->semesterEvaluations()->where('semester_id', $this->semester()->id)->first(),
             'general_assemblies' => GeneralAssembly::all()->sortByDesc('closed_at')->take(2),
-            'community_services' => user()->communityServiceRequests()->where('semester_id', Semester::current()->id)->get(),
+            'community_services' => user()->communityServiceRequests()->where('semester_id', $this->semester()->id)->get(),
             'position_roles' => user()->roles()->whereIn('name', Role::STUDENT_POSTION_ROLES)->get(),
             'periodicEvent' => $this->periodicEvent(),
             'users_havent_filled_out' => user()->can('manage', SemesterEvaluation::class) ? SemesterEvaluationController::usersHaventFilledOutTheForm($this->semester()) : null,
