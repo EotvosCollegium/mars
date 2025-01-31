@@ -19,17 +19,18 @@ class NotifyAboutEvaluation
     public function handle(Request $request, Closure $next)
     {
         $user = $request->user();
+        // this is non-static, but actually, the controller contains nothing;
+        // so it will be to construct an instance,
+        // and app(...) does this
+        $semesterEvaluationControllerInstance = app(SemesterEvaluationController::class);
         if (
             $user
             && $user->verified
             && $request->method() == 'GET'
             && !$request->routeIs('secretariat.evaluation.*')
             && $user->isCollegist(alumni: false)
-            && $user->getStatus(Semester::next()) == null
-            // this is non-static, but actually, the controller contains nothing;
-            // so it will be to construct an instance,
-            // and app(...) does this
-            && app(SemesterEvaluationController::class)->isActive()
+            && $semesterEvaluationControllerInstance->isActive()
+            && $user->getStatus($semesterEvaluationControllerInstance->semester()->succ()) == null
         ) {
             $request->session()->flash('message', 'Töltsd ki a szemeszter végi kérdőívet a profilod alatt!');
         }
