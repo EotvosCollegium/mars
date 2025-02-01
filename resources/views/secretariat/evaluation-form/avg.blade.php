@@ -5,8 +5,8 @@
     </blockquote>
     <div class="row">
         <input type="hidden" name="section" value="avg"/>
-        <x-input.text s=6 type="number" min="1" max="5" step="0.01" id="current_avg" :value="$evaluation?->current_avg" text="Átlag ({{\App\Models\Semester::current()->tag}})" helper="tizedesponttal"/>
-        <x-input.text s=6 type="number" min="1" max="5" step="0.01" id="last_avg" :value="$evaluation?->last_avg" text="Átlag ({{\App\Models\Semester::previous()->tag}})" helper="tizedesponttal" />
+        <x-input.text s=6 type="number" min="1" max="5" step="0.01" id="current_avg" :value="$evaluation?->current_avg" text="Átlag ({{$periodicEvent->semester->tag}})" />
+        <x-input.text s=6 type="number" min="1" max="5" step="0.01" id="last_avg" :value="$evaluation?->last_avg" text="Átlag ({{$periodicEvent->semester->pred()->tag}})" />
     </div>
     <blockquote>
         <a href="https://eotvos.elte.hu/collegium/mukodes/szabalyzatok">CTSZK 7. § (4) b.</a>

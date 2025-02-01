@@ -77,7 +77,7 @@
         <div class="col s12">
             <div class="card" id="courses">
                 <div class="card-content">
-                    <div class="card-title">EC-s kurzusok ({{\App\Models\Semester::current()->tag}})</div>
+                    <div class="card-title">EC-s kurzusok ({{$periodicEvent->semester->tag}})</div>
                     @include('secretariat.evaluation-form.courses')
                 </div>
             </div>
