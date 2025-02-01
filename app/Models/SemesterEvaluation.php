@@ -133,22 +133,6 @@ class SemesterEvaluation extends Model
         );
     }
 
-    /**
-     * Get last_avg attribute. If null, search for the current_avg in last semester.
-     *
-     * @return \Illuminate\Database\Eloquent\Casts\Attribute
-     */
-    protected function lastAvg(): Attribute
-    {
-        return Attribute::make(
-            get: fn ($value) => $value ? $value :
-                $this->user->semesterEvaluations()
-                ->where('semester_id', Semester::previous()->id)
-                ->first()
-                ?->current_avg,
-            set: fn ($value) => $value,
-        );
-    }
 
     /**
      * Get/Set the professonal_results attribute.
