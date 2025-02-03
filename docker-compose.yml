@@ -1,8 +1,8 @@
 version: '3'
 
 services:
-  mysql:
-    container_name: mysql
+  mars_mysql:
+    container_name: mars_mysql
     image: mysql:8.3
     environment:
       MYSQL_DATABASE: 'mars'
@@ -22,7 +22,7 @@ services:
     build:
       context: ./docker-dev-setup
     depends_on:
-      - mysql
+      - mars_mysql
     volumes:
       - ".:/workspace/mars"
     ports:
