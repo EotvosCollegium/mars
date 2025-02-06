@@ -76,11 +76,11 @@ class AnonymousQuestionController extends Controller
                 'required',
                 Rule::in(Question::QUESTION_TYPES)
             ],
-            'max_options' => ['required', 'min:1', Rule::excludeIf($request['question_type'] != 'selection')],
-            'options' => ['required', 'min:1', Rule::excludeIf($request['question_type'] != 'selection'), 'array'],
-            'options.*' => ['required', 'min:1', 'max:255', Rule::excludeIf($request['question_type'] != 'selection'), 'string'],
+            'max_options' => ['required', 'min:1', Rule::excludeIf($request['question_type'] != QUESTION::SELECTION)],
+            'options' => ['required', 'min:1', Rule::excludeIf($request['question_type'] != QUESTION::SELECTION && $request['question_type'] != QUESTION::RANKING), 'array'],
+            'options.*' => ['required', 'min:1', 'max:255', Rule::excludeIf($request['question_type'] != QUESTION::SELECTION && $request['question_type'] != QUESTION::RANKING), 'string'],
         ]);
-        if ($validatedData['question_type'] == Question::SELECTION) {
+        if ($validatedData['question_type'] == Question::SELECTION || $validatedData['question_type'] == Question::RANKING) {
             $options = array_filter($validatedData['options'], function ($s) {
                 return $s != null;
             });
@@ -100,7 +100,7 @@ class AnonymousQuestionController extends Controller
             'opened_at' => $event?->start_date ?? null,
             'closed_at' => $event?->end_date ?? null
         ]);
-        if ($validatedData['question_type'] == Question::SELECTION) {
+        if ($validatedData['question_type'] == Question::SELECTION || $validatedData['question_type'] == Question::RANKING) {
             foreach ($options as $option) {
                 $question->options()->create([
                     'title' => $option,
@@ -162,7 +162,8 @@ class AnonymousQuestionController extends Controller
                 // validation ensures we have answers
                 // to all of these questions
                 $answer = $validatedData[$question->formKey()];
-                if ($question->question_type == Question::TEXT_ANSWER) {
+                if ($question->question_type == Question::TEXT_ANSWER ||
+                    $question->question_type == Question::RANKING) {
                     $question->storeAnswers(user(), $answer, $answerSheet);
                 } elseif ($question->question_type == Question::SELECTION) {
                     if ($question->isMultipleChoice()) {

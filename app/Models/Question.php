@@ -24,6 +24,8 @@ use App\Models\AnonymousQuestions\LongAnswer;
 use App\Models\User;
 use App\Models\Semester;
 
+use App\Rules\RankingVote;
+
 /**
  * App\Models\Question
  *
@@ -67,7 +69,7 @@ class Question extends Model
     use HasFactory;
 
     protected $fillable = ['title', 'max_options', 'opened_at', 'closed_at', 'question_type'];
-    
+
     public const SELECTION = 'selection';
     public const TEXT_ANSWER = 'text_answer';
     public const RANKING = 'ranking';
@@ -232,7 +234,8 @@ class Question extends Model
                     }
                 }
             } // else it is a string
-            elseif ($this->question_type != Question::TEXT_ANSWER) {
+            elseif ($this->question_type != Question::TEXT_ANSWER &&
+                    $this->question_type != Question::RANKING) {
                 throw new Exception("This question does not support long answers");
             } else {
                 $this->longAnswers()->create([
@@ -269,22 +272,32 @@ class Question extends Model
         $rules = [];
         if ($this->question_type == Question::TEXT_ANSWER) {
             $rules[$key] = 'required|string';
-        } elseif ($this->isMultipleChoice()) {
+        } elseif($this->question_type == Question::RANKING){
             $rules[$key] = [
                 'required',
-                'array',
-                'max:' . $this->max_options
+                'string',
+                new RankingVote($this),
             ];
-            $rules[$key . '.*'] = Rule::in($this->options->map(
-                function (QuestionOption $option) {return $option->id;}
-            ));
-        } else {
-            $rules[$key] = [
-                'required',
-                Rule::in($this->options->map(
+        } elseif($this->question_type == Question::SELECTION){
+            if ($this->isMultipleChoice()) {
+                $rules[$key] = [
+                    'required',
+                    'array',
+                    'max:' . $this->max_options
+                ];
+                $rules[$key . '.*'] = Rule::in($this->options->map(
                     function (QuestionOption $option) {return $option->id;}
-                ))
-            ];
+                ));
+            } else {
+                $rules[$key] = [
+                    'required',
+                    Rule::in($this->options->map(
+                        function (QuestionOption $option) {return $option->id;}
+                    ))
+                ];
+            }
+        } else {
+            throw new \Exception("Unknown question type");
         }
         return $rules;
     }

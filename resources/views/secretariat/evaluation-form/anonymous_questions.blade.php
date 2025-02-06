@@ -26,6 +26,9 @@
                 @if($question->question_type == \App\Models\Question::TEXT_ANSWER)
                 <x-input.textarea :id="$question->formKey()" :text="__('anonymous_questions.long_answer_placeholder')" style="height:100px" />
                 @endif
+                @if($question->question_type == \App\Models\Question::RANKING)
+                <x-input.textarea :id="$question->formKey()" :text="__('anonymous_questions.long_answer_placeholder')" style="height:100px" />
+                @endif
                 @if($question->question_type == \App\Models\Question::SELECTION)
                 @foreach($question->options()->get() as $option)
                     @if($question->max_options==1)

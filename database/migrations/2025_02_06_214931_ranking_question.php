@@ -12,7 +12,6 @@ return new class () extends Migration {
     {
         Schema::table('questions', function (Blueprint $table) {
             $table->enum('question_type',['selection', 'text_answer', 'ranking'])->default('selection');
-            $table->text('metadata')->nullable();
             $table->integer('max_options')->nullable()->change();
             $table->timestamps();
         });
@@ -27,6 +26,7 @@ return new class () extends Migration {
      */
     public function down(): void
     {
+        DB::table('questions')->whereNull('max_options')->update(['max_options' => 1]);
         Schema::table('questions', function (Blueprint $table) {
             $table->boolean('has_long_answers');
             $table->integer('max_options')->nullable(false)->change();
@@ -38,7 +38,6 @@ return new class () extends Migration {
         })->delete();
         Schema::table('questions', function (Blueprint $table) {
             $table->dropColumn('question_type');
-            $table->dropColumn('metadata');
             $table->dropTimestamps();
         });
     }
