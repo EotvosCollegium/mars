@@ -46,7 +46,7 @@ class RankingVote implements ValidationRule
             }
         }
         if (!$this->isArrUni($converted)) {
-            fail("All elements must be unique.");
+            $fail("All elements must be unique.");
             return;
         }
         $valid_ids = [];
