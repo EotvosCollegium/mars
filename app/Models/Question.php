@@ -66,7 +66,13 @@ class Question extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'max_options', 'opened_at', 'closed_at', 'has_long_answers'];
+    protected $fillable = ['title', 'max_options', 'opened_at', 'closed_at', 'question_type'];
+    
+    public const SELECTION = 'selection';
+    public const TEXT_ANSWER = 'text_answer';
+    public const RANKING = 'ranking';
+
+    public const QUESTION_TYPES = [self::SELECTION, self::TEXT_ANSWER, self::RANKING];
 
     public $timestamps = false;
 
@@ -226,7 +232,7 @@ class Question extends Model
                     }
                 }
             } // else it is a string
-            elseif (!$this->has_long_answers) {
+            elseif ($this->question_type != Question::TEXT_ANSWER) {
                 throw new Exception("This question does not support long answers");
             } else {
                 $this->longAnswers()->create([
@@ -261,7 +267,7 @@ class Question extends Model
     {
         $key = $this->formKey();
         $rules = [];
-        if ($this->has_long_answers) {
+        if ($this->question_type == Question::TEXT_ANSWER) {
             $rules[$key] = 'required|string';
         } elseif ($this->isMultipleChoice()) {
             $rules[$key] = [

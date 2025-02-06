@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 
 use App\Models\User;
 use App\Models\Semester;
+use App\Models\Question;
 use App\Models\QuestionOption;
 use App\Models\AnonymousQuestions\LongAnswer;
 
@@ -97,7 +98,7 @@ class AnswerSheet extends Model
             $this->year_of_acceptance
         ];
         foreach ($this->semester->questions()->orderBy('id')->get() as $question) {
-            if ($question->has_long_answers) {
+            if ($question->question_type == Question::TEXT_ANSWER) {
                 $row[] = $this->longAnswers()
                                         ->where('question_id', $question->id)
                                         ->first()->text ?? '';

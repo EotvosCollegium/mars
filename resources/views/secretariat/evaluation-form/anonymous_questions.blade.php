@@ -23,9 +23,10 @@
         <li class="collection-item">
             <div class="question-title">{{ $question->title }}</div>
             <div class="row">
-                @if($question->has_long_answers)
+                @if($question->question_type == \App\Models\Question::TEXT_ANSWER)
                 <x-input.textarea :id="$question->formKey()" :text="__('anonymous_questions.long_answer_placeholder')" style="height:100px" />
-                @else
+                @endif
+                @if($question->question_type == \App\Models\Question::SELECTION)
                 @foreach($question->options()->get() as $option)
                     @if($question->max_options==1)
                     <x-input.radio :name="$question->formKey()" value="{{$option->id}}" text="{{$option->title}}"

@@ -32,7 +32,7 @@
                 @foreach($semester->questions as $question)
                 <li class="collection-item">
                     <b style="font-size: 110%;">{{$question->title}}</b>
-                    @if($question->has_long_answers)
+                    @if($question->question_type == \App\Models\Question::TEXT_ANSWER)
                     (@lang('anonymous_questions.has_long_answers'))
                     @else
                     @if($question->isMultipleChoice()) (@lang('anonymous_questions.is_multiple_choice')) @endif

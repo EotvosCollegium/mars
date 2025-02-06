@@ -17,12 +17,9 @@
     <div class="row">
         <x-input.text type="number" :value="1" id="max_options" text="voting.max_options" required/>
     </div>
-    @if ($canHaveLongAnswers)
     <div class="row">
-        <x-input.checkbox s="12" name="has_long_answers" text="anonymous_questions.has_long_answers"
-            onchange="toggleLongAnswers(this);"/>
+        <x-input.select s="12" name="question_type" id="question_type" :elements=\App\Models\Question::QUESTION_TYPES required />
     </div>
-    @endif
 </div>
 @push('scripts')
 {{-- disable answer options if this is checked --}}

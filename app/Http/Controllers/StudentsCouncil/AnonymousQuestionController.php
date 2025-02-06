@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
-
+use Illuminate\Validation\Rule;
 use App\Models\AnonymousQuestions\AnswerSheet;
 use App\Models\Semester;
 use App\Models\Question;
@@ -70,16 +70,18 @@ class AnonymousQuestionController extends Controller
             abort(403, "tried to add a question to a closed semester");
         }
 
-        $validator = Validator::make($request->all(), [
+        $validatedData = $request->validate([
             'title' => 'required|string',
-            'has_long_answers' => 'nullable|in:on',
-            'max_options' => 'exclude_if:has_long_answers,on|required|min:1',
-            'options' => 'exclude_if:has_long_answers,on|required|array|min:1',
-            'options.*' => 'exclude_if:has_long_answers,on|nullable|string|max:255',
+            'question_type' => [
+                'required',
+                Rule::in(Question::QUESTION_TYPES)
+            ],
+            'max_options' => ['required', 'min:1', Rule::excludeIf($request['question_type'] != 'selection')],
+            'options' => ['required', 'min:1', Rule::excludeIf($request['question_type'] != 'selection'), 'array'],
+            'options.*' => ['required', 'min:1', 'max:255', Rule::excludeIf($request['question_type'] != 'selection'), 'string'],
         ]);
-        $hasLongAnswers = isset($request->has_long_answers);
-        if (!$hasLongAnswers) {
-            $options = array_filter($request->options, function ($s) {
+        if ($validatedData['question_type'] == Question::SELECTION) {
+            $options = array_filter($validatedData['options'], function ($s) {
                 return $s != null;
             });
             if (count($options) == 0) {
@@ -88,18 +90,17 @@ class AnonymousQuestionController extends Controller
                 });
             }
         }
-        $validator->validate();
 
         $event = $this->periodicEventForSemester($semester);
 
         $question = $semester->questions()->create([
-            'title' => $request->title,
-            'max_options' => $hasLongAnswers ? 0 : $request->max_options,
-            'has_long_answers' => $hasLongAnswers,
+            'title' => $validatedData['title'],
+            'max_options' => $validatedData['question_type'] == Question::SELECTION ? $validatedData['max_options'] : null,
+            'question_type' => $validatedData['question_type'],
             'opened_at' => $event?->start_date ?? null,
             'closed_at' => $event?->end_date ?? null
         ]);
-        if (!$hasLongAnswers) {
+        if ($validatedData['question_type'] == Question::SELECTION) {
             foreach ($options as $option) {
                 $question->options()->create([
                     'title' => $option,
@@ -157,21 +158,25 @@ class AnonymousQuestionController extends Controller
             // we have to create a new one.
             $answerSheet = AnswerSheet::createForCurrentUser($semester);
 
-            foreach($semester->questionsNotAnsweredBy(user()) as $question) {
+            foreach ($semester->questionsNotAnsweredBy(user()) as $question) {
                 // validation ensures we have answers
                 // to all of these questions
                 $answer = $validatedData[$question->formKey()];
-                if ($question->has_long_answers) {
+                if ($question->question_type == Question::TEXT_ANSWER) {
                     $question->storeAnswers(user(), $answer, $answerSheet);
-                } elseif ($question->isMultipleChoice()) {
-                    $options = array_map(
-                        function (int $id) {return QuestionOption::find($id);},
-                        $answer
-                    );
-                    $question->storeAnswers(user(), $options, $answerSheet);
+                } elseif ($question->question_type == Question::SELECTION) {
+                    if ($question->isMultipleChoice()) {
+                        $options = array_map(
+                            function (int $id) {return QuestionOption::find($id);},
+                            $answer
+                        );
+                        $question->storeAnswers(user(), $options, $answerSheet);
+                    } else {
+                        $option = QuestionOption::find($answer);
+                        $question->storeAnswers(user(), $option, $answerSheet);
+                    }
                 } else {
-                    $option = QuestionOption::find($answer);
-                    $question->storeAnswers(user(), $option, $answerSheet);
+                    throw new \Exception("Unknown question type");
                 }
             }
         });

@@ -56,7 +56,7 @@ class GeneralAssemblyQuestionController extends Controller
         $question = $generalAssembly->questions()->create([
             'title' => $request->title,
             'max_options' => $request->max_options,
-            'has_long_answers' => false
+            'question_type' => Question::SELECTION
         ]);
         foreach ($options as $option) {
             $question->options()->create([
