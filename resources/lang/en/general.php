@@ -18,6 +18,7 @@ return [
     'delete' => 'Delete',
     'delete_all' => 'Delete all',
     'description' => 'Description',
+    'details' => 'Details',
     'dormitory' => 'Dormitory',
     'download' => 'Download',
     'edit' => 'Edit',

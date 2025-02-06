@@ -27,15 +27,24 @@
                     </span>
                     <blockquote>@lang('voting.description')</blockquote>
                     <blockquote class="error">@lang('voting.warning')</blockquote>
+                    @if($question->question_type == \App\Models\Question::SELECTION)
                     <blockquote>@lang('voting.max_options') {{$question->max_options}}</blockquote>
+                    @elseif($question->question_type == \App\Models\Question::RANKING)
+                    <blockquote>
+                        <p>@lang('voting.ranking_instructions')</p>
+                        <p>@lang('voting.ranking_explanation')</p>
+                        <p>@lang('voting.seats_allocated', ['seats' => $question->max_options])</p>
+                    </blockquote>
+                    @endif
+
                     <div class="row">
-                    @foreach($question->options()->get() as $option)
-                        @if($question->max_options==1)
-                        <x-input.radio name="option" value="{{$option->id}}" text="{{$option->title}}" />
-                        @else
-                        <x-input.checkbox name="option[]" value="{{$option->id}}" text="{{$option->title}}" />
-                        @endif
-                    @endforeach
+                    @if($question->question_type == \App\Models\Question::TEXT_ANSWER)
+                    @include('utils.questions.text_answer', ['question' => $question])
+                    @elseif($question->question_type == \App\Models\Question::SELECTION)
+                    @include('utils.questions.selection', ['question' => $question])
+                    @elseif($question->question_type == \App\Models\Question::RANKING)
+                    @include('utils.questions.ranking', ['question' => $question])
+                    @endif
                     @foreach ($errors->all() as $error)
                         <blockquote class="error">{{ $error }}</blockquote>
                     @endforeach
@@ -68,20 +77,19 @@
                         <thead>
                             <tr>
                                 <th>{{ $question->title }}</th>
-                                @if($question->isClosed())
-                                <th>{{ $question->users()->count() }}</th>
-                                @endif
+                                <th>@lang('voting.number_of_ballots'): {{ $question->users()->count() }}</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($question->options->sortByDesc('votes') as $option)
-                            <tr>
-                                <td>{{$option->title}}</td>
-                                @if($question->hasBeenOpened())
-                                <td><b>{{$option->votes}}</b></td>
+                            @if($question->hasBeenOpened())
+                                @if($question->question_type == \App\Models\Question::TEXT_ANSWER)
+                                    @include('utils.questions.results.text_answer', ['question' => $question])
+                                @elseif($question->question_type == \App\Models\Question::SELECTION)
+                                    @include('utils.questions.results.selection', ['question' => $question])
+                                @elseif($question->question_type == \App\Models\Question::RANKING)
+                                    @include('utils.questions.results.ranking', ['question' => $question])
                                 @endif
-                            </tr>
-                            @endforeach
+                            @endif
                         </tbody>
                     </table>
                     @if($question->isClosed())

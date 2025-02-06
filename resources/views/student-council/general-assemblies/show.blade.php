@@ -141,6 +141,18 @@
                             @elsecan('viewResults', $question)
                             <x-input.button href="{{ $route }}" floating class="right" icon="remove_red_eye" />
                             @endcan
+                            @can('administer', $general_assembly)
+                            <form method="post" action="{{ route('general_assemblies.questions.votes.delete', ['general_assembly' => $general_assembly, 'question' => $question]) }}" onsubmit="return confirm('Do you really want to delete the question?');"> 
+                                @csrf
+                                <input type="hidden" name="_method" value="DELETE">
+                                <x-input.button
+                                    type="submit"
+                                    floating
+                                    class="right red"
+                                    icon="delete"
+                                />
+                            </form>
+                            @endcan
                         </td>
                     </tr>
                     @endforeach
@@ -181,8 +193,8 @@
                             @if($presence_check->isOpen())
                             @can('administer', $general_assembly)
                             <form action="{{ route('general_assemblies.presence_checks.close', [
-                                "general_assembly" => $general_assembly->id,
-                                "presence_check" => $presence_check->id,
+                                'general_assembly' => $general_assembly->id,
+                                'presence_check' => $presence_check->id,
                             ]) }}" method="POST">
                                 @csrf
                                 <x-input.button text="voting.close_presence_check" class="red" />

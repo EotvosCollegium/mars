@@ -12,13 +12,13 @@ const mix = require('laravel-mix');
 
 mix.js('resources/js/materialize_custom.js', 'public/js/materialize.js') // We use our custom materialize JS
    .js('resources/js/cookieconsent-initialize.js', 'public/js/')
-   .scripts(['resources/js/site.js'], 'public/js/site.js')
    // We have to copy already minimized JS
    .copy('resources/js/cookieconsent.min.js', 'public/js/') // TODO: see #223
    .copy([
       'node_modules/moment/min/moment.min.js',
       'node_modules/jquery/dist/jquery.min.js',
-      'node_modules/tabulator-tables/dist/js/tabulator.min.js'
+      'node_modules/tabulator-tables/dist/js/tabulator.min.js',
+      'node_modules/sortablejs/Sortable.min.js'
    ], 'public/js/')
    // Compile SASS
    .sass('resources/sass/materialize.scss', 'public/css/', {

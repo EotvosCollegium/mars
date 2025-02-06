@@ -287,6 +287,9 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
                 ->name('general_assemblies.questions.votes.store')
                 ->withoutMiddleware(LogRequests::class)
                 ->scopeBindings();
+    Route::delete('/general_assemblies/{general_assembly}/questions/{question}', [GeneralAssemblyQuestionController::class, 'delete'])
+                ->name('general_assemblies.questions.votes.delete')
+                ->scopeBindings();
 
     Route::prefix('reservations')->name('reservations.')->group(function () {
         Route::resource('items', ReservableItemController::class)->only([
@@ -331,6 +334,7 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
         Route::get('/{semester}/questions/{question}', [AnonymousQuestionController::class, 'show'])->name('show')
             ->withoutMiddleware([LogRequests::class])
             ->scopeBindings();
+        Route::delete('/{semester}/questions/{question}', [AnonymousQuestionController::class, 'delete'])->name('delete');
         Route::post('/{semester}/sheets/', [AnonymousQuestionController::class, 'storeAnswerSheet'])->name('store_answer_sheet')
             ->withoutMiddleware([LogRequests::class]);
         Route::get('/{semester}/sheets/', [AnonymousQuestionController::class, 'exportAnswerSheets'])->name('export_answer_sheets');

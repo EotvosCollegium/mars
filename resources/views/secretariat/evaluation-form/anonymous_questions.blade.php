@@ -23,19 +23,12 @@
         <li class="collection-item">
             <div class="question-title">{{ $question->title }}</div>
             <div class="row">
-                @if($question->has_long_answers)
-                <x-input.textarea :id="$question->formKey()" :text="__('anonymous_questions.long_answer_placeholder')" style="height:100px" />
-                @else
-                @foreach($question->options()->get() as $option)
-                    @if($question->max_options==1)
-                    <x-input.radio :name="$question->formKey()" value="{{$option->id}}" text="{{$option->title}}"
-                        :checked="old($question->formKey()) == $option->id" />
-                    @else
-                    <x-input.checkbox :id="$question->formKey()" :name="$question->formKey().'[]'" value="{{$option->id}}" text="{{$option->title}}"
-                        {{-- for some reason, having a custom id changes the structure of old($id) --}}
-                        :checked="in_array($option->id, (old($question->formKey()) ?? []))" />
-                    @endif
-                @endforeach
+                @if($question->question_type == \App\Models\Question::TEXT_ANSWER)
+                @include('utils.questions.text_answer', ['question' => $question])
+                @elseif($question->question_type == \App\Models\Question::SELECTION)
+                @include('utils.questions.selection', ['question' => $question])
+                @elseif($question->question_type == \App\Models\Question::RANKING)
+                @include('utils.questions.ranking', ['question' => $question])
                 @endif
             </div>
         </li>

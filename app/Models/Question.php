@@ -3,9 +3,14 @@
 namespace App\Models;
 
 use Exception;
+use CondorcetPHP\Condorcet\Candidate;
+use CondorcetPHP\Condorcet\Election;
+use CondorcetPHP\Condorcet\Result;
+use CondorcetPHP\Condorcet\Vote;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -23,6 +28,8 @@ use App\Models\AnonymousQuestions\AnswerSheet;
 use App\Models\AnonymousQuestions\LongAnswer;
 use App\Models\User;
 use App\Models\Semester;
+
+use App\Rules\RankingVote;
 
 /**
  * App\Models\Question
@@ -65,8 +72,21 @@ use App\Models\Semester;
 class Question extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
-    protected $fillable = ['title', 'max_options', 'opened_at', 'closed_at', 'has_long_answers'];
+    /*
+     * HACK: max_option is used for both:
+     * - number of permitted options to select in a multiple-choice question
+     * - number of seats in a ranking question (required for quota calculation)
+     */
+
+    protected $fillable = ['title', 'max_options', 'opened_at', 'closed_at', 'question_type', 'results_cache'];
+
+    public const SELECTION = 'selection';
+    public const TEXT_ANSWER = 'text_answer';
+    public const RANKING = 'ranking';
+
+    public const QUESTION_TYPES = [self::SELECTION, self::TEXT_ANSWER, self::RANKING];
 
     public $timestamps = false;
 
@@ -156,6 +176,17 @@ class Question extends Model
         if (!$this->hasBeenOpened()) {
             throw new Exception("tried to close question when it has not been opened");
         }
+        if($this->question_type == self::RANKING) {
+            // 'results' will contain the final vote counts and
+            // 'stats' the table with the vote counts in each round
+            $resultObject = $this->computeElectionResults();
+            $toWriteToCache = array();
+            $toWriteToCache['results'] = $resultObject->getResultAsArray(true);
+            $toWriteToCache['stats'] = $resultObject->getStats();
+            $this->update(
+                ['results_cache' => json_encode($toWriteToCache)]
+            );
+        }
         $this->update(['closed_at' => now()]);
     }
 
@@ -226,11 +257,12 @@ class Question extends Model
                     }
                 }
             } // else it is a string
-            elseif (!$this->has_long_answers) {
+            elseif ($this->question_type != Question::TEXT_ANSWER &&
+                    $this->question_type != Question::RANKING) {
                 throw new Exception("This question does not support long answers");
             } else {
                 $this->longAnswers()->create([
-                    'answer_sheet_id' => $answerSheet->id,
+                    'answer_sheet_id' => $answerSheet?->id,
                     'text' => $answer
                 ]);
             }
@@ -248,6 +280,34 @@ class Question extends Model
         return "q{$this->id}";
     }
 
+    public function rankingData()
+    {
+        $obj = array();
+        if($this->question_type == self::RANKING) {
+            $obj['options'] = array();
+            foreach($this->options as $option) {
+                $obj['options'][$option->id] = $option['title'];
+            }
+            if($this->isClosed() && $this->results_cache != null) {
+                $resultsCache = json_decode($this->results_cache, true);
+                $obj['results'] = $resultsCache['results'];
+                $obj['stats'] = $resultsCache['stats'];
+                $obj['results_named'] = array();
+                foreach($obj['results'] as $place => $id) {
+                    $obj['results_named'][$place] = array_map(function ($id) use ($obj) { return $obj['options'][$id]; }, is_array($id) ? $id : [$id]);
+                }
+            }
+            $obj['ballots'] = [];
+            foreach($this->longAnswers as $answer) {
+                $obj['ballots'][] = json_decode($answer->text);
+            }
+            shuffle($obj['ballots']);
+            return $obj;
+        } else {
+            throw new \Exception("rankingData queried for a non-ranking question");
+        }
+    }
+
     /**
      * The validation rules to be included
      * for the answer we get to the question
@@ -261,25 +321,59 @@ class Question extends Model
     {
         $key = $this->formKey();
         $rules = [];
-        if ($this->has_long_answers) {
+        if ($this->question_type == Question::TEXT_ANSWER) {
             $rules[$key] = 'required|string';
-        } elseif ($this->isMultipleChoice()) {
+        } elseif($this->question_type == Question::RANKING) {
             $rules[$key] = [
                 'required',
-                'array',
-                'max:' . $this->max_options
+                'string',
+                new RankingVote($this),
             ];
-            $rules[$key . '.*'] = Rule::in($this->options->map(
-                function (QuestionOption $option) {return $option->id;}
-            ));
-        } else {
-            $rules[$key] = [
-                'required',
-                Rule::in($this->options->map(
+        } elseif($this->question_type == Question::SELECTION) {
+            if ($this->isMultipleChoice()) {
+                $rules[$key] = [
+                    'required',
+                    'array',
+                    'max:' . $this->max_options
+                ];
+                $rules[$key . '.*'] = Rule::in($this->options->map(
                     function (QuestionOption $option) {return $option->id;}
-                ))
-            ];
+                ));
+            } else {
+                $rules[$key] = [
+                    'required',
+                    Rule::in($this->options->map(
+                        function (QuestionOption $option) {return $option->id;}
+                    ))
+                ];
+            }
+        } else {
+            throw new \Exception("Unknown question type");
         }
         return $rules;
+    }
+
+    private function computeElectionResults(): Result
+    {
+        if($this->question_type != self::RANKING) {
+            throw new Exception('This question is not a ranking question');
+        }
+
+        $election = new Election();
+
+        $election->setNumberOfSeats($this->max_options);
+        foreach($this->options as $option) {
+            $election->addCandidate($option->id);
+        }
+        foreach($this->longAnswers as $ballot) {
+            $preferences = json_decode($ballot->text);
+            if(count($preferences) == 0) {
+                continue;
+            }
+
+            $election->addVote(array_map('strval', $preferences));
+        }
+
+        return $election->getResult('STV');
     }
 }

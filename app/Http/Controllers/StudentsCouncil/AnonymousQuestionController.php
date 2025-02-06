@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
-
+use Illuminate\Validation\Rule;
 use App\Models\AnonymousQuestions\AnswerSheet;
 use App\Models\Semester;
 use App\Models\Question;
@@ -19,7 +19,7 @@ use App\Exports\UsersSheets\AnonymousQuestionsExport;
 /**
  * Controls actions related to anonymous questions.
  */
-class AnonymousQuestionController extends Controller
+class AnonymousQuestionController extends QuestionController
 {
     use HasPeriodicEvent;
     /**
@@ -70,43 +70,7 @@ class AnonymousQuestionController extends Controller
             abort(403, "tried to add a question to a closed semester");
         }
 
-        $validator = Validator::make($request->all(), [
-            'title' => 'required|string',
-            'has_long_answers' => 'nullable|in:on',
-            'max_options' => 'exclude_if:has_long_answers,on|required|min:1',
-            'options' => 'exclude_if:has_long_answers,on|required|array|min:1',
-            'options.*' => 'exclude_if:has_long_answers,on|nullable|string|max:255',
-        ]);
-        $hasLongAnswers = isset($request->has_long_answers);
-        if (!$hasLongAnswers) {
-            $options = array_filter($request->options, function ($s) {
-                return $s != null;
-            });
-            if (count($options) == 0) {
-                $validator->after(function ($validator) {
-                    $validator->errors()->add('options', __('voting.at_least_one_option'));
-                });
-            }
-        }
-        $validator->validate();
-
-        $event = $this->periodicEventForSemester($semester);
-
-        $question = $semester->questions()->create([
-            'title' => $request->title,
-            'max_options' => $hasLongAnswers ? 0 : $request->max_options,
-            'has_long_answers' => $hasLongAnswers,
-            'opened_at' => $event?->start_date ?? null,
-            'closed_at' => $event?->end_date ?? null
-        ]);
-        if (!$hasLongAnswers) {
-            foreach ($options as $option) {
-                $question->options()->create([
-                    'title' => $option,
-                    'votes' => 0
-                ]);
-            }
-        }
+        $question = $this->createQuestion($request, $semester);
 
         session()->put('section', $semester->id);
         return redirect()->route('anonymous_questions.index_semesters')
@@ -157,22 +121,8 @@ class AnonymousQuestionController extends Controller
             // we have to create a new one.
             $answerSheet = AnswerSheet::createForCurrentUser($semester);
 
-            foreach($semester->questionsNotAnsweredBy(user()) as $question) {
-                // validation ensures we have answers
-                // to all of these questions
-                $answer = $validatedData[$question->formKey()];
-                if ($question->has_long_answers) {
-                    $question->storeAnswers(user(), $answer, $answerSheet);
-                } elseif ($question->isMultipleChoice()) {
-                    $options = array_map(
-                        function (int $id) {return QuestionOption::find($id);},
-                        $answer
-                    );
-                    $question->storeAnswers(user(), $options, $answerSheet);
-                } else {
-                    $option = QuestionOption::find($answer);
-                    $question->storeAnswers(user(), $option, $answerSheet);
-                }
+            foreach ($semester->questionsNotAnsweredBy(user()) as $question) {
+                $this->saveVoteForQuestion($question, $validatedData, $answerSheet);
             }
         });
 
@@ -192,5 +142,18 @@ class AnonymousQuestionController extends Controller
             new AnonymousQuestionsExport($semester),
             'anonymous_questions_' . $semester->year . '_' . $semester->part . '.xlsx'
         );
+    }
+
+    public function delete(Semester $semester, Question $question)
+    {
+        $this->authorize('administer', AnswerSheet::class);
+
+        if($question['parent_type'] != AnswerSheet::class) {
+            abort(400);
+        }
+
+        $question->delete();
+
+        return redirect(route('anonymous_questions.index_semesters'));
     }
 }

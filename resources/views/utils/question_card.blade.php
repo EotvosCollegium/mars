@@ -9,6 +9,9 @@
 
     <span class="card-title">@lang('voting.new_question')</span>
     <div class="row">
+        <x-input.select s="12" name="question_type" id="question_type" :elements=\App\Models\Question::QUESTION_TYPES :formatter="fn($t) => __('voting.question_types.' . $t)" text="voting.question_type" required />
+    </div>
+    <div class="row">
         <x-input.text s="12" type="text" text="voting.question_title" id="title" maxlength="250" required/>
     </div>
     <div class="row">
@@ -17,12 +20,6 @@
     <div class="row">
         <x-input.text type="number" :value="1" id="max_options" text="voting.max_options" required/>
     </div>
-    @if ($canHaveLongAnswers)
-    <div class="row">
-        <x-input.checkbox s="12" name="has_long_answers" text="anonymous_questions.has_long_answers"
-            onchange="toggleLongAnswers(this);"/>
-    </div>
-    @endif
 </div>
 @push('scripts')
 {{-- disable answer options if this is checked --}}
