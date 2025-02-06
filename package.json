@@ -23,6 +23,7 @@
         "@materializecss/materialize": "^1.1.0",
         "jquery": "^3.6.0",
         "moment": "^2.29.4",
+        "sortablejs": "^1.15.6",
         "tabulator-tables": "^4.9.3",
         "webpack": "^5.94.0"
     }
