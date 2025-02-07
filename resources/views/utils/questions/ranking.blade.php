@@ -1,4 +1,4 @@
-<ul id="{{ 'ranking-' . $question->formKey() }}" class="collection container2">
+<ul id="{{ 'ranking-' . $question->formKey() }}" class="collection">
     @foreach($question->options()->get() as $option)
     <li class="collection-item" data-id="{{ $option->id }}">{{ $option->title }}</li>
     @endforeach
