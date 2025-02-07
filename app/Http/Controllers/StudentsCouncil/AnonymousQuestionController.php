@@ -114,6 +114,8 @@ class AnonymousQuestionController extends QuestionController
                 ->withInput();
         }
 
+        $validatedData = $validator->validated();
+
         DB::transaction(function () use ($validatedData, $semester) {
             // Since answer sheets are anonymous,
             // we cannot append new answers to the previous sheet (if any);

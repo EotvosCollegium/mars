@@ -257,6 +257,24 @@ class Question extends Model
         return "q{$this->id}";
     }
 
+    public function rankingData(): string {
+        if($this->question_type == self::RANKING){
+            $obj = array();
+            $obj['options'] = array();
+            foreach($this->options as $option){
+                $obj['options'][$option->id] = $option['title'];
+            }
+            $obj['ballots'] = [];
+            foreach($this->longAnswers as $answer){
+                $obj['ballots'][] = json_decode($answer->text);
+            }
+            shuffle($obj['ballots']);
+            return json_encode($obj);
+        } else {
+            return "";
+        }
+    }
+
     /**
      * The validation rules to be included
      * for the answer we get to the question

@@ -71,20 +71,19 @@
                         <thead>
                             <tr>
                                 <th>{{ $question->title }}</th>
-                                @if($question->isClosed())
                                 <th>{{ $question->users()->count() }}</th>
-                                @endif
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($question->options->sortByDesc('votes') as $option)
-                            <tr>
-                                <td>{{$option->title}}</td>
-                                @if($question->hasBeenOpened())
-                                <td><b>{{$option->votes}}</b></td>
+                            @if($question->hasBeenOpened())
+                                @if($question->question_type == \App\Models\Question::TEXT_ANSWER)
+                                    @include('utils.questions.results.text_answer', ['question' => $question])
+                                @elseif($question->question_type == \App\Models\Question::SELECTION)
+                                    @include('utils.questions.results.selection', ['question' => $question])
+                                @elseif($question->question_type == \App\Models\Question::RANKING)
+                                    @include('utils.questions.results.ranking', ['question' => $question])
                                 @endif
-                            </tr>
-                            @endforeach
+                            @endif
                         </tbody>
                     </table>
                     @if($question->isClosed())
