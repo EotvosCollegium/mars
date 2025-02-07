@@ -4,7 +4,7 @@
     @endforeach
 </ul>
 
-<input type="hidden" name="{{ $question->formKey() }}" value="{{ old($question->formKey()) }}">
+<input type="hidden" name="{{ $name ?? $question->formKey() }}" value="{{ old($question->formKey()) }}">
 
 
 @push('scripts')
@@ -15,7 +15,7 @@
 <script>
     addEventListener("DOMContentLoaded", (event) => {
         const ranking = document.getElementById("{{ 'ranking-' . $question->formKey() }}");
-        const input = document.querySelector("input[name='{{ $question->formKey() }}']");
+        const input = document.querySelector("input[name='{{ $name ?? $question->formKey() }}']");
 
         const sortable = new Sortable(ranking, {
             delay: 100,

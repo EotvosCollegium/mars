@@ -27,15 +27,18 @@
                     </span>
                     <blockquote>@lang('voting.description')</blockquote>
                     <blockquote class="error">@lang('voting.warning')</blockquote>
+                    @if($question->question_type == \App\Models\Question::SELECTION)
                     <blockquote>@lang('voting.max_options') {{$question->max_options}}</blockquote>
+                    @endif
+
                     <div class="row">
-                    @foreach($question->options()->get() as $option)
-                        @if($question->max_options==1)
-                        <x-input.radio name="option" value="{{$option->id}}" text="{{$option->title}}" />
-                        @else
-                        <x-input.checkbox name="option[]" value="{{$option->id}}" text="{{$option->title}}" />
-                        @endif
-                    @endforeach
+                    @if($question->question_type == \App\Models\Question::TEXT_ANSWER)
+                    @include('utils.questions.text_answer', ['question' => $question, 'name' => 'option'])
+                    @elseif($question->question_type == \App\Models\Question::SELECTION)
+                    @include('utils.questions.selection', ['question' => $question, 'name' => $question->max_options == 1 ?  'option' : 'option[]'])
+                    @elseif($question->question_type == \App\Models\Question::RANKING)
+                    @include('utils.questions.ranking', ['question' => $question, 'name' => 'option'])
+                    @endif
                     @foreach ($errors->all() as $error)
                         <blockquote class="error">{{ $error }}</blockquote>
                     @endforeach

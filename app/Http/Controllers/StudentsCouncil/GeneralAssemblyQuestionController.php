@@ -8,6 +8,7 @@ use App\Models\Question;
 use App\Models\QuestionOption;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class GeneralAssemblyQuestionController extends Controller
 {
@@ -42,6 +43,10 @@ class GeneralAssemblyQuestionController extends Controller
             'max_options' => 'required|min:1',
             'options' => 'required|array|min:1',
             'options.*' => 'nullable|string|max:255',
+            'question_type' => [
+                'required',
+                Rule::in(Question::QUESTION_TYPES)
+            ],
         ]);
         $options = array_filter($request->options, function ($s) {
             return $s != null;
@@ -56,7 +61,7 @@ class GeneralAssemblyQuestionController extends Controller
         $question = $generalAssembly->questions()->create([
             'title' => $request->title,
             'max_options' => $request->max_options,
-            'question_type' => Question::SELECTION
+            'question_type' => $request->question_type,
         ]);
         foreach ($options as $option) {
             $question->options()->create([
