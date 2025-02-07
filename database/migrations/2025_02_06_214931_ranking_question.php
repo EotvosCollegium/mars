@@ -10,10 +10,19 @@ return new class () extends Migration {
      */
     public function up(): void
     {
+        Schema::table('long_answers', function (Blueprint $table) {
+            $table->dropForeign(['question_id']);
+            $table->dropForeign(['answer_sheet_id']);
+
+            $table->foreign('question_id')->references('id')->on('questions')->onDelete('cascade');
+            $table->foreign('answer_sheet_id')->references('id')->on('answer_sheets')->onDelete('cascade');
+        });
         Schema::table('questions', function (Blueprint $table) {
             $table->enum('question_type',['selection', 'text_answer', 'ranking'])->default('selection');
+            $table->enum('voting_system',['borda_count', 'single_transferable'])->nullable();
             $table->integer('max_options')->nullable()->change();
             $table->timestamps();
+            $table->softDeletes();
         });
         Schema::table('long_answers', function (Blueprint $table) {
             $table->unsignedBigInteger('answer_sheet_id')->nullable()->change();
@@ -44,7 +53,16 @@ return new class () extends Migration {
         });
         Schema::table('questions', function (Blueprint $table) {
             $table->dropColumn('question_type');
+            $table->dropColumn('voting_system');
             $table->dropTimestamps();
+            $table->dropSoftDeletes();
+        });
+        Schema::table('long_answers', function (Blueprint $table) {
+            $table->dropForeign(['question_id']);
+            $table->dropForeign(['answer_sheet_id']);
+
+            $table->foreign('question_id')->references('id')->on('questions')->onDelete('restrict');
+            $table->foreign('answer_sheet_id')->references('id')->on('answer_sheets')->onDelete('restrict');
         });
     }
 };

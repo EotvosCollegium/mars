@@ -111,4 +111,16 @@ class GeneralAssemblyQuestionController extends QuestionController
 
         return redirect()->route('general_assemblies.show', $question->parent)->with('message', __('voting.successful_voting'));
     }
+
+    public function delete(GeneralAssembly $generalAssembly, Question $question){
+        $this->authorize('administer', GeneralAssembly::class);
+
+        if($question['parent_type'] != GeneralAssembly::class){
+            abort(400);
+        }
+
+        $question->delete();
+
+        return redirect(route('general_assemblies.show', ["general_assembly" => $generalAssembly]));
+    }
 }

@@ -1,5 +1,5 @@
 <tr>
-    <td>The order of the ballots are randomized</td>
+    <td>The order of the ballots is randomized</td>
 </tr>
 <tr>
     <td>{{ $question->rankingData() }}</td>

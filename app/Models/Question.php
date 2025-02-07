@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -67,14 +68,20 @@ use App\Rules\RankingVote;
 class Question extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
-    protected $fillable = ['title', 'max_options', 'opened_at', 'closed_at', 'question_type'];
+    protected $fillable = ['title', 'max_options', 'opened_at', 'closed_at', 'question_type', 'voting_system'];
 
     public const SELECTION = 'selection';
     public const TEXT_ANSWER = 'text_answer';
     public const RANKING = 'ranking';
 
     public const QUESTION_TYPES = [self::SELECTION, self::TEXT_ANSWER, self::RANKING];
+
+    public const BORDA_COUNT = 'borda_count';
+    public const SINGLE_TRANSFERABLE = 'single_transferable';
+
+    public const VOTING_SYSTEMS = [self::BORDA_COUNT, self::SINGLE_TRANSFERABLE];
 
     public $timestamps = false;
 

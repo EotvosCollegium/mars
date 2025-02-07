@@ -141,6 +141,11 @@
                             @elsecan('viewResults', $question)
                             <x-input.button href="{{ $route }}" floating class="right" icon="remove_red_eye" />
                             @endcan
+                            <form method="post" action="{{ route('general_assemblies.questions.votes.delete', ['general_assembly' => $general_assembly, 'question' => $question]) }}"> 
+                                @csrf
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button type="submit">delete</button>
+                            </form>
                         </td>
                     </tr>
                     @endforeach

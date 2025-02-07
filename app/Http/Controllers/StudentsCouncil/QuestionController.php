@@ -22,7 +22,7 @@ use App\Exports\UsersSheets\AnonymousQuestionsExport;
  */
 class QuestionController extends Controller
 {
-
+    
     /**
      * Saves a new question.
      */
@@ -33,6 +33,11 @@ class QuestionController extends Controller
             'question_type' => [
                 'required',
                 Rule::in(Question::QUESTION_TYPES)
+            ],
+            'voting_system' => [
+                'required',
+                Rule::in(Question::VOTING_SYSTEMS),
+                Rule::excludeIf($request['question_type'] != QUESTION::RANKING)
             ],
             'max_options' => ['required', 'min:1', Rule::excludeIf($request['question_type'] != QUESTION::SELECTION)],
             'options' => ['required', 'min:1', Rule::excludeIf($request['question_type'] != QUESTION::SELECTION && $request['question_type'] != QUESTION::RANKING), 'array'],
@@ -48,11 +53,11 @@ class QuestionController extends Controller
                 });
             }
         }
-
         $question = $parent->questions()->create([
             'title' => $validatedData['title'],
-            'max_options' => $validatedData['question_type'] == Question::SELECTION ? $validatedData['max_options'] : null,
-            'question_type' => $validatedData['question_type']
+            'max_options' => isset($validatedData['max_options']) ? $validatedData['max_options'] : null,
+            'question_type' => $validatedData['question_type'],
+            'voting_system' => isset($validatedData['voting_system']) ? $validatedData['voting_system'] : null,
         ]);
         if ($validatedData['question_type'] == Question::SELECTION || $validatedData['question_type'] == Question::RANKING) {
             foreach ($options as $option) {
@@ -65,7 +70,8 @@ class QuestionController extends Controller
         return $question;
     }
 
-    protected function saveVoteForQuestion(Question $question, $validatedData, ?AnswerSheet $answerSheet = null){
+    protected function saveVoteForQuestion(Question $question, $validatedData, ?AnswerSheet $answerSheet = null)
+    {
         // validation ensures we have answers
         // to all of these questions
         $answer = $validatedData[$question->formKey()];

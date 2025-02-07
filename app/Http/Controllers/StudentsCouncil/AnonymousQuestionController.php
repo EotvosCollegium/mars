@@ -144,4 +144,16 @@ class AnonymousQuestionController extends QuestionController
             'anonymous_questions_' . $semester->year . '_' . $semester->part . '.xlsx'
         );
     }
+
+    public function delete(Semester $semester, Question $question){
+        $this->authorize('administer', AnswerSheet::class);
+
+        if($question['parent_type'] != AnswerSheet::class){
+            abort(400);
+        }
+
+        $question->delete();
+
+        return redirect(route('anonymous_questions.index_semesters'));
+    }
 }
