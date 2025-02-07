@@ -33,11 +33,11 @@
 
                     <div class="row">
                     @if($question->question_type == \App\Models\Question::TEXT_ANSWER)
-                    @include('utils.questions.text_answer', ['question' => $question, 'name' => 'option'])
+                    @include('utils.questions.text_answer', ['question' => $question])
                     @elseif($question->question_type == \App\Models\Question::SELECTION)
-                    @include('utils.questions.selection', ['question' => $question, 'name' => $question->max_options == 1 ?  'option' : 'option[]'])
+                    @include('utils.questions.selection', ['question' => $question])
                     @elseif($question->question_type == \App\Models\Question::RANKING)
-                    @include('utils.questions.ranking', ['question' => $question, 'name' => 'option'])
+                    @include('utils.questions.ranking', ['question' => $question])
                     @endif
                     @foreach ($errors->all() as $error)
                         <blockquote class="error">{{ $error }}</blockquote>

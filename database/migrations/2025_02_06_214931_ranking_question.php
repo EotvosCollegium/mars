@@ -15,6 +15,9 @@ return new class () extends Migration {
             $table->integer('max_options')->nullable()->change();
             $table->timestamps();
         });
+        Schema::table('long_answers', function (Blueprint $table) {
+            $table->unsignedBigInteger('answer_sheet_id')->nullable()->change();
+        });
         DB::table('questions')->where('has_long_answers', 1)->update(['question_type' => 'text_answer']);
         Schema::table('questions', function (Blueprint $table) {
             $table->dropColumn('has_long_answers');
@@ -36,6 +39,9 @@ return new class () extends Migration {
             $query->where('question_type', 'selection')
                   ->orWhere('question_type', 'text_answer');
         })->delete();
+        Schema::table('long_answers', function (Blueprint $table) {
+            $table->unsignedBigInteger('answer_sheet_id')->nullable(false)->change();
+        });
         Schema::table('questions', function (Blueprint $table) {
             $table->dropColumn('question_type');
             $table->dropTimestamps();

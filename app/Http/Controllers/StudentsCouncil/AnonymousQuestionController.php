@@ -16,10 +16,11 @@ use App\Models\QuestionOption;
 use App\Utils\HasPeriodicEvent;
 use App\Exports\UsersSheets\AnonymousQuestionsExport;
 
+
 /**
  * Controls actions related to anonymous questions.
  */
-class AnonymousQuestionController extends Controller
+class AnonymousQuestionController extends QuestionController
 {
     use HasPeriodicEvent;
     /**
@@ -70,44 +71,7 @@ class AnonymousQuestionController extends Controller
             abort(403, "tried to add a question to a closed semester");
         }
 
-        $validatedData = $request->validate([
-            'title' => 'required|string',
-            'question_type' => [
-                'required',
-                Rule::in(Question::QUESTION_TYPES)
-            ],
-            'max_options' => ['required', 'min:1', Rule::excludeIf($request['question_type'] != QUESTION::SELECTION)],
-            'options' => ['required', 'min:1', Rule::excludeIf($request['question_type'] != QUESTION::SELECTION && $request['question_type'] != QUESTION::RANKING), 'array'],
-            'options.*' => ['required', 'min:1', 'max:255', Rule::excludeIf($request['question_type'] != QUESTION::SELECTION && $request['question_type'] != QUESTION::RANKING), 'string'],
-        ]);
-        if ($validatedData['question_type'] == Question::SELECTION || $validatedData['question_type'] == Question::RANKING) {
-            $options = array_filter($validatedData['options'], function ($s) {
-                return $s != null;
-            });
-            if (count($options) == 0) {
-                $validator->after(function ($validator) {
-                    $validator->errors()->add('options', __('voting.at_least_one_option'));
-                });
-            }
-        }
-
-        $event = $this->periodicEventForSemester($semester);
-
-        $question = $semester->questions()->create([
-            'title' => $validatedData['title'],
-            'max_options' => $validatedData['question_type'] == Question::SELECTION ? $validatedData['max_options'] : null,
-            'question_type' => $validatedData['question_type'],
-            'opened_at' => $event?->start_date ?? null,
-            'closed_at' => $event?->end_date ?? null
-        ]);
-        if ($validatedData['question_type'] == Question::SELECTION || $validatedData['question_type'] == Question::RANKING) {
-            foreach ($options as $option) {
-                $question->options()->create([
-                    'title' => $option,
-                    'votes' => 0
-                ]);
-            }
-        }
+        $question = $this->createQuestion($request, $semester);
 
         session()->put('section', $semester->id);
         return redirect()->route('anonymous_questions.index_semesters')
@@ -150,8 +114,6 @@ class AnonymousQuestionController extends Controller
                 ->withInput();
         }
 
-        $validatedData = $validator->validated();
-
         DB::transaction(function () use ($validatedData, $semester) {
             // Since answer sheets are anonymous,
             // we cannot append new answers to the previous sheet (if any);
@@ -159,26 +121,7 @@ class AnonymousQuestionController extends Controller
             $answerSheet = AnswerSheet::createForCurrentUser($semester);
 
             foreach ($semester->questionsNotAnsweredBy(user()) as $question) {
-                // validation ensures we have answers
-                // to all of these questions
-                $answer = $validatedData[$question->formKey()];
-                if ($question->question_type == Question::TEXT_ANSWER ||
-                    $question->question_type == Question::RANKING) {
-                    $question->storeAnswers(user(), $answer, $answerSheet);
-                } elseif ($question->question_type == Question::SELECTION) {
-                    if ($question->isMultipleChoice()) {
-                        $options = array_map(
-                            function (int $id) {return QuestionOption::find($id);},
-                            $answer
-                        );
-                        $question->storeAnswers(user(), $options, $answerSheet);
-                    } else {
-                        $option = QuestionOption::find($answer);
-                        $question->storeAnswers(user(), $option, $answerSheet);
-                    }
-                } else {
-                    throw new \Exception("Unknown question type");
-                }
+                $this->saveVoteForQuestion($question, $validatedData, $answerSheet);
             }
         });
 

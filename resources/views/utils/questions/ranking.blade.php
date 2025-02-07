@@ -25,6 +25,7 @@
                 set: (sortable) => input.value = JSON.stringify(sortable.toArray().map(Number)),
             }
         });
+        input.value = JSON.stringify(sortable.toArray().map(Number));
     });
 </script>
 @endpush

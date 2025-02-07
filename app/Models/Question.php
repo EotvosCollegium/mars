@@ -239,7 +239,7 @@ class Question extends Model
                 throw new Exception("This question does not support long answers");
             } else {
                 $this->longAnswers()->create([
-                    'answer_sheet_id' => $answerSheet->id,
+                    'answer_sheet_id' => $answerSheet?->id,
                     'text' => $answer
                 ]);
             }
