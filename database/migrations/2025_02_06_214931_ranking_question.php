@@ -19,8 +19,9 @@ return new class () extends Migration {
         });
         Schema::table('questions', function (Blueprint $table) {
             $table->enum('question_type',['selection', 'text_answer', 'ranking'])->default('selection');
-            $table->enum('voting_system',['borda_count', 'single_transferable'])->nullable();
+            $table->enum('voting_system',['Borda', 'STV'])->nullable();
             $table->integer('max_options')->nullable()->change();
+            $table->text('results_cache')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -54,6 +55,7 @@ return new class () extends Migration {
         Schema::table('questions', function (Blueprint $table) {
             $table->dropColumn('question_type');
             $table->dropColumn('voting_system');
+            $table->dropColumn('results_cache');
             $table->dropTimestamps();
             $table->dropSoftDeletes();
         });

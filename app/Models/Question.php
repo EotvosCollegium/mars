@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use Exception;
+use CondorcetPHP\Condorcet\Election;
+use CondorcetPHP\Condorcet\Candidate;
+use CondorcetPHP\Condorcet\Vote;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -70,7 +73,7 @@ class Question extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $fillable = ['title', 'max_options', 'opened_at', 'closed_at', 'question_type', 'voting_system'];
+    protected $fillable = ['title', 'max_options', 'opened_at', 'closed_at', 'question_type', 'voting_system', 'results_cache'];
 
     public const SELECTION = 'selection';
     public const TEXT_ANSWER = 'text_answer';
@@ -78,8 +81,8 @@ class Question extends Model
 
     public const QUESTION_TYPES = [self::SELECTION, self::TEXT_ANSWER, self::RANKING];
 
-    public const BORDA_COUNT = 'borda_count';
-    public const SINGLE_TRANSFERABLE = 'single_transferable';
+    public const BORDA_COUNT = 'Borda';
+    public const SINGLE_TRANSFERABLE = 'STV';
 
     public const VOTING_SYSTEMS = [self::BORDA_COUNT, self::SINGLE_TRANSFERABLE];
 
@@ -170,6 +173,18 @@ class Question extends Model
         }
         if (!$this->hasBeenOpened()) {
             throw new Exception("tried to close question when it has not been opened");
+        }
+        if($this->question_type == self::RANKING){
+            $election = new Election();
+            foreach($this->options as $option){
+                $election->addCandidate($option->id);
+            }
+            foreach($this->longAnswers as $ballot){
+                $election->addVote(array_map('strval', json_decode($ballot->text)));
+            }
+            $this->update(
+                ['results_cache' => json_encode($election->getResult('Schulze')->getResultAsArray(true))]
+            );
         }
         $this->update(['closed_at' => now()]);
     }
@@ -264,21 +279,28 @@ class Question extends Model
         return "q{$this->id}";
     }
 
-    public function rankingData(): string {
+    public function rankingData() {
+        $obj = array();
         if($this->question_type == self::RANKING){
-            $obj = array();
             $obj['options'] = array();
             foreach($this->options as $option){
                 $obj['options'][$option->id] = $option['title'];
+            }
+            if($this->isClosed() && $this->results_cache != null){
+                $obj['results'] = json_decode($this->results_cache);
+                $obj['results_named'] = array();
+                foreach($obj['results'] as $place => $id){
+                    $obj['results_named'][$place] = $obj['options'][$id];
+                }
             }
             $obj['ballots'] = [];
             foreach($this->longAnswers as $answer){
                 $obj['ballots'][] = json_decode($answer->text);
             }
             shuffle($obj['ballots']);
-            return json_encode($obj);
+            return $obj;
         } else {
-            return "";
+            return $obj;
         }
     }
 

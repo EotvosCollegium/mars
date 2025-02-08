@@ -31,7 +31,17 @@
             <ul class="collection">
                 @foreach($semester->questions as $question)
                 <li class="collection-item">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <x-input.button
+                        type="submit"
+                        floating
+                        class="right red"
+                        icon="delete"
+                    />
                     <b style="font-size: 110%;">{{$question->title}}</b>
+                    <form method="post" action="{{ route('anonymous_questions.delete', ['semester' => $semester, 'question' => $question]) }}" onsubmit="return confirm('Do you really want to delete the question?');"> 
+                        @csrf
+                    </form>
                     @if($question->question_type == \App\Models\Question::TEXT_ANSWER)
                     (@lang('anonymous_questions.has_long_answers'))
                     @else
@@ -45,11 +55,6 @@
                         @endforeach
                     </ul>
                     @endif
-                    <form method="post" action="{{ route('anonymous_questions.delete', ['semester' => $semester, 'question' => $question]) }}"> 
-                        @csrf
-                        <input type="hidden" name="_method" value="DELETE">
-                        <button type="submit">delete</button>
-                    </form>
                 </li>
                 @endforeach
             </ul>

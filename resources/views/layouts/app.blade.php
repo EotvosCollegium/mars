@@ -25,7 +25,6 @@
     <script type="text/javascript" src="{{ mix('js/cookieconsent.min.js') }}" defer></script>
     <script type="text/javascript" src="{{ mix('js/cookieconsent-initialize.js') }}" defer></script>
     <script type="text/javascript" src="{{ mix('js/materialize.js') }}"></script>
-    <script type="text/javascript" src="{{ mix('js/site.js') }}"></script>
     <script>
         $(document).ready(
             function() {

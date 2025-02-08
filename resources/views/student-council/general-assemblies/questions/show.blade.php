@@ -71,7 +71,7 @@
                         <thead>
                             <tr>
                                 <th>{{ $question->title }}</th>
-                                <th>{{ $question->users()->count() }}</th>
+                                <th>Number of ballots: {{ $question->users()->count() }}</th>
                             </tr>
                         </thead>
                         <tbody>
