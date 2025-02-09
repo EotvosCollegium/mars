@@ -13,7 +13,7 @@ return [
     'general_assemblies' => 'Közgyűlések',
     'incorrect_passcode' => 'Érvénytelen kód',
     'is_open' => 'Nyitva?',
-    'max_options' => 'Legfeljebb hány opció választható ki:',
+    'max_options' => 'Legfeljebb hány opció választható ki/Mandátumok száma:',
     'name' => 'Név',
     'new_question' => 'Új kérdés',
     'new_sitting' => 'Új ülés',
@@ -48,4 +48,10 @@ return [
     'new_presence_check' => 'Új jelenlét-ellenőrzés',
     'excused_users' => 'Igazolt hiányzók',
     'automatically_excused_user_comment' => 'Automatikusan igazolt: passzív státusz',
+    'question_type' => 'Kérdés típusa',
+    'question_types' => [
+        'selection' => 'Feleletválasztós kérdés',
+        'text_answer' => 'Szöveges válasz',
+        'ranking' => 'Preferenciális szavazás',
+    ],
 ];

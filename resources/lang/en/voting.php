@@ -13,7 +13,7 @@ return [
     'general_assemblies' => 'General assemblies',
     'incorrect_passcode' => 'Incorrect passcode',
     'is_open' => 'Is open?',
-    'max_options' => 'At most how many options should be chosen?',
+    'max_options' => 'At most how many options should be chosen?/Number of seats?',
     'name' => 'Title',
     'new_question' => 'New question',
     'new_sitting' => 'New general assembly',
@@ -48,4 +48,10 @@ return [
     'new_presence_check' => 'New presence check',
     'excused_users' => 'Excused users',
     'automatically_excused_user_comment' => 'Automatically excused: passive status',
+    'question_type' => 'Question type',
+    'question_types' => [
+        'selection' => 'Selection',
+        'text_answer' => 'Text answer',
+        'ranking' => 'Ranking',
+    ],
 ];

@@ -9,7 +9,7 @@
 
     <span class="card-title">@lang('voting.new_question')</span>
     <div class="row">
-        <x-input.select s="12" name="question_type" id="question_type" :elements=\App\Models\Question::QUESTION_TYPES text="voting.question_type" required />
+        <x-input.select s="12" name="question_type" id="question_type" :elements=\App\Models\Question::QUESTION_TYPES :formatter="fn($t) => __('voting.question_types.' . $t)" text="voting.question_type" required />
     </div>
     <div class="row">
         <x-input.select s="12" name="voting_system" id="voting_system" :elements=\App\Models\Question::VOTING_SYSTEMS text="voting.voting_system" required />
