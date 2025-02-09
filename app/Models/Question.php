@@ -290,7 +290,7 @@ class Question extends Model
                 $obj['results'] = json_decode($this->results_cache);
                 $obj['results_named'] = array();
                 foreach($obj['results'] as $place => $id){
-                    $obj['results_named'][$place] = $obj['options'][$id];
+                    $obj['results_named'][$place] = array_map(function ($id) use ($obj) { return $obj['options'][$id]; }, is_array($id) ? $id : [$id]);
                 }
             }
             $obj['ballots'] = [];

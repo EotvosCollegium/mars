@@ -3,11 +3,13 @@
    $rdata = $question->rankingData()
 @endphp
 @if(isset($rdata["results_named"]))
-    @foreach($rdata["results_named"] as $rank => $name)
-        <tr>
-            <th>{{ $rank }}</th>
-            <td>{{ $name }}</td>
-        </tr>
+    @foreach($rdata["results_named"] as $rank => $names)
+        @foreach($names as $idx => $name)
+            <tr>
+                @if($idx == 0) <th rowspan="{{ count($names) }}">{{ $rank }}</th> @endif
+                <td>{{ $name }}</td>
+            </tr>
+        @endforeach
     @endforeach
 @endif
 <tr>
