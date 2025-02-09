@@ -282,7 +282,7 @@ class AnonymousQuestionTest extends TestCase
         $semester = Semester::current();
         $question = Question::factory()
             ->for($semester, 'parent')
-            ->create(['has_long_answers' => true]);
+            ->create(['question_type' => Question::TEXT_ANSWER]);
 
         $this->openForm();
         $question->refresh();
@@ -316,7 +316,7 @@ class AnonymousQuestionTest extends TestCase
         $semester = Semester::current();
         $question = Question::factory()
             ->for($semester, 'parent')
-            ->create(['has_long_answers' => false]);
+            ->create();
 
         $this->openForm();
         $question->refresh();

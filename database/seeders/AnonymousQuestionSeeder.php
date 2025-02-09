@@ -30,14 +30,14 @@ class AnonymousQuestionSeeder extends Seeder
             $singleChoice = Question::factory()
                 ->for($semester, 'parent')
                 ->hasOptions(4)
-                ->create(['opened_at' => now(), 'closed_at' => null, 'max_options' => 1]);
+                ->create(['opened_at' => now(), 'closed_at' => null, 'max_options' => 1, 'question_type' => Question::SELECTION]);
             $multipleChoice = Question::factory()
                 ->for($semester, 'parent')
                 ->hasOptions(3)
-                ->create(['opened_at' => now(), 'closed_at' => null, 'max_options' => 3]);
+                ->create(['opened_at' => now(), 'closed_at' => null, 'max_options' => 3, 'question_type' => Question::SELECTION]);
             $withLongAnswers = Question::factory()
                 ->for($semester, 'parent')
-                ->create(['opened_at' => now(), 'closed_at' => null, 'max_options' => 0, 'has_long_answers' => true]);
+                ->create(['opened_at' => now(), 'closed_at' => null, 'max_options' => 0, 'question_type' => Question::TEXT_ANSWER]);
 
             // the test users should not be included
             foreach(User::withRole(Role::COLLEGIST)->where('id', '>', 4)->get() as $collegist) {

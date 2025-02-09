@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\GeneralAssemblies\GeneralAssembly;
 use App\Models\User;
+use App\Models\Question;
 use Illuminate\Database\Seeder;
 
 class GeneralAssemblySeeder extends Seeder
@@ -23,7 +24,7 @@ class GeneralAssemblySeeder extends Seeder
         $openQuestion = $openSitting->questions()->create([
             'title' => "I support the election of the new Students' Council.",
             'max_options' => 1,
-            'has_long_answers' => false,
+            'question_type' => Question::SELECTION,
             'opened_at' => now()
         ]);
         $openQuestion->options()->create([
@@ -40,7 +41,7 @@ class GeneralAssemblySeeder extends Seeder
         $openCheckboxQuestion = $openSitting->questions()->create([
             'title' => "Curatorium members",
             'max_options' => 3,
-            'has_long_answers' => false,
+            'question_type' => Question::SELECTION,
             'opened_at' => now()
         ]);
         $openCheckboxQuestion->options()->create([
