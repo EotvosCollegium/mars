@@ -39,7 +39,7 @@ class QuestionController extends Controller
                 Rule::in(Question::VOTING_SYSTEMS),
                 Rule::excludeIf($request['question_type'] != QUESTION::RANKING)
             ],
-            'max_options' => ['required', 'min:1', Rule::excludeIf($request['question_type'] != QUESTION::SELECTION)],
+            'max_options' => ['required', 'min:1', Rule::excludeIf($request['question_type'] == QUESTION::TEXT_ANSWER), 'integer'],
             'options' => ['required', 'min:1', Rule::excludeIf($request['question_type'] != QUESTION::SELECTION && $request['question_type'] != QUESTION::RANKING), 'array'],
             'options.*' => ['required', 'min:1', 'max:255', Rule::excludeIf($request['question_type'] != QUESTION::SELECTION && $request['question_type'] != QUESTION::RANKING), 'string'],
         ]);

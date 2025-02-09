@@ -176,6 +176,8 @@ class Question extends Model
         }
         if($this->question_type == self::RANKING){
             $election = new Election();
+
+            $election->setNumberOfSeats($this->max_options);
             foreach($this->options as $option){
                 $election->addCandidate($option->id);
             }
@@ -183,7 +185,7 @@ class Question extends Model
                 $election->addVote(array_map('strval', json_decode($ballot->text)));
             }
             $this->update(
-                ['results_cache' => json_encode($election->getResult('Schulze')->getResultAsArray(true))]
+                ['results_cache' => json_encode($election->getResult($this->voting_system)->getResultAsArray(true))]
             );
         }
         $this->update(['closed_at' => now()]);
