@@ -57,9 +57,5 @@ class RankingVote implements ValidationRule
             $fail("All elements must be from a valid selection.");
             return;
         }
-        if (!$this->isSubset($valid_ids, $converted)) {
-            $fail("All available elements should be contained.");
-            return;
-        }
     }
 }

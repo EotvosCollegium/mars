@@ -61,6 +61,8 @@
     }
     </style>
 
+    @stack('styles')
+
 </head>
 
 <div class="preloader"></div>
