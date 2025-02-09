@@ -3,8 +3,9 @@
 namespace App\Models;
 
 use Exception;
-use CondorcetPHP\Condorcet\Election;
 use CondorcetPHP\Condorcet\Candidate;
+use CondorcetPHP\Condorcet\Election;
+use CondorcetPHP\Condorcet\Result;
 use CondorcetPHP\Condorcet\Vote;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -175,17 +176,8 @@ class Question extends Model
             throw new Exception("tried to close question when it has not been opened");
         }
         if($this->question_type == self::RANKING){
-            $election = new Election();
-
-            $election->setNumberOfSeats($this->max_options);
-            foreach($this->options as $option){
-                $election->addCandidate($option->id);
-            }
-            foreach($this->longAnswers as $ballot){
-                $election->addVote(array_map('strval', json_decode($ballot->text)));
-            }
             $this->update(
-                ['results_cache' => json_encode($election->getResult($this->voting_system)->getResultAsArray(true))]
+                ['results_cache' => json_encode($this->computeElectionResults()->getResultAsArray(true))]
             );
         }
         $this->update(['closed_at' => now()]);
@@ -349,5 +341,24 @@ class Question extends Model
             throw new \Exception("Unknown question type");
         }
         return $rules;
+    }
+
+    private function computeElectionResults(): Result
+    {
+        if($this->question_type != self::RANKING){
+            throw new Exception("This question is not a ranking question");
+        }
+
+        $election = new Election();
+
+        $election->setNumberOfSeats($this->max_options);
+        foreach($this->options as $option){
+            $election->addCandidate($option->id);
+        }
+        foreach($this->longAnswers as $ballot){
+            $election->addVote(array_map('strval', json_decode($ballot->text)));
+        }
+
+        return $election->getResult($this->voting_system);
     }
 }
