@@ -54,4 +54,9 @@ return [
         'text_answer' => 'Text answer',
         'ranking' => 'Ranking',
     ],
+    'ranking_instructions' => 'Drag the names of the candidates in your preferred order to the section above (place the one you support most at the top). You can rank any number of candidates; leave those you don\'t support below the line.',
+    'ranking_explanation' => 'Your vote will be transferred to later candidates if the first candidate has enough votes already or has no chance of winning.',
+    'seats_allocated' => 'Number of seats to be allocated: :seats',
+    'drag_to_rank' => 'Drag options here to rank them',
+    'drag_to_exclude' => 'Drag options here to exclude from ranking',
 ];

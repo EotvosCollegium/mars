@@ -54,4 +54,9 @@ return [
         'text_answer' => 'Szöveges válasz',
         'ranking' => 'Preferenciális szavazás',
     ],
+    'ranking_instructions' => 'Húzd a jelöltek neveit az általad preferált sorrendben a fenti részre (legfelülre azt, akit legjobban támogatsz). Tetszőleges számú jelöltet rangsorolhatsz; hagyd a vonal alatt azokat, akiket semmiképp sem támogatsz.',
+    'ranking_explanation' => 'A szavazatod a későbbi jelöltekre száll, ha az első jelöltnek már elegendő szavazata van, vagy ha nincs esélye nyerni.',
+    'seats_allocated' => 'Kiosztandó mandátumok száma: :seats',
+    'drag_to_rank' => 'Húzd ide az opciókat a sorrend felállításához',
+    'drag_to_exclude' => 'Húzd ide az opciókat, amikre nem kívánsz szavazni',
 ];

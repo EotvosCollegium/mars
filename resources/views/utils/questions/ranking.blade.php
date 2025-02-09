@@ -1,6 +1,6 @@
 <ul id="{{ 'ranking-' . $question->formKey() }}" class="collection rcv-list rcv-ranking"></ul>
 
-<hr>
+<hr style="border-top: 1.5px solid #666;">
 
 <ul id="{{ 'abstention-' . $question->formKey() }}" class="collection rcv-list rcv-abstention">
     @foreach($question->options()->get() as $option)
@@ -69,13 +69,11 @@
 }
 
 .rcv-ranking:not(:has(*))::after {
-    /* TODO: localize */
-    content: "Drag options here to rank them";
+    content: "{{ __('voting.drag_to_rank') }}";
 }
 
 .rcv-abstention:not(:has(*))::after {
-    /* TODO: localize */
-    content: "Drag options here to exclude from vote";
+    content: "{{ __('voting.drag_to_exclude') }}";
 }
 
 .rcv-abstention .collection-item {

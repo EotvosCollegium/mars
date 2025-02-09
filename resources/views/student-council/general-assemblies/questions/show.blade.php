@@ -29,6 +29,12 @@
                     <blockquote class="error">@lang('voting.warning')</blockquote>
                     @if($question->question_type == \App\Models\Question::SELECTION)
                     <blockquote>@lang('voting.max_options') {{$question->max_options}}</blockquote>
+                    @elseif($question->question_type == \App\Models\Question::RANKING)
+                    <blockquote>
+                        <p>@lang('voting.ranking_instructions')</p>
+                        <p>@lang('voting.ranking_explanation')</p>
+                        <p>@lang('voting.seats_allocated', ['seats' => $question->max_options])</p>
+                    </blockquote>
                     @endif
 
                     <div class="row">
