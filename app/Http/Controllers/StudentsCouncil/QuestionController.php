@@ -34,11 +34,6 @@ class QuestionController extends Controller
                 'required',
                 Rule::in(Question::QUESTION_TYPES)
             ],
-            'voting_system' => [
-                'required',
-                Rule::in(Question::VOTING_SYSTEMS),
-                Rule::excludeIf($request['question_type'] != QUESTION::RANKING)
-            ],
             'max_options' => ['required', 'min:1', Rule::excludeIf($request['question_type'] == QUESTION::TEXT_ANSWER), 'integer'],
             'options' => ['required', 'min:1', Rule::excludeIf($request['question_type'] != QUESTION::SELECTION && $request['question_type'] != QUESTION::RANKING), 'array'],
             'options.*' => ['required', 'min:1', 'max:255', Rule::excludeIf($request['question_type'] != QUESTION::SELECTION && $request['question_type'] != QUESTION::RANKING), 'string'],
@@ -57,7 +52,6 @@ class QuestionController extends Controller
             'title' => $validatedData['title'],
             'max_options' => isset($validatedData['max_options']) ? $validatedData['max_options'] : null,
             'question_type' => $validatedData['question_type'],
-            'voting_system' => isset($validatedData['voting_system']) ? $validatedData['voting_system'] : null,
         ]);
         if ($validatedData['question_type'] == Question::SELECTION || $validatedData['question_type'] == Question::RANKING) {
             foreach ($options as $option) {

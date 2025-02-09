@@ -74,18 +74,13 @@ class Question extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $fillable = ['title', 'max_options', 'opened_at', 'closed_at', 'question_type', 'voting_system', 'results_cache'];
+    protected $fillable = ['title', 'max_options', 'opened_at', 'closed_at', 'question_type', 'results_cache'];
 
     public const SELECTION = 'selection';
     public const TEXT_ANSWER = 'text_answer';
     public const RANKING = 'ranking';
 
     public const QUESTION_TYPES = [self::SELECTION, self::TEXT_ANSWER, self::RANKING];
-
-    public const BORDA_COUNT = 'Borda';
-    public const SINGLE_TRANSFERABLE = 'STV';
-
-    public const VOTING_SYSTEMS = [self::BORDA_COUNT, self::SINGLE_TRANSFERABLE];
 
     public $timestamps = false;
 
@@ -346,7 +341,7 @@ class Question extends Model
     private function computeElectionResults(): Result
     {
         if($this->question_type != self::RANKING){
-            throw new Exception("This question is not a ranking question");
+            throw new Exception('This question is not a ranking question');
         }
 
         $election = new Election();
@@ -359,6 +354,6 @@ class Question extends Model
             $election->addVote(array_map('strval', json_decode($ballot->text)));
         }
 
-        return $election->getResult($this->voting_system);
+        return $election->getResult('STV');
     }
 }
