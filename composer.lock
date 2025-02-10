@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d0c2a40206e50fb650eacc97e2c57f38",
+    "content-hash": "1b000fc54972c8053afcdd15bc307fbf",
     "packages": [
         {
             "name": "brick/math",
@@ -936,16 +936,16 @@
         },
         {
             "name": "google/apiclient-services",
-            "version": "v0.393.0",
+            "version": "v0.394.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-api-php-client-services.git",
-                "reference": "ed24c09584df8ef0cdcfb9d4305abf66fc17e609"
+                "reference": "17fa8210d62c02c398fb4985ed4bc461d18989c1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/ed24c09584df8ef0cdcfb9d4305abf66fc17e609",
-                "reference": "ed24c09584df8ef0cdcfb9d4305abf66fc17e609",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/17fa8210d62c02c398fb4985ed4bc461d18989c1",
+                "reference": "17fa8210d62c02c398fb4985ed4bc461d18989c1",
                 "shasum": ""
             },
             "require": {
@@ -974,9 +974,9 @@
             ],
             "support": {
                 "issues": "https://github.com/googleapis/google-api-php-client-services/issues",
-                "source": "https://github.com/googleapis/google-api-php-client-services/tree/v0.393.0"
+                "source": "https://github.com/googleapis/google-api-php-client-services/tree/v0.394.0"
             },
-            "time": "2025-02-03T00:54:21+00:00"
+            "time": "2025-02-10T01:06:23+00:00"
         },
         {
             "name": "google/auth",
@@ -1738,16 +1738,16 @@
         },
         {
             "name": "julien-boudry/condorcet",
-            "version": "v4.7.0",
+            "version": "dev-stv-tie",
             "source": {
                 "type": "git",
-                "url": "https://github.com/julien-boudry/Condorcet.git",
-                "reference": "d183091c514a1605904025371a0e70a4fc0267e6"
+                "url": "https://github.com/EotvosCollegium/Condorcet.git",
+                "reference": "85c8ca1f9fe8e18bf9aaa19c34ebfaf197237712"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/julien-boudry/Condorcet/zipball/d183091c514a1605904025371a0e70a4fc0267e6",
-                "reference": "d183091c514a1605904025371a0e70a4fc0267e6",
+                "url": "https://api.github.com/repos/EotvosCollegium/Condorcet/zipball/85c8ca1f9fe8e18bf9aaa19c34ebfaf197237712",
+                "reference": "85c8ca1f9fe8e18bf9aaa19c34ebfaf197237712",
                 "shasum": ""
             },
             "require": {
@@ -1759,15 +1759,12 @@
                 "symfony/yaml": "^7.0"
             },
             "require-dev": {
-                "cmgmyr/phploc": "^8.0",
                 "ext-pdo": "*",
                 "ext-pdo_sqlite": "*",
                 "haydenpierce/class-finder": ">= 0.5.3",
-                "infection/infection": "^0.27, >= 0.27.7",
-                "laravel/pint": "^1.16",
+                "laravel/pint": "^1.17",
                 "mammothphp/woollym": "dev-master",
-                "pestphp/pest": "^2.34",
-                "pestphp/pest-plugin-drift": "^2.0",
+                "pestphp/pest": "^3.0",
                 "phpbench/phpbench": "*",
                 "phpstan/phpstan": "^1.9"
             },
@@ -1784,7 +1781,35 @@
                     "CondorcetPHP\\Condorcet\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "psr-4": {
+                    "Tests\\": "tests/",
+                    "CondorcetPHP\\Condorcet\\Dev\\CondorcetDocumentationGenerator\\": "Dev/CondorcetDocumentationGenerator/",
+                    "CondorcetPHP\\Condorcet\\Benchmarks\\": "Benchmarks"
+                }
+            },
+            "archive": {
+                "exclude": [
+                    "/Assets",
+                    "/Benchmarks",
+                    "/Dev/",
+                    "/Docs",
+                    "/Examples",
+                    "/tests",
+                    "*.dist"
+                ]
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ],
+                "document": [
+                    "php Dev/update-documentation.php"
+                ],
+                "pintify": [
+                    "pint"
+                ]
+            },
             "license": [
                 "MIT"
             ],
@@ -1799,32 +1824,31 @@
             "description": "Complete election manager, providing natively many voting methods including: Condorcet / Borda (+ Nauru variant) / Copeland / Dodgson (2 Approximations) / FTPT / Instant-runoff (alternative vote) / Kemeny–Young / Minimax (+ variants) / Ranked Pairs (+ variants) / Schulze (+ variants), Single Transferable Vote (STV) / Comparison of Pairs of Outcomes by the Single Transferable Vote (CPO-STV)",
             "homepage": "https://github.com/julien-boudry/Condorcet",
             "keywords": [
-                "Condorcet",
-                "Tideman",
+                "STV",
                 "alternative vote",
                 "borda",
+                "condorcet",
                 "copeland",
                 "election",
                 "ranked pairs",
                 "schulze",
-                "stv",
+                "tideman",
                 "vote"
             ],
             "support": {
-                "issues": "https://github.com/julien-boudry/Condorcet/issues",
-                "source": "https://github.com/julien-boudry/Condorcet/tree/v4.7.0"
+                "source": "https://github.com/EotvosCollegium/Condorcet/tree/master"
             },
             "funding": [
                 {
-                    "url": "https://blockchair.com/bitcoin/address/bc1q3jllk3qd9fjvvuqy07tawkv7t6h7qjf55fc2gh",
-                    "type": "bitcoin"
+                    "type": "github",
+                    "url": "https://github.com/sponsors/julien-boudry"
                 },
                 {
-                    "url": "https://github.com/sponsors/julien-boudry",
-                    "type": "github"
+                    "type": "bitcoin",
+                    "url": "https://blockchair.com/bitcoin/address/bc1q3jllk3qd9fjvvuqy07tawkv7t6h7qjf55fc2gh"
                 }
             ],
-            "time": "2024-06-14T20:29:01+00:00"
+            "time": "2025-02-10T17:41:09+00:00"
         },
         {
             "name": "laravel/framework",
@@ -3870,20 +3894,20 @@
         },
         {
             "name": "phpoffice/phpspreadsheet",
-            "version": "1.29.9",
+            "version": "1.29.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPOffice/PhpSpreadsheet.git",
-                "reference": "ffb47b639649fc9c8a6fa67977a27b756592ed85"
+                "reference": "c80041b1628c4f18030407134fe88303661d4e4e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPOffice/PhpSpreadsheet/zipball/ffb47b639649fc9c8a6fa67977a27b756592ed85",
-                "reference": "ffb47b639649fc9c8a6fa67977a27b756592ed85",
+                "url": "https://api.github.com/repos/PHPOffice/PhpSpreadsheet/zipball/c80041b1628c4f18030407134fe88303661d4e4e",
+                "reference": "c80041b1628c4f18030407134fe88303661d4e4e",
                 "shasum": ""
             },
             "require": {
-                "composer/pcre": "^3.3",
+                "composer/pcre": "^1||^2||^3",
                 "ext-ctype": "*",
                 "ext-dom": "*",
                 "ext-fileinfo": "*",
@@ -3970,9 +3994,9 @@
             ],
             "support": {
                 "issues": "https://github.com/PHPOffice/PhpSpreadsheet/issues",
-                "source": "https://github.com/PHPOffice/PhpSpreadsheet/tree/1.29.9"
+                "source": "https://github.com/PHPOffice/PhpSpreadsheet/tree/1.29.10"
             },
-            "time": "2025-01-26T04:55:00+00:00"
+            "time": "2025-02-08T02:56:14+00:00"
         },
         {
             "name": "phpoption/phpoption",
@@ -7793,16 +7817,16 @@
         },
         {
             "name": "composer/class-map-generator",
-            "version": "1.5.0",
+            "version": "1.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/class-map-generator.git",
-                "reference": "4b0a223cf5be7c9ee7e0ef1bc7db42b4a97c9915"
+                "reference": "ffe442c5974c44a9343e37a0abcb1cc37319f5b9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/class-map-generator/zipball/4b0a223cf5be7c9ee7e0ef1bc7db42b4a97c9915",
-                "reference": "4b0a223cf5be7c9ee7e0ef1bc7db42b4a97c9915",
+                "url": "https://api.github.com/repos/composer/class-map-generator/zipball/ffe442c5974c44a9343e37a0abcb1cc37319f5b9",
+                "reference": "ffe442c5974c44a9343e37a0abcb1cc37319f5b9",
                 "shasum": ""
             },
             "require": {
@@ -7846,7 +7870,7 @@
             ],
             "support": {
                 "issues": "https://github.com/composer/class-map-generator/issues",
-                "source": "https://github.com/composer/class-map-generator/tree/1.5.0"
+                "source": "https://github.com/composer/class-map-generator/tree/1.6.0"
             },
             "funding": [
                 {
@@ -7862,7 +7886,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-11-25T16:11:06+00:00"
+            "time": "2025-02-05T10:05:34+00:00"
         },
         {
             "name": "composer/xdebug-handler",
@@ -8328,16 +8352,16 @@
         },
         {
             "name": "larastan/larastan",
-            "version": "v2.9.12",
+            "version": "v2.9.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/larastan/larastan.git",
-                "reference": "19012b39fbe4dede43dbe0c126d9681827a5e908"
+                "reference": "78f7f8da613e54edb2ab4afa5bede045228fb843"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/larastan/larastan/zipball/19012b39fbe4dede43dbe0c126d9681827a5e908",
-                "reference": "19012b39fbe4dede43dbe0c126d9681827a5e908",
+                "url": "https://api.github.com/repos/larastan/larastan/zipball/78f7f8da613e54edb2ab4afa5bede045228fb843",
+                "reference": "78f7f8da613e54edb2ab4afa5bede045228fb843",
                 "shasum": ""
             },
             "require": {
@@ -8351,7 +8375,7 @@
                 "illuminate/support": "^9.52.16 || ^10.28.0 || ^11.16",
                 "php": "^8.0.2",
                 "phpmyadmin/sql-parser": "^5.9.0",
-                "phpstan/phpstan": "^1.12.11"
+                "phpstan/phpstan": "^1.12.17"
             },
             "require-dev": {
                 "doctrine/coding-standard": "^12.0",
@@ -8409,7 +8433,7 @@
             ],
             "support": {
                 "issues": "https://github.com/larastan/larastan/issues",
-                "source": "https://github.com/larastan/larastan/tree/v2.9.12"
+                "source": "https://github.com/larastan/larastan/tree/v2.9.14"
             },
             "funding": [
                 {
@@ -8417,7 +8441,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-11-26T23:09:02+00:00"
+            "time": "2025-02-06T21:03:14+00:00"
         },
         {
             "name": "laravel/homestead",
@@ -9053,16 +9077,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.12.16",
+            "version": "1.12.17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "e0bb5cb78545aae631220735aa706eac633a6be9"
+                "reference": "7027b3b0270bf392de0cfba12825979768d728bf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/e0bb5cb78545aae631220735aa706eac633a6be9",
-                "reference": "e0bb5cb78545aae631220735aa706eac633a6be9",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/7027b3b0270bf392de0cfba12825979768d728bf",
+                "reference": "7027b3b0270bf392de0cfba12825979768d728bf",
                 "shasum": ""
             },
             "require": {
@@ -9107,7 +9131,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-01-21T14:50:05+00:00"
+            "time": "2025-02-07T15:01:57+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -9434,16 +9458,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "11.5.6",
+            "version": "11.5.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "3c3ae14c90f244cdda95028c3e469028e8d1c02c"
+                "reference": "e1cb706f019e2547039ca2c839898cd5f557ee5d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/3c3ae14c90f244cdda95028c3e469028e8d1c02c",
-                "reference": "3c3ae14c90f244cdda95028c3e469028e8d1c02c",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/e1cb706f019e2547039ca2c839898cd5f557ee5d",
+                "reference": "e1cb706f019e2547039ca2c839898cd5f557ee5d",
                 "shasum": ""
             },
             "require": {
@@ -9515,7 +9539,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/11.5.6"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/11.5.7"
             },
             "funding": [
                 {
@@ -9531,7 +9555,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-01-31T07:03:30+00:00"
+            "time": "2025-02-06T16:10:05+00:00"
         },
         {
             "name": "react/cache",
@@ -11742,6 +11766,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "julien-boudry/condorcet": 20,
         "phpstan/phpstan": 0
     },
     "prefer-stable": true,

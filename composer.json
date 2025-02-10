@@ -11,7 +11,7 @@
         "php": "^8.2",
         "graham-campbell/markdown": "^15.0",
         "intervention/image": "^3.10",
-        "julien-boudry/condorcet": "^4.7",
+        "julien-boudry/condorcet": "dev-stv-tie",
         "laravel/framework": "^11.0",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^4.0",
@@ -77,5 +77,11 @@
         "phpstan": [
             "./vendor/bin/phpstan analyse --memory-limit 512M"
         ]
-    }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/eotvoscollegium/condorcet.git"
+        }
+    ]
 }
