@@ -288,7 +288,8 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
                 ->withoutMiddleware(LogRequests::class)
                 ->scopeBindings();
     Route::delete('/general_assemblies/{general_assembly}/questions/{question}', [GeneralAssemblyQuestionController::class, 'delete'])
-                ->name('general_assemblies.questions.votes.delete');
+                ->name('general_assemblies.questions.votes.delete')
+                ->scopeBindings();
 
     Route::prefix('reservations')->name('reservations.')->group(function () {
         Route::resource('items', ReservableItemController::class)->only([
