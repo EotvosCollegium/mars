@@ -171,8 +171,14 @@ class Question extends Model
             throw new Exception("tried to close question when it has not been opened");
         }
         if($this->question_type == self::RANKING){
+            // 'results' will contain the final vote counts and
+            // 'stats' the table with the vote counts in each round
+            $resultObject = $this->computeElectionResults();
+            $toWriteToCache = array();
+            $toWriteToCache['results'] = $resultObject->getResultAsArray(true);
+            $toWriteToCache['stats'] = $resultObject->getStats();
             $this->update(
-                ['results_cache' => json_encode($this->computeElectionResults()->getResultAsArray(true))]
+                ['results_cache' => json_encode($toWriteToCache)]
             );
         }
         $this->update(['closed_at' => now()]);
@@ -276,7 +282,9 @@ class Question extends Model
                 $obj['options'][$option->id] = $option['title'];
             }
             if($this->isClosed() && $this->results_cache != null){
-                $obj['results'] = json_decode($this->results_cache);
+                $resultsCache = json_decode($this->results_cache, true);
+                $obj['results'] = $resultsCache['results'];
+                $obj['stats'] = $resultsCache['stats'];
                 $obj['results_named'] = array();
                 foreach($obj['results'] as $place => $id){
                     $obj['results_named'][$place] = array_map(function ($id) use ($obj) { return $obj['options'][$id]; }, is_array($id) ? $id : [$id]);
@@ -289,7 +297,7 @@ class Question extends Model
             shuffle($obj['ballots']);
             return $obj;
         } else {
-            return $obj;
+            throw new \Exception("rankingData queried for a non-ranking question");
         }
     }
 

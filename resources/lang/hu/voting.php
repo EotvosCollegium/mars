@@ -18,6 +18,7 @@ return [
     'new_question' => 'Új kérdés',
     'new_sitting' => 'Új ülés',
     'not_active' => 'Jelenleg a státuszod nem aktív, ezért nem tudsz szavazni.',
+    'number_of_ballots' => 'Szavazók száma',
     'open' => 'Nyitva',
     'open_question' => 'Kérdés megnyitása',
     'open_sitting' => 'Ülés megnyitása',
@@ -59,4 +60,5 @@ return [
     'seats_allocated' => 'Kiosztandó mandátumok száma: :seats',
     'drag_to_rank' => 'Húzd ide az opciókat a sorrend felállításához',
     'drag_to_exclude' => 'Húzd ide az opciókat, amikre nem kívánsz szavazni',
+    'votes_needed_to_win' => 'Kvóta a megválasztáshoz'
 ];

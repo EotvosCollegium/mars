@@ -41,4 +41,17 @@ class QuestionOption extends Model
     {
         return $this->belongsTo(Question::class);
     }
+
+    /**
+     * @return string The initial letters of the option title.
+     * Useful if having to display the option title in a small table cell.
+     */
+    public function initials(): string
+    {
+        $letters = array();
+        foreach(explode(' ', $this->title, 3) as $word) {
+            $letters[] = substr($word, 0, 1);
+        }
+        return implode($letters);
+    }
 }
