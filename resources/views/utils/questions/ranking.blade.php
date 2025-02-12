@@ -42,6 +42,7 @@
                 set: (sortable) => input.value = JSON.stringify(sortable.toArray().map(Number)),
             },
             onChange: positionChanged,
+            onEnd: positionChanged,
         });
         input.value = JSON.stringify(sortable.toArray().map(Number));
 
@@ -51,6 +52,7 @@
             delayOnTouchOnly: true,
             sort: false,
             onChange: positionChanged,
+            onEnd: positionChanged,
         });
     });
 </script>
