@@ -1742,12 +1742,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/EotvosCollegium/Condorcet.git",
-                "reference": "85c8ca1f9fe8e18bf9aaa19c34ebfaf197237712"
+                "reference": "026aa984dac9cb3a7e642b56ff5019db416390f2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/EotvosCollegium/Condorcet/zipball/85c8ca1f9fe8e18bf9aaa19c34ebfaf197237712",
-                "reference": "85c8ca1f9fe8e18bf9aaa19c34ebfaf197237712",
+                "url": "https://api.github.com/repos/EotvosCollegium/Condorcet/zipball/026aa984dac9cb3a7e642b56ff5019db416390f2",
+                "reference": "026aa984dac9cb3a7e642b56ff5019db416390f2",
                 "shasum": ""
             },
             "require": {
@@ -1836,7 +1836,7 @@
                 "vote"
             ],
             "support": {
-                "source": "https://github.com/EotvosCollegium/Condorcet/tree/master"
+                "source": "https://github.com/EotvosCollegium/Condorcet/tree/stv-tie"
             },
             "funding": [
                 {
@@ -1848,7 +1848,7 @@
                     "url": "https://blockchair.com/bitcoin/address/bc1q3jllk3qd9fjvvuqy07tawkv7t6h7qjf55fc2gh"
                 }
             ],
-            "time": "2025-02-10T17:41:09+00:00"
+            "time": "2025-02-12T18:03:43+00:00"
         },
         {
             "name": "laravel/framework",
