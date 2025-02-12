@@ -31,7 +31,7 @@ class RankingVote implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         $converted = json_decode($value);
-        if ($converted == null) {
+        if ($converted === null) {
             $fail("The value must be a JSON string.");
             return;
         }
@@ -41,7 +41,7 @@ class RankingVote implements ValidationRule
         }
         foreach ($converted as $element) {
             if (!is_int($element)) {
-                $fail("All elements must be strings.");
+                $fail("All elements must be integers.");
                 return;
             }
         }
