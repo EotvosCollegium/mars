@@ -50,7 +50,7 @@ class QuestionOption extends Model
     {
         $letters = array();
         foreach(explode(' ', $this->title, 3) as $word) {
-            $letters[] = substr($word, 0, 1);
+            $letters[] = mb_substr($word, 0, 1);
         }
         return implode($letters);
     }

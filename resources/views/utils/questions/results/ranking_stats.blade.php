@@ -24,7 +24,7 @@ $roundCount = count($stats['rounds'])
             <tr>
             @foreach($stats['rounds'][1] as $optionId => $voteNumber)
                 <th @class(['winner' => in_array($optionId, $winners)])>
-                    {{$question->options()->where('id', $optionId)->first()->initials()}}
+                    <span title='{{ $question->options()->where('id', $optionId)->first()->title }}'>{{$question->options()->where('id', $optionId)->first()->initials()}}</span>
                 </th>
                 @php $optionIds[] = $optionId; @endphp
             @endforeach
