@@ -351,7 +351,12 @@ class Question extends Model
             $election->addCandidate($option->id);
         }
         foreach($this->longAnswers as $ballot){
-            $election->addVote(array_map('strval', json_decode($ballot->text)));
+            $preferences = json_decode($ballot->text);
+            if(count($preferences) == 0){
+                continue;
+            }
+
+            $election->addVote(array_map('strval', $preferences));
         }
 
         return $election->getResult('STV');
