@@ -5,13 +5,15 @@
 <ul id="{{ 'abstention-' . $question->formKey() }}" class="collection rcv-list rcv-abstention">
     @foreach($question->options()->get() as $option)
     <li class="collection-item row" data-id="{{ $option->id }}">
-        <div class="col s9">
+        <div class="col s8 m10" style="padding: 10px 0">
             <span style="display: inline-block; width: 1.5em" class="rcv-idx"></span>
             {{ $option->title }}
         </div>
-        <div class="col s3">
-            <button type="button" class="rcv-list-up"><i class="material-icons">keyboard_arrow_up</i></button>
-            <button type="button" class="rcv-list-down"><i class="material-icons">keyboard_arrow_down</i></button>
+        <div class="col s2 m1">
+            <button type="button" class="rcv-list-up btn-floating waves-effect waves-light right"><i class="material-icons">keyboard_arrow_up</i></button>
+        </div>
+        <div class="col s2 m1">
+            <button type="button" class="rcv-list-down btn-floating waves-effect waves-light right"><i class="material-icons">keyboard_arrow_down</i></button>
         </div>
     </li>
     @endforeach
