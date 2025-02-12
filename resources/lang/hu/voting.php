@@ -10,6 +10,8 @@ return [
     'closed_at' => 'Lezárva',
     'code' => 'Kód',
     'description' => 'A szavazatod névtelen és nem köthető a felhasználódhoz, de a szavazatod ténye nyilvános. Szavazni a vetítőn látható kód beírásával lehet.',
+    'drag_to_rank' => 'Húzd ide az opciókat a sorrend felállításához',
+    'drag_to_exclude' => 'Húzd ide az opciókat, amikre nem kívánsz szavazni',
     'general_assemblies' => 'Közgyűlések',
     'incorrect_passcode' => 'Érvénytelen kód',
     'is_open' => 'Nyitva?',
@@ -39,6 +41,7 @@ return [
     'successful_voting' => 'Sikeres szavazás',
     'too_many_options' => 'Túl sok opció lett megjelölve; próbáld újra.',
     'vote' => 'Szavazás',
+    'votes_needed_to_win' => 'Kvóta a megválasztáshoz',
     'voting' => 'Szavazás',
     'warning' => 'A szavazatot utólag már nem lehet módosítani!',
     'presence_checks' => 'Jelenlét-ellenőrzések',
@@ -58,7 +61,4 @@ return [
     'ranking_instructions' => 'Húzd a jelöltek neveit az általad preferált sorrendben a fenti részre (legfelülre azt, akit legjobban támogatsz). Tetszőleges számú jelöltet rangsorolhatsz; hagyd a vonal alatt azokat, akiket semmiképp sem támogatsz.',
     'ranking_explanation' => 'A szavazatod a későbbi jelöltekre száll, ha az első jelöltnek már elegendő szavazata van, vagy ha nincs esélye nyerni.',
     'seats_allocated' => 'Kiosztandó mandátumok száma: :seats',
-    'drag_to_rank' => 'Húzd ide az opciókat a sorrend felállításához',
-    'drag_to_exclude' => 'Húzd ide az opciókat, amikre nem kívánsz szavazni',
-    'votes_needed_to_win' => 'Kvóta a megválasztáshoz'
 ];

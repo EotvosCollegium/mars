@@ -74,6 +74,12 @@ class Question extends Model
     use HasFactory;
     use SoftDeletes;
 
+    /*
+     * HACK: max_option is used for both:
+     * - number of permitted options to select in a multiple-choice question
+     * - number of seats in a ranking question (required for quota calculation)
+     */
+
     protected $fillable = ['title', 'max_options', 'opened_at', 'closed_at', 'question_type', 'results_cache'];
 
     public const SELECTION = 'selection';

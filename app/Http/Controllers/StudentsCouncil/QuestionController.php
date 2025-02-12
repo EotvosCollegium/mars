@@ -18,7 +18,7 @@ use App\Utils\HasPeriodicEvent;
 use App\Exports\UsersSheets\AnonymousQuestionsExport;
 
 /**
- * Controls actions related to anonymous questions.
+ * Controls actions related to anonymous questions or general assembly polls.
  */
 class QuestionController extends Controller
 {

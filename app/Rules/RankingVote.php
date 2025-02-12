@@ -13,12 +13,12 @@ class RankingVote implements ValidationRule
         $this->question = $question;
     }
 
-    private function isSubset($subset, $superset)
+    private static function isSubset($subset, $superset)
     {
         return count(array_intersect($subset, $superset)) == count($subset);
     }
 
-    private function isArrUni($array)
+    private static function isArrUni($array)
     {
         return count($array) === count(array_unique($array));
     }

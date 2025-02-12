@@ -10,6 +10,8 @@ return [
     'closed_at' => 'Closed at',
     'code' => 'Code',
     'description' => 'Your vote is anonymous and cannot be connected to you. You can only vote by entering the code given by the organizers.',
+    'drag_to_rank' => 'Drag options here to rank them',
+    'drag_to_exclude' => 'Drag options here to exclude from ranking',
     'general_assemblies' => 'General assemblies',
     'incorrect_passcode' => 'Incorrect passcode',
     'is_open' => 'Is open?',
@@ -39,6 +41,7 @@ return [
     'successful_voting' => 'Voted successfully',
     'too_many_options' => 'You have checked too many options; please try again.',
     'vote' => 'Vote',
+    'votes_needed_to_win' => 'Votes needed to win',
     'voting' => 'Voting',
     'warning' => 'Warning: You cannot change your vote after you have submitted it.',
     'presence_checks' => 'Presence checks',
@@ -58,7 +61,4 @@ return [
     'ranking_instructions' => 'Drag the names of the candidates in your preferred order to the section above (place the one you support most at the top). You can rank any number of candidates; leave those you don\'t support below the line.',
     'ranking_explanation' => 'Your vote will be transferred to later candidates if the first candidate has enough votes already or has no chance of winning.',
     'seats_allocated' => 'Number of seats to be allocated: :seats',
-    'drag_to_rank' => 'Drag options here to rank them',
-    'drag_to_exclude' => 'Drag options here to exclude from ranking',
-    'votes_needed_to_win' => 'Votes needed to win'
 ];
