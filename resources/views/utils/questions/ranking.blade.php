@@ -4,9 +4,15 @@
 
 <ul id="{{ 'abstention-' . $question->formKey() }}" class="collection rcv-list rcv-abstention">
     @foreach($question->options()->get() as $option)
-    <li class="collection-item" data-id="{{ $option->id }}">
-        <span style="display: inline-block; width: 1.5em" class="rcv-idx"></span>
-        {{ $option->title }}
+    <li class="collection-item row" data-id="{{ $option->id }}">
+        <div class="col s9">
+            <span style="display: inline-block; width: 1.5em" class="rcv-idx"></span>
+            {{ $option->title }}
+        </div>
+        <div class="col s3">
+            <button type="button" class="rcv-list-up"><i class="material-icons">keyboard_arrow_up</i></button>
+            <button type="button" class="rcv-list-down"><i class="material-icons">keyboard_arrow_down</i></button>
+        </div>
     </li>
     @endforeach
 </ul>
@@ -53,6 +59,40 @@
             sort: false,
             onChange: positionChanged,
             onEnd: positionChanged,
+        });
+
+        document.querySelectorAll(".rcv-list-up").forEach((button) => {
+            button.addEventListener("click", (evt) => {
+                const item = evt.target.closest(".collection-item");
+                if (evt.target.closest(".rcv-abstention")) {
+                    ranking.appendChild(item);
+                } else {
+                    const prev = item.previousElementSibling;
+                    if (prev) {
+                        item.parentNode.insertBefore(item, prev);
+                    }
+                }
+
+                positionChanged();
+                sortable.save();
+            });
+        });
+
+        document.querySelectorAll(".rcv-list-down").forEach((button) => {
+            button.addEventListener("click", (evt) => {
+                const item = evt.target.closest(".collection-item");
+                if (evt.target.closest(".rcv-abstention")) return;
+
+                const next = item.nextElementSibling;
+                if (!next) {
+                    abstention.appendChild(item);
+                } else {
+                    item.parentNode.insertBefore(next, item);
+                }
+
+                positionChanged();
+                sortable.save();
+            });
         });
     });
 </script>
