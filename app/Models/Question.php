@@ -170,7 +170,7 @@ class Question extends Model
         if (!$this->hasBeenOpened()) {
             throw new Exception("tried to close question when it has not been opened");
         }
-        if($this->question_type == self::RANKING){
+        if($this->question_type == self::RANKING) {
             // 'results' will contain the final vote counts and
             // 'stats' the table with the vote counts in each round
             $resultObject = $this->computeElectionResults();
@@ -274,24 +274,25 @@ class Question extends Model
         return "q{$this->id}";
     }
 
-    public function rankingData() {
+    public function rankingData()
+    {
         $obj = array();
-        if($this->question_type == self::RANKING){
+        if($this->question_type == self::RANKING) {
             $obj['options'] = array();
-            foreach($this->options as $option){
+            foreach($this->options as $option) {
                 $obj['options'][$option->id] = $option['title'];
             }
-            if($this->isClosed() && $this->results_cache != null){
+            if($this->isClosed() && $this->results_cache != null) {
                 $resultsCache = json_decode($this->results_cache, true);
                 $obj['results'] = $resultsCache['results'];
                 $obj['stats'] = $resultsCache['stats'];
                 $obj['results_named'] = array();
-                foreach($obj['results'] as $place => $id){
+                foreach($obj['results'] as $place => $id) {
                     $obj['results_named'][$place] = array_map(function ($id) use ($obj) { return $obj['options'][$id]; }, is_array($id) ? $id : [$id]);
                 }
             }
             $obj['ballots'] = [];
-            foreach($this->longAnswers as $answer){
+            foreach($this->longAnswers as $answer) {
                 $obj['ballots'][] = json_decode($answer->text);
             }
             shuffle($obj['ballots']);
@@ -316,13 +317,13 @@ class Question extends Model
         $rules = [];
         if ($this->question_type == Question::TEXT_ANSWER) {
             $rules[$key] = 'required|string';
-        } elseif($this->question_type == Question::RANKING){
+        } elseif($this->question_type == Question::RANKING) {
             $rules[$key] = [
                 'required',
                 'string',
                 new RankingVote($this),
             ];
-        } elseif($this->question_type == Question::SELECTION){
+        } elseif($this->question_type == Question::SELECTION) {
             if ($this->isMultipleChoice()) {
                 $rules[$key] = [
                     'required',
@@ -348,19 +349,19 @@ class Question extends Model
 
     private function computeElectionResults(): Result
     {
-        if($this->question_type != self::RANKING){
+        if($this->question_type != self::RANKING) {
             throw new Exception('This question is not a ranking question');
         }
 
         $election = new Election();
 
         $election->setNumberOfSeats($this->max_options);
-        foreach($this->options as $option){
+        foreach($this->options as $option) {
             $election->addCandidate($option->id);
         }
-        foreach($this->longAnswers as $ballot){
+        foreach($this->longAnswers as $ballot) {
             $preferences = json_decode($ballot->text);
-            if(count($preferences) == 0){
+            if(count($preferences) == 0) {
                 continue;
             }
 
