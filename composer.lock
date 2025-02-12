@@ -1742,12 +1742,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/EotvosCollegium/Condorcet.git",
-                "reference": "026aa984dac9cb3a7e642b56ff5019db416390f2"
+                "reference": "f0c03b7967a5f7f1ac070465f03283991245e771"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/EotvosCollegium/Condorcet/zipball/026aa984dac9cb3a7e642b56ff5019db416390f2",
-                "reference": "026aa984dac9cb3a7e642b56ff5019db416390f2",
+                "url": "https://api.github.com/repos/EotvosCollegium/Condorcet/zipball/f0c03b7967a5f7f1ac070465f03283991245e771",
+                "reference": "f0c03b7967a5f7f1ac070465f03283991245e771",
                 "shasum": ""
             },
             "require": {
@@ -1848,7 +1848,7 @@
                     "url": "https://blockchair.com/bitcoin/address/bc1q3jllk3qd9fjvvuqy07tawkv7t6h7qjf55fc2gh"
                 }
             ],
-            "time": "2025-02-12T18:03:43+00:00"
+            "time": "2025-02-12T18:59:25+00:00"
         },
         {
             "name": "laravel/framework",
