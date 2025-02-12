@@ -16,7 +16,6 @@ use App\Models\QuestionOption;
 use App\Utils\HasPeriodicEvent;
 use App\Exports\UsersSheets\AnonymousQuestionsExport;
 
-
 /**
  * Controls actions related to anonymous questions.
  */
@@ -145,10 +144,11 @@ class AnonymousQuestionController extends QuestionController
         );
     }
 
-    public function delete(Semester $semester, Question $question){
+    public function delete(Semester $semester, Question $question)
+    {
         $this->authorize('administer', AnswerSheet::class);
 
-        if($question['parent_type'] != AnswerSheet::class){
+        if($question['parent_type'] != AnswerSheet::class) {
             abort(400);
         }
 

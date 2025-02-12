@@ -22,7 +22,6 @@ use App\Exports\UsersSheets\AnonymousQuestionsExport;
  */
 class QuestionController extends Controller
 {
-    
     /**
      * Saves a new question.
      */

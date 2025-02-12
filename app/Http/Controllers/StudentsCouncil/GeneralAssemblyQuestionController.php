@@ -97,8 +97,8 @@ class GeneralAssemblyQuestionController extends QuestionController
         $this->authorize('vote', $question); //this also checks whether the user has already voted
 
         $passcode_request = $request->validate(['passcode' => ['required', 'string',
-                function($attribute, $value, $fail){
-                    if(!GeneralAssembly::isTemporaryPasscode($value)){
+                function ($attribute, $value, $fail) {
+                    if(!GeneralAssembly::isTemporaryPasscode($value)) {
                         $fail(__('voting.incorrect_passcode'));
                     }
                 }
@@ -112,10 +112,11 @@ class GeneralAssemblyQuestionController extends QuestionController
         return redirect()->route('general_assemblies.show', $question->parent)->with('message', __('voting.successful_voting'));
     }
 
-    public function delete(GeneralAssembly $generalAssembly, Question $question){
+    public function delete(GeneralAssembly $generalAssembly, Question $question)
+    {
         $this->authorize('administer', GeneralAssembly::class);
 
-        if($question['parent_type'] != GeneralAssembly::class){
+        if($question['parent_type'] != GeneralAssembly::class) {
             abort(400);
         }
 
