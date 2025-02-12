@@ -118,6 +118,22 @@ span.badge.tag {
     }
 }
 
+/* for STV ranking stats tables */
+table.ranking-stats th,
+table.ranking-stats td {
+    text-align: center;
+}
+table.ranking-stats th.winner,
+table.ranking-stats td.winner.colored {
+    color: green;
+}
+table.ranking-stats td.colored {
+    color: red;
+}
+table.ranking-stats td.round-of-elimination {
+    font-weight: bold;
+}
+
 /* Settings for dark mode */
 $transition-effects: color 1s ease, background-color 0.5s ease;
 

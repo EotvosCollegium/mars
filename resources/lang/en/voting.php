@@ -18,6 +18,7 @@ return [
     'new_question' => 'New question',
     'new_sitting' => 'New general assembly',
     'not_active' => 'You cannot vote because you have no active status for the semester.',
+    'number_of_ballots' => 'Number of ballots',
     'open' => 'Open',
     'open_question' => 'Open question',
     'open_sitting' => 'Open general assembly',
@@ -59,4 +60,5 @@ return [
     'seats_allocated' => 'Number of seats to be allocated: :seats',
     'drag_to_rank' => 'Drag options here to rank them',
     'drag_to_exclude' => 'Drag options here to exclude from ranking',
+    'votes_needed_to_win' => 'Votes needed to win'
 ];

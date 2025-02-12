@@ -2,7 +2,9 @@
 @php
    $rdata = $question->rankingData()
 @endphp
+
 @if(isset($rdata["results_named"]))
+<table>
     @foreach($rdata["results_named"] as $rank => $names)
         @foreach($names as $idx => $name)
             <tr>
@@ -11,18 +13,30 @@
             </tr>
         @endforeach
     @endforeach
+</table>
 @endif
-<tr>
-    <td><details>
-        <summary>Computer-readable data of the election (the order of the ballots is randomized):</summary>
-        <p>
-            <button class="waves-effect waves-light btn" onclick="copyData('election-results-data')">
-                Copy data <i class="material-icons right">content_copy</i>
-            </button>
-        </p>
-        <pre id="election-results-data">{{ json_encode($rdata, JSON_PRETTY_PRINT) }}</pre>
-    </details></td>
-</tr>
+
+@if(isset($rdata["stats"]))
+    @include('utils.questions.results.ranking_stats',
+        ['rdata' => $rdata, 'question' => $question]
+    )
+@endif
+
+<table>
+    <tr>
+        <td><details>
+            <summary>Computer-readable data of the election (the order of the ballots is randomized):</summary>
+            <p>
+                <button class="waves-effect waves-light btn" onclick="copyData('election-results-data')">
+                    Copy data <i class="material-icons right">content_copy</i>
+                </button>
+            </p>
+            <pre id="election-results-data">
+                {{ json_encode($question->rankingData(), JSON_PRETTY_PRINT) }}
+            </pre>
+        </details></td>
+    </tr>
+</table>
 
 @push('scripts')
 <script>

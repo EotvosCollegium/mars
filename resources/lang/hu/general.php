@@ -18,6 +18,7 @@ return [
     'delete' => 'Törlés',
     'delete_all' => 'Az összes törlése',
     'description' => 'Leírás',
+    'details' => 'Részletek',
     'dormitory' => 'Épület',
     'download' => 'Letöltés',
     'edit' => 'Szerkesztés',
