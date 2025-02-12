@@ -23,7 +23,7 @@ class QuestionFactory extends Factory
             'max_options' => $this->faker->numberBetween(1, 3),
             'opened_at' => now()->addHours($this->faker->numberBetween(-3, -2)),
             'closed_at' => now()->addHours($this->faker->numberBetween(-1, 1)),
-            'question_type' => QUESTION::SELECTION,
+            'question_type' => Question::SELECTION,
         ];
     }
 }
