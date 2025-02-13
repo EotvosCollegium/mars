@@ -8,7 +8,7 @@
     @foreach($rdata["results_named"] as $rank => $names)
         @foreach($names as $idx => $name)
             <tr>
-                @if($idx == 0) <th rowspan="{{ count($names) }}">{{ $rank }}</th> @endif
+                @if($idx == 0) <th rowspan="{{ count($names) }}">{{ $rank + 1 }}</th> @endif
                 <td>{{ $name }}</td>
             </tr>
         @endforeach
