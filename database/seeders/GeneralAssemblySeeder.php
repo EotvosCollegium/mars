@@ -107,7 +107,7 @@ class GeneralAssemblySeeder extends Seeder
         $rankingVoteCount = rand(0, 300);
         for ($i = 0; $i < $rankingVoteCount; ++$i) {
             shuffle($rankingOptionIds);
-            $orderedOptionCount = rand(0, count($rankingOptionIds)-1);
+            $orderedOptionCount = rand(0, count($rankingOptionIds) - 1);
             $answer = array_slice($rankingOptionIds, 0, $orderedOptionCount);
             // we won't connect them to users,
             // just write them among the answers
