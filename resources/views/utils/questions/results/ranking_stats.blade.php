@@ -14,9 +14,23 @@ $roundCount = count($stats['rounds'])
     @lang('general.details')
 </p>
 
-<p>
-    @lang('voting.votes_needed_to_win'): {{ $stats['Votes Needed to Win'] }}
-</p>
+@php
+$numberOfBallots = count($rdata["ballots"]);
+$numberOfAbstentions = count(array_filter(
+    $rdata["ballots"],
+    function ($ballot) { return 0 == count($ballot); }
+));
+@endphp
+
+<blockquote>
+    <ul>
+        <li><strong>@lang('voting.number_of_ballots'):</strong> {{$numberOfBallots}}</li>
+        <li>@lang('voting.number_of_abstentions'): {{$numberOfAbstentions}}</li>
+        <li>@lang('voting.number_of_valid_ballots'): {{$numberOfBallots - $numberOfAbstentions}}</li>
+        <li>@lang('voting.number_of_seats'): {{$question->max_options}}</li>
+        <li><strong>@lang('voting.votes_needed_to_win'):</strong> {{ $stats['Votes Needed to Win'] }}</li>
+    </ul>
+</blockquote>
 
 <tr><td colspan="2">
     <table class="ranking-stats">
