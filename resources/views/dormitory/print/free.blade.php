@@ -1,9 +1,9 @@
-@if(!user()->freePages->isEmpty())
+@if(!user()->freePrintingCredits->isEmpty())
 <div class="card">
     <div class="card-content">
         <div class="card-title">@lang('print.free')</div>
-        <div id="free-page-table"></div>
-        <blockquote>@lang('print.free_pages_description')</blockquote>
+        <div id="free-printing-credits-table"></div>
+        <blockquote>@lang('print.free_printing_credits_description')</blockquote>
     </div>
 </div>
 <script type="text/javascript" src="{{ mix('js/moment.min.js') }}"></script>
@@ -16,7 +16,7 @@
                 }
                 return value;
             }
-        var table = new Tabulator("#free-page-table", {
+        var table = new Tabulator("#free-printing-credits-table", {
             paginationSize: 10,
             layout: "fitColumns",
             pagination: "remote", //enable remote pagination
@@ -25,10 +25,10 @@
             columnMinWidth: 150,
             headerSort: false,
             ajaxURL: "{{ $route }}", //set url for ajax request
-            placeholder: "@lang('print.no_free_pages')",
+            placeholder: "@lang('print.no_free_printing_credits')",
             columns: [
                 @if($admin)
-                @can('viewAny', App\Models\FreePages::class)
+                @can('viewAny', App\Models\FreePrintingCredits::class)
                 {
                     title: "@lang('internet.created_at')",
                     field: "created_at",
@@ -48,26 +48,26 @@
                     title: "@lang('print.free')",
                     field: "amount",
                     sorter: "number",
-                    @can('viewAny', App\Models\FreePages::class) headerFilter: 'input' @endcan
+                    @can('viewAny', App\Models\FreePrintingCredits::class) headerFilter: 'input' @endcan
                 },
                 {
                     title: "@lang('print.deadline')",
                     field: "deadline",
                     sorter: "datetime",
                     formatter:dateFormatter,
-                    @can('viewAny', App\Models\FreePages::class) headerFilter: 'input' @endif
+                    @can('viewAny', App\Models\FreePrintingCredits::class) headerFilter: 'input' @endcan
                 },
                 {
                     title: "@lang('print.last_modified_by')",
                     field: "modifier.name",
                     sorter: "string",
-                    @can('viewAny', App\Models\FreePages::class) headerFilter: 'input' @endif
+                    @can('viewAny', App\Models\FreePrintingCredits::class) headerFilter: 'input' @endcan
                 },
                 {
                     title: "@lang('general.comment')",
                     field: "comment",
                     sorter: "string",
-                    @can('viewAny', App\Models\FreePages::class) headerFilter: 'input' @endif
+                    @can('viewAny', App\Models\FreePrintingCredits::class) headerFilter: 'input' @endcan
                 },
             ],
         });

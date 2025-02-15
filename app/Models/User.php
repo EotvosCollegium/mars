@@ -48,7 +48,7 @@ use Illuminate\Support\Facades\Mail;
  * @property ImportItem[]|Collection $importItems
  * @property Room|null $room
  * @property PrintAccount|null $printAccount
- * @property FreePages[]|Collection $freePages
+ * @property FreePrintingCredits[]|Collection $FreePrintingCredits
  * @property PrintAccountHistory[]|Collection $printHistory
  * @property PrintJob[]|Collection $printJobs
  * @property InternetAccess|null $internetAccess
@@ -74,7 +74,7 @@ use Illuminate\Support\Facades\Mail;
  * @property-read int|null $community_service_approvals_count
  * @property-read int|null $community_service_requests_count
  * @property-read int|null $faculties_count
- * @property-read int|null $free_pages_count
+ * @property-read int|null $free_printing_credits_count
  * @property-read int|null $import_items_count
  * @property-read int|null $mac_addresses_count
  * @property-read int|null $mr_and_miss_votes_given_count
@@ -337,12 +337,12 @@ class User extends Authenticatable implements HasLocalePreference
     }
 
     /**
-     * The user's free pages.
+     * The user's free credits.
      * @return HasMany
      */
-    public function freePages(): HasMany
+    public function freePrintingCredits(): HasMany
     {
-        return $this->hasMany(FreePages::class);
+        return $this->hasMany(FreePrintingCredits::class);
     }
 
     /**
@@ -931,7 +931,7 @@ class User extends Authenticatable implements HasLocalePreference
     {
         return $this->printHistory()
             ->where('balance_change', '<', 0)
-            ->orWhere('free_page_change', '<', 0)
+            ->orWhere('free_printing_credit_change', '<', 0)
             ->count();
     }
 
@@ -948,24 +948,24 @@ class User extends Authenticatable implements HasLocalePreference
     }
 
     /**
-     * Returns how many free pages the user used.
+     * Returns how many free credits the user used.
      *
      * @return int
      */
-    public function spentFreePages(): int
+    public function spentFreePrintingCredits(): int
     {
         return abs($this->printHistory()
-            ->where('free_page_change', '<', 0)
-            ->sum('free_page_change'));
+            ->where('free_printing_credit_change', '<', 0)
+            ->sum('free_printing_credit_change'));
     }
 
     /**
-     * Returns how many free pages are left that can still be used
+     * Returns how many free credits are left that can still be used
      * @return int
      */
-    public function sumOfActiveFreePages(): int
+    public function sumOfActiveFreePrintingCredits(): int
     {
-        return $this->freePages()->where('deadline', '>', Carbon::now())->sum('amount');
+        return $this->freePrintingCredits()->where('deadline', '>', Carbon::now())->sum('amount');
     }
 
     /* Transaction related */

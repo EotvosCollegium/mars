@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use App\Models\Semester;
 use App\Models\Checkout;
 use App\Models\Faculty;
-use App\Models\FreePages;
+use App\Models\FreePrintingCredits;
 use App\Models\RoleObject;
 use App\Models\Workshop;
 use App\Models\Role;
@@ -85,7 +85,7 @@ class UsersTableSeeder extends Seeder
         $user->printAccount()->save(PrintAccount::factory()->make(['user_id' => $user->id]));
         $user->personalInformation()->save(PersonalInformation::factory()->make(['user_id' => $user->id]));
         MacAddress::factory()->count(3)->create(['user_id' => $user->id]);
-        FreePages::factory()->count(5)->create(['user_id' => $user->id]);
+        FreePrintingCredits::factory()->count(5)->create(['user_id' => $user->id]);
         PrintJob::factory()->count(5)->create(['user_id' => $user->id]);
         $user->educationalInformation()->save(EducationalInformation::factory()->make(['user_id' => $user->id]));
         for ($x = 0; $x < rand(1, 3); $x++) {

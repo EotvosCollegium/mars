@@ -15,7 +15,7 @@ use App\Http\Controllers\Auth\AdmissionController;
 use App\Http\Controllers\Auth\ApplicationController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Dormitory\FaultController;
-use App\Http\Controllers\Dormitory\Printing\FreePagesController;
+use App\Http\Controllers\Dormitory\Printing\FreePrintingCreditsController;
 use App\Http\Controllers\Dormitory\Printing\PrinterController;
 use App\Http\Controllers\Dormitory\Printing\PrintJobController;
 use App\Http\Controllers\Dormitory\Printing\PrintAccountController;
@@ -137,9 +137,9 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
         Route::post('/print-job', [PrintJobController::class, 'store'])->name('print-job.store');
         Route::put('/print-job/{job}', [PrintJobController::class, 'update'])->name('print-job.update');
 
-        Route::get('/free-pages', [FreePagesController::class, 'index'])->name('free-pages.index');
-        Route::post('/free-pages', [FreePagesController::class, 'store'])->name('free-pages.store');
-        Route::get('/free-pages/admin', [FreePagesController::class, 'adminIndex'])->name('free-pages.index.admin');
+        Route::get('/free-printing-credits', [FreePrintingCreditsController::class, 'index'])->name('free-printing-credits.index');
+        Route::post('/free-printing-credits', [FreePrintingCreditsController::class, 'store'])->name('free-printing-credits.store');
+        Route::get('/free-printing-credits/admin', [FreePrintingCreditsController::class, 'adminIndex'])->name('free-printing-credits.index.admin');
 
 
         Route::get('/print-account-history', [PrintAccountHistoryController::class, 'index'])->name('print-account-history.index');
