@@ -27,7 +27,6 @@
             ajaxURL: "{{ $route }}", //set url for ajax request
             placeholder: "@lang('print.no_free_printing_credits')",
             columns: [
-                @if($admin)
                 @can('viewAny', App\Models\FreePrintingCredits::class)
                 {
                     title: "@lang('internet.created_at')",
@@ -42,7 +41,6 @@
                     sorter: "string",
                     headerFilter: 'input'
                 },
-                @endif
                 @endcan
                 {
                     title: "@lang('print.free')",
