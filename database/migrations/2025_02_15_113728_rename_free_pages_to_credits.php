@@ -11,9 +11,17 @@ return new class () extends Migration {
     public function up(): void
     {
         Schema::rename("printing_free_pages", "printing_free_printing_credits");
+        DB::table('printing_free_printing_credits')
+            ->update(array(
+                'amount' => DB::raw('amount * ' . env('PRINT_COST_ONESIDED', '8')),
+            ));
         Schema::table('print_jobs', function (Blueprint $table) {
             $table->renameColumn('used_free_pages', 'used_free_printing_credits');
         });
+        DB::table('print_jobs')
+            ->update(array(
+                'used_free_printing_credits' => DB::raw('used_free_printing_credits * ' . env('PRINT_COST_ONESIDED', '8')),
+            ));
         Schema::table('print_account_history', function (Blueprint $table) {
             $table->renameColumn('free_page_change', 'free_printing_credits_change');
         });
@@ -27,9 +35,17 @@ return new class () extends Migration {
         Schema::table('print_account_history', function (Blueprint $table) {
             $table->renameColumn('free_printing_credits_change', 'free_page_change');
         });
+        DB::table('print_jobs')
+            ->update(array(
+                'used_free_printing_credits' => DB::raw('used_free_printing_credits / ' . env('PRINT_COST_ONESIDED', '8')),
+            ));
         Schema::table('print_jobs', function (Blueprint $table) {
             $table->renameColumn('used_free_printing_credits', 'used_free_pages');
         });
+        DB::table('printing_free_printing_credits')
+            ->update(array(
+                'amount' => DB::raw('amount / ' . env('PRINT_COST_ONESIDED', '8')),
+            ));
         Schema::rename("printing_free_printing_credits", "printing_free_pages");
     }
 };
