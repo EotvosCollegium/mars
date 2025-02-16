@@ -931,7 +931,7 @@ class User extends Authenticatable implements HasLocalePreference
     {
         return $this->printHistory()
             ->where('balance_change', '<', 0)
-            ->orWhere('free_printing_credit_change', '<', 0)
+            ->orWhere('free_printing_credits_change', '<', 0)
             ->count();
     }
 
@@ -955,8 +955,8 @@ class User extends Authenticatable implements HasLocalePreference
     public function spentFreePrintingCredits(): int
     {
         return abs($this->printHistory()
-            ->where('free_printing_credit_change', '<', 0)
-            ->sum('free_printing_credit_change'));
+            ->where('free_printing_credits_change', '<', 0)
+            ->sum('free_printing_credits_change'));
     }
 
     /**

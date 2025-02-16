@@ -25,7 +25,6 @@ return [
     'document' => 'Dokumentum',
     'error_printing' => 'Sikertelen nyomtatás',
     'free' => 'Ingyenes nyomtatási kredit hozzáadása',
-    'free_printing_credit_change' => 'Ingyenes nyomtatási kredit változás',
     'free_printing_credits_description' => 'Néhány felhasználó (pl. nyelvtanárok, választmányi tagok) ingyenes nyomtatással rendelkezhetnek. Ilyenkor hivatalos ügyekben a legkorábbi felhasználási határidővel rendelkező ingyenes nyomtatási kreditjeikkel nyomtathatnak.',
     'handle_free_printing_credits' => 'Ingyenes nyomtatási kreditek kezelése',
     'history' => 'Előzmények',

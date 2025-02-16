@@ -25,7 +25,6 @@ return [
     'document' => 'Document',
     'error_printing' => 'Printing failed',
     'free' => 'Free printing credits',
-    'free_printing_credit_change' => 'Free printing credits change',
     'free_printing_credits_description' => 'Some users (e.g., teachers, student committee members) can print free of charge in official matters. This way, the free printing credits with the closest deadline will be used.',
     'handle_free_printing_credits' => 'Handle free printing credits',
     'history' => 'History',
