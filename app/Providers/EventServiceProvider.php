@@ -3,13 +3,13 @@
 namespace App\Providers;
 
 use App\Listeners\MailGate;
-use App\Models\FreePages;
+use App\Models\FreePrintingCredits;
 use App\Models\GeneralAssemblies\GeneralAssembly;
 use App\Models\PeriodicEvent;
 use App\Models\PrintAccount;
 use App\Models\RoleUser;
 use App\Models\SemesterStatus;
-use App\Observers\FreePagesObserver;
+use App\Observers\FreePrintingCreditsObserver;
 use App\Observers\GeneralAssemblyObserver;
 use App\Observers\PrintAccountObserver;
 use App\Observers\RoleUserObserver;
@@ -44,7 +44,7 @@ class EventServiceProvider extends ServiceProvider
         parent::boot();
 
         SemesterStatus::observe(StatusObserver::class);
-        FreePages::observe(FreePagesObserver::class);
+        FreePrintingCredits::observe(FreePrintingCreditsObserver::class);
         PrintAccount::observe(PrintAccountObserver::class);
         RoleUser::observe(RoleUserObserver::class);
         GeneralAssembly::observe(GeneralAssemblyObserver::class);

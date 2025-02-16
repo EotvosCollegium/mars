@@ -2,12 +2,12 @@
 
 namespace Database\Factories;
 
-use App\Models\FreePages;
+use App\Models\FreePrintingCredits;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class FreePagesFactory extends Factory
+class FreePrintingCreditsFactory extends Factory
 {
-    protected $model = FreePages::class;
+    protected $model = FreePrintingCredits::class;
 
     public function definition()
     {

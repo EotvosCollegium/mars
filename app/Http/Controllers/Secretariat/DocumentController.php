@@ -138,7 +138,7 @@ class DocumentController extends Controller
             return $result['redirect'];
         }
         $document = $result['pdf'];
-        $printer = new Printer($filename, $document, /* $use_free_pages */ true);
+        $printer = new Printer($filename, $document, /* $use_free_printing_credits */ true);
         return $printer->print();
     }
 

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Dormitory\Printing;
 
 use App\Enums\PrintJobStatus;
 use App\Http\Controllers\Controller;
-use App\Models\FreePages;
+use App\Models\FreePrintingCredits;
 use App\Models\PrintAccount;
 use App\Models\Printer;
 use App\Enums\PrinterCancelResult;
@@ -84,10 +84,10 @@ class PrintJobController extends Controller
             'file' => 'required|file',
             'copies' => 'required|integer|min:1',
             'two_sided' => 'in:on,off',
-            'use_free_pages' => 'in:on,off',
+            'use_free_printing_credits' => 'in:on,off',
         ]);
 
-        $useFreePages = $request->boolean('use_free_pages');
+        $useFreePrintingCredits = $request->boolean('use_free_printing_credits');
         $copyNumber = $request->input('copies');
         $twoSided = $request->boolean('two_sided');
         $file = $request->file('file');
@@ -102,20 +102,20 @@ class PrintJobController extends Controller
         /** @var PrintAccount */
         $printAccount = user()->printAccount;
 
-        if (!$printAccount->hasEnoughBalanceOrFreePages($useFreePages, $pageNumber, $copyNumber, $twoSided)) {
+        if (!$printAccount->hasEnoughBalanceOrFreePrintingCredits($useFreePrintingCredits, $pageNumber, $copyNumber, $twoSided)) {
             DB::rollBack();
             return back()->with('error', __('print.no_balance'));
         }
 
-        $cost = $useFreePages ?
-            PrinterHelper::getFreePagesNeeded($pageNumber, $copyNumber, $twoSided) :
+        $cost = $useFreePrintingCredits ?
+            PrinterHelper::getFreePrintingCreditsNeeded($pageNumber, $copyNumber, $twoSided) :
             PrinterHelper::getBalanceNeeded($pageNumber, $copyNumber, $twoSided);
 
-        $printAccount->updateHistory($useFreePages, $cost);
+        $printAccount->updateHistory($useFreePrintingCredits, $cost);
 
         try {
-            $printJob = $printer->createPrintJob($useFreePages, $cost, Storage::disk('printing')->path($path), $originalName, $twoSided, $copyNumber);
-            Log::info("User $printAccount->user_id started print job a document for $cost. Job ID: $printJob->job_id. Used free pages: $useFreePages. File: $originalName");
+            $printJob = $printer->createPrintJob($useFreePrintingCredits, $cost, Storage::disk('printing')->path($path), $originalName, $twoSided, $copyNumber);
+            Log::info("User $printAccount->user_id started print job a document for $cost. Job ID: $printJob->job_id. Used free printing credits: $useFreePrintingCredits. File: $originalName");
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error("Error while creating print job: " . $e->getMessage());

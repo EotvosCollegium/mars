@@ -20,8 +20,8 @@ use Psr\Container\ContainerExceptionInterface;
  * @property int $balance
  * @property int|null $last_modified_by
  * @property string|null $modified_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\FreePages[] $freePages
- * @property-read int|null $free_pages_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\FreePrintingCredits[] $freePrintingCredits
+ * @property-read int|null $free_printing_credits_count
  * @property-read \App\Models\User $user
  * @method static \Database\Factories\PrintAccountFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|PrintAccount newModelQuery()
@@ -62,32 +62,31 @@ class PrintAccount extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function freePages()
+    public function freePrintingCredits()
     {
-        return $this->hasMany(FreePages::class, 'user_id', 'user_id');
+        return $this->hasMany(FreePrintingCredits::class, 'user_id', 'user_id');
     }
 
     /**
-     * The free pages which are currently available. Sorts the free pages by their deadline.
-     * @return Collection|FreePages[]
+     * The free credits which are currently available. Sorts the free credits by their deadline.
+     * @return Collection|FreePrintingCredits[]
      */
-    public function availableFreePages()
+    public function availableFreePrintingCredits()
     {
-        return $this->freePages()->where('deadline', '>', now())->orderBy('deadline')->get();
+        return $this->freePrintingCredits()->where('deadline', '>', now())->orderBy('deadline')->get();
     }
 
     /**
-     * Returns wether the user has enough free pages to print a document.
-     * A free page is enough to print either a one sided or a two sided page.
+     * Returns wether the user has enough free credits to print a document.
      * @param int $pages
      * @param int $copies
      * @param bool $twoSided
      * @return bool
      */
-    public function hasEnoughFreePages(int $pages, int $copies, bool $twoSided)
+    public function hasEnoughFreePrintingCredits(int $pages, int $copies, bool $twoSided)
     {
-        return $this->availableFreePages()->sum('amount') >=
-            PrinterHelper::getFreePagesNeeded($pages, $copies, $twoSided);
+        return $this->availableFreePrintingCredits()->sum('amount') >=
+            PrinterHelper::getFreePrintingCreditsNeeded($pages, $copies, $twoSided);
     }
 
     /**
@@ -103,51 +102,51 @@ class PrintAccount extends Model
     }
 
     /**
-     * Returns wether the user has enough balance or free pages to print a document.
-     * @param bool $useFreePages
+     * Returns wether the user has enough balance or free credits to print a document.
+     * @param bool $useFreePrintingCredits
      * @param int $pages
      * @param int $copies
      * @param bool $twoSided
      * @return bool
      */
-    public function hasEnoughBalanceOrFreePages(bool $useFreePages, int $pages, int $copies, bool $twoSided)
+    public function hasEnoughBalanceOrFreePrintingCredits(bool $useFreePrintingCredits, int $pages, int $copies, bool $twoSided)
     {
-        return $useFreePages ? $this->hasEnoughFreePages($pages, $copies, $twoSided) : $this->hasEnoughBalance($pages, $copies, $twoSided);
+        return $useFreePrintingCredits ? $this->hasEnoughFreePrintingCredits($pages, $copies, $twoSided) : $this->hasEnoughBalance($pages, $copies, $twoSided);
     }
 
     /**
      * Updates the print account history and the print account balance.
      * Important note: This function should only be called within a transaction. Otherwise, the history may not be consistent.
-     * @param bool $useFreePages
+     * @param bool $useFreePrintingCredits
      * @param int $cost
      */
-    public function updateHistory(bool $useFreePages, int $cost)
+    public function updateHistory(bool $useFreePrintingCredits, int $cost)
     {
         // Update the print account history
         $this->last_modified_by = user()->id;
 
-        if ($useFreePages) {
-            $freePagesToSubtract = $cost;
-            $availableFreePages = $this->availableFreePages()->where('amount', '>', 0);
+        if ($useFreePrintingCredits) {
+            $freePrintingCreditsToSubtract = $cost;
+            $availableFreePrintingCredits = $this->availableFreePrintingCredits()->where('amount', '>', 0);
 
-            // Subtract the pages from the free pages pool, as many free pages as necessary
-            /** @var FreePages $freePages */
-            foreach ($availableFreePages as $freePages) {
-                $subtractablePages = $freePages->calculateSubtractablePages($freePagesToSubtract);
-                $freePages->subtractPages($subtractablePages);
-                $freePagesToSubtract -= $subtractablePages;
+            // Subtract the credits from the free credits pool, as many free credits as necessary
+            /** @var FreePrintingCredits $freePrintingCredits */
+            foreach ($availableFreePrintingCredits as $freePrintingCredits) {
+                $subtractableCredits = $freePrintingCredits->calculateSubtractableCredits($freePrintingCreditsToSubtract);
+                $freePrintingCredits->subtractCredits($subtractableCredits);
+                $freePrintingCreditsToSubtract -= $subtractableCredits;
 
-                if ($freePagesToSubtract <= 0) { // < should not be necessary, but better safe than sorry
+                if ($freePrintingCreditsToSubtract <= 0) { // < should not be necessary, but better safe than sorry
                     break;
                 }
             }
-            // Set value in the session so that free page checkbox stays checked
-            session()->put('use_free_pages', true);
+            // Set value in the session so that free printing credits checkbox stays checked
+            session()->put('use_free_printing_credits', true);
         } else {
             $this->balance -= $cost;
 
-            // Remove value regarding the free page checkbox from the session
-            session()->remove('use_free_pages');
+            // Remove value regarding the free printing credits checkbox from the session
+            session()->remove('use_free_printing_credits');
         }
 
         $this->save();

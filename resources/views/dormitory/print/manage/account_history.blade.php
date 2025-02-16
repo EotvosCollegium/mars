@@ -26,8 +26,8 @@ $(document).ready(function() {
                 minWidth:100
             },
             {
-                title: "Ingyenes oldal változás",
-                field: "free_page_change",
+                title: "Ingyenes nyomtatási kredit változás",
+                field: "free_printing_credits_change",
                 sorter: "number",
                 minWidth:100
             },

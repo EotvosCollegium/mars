@@ -29,7 +29,7 @@ class PrintAccountObserver
             DB::table('print_account_history')->insert([
                 'user_id' => $printAccount->user_id,
                 'balance_change' => $printAccount->balance - $printAccount->getOriginal('balance'),
-                'free_page_change' => 0,
+                'free_printing_credits_change' => 0,
                 'deadline_change' => null,
                 'modified_by' => $printAccount->last_modified_by,
                 'modified_at' => $printAccount->modified_at ?? now()

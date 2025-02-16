@@ -43,7 +43,7 @@ class Printer extends Model
 
     /**
      * Starts a new print job for the current user and saves it.
-     * @param bool $useFreePages
+     * @param bool $useFreePrintingCredits
      * @param int $cost
      * @param string $filePath
      * @param string $originalName
@@ -54,7 +54,7 @@ class Printer extends Model
      * @throws PrinterException
      * @throws MassAssignmentException
      */
-    public function createPrintJob(bool $useFreePages, int $cost, string $filePath, string $originalName, bool $twoSided, int $copyNumber)
+    public function createPrintJob(bool $useFreePrintingCredits, int $cost, string $filePath, string $originalName, bool $twoSided, int $copyNumber)
     {
         $jobId = $this->print($twoSided, $copyNumber, $filePath);
 
@@ -63,7 +63,7 @@ class Printer extends Model
             'state' => PrintJobStatus::QUEUED,
             'job_id' => $jobId,
             'cost' => $cost,
-            'used_free_pages' => $useFreePages,
+            'used_free_printing_credits' => $useFreePrintingCredits,
             'filename' => $originalName,
         ]);
     }
