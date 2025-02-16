@@ -28,6 +28,7 @@ return new class () extends Migration {
         DB::table('print_account_history')
             ->update(array(
                 'free_printing_credits_change' => DB::raw('free_printing_credits_change * ' . env('PRINT_COST_ONESIDED', '8')),
+                'modified_at' => DB::raw('modified_at'),
             ));
     }
 
@@ -39,6 +40,7 @@ return new class () extends Migration {
         DB::table('print_account_history')
             ->update(array(
                 'free_printing_credits_change' => DB::raw('free_printing_credits_change / ' . env('PRINT_COST_ONESIDED', '8')),
+                'modified_at' => DB::raw('modified_at'),
             ));
         Schema::table('print_account_history', function (Blueprint $table) {
             $table->renameColumn('free_printing_credits_change', 'free_page_change');
