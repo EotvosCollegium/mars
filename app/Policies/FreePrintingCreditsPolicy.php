@@ -2,12 +2,12 @@
 
 namespace App\Policies;
 
-use App\Models\FreePages;
+use App\Models\FreePrintingCredits;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class FreePagesPolicy
+class FreePrintingCreditsPolicy
 {
     use HandlesAuthorization;
 
@@ -23,9 +23,9 @@ class FreePagesPolicy
         return false;
     }
 
-    public function view(User $user, FreePages $freePages): bool
+    public function view(User $user, FreePrintingCredits $freePrintingCredits): bool
     {
-        return $freePages->user_id == $user->id;
+        return $freePrintingCredits->user_id == $user->id;
     }
 
     public function viewSelf(User $user): bool
@@ -38,8 +38,8 @@ class FreePagesPolicy
         return false;
     }
 
-    public function update(User $user, FreePages $freePages): bool
+    public function update(User $user, FreePrintingCredits $freePrintingCredits): bool
     {
-        return $freePages->user_id == $user->id;
+        return $freePrintingCredits->user_id == $user->id;
     }
 }

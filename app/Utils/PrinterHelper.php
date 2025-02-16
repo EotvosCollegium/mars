@@ -49,15 +49,15 @@ class PrinterHelper
     }
 
     /**
-     * Returns the number of free pages needed to print with given configuration.
+     * Returns the number of free credits needed to print with given configuration.
      * @param int $pages
      * @param int $copies
      * @param bool $twoSided
      * @return int
      */
-    public static function getFreePagesNeeded(int $pages, int $copies, bool $twoSided)
+    public static function getFreePrintingCreditsNeeded(int $pages, int $copies, bool $twoSided)
     {
-        return $pages * $copies; //We are charging for each of the printed sides of paper
+        return self::getBalanceNeeded($pages, $copies, $twoSided);
     }
 
     /**

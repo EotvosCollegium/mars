@@ -53,13 +53,13 @@ class PrintJob extends Model
         'job_id',
         'cost',
         'printer_id',
-        'used_free_pages',
+        'used_free_printing_credits',
         'filename',
     ];
 
     protected $casts = [
         'state' => PrintJobStatus::class,
-        'used_free_pages' => 'boolean',
+        'used_free_printing_credits' => 'boolean',
     ];
 
     /**
@@ -104,7 +104,7 @@ class PrintJob extends Model
     public function translatedCost(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->used_free_pages ? "$this->cost ingyenes oldal" : "$this->cost HUF"
+            get: fn () => $this->used_free_printing_credits ? "$this->cost nyomtatási kredit" : "$this->cost HUF"
         );
     }
 
@@ -134,18 +134,6 @@ class PrintJob extends Model
                 $this->update([
                     'state' => PrintJobStatus::CANCELLED,
                 ]);
-                $printAccount = $this->printAccount;
-                $printAccount->last_modified_by = user()->id;
-
-                if ($this->used_free_pages) {
-                    $pages = $printAccount->availableFreePages()->first();
-                    $pages->update([
-                        'last_modified_by' => user()->id,
-                        'amount' => $pages->amount + $this->cost,
-                    ]);
-                } else {
-                    $printAccount->balance += $this->cost;
-                }
 
                 $this->save();
                 return PrinterCancelResult::Success;

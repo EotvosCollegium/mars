@@ -20,11 +20,11 @@ class PrintControllerTest extends TestCase
 
         $response = $this->get('/print');
         $response->assertStatus(200);
-        $response = $this->get('/print/free-pages');
+        $response = $this->get('/print/free-printing-credits');
         $response->assertStatus(200);
         $response = $this->get('/print/print-job');
         $response->assertStatus(200);
-        $response = $this->get('/print/free-pages/admin');
+        $response = $this->get('/print/free-printing-credits/admin');
         $response->assertStatus(403);
         $response = $this->get('/print/print-job/admin');
         $response->assertStatus(403);
@@ -54,11 +54,11 @@ class PrintControllerTest extends TestCase
 
         $response = $this->get('/print');
         $response->assertStatus(200);
-        $response = $this->get('/print/free-pages');
+        $response = $this->get('/print/free-printing-credits');
         $response->assertStatus(200);
         $response = $this->get('/print/print-job');
         $response->assertStatus(200);
-        $response = $this->get('/print/free-pages/admin');
+        $response = $this->get('/print/free-printing-credits/admin');
         $response->assertStatus(403);
         $response = $this->get('/print/print-job/admin');
         $response->assertStatus(403);
@@ -89,11 +89,11 @@ class PrintControllerTest extends TestCase
 
         $response = $this->get('/print');
         $response->assertStatus(200);
-        $response = $this->get('/print/free-pages');
+        $response = $this->get('/print/free-printing-credits');
         $response->assertStatus(200);
         $response = $this->get('/print/print-job');
         $response->assertStatus(200);
-        $response = $this->get('/print/free-pages/admin');
+        $response = $this->get('/print/free-printing-credits/admin');
         $response->assertStatus(200);
         $response = $this->get('/print/print-job/admin');
         $response->assertStatus(200);

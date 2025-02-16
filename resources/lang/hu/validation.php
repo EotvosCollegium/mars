@@ -21,7 +21,7 @@ return [
         'user_to_send' => 'kiválasztott felhasználó',
         'user_id_modify' => 'kiválasztott felhasználó',
         'user_id_free' => 'kiválasztott felhasználó',
-        'free_pages' => 'ingyenes oldalak',
+        'free_printing_credits' => 'ingyenes nyomtatási kreditek',
         'deadline' => 'határidő',
         'email' => 'e-mail',
         'phone_number' => 'telefonszám',

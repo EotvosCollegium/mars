@@ -24,9 +24,9 @@ return new class () extends Migration {
 
         // Create the default printer
         DB::table('printers')->insert([
-            'name' => env('PRINTER_NAME'),
-            'ip' => env('PRINTER_IP'),
-            'port' => env('PRINTER_PORT'),
+            'name' => env('PRINTER_NAME', 'NemUjBela'),
+            'ip' => env('PRINTER_IP', ''),
+            'port' => env('PRINTER_PORT', ''),
         ]);
     }
 

@@ -19,9 +19,14 @@
             @lang('print.available_money'): <b class="coli-text text-orange"> {{ $printAccount->balance }}</b> HUF.
             @lang('print.upload_money')
             </p>
+            @if($printAccount->availableFreePrintingCredits()->sum('amount') > 0)
+            <p>
+            @lang("print.available_free_printing_credits", ['number_of_free_printing_credits' => $printAccount->availableFreePrintingCredits()->sum('amount')])
+            </p>
             <p>
             @lang('print.payment_methods_cannot_be_mixed')
             </p>
+            @endif
         </blockquote>
         <form class="form-horizontal" role="form" method="POST" action="{{ route('print.print-job.store') }}" enctype="multipart/form-data">
             @csrf
@@ -29,9 +34,9 @@
                 <x-input.file l=8 xl=10 id="file" accept=".pdf" required text="print.select_document"/>
                 <x-input.text l=4 xl=2  id="copies" type="number" min="1" :value="1" required text="print.number_of_copies"/>
                 <x-input.checkbox s=8 xl=4 name="two_sided" checked text="print.twosided"/>
-                @if($printAccount->availableFreePages()->sum('amount') > 0) {{-- only show if the user has active free pages --}}
-                    <x-input.checkbox s=8 xl=4 name="use_free_pages" text="print.use_free_pages" 
-                        checked="{{ session()->get('use_free_pages') ? 'checked' : '' }}"
+                @if($printAccount->availableFreePrintingCredits()->sum('amount') > 0) {{-- only show if the user has active free pages --}}
+                    <x-input.checkbox s=8 xl=4 name="use_free_printing_credits" text="print.use_free_printing_credits" 
+                        checked="{{ session()->get('use_free_printing_credits') ? 'checked' : '' }}"
                     />
                     <x-input.button s=4 class="right" text="print.print"/>
                 @else

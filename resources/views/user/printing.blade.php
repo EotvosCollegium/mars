@@ -8,7 +8,7 @@
             <th scope="row">@lang('print.free')</th>
             <td>
                 <ul>
-                    @foreach($user->freePages->sortBy('deadline') as $page)
+                    @foreach($user->freePrintingCredits->sortBy('deadline') as $page)
                         <li>
                         <span class="new badge
                             @if($page->available)
@@ -33,8 +33,8 @@
             <td>{{ $user->spentBalance() }} HUF</td>
         </tr>
         <tr>
-            <th scope="row">@lang('print.spent_free_pages')</th>
-            <td>{{ $user->spentFreePages() }}</td>
+            <th scope="row">@lang('print.spent_free_printing_credits')</th>
+            <td>{{ $user->spentFreePrintingCredits() }}</td>
         </tr>
     </tbody>
 </table>

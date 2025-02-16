@@ -21,7 +21,7 @@ return [
         'user_to_send' => 'choosen user',
         'user_id_modify' => 'choosen user',
         'user_id_free' => 'choosen ',
-        'free_pages' => 'free pages',
+        'free_printing_credits' => 'free printing credits',
         'deadline' => 'deadline',
         'email' => 'email',
         'phone_number' => 'phone number',
