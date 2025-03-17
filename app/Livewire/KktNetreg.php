@@ -19,7 +19,7 @@ class KktNetreg extends Component
      */
     public function getUnpaidUsersProperty()
     {
-        $query = User::hasToPayKKTNetreg()->canView();
+        $query = User::hasToPayKKTNetreg();
 
         $query->where(function (Builder $query) {
             foreach ($this->workshops as $workshop) {
