@@ -64,15 +64,17 @@ trait HasRoles
             return $query;
         }
 
+        $firstRole = reset($allRoles);
+
         // Input is an array of role names => filter based on names
-        if (is_string($allRoles[0])) {
+        if (is_string($firstRole)) {
             return $query->whereHas('roles', function (Builder $query) use ($allRoles) {
                 $query->whereIn('name', $allRoles);
             }, '=', count($allRoles));
         }
 
         // Input is an array of role objects => convert objects to IDs
-        if ($allRoles[0] instanceof Role) {
+        if ($firstRole instanceof Role) {
             $allRoles = array_map(fn ($role) => $role->id, $allRoles);
         }
 
