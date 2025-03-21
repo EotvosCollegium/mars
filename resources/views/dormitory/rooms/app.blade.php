@@ -98,10 +98,10 @@
                 query2='room'+query;
             }
             $('#room'+query).addClass('blink');
-            $('[data-info*='+String(query2)+' i]').addClass('blink');
+            $("[data-info*='" + String(query2) + "'i]").addClass('blink');
             setTimeout(function(){
                 $('#room'+query).removeClass('blink');
-                $('[data-info*='+String(query2)+' i]').removeClass('blink');
+                $("[data-info*='" + String(query2) + "'i]").removeClass('blink');
             }, 5000);
 
         });
