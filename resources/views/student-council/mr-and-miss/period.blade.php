@@ -1,10 +1,10 @@
-@can('finalize', \App\Models\Application::class)
+@can('manage', \App\Models\MrAndMissVote::class)
     <div class="card">
         <form action="{{route('mr_and_miss.period.update')}}" method="POST">
             @csrf
             <div class="card-content">
                 <div class="card-title">
-                    Felvételi időszak
+                    Szavazási időszak
                 </div>
                 @if($periodicEvent?->isActive())
                     <blockquote>A szavazás jelenleg aktív.</blockquote>
