@@ -284,7 +284,7 @@ class MrAndMissController extends Controller
             return new Collection();
         }
 
-        return User::collegist()->active()->whereNotIn('id', function ($query) {
+        return User::collegist()->whereNotIn('id', function ($query) {
             $query->select('user_id')
                 ->from('mr_and_miss_opt_outs')
                 ->where('semester_id', $this->semester()->id);
