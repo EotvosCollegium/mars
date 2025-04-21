@@ -11,7 +11,6 @@
 
 @section('content')
     <div class="row">
-
         <div class="col s12">
             @can('manage', \App\Models\MrAndMissVote::class)
                 <p>
@@ -19,11 +18,38 @@
                     <x-input.button :href="route('mr_and_miss.results')" text="Eredmények" />
                 </p>
             @endcan
+            @can('optOut', \App\Models\MrAndMissVote::class)
+            <div class="card">
+                <div class="card-content">
+                    <span class="card-title">Mr. és Miss Eötvös részvétel</span>
+                    <p>
+                        Amennyiben nem szeretnél részt venni az idei Mr. és Miss Eötvösben, a szavazási időszak kezdetéig <span>({{ $start_date }})</span> a lenti gombbal jelezheted.
+                        Ekkor mások nem adhatnak le rád szavazatot, és te sem tudsz szavazni.
+                    </p>
+                </div>
+                <div class="card-action right-align">
+                    <form action="{{ route('mr_and_miss.opt_out') }}" method="post">
+                        <input type="hidden" name="opt_out" value="{{ $opted_out ? '0' : '1' }}">
+                        @csrf
+                        @if ($opted_out)
+                            <button class="btn waves-effect waves-light green" type="submit">Részt veszek
+                                <i class="material-icons right">check</i>
+                            </button>
+                        @else
+                            <button class="btn waves-effect waves-light red" type="submit">Nem szeretnék részt venni
+                                <i class="material-icons right">clear</i>
+                            </button>
+                        @endif
+                    </form>
+                </div>
+            </div>
+            @elsecan('vote', \App\Models\MrAndMissVote::class)
             <div class="card">
                 <div class="card-content">
                     <span class="card-title">Szavazás</span>
                     <p>
-                        Külön tudtok szavazni a Mr, a Miss, illetve az egyéni kategóriákban. Lehetőleg a keresők segítségével válasszátok ki a jelölteteket, azonban ha nem találjátok az illetőt a rendszerben, a sor végén található gombbal tudtok szabad kezes bevitelre váltani.
+                        Külön tudtok szavazni a Mr, a Miss, illetve az egyéni kategóriákban. Lehetőleg a keresők segítségével válasszátok ki a jelölteteket.
+                        A listában azok az aktív collegisták szerepelnek, akik nem jelezték, hogy nem szeretnének részt venni a szavazásban. Ha a felsorolt lehetőségek helyett másra szavaznátok, a sor végén található gombbal szabad kezes bevitelre válthattok.
                         A határidőig bárhányszor módosíthatjátok a szavazatokat.
                     </p>
                     <blockquote>
@@ -34,7 +60,6 @@
                     @endforeach
                 </div>
             </div>
-            @can('vote', \App\Models\MrAndMissVote::class)
             <div class="card">
                 <div class="card-tabs">
                     <ul class="tabs tabs-fixed-width">

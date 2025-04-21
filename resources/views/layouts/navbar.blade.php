@@ -121,7 +121,7 @@
                                         </a>
                                     </li>
                                     <!-- community committee -->
-                                    @can('voteOrManage', \App\Models\MrAndMissVote::class)
+                                    @can('accessOrManage', \App\Models\MrAndMissVote::class)
                                         <li>
                                             <a class="waves-effect" href="{{ route('mr_and_miss.index') }}">
                                                 <i class="material-icons left">how_to_vote</i> Mr. és Miss Eötvös

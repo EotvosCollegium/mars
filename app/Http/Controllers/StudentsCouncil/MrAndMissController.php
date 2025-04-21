@@ -7,9 +7,11 @@ use App\Models\MrAndMissCategory;
 use App\Models\MrAndMissVote;
 use App\Models\Semester;
 use App\Models\User;
+use App\Models\MrAndMissOptOut;
 use App\Utils\HasPeriodicEvent;
 use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -19,12 +21,12 @@ class MrAndMissController extends Controller
     use HasPeriodicEvent;
 
     /**
-     * Show the page for voting.
+     * Show the page for voting and opting out.
      * Accessible by collegists.
      */
     public function index(Request $request)
     {
-        $this->authorize('voteOrManage', MrAndMissVote::class);
+        $this->authorize('accessOrManage', MrAndMissVote::class);
 
         $categories = MrAndMissCategory::select(['mr_and_miss_categories.id', 'title', 'mr', 'custom', 'votee_id', 'votee_name as custom_name'])
             ->where('hidden', false)
@@ -46,9 +48,11 @@ class MrAndMissController extends Controller
             'student-council.mr-and-miss.index',
             [
                 'categories' => $categories,
-                'users' => User::collegists(),
+                'users' => $this->participatingUsers(),
                 'miss_first' => rand(0, 1) == 0,
                 'deadline' => $this->getDeadline(),
+                'start_date' => $this->getStartDate(),
+                'opted_out' => $this->optedOut(user()),
             ]
         );
     }
@@ -149,7 +153,7 @@ class MrAndMissController extends Controller
     {
         $this->authorize('manage', MrAndMissVote::class);
 
-        if(!$this->semester()) {
+        if (!$this->semester()) {
             throw new \Exception('Nincs megjeleníthető eredmény.');
         }
         $results = MrAndMissVote::select(DB::raw('count(*) as count, users.name, votee_name, title, mr, custom'))
@@ -230,5 +234,60 @@ class MrAndMissController extends Controller
         return redirect()->back()
             ->with('activate_custom', 'true') //go to the custom category page
             ->with('message', __('general.successful_modification'));
+    }
+
+    /*
+     * Opt out of participating.
+     * Accessible by collegists in the week leading up to the voting period.
+     */
+    public function optOut(Request $request)
+    {
+        $this->authorize('optOut', MrAndMissVote::class);
+
+        $validatedData = $request->validate([
+            'opt_out' => 'required|boolean',
+        ]);
+
+        if ($validatedData['opt_out']) {
+            MrAndMissOptOut::updateOrCreate([
+                'user_id' => user()->id,
+                'semester_id' => $this->semester()->id,
+            ]);
+        } else {
+            MrAndMissOptOut::where([
+                'user_id' => user()->id,
+                'semester_id' => $this->semester()->id,
+            ])->delete();
+        }
+
+        return back()->with('message', __('general.successful_modification'));
+    }
+
+    public function isOptOutPeriod(): bool
+    {
+        $startDate = $this->periodicEvent()?->startDate();
+
+        return $startDate && $startDate->between(Carbon::now(), Carbon::now()->addDays(7));
+    }
+
+    public function optedOut(User $user): bool
+    {
+        return MrAndMissOptOut::where([
+            'user_id' => $user->id,
+            'semester_id' => $this->semester()?->id,
+        ])->exists();
+    }
+
+    private function participatingUsers(): Collection
+    {
+        if (!$this->semester()) {
+            return new Collection();
+        }
+
+        return User::collegist()->active()->whereNotIn('id', function ($query) {
+            $query->select('user_id')
+                ->from('mr_and_miss_opt_outs')
+                ->where('semester_id', $this->semester()->id);
+        })->get();
     }
 }
