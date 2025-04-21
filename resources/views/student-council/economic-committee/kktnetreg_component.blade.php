@@ -29,22 +29,24 @@
                 </div>
             </div>
             @forelse($this->unpaidUsers as $user)
-                @can('view', $user)
-                    <div class="row">
-                        <div class="col s12 xl3">
+                <div class="row">
+                    <div class="col s12 xl3">
+                        @can('view', $user)
                             <a href="{{ route('users.show', ['user' => $user->id]) }}"><b>{{ $user->name }}</b></a><br>
                             {{ $user->email }}
-                            @if($user->hasEducationalInformation())
-                                <br>{{ $user->educationalInformation->neptun ?? '' }}
-                            @endif
-                        </div>
-                        <div class="col s12 xl4">
-                            @if($user->hasEducationalInformation())
-                                @include('user.workshop_tags', ['workshops' => $user->workshops, 'newline' => true])
-                            @endif
-                        </div>
+                        @else
+                            <b>{{ $user->name }}</b>
+                        @endcan
+                        @if($user->hasEducationalInformation())
+                            <br>{{ $user->educationalInformation->neptun ?? '' }}
+                        @endif
                     </div>
-                @endcan
+                    <div class="col s12 xl4">
+                        @if($user->hasEducationalInformation())
+                            @include('user.workshop_tags', ['workshops' => $user->workshops, 'newline' => true])
+                        @endif
+                    </div>
+                </div>
             @empty
             @lang('user.no_such_user')
             @endforelse
@@ -67,28 +69,30 @@
             </div>
             @forelse($this->payments as $transaction)
                 @php($user = $transaction->payer)
-                @can('view', $user)
-                    <div class="row">
-                        <div class="col s12 xl3">
+                <div class="row">
+                    <div class="col s12 xl3">
+                        @can('view', $user)
                             <a href="{{ route('users.show', ['user' => $user->id]) }}"><b>{{ $user->name }}</b></a><br>
                             {{ $user->email }}
-                            @if($user->hasEducationalInformation())
-                                <br>{{ $user->educationalInformation->neptun ?? '' }}
-                            @endif
-                        </div>
-                        <div class="col s12 xl4">
-                            @if($user->hasEducationalInformation())
-                                @include('user.workshop_tags', ['workshops' => $user->workshops, 'newline' => true])
-                            @endif
-                        </div>
-                        <div class="col s12 xl1" style="padding-left:50px;">
-                            {{ $transaction->comment }}
-                            <br>
-                            {{ $transaction->amount }}
-                        </div>
-
+                        @else
+                            <b>{{ $user->name }}</b>
+                        @endcan
+                        @if($user->hasEducationalInformation())
+                            <br>{{ $user->educationalInformation->neptun ?? '' }}
+                        @endif
                     </div>
-                @endcan
+                    <div class="col s12 xl4">
+                        @if($user->hasEducationalInformation())
+                            @include('user.workshop_tags', ['workshops' => $user->workshops, 'newline' => true])
+                        @endif
+                    </div>
+                    <div class="col s12 xl1" style="padding-left:50px;">
+                        {{ $transaction->comment }}
+                        <br>
+                        {{ $transaction->amount }}
+                    </div>
+
+                </div>
             @empty
             @lang('checkout.no_such_payment')
             @endforelse

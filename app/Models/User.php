@@ -527,17 +527,14 @@ class User extends Authenticatable implements HasLocalePreference
     }
 
     /**
-     * Scope a query to only include collegist users (including alumni).
+     * Scope a query to only include collegist users (excluding alumni).
+     *
+     * @param Builder $query
      * @return Builder
      */
-    public function scopeCollegist(): Builder
+    public function scopeCollegist(Builder $query): Builder
     {
-        return $this->where(function ($query) {
-            return $query->withRole(Role::COLLEGIST)
-                ->orWhere(function ($query) {
-                    return $query->withRole(Role::ALUMNI);
-                });
-        });
+        return $query->withRole(Role::COLLEGIST);
     }
 
     /**
