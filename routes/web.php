@@ -251,6 +251,7 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
     Route::get('/community_committee/mr_and_miss', [MrAndMissController::class, 'index'])->name('mr_and_miss.index');
     Route::post('/community_committee/mr_and_miss/vote', [MrAndMissController::class, 'saveVote'])->name('mr_and_miss.vote.save');
     Route::post('/community_committee/mr_and_miss/vote/custom', [MrAndMissController::class, 'customVote'])->name('mr_and_miss.vote.custom');
+    Route::post('/community_committee/mr_and_miss/opt_out', [MrAndMissController::class, 'optOut'])->name('mr_and_miss.opt_out');
     Route::get('/community_committee/mr_and_miss/admin', [MrAndMissController::class, 'indexAdmin'])->name('mr_and_miss.admin');
     Route::post('/community_committee/mr_and_miss/admin/categories', [MrAndMissController::class, 'createCategory'])->name('mr_and_miss.categories.create');
     Route::post('/community_committee/mr_and_miss/admin/categories/create', [MrAndMissController::class, 'editCategories'])->name('mr_and_miss.categories.edit');
