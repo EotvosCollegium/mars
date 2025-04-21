@@ -26,7 +26,7 @@ class MrAndMissVotePolicy
         if (!($user->isCollegist(alumni: false))) {
             return Response::deny('Csak collegisták szavazhatnak.');
         }
-        if(!app(MrAndMissController::class)->isActive()) {
+        if (!app(MrAndMissController::class)->isActive()) {
             return Response::deny('A szavazás jelenleg nem elérhető.');
         }
         return Response::allow();
@@ -40,9 +40,8 @@ class MrAndMissVotePolicy
      */
     public function manage(User $user): bool
     {
-        return $user->hasRole([Role::STUDENT_COUNCIL => Role::COMMUNITY_LEADER]);
+        return $user->isAdmin() || $user->hasRole([Role::STUDENT_COUNCIL => Role::COMMUNITY_LEADER]);
     }
-
 
     /**
      * Determine whether the user can vote or manage the categories and see the results.
@@ -52,7 +51,7 @@ class MrAndMissVotePolicy
      */
     public function voteOrManage(User $user)
     {
-        if(!$this->manage($user)) {
+        if (!$this->manage($user)) {
             return $this->vote($user);
         }
         return true;
