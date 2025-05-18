@@ -47,7 +47,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $schedule->job(new PeriodicEventsProcessor())->daily()->at('13:00')->onFailure(function () {
             Log::error('Error processing periodic events.');
         });
-        $schedule->job(new PingRouters())->everyFiveMinutes()->onFailure(function () {
+        $schedule->job(new PingRouters())->everyMinute()->onFailure(function () {
             Log::error('Error pinging routers');
         });
 
