@@ -9,6 +9,7 @@ use App\Utils\Process;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Container\ContainerExceptionInterface;
+use Illuminate\Support\Facades\Log;
 
 class PrinterHelper
 {
@@ -19,10 +20,33 @@ class PrinterHelper
      */
     public static function getDocumentPageNumber(string $path): int
     {
-        $process = Process::fromShellCommandline(config('commands.pdfinfo') . " $path | grep '^Pages' | awk '{print $2}'");
+        $process = new Process([config('commands.pdfinfo'), $path]);
         $process->run();
-        $result = intval($process->getOutput(strval(rand(1, 10))));
-        return $result;
+        $pdfinfo = $process->getOutput("Title:           TEST
+Author:          TEST
+Creator:         TEST
+Producer:        TEST
+CreationDate:    TEST
+ModDate:         TEST
+Custom Metadata: TEST
+Metadata Stream: TEST
+Tagged:          TEST
+UserProperties:  TEST
+Suspects:        TEST
+Form:            TEST
+JavaScript:      TEST
+Pages:           " . strval(rand(1, 10)) . "
+Encrypted:       TEST
+Page size:       TEST
+Page rot:        TEST
+File size:       TEST
+Optimized:       no
+PDF version:     1.4");
+        if (preg_match('/Pages:\s+(\d+)/', $pdfinfo, $needle)) {
+            return intval($needle[1]);
+        } else {
+            throw new Exception("Could not determine number of pages");
+        }
     }
 
     /**

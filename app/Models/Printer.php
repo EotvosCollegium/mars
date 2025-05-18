@@ -120,10 +120,13 @@ class Printer extends Model
     public function getCompletedPrintJobs()
     {
         try {
-            $process = Process::fromShellCommandline(config('commands.lpstat') . " -h $this->ip:$this->port -W completed -o $this->name | awk '{print $1}'");
+            $process = new Process([config('commands.lpstat'), '-h', "$this->ip:$this->port", '-W', 'completed', '-o', $this->name]);
             $process->run();
             $result = explode("\n", $process->getOutput());
-            return $result;
+            $firstWords = array_map(function ($line) {
+                return strtok($line, " ");
+            }, $result);
+            return $firstWords;
         } catch (\Exception $e) {
             Log::error("Printing error at line: " . __FILE__ . ":" . __LINE__ . " (in function " . __FUNCTION__ . "). " . $e->getMessage());
             throw new PrinterException($e->getMessage(), $e->getCode(), $e->getPrevious());
