@@ -123,7 +123,7 @@ class Printer extends Model
             $process = new Process([config('commands.lpstat'), '-h', "$this->ip:$this->port", '-W', 'completed', '-o', $this->name]);
             $process->run();
             $result = explode("\n", $process->getOutput());
-            $firstWords = array_map(function($line) {
+            $firstWords = array_map(function ($line) {
                 return strtok($line, " ");
             }, $result);
             return $firstWords;
