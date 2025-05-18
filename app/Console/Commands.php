@@ -16,11 +16,12 @@ class Commands
         if (!filter_var($router->ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
             throw new \InvalidArgumentException("Invalid IP address: " . $router->ip);
         }
+        $process = new Process([config('commands.nmap'), $router->ip, '-sP', '-oG', '-']);
 
-        $process = Process::fromShellCommandline(config('commands.ping') . " $router->ip -c 1 | grep 'error\|unreachable'");
         $process->run(log: false);
-        $result = $process->getOutput(debugOutput: rand(1, 10) > 9 ? "error" : '');
-        return $result;
+        $nmap = $process->getOutput(debugOutput: rand(1, 10) > 9 ? '' : 'Status: Up');
+
+        return strpos($nmap, "Status: Up") !== false;
     }
 
     public static function latexToPdf($path, $outputDir)
