@@ -58,8 +58,8 @@ class Router extends Model
     public $incrementing = false;
     public $timestamps = false;
 
-    // We send a warning to the network admins on the second error.
-    public const WARNING_THRESHOLD = 2;
+    // We send a warning on the sixth error.
+    public const WARNING_THRESHOLD = 6;
 
     protected $fillable = [
         'ip', 'room', 'failed_for', 'port', 'type', 'serial_number',
