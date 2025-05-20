@@ -6,7 +6,7 @@ use App\Enums\PrintJobStatus;
 use App\Http\Controllers\Controller;
 use App\Models\FreePrintingCredits;
 use App\Models\PrintAccount;
-use App\Models\Printer;
+use App\Models\PrinterConfiguration;
 use App\Enums\PrinterCancelResult;
 use App\Utils\PrinterHelper;
 use App\Models\PrintJob;
@@ -33,7 +33,7 @@ class PrintJobController extends Controller
     {
         $this->authorize('viewSelf', PrintJob::class);
 
-        PrinterHelper::updateCompletedPrintJobs();
+        PrintJob::updateCompletedPrintJobs();
 
         return $this->paginatorFrom(
             printJobs: user()
@@ -56,7 +56,7 @@ class PrintJobController extends Controller
     {
         $this->authorize('viewAny', PrintJob::class);
 
-        PrinterHelper::updateCompletedPrintJobs();
+        PrintJob::updateCompletedPrintJobs();
 
         return $this->paginatorFrom(
             printJobs: PrintJob::with('user')
@@ -80,41 +80,38 @@ class PrintJobController extends Controller
     {
         DB::beginTransaction();
 
-        $request->validate([
+        $validated = $request->validate([
             'file' => 'required|file',
-            'copies' => 'required|integer|min:1',
-            'two_sided' => 'in:on,off',
-            'use_free_printing_credits' => 'in:on,off',
+            'copies' => 'required|integer|min:1|max:99',
+            'use_free_printing_credits' => 'sometimes|accepted',
+            'printer_configuration' => 'required|integer|exists:printer_configurations,id'
         ]);
 
-        $useFreePrintingCredits = $request->boolean('use_free_printing_credits');
-        $copyNumber = $request->input('copies');
-        $twoSided = $request->boolean('two_sided');
-        $file = $request->file('file');
+        $useFreePrintingCredits = isset($validated['use_free_printing_credits']) && $validated['use_free_printing_credits'];
+        $copyNumber = $validated['copies'];
+        $file = $validated['file'];
 
-        /** @var Printer */
-        $printer = Printer::firstWhere('name', config('print.printer_name'));
+        $configuration = PrinterConfiguration::find($validated['printer_configuration']);
+
+        $this->authorize('use', $configuration);
 
         $path = $file->store('', 'printing');
         $originalName = $file->getClientOriginalName();
         $pageNumber = PrinterHelper::getDocumentPageNumber(Storage::disk('printing')->path($path));
 
-        /** @var PrintAccount */
         $printAccount = user()->printAccount;
 
-        if (!$printAccount->hasEnoughBalanceOrFreePrintingCredits($useFreePrintingCredits, $pageNumber, $copyNumber, $twoSided)) {
+        if (!$printAccount->hasEnoughBalanceOrFreePrintingCredits($useFreePrintingCredits, $pageNumber, $copyNumber, $configuration)) {
             DB::rollBack();
             return back()->with('error', __('print.no_balance'));
         }
 
-        $cost = $useFreePrintingCredits ?
-            PrinterHelper::getFreePrintingCreditsNeeded($pageNumber, $copyNumber, $twoSided) :
-            PrinterHelper::getBalanceNeeded($pageNumber, $copyNumber, $twoSided);
+        $cost = $configuration->getPrice($pageNumber, $copyNumber);
 
         $printAccount->updateHistory($useFreePrintingCredits, $cost);
 
         try {
-            $printJob = $printer->createPrintJob($useFreePrintingCredits, $cost, Storage::disk('printing')->path($path), $originalName, $twoSided, $copyNumber);
+            $printJob = $configuration->createPrintJob($useFreePrintingCredits, $cost, Storage::disk('printing')->path($path), $originalName, $copyNumber);
             Log::info("User $printAccount->user_id started print job a document for $cost. Job ID: $printJob->job_id. Used free printing credits: $useFreePrintingCredits. File: $originalName");
         } catch (\Exception $e) {
             DB::rollBack();

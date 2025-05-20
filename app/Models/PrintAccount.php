@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Utils\PrinterHelper;
+use App\Models\PrinterConfiguration;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
@@ -80,25 +81,23 @@ class PrintAccount extends Model
      * Returns wether the user has enough free credits to print a document.
      * @param int $pages
      * @param int $copies
-     * @param bool $twoSided
      * @return bool
      */
-    public function hasEnoughFreePrintingCredits(int $pages, int $copies, bool $twoSided)
+    public function hasEnoughFreePrintingCredits(int $pages, int $copies, PrinterConfiguration $configuration)
     {
         return $this->availableFreePrintingCredits()->sum('amount') >=
-            PrinterHelper::getFreePrintingCreditsNeeded($pages, $copies, $twoSided);
+            $configuration->getPrice($pages, $copies);
     }
 
     /**
      * Returns wether the user has enough balance to print a document.
      * @param int $pages
      * @param int $copies
-     * @param bool $twoSided
      * @return bool
      */
-    public function hasEnoughBalance(int $pages, int $copies, bool $twoSided)
+    public function hasEnoughBalance(int $pages, int $copies, PrinterConfiguration $configuration)
     {
-        return $this->balance >= PrinterHelper::getBalanceNeeded($pages, $copies, $twoSided);
+        return $this->balance >= $configuration->getPrice($pages, $copies);
     }
 
     /**
@@ -106,12 +105,11 @@ class PrintAccount extends Model
      * @param bool $useFreePrintingCredits
      * @param int $pages
      * @param int $copies
-     * @param bool $twoSided
      * @return bool
      */
-    public function hasEnoughBalanceOrFreePrintingCredits(bool $useFreePrintingCredits, int $pages, int $copies, bool $twoSided)
+    public function hasEnoughBalanceOrFreePrintingCredits(bool $useFreePrintingCredits, int $pages, int $copies, PrinterConfiguration $configuration)
     {
-        return $useFreePrintingCredits ? $this->hasEnoughFreePrintingCredits($pages, $copies, $twoSided) : $this->hasEnoughBalance($pages, $copies, $twoSided);
+        return $useFreePrintingCredits ? $this->hasEnoughFreePrintingCredits($pages, $copies, $configuration) : $this->hasEnoughBalance($pages, $copies, $configuration);
     }
 
     /**
