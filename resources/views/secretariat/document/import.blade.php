@@ -62,8 +62,6 @@
             <div class="card-action">
                 <a href="{{ route('documents.import.download') }}" type="submit"
                     class="btn waves-effect coli">letöltés</a>
-                <a href="{{ route('documents.import.print') }}" type="submit"
-                    class="btn waves-effect coli blue right">Nyomtatás</a>
             </div>
         </div>
     </div>

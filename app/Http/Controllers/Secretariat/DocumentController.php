@@ -7,7 +7,6 @@ use App\Models\User;
 use App\Models\Semester;
 use App\Models\ImportItem;
 use App\Console\Commands;
-use App\Utils\Printer;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,16 +21,6 @@ class DocumentController extends Controller
         Gate::authorize('document.any');
 
         return view('secretariat.document.index');
-    }
-
-    /** Register statement */
-
-    public function printRegisterStatement()
-    {
-        Gate::authorize('document.register-statement');
-
-        $result = $this->generateRegisterStatement();
-        return $this->printDocument($result, __('document.register-statement'));
     }
 
     public function downloadRegisterStatement()
@@ -50,16 +39,6 @@ class DocumentController extends Controller
 
         $result = $this->generateDepartureStatement();
         return $this->downloadDocument($result);
-    }
-
-    /** Import license */
-
-    public function printImport()
-    {
-        Gate::authorize('document.import-license');
-
-        $result = $this->generateImport();
-        return $this->printDocument($result, __('document.import'));
     }
 
     public function downloadImport()
@@ -139,16 +118,6 @@ class DocumentController extends Controller
         }
         $document = $result['pdf'];
         return response()->download($document);
-    }
-
-    private function printDocument($result, $filename)
-    {
-        if (!$result['success']) {
-            return $result['redirect'];
-        }
-        $document = $result['pdf'];
-        $printer = new Printer($filename, $document, /* $use_free_printing_credits */ true);
-        return $printer->print();
     }
 
     // Returns the .tex file in debug mode
