@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Log;
  */
 class Commands
 {
-    public static function pingRouter($router) : bool
+    public static function pingRouter($router): bool
     {
         if (!filter_var($router->ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
             throw new \InvalidArgumentException("Invalid IP address: " . $router->ip);
