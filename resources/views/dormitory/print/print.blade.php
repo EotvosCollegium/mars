@@ -30,7 +30,7 @@
             <p>
             @lang('print.double_sided_pricing')
             </p>
-            <p>@lang('print.no-paper-description')</p>
+            <p>@lang('print.no-paper-description', ["mailsysadmin" => config('contacts.mail_sysadmin')])</p>
         </blockquote>
         @foreach($printer_configurations as $printer_configuration)
             <form id="{{ 'printer_edit_form_'.$printer_configuration->id}}" method="POST" action="{{ route('print.update', ['printer_configuration' => $printer_configuration]) }}">

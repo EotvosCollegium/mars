@@ -27,7 +27,7 @@ class Process extends SymfonyProcess
             }
             return $return_value;
         }
-        Log::info("Process not executed in debug mode.");
+        Log::info("Process not executed in debug mode. Command: {$this->getCommandLine()}");
         return 0;
     }
 

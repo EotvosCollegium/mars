@@ -39,7 +39,7 @@ class PrinterConfigurationController extends Controller
     }
 
     /**
-     * Sets the given printer's out of paper sign.
+     * Handles reports of the printer running out of paper and printer configuration (de)activation
      */
     public function update(Request $request, PrinterConfiguration $printer_configuration)
     {

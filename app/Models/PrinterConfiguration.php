@@ -95,13 +95,10 @@ class PrinterConfiguration extends Model
      */
     public function print(int $copies, string $path)
     {
-        if (config('app.debug')) {
-            return "not_submitted";
-        }
         $jobId = null;
         try {
-            $process = new Process(array_merge([
-                'lp',
+            $process = new Process(array_merge(
+                ['lp'],
                 explode(
                     ' ',
                     str_replace(
@@ -110,8 +107,11 @@ class PrinterConfiguration extends Model
                         $this->lp_flags
                     )
                 )
-            ]));
+            ));
             $process->run();
+            if (config('app.debug')) {
+                return "not_submitted";
+            }
             if (!$process->isSuccessful()) {
                 Log::error("Printing error at line: " . __FILE__ . ":" . __LINE__ . " (in function " . __FUNCTION__ . "). " . $process->getErrorOutput());
                 throw new PrinterException($process->getErrorOutput());
