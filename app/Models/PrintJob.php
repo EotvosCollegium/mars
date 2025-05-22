@@ -57,6 +57,7 @@ class PrintJob extends Model
         'printer_configuration_id',
         'used_free_printing_credits',
         'filename',
+        'file_path',
     ];
 
     protected $casts = [
