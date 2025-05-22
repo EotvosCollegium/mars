@@ -81,6 +81,7 @@ class PrintAccount extends Model
      * Returns wether the user has enough free credits to print a document.
      * @param int $pages
      * @param int $copies
+     * @param PrinterConfiguration $configuration
      * @return bool
      */
     public function hasEnoughFreePrintingCredits(int $pages, int $copies, PrinterConfiguration $configuration)
@@ -93,6 +94,7 @@ class PrintAccount extends Model
      * Returns wether the user has enough balance to print a document.
      * @param int $pages
      * @param int $copies
+     * @param PrinterConfiguration $configuration
      * @return bool
      */
     public function hasEnoughBalance(int $pages, int $copies, PrinterConfiguration $configuration)
@@ -105,6 +107,7 @@ class PrintAccount extends Model
      * @param bool $useFreePrintingCredits
      * @param int $pages
      * @param int $copies
+     * @param PrinterConfiguration $configuration
      * @return bool
      */
     public function hasEnoughBalanceOrFreePrintingCredits(bool $useFreePrintingCredits, int $pages, int $copies, PrinterConfiguration $configuration)

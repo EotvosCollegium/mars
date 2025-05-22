@@ -162,7 +162,7 @@ class PrintJob extends Model
      * @throws NotFoundExceptionInterface
      * @throws ContainerExceptionInterface
      */
-    private static function getCompletedPrintJobsFromLpstat() : array
+    private static function getCompletedPrintJobsFromLpstat(): array
     {
         try {
             $process = new Process([config('commands.lpstat'), '-h', config('print.cups_address'), '-W', 'completed']);
