@@ -156,16 +156,16 @@ class PrintJob extends Model
     }
 
     /**
-     * Returns the completed printjobs.
+     * Returns the completed printjobs. Running this function is really expensive.
      * @return array
      * @throws NotFoundExceptionInterface
      * @throws ContainerExceptionInterface
      */
-    private static function getCompletedPrintJobs()
+    private static function getCompletedPrintJobsFromLpstat() : array
     {
         try {
             $process = new Process([config('commands.lpstat'), '-h', config('print.cups_address'), '-W', 'completed']);
-            $process->run();
+            $process->run(log: false);
             $result = explode("\n", $process->getOutput());
             $firstWords = array_map(function ($line) {
                 return strtok($line, " ");
@@ -178,14 +178,15 @@ class PrintJob extends Model
     }
 
     /**
-     * Updates the state of the completed printjobs to `PrintJobStatus::SUCCESS`.
+     * Updates the state of the completed printjobs to `PrintJobStatus::SUCCESS`.  Running this function is really expensive.
      */
     public static function updateCompletedPrintJobs()
     {
-        DB::transaction(function () {
+        $completedPrintJobs = self::getCompletedPrintJobsFromLpstat();
+        DB::transaction(function () use ($completedPrintJobs) {
             PrintJob::where('state', PrintJobStatus::QUEUED)->whereIn(
                 'job_id',
-                self::getCompletedPrintJobs()
+                $completedPrintJobs
             )->update(['state' => PrintJobStatus::SUCCESS]);
         });
     }

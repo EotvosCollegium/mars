@@ -33,8 +33,6 @@ class PrintJobController extends Controller
     {
         $this->authorize('viewSelf', PrintJob::class);
 
-        PrintJob::updateCompletedPrintJobs();
-
         return $this->paginatorFrom(
             printJobs: user()
                 ->printJobs()
@@ -55,8 +53,6 @@ class PrintJobController extends Controller
     public function adminIndex()
     {
         $this->authorize('viewAny', PrintJob::class);
-
-        PrintJob::updateCompletedPrintJobs();
 
         return $this->paginatorFrom(
             printJobs: PrintJob::with('user')

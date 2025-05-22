@@ -7,6 +7,7 @@ use App\Http\Middleware\RedirectTenantsToUpdate;
 use App\Jobs\PeriodicEventsProcessor;
 use App\Jobs\PingRouters;
 use App\Jobs\ProcessWifiConnections;
+use App\Jobs\UpdatePrintJobs;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -49,6 +50,9 @@ return Application::configure(basePath: dirname(__DIR__))
         });
         $schedule->job(new PingRouters())->everyMinute()->onFailure(function () {
             Log::error('Error pinging routers');
+        });
+        $schedule->job(new UpdatePrintJobs())->everyThirtySeconds()->onFailure(function () {
+            Log::error('Error updating print jobs');
         });
 
         $schedule->job(new ProcessWifiConnections())->dailyAt('01:00')->onFailure(function () {
