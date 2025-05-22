@@ -82,6 +82,7 @@ class PrinterConfiguration extends Model
             'cost' => $cost,
             'used_free_printing_credits' => $useFreePrintingCredits,
             'filename' => $originalName,
+            'file_path' => $filePath,
         ]);
     }
 
