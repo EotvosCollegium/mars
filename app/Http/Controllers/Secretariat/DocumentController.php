@@ -9,7 +9,6 @@ use App\Models\ImportItem;
 use App\Console\Commands;
 use App\Utils\Printer;
 use App\Http\Controllers\Controller;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -40,6 +39,16 @@ class DocumentController extends Controller
         Gate::authorize('document.register-statement');
 
         $result = $this->generateRegisterStatement();
+        return $this->downloadDocument($result);
+    }
+
+    /** Departure statement */
+
+    public function downloadDepartureStatement()
+    {
+        Gate::authorize('document.departure-statement');
+
+        $result = $this->generateDepartureStatement();
         return $this->downloadDocument($result);
     }
 
@@ -165,7 +174,7 @@ class DocumentController extends Controller
         }
     }
 
-    private function generateRegisterStatement()
+    private function generateStatement($template_name)
     {
         $user = user();
 
@@ -178,7 +187,7 @@ class DocumentController extends Controller
         $info = $user->personalInformation;
 
         $pdf = $this->generatePDF(
-            'latex.register-statement',
+            $template_name,
             [ 'name' => $user->name,
               'address' => $info->zip_code . ' ' . $info->getAddress(),
               'phone' => $info->phone_number,
@@ -189,6 +198,16 @@ class DocumentController extends Controller
         ]
         );
         return ['success' => true, 'pdf' => $pdf];
+    }
+
+    private function generateRegisterStatement()
+    {
+        return $this->generateStatement('latex.register-statement');
+    }
+
+    private function generateDepartureStatement()
+    {
+        return $this->generateStatement('latex.departure-statement');
     }
 
     private function generateImport()
