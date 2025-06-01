@@ -44,6 +44,10 @@ class AuthServiceProvider extends ServiceProvider
             return $user->isCollegist(alumni: false)
                 || $user->hasRole(Role::TENANT);
         });
+        Gate::define('document.departure-statement', function ($user) {
+            return $user->isCollegist(alumni: false)
+                || $user->hasRole(Role::TENANT);
+        });
         Gate::define('document.import-license', function ($user) {
             return $user->isCollegist()
                 || $user->hasRole(Role::TENANT);

@@ -43,6 +43,16 @@ class DocumentController extends Controller
         return $this->downloadDocument($result);
     }
 
+    /** Departure statement */
+
+    public function downloadDepartureStatement()
+    {
+        Gate::authorize('document.departure-statement');
+
+        $result = $this->generateDepartureStatement();
+        return $this->downloadDocument($result);
+    }
+
     /** Import license */
 
     public function printImport()
@@ -138,7 +148,7 @@ class DocumentController extends Controller
             return $result['redirect'];
         }
         $document = $result['pdf'];
-        $printer = new Printer($filename, $document, /* $use_free_printing_credits */ true);
+        $printer = new Printer($filename, $document, /* $use_free_printing_credits */ false);
         return $printer->print();
     }
 
@@ -165,8 +175,7 @@ class DocumentController extends Controller
         }
     }
 
-    private function generateRegisterStatement()
-    {
+    private function generateStatement($template_name) {
         $user = user();
 
         if (!$user->hasPersonalInformation()) {
@@ -178,7 +187,7 @@ class DocumentController extends Controller
         $info = $user->personalInformation;
 
         $pdf = $this->generatePDF(
-            'latex.register-statement',
+            $template_name,
             [ 'name' => $user->name,
               'address' => $info->zip_code . ' ' . $info->getAddress(),
               'phone' => $info->phone_number,
@@ -189,6 +198,16 @@ class DocumentController extends Controller
         ]
         );
         return ['success' => true, 'pdf' => $pdf];
+    }
+
+    private function generateRegisterStatement()
+    {
+        return $this->generateStatement('latex.register-statement');
+    }
+
+    private function generateDepartureStatement()
+    {
+        return $this->generateStatement('latex.departure-statement');
     }
 
     private function generateImport()
