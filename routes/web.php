@@ -215,6 +215,7 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
     Route::get('/documents', [DocumentController::class, 'index'])->name('documents');
     Route::get('/documents/register-statement/download', [DocumentController::class, 'downloadRegisterStatement'])->name('documents.register-statement.download');
     Route::get('/documents/register-statement/print', [DocumentController::class, 'printRegisterStatement'])->name('documents.register-statement.print');
+    Route::get('/documents/departure-statement/download', [DocumentController::class, 'downloadDepartureStatement'])->name('documents.departure-statement.download');
     Route::get('/documents/import/show', [DocumentController::class, 'showImport'])->name('documents.import.show');
     Route::post('/documents/import/add', [DocumentController::class, 'addImport'])->name('documents.import.add');
     Route::post('/documents/import/remove', [DocumentController::class, 'removeImport'])->name('documents.import.remove');

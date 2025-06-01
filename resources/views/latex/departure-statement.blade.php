@@ -26,7 +26,7 @@
 \begin{document}
 
 \begin{center}
-\Large \textsc{Eötvös József Collegium \\ Beköltözési nyilatkozat} \\ \normalsize (Házirend, 1. sz. melléklet)
+\Large \textsc{Eötvös József Collegium \\ Kiköltözési nyilatkozat} \\ \normalsize (Házirend, 3. sz. melléklet)
 \end{center}
 
 \vspace*{2em}
@@ -37,25 +37,40 @@ Telefonszám: {{ \App\Utils\LatexSanitizer::sanitizeLatex($phone) }} \\
 E-mail: {{ \App\Utils\LatexSanitizer::sanitizeLatex($email) }} \\
 Születési hely és idő: {{ \App\Utils\LatexSanitizer::sanitizeLatex($place_and_of_birth) }} \\
 Anyja neve: {{ \App\Utils\LatexSanitizer::sanitizeLatex($mothers_name) }} \\
-Beköltözés dátuma: \\
+Kiköltözés dátuma: \\
 \\
-Megjegyzések:
-
-A szobában lévő berendezéseket csak gondnoki engedéllyel lehet cserélni. A behozatali engedélyt a beköltözési nyilatkozattal együtt kell leadni. A ki - és beköltözést, valamint az átköltözést minden esetben jelenteni kell a gondnoknak és a Választmánynak is.
-
-A beköltözéssel elfogadom a Házirendet, valamint az intézmény Munka-, tűz- és vagyonvédelmi
-előírásait.
-
-\vspace{4em}
-A fentieket tudomásul vettem, a szobát a leltár szerint átvettem.
+A szobát a leltár szerint átadtam.
 
 \vspace{2em}
 \noindent{}Budapest, {{ \App\Utils\LatexSanitizer::sanitizeLatex($date) }}
 
 \hfill\lotofdots
 
-\hfill aláírás\hspace{3.5em}
+\hfill Aláírás\hspace{3.5em}
 
 \vspace{3em}
+
+\hline
+
+\vspace{2em}
+
+\noindent{}A szobát ellenőriztük, állapota rendezett, kitakarított.\\
+Budapest, {{ \App\Utils\LatexSanitizer::sanitizeLatex($date) }}
+
+\vspace{3em}
+
+\hfill\lotofdots
+
+\hfill Aláírás\hspace{3.5em}
+
+\hfill Gondnokság\hspace{2em}
+
+\vspace{3em}
+
+\hfill\lotofdots
+
+\hfill Aláírás\hspace{3.5em}
+
+\hfill Választmányi delegált
 
 \end{document}
