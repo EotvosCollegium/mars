@@ -9,7 +9,6 @@ use App\Models\ImportItem;
 use App\Console\Commands;
 use App\Utils\Printer;
 use App\Http\Controllers\Controller;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -175,7 +174,8 @@ class DocumentController extends Controller
         }
     }
 
-    private function generateStatement($template_name) {
+    private function generateStatement($template_name)
+    {
         $user = user();
 
         if (!$user->hasPersonalInformation()) {
