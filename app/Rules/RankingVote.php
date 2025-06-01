@@ -50,7 +50,7 @@ class RankingVote implements ValidationRule
             return;
         }
         $valid_ids = [];
-        foreach($this->question->options as $option) {
+        foreach ($this->question->options as $option) {
             $valid_ids[] = $option->id;
         }
         if (!$this->isSubset($converted, $valid_ids)) {

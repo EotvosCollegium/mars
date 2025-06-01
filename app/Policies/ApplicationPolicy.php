@@ -68,14 +68,14 @@ class ApplicationPolicy
     public function editStatus(User $user, ?Workshop $workshop = null): bool
     {
         if ($workshop) {
-            if($user->hasRole([
+            if ($user->hasRole([
                 Role::SECRETARY,
                 Role::DIRECTOR,
                 Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS
             ])) {
                 return true;
             }
-            if($user->hasRole(Role::WORKSHOP_LEADER)) {
+            if ($user->hasRole(Role::WORKSHOP_LEADER)) {
                 return $user->roleWorkshops->contains($workshop);
             }
         }

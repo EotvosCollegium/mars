@@ -51,9 +51,9 @@ class StatusesExport implements FromCollection, WithTitle, WithMapping, WithHead
     {
         $semesters = $this->semesters->map(function ($semester) use ($user) {
             $status = $user->getStatus($semester);
-            if($status) {
+            if ($status) {
                 $text = __('user.'.$status->status);
-                if($status->comment) {
+                if ($status->comment) {
                     $text .= ' ('.$status->comment.')';
                 }
             }

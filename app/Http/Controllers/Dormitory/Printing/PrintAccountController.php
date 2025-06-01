@@ -138,7 +138,7 @@ class PrintAccountController extends Controller
         Mail::to(user())->queue(new ChangedPrintBalance(user(), $printAccount->user, $amount, user()->name));
 
         //Do not send duplicate emails
-        if($printAccount->user->id !== user()->id) {
+        if ($printAccount->user->id !== user()->id) {
             Mail::to($printAccount->user)->queue(new ChangedPrintBalance($printAccount->user, $printAccount->user, $amount, user()->name));
         }
 

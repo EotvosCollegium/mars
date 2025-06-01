@@ -63,7 +63,7 @@ class GeneralAssemblySeeder extends Seeder
             'title' => "I abstain",
         ]);
 
-        foreach(User::collegists() as $collegist) {
+        foreach (User::collegists() as $collegist) {
             $openQuestion->storeAnswers($collegist, [$openQuestion->options->random()]);
             $openCheckboxQuestion->storeAnswers($collegist, $openCheckboxQuestion->options->random(2)->all());
         }

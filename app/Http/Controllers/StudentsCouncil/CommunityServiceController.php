@@ -5,7 +5,6 @@ namespace App\Http\Controllers\StudentsCouncil;
 use App\Models\User;
 use App\Models\Semester;
 use App\Models\CommunityService;
-
 use App\Http\Controllers\Controller;
 use App\Mail\CommunityServiceStatusChanged;
 use App\Mail\CommunityServiceRequested;

@@ -26,7 +26,7 @@ return new class () extends Migration {
             'name' => 'printer'
         ]);
 
-        foreach(DB::table('users')->where('verified', 1)->get() as $user) {
+        foreach (DB::table('users')->where('verified', 1)->get() as $user) {
             DB::table('role_users')->insert([
                 'role_id' => $printer_role_id,
                 'user_id' => $user->id

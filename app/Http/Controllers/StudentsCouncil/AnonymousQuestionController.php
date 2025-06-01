@@ -148,7 +148,7 @@ class AnonymousQuestionController extends QuestionController
     {
         $this->authorize('administer', AnswerSheet::class);
 
-        if($question['parent_type'] != AnswerSheet::class) {
+        if ($question['parent_type'] != AnswerSheet::class) {
             abort(400);
         }
 

@@ -107,7 +107,7 @@ PDF version:     1.4");
      */
     public static function updateCompletedPrintJobs()
     {
-        foreach(PrintJob::where('state', PrintJobStatus::QUEUED)->whereNotNull('printer_id')->pluck('printer_id')->unique() as $printer_id) {
+        foreach (PrintJob::where('state', PrintJobStatus::QUEUED)->whereNotNull('printer_id')->pluck('printer_id')->unique() as $printer_id) {
             Printer::find($printer_id)->updateCompletedPrintJobs();
         }
     }

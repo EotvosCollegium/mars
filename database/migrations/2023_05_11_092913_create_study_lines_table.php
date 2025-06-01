@@ -23,8 +23,8 @@ return new class () extends Migration {
             $table->timestamps();
         });
 
-        foreach(DB::table('educational_information')->get() as $data) {
-            foreach(DataCompresser::decompressData($data->program) as $program) {
+        foreach (DB::table('educational_information')->get() as $data) {
+            foreach (DataCompresser::decompressData($data->program) as $program) {
                 DB::table('study_lines')->insert(
                     [
                         'educational_information_id' => $data->id,

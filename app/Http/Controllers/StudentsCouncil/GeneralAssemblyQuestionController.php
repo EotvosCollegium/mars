@@ -98,7 +98,7 @@ class GeneralAssemblyQuestionController extends QuestionController
 
         $passcode_request = $request->validate(['passcode' => ['required', 'string',
                 function ($attribute, $value, $fail) {
-                    if(!GeneralAssembly::isTemporaryPasscode($value)) {
+                    if (!GeneralAssembly::isTemporaryPasscode($value)) {
                         $fail(__('voting.incorrect_passcode'));
                     }
                 }
@@ -116,7 +116,7 @@ class GeneralAssemblyQuestionController extends QuestionController
     {
         $this->authorize('administer', GeneralAssembly::class);
 
-        if($question['parent_type'] != GeneralAssembly::class) {
+        if ($question['parent_type'] != GeneralAssembly::class) {
             abort(400);
         }
 

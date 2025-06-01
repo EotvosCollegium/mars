@@ -3,7 +3,6 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
-
 use App\Http\Controllers\StudentsCouncil\EconomicController;
 use App\Models\Checkout;
 use App\Models\Role;

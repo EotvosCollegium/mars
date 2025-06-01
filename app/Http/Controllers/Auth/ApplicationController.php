@@ -45,7 +45,7 @@ class ApplicationController extends Controller
         $this->ensureApplicationExists(user());
 
         // only allow access if the application period is open or after, if the user has submitted application
-        if(!($this->isActive() || user()->application?->submitted)) {
+        if (!($this->isActive() || user()->application?->submitted)) {
             abort(403, "A felvétel jelenleg nincs megnyitva");
         }
 

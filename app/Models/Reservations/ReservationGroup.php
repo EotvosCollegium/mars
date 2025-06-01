@@ -7,12 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
-
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-
 use App\Models\User;
-
 use App\Exceptions\ReservationConflictException;
 
 /**
@@ -292,14 +289,14 @@ class ReservationGroup extends Model
             $allBefore = $this->reservations()
                 ->where('reserved_from', '<', $firstReservation->reserved_from)
                 ->get();
-            foreach($allBefore as $reservation) {
+            foreach ($allBefore as $reservation) {
                 $reservation->update(['group_id' => null]);
             }
 
             $allAfter = $this->reservations()
                 ->where('reserved_from', '>=', $firstReservation->reserved_from)
                 ->get();
-            foreach($allAfter as $reservation) {
+            foreach ($allAfter as $reservation) {
                 $this->setForReservation(
                     actualReservation: $reservation,
                     groupItem: $groupItem,

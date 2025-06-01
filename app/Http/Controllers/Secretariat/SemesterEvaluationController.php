@@ -88,7 +88,7 @@ class SemesterEvaluationController extends Controller
      */
     public function handlePeriodicEventReminder(int $daysBeforeEnd): void
     {
-        if($daysBeforeEnd < 3) {
+        if ($daysBeforeEnd < 3) {
             $userCount = SemesterEvaluationController::usersHaventFilledOutTheForm($this->semester())->count();
             Mail::to(config('contacts.mail_membra'))->queue(new EvaluationFormReminder($userCount, $this->getDeadline()));
         }
@@ -136,7 +136,7 @@ class SemesterEvaluationController extends Controller
     {
         $this->authorize('fillOrManage', SemesterEvaluation::class);
 
-        if(!$this->isActive()) {
+        if (!$this->isActive()) {
             return view('secretariat.evaluation-form.app', [
                 'users_havent_filled_out' => user()->can('manage', SemesterEvaluation::class) ? ($this->semester() ? SemesterEvaluationController::usersHaventFilledOutTheForm($this->semester()) : []) : null,
                 'periodicEvent' => $this->periodicEvent(),
@@ -191,7 +191,7 @@ class SemesterEvaluationController extends Controller
 
         $user = user();
         $semester = $this->semester();
-        if(!$semester) {
+        if (!$semester) {
             throw new \Exception('No semester found for the event');
         }
         $evaluation = $user->semesterEvaluations()->where('semester_id', $semester->id)->first();

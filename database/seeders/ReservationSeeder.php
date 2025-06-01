@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use Carbon\Carbon;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-
 use App\Models\Reservations\ReservableItem;
 use App\Models\Reservations\Reservation;
 use App\Models\Reservations\ReservationGroup;
@@ -38,7 +37,7 @@ class ReservationSeeder extends Seeder
         // creating the rooms
         $rooms = ReservableItem::factory()->count(10)->create();
 
-        foreach($washing_machines as $machine) {
+        foreach ($washing_machines as $machine) {
             // for today and the next 14 days
             for ($day = 0; $day < 14; ++$day) {
                 for ($hour = 0; $hour < 24; ++$hour) {
@@ -57,7 +56,7 @@ class ReservationSeeder extends Seeder
 
         $faker = \Faker\Factory::create('hu_HU');
 
-        foreach($rooms as $room) {
+        foreach ($rooms as $room) {
             $reservations = [];
 
             // first some recurring ones
@@ -112,7 +111,7 @@ class ReservationSeeder extends Seeder
                 ]);
 
                 $wasDeleted = false;
-                foreach($reservations as $earlier) {
+                foreach ($reservations as $earlier) {
                     if ($earlier->conflictsWith($new_one)) {
                         $new_one->delete();
                         $wasDeleted = true;

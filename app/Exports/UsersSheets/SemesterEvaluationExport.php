@@ -112,7 +112,7 @@ class SemesterEvaluationExport implements FromCollection, WithTitle, WithMapping
             })->implode(" \n"),
             $evaluation->general_assembly_note,
             $user->roles()->whereIn('name', Role::STUDENT_POSTION_ROLES)->get()->map(function ($role) {
-                if($role->has_objects || $role->has_workshops) {
+                if ($role->has_objects || $role->has_workshops) {
                     return $role->translatedName . " (" .$role->pivot->translatedName. ")";
                 } else {
                     return $role->translatedName;

@@ -124,7 +124,7 @@ class AdmissionController extends Controller
 
         $applications = $applications->with('user.educationalInformation')->distinct()->get()->sortBy('user.name');
 
-        if($request->input('return_excel')) {
+        if ($request->input('return_excel')) {
             return Excel::download(new ApplicantsExport($applications), 'felveteli.xlsx');
         }
 
@@ -187,7 +187,7 @@ class AdmissionController extends Controller
     public function indexFinalize(): View
     {
         $this->authorize('finalize', Application::class);
-        if(!($this->getDeadline() < now())) {
+        if (!($this->getDeadline() < now())) {
             throw new \InvalidArgumentException('The application deadline has not passed yet.');
         }
         [$admitted, $not_admitted, $users_to_delete] = $this->getApplications();
@@ -210,10 +210,10 @@ class AdmissionController extends Controller
     public function finalize(): RedirectResponse
     {
         $this->authorize('finalize', Application::class);
-        if(!($this->getDeadline() < now())) {
+        if (!($this->getDeadline() < now())) {
             throw new \InvalidArgumentException('The application deadline has not passed yet.');
         }
-        if(!$this->semester()) {
+        if (!$this->semester()) {
             throw new \InvalidArgumentException('No semester can be retrieved from the application periodic event.');
         }
         DB::transaction(function () {
@@ -221,7 +221,7 @@ class AdmissionController extends Controller
             // admit users
             foreach ($admitted as $application) {
                 $application->user->update(['verified' => true]);
-                if($application->admitted_for_resident_status) {
+                if ($application->admitted_for_resident_status) {
                     $application->user->setResident();
                 } else {
                     $application->user->setExtern();

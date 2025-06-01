@@ -6,9 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-
 use Carbon\Carbon;
-
 use App\Enums\ReservableItemType;
 use App\Models\Reservations\ReservableItem;
 use App\Models\Role;
