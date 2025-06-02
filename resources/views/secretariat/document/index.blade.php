@@ -28,6 +28,15 @@
                             </td>
                         </tr>
                         @endcan
+                        @can('document.departure-statement')
+                        <tr>
+                            <td>Kiköltözési nyilatkozat</td>
+                            <td></td>
+                            <td>
+                                <x-input.button :href="route('documents.departure-statement.download')" text="letöltés" />
+                            </td>
+                        </tr>
+                        @endcan
                         @can('document.import-license')
                         <tr>
                             <td>Behozatali engedély</td>
