@@ -189,7 +189,7 @@ class DocumentController extends Controller
         $pdf = $this->generatePDF(
             $template_name,
             [ 'name' => $user->name,
-              'address' => $info->zip_code . ' ' . $info->getAddress(),
+              'address' => $info->getAddress(),
               'phone' => $info->phone_number,
               'email' => $user->email,
               'place_and_of_birth' => $info->getPlaceAndDateOfBirth(),
