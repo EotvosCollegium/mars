@@ -35,7 +35,7 @@ class UserPolicy
             Role::SECRETARY,
             Role::DIRECTOR,
             Role::STUDENT_COUNCIL_SECRETARY,
-            Role::STUDENT_COUNCIL => array_merge(Role::STUDENT_COUNCIL_LEADERS, Role::COMMITTEE_LEADERS),
+            Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS_AND_COMMITTEE_LEADERS,
         ]);
     }
 
@@ -68,7 +68,7 @@ class UserPolicy
                 Role::WORKSHOP_ADMINISTRATOR,
                 Role::WORKSHOP_LEADER,
                 Role::STUDENT_COUNCIL_SECRETARY,
-                Role::STUDENT_COUNCIL => array_merge(Role::STUDENT_COUNCIL_LEADERS, Role::COMMITTEE_LEADERS),
+                Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS_AND_COMMITTEE_LEADERS,
             ]);
     }
 
@@ -102,7 +102,7 @@ class UserPolicy
                 return $user->hasRole([
                     Role::SECRETARY,
                     Role::DIRECTOR,
-                    Role::STUDENT_COUNCIL => array_merge(Role::STUDENT_COUNCIL_LEADERS, Role::COMMITTEE_LEADERS),
+                    Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS_AND_COMMITTEE_LEADERS,
                     Role::STUDENT_COUNCIL_SECRETARY,
                 ]);
             })) || $target->workshops
@@ -128,7 +128,7 @@ class UserPolicy
         if (!isset($role)) {
             return $user->hasRole([
                 Role::SECRETARY,
-                Role::STUDENT_COUNCIL => array_merge(Role::STUDENT_COUNCIL_LEADERS, Role::COMMITTEE_LEADERS),
+                Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS_AND_COMMITTEE_LEADERS,
                 Role::STUDENT_COUNCIL_SECRETARY,
                 Role::WORKSHOP_ADMINISTRATOR,
                 Role::WORKSHOP_LEADER
@@ -182,7 +182,7 @@ class UserPolicy
 
         if ($role->name == Role::STUDENT_COUNCIL) {
             return $user->hasRole([
-                Role::STUDENT_COUNCIL => array_merge(Role::STUDENT_COUNCIL_LEADERS, Role::COMMITTEE_LEADERS),
+                Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS_AND_COMMITTEE_LEADERS,
                 Role::STUDENT_COUNCIL_SECRETARY
             ]);
         }
