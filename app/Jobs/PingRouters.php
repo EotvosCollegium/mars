@@ -35,7 +35,7 @@ class PingRouters implements ShouldQueue
     {
         foreach (Router::all() as $router) {
             $result = Commands::pingRouter($router);
-            if ($result == '') {
+            if ($result) {
                 $router->update([
                     'failed_for' => 0,
                 ]);

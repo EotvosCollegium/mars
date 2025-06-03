@@ -58,8 +58,8 @@ class Router extends Model
     public $incrementing = false;
     public $timestamps = false;
 
-    // We send a warning to the network admins on the second error.
-    public const WARNING_THRESHOLD = 2;
+    // We send a warning on the sixth error.
+    public const WARNING_THRESHOLD = 6;
 
     protected $fillable = [
         'ip', 'room', 'failed_for', 'port', 'type', 'serial_number',
@@ -89,7 +89,7 @@ class Router extends Model
 
     public function getFailStartDate()
     {
-        return Carbon::now()->subMinutes($this->failed_for * 5)->roundMinute(5)->format('Y-m-d H:i');
+        return Carbon::now()->subMinutes($this->failed_for)->roundMinute()->format('Y-m-d H:i');
     }
 
     /**
