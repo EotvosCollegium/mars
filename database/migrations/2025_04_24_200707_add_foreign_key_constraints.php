@@ -11,42 +11,66 @@ return new class () extends Migration {
     public function up(): void
     {
         Schema::table('epistola', function (Blueprint $table) {
-            $table->foreign('uploader_id')->references('id')->on('users');
+            $table->foreign('uploader_id')->references('id')->on('users')
+                ->onUpdate('cascade')
+                ->onDelete('restrict');  //Admitted collegists are almost never deleted from the system
         });
 
         Schema::table('language_exams', function (Blueprint $table) {
-            $table->foreign('educational_information_id')->references('id')->on('educational_information');
+            $table->foreign('educational_information_id')->references('id')->on('educational_information')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');  //A user will deleted if they are not admitted
         });
 
         Schema::table('mr_and_miss_categories', function (Blueprint $table) {
-            $table->foreign('created_by')->references('id')->on('users');
+            $table->foreign('created_by')->references('id')->on('users')
+                ->onUpdate('cascade')
+                ->onDelete('restrict');  //Admitted collegists are almost never deleted from the system
         });
 
         Schema::table('printing_free_printing_credits', function (Blueprint $table) {
             $table->unsignedBigInteger('last_modified_by')->change();
-            $table->foreign('last_modified_by')->references('id')->on('users');
+            $table->foreign('last_modified_by')->references('id')->on('users')
+                ->onUpdate('cascade')
+                ->onDelete('restrict');  //Admitted collegists are almost never deleted from the system
         });
 
         Schema::table('print_accounts', function (Blueprint $table) {
-            $table->foreign('last_modified_by')->references('id')->on('users');
+            $table->foreign('last_modified_by')->references('id')->on('users')
+                ->onUpdate('cascade')
+                ->onDelete('restrict');  //For bookkeeping
+            $table->dropForeign(['user_id']);
+            $table->foreign('user_id')->references('id')->on('users')
+                ->onUpdate('cascade')
+                ->onDelete('restrict'); //For bookkeeping
         });
 
         Schema::table('print_account_history', function (Blueprint $table) {
-            $table->foreign('modified_by')->references('id')->on('users');
+            $table->foreign('modified_by')->references('id')->on('users')
+                ->onUpdate('cascade')
+                ->onDelete('restrict');  //Admitted collegists are almost never deleted from the system
         });
 
         Schema::table('question_options', function (Blueprint $table) {
-            $table->foreign('question_id')->references('id')->on('questions');
+            $table->foreign('question_id')->references('id')->on('questions')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
         });
 
         Schema::table('semester_evaluations', function (Blueprint $table) {
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')
+                ->onUpdate('cascade')
+                ->onDelete('restrict');  //Admitted collegists are almost never deleted from the system
             $table->unsignedSmallInteger('semester_id')->change();
-            $table->foreign('semester_id')->references('id')->on('semesters');
+            $table->foreign('semester_id')->references('id')->on('semesters')
+                ->onUpdate('cascade')
+                ->onDelete('restrict');  //A semester should never ever be deleted if there is a evaluation associated with it
         });
 
         Schema::table('study_lines', function (Blueprint $table) {
-            $table->foreign('educational_information_id')->references('id')->on('educational_information');
+            $table->foreign('educational_information_id')->references('id')->on('educational_information')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');  //A user will deleted if they are not admitted
         });
     }
 
@@ -73,6 +97,10 @@ return new class () extends Migration {
         });
 
         Schema::table('print_accounts', function (Blueprint $table) {
+            $table->dropForeign(['user_id']);
+            $table->foreign('user_id')->references('id')->on('users')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
             $table->dropForeign(['last_modified_by']);
         });
 
