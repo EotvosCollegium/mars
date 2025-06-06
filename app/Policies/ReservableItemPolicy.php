@@ -42,7 +42,7 @@ class ReservableItemPolicy
                     return $user->hasRole([Role::COLLEGIST, Role::TENANT]);
                 case ReservableItemType::ROOM:
                     return config('custom.room_reservation_open')
-                        && $user->hasRole([Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR, Role::STUDENT_COUNCIL]);
+                        && $user->hasRole([Role::WORKSHOP_LEADER, Role::WORKSHOP_ADMINISTRATOR, Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS_AND_COMMITTEE_LEADERS]);
                 default:
                     throw new \Exception("unknown ReservableItemType");
             }
