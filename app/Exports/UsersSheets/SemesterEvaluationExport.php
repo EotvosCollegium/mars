@@ -108,11 +108,11 @@ class SemesterEvaluationExport implements FromCollection, WithTitle, WithMapping
             $evaluation->last_avg,
             implode(" \n", array_map(fn ($course) => $course['code'] . " " . $course['name'] . ' - ' . $course['grade'], $evaluation->courses)),
             GeneralAssembly::all()->sortByDesc('closed_at')->take(2)->map(function ($generalAssembly) use ($user) {
-                return $generalAssembly->isAttended($user) ? "Részt vett" : "Nem vett részt";
+                return $generalAssembly->isAttended($user) ? "Részt vett / igazolt" : "Nem vett részt";
             })->implode(" \n"),
             $evaluation->general_assembly_note,
             $user->roles()->whereIn('name', Role::STUDENT_POSTION_ROLES)->get()->map(function ($role) {
-                if($role->has_objects || $role->has_workshops) {
+                if ($role->has_objects || $role->has_workshops) {
                     return $role->translatedName . " (" .$role->pivot->translatedName. ")";
                 } else {
                     return $role->translatedName;

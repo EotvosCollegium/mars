@@ -8,9 +8,9 @@
     <x-input.button type="button" id="addCourse" floating icon="add" onclick="insertEmptyCourse()" />
 
     <blockquote>
-        <a href="https://eotvos.elte.hu/collegium/mukodes/szabalyzatok">CTSZK 7. § (4) a.</a>
-        A collegiumi tagság automatikusan megszűnik, ha a hallgató egy aktív félévben egyetlen collegiumi órát sem vett fel.<br>
-        <a href="https://eotvos.elte.hu/collegium/mukodes/szabalyzatok">CTSZK 7. § (5) b.</a>
+        <a href="https://eotvos.elte.hu/collegium/mukodes/szabalyzatok">CTSZK 8. § (4) a.</a>
+        A collegiumi tagság automatikusan megszűnik, ha a hallgató egy aktív félévben egyetlen collegiumi órát sem vett fel [...].<br>
+        <a href="https://eotvos.elte.hu/collegium/mukodes/szabalyzatok">CTSZK 8. § (5) b.</a>
         A Collegiumból elbocsátható, aki a Collegiumban felvett óráját nem teljesítette.
     </blockquote>
     <div class="row">
