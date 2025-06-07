@@ -274,7 +274,7 @@ class Timetable extends Component
             $block = $blocks[$i];
 
             // this has to be modifiable
-            $splittingPointAfter = Carbon::make($block->getFrom());
+            $splittingPointAfter = Carbon::make(Carbon::createFromImmutable($block->getFrom()));
             if ($block->isFree()) {
                 $splittingPointAfter->minute = 0;
                 $splittingPointAfter->addHours(1);
