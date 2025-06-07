@@ -6,7 +6,6 @@ use Livewire\Component;
 use Livewire\Attributes\On;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
-
 use App\Models\Reservations\ReservableItem;
 use App\Models\Reservations\Reservation;
 
@@ -219,7 +218,7 @@ class Timetable extends Component
 
         $currentStart = $from;
         $i = 0;
-        while($i < count($reservations)) {
+        while ($i < count($reservations)) {
             if ($isForReservation) {
                 $reservation = $reservations[$i];
                 $blocks[] = new Block(
