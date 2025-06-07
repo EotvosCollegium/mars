@@ -7,7 +7,7 @@
             <td>{{ $general_assembly->opened_at->format('Y-m-d') }}</td>
             <td>
                 @if($general_assembly->isAttended($user))
-                    <span class="green-text">Részt vettél</span>
+                    <span class="green-text">Részt vettél / igazoltan hiányoztál</span>
                 @else
                     <span class="red-text">Nem vettél részt</span>
                 @endif
@@ -21,7 +21,7 @@
         ellenőrizhetjük.</i>
 @endif
 <blockquote>
-    <a href="https://eotvos.elte.hu/collegium/mukodes/szabalyzatok">CTSZK 7. § (5) d.</a> A Collegiumból elbocsátható az
+    <a href="https://eotvos.elte.hu/collegium/mukodes/szabalyzatok">CTSZK 8. § (5) d.</a> A Collegiumból elbocsátható az
     a hallgató, aki a CHÖK két egymást követő Közgyűlésétől igazolatlanul távol marad.*<br>
     *A rendszerben résztvevőnek számít az, aki a Közgyűlésen a megfelelő számban teljesíti a jelenlét-ellenőrzéseket.
 </blockquote>
