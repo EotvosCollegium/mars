@@ -350,7 +350,9 @@ class Timetable extends Component
      */
     public function step(int $days): void
     {
+        $this->firstDay->setTimezone(config('app.timezone'));
         $this->firstDay->addDays($days);
+        $this->lastDay->setTimezone(config('app.timezone'));
         $this->lastDay->addDays($days);
     }
 
@@ -362,7 +364,9 @@ class Timetable extends Component
     public function firstDayUpdated(string $firstDay): void
     {
         $oldFirstDay = $this->firstDay;
+        $this->firstDay->setTimezone(config('app.timezone'));
         $this->firstDay = Carbon::make($firstDay);
+        $this->lastDay->setTimezone(config('app.timezone'));
         $this->lastDay->addDays($oldFirstDay->diffInDays($this->firstDay));
     }
 }
