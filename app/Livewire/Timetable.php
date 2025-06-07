@@ -148,6 +148,7 @@ class Timetable extends Component
      * The last day of the span displayed (inclusive).
      */
     public Carbon $lastDay;
+    public string $firstDayYYYYMMDD;
     /**
      * The first hour to be displayed in the table, inclusive (defaults to 0).
      */
@@ -326,6 +327,7 @@ class Timetable extends Component
         } else {
             $this->firstDay = Carbon::today();
         }
+        $this->firstDayYYYYMMDD = $this->firstDay->isoFormat('YYYY-MM-DD');
         $this->lastDay = $this->firstDay->copy()->addDays($days - 1);
 
         $this->firstHour = $firstHour;
@@ -352,6 +354,7 @@ class Timetable extends Component
     {
         $this->firstDay->setTimezone(config('app.timezone'));
         $this->firstDay->addDays($days);
+        $this->firstDayYYYYMMDD = $this->firstDay->isoFormat('YYYY-MM-DD');
         $this->lastDay->setTimezone(config('app.timezone'));
         $this->lastDay->addDays($days);
     }
@@ -366,6 +369,7 @@ class Timetable extends Component
         $oldFirstDay = $this->firstDay;
         $this->firstDay->setTimezone(config('app.timezone'));
         $this->firstDay = Carbon::make($firstDay);
+        $this->firstDayYYYYMMDD = $this->firstDay->isoFormat('YYYY-MM-DD');
         $this->lastDay->setTimezone(config('app.timezone'));
         $this->lastDay->addDays($oldFirstDay->diffInDays($this->firstDay));
     }

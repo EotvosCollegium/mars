@@ -17,26 +17,26 @@ $absoluteHeight = $isPrintVersion ? '650px' : '1000px';
 
 @push('scripts')
 <script>
+
     document.addEventListener('DOMContentLoaded', function() {
-        var elem = document.getElementById('firstDay');
-        M.Datepicker.init(elem, {
-            format: 'yyyy-mm-dd',
-            firstDay: 1,
-            showClearBtn: false,
-            onClose: () => @this.firstDayUpdated(elem.value)
+        const firstDay = document.getElementById("firstDay");
+        firstDay.addEventListener('click', function(event) {
+            event.target.showPicker();
         });
+        firstDay.addEventListener('change', function(event) {
+            @this.firstDayUpdated(event.target.value);
+        });
+        setTimeout(function(){
+            firstDay.value = "{{$firstDayYYYYMMDD}}";
+        }, 50); //FIXME, it is a terrible hack
 
         window.stepDays = function(days) {
             @this.step(days);
-            const elem = document.getElementById('firstDay');
-            let date = new Date(elem.value);
-            date.setDate(date.getDate() + days);
-            // HACK: This is the easiest way to get yyyy-mm-dd.
-            elem.value = date.toISOString().slice(0, 10);
         };
     });
 </script>
 @endpush
+
 
 <div>
     {{-- navigation buttons --}}
@@ -51,10 +51,11 @@ $absoluteHeight = $isPrintVersion ? '650px' : '1000px';
         <div class="col s4 left-align">
             <x-input.button floating onclick="stepDays({{ -1 * $dayCount }})" icon="chevron_left" />
         </div>
-        <div class="col s4 center-align" wire:ignore>
-            <input type="text" class="datepicker validate" id="firstDay" value="{{$firstDay->format('Y-m-d')}}"
-                    style="color:#b38f2f; text-decoration: underline; border: none; box-shadow: none;
-                    text-align: center; font-size: 1.2em; cursor: pointer" >
+        <div class="col s4 center-align">
+        <input type="date" 
+            style="color:#b38f2f; text-decoration: underline; border: none; box-shadow: none;
+                    text-align: center; font-size: 1.2em; cursor: pointer"
+            id="firstDay" wire:model="firstDayYYYYMMDD">
         </div>
         <div class="col s4 right-align">
             <x-input.button floating onclick="stepDays({{ $dayCount }})" icon="chevron_right" />
