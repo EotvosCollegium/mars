@@ -516,7 +516,7 @@ class User extends Authenticatable implements HasLocalePreference
             return $query->withRole(Role::TENANT);
         }
         if (user()->can('viewAll', User::class)) {
-            return $query->collegist();
+            return $query->collegist(alumniIncluded: true);
         }
         if (user()->can('viewSome', User::class)) {
             return $query->collegist()->whereHas('workshops', function ($query) {
@@ -532,9 +532,18 @@ class User extends Authenticatable implements HasLocalePreference
      * @param Builder $query
      * @return Builder
      */
-    public function scopeCollegist(Builder $query): Builder
+    public function scopeCollegist(Builder $query, ?bool $alumniIncluded = false): Builder
     {
-        return $query->withRole(Role::COLLEGIST);
+        if($alumniIncluded){
+            return $query->where(function ($query) {
+                return $query->withRole(Role::COLLEGIST)
+                    ->orWhere(function ($query) {
+                        return $query->withRole(Role::ALUMNI);
+                    });
+            });
+        } else {
+            return $query->withRole(Role::COLLEGIST);
+        }
     }
 
     /**
