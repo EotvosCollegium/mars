@@ -24,6 +24,7 @@
                         <li>Hajszárító, hajsütő</li>
                     </ul>
                 </blockquote>
+                @include("secretariat.document.printing_info")
                 <div class="row">
                     <div class="col s12">
                         <table>
@@ -60,8 +61,21 @@
                 </div>
             </div>
             <div class="card-action">
-                <a href="{{ route('documents.import.download') }}" type="submit"
-                    class="btn waves-effect coli">letöltés</a>
+                <div class="row" style="margin-bottom: 0;">
+                    <div class="col s6">
+                        <a href="{{ route('documents.import.download') }}">
+                            <x-input.button type="submit" class="coli" text="letöltés" style="width: 100%;" />
+                        </a>
+                    </div>
+                    @if($printing_available)
+                        <div class="col s6">
+                            <form method="post" action="{{route('documents.import.print')}}" style="margin: 0;">
+                                @csrf
+                                <x-input.button type="submit" class="coli blue" text="print.print" style="width: 100%;" />
+                            </form>
+                        </div>
+                    @endif
+                </div>
             </div>
         </div>
     </div>

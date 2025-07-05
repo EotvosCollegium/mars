@@ -231,14 +231,18 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
     /** Documents */
     Route::get('/documents', [DocumentController::class, 'index'])->name('documents');
     Route::get('/documents/register-statement/download', [DocumentController::class, 'downloadRegisterStatement'])->name('documents.register-statement.download');
+    Route::post('/documents/register-statement/print', [DocumentController::class, 'printRegisterStatement'])->name('documents.register-statement.print');
     Route::get('/documents/departure-statement/download', [DocumentController::class, 'downloadDepartureStatement'])->name('documents.departure-statement.download');
+    Route::post('/documents/departure-statement/print', [DocumentController::class, 'printDepartureStatement'])->name('documents.departure-statement.print');
     Route::get('/documents/import/show', [DocumentController::class, 'showImport'])->name('documents.import.show');
     Route::post('/documents/import/add', [DocumentController::class, 'addImport'])->name('documents.import.add');
     Route::post('/documents/import/remove', [DocumentController::class, 'removeImport'])->name('documents.import.remove');
     Route::get('/documents/import/download', [DocumentController::class, 'downloadImport'])->name('documents.import.download');
+    Route::post('/documents/import/print', [DocumentController::class, 'printImport'])->name('documents.import.print');
     Route::get('/documents/status-cert/download', [DocumentController::class, 'downloadStatusCertificate'])->name('documents.status-cert.download');
-    Route::get('/documents/status-cert/request', [DocumentController::class, 'requestStatusCertificate'])->name('documents.status-cert.request');
+    Route::post('/documents/status-cert/request', [DocumentController::class, 'requestStatusCertificate'])->name('documents.status-cert.request');
     Route::get('/documents/status-cert/{id}/show', [DocumentController::class, 'showStatusCertificate'])->name('documents.status-cert.show');
+    Route::post('/documents/status-cert/print', [DocumentController::class, 'printStatusCertificate'])->name('documents.status-cert.print');
 
     /** Students' Council */
     Route::get('/economic_committee', [EconomicController::class, 'index'])->name('economic_committee');
