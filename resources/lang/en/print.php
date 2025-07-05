@@ -58,7 +58,7 @@ return [
     'spent_balance' => 'Balance spent',
     'spent_free_printing_credits' => 'Free printing credits spent',
     'state' => 'State',
-    'success' => 'Success',
+    'success' => 'Sent print job to printer',
     'transfer_money' => 'Transfer money',
     'twosided' => 'Two-sided printing',
     'two_sided_cost' => 'Cost of double-sided printing (HUF / sheet)',

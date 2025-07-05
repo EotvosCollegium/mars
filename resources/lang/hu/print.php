@@ -58,7 +58,7 @@ return [
     'spent_balance' => 'Elköltött egyenleg',
     'spent_free_printing_credits' => 'Felhasznált ingyenes nyomtatási kreditek',
     'state' => 'Állapot',
-    'success' => 'Sikeres nyomtatás',
+    'success' => 'Nyomtatás elindítva',
     'transfer_money' => 'Felhasználható egyenleg utalása',
     'twosided' => 'Kétoldalas nyomtatás',
     'two_sided_cost' => 'Kétoldalas nyomtatás ára (Ft / lap)',
