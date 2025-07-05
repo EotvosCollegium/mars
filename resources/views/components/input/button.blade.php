@@ -1,4 +1,4 @@
-@if(!$onlyInput && !$attributes->get('href'))
+@if(!$onlyInput)
 <div class="input-field col s{{$s}} m{{$m}} l{{$l}} xl{{$xl}}">
 @endif
 
@@ -24,6 +24,6 @@
 </button>
 @endif
 
-@if(!$onlyInput && !$attributes->get('href'))
+@if(!$onlyInput)
 </div>
 @endif

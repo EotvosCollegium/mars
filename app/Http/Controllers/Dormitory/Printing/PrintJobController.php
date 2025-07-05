@@ -18,6 +18,7 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
@@ -88,14 +89,17 @@ class PrintJobController extends Controller
         $path = $file->store('', 'printing');
 
         $printerConfiguration = PrinterConfiguration::find($validated['printer_configuration']);
-        $this->authorize('use', $printerConfiguration);
 
         $pageNumber = PrinterHelper::getDocumentPageNumber(Storage::disk('printing')->path($path));
 
         return self::printDocument($printerConfiguration, $copyNumber, $useFreePrintingCredits, $path, $originalName);
     }
 
-    public static function printDocument(PrinterConfiguration $printerConfiguration, int $copyNumber, bool $useFreePrintingCredits, string $path, string $originalName){
+    public static function printDocument(PrinterConfiguration $printerConfiguration, int $copyNumber, bool $useFreePrintingCredits, string $path, string $originalName)
+    {
+
+        Gate::authorize('use', $printerConfiguration);
+
         $pageNumber = PrinterHelper::getDocumentPageNumber(Storage::disk('printing')->path($path));
 
         DB::beginTransaction();
