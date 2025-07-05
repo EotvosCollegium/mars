@@ -49,7 +49,7 @@ class PrinterConfiguration extends Model
         'paper_out_at' => 'datetime',
     ];
 
-    protected  $primaryKey = 'id';
+    protected $primaryKey = 'id';
 
     /**
      * Returns the `PrintJob`s that were executed by this printer.

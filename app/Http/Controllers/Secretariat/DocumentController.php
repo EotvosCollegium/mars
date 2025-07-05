@@ -38,7 +38,7 @@ class DocumentController extends Controller
     public function printRegisterStatement()
     {
         Gate::authorize('document.register-statement');
-        $this->authorize('use', $this->printingConf());
+        $this->authorize('use', $this->printingConfiguration());
 
         $result = $this->generateRegisterStatement();
         return $this->printDocument($result);
@@ -57,7 +57,7 @@ class DocumentController extends Controller
     public function printDepartureStatement()
     {
         Gate::authorize('document.departure-statement');
-        $this->authorize('use', $this->printingConf());
+        $this->authorize('use', $this->printingConfiguration());
 
         $result = $this->generateDepartureStatement();
         return $this->printDocument($result);
@@ -74,7 +74,7 @@ class DocumentController extends Controller
     public function printImport()
     {
         Gate::authorize('document.import-license');
-        $this->authorize('use', $this->printingConf());
+        $this->authorize('use', $this->printingConfiguration());
 
         $result = $this->generateImport();
         return $this->printDocument($result);
@@ -84,13 +84,15 @@ class DocumentController extends Controller
     {
         Gate::authorize('document.import-license');
 
-        return view('secretariat.document.import', 
-        array_merge(
-            [
+        return view(
+            'secretariat.document.import',
+            array_merge(
+                [
                 'items' => user()->importItems,
             ],
-            $this->printingBladeData()
-        ));
+                $this->printingBladeData()
+            )
+        );
     }
 
     public function addImport(Request $request)
@@ -148,7 +150,7 @@ class DocumentController extends Controller
     public function printStatusCertificate()
     {
         Gate::authorize('document.status-certificate');
-        $this->authorize('use', $this->printingConf());
+        $this->authorize('use', $this->printingConfiguration());
 
         $result = $this->generateStatusCertificate(user());
         return $this->printDocument($result);
@@ -171,13 +173,12 @@ class DocumentController extends Controller
 
     private function printDocument($result)
     {
-        $this->authorize('use', $this->printingConf());
         if (!$result['success']) {
             return $result['redirect'];
         }
         $document = $result['pdf'];
         return PrintJobController::printDocument(
-            $this->printingConf(),
+            $this->printingConfiguration(),
             1,
             false,
             $document,
@@ -185,23 +186,24 @@ class DocumentController extends Controller
         );
     }
 
-    private function printingConf()
+    private function printingConfiguration()
     {
         return PrinterConfiguration::find(config('document.printer_configuration_id'));
     }
 
     private function printingAvailable(): bool
     {
-        return PrinterConfiguration::find(config('document.printer_configuration_id')) != null
-        && user()->can("use", PrinterConfiguration::find(config('document.printer_configuration_id')));
+        return $this->printingConfiguration() != null
+        && user()->can("use", $this->printingConfiguration());
     }
 
-    private function printingBladeData() {
+    private function printingBladeData()
+    {
         if ($this->printingAvailable()) {
             return [
-                    'printing_conf_name_hun' => $this->printingConf()['description_hun'],
-                    'printing_conf_name_eng' => $this->printingConf()['description_eng'],
-                    'current_balance' => user()->printAccount['balance'],
+                    'printing_conf_name_hun' => $this->printingConfiguration()->description_hun,
+                    'printing_conf_name_eng' => $this->printingConfiguration()->description_eng,
+                    'current_balance' => user()->printAccount->balance,
                     'printing_available' => $this->printingAvailable()
                 ];
         } else {
