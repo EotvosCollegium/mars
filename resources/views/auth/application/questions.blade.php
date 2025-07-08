@@ -119,25 +119,18 @@
                                           without-label placeholder="egyéb/bővebben..."/>
                         </div>
                     </div>
-                    <div class="markdown_with_red">
-                        @markdown(\App\Models\ConfigurableText::getText("APPLICATION_QUESTION2"))
-                        <x-input.textarea id="question_2" :helper="\App\Models\ConfigurableText::getText('APPLICATION_QUESTION2_HELPER')"
-                                          :value="$user->application->question_2"/>
-                    </div>
-                    <div class="markdown_with_red">
-                        @markdown(\App\Models\ConfigurableText::getText("APPLICATION_QUESTION3"))
-                        <x-input.textarea id="question_3" :helper="\App\Models\ConfigurableText::getText('APPLICATION_QUESTION3_HELPER')"
-                                          :value="$user->application->question_3"/>
-                    </div>
-                    <div class="markdown_with_red">
-                        @markdown(\App\Models\ConfigurableText::getText("APPLICATION_QUESTION4"))
-                        <x-input.textarea id="question_4" :helper="\App\Models\ConfigurableText::getText('APPLICATION_QUESTION4_HELPER')"
-                                          :value="$user->application->question_4"/>
-                    </div>
-                    <div class="markdown_with_red">
-                        Amennyiben nem tud jelen lenni a felvételi teljes ideje alatt (kedd-péntek), kérjük itt indoklással jelezze!
-                        <x-input.textarea id="present" :value="$user->application->present"  helper="Változás esetén értesítse a titkárságot!"/>
-                    </div>
+                    <x-input.textarea id="question_2" text="Miért kíván a Collegium tagja lenni?"
+                                      helper="≈300-500 karakter" :value="$user->application->question_2"/>
+                    <x-input.textarea id="question_3"
+                                      text="Tervez-e tovább tanulni a diplomája megszerzése után? Milyen tervei vannak az egyetem után?"
+                                      :value="$user->application->question_3"/>
+                    <x-input.textarea id="question_4"
+                                      text="Részt vett-e közéleti tevékenységben? Ha igen, röviden jellemezze!"
+                                      helper="Pl. diákönkormányzati tevékenység, önkéntesség, szervezeti tagság. (nem kötelező)"
+                                      :value="$user->application->question_4"/>
+                    <x-input.textarea id="present"
+                                      text="Amennyiben nem tud jelen lenni a felvételi teljes ideje alatt (kedd-péntek), kérjük itt indoklással jelezze!"
+                                      :value="$user->application->present"  helper="Változás esetén értesítse a titkárságot!"/>
                     <x-input.checkbox id="accommodation"
                                       text="Igényel-e szállást a felvételi idejére?"
                                       :checked="$user->application->accommodation"/>
