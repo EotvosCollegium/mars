@@ -28,7 +28,13 @@ class ApplicationController extends Controller
     private const DELETE_FILE_ROUTE = 'files.delete';
     private const SUBMIT_ROUTE = 'submit';
 
-
+    /**
+     * If a collegist wants to start the application, they need to send a POST request to the endpoint that is handled by `confirm_start`
+     */
+    public function confirm_start(): RedirectResponse{
+        $this->ensureApplicationExists(user());
+        return redirect()->back()->with('message', __('Jelentkezési folyamat elindítva'));
+    }
 
     /**
      * Return the view based on the request's page parameter.
@@ -40,6 +46,11 @@ class ApplicationController extends Controller
         if (user()->hasRole(Role::TENANT)) {
             //let the user delete their tenant status
             return redirect()->route('users.tenant-update.show');
+        }
+
+        if( user()->isCollegist() &&
+            user()->application()->doesntExist()){
+            return view("auth.application.confirm_start");
         }
 
         $this->ensureApplicationExists(user());
