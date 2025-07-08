@@ -51,36 +51,6 @@ If you are a tenant, you are in the right place."
         ]);
 
         \DB::table('configurable_texts')->insert([
-            "key" => "APPLICATION_QUESTION2",
-            "rawtext" => "Miért kíván a Collegium tagja lenni?"
-        ]);
-
-        \DB::table('configurable_texts')->insert([
-            "key" => "APPLICATION_QUESTION2_HELPER",
-            "rawtext" => "≈300-500 karakter"
-        ]);
-
-        \DB::table('configurable_texts')->insert([
-            "key" => "APPLICATION_QUESTION3",
-            "rawtext" => "Tervez-e tovább tanulni a diplomája megszerzése után? Milyen tervei vannak az egyetem után?"
-        ]);
-
-        \DB::table('configurable_texts')->insert([
-            "key" => "APPLICATION_QUESTION3_HELPER",
-            "rawtext" => ""
-        ]);
-
-        \DB::table('configurable_texts')->insert([
-            "key" => "APPLICATION_QUESTION4",
-            "rawtext" => "Részt vett-e közéleti tevékenységben? Ha igen, röviden jellemezze!"
-        ]);
-
-        \DB::table('configurable_texts')->insert([
-            "key" => "APPLICATION_QUESTION4_HELPER",
-            "rawtext" => "Pl. diákönkormányzati tevékenység, önkéntesség, szervezeti tagság. (nem kötelező)"
-        ]);
-
-        \DB::table('configurable_texts')->insert([
             "key" => "APPLICATION_INFORMATION_PRIOR_TO_FINALIZATION",
             "rawtext" => "A jelentkezése jelen állapotában még nem látható a felvételiztető bizottság számára!
 
