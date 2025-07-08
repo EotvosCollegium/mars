@@ -161,10 +161,7 @@ class AdmissionController extends Controller
      */
     public function update(Request $request, Application $application): RedirectResponse
     {
-        $this->authorize('view', $application);
-        if (user()->id == $application->user_id) {
-            return redirect()->back()->with('error', 'You cannot modify the internal note of yourself.');
-        }
+        $this->authorize('update', $application);
         if ($request->has('note')) {
             $request->validate([
                 'note' => 'string',
@@ -177,6 +174,22 @@ class AdmissionController extends Controller
             $this->authorize('editStatus', Application::class);
             $this->storeFile($request, $application->user);
             Mail::bcc($application->committeeMembers())->queue(new ApplicationFileUploaded($request->get('name'), $application));
+        }
+        if ($request->has('submit')) {
+            $this->authorize('editSubmissionStatus', Application::class);
+            $application->update(
+                [
+                    "submitted" => 1
+                ]
+            );
+        }
+        if ($request->has('unsubmit')) {
+            $this->authorize('editSubmissionStatus', Application::class);
+            $application->update(
+                [
+                    "submitted" => 0
+                ]
+            );
         }
         return redirect()->back();
     }

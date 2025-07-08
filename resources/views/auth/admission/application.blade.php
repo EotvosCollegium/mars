@@ -48,4 +48,24 @@
             </div>
         </form>
     </div>
+    @can('editSubmissionStatus', \App\Models\Application::class)
+    <div class="card">
+        <form method="POST" action="{{ route('admission.applicants.update', ['application' => $user->application]) }}"
+              onsubmit="return confirm('Biztosan módosítani szeretné a jelentkezés státuszát? Ilyet nagyon ritka esetekben kell végezni.');">
+            <div class="card-content">
+                @csrf
+                <div class="card-title">Jelentkezés státuszának módosítása</div>
+                <div class="row">
+                    @if($user->application->submitted)
+                        <input type="hidden" name="unsubmit" value="1">
+                        <button type="submit" class="btn red">Véglegesítés visszavonása</button>
+                    @else
+                        <input type="hidden" name="submit" value="1">
+                        <button type="submit" class="btn green">Véglegesítés</button>
+                    @endif
+                </div>
+            </div>
+        </form>
+    </div>
+    @endcan
 @endsection
