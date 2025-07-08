@@ -257,7 +257,7 @@
                             </tr>
                             <tr>
                                 <td colspan="2">
-                                    <p style="font-weight: bold;">Miért kíván a Collegium tagja lenni?</p>
+                                    <p style="font-weight: bold;">@markdown(\App\Models\ConfigurableText::getText("APPLICATION_QUESTION2"))</p>
                                     <p>
                                         {{ $user->application->question_2 }}
                                         @if(!$user->application->question_2)
@@ -268,10 +268,7 @@
                             </tr>
                             <tr>
                                 <td colspan="2">
-                                    <p style="font-weight: bold;">Tervez-e tovább tanulni a diplomája
-                                        megszerzése
-                                        után?
-                                        Milyen tervei vannak az egyetem után?</p>
+                                    <p style="font-weight: bold;">@markdown(\App\Models\ConfigurableText::getText("APPLICATION_QUESTION3"))</p>
                                     <p>
                                         {{ $user->application->question_3}}
                                         @if(!$user->application->question_3)
@@ -282,8 +279,7 @@
                             </tr>
                             <tr>
                                 <td colspan="2">
-                                    <p style="font-weight: bold;">Részt vett-e közéleti tevékenységben? Ha
-                                        igen, röviden jellemezze!</p>
+                                    <p style="font-weight: bold;">@markdown(\App\Models\ConfigurableText::getText("APPLICATION_QUESTION4"))</p>
                                     <p>{{ $user->application->question_4 ?? "-" }}</p>
                                 </td>
                             </tr>
