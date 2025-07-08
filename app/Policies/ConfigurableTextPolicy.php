@@ -5,7 +5,6 @@ namespace App\Policies;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\ConfigurableText;
-
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class ConfigurableTextPolicy
@@ -14,7 +13,7 @@ class ConfigurableTextPolicy
 
     public function before(User $user)
     {
-        if($user->isAdmin()){
+        if ($user->isAdmin()) {
             return true;
         }
     }

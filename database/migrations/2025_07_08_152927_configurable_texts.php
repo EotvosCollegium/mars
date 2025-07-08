@@ -4,15 +4,14 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class () extends Migration {
     /**
      * Run the migrations.
      */
     public function up(): void
     {
         Schema::rename("custom", "configurable_texts");
-        Schema::table('configurable_texts', function($table) {
+        Schema::table('configurable_texts', function ($table) {
             $table->unsignedTinyInteger('workshop_id')->nullable();
 
             $table->string('summarize')->storedAs("CONCAT(`key`, ';', COALESCE(`workshop_id`, ''))");
@@ -131,7 +130,7 @@ Az interneten számos [minta található](https://www.google.com/search?q=hagyom
      */
     public function down(): void
     {
-        Schema::table('configurable_texts', function($table) {
+        Schema::table('configurable_texts', function ($table) {
             $table->dropForeign(['workshop_id']);
             $table->dropUnique(['summarize']);
             $table->dropColumn('summarize');
