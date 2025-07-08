@@ -6,6 +6,16 @@
 
 @section('content')
     @include('auth.admission.period')
+
+    @can('editAny', \App\Models\ConfigurableText::class)
+    <div class="card">
+        <div class="card-content">
+            <div class="row">
+                A különböző szövegeket a <a href="{{ route('configurable_texts.index') }}">@lang('configurable_texts.configurable_texts')</a> oldalon lehet módosítani.
+            </div>
+        </div>
+    </div>
+    @endcan
     <div class="card">
         <div class="card-content">
             <div class="row center" style="margin-bottom: 0">

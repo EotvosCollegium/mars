@@ -199,6 +199,13 @@
                                         </a>
                                     </li>
                                 @endcan
+                                @can('editAny', \App\Models\ConfigurableText::class)
+                                    <li>
+                                        <a class="waves-effect" href="{{ route('configurable_texts.index') }}">
+                                            <i class="material-icons left">edit_square</i> @lang('configurable_texts.configurable_texts')
+                                        </a>
+                                    </li>
+                                @endcan
                             </ul>
                         </div>
                     </li>

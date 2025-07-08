@@ -355,3 +355,14 @@ body.dark a.btn {
         @include column-count(3);
     }
 }
+
+.markdown_with_red h6 {
+    color: red;
+}
+
+.markdown_with_red ul li {
+    list-style-type: disc;
+}
+.markdown_with_red ul {
+    margin-left: 20px;
+}

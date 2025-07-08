@@ -28,6 +28,7 @@ use App\Http\Controllers\Network\AdminInternetController;
 use App\Http\Controllers\Network\InternetController;
 use App\Http\Controllers\Network\MacAddressController;
 use App\Http\Controllers\Network\RouterController;
+use App\Http\Controllers\ConfigurableText\ConfigurableTextController;
 use App\Http\Controllers\IssuesController;
 use App\Http\Controllers\Secretariat\DocumentController;
 use App\Http\Controllers\Secretariat\GuestsController;
@@ -169,6 +170,11 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
     Route::post('/network/admin/checkout/expense/add', [AdminCheckoutController::class, 'addExpense'])->name('admin.checkout.expense.add');
     Route::post('/network/admin/checkout/income/add', [AdminCheckoutController::class, 'addIncome'])->name('admin.checkout.income.add');
     Route::get('/network/admin/checkout/transaction/delete/{transaction}', [EconomicController::class, 'deleteTransaction'])->name('admin.checkout.transaction.delete');
+
+    Route::prefix('configurable_texts')->name('configurable_texts.')->group(function () {
+        Route::get('/', [ConfigurableTextController::class, 'index'])->name('index');
+        Route::post('/store', [ConfigurableTextController::class, 'store'])->name('store');
+    });
 
     /** Routers */
     Route::get('/routers', [RouterController::class, 'index'])->name('routers');

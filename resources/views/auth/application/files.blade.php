@@ -9,26 +9,9 @@
         <div class="card-content">
             <div class="card-title">Feltöltött fájlok</div>
             <blockquote>
-                A pályázatnak az alábbiakat kell tartalmaznia:
-                <ul style="margin-left:20px;margin-top:0">
-                    <li style="list-style-type: circle !important"><em>hagyományos, leíró jellegű</em> önéletrajz
-                        <i class="material-icons tooltipped" style="font-size: 1em; vertical-align: -0.2em; cursor: default"
-                           data-tooltip="teljes mondatokból álló, összefüggő szöveg (NEM Europass-jellegű)">
-                           info_outline
-                        </i>
-                    </li>
-                    <li style="list-style-type: circle !important">elsőéves egyetemistaként:<br/>
-                        szakfelvételi engedély/felvételi határozat (Neptun: Tanulmányok - Hivatalos
-                        bejegyzések menüpont alatt letölthető)<br/>
-                        érettségi bizonyítvány másolata
-                    </li>
-                    <li style="list-style-type: circle !important">lezárt egyetemi félévek esetén:<br/>
-                        diploma másolata vagy leckekönyv/törzslap kivonat az eddigi eredményekről
-                    </li>
-                    <li style="list-style-type: circle !important">opcionális: oklevelek, igazolások, szaktanári
-                        ajánlás
-                    </li>
-                </ul>
+                <div class="markdown_with_red">
+                    @markdown(\App\Models\ConfigurableText::getText("APPLICATION_FILES"))
+                </div>
             </blockquote>
             <form method="POST" action="{{ route('application.store', ['page' => 'files']) }}"
                   enctype='multipart/form-data'>

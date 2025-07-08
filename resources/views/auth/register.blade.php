@@ -14,25 +14,20 @@
                 </span>
             </div>
             <div class="card-content">
-                @if($user_type == \App\Models\Role::COLLEGIST)
-                <blockquote lang="en">
-                    <a href="{{route('register.guest')}}" style="text-decoration: underline">@lang('registration.information_tenant', [], 'en')</a>
-                </blockquote>
-                <blockquote lang="hu">
-                    <a href="{{route('register.guest')}}" style="text-decoration: underline">@lang('registration.information_tenant', [], 'hu')</a>
-                </blockquote>
-                <blockquote>
-                    Ha már rendelkezel {{ config('app.name') }} fiókkal, <a href="{{ route('login') }}">belépést</a> követően adhatod le jelentkezésed.
-                </blockquote>
-                @else
-                <blockquote lang="hu">
-                    <a href="{{route('register')}}" style="text-decoration: underline">@lang('registration.information_collegist', [], 'hu')</a>
-                </blockquote>
-                <blockquote lang="en">
-                    <a href="{{route('register')}}" style="text-decoration: underline">@lang('registration.information_collegist', [], 'en')</a>
-                </blockquote>
-                @endif
                 @if($user_type == \App\Models\Role::TENANT || $application_open ?? false)
+                    @if($user_type == \App\Models\Role::COLLEGIST)
+
+                    <div class="markdown_with_red">
+                        @markdown(\App\Models\ConfigurableText::getText("APPLICANT_REGISTRATION"))
+                    </div>
+                    
+                    @else
+
+                    <div class="markdown_with_red">
+                        @markdown(\App\Models\ConfigurableText::getText("TENANT_REGISTRATION"))
+                    </div>
+
+                    @endif
                 <form method="POST" action="{{ route('register') }}">
                     @csrf
                     @foreach ($errors->all() as $error)
@@ -64,6 +59,12 @@
                     </div>
                 </form>
             @else
+            <blockquote lang="en">
+                <a href="{{route('register.guest')}}" style="text-decoration: underline">@lang('registration.information_tenant', [], 'en')</a>
+            </blockquote>
+            <blockquote lang="hu">
+                <a href="{{route('register.guest')}}" style="text-decoration: underline">@lang('registration.information_tenant', [], 'hu')</a>
+            </blockquote>
             <blockquote>Jelenleg nem lehet jelentkezni a Collegiumba.</blockquote>
             @endif
             </div>
