@@ -24,6 +24,16 @@ class ApplicationPolicy
             return true;
         }
     }
+    public function update(User $user, Application $target): bool
+    {
+        return $user->can('viewAll', Application::class) ||
+                $target->appliedWorkshops
+                ->intersect($user->applicationCommitteWorkshops)
+                ->count() > 0
+            || $target->appliedWorkshops
+                ->intersect($user->roleWorkshops)
+                ->count() > 0;
+    }
 
     /**
      * @param User $user
@@ -32,16 +42,7 @@ class ApplicationPolicy
      */
     public function view(User $user, Application $target): bool
     {
-        if ($user->id == $target->user_id || $user->can('viewAll', Application::class)) {
-            return true;
-        } else {
-            return $target->appliedWorkshops
-                ->intersect($user->applicationCommitteWorkshops)
-                ->count() > 0
-            || $target->appliedWorkshops
-                ->intersect($user->roleWorkshops)
-                ->count() > 0;
-        }
+        return $user->id == $target->user_id || $user->can('update', Application::class);
     }
 
     /**
@@ -59,6 +60,10 @@ class ApplicationPolicy
             Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS,
             Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER
         ]);
+    }
+
+    public function editSubmissionStatus(User $user) : bool {
+        return false;
     }
 
     /**
