@@ -11,8 +11,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class ConfigurableTextController extends Controller
 {
-
-    const CUSTOM_TEXT_FIELDS = [
+    public const CUSTOM_TEXT_FIELDS = [
         'APPLICANT_REGISTRATION',
         'TENANT_REGISTRATION',
         'APPLICATION_INFORMATION_PRIOR_TO_FINALIZATION',
@@ -30,38 +29,40 @@ class ConfigurableTextController extends Controller
     {
         $this->authorize('editAny', ConfigurableText::class);
         $text_fields = [];
-        foreach(self::CUSTOM_TEXT_FIELDS as $configurable_text_field){
+        foreach (self::CUSTOM_TEXT_FIELDS as $configurable_text_field) {
             $configurable_text = ConfigurableText::getConfigurableText($configurable_text_field);
             if (user()->can('edit', $configurable_text)) {
                 $text_fields[] = $configurable_text;
             }
         }
-        foreach(Workshop::all() as $workshop){
+        foreach (Workshop::all() as $workshop) {
             $configurable_text = ConfigurableText::getConfigurableText("APPLICATION_INFORMATION_PER_WORKSHOP_AFTER_FINALIZATION", $workshop->id);
             if (user()->can('edit', $configurable_text)) {
                 $text_fields[] = $configurable_text;
             }
         }
-        return view('configurable_texts.manage',
+        return view(
+            'configurable_texts.manage',
             [
                 'text_fields' => $text_fields
             ]
         );
     }
 
-    public function store(Request $request){
+    public function store(Request $request)
+    {
         $this->authorize('editAny', ConfigurableText::class);
         $validated = array();
-        foreach($request->toArray() as $key => $value){
+        foreach ($request->toArray() as $key => $value) {
             $configurableText = ConfigurableText::getConfigurableTextFromSummary($key);
-            if($configurableText){
+            if ($configurableText) {
                 $this->authorize('edit', $configurableText);
                 $validated[$key] = $value;
             }
         }
-        foreach($validated as $key => $value){
+        foreach ($validated as $key => $value) {
             $configurableText = ConfigurableText::getConfigurableTextFromSummary($key);
-            if($configurableText){
+            if ($configurableText) {
                 $configurableText->update(
                     ["rawtext" => $value]
                 );

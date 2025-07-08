@@ -22,29 +22,34 @@ class ConfigurableText extends Model
 
     public $timestamps = true;
 
-    private static function getSummary(string $key, ?int $workshop_id = null){
+    private static function getSummary(string $key, ?int $workshop_id = null)
+    {
         $summary = "${key};";
-        if($workshop_id != null){
+        if ($workshop_id != null) {
             $summary .= "${workshop_id}";
         }
         return $summary;
     }
 
-    public function summary() {
+    public function summary()
+    {
         return self::getSummary($this->key, $this->workshop_id);
     }
 
-    public static function getText(string $key, ?int $workshop_id = null): string{
+    public static function getText(string $key, ?int $workshop_id = null): string
+    {
         return self::getConfigurableText($key, $workshop_id)->text ?? "";
     }
 
-    public static function getConfigurableTextFromSummary(string $summary){
+    public static function getConfigurableTextFromSummary(string $summary)
+    {
         return self::where(['summarize' => $summary])->first();
     }
 
-    public static function getConfigurableText(string $key, ?int $workshop_id = null): ConfigurableText{
+    public static function getConfigurableText(string $key, ?int $workshop_id = null): ConfigurableText
+    {
         $configurable_text = self::where(['summarize' => self::getSummary($key, $workshop_id)])->first();
-        if(!$configurable_text){
+        if (!$configurable_text) {
             $configurable_text = self::create(
                 [
                     'key' => $key,
@@ -55,7 +60,8 @@ class ConfigurableText extends Model
         return $configurable_text;
     }
 
-    public function workshop() : BelongsTo {
+    public function workshop(): BelongsTo
+    {
         return $this->belongsTo('App\Models\Workshop');
     }
 

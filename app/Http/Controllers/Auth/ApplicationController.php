@@ -31,9 +31,10 @@ class ApplicationController extends Controller
     /**
      * If a collegist wants to start the application, they need to send a POST request to the endpoint that is handled by `confirm_start`
      */
-    public function confirm_start(): RedirectResponse{
+    public function confirm_start(): RedirectResponse
+    {
         $this->ensureApplicationExists(user());
-        return redirect()->back()->with('message', __('Jelentkezési folyamat elindítva'));
+        return redirect()->route('application')->with('message', __('Jelentkezési folyamat elindítva'));
     }
 
     /**
@@ -48,15 +49,15 @@ class ApplicationController extends Controller
             return redirect()->route('users.tenant-update.show');
         }
 
-        if( user()->isCollegist() &&
-            user()->application()->doesntExist()){
+        if (user()->isCollegist() &&
+            user()->application()->doesntExist()) {
             return view("auth.application.confirm_start");
         }
 
         $this->ensureApplicationExists(user());
 
         // only allow access if the application period is open or after, if the user has submitted application
-        if(!($this->isActive() || user()->application?->submitted)) {
+        if (!($this->isActive() || user()->application?->submitted)) {
             abort(403, "A felvétel jelenleg nincs megnyitva");
         }
 

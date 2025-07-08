@@ -42,7 +42,7 @@ class ApplicationPolicy
      */
     public function view(User $user, Application $target): bool
     {
-        return $user->id == $target->user_id || $user->can('update', Application::class);
+        return $user->id == $target->user_id || $user->can('update', $target);
     }
 
     /**
@@ -62,7 +62,8 @@ class ApplicationPolicy
         ]);
     }
 
-    public function editSubmissionStatus(User $user) : bool {
+    public function editSubmissionStatus(User $user): bool
+    {
         return false;
     }
 
@@ -73,14 +74,14 @@ class ApplicationPolicy
     public function editStatus(User $user, ?Workshop $workshop = null): bool
     {
         if ($workshop) {
-            if($user->hasRole([
+            if ($user->hasRole([
                 Role::SECRETARY,
                 Role::DIRECTOR,
                 Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS
             ])) {
                 return true;
             }
-            if($user->hasRole(Role::WORKSHOP_LEADER)) {
+            if ($user->hasRole(Role::WORKSHOP_LEADER)) {
                 return $user->roleWorkshops->contains($workshop);
             }
         }
