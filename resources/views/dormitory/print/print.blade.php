@@ -60,7 +60,7 @@
                     <td>
                         <label>
                             <input type="radio" name="printer_configuration" value="{{ $printer_configuration->id }}"
-                                {{ $index === 0 ? 'checked' : '' }} {-- Default selection --}
+                                {{ $index === 0 ? 'checked' : '' }} {{-- Default selection --}}
                             >
                             <span class="black-text">{{$printer_configuration->description}}
                             @can('manageActivation', $printer_configuration)
