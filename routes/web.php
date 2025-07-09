@@ -86,6 +86,10 @@ Route::prefix('/register')->group(function () {
     Route::get('/guest', [RegisterController::class, 'showTenantRegistrationForm'])->name('register.guest');
 });
 
+Route::bind('user', function (int $value) {
+    return \App\Models\User::withoutGlobalScope('verified')->where('id', $value)->first();
+});
+
 Route::middleware([Authenticate::class, LogRequests::class])->group(function () {
     /** Routes that needs to be accessed during the application process */
     Route::get('/application', [ApplicationController::class, 'show'])

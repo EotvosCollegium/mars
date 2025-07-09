@@ -68,4 +68,11 @@
         </form>
     </div>
     @endcan
+    @can('view', $user)
+    <div class="card">
+        <div class="card-content">
+            <a href="{{ route('users.show', $user) }}">Jelentkező felhasználói adatlapja</a>
+        </div>
+    </div>
+    @endcan
 @endsection
