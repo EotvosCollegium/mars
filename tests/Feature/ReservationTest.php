@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
-
 use App\Enums\ReservableItemType;
 use App\Models\User;
 use App\Models\Role;
@@ -681,7 +680,7 @@ class ReservationTest extends TestCase
             'verified' => 1
         ]);
 
-        foreach([$machine1, $machine2] as $machine) {
+        foreach ([$machine1, $machine2] as $machine) {
             for ($i = 0; $i < 3; ++$i) {
                 $input = [
                     'reserved_from' => $nowHour->addHour($i),
@@ -697,7 +696,7 @@ class ReservationTest extends TestCase
         }
 
         // and now let's try to add a seventh one
-        foreach([$machine1, $machine2] as $machine) {
+        foreach ([$machine1, $machine2] as $machine) {
             $input = [
                 'reserved_from' => $nowHour->addHours(3),
                 'reserved_until' => $nowHour->addHours(4),
@@ -828,8 +827,8 @@ class ReservationTest extends TestCase
         $collegist = self::createCollegist();
         $now = CarbonImmutable::now();
 
-        foreach([ReservableItemType::WASHING_MACHINE, ReservableItemType::ROOM] as $type) {
-            foreach([1, 0] as $outOfOrder) {
+        foreach ([ReservableItemType::WASHING_MACHINE, ReservableItemType::ROOM] as $type) {
+            foreach ([1, 0] as $outOfOrder) {
                 $item = ReservableItem::factory()->create([
                     'name' => 'item',
                     'type' => $type->value,

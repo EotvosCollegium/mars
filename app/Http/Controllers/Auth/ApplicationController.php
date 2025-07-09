@@ -28,7 +28,14 @@ class ApplicationController extends Controller
     private const DELETE_FILE_ROUTE = 'files.delete';
     private const SUBMIT_ROUTE = 'submit';
 
-
+    /**
+     * If a collegist wants to start the application, they need to send a POST request to the endpoint that is handled by `confirm_start`
+     */
+    public function confirmStart(): RedirectResponse
+    {
+        $this->ensureApplicationExists(user());
+        return redirect()->route('application')->with('message', __('Jelentkezési folyamat elindítva'));
+    }
 
     /**
      * Return the view based on the request's page parameter.
@@ -37,17 +44,17 @@ class ApplicationController extends Controller
      */
     public function show(Request $request): View|RedirectResponse
     {
-        if (user()->hasRole(Role::TENANT)) {
-            //let the user delete their tenant status
-            return redirect()->route('users.tenant-update.show');
+        // only allow access if the application period is open or after, if the user has submitted application
+        if (!($this->isActive() || user()->application?->submitted)) {
+            abort(403, "A felvételi jelenleg nincs megnyitva");
+        }
+
+        if (user()->roles()->exists() &&
+            user()->application()->doesntExist()) {
+            return view("auth.application.confirm_start");
         }
 
         $this->ensureApplicationExists(user());
-
-        // only allow access if the application period is open or after, if the user has submitted application
-        if(!($this->isActive() || user()->application?->submitted)) {
-            abort(403, "A felvétel jelenleg nincs megnyitva");
-        }
 
         $data = [
             'workshops' => Workshop::all(),

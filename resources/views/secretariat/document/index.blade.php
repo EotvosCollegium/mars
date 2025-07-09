@@ -11,56 +11,94 @@
         <div class="card">
             <div class="card-content">
                 <span class="card-title">Dokumentumok</span>
-                <blockquote>Nyomtasd ki a kívánt dokumentumot a Collegiumban kihelyezett nyomtatóval, és add le a titkárságon/portán. A költségek levonásra kerülnek.</blockquote>
-                <blockquote>Igazolásokat a titkárságtól tudsz igényelni az "Igénylés" gombra kattintva, erről a titkárság értesítést kap. Az igazolásokat a következő munkanapon veheted át. Csak az aláírt és lepecsételt igazolások érvényesek!</blockquote>
+                @include("secretariat.document.printing_info")
+                <blockquote>Igazolásokat a titkárságtól tudsz igényelni az "Igénylés" gombra kattintva, erről a titkárság értesítést kap. Az igazolásokat általában a következő munkanapon veheted át. Csak az aláírt és lepecsételt igazolások érvényesek! Az igazolásokat jellemzően a titkárság nyomtatja.</blockquote>
                 {{-- TODO: show printing errors --}}
                 <table>
                     <tbody>
                         @can('document.register-statement')
                         <tr>
-                            <td>Beköltözési nyilatkozat</td>
-                            <td></td>
                             <td>
-                                <x-input.button :href="route('documents.register-statement.download')" text="letöltés" />
+                                {{__("document.register-statement")}}
                             </td>
                             <td>
-                                <x-input.button :href="route('documents.register-statement.print')" class="coli blue" text="nyomtatás" />
                             </td>
+                            <td>
+                                <x-input.button :href="route('documents.register-statement.download')" text="document.download" />
+                            </td>
+                            @if($printing_available)
+                                <td>
+                                    <form method="post" action="{{route('documents.register-statement.print')}}">
+                                        @csrf
+                                        <x-input.button type="submit" class="coli blue" text="print.print" />
+                                    </form>
+                                </td>
+                            @endif
                         </tr>
                         @endcan
                         @can('document.departure-statement')
                         <tr>
-                            <td>Kiköltözési nyilatkozat</td>
-                            <td></td>
                             <td>
-                                <x-input.button :href="route('documents.departure-statement.download')" text="letöltés" />
+                                {{__("document.departure-statement")}}
                             </td>
+                            <td>
+                            </td>
+                            <td>
+                                <x-input.button :href="route('documents.departure-statement.download')" text="document.download" />
+                            </td>
+                            @if($printing_available)
+                                <td>
+                                    <form method="post" action="{{route('documents.departure-statement.print')}}">
+                                        @csrf
+                                        <x-input.button type="submit" class="coli blue" text="print.print" />
+                                    </form>
+                                </td>
+                            @endif
                         </tr>
                         @endcan
                         @can('document.import-license')
                         <tr>
-                            <td>Behozatali engedély</td>
                             <td>
-                                <x-input.button :href="route('documents.import.show')" text="kitöltés" />
+                                {{__("document.import")}}
                             </td>
                             <td>
-                                <x-input.button :href="route('documents.import.download')" text="nyomtatás" />
+                                <x-input.button :href="route('documents.import.show')" text="document.fill" />
                             </td>
                             <td>
-                                <x-input.button :href="route('documents.import.print')" class="coli blue" text="document.print" />
+                                <x-input.button :href="route('documents.import.download')" text="document.download" />
                             </td>
+                            @if($printing_available)
+                                <td>
+                                    <form method="post" action="{{route('documents.import.print')}}">
+                                        @csrf
+                                        <x-input.button type="submit" class="coli blue" text="print.print" />
+                                    </form>
+                                </td>
+                            @endif
                         </tr>
                         @endcan
                         @can('document.status-certificate')
                         <tr>
-                            <td>Tagsági igazolás</td>
-                            <td></td>
                             <td>
-                                <x-input.button :href="route('documents.status-cert.download')" text="letöltés" />
+                                {{__("document.status-cert")}}
                             </td>
                             <td>
-                                <x-input.button :href="route('documents.status-cert.request')" class="coli blue" text="igénylés" />
+                                <form method="post" action="{{route('documents.status-cert.request')}}">
+                                    @csrf
+                                    <x-input.button type="submit" class="coli blue" text="document.request" />
+                                </form>
                             </td>
+                            <td>
+                                <x-input.button :href="route('documents.status-cert.download')" text="document.download" />
+                            </td>
+                            @if($printing_available)
+                                <td>
+                                    <form method="post" action="{{route('documents.status-cert.print')}}">
+                                        @csrf
+                                        <x-input.button type="submit" class="coli blue" text="print.print" />
+                                    </form>
+                                </td>
+                            @endif
                         </tr>
                         @endcan
                     </tbody>

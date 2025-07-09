@@ -24,6 +24,16 @@ class ApplicationPolicy
             return true;
         }
     }
+    public function update(User $user, Application $target): bool
+    {
+        return $user->can('viewAll', Application::class) ||
+                $target->appliedWorkshops
+                ->intersect($user->applicationCommitteWorkshops)
+                ->count() > 0
+            || $target->appliedWorkshops
+                ->intersect($user->roleWorkshops)
+                ->count() > 0;
+    }
 
     /**
      * @param User $user
@@ -32,16 +42,7 @@ class ApplicationPolicy
      */
     public function view(User $user, Application $target): bool
     {
-        if ($user->id == $target->user_id || $user->can('viewAll', Application::class)) {
-            return true;
-        } else {
-            return $target->appliedWorkshops
-                ->intersect($user->applicationCommitteWorkshops)
-                ->count() > 0
-            || $target->appliedWorkshops
-                ->intersect($user->roleWorkshops)
-                ->count() > 0;
-        }
+        return $user->id == $target->user_id || $user->can('update', $target);
     }
 
     /**
@@ -61,6 +62,11 @@ class ApplicationPolicy
         ]);
     }
 
+    public function editSubmissionStatus(User $user): bool
+    {
+        return false;
+    }
+
     /**
      * @param User $user
      * @return bool
@@ -68,14 +74,14 @@ class ApplicationPolicy
     public function editStatus(User $user, ?Workshop $workshop = null): bool
     {
         if ($workshop) {
-            if($user->hasRole([
+            if ($user->hasRole([
                 Role::SECRETARY,
                 Role::DIRECTOR,
                 Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS
             ])) {
                 return true;
             }
-            if($user->hasRole(Role::WORKSHOP_LEADER)) {
+            if ($user->hasRole(Role::WORKSHOP_LEADER)) {
                 return $user->roleWorkshops->contains($workshop);
             }
         }

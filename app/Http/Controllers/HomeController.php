@@ -8,6 +8,7 @@ use App\Models\Role;
 use App\Models\RoleObject;
 use App\Models\RoleUser;
 use App\Models\User;
+use App\Models\ConfigurableText;
 use App\Models\Workshop;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
@@ -30,10 +31,10 @@ class HomeController extends Controller
             $epistola = EpistolaController::getActiveNews();
         }
 
-        $information_general = DB::table('custom')->where('key', 'HOME_PAGE_NEWS')->first()->text;
+        $information_general = ConfigurableText::getText('HOME_PAGE_NEWS');
 
         if (user()->hasRole(Role::COLLEGIST)) {
-            $information_collegist = DB::table('custom')->where('key', 'HOME_PAGE_NEWS_COLLEGISTS')->first()->text;
+            $information_collegist = ConfigurableText::getText('HOME_PAGE_NEWS_COLLEGISTS');
         }
 
         return view('home', [
@@ -55,23 +56,22 @@ class HomeController extends Controller
 
     public function editNews(Request $request)
     {
-        /*@var User $user*/
-        $user = user();
-        if (!$user->hasRole([
-            Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS,
-            Role::SYS_ADMIN,
-            Role::STUDENT_COUNCIL_SECRETARY])) {
-            abort(403);
-        }
+        $configurable_text_home_page_news = ConfigurableText::getConfigurableText('HOME_PAGE_NEWS');
+        $this->authorize("edit", $configurable_text_home_page_news);
+        $configurable_text_home_page_news_collegists = ConfigurableText::getConfigurableText('HOME_PAGE_NEWS_COLLEGISTS');
+        $this->authorize("edit", $configurable_text_home_page_news_collegists);
 
-        DB::table('custom')->where('key', 'HOME_PAGE_NEWS')->update([
-            'text' => $request->info_general ?? "",
-            'user_id' => $user->id
-        ]);
-        DB::table('custom')->where('key', 'HOME_PAGE_NEWS_COLLEGISTS')->update([
-            'text' => $request->info_collegist ?? "",
-            'user_id' => $user->id
-        ]);
+        $configurable_text_home_page_news->update(
+            [
+                "rawtext" => $request->info_general
+            ]
+        );
+
+        $configurable_text_home_page_news_collegists->update(
+            [
+                "rawtext" => $request->info_collegist
+            ]
+        );
 
         return redirect()->back()->with('message', __('general.successful_modification'));
     }

@@ -88,7 +88,7 @@
                         <!-- Roles -->
                         <div class="col s12 xl4">
                             @include('user.role_tags', [
-                                'roles' => $user->roles->whereNotIn('name', ['internet-user', 'printer']),
+                                'roles' => $user->roles,
                                 'newline' => true
                             ])
                         </div>

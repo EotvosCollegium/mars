@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-
 use App\Models\Semester;
 use App\Models\User;
 use App\Models\Role;
@@ -22,11 +21,10 @@ class AnonymousQuestionSeeder extends Seeder
         // for generating long answers
         $faker = \Faker\Factory::create();
 
-        foreach(Semester::all()->filter(
+        foreach (Semester::all()->filter(
             // not for future semesters
             function (Semester $semester) {return $semester->isCurrent() || $semester->isClosed();}
-        )
-                as $semester) {
+        ) as $semester) {
             $singleChoice = Question::factory()
                 ->for($semester, 'parent')
                 ->hasOptions(4)
@@ -40,7 +38,7 @@ class AnonymousQuestionSeeder extends Seeder
                 ->create(['opened_at' => now(), 'closed_at' => null, 'max_options' => 0, 'question_type' => Question::TEXT_ANSWER]);
 
             // the test users should not be included
-            foreach(User::withRole(Role::COLLEGIST)->where('id', '>', 4)->get() as $collegist) {
+            foreach (User::withRole(Role::COLLEGIST)->where('id', '>', 4)->get() as $collegist) {
                 $answerSheet = AnswerSheet::createForUser($collegist, $semester);
 
                 $singleChoice->storeAnswers($collegist, $singleChoice->options->random(), $answerSheet);

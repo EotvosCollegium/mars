@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Support\Facades\DB;
+use Psr\Container\NotFoundExceptionInterface;
+use Psr\Container\ContainerExceptionInterface;
 use Log;
 
 /**
@@ -52,9 +54,10 @@ class PrintJob extends Model
         'state',
         'job_id',
         'cost',
-        'printer_id',
+        'printer_configuration_id',
         'used_free_printing_credits',
         'filename',
+        'file_path',
     ];
 
     protected $casts = [
@@ -72,12 +75,12 @@ class PrintJob extends Model
     }
 
     /**
-     * `Printer` which this `PrintJob` was sent to.
+     * `PrinterConfiguration` which this `PrintJob` was sent to.
      * @return BelongsTo
      */
-    public function printer()
+    public function printerConfiguration()
     {
-        return $this->belongsTo(Printer::class);
+        return $this->belongsTo(PrinterConfiguration::class);
     }
 
     /**
@@ -125,8 +128,7 @@ class PrintJob extends Model
     public function cancel()
     {
         return DB::transaction(function () {
-            $printer = $this->printer;
-            $process = new Process([config('commands.cancel'), $this->job_id, '-h', "$printer->ip:$printer->port"]);
+            $process = new Process([config('commands.cancel'), $this->job_id, '-h', config('print.cups_address')]);
             $process->run();
             $result = ['output' => $process->getOutput(), 'exit_code' => $process->getExitCode()];
 
@@ -151,6 +153,42 @@ class PrintJob extends Model
                 return PrinterCancelResult::AlreadyCompleted;
             }
             return PrinterCancelResult::CannotCancel;
+        });
+    }
+
+    /**
+     * Returns the completed printjobs. Running this function is really expensive.
+     * @return array
+     * @throws NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     */
+    private static function getCompletedPrintJobsFromLpstat(): array
+    {
+        try {
+            $process = new Process([config('commands.lpstat'), '-h', config('print.cups_address'), '-W', 'completed']);
+            $process->run(log: false);
+            $result = explode("\n", $process->getOutput());
+            $firstWords = array_map(function ($line) {
+                return strtok($line, " ");
+            }, $result);
+            return $firstWords;
+        } catch (\Exception $e) {
+            Log::error("Printing error at line: " . __FILE__ . ":" . __LINE__ . " (in function " . __FUNCTION__ . "). " . $e->getMessage());
+            throw new PrinterException($e->getMessage(), $e->getCode(), $e->getPrevious());
+        }
+    }
+
+    /**
+     * Updates the state of the completed printjobs to `PrintJobStatus::SUCCESS`.  Running this function is really expensive.
+     */
+    public static function updateCompletedPrintJobs()
+    {
+        $completedPrintJobs = self::getCompletedPrintJobsFromLpstat();
+        DB::transaction(function () use ($completedPrintJobs) {
+            PrintJob::where('state', PrintJobStatus::QUEUED)->whereIn(
+                'job_id',
+                $completedPrintJobs
+            )->update(['state' => PrintJobStatus::SUCCESS]);
         });
     }
 }

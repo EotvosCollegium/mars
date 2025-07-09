@@ -1,6 +1,6 @@
 @can('modify', \App\Models\PrintAccount::class)
 <span class="card-title">Egyenleg módosítása</span>
-<blockquote>A tranzakció az admin kasszába fog kerülni.</blockquote>
+<blockquote>A tranzakció a rendszergazdai kasszába fog kerülni.</blockquote>
 <div class="row">
 <form method="POST" action="{{ route('print-account.update') }}">
         @csrf

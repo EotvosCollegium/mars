@@ -6,15 +6,16 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-
 use App\Models\Semester;
 use App\Models\Role;
 
 /**
  * Either B2 or C1.
  */
-enum LanguageExamLevel {
-    case B2; case C1;
+enum LanguageExamLevel
+{
+    case B2;
+    case C1;
 }
 
 /**
@@ -81,7 +82,7 @@ class EducationalInformation extends Model
 
     public function user()
     {
-        return $this->belongsTo('App\Models\User');
+        return $this->belongsTo('App\Models\User')->withoutGlobalScope('verified');
     }
 
     /**
@@ -147,7 +148,7 @@ class EducationalInformation extends Model
                     $query->whereHas('endSemester', function ($query) {
                         $query->where('year', '>=', $this->year_of_acceptance);
                     })->orWhereNull('end');
-            })->doesntExist();
+                })->doesntExist();
     }
 
     /**
@@ -197,7 +198,9 @@ class EducationalInformation extends Model
      */
     public function alfonsoCompleted(): bool
     {
-        if ($this->alfonsoExempted()) return true;
+        if ($this->alfonsoExempted()) {
+            return true;
+        }
         foreach ($this->alfonsoRequirements() as $language => $level) {
             if ($this->checkIfPassed($language, $level)) {
                 return true;

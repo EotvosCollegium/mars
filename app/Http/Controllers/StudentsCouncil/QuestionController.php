@@ -27,7 +27,7 @@ class QuestionController extends Controller
      */
     protected function createQuestion(Request $request, Semester|GeneralAssembly $parent = null): Question
     {
-        $validatedData = $request->validate([
+        $validator = Validator::make($request->all(), [
             'title' => 'required|string',
             'question_type' => [
                 'required',
@@ -37,6 +37,8 @@ class QuestionController extends Controller
             'options' => ['required', 'min:1', Rule::excludeIf($request['question_type'] != QUESTION::SELECTION && $request['question_type'] != QUESTION::RANKING), 'array'],
             'options.*' => ['required', 'min:1', 'max:255', Rule::excludeIf($request['question_type'] != QUESTION::SELECTION && $request['question_type'] != QUESTION::RANKING), 'string'],
         ]);
+        $validatedData = $validator->safe()->only(['question_type', 'options']);
+        $options = array();
         if ($validatedData['question_type'] == Question::SELECTION || $validatedData['question_type'] == Question::RANKING) {
             $options = array_filter($validatedData['options'], function ($s) {
                 return $s != null;
@@ -47,6 +49,8 @@ class QuestionController extends Controller
                 });
             }
         }
+        $validatedData = $validator->validated();
+
         $question = $parent->questions()->create([
             'title' => $validatedData['title'],
             'max_options' => isset($validatedData['max_options']) ? $validatedData['max_options'] : null,

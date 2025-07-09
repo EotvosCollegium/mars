@@ -5,7 +5,6 @@ namespace App\Mail\Reservations;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-
 use App\Models\Reservations\ReservableItem;
 
 /**

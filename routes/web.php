@@ -16,7 +16,7 @@ use App\Http\Controllers\Auth\ApplicationController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Dormitory\FaultController;
 use App\Http\Controllers\Dormitory\Printing\FreePrintingCreditsController;
-use App\Http\Controllers\Dormitory\Printing\PrinterController;
+use App\Http\Controllers\Dormitory\Printing\PrinterConfigurationController;
 use App\Http\Controllers\Dormitory\Printing\PrintJobController;
 use App\Http\Controllers\Dormitory\Printing\PrintAccountController;
 use App\Http\Controllers\Dormitory\Printing\PrintAccountHistoryController;
@@ -28,6 +28,7 @@ use App\Http\Controllers\Network\AdminInternetController;
 use App\Http\Controllers\Network\InternetController;
 use App\Http\Controllers\Network\MacAddressController;
 use App\Http\Controllers\Network\RouterController;
+use App\Http\Controllers\ConfigurableText\ConfigurableTextController;
 use App\Http\Controllers\IssuesController;
 use App\Http\Controllers\Secretariat\DocumentController;
 use App\Http\Controllers\Secretariat\GuestsController;
@@ -47,6 +48,7 @@ use App\Http\Controllers\Dormitory\Reservations\ReservationController;
 use App\Http\Middleware\LogRequests;
 use App\Http\Middleware\OnlyHungarian;
 use App\Http\Middleware\EnsureVerified;
+use App\Http\Middleware\RedirectTenantsToUpdate;
 use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -84,10 +86,21 @@ Route::prefix('/register')->group(function () {
     Route::get('/guest', [RegisterController::class, 'showTenantRegistrationForm'])->name('register.guest');
 });
 
+Route::bind('user', function ($value) {
+    return \App\Models\User::withoutGlobalScope('verified')->findOrFail($value);
+});
+
 Route::middleware([Authenticate::class, LogRequests::class])->group(function () {
     /** Routes that needs to be accessed during the application process */
-    Route::get('/application', [ApplicationController::class, 'show'])->name('application')->middleware(OnlyHungarian::class);
-    Route::post('/application', [ApplicationController::class, 'store'])->name('application.store');
+    Route::get('/application', [ApplicationController::class, 'show'])
+        ->name('application')
+        ->withoutMiddleware(RedirectTenantsToUpdate::class);
+    Route::post('/application/confirm_start', [ApplicationController::class, 'confirmStart'])
+        ->name('application.confirm_start')
+        ->withoutMiddleware(RedirectTenantsToUpdate::class);
+    Route::post('/application', [ApplicationController::class, 'store'])
+        ->name('application.store')
+        ->withoutMiddleware(RedirectTenantsToUpdate::class);
     Route::post('/users/{user}/profile_picture', [UserController::class, 'storeProfilePicture'])->name('users.update.profile-picture');
     Route::delete('/users/{user}/profile_picture', [UserController::class, 'deleteProfilePicture'])->name('users.delete.profile-picture');
     Route::post('/users/{user}/personal_information', [UserController::class, 'updatePersonalInformation'])->name('users.update.personal');
@@ -114,7 +127,6 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
     Route::delete('/users/{user}/roles/{role}', [UserController::class, 'removeRole'])->name('users.roles.delete');
     Route::post('/users/update_password', [UserController::class, 'updatePassword'])->name('users.update.password')->withoutMiddleware(LogRequests::class);
     Route::get('/users/tenant_update/show', [UserController::class, 'showTenantUpdate'])->name('users.tenant-update.show');
-    Route::post('/users/tenant_update/applicant', [UserController::class, 'tenantToApplicant'])->name('users.tenant-update.to-applicant');
 
     /** Localization */
     Route::get('/localizations', [LocaleController::class, 'index'])->name('localizations');
@@ -128,9 +140,9 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
 
     /** Printing */
     Route::prefix('print')->name('print.')->group(function () {
-        Route::get('/', [PrinterController::class, 'index'])->name('index');
-        Route::get('/admin', [PrinterController::class, 'adminIndex'])->name('index.admin');
-        Route::put('/{printer}', [PrinterController::class, 'update'])->name('update');
+        Route::get('/', [PrinterConfigurationController::class, 'index'])->name('index');
+        Route::get('/admin', [PrinterConfigurationController::class, 'adminIndex'])->name('index.admin');
+        Route::put('/{printer_configuration}', [PrinterConfigurationController::class, 'update'])->name('update');
 
         Route::get('/print-job', [PrintJobController::class, 'index'])->name('print-job.index');
         Route::get('/print-job/admin', [PrintJobController::class, 'adminIndex'])->name('print-job.index.admin');
@@ -169,6 +181,11 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
     Route::post('/network/admin/checkout/expense/add', [AdminCheckoutController::class, 'addExpense'])->name('admin.checkout.expense.add');
     Route::post('/network/admin/checkout/income/add', [AdminCheckoutController::class, 'addIncome'])->name('admin.checkout.income.add');
     Route::get('/network/admin/checkout/transaction/delete/{transaction}', [EconomicController::class, 'deleteTransaction'])->name('admin.checkout.transaction.delete');
+
+    Route::prefix('configurable_texts')->name('configurable_texts.')->group(function () {
+        Route::get('/', [ConfigurableTextController::class, 'index'])->name('index');
+        Route::post('/store', [ConfigurableTextController::class, 'store'])->name('store');
+    });
 
     /** Routers */
     Route::get('/routers', [RouterController::class, 'index'])->name('routers');
@@ -214,16 +231,18 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
     /** Documents */
     Route::get('/documents', [DocumentController::class, 'index'])->name('documents');
     Route::get('/documents/register-statement/download', [DocumentController::class, 'downloadRegisterStatement'])->name('documents.register-statement.download');
-    Route::get('/documents/register-statement/print', [DocumentController::class, 'printRegisterStatement'])->name('documents.register-statement.print');
+    Route::post('/documents/register-statement/print', [DocumentController::class, 'printRegisterStatement'])->name('documents.register-statement.print');
     Route::get('/documents/departure-statement/download', [DocumentController::class, 'downloadDepartureStatement'])->name('documents.departure-statement.download');
+    Route::post('/documents/departure-statement/print', [DocumentController::class, 'printDepartureStatement'])->name('documents.departure-statement.print');
     Route::get('/documents/import/show', [DocumentController::class, 'showImport'])->name('documents.import.show');
     Route::post('/documents/import/add', [DocumentController::class, 'addImport'])->name('documents.import.add');
     Route::post('/documents/import/remove', [DocumentController::class, 'removeImport'])->name('documents.import.remove');
     Route::get('/documents/import/download', [DocumentController::class, 'downloadImport'])->name('documents.import.download');
-    Route::get('/documents/import/print', [DocumentController::class, 'printImport'])->name('documents.import.print');
+    Route::post('/documents/import/print', [DocumentController::class, 'printImport'])->name('documents.import.print');
     Route::get('/documents/status-cert/download', [DocumentController::class, 'downloadStatusCertificate'])->name('documents.status-cert.download');
-    Route::get('/documents/status-cert/request', [DocumentController::class, 'requestStatusCertificate'])->name('documents.status-cert.request');
+    Route::post('/documents/status-cert/request', [DocumentController::class, 'requestStatusCertificate'])->name('documents.status-cert.request');
     Route::get('/documents/status-cert/{id}/show', [DocumentController::class, 'showStatusCertificate'])->name('documents.status-cert.show');
+    Route::post('/documents/status-cert/print', [DocumentController::class, 'printStatusCertificate'])->name('documents.status-cert.print');
 
     /** Students' Council */
     Route::get('/economic_committee', [EconomicController::class, 'index'])->name('economic_committee');

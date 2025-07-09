@@ -155,7 +155,7 @@ trait HasRoles
             //if adding a collegist role to a collegist
             if ($role->name == Role::COLLEGIST) {
                 //delete other object, if exists
-                if($this->hasRole(Role::COLLEGIST)) {
+                if ($this->hasRole(Role::COLLEGIST)) {
                     $this->roles()->detach($role->id);
                 }
                 $this->roles()->attach($role->id, ['object_id' => $object->id]);

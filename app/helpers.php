@@ -15,7 +15,7 @@ if (!function_exists('user')) {
     function user(): User
     {
         $user = Auth::user();
-        if($user) {
+        if ($user) {
             return $user;
         } else {
             throw new \Illuminate\Auth\AuthenticationException("The session does not have an authenticated user");

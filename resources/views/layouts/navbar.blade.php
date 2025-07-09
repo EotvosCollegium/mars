@@ -33,6 +33,12 @@
         <li class="grey darken-1 white-text" style="padding:5px;line-height:1.5em">@lang('general.debug_descr')</li>
     @endif
 
+    @if(app(\App\Http\Controllers\Auth\ApplicationController::class)->isActive()
+        && Auth::user())
+        <li><a class="waves-effect" href="{{ route('application') }}"><i
+                            class="material-icons left">person_search</i>Felvételi jelentkezés</a></li>
+    @endif
+
     <!-- main options -->
     @if(Auth::user()?->verified)
         <!-- print page -->
@@ -196,6 +202,13 @@
                                     <li>
                                         <a class="waves-effect" href="{{ route('admin.checkout') }}">
                                             <i class="material-icons left">credit_card</i> Rendszergazdai kassza
+                                        </a>
+                                    </li>
+                                @endcan
+                                @can('editAny', \App\Models\ConfigurableText::class)
+                                    <li>
+                                        <a class="waves-effect" href="{{ route('configurable_texts.index') }}">
+                                            <i class="material-icons left">edit_square</i> @lang('configurable_texts.configurable_texts')
                                         </a>
                                     </li>
                                 @endcan

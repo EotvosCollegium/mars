@@ -534,6 +534,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function scopeCollegist(Builder $query, ?bool $alumniIncluded = false): Builder
     {
+        /** @var Builder|static $query */
         if ($alumniIncluded) {
             return $query->where(function ($query) {
                 return $query->withRole(Role::COLLEGIST)
@@ -1102,8 +1103,9 @@ class User extends Authenticatable implements HasLocalePreference
     {
         return self::withRole(Role::STAFF)->first();
     }
+
     /**
-     * @return array|Collection|User[] the users with printer role
+     * @return array|Collection|User[] the users with tenant role
      */
     public static function tenants(): Collection|array
     {

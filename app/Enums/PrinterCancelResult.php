@@ -2,7 +2,8 @@
 
 namespace App\Enums;
 
-enum PrinterCancelResult: string {
+enum PrinterCancelResult: string
+{
     case AlreadyCancelled = "already-cancelled";
     case AlreadyCompleted = "already-completed";
     case CannotCancel = "cannot-cancel";

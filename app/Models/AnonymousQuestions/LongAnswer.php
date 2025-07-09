@@ -5,7 +5,6 @@ namespace App\Models\AnonymousQuestions;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
-
 use App\Models\AnonymousQuestions\AnswerSheet;
 use App\Models\Question;
 

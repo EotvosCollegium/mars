@@ -3,7 +3,7 @@
 namespace App\Utils;
 
 use App\Enums\PrintJobStatus;
-use App\Models\Printer;
+use App\Models\PrinterConfiguration;
 use App\Models\PrintJob;
 use App\Utils\Process;
 use Illuminate\Contracts\Container\BindingResolutionException;
@@ -45,7 +45,7 @@ PDF version:     1.4");
         if (preg_match('/Pages:\s+(\d+)/', $pdfinfo, $needle)) {
             return intval($needle[1]);
         } else {
-            throw new Exception("Could not determine number of pages");
+            throw new \Exception("Could not determine number of pages");
         }
     }
 
@@ -70,45 +70,5 @@ PDF version:     1.4");
             'one_sided' => $oneSidedPages,
             'two_sided' => $twoSidedPages,
         ];
-    }
-
-    /**
-     * Returns the number of free credits needed to print with given configuration.
-     * @param int $pages
-     * @param int $copies
-     * @param bool $twoSided
-     * @return int
-     */
-    public static function getFreePrintingCreditsNeeded(int $pages, int $copies, bool $twoSided)
-    {
-        return self::getBalanceNeeded($pages, $copies, $twoSided);
-    }
-
-    /**
-     * Returns the amount of money needed to print with given configuration.
-     * @param int $pages
-     * @param int $copies
-     * @param bool $twoSided
-     * @return mixed
-     * @throws BindingResolutionException
-     * @throws NotFoundExceptionInterface
-     * @throws ContainerExceptionInterface
-     */
-    public static function getBalanceNeeded(int $pages, int $copies, bool $twoSided)
-    {
-        $pageTypesNeeded = self::getPageTypesNeeded($pages, $twoSided);
-
-        return $pageTypesNeeded['one_sided'] * config('print.one_sided_cost') * $copies +
-            $pageTypesNeeded['two_sided'] * config('print.two_sided_cost') * $copies;
-    }
-
-    /**
-     * Gets the printjob-status with every printer, updates the status of the completed printjobs.
-     */
-    public static function updateCompletedPrintJobs()
-    {
-        foreach(PrintJob::where('state', PrintJobStatus::QUEUED)->whereNotNull('printer_id')->pluck('printer_id')->unique() as $printer_id) {
-            Printer::find($printer_id)->updateCompletedPrintJobs();
-        }
     }
 }

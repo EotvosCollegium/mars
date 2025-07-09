@@ -3,7 +3,6 @@
 namespace Database\Factories\Reservations;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-
 use Carbon\Carbon;
 
 /**

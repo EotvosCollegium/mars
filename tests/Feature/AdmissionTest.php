@@ -134,7 +134,7 @@ class AdmissionTest extends TestCase
      */
     private function assertDontSeeUnsubmitted()
     {
-        foreach(['everybody', 'unsubmitted'] as $filter) {
+        foreach (['everybody', 'unsubmitted'] as $filter) {
             $response = $this->get(route('admission.applicants.index') . "?status_filter=$filter");
             $response->assertStatus(403);
             $response->assertSee('You are not authorized to access unsubmitted applications.');
