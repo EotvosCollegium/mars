@@ -6,7 +6,6 @@ use Livewire\Component;
 use Livewire\Attributes\On;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
-
 use App\Models\Reservations\ReservableItem;
 use App\Models\Reservations\Reservation;
 
@@ -218,7 +217,7 @@ class Timetable extends Component
 
         $currentStart = $from;
         $i = 0;
-        while($i < count($reservations)) {
+        while ($i < count($reservations)) {
             if ($isForReservation) {
                 $reservation = $reservations[$i];
                 $blocks[] = new Block(
@@ -274,7 +273,7 @@ class Timetable extends Component
             $block = $blocks[$i];
 
             // this has to be modifiable
-            $splittingPointAfter = Carbon::make($block->getFrom());
+            $splittingPointAfter = Carbon::make(Carbon::createFromImmutable($block->getFrom()));
             if ($block->isFree()) {
                 $splittingPointAfter->minute = 0;
                 $splittingPointAfter->addHours(1);
@@ -350,7 +349,9 @@ class Timetable extends Component
      */
     public function step(int $days): void
     {
+        $this->firstDay->setTimezone(config('app.timezone'));
         $this->firstDay->addDays($days);
+        $this->lastDay->setTimezone(config('app.timezone'));
         $this->lastDay->addDays($days);
     }
 
@@ -362,7 +363,9 @@ class Timetable extends Component
     public function firstDayUpdated(string $firstDay): void
     {
         $oldFirstDay = $this->firstDay;
+        $this->firstDay->setTimezone(config('app.timezone'));
         $this->firstDay = Carbon::make($firstDay);
+        $this->lastDay->setTimezone(config('app.timezone'));
         $this->lastDay->addDays($oldFirstDay->diffInDays($this->firstDay));
     }
 }
