@@ -453,20 +453,4 @@ class UserController extends Controller
     {
         return view('user.update_tenant_status');
     }
-
-    /**
-     * Updates a tenant to an applicant
-     */
-    public function tenantToApplicant()
-    {
-        if (!user()->isTenant() || user()->isCollegist(alumni: false)) {
-            return abort(403);
-        }
-        $user = user();
-        $user->personalInformation()->update(['tenant_until' => null]);
-        $user->removeRole(Role::get(Role::TENANT));
-        $user->application()->create();
-        Cache::forget('collegists');
-        return redirect(route('application'));
-    }
 }

@@ -48,6 +48,7 @@ use App\Http\Controllers\Dormitory\Reservations\ReservationController;
 use App\Http\Middleware\LogRequests;
 use App\Http\Middleware\OnlyHungarian;
 use App\Http\Middleware\EnsureVerified;
+use App\Http\Middleware\RedirectTenantsToUpdate;
 use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -87,9 +88,15 @@ Route::prefix('/register')->group(function () {
 
 Route::middleware([Authenticate::class, LogRequests::class])->group(function () {
     /** Routes that needs to be accessed during the application process */
-    Route::get('/application', [ApplicationController::class, 'show'])->name('application')->middleware(OnlyHungarian::class);
-    Route::post('/application/confirm_start', [ApplicationController::class, 'confirm_start'])->name('application.confirm_start');
-    Route::post('/application', [ApplicationController::class, 'store'])->name('application.store');
+    Route::get('/application', [ApplicationController::class, 'show'])
+        ->name('application')
+        ->withoutMiddleware(RedirectTenantsToUpdate::class);
+    Route::post('/application/confirm_start', [ApplicationController::class, 'confirm_start'])
+        ->name('application.confirm_start')
+        ->withoutMiddleware(RedirectTenantsToUpdate::class);
+    Route::post('/application', [ApplicationController::class, 'store'])
+        ->name('application.store')
+        ->withoutMiddleware(RedirectTenantsToUpdate::class);
     Route::post('/users/{user}/profile_picture', [UserController::class, 'storeProfilePicture'])->name('users.update.profile-picture');
     Route::delete('/users/{user}/profile_picture', [UserController::class, 'deleteProfilePicture'])->name('users.delete.profile-picture');
     Route::post('/users/{user}/personal_information', [UserController::class, 'updatePersonalInformation'])->name('users.update.personal');
@@ -116,7 +123,6 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
     Route::delete('/users/{user}/roles/{role}', [UserController::class, 'removeRole'])->name('users.roles.delete');
     Route::post('/users/update_password', [UserController::class, 'updatePassword'])->name('users.update.password')->withoutMiddleware(LogRequests::class);
     Route::get('/users/tenant_update/show', [UserController::class, 'showTenantUpdate'])->name('users.tenant-update.show');
-    Route::post('/users/tenant_update/applicant', [UserController::class, 'tenantToApplicant'])->name('users.tenant-update.to-applicant');
 
     /** Localization */
     Route::get('/localizations', [LocaleController::class, 'index'])->name('localizations');

@@ -3,7 +3,9 @@
 @section('content')
     <div class="card">
         <div class="card-content">
-            <h3>Biztos el akarod kezdeni a felvételi folyamatot?</h3>
+            <div class="markdown_with_red">
+                @markdown(\App\Models\ConfigurableText::getText("START_APPLICATION"))
+            </div>
             <form method="POST" action="{{ route('application.confirm_start') }}">
                 @csrf
                 <button type="submit" class="btn btn-primary">Igen</button>

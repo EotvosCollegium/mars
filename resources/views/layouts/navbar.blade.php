@@ -33,7 +33,8 @@
         <li class="grey darken-1 white-text" style="padding:5px;line-height:1.5em">@lang('general.debug_descr')</li>
     @endif
 
-    @if(app(\App\Http\Controllers\Auth\ApplicationController::class)->isActive())
+    @if(app(\App\Http\Controllers\Auth\ApplicationController::class)->isActive()
+        && Auth::user())
         <li><a class="waves-effect" href="{{ route('application') }}"><i
                             class="material-icons left">person_search</i>Felvételi jelentkezés</a></li>
     @endif

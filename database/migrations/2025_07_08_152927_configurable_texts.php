@@ -94,6 +94,13 @@ A felvételire behívottak névsora és a további teendők a [Collegium honlapj
 
 Az interneten számos [minta található](https://www.google.com/search?q=hagyományos+leíró+jellegű+önéletrajz) hagyományos önéletrajzokra, valamint a [8. osztályos magyar könyv is bemutatja az önéletrajzok két típusát](https://nat2012.nkp.hu/tankonyv/magyar_nyelv_8/lecke_02_009)."
         ]);
+
+        \DB::table('configurable_texts')->insert([
+            "key" => "START_APPLICATION",
+            "rawtext" => "###### This page is designed for students at ELTE who would like to apply to the College. Further information is available on [our website](https://eotvos.elte.hu/felveteli).
+
+**Biztosan szeretné elkezdeni a felvételi folyamatot?** (További információk a [honlapon](https://eotvos.elte.hu/felveteli).)"
+        ]);
     }
 
     /**
