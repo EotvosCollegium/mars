@@ -402,7 +402,7 @@ class Application extends Model
     public function syncAppliedWorkshops(?array $workshop_ids): void
     {
         foreach (Workshop::all() as $workshop) {
-            if(in_array($workshop->id, $workshop_ids ?? [])) {
+            if (in_array($workshop->id, $workshop_ids ?? [])) {
                 // make sure applied workshop exists
                 $this
                     ->applicationWorkshops()

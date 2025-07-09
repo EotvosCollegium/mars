@@ -72,13 +72,13 @@ trait HasPeriodicEvent
      */
     final public function updatePeriodicEvent(Semester $semester, Carbon $start_date, Carbon $end_date, Carbon $extended_end_date = null): PeriodicEvent
     {
-        if($end_date < now()) {
+        if ($end_date < now()) {
             throw new \InvalidArgumentException('End date must be in the future.');
         }
-        if($end_date < $start_date) {
+        if ($end_date < $start_date) {
             throw new \InvalidArgumentException('End date must be after the start date.');
         }
-        if($extended_end_date && $extended_end_date < $end_date) {
+        if ($extended_end_date && $extended_end_date < $end_date) {
             throw new \InvalidArgumentException('Extended end date must be after the end date.');
         }
 
@@ -88,10 +88,10 @@ trait HasPeriodicEvent
             $event->start_date = $start_date;
             $event->end_date = $end_date;
             $event->extended_end_date = $extended_end_date;
-            if($start_date->isFuture()) {
+            if ($start_date->isFuture()) {
                 $event->start_handled = null;
             }
-            if($end_date->isFuture()) {
+            if ($end_date->isFuture()) {
                 $event->end_handled = null;
             }
             $event->save();

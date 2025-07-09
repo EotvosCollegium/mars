@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\EpistolaCollegii;
 use Intervention\Image\ImageManager;
-
 use App\Models\EpistolaNews;
 
 class EpistolaController extends Controller

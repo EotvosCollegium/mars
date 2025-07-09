@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
 use App\Models\Question;
 
 /**
@@ -49,7 +48,7 @@ class QuestionOption extends Model
     public function initials(): string
     {
         $letters = array();
-        foreach(explode(' ', $this->title, 3) as $word) {
+        foreach (explode(' ', $this->title, 3) as $word) {
             $letters[] = mb_substr($word, 0, 1);
         }
         return implode($letters);

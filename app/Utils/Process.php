@@ -18,8 +18,8 @@ class Process extends SymfonyProcess
     {
         if (config('app.debug') === false || config('commands.run_in_debug') === true) {
             $return_value = parent::run($callback, $env);
-            if($log) {
-                if($return_value === 0) {
+            if ($log) {
+                if ($return_value === 0) {
                     Log::info("Command: " . $this->getCommandLine() . " executed successfully. With output: " . $this->getOutput() . " and error output: " . $this->getErrorOutput());
                 } else {
                     Log::error("Command: " . $this->getCommandLine() . " failed with error code: " . $return_value . "\nWith output: " . $this->getOutput() . " and error output: " . $this->getErrorOutput());

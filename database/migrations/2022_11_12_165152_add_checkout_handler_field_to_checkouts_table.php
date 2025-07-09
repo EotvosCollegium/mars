@@ -21,7 +21,7 @@ return new class () extends Migration {
 
         $economic_vice_president_user = DB::table('role_users')->where('role_id', $student_council_role_id)->where('object_id', $economic_vice_president_object_id);
 
-        if($economic_vice_president_user->exists()) {
+        if ($economic_vice_president_user->exists()) {
             DB::table('checkouts')->where('name', 'VALASZTMANY')->update([
                 'handler_id' => $economic_vice_president_user->first()->id
             ]);

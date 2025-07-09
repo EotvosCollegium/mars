@@ -20,10 +20,10 @@ class SemesterEvaluationPolicy
      */
     public function fill(User $user): Response|bool
     {
-        if(!$user->isCollegist(alumni: false) || $user->hasRole(Role::SENIOR)) {
+        if (!$user->isCollegist(alumni: false) || $user->hasRole(Role::SENIOR)) {
             return false;
         }
-        if(!app(SemesterEvaluationController::class)->isActive()) {
+        if (!app(SemesterEvaluationController::class)->isActive()) {
             return Response::deny('Lejárt a határidő a kérdőív kitöltésére.');
         }
         return true;

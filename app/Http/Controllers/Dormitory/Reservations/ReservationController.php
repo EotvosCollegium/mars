@@ -9,10 +9,8 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\Database\Query\Builder;
-
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
-
 use App\Enums\ReservableItemType;
 use App\Models\User;
 use App\Models\Role;

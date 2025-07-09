@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
 use App\Models\Question;
 use App\Models\User;
 use Carbon\Carbon;
@@ -190,7 +189,7 @@ class GeneralAssembly extends Model
                 $question->close();
             }
         }
-        foreach($this->presenceChecks as $presenceCheck) {
+        foreach ($this->presenceChecks as $presenceCheck) {
             if ($presenceCheck->isOpen()) {
                 $presenceCheck->close();
             }

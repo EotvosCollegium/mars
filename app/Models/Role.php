@@ -46,7 +46,7 @@ class Role extends Model
     public const STAFF = 'staff';
     public const LOCALE_ADMIN = 'locale-admin';
     /**
-     * Danger: STUDENT_COUNCIL role is given to many users who ARE NOT actually part of the elected part of the student council (like KKT handlers, committee members). 
+     * Danger: STUDENT_COUNCIL role is given to many users who ARE NOT actually part of the elected part of the student council (like KKT handlers, committee members).
      * It is generally a mistake if you simply check for the existence of this role. You usually need to check for the RoleObject as well.
      * You most likely would like to use STUDENT_COUNCIL => STUDENT_COUNCIL_LEADERS or STUDENT_COUNCIL => STUDENT_COUNCIL_LEADERS_AND_COMMITTEE_LEADERS
      * instead of STUDENT_COUNCIL in policies.
