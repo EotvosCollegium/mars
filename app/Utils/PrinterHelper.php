@@ -45,7 +45,7 @@ PDF version:     1.4");
         if (preg_match('/Pages:\s+(\d+)/', $pdfinfo, $needle)) {
             return intval($needle[1]);
         } else {
-            throw new Exception("Could not determine number of pages");
+            throw new \Exception("Could not determine number of pages");
         }
     }
 

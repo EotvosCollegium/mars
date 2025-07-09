@@ -8,6 +8,8 @@ use App\Models\Question;
 
 class RankingVote implements ValidationRule
 {
+    private Question $question;
+
     public function __construct(Question $question)
     {
         $this->question = $question;

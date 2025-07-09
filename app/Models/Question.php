@@ -359,6 +359,7 @@ class Question extends Model
 
         $election->setNumberOfSeats($this->max_options);
         foreach ($this->options as $option) {
+            // @phpstan-ignore-next-line
             $election->addCandidate($option->id);
         }
         foreach ($this->longAnswers as $ballot) {
