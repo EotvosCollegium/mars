@@ -9,6 +9,7 @@ return [
         'APPLICATION_INFORMATION_AFTER_FINALIZATION' => 'Információk a jelentkezőknek a véglegesítés után',
         'APPLICATION_INFORMATION_PRIOR_TO_FINALIZATION' => 'Információk a jelentkezőknek a véglegesítés előtt',
         'APPLICATION_INFORMATION_PER_WORKSHOP_AFTER_FINALIZATION' => 'Információk a jelentkezőknek a véglegesítés után az adott műhelyről',
+        'START_APPLICATION' => 'Jóváhagyás olyan felhasználóknak, akik korábban regisztráltak, de kezdeményezik a felvételijüket',
         'TENANT_REGISTRATION' => 'Vendégregisztrációkor megjelenő szövegek',
     ],
 ];

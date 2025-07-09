@@ -44,22 +44,17 @@ class ApplicationController extends Controller
      */
     public function show(Request $request): View|RedirectResponse
     {
-        if (user()->hasRole(Role::TENANT)) {
-            //let the user delete their tenant status
-            return redirect()->route('users.tenant-update.show');
+        // only allow access if the application period is open or after, if the user has submitted application
+        if (!($this->isActive() || user()->application?->submitted)) {
+            abort(403, "A felvételi jelenleg nincs megnyitva");
         }
 
-        if (user()->isCollegist() &&
+        if (user()->roles()->exists() &&
             user()->application()->doesntExist()) {
             return view("auth.application.confirm_start");
         }
 
         $this->ensureApplicationExists(user());
-
-        // only allow access if the application period is open or after, if the user has submitted application
-        if (!($this->isActive() || user()->application?->submitted)) {
-            abort(403, "A felvétel jelenleg nincs megnyitva");
-        }
 
         $data = [
             'workshops' => Workshop::all(),
