@@ -136,13 +136,16 @@ class ApplicationController extends Controller
     }
 
     /**
-     * Create the application for the user if it doesn't exist.
+     * Create the application and personal information for the user if they don't exist.
      * @param User $user
      */
     private function ensureApplicationExists(User $user): void
     {
         if ($user->application()->doesntExist()) {
             $user->application()->create();
+        }
+        if ($user->personalInformation()->doesntExist()) {
+            $user->personalInformation()->create();
         }
     }
 }

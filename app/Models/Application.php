@@ -340,9 +340,24 @@ class Application extends Model
         $personalInformation = $user->personalInformation;
 
         $missingData = [];
-
-        if (!isset($personalInformation)) {
-            $missingData[] = 'Személyes adatok';
+        
+        foreach(PersonalInformation::FIELDS_STORED_IN_USER as $user_field){
+            if(
+                user()->cannot("submitApplicationWithout", [$personalInformation, $user_field])
+                    && !isset($user[$user_field])
+                ){
+                $missingData[] = 'Személyes adat ('.__('user.'.$user_field).')';
+            }
+        }
+        
+        foreach(PersonalInformation::FIELDS_STORED_IN_PERSONAL_INFORMATION as $personal_info_field){
+            if(
+                user()->cannot("submitApplicationWithout", [$personalInformation, $personal_info_field])
+                    &&
+                (!isset($personalInformation) || !isset($personalInformation[$personal_info_field]))
+                ){
+                $missingData[] = 'Személyes adat ('.__('user.'.$personal_info_field).')';
+            }
         }
 
         if (!isset($educationalInformation)) {

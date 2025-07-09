@@ -73,6 +73,41 @@ class PersonalInformation extends Model
         'relatives_contact_data',
     ];
 
+    public const PERSONAL_INFORMATION_TEXT_LIKE_FIELDS = [
+        "name",
+        "email",
+        "phone_number",
+        "mothers_name",
+        "place_of_birth",
+        "date_of_birth",
+        "country",
+        "county",
+        "zip_code",
+        "city",
+        "street_and_number",
+        "relatives_contact_data",
+        "tenant_until"
+    ];
+
+    public const FIELDS_STORED_IN_USER = [
+        "name",
+        "email"
+    ];
+
+    public const FIELDS_STORED_IN_PERSONAL_INFORMATION = [
+        "place_of_birth",
+        "date_of_birth",
+        "mothers_name",
+        "phone_number",
+        "country",
+        "county",
+        "zip_code",
+        "city",
+        "street_and_number",
+        "tenant_until",
+        "relatives_contact_data"
+    ];
+
     /**
      * The user that owns the personal information.
      */

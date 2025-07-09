@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\EducationalInformation;
 use App\Models\Faculty;
 use App\Models\LanguageExam;
+use App\Models\PersonalInformation;
 use App\Models\Role;
 use App\Models\Semester;
 use App\Models\StudyLine;
@@ -105,37 +106,60 @@ class UserController extends Controller
         $this->authorize('view', $user);
         session()->put('section', 'personal_information');
 
-        $isCollegist = $user->isCollegist();
+        $validation_rules_raw = array();
+        $validation_rules_raw['name'] = ['string', 'min:1', 'max:255'];
+        $validation_rules_raw['email'] = ['string', 'email', 'max:225', new SameOrUnique($user)];
+        $validation_rules_raw['phone_number'] = ['string', 'min:3', 'max:18'];
+        $validation_rules_raw['mothers_name'] = ['string', 'min:3', 'max:225'];
+        $validation_rules_raw['place_of_birth'] = ['string', 'min:3', 'max:225'];
+        $validation_rules_raw['date_of_birth'] = ['date'];
+        $validation_rules_raw['country'] = ['string', 'min:3', 'max:225'];
+        $validation_rules_raw['county'] = ['string', 'min:3', 'max:31'];
+        $validation_rules_raw['zip_code'] = ['string', 'min:3', 'max:31'];
+        $validation_rules_raw['city'] = ['string', 'min:3', 'max:255'];
+        $validation_rules_raw['street_and_number'] = ['string', 'min:3', 'max:255'];
+        $validation_rules_raw['relatives_contact_data'] = ['string', 'max:255'];
+        $validation_rules_raw['tenant_until'] = ['date', 'before_or_equal:' . Carbon::now()->addMonths(6)->toDateString()];
 
-        $data = $request->validate([
-            'email' => ['required', 'email', 'max:225', new SameOrUnique($user)],
-            'name' => 'required|string|max:255',
-            'phone_number' => 'required|string|min:8|max:18',
-            'mothers_name' => [Rule::requiredIf($isCollegist), 'max:225'],
-            'place_of_birth' => [Rule::requiredIf($isCollegist), 'string', 'max:225'],
-            'date_of_birth' => [Rule::requiredIf($isCollegist), 'string', 'max:225'],
-            'country' => [Rule::requiredIf($isCollegist), 'string', 'max:255'],
-            'county' => [Rule::requiredIf($isCollegist), 'string', 'max:255'],
-            'zip_code' => [Rule::requiredIf($isCollegist), 'string', 'max:31'],
-            'city' => [Rule::requiredIf($isCollegist), 'string', 'max:255'],
-            'street_and_number' => [Rule::requiredIf($isCollegist), 'string', 'max:255'],
-            'tenant_until' => [Rule::requiredIf($user->isTenant()), 'date', 'after:today'],
-            'relatives_contact_data' => ['nullable', 'string', 'max:255'],
-        ]);
-
-        $user->update(['email' => $request->email, 'name' => $request->name]);
-        $personal_data = Arr::except($data, ['name', 'email', 'tenant_until']);
-
-        if (!$user->hasPersonalInformation()) {
-            $user->personalInformation()->create($personal_data);
-        } else {
-            $user->personalInformation()->update($personal_data);
+        $validation_rules = array();
+        foreach(PersonalInformation::PERSONAL_INFORMATION_TEXT_LIKE_FIELDS as $field){
+            if(user()->can("edit", [$user->personalInformation, $field])){
+                $validation_rules[$field] =
+                    array_merge([
+                        $validation_rules_raw[$field],
+                        [
+                            user()->can("saveWithout", [$user->personalInformation, $field]) ?
+                                "nullable" : "required"
+                        ]
+                    ]);
+            }
         }
 
-        if ($request->has('tenant_until')) {
-            $date = min(Carbon::parse($request->tenant_until), Carbon::now()->addMonths(6));
-            $user->personalInformation()->update(['tenant_until' => $date]);
-            $user->internetAccess()->update(['has_internet_until' => $date]);
+        $validated = $request->validate($validation_rules);
+        
+        $fields_updated_in_user = array();
+        foreach(PersonalInformation::FIELDS_STORED_IN_USER as $user_field){
+            if (array_key_exists($user_field, $validated)) {
+                $fields_updated_in_user[$user_field] = $validated[$user_field];
+            }
+        }
+        $fields_updated_in_personal_information = array();
+        foreach(PersonalInformation::FIELDS_STORED_IN_PERSONAL_INFORMATION as $personal_info_field){
+            if (array_key_exists($personal_info_field, $validated)) {
+                $fields_updated_in_personal_information[$personal_info_field] = $validated[$personal_info_field];
+            }
+        }
+
+        $user->update($fields_updated_in_user);
+
+        if (!$user->hasPersonalInformation()) {
+            $user->personalInformation()->create($fields_updated_in_personal_information);
+        } else {
+            $user->personalInformation()->update($fields_updated_in_personal_information);
+        }
+
+        if (isset($validated['tenant_until'])) {
+            $user->internetAccess()->update(['has_internet_until' => $validated['tenant_until']]);
         }
 
         return redirect()->back()->with('message', __('general.successful_modification'));
