@@ -40,15 +40,24 @@ class AlfonsoTest extends TestCase
     }
 
     /**
+     * The autumn semester for the current academic year.
+     */
+    private static function autumnSemester(): Semester
+    {
+        $semester = Semester::current();
+        return $semester->isAutumn() ? $semester : $semester->pred();
+    }
+
+    /**
      * @return void
      */
     public function test_entry_without_exams()
     {
         $user = User::factory()->create();
         $educationalInfo = EducationalInformation::factory()->for($user)->create([
-            'year_of_acceptance' => Semester::current()->year,
+            'year_of_acceptance' => self::autumnSemester()->year,
         ]);
-        StudyLine::factory()->for($educationalInfo)->create(['type' => 'bachelor', 'start' => Semester::current()->id, 'end' => null]);
+        StudyLine::factory()->for($educationalInfo)->create(['type' => 'bachelor', 'start' => self::autumnSemester()->id, 'end' => null]);
         LanguageExam::factory()->for($educationalInfo)->create([
             'date' => self::dateAfter($educationalInfo->year_of_acceptance),
             'language' => 'en',
@@ -78,9 +87,9 @@ class AlfonsoTest extends TestCase
     {
         $user = User::factory()->create();
         $educationalInfo = EducationalInformation::factory()->for($user)->create([
-            'year_of_acceptance' => Semester::current()->year,
+            'year_of_acceptance' => self::autumnSemester()->year,
         ]);
-        StudyLine::factory()->for($educationalInfo)->create(['type' => 'bachelor', 'start' => Semester::current()->id, 'end' => null]);
+        StudyLine::factory()->for($educationalInfo)->create(['type' => 'bachelor', 'start' => self::autumnSemester()->id, 'end' => null]);
         LanguageExam::factory()->for($educationalInfo)->create(
             [
             'date' => self::dateBefore($educationalInfo->year_of_acceptance), //before
@@ -111,7 +120,7 @@ class AlfonsoTest extends TestCase
         //same with C1
         $user = User::factory()->create();
         $educationalInfo = EducationalInformation::factory()->for($user)->create([
-            'year_of_acceptance' => Semester::current()->year,
+            'year_of_acceptance' => self::autumnSemester()->year,
         ]);
         LanguageExam::factory()->for($educationalInfo)->create([
             'date' => self::dateBefore($educationalInfo->year_of_acceptance), //before
@@ -141,9 +150,9 @@ class AlfonsoTest extends TestCase
         //have not completed
         $user = User::factory()->create();
         $educationalInfo = EducationalInformation::factory()->for($user)->create([
-            'year_of_acceptance' => Semester::current()->year,
+            'year_of_acceptance' => self::autumnSemester()->year,
         ]);
-        StudyLine::factory()->for($educationalInfo)->create(['type' => 'bachelor', 'start' => Semester::current()->id, 'end' => null]);
+        StudyLine::factory()->for($educationalInfo)->create(['type' => 'bachelor', 'start' => self::autumnSemester()->id, 'end' => null]);
         LanguageExam::factory()->for($educationalInfo)->create(['date' => self::dateBefore($educationalInfo->year_of_acceptance), 'level' => 'C1', 'language' => 'en']); //before
         LanguageExam::factory()->for($educationalInfo)->create(['date' => self::dateAfter($educationalInfo->year_of_acceptance), 'level' => 'C2', 'language' => 'en']); //after
 
@@ -169,9 +178,9 @@ class AlfonsoTest extends TestCase
     {
         $user = User::factory()->create();
         $educationalInfo = EducationalInformation::factory()->for($user)->create([
-            'year_of_acceptance' => Semester::current()->year,
+            'year_of_acceptance' => self::autumnSemester()->year,
         ]);
-        StudyLine::factory()->for($educationalInfo)->create(['type' => 'bachelor', 'start' => Semester::current()->id, 'end' => null]);
+        StudyLine::factory()->for($educationalInfo)->create(['type' => 'bachelor', 'start' => self::autumnSemester()->id, 'end' => null]);
         LanguageExam::factory()->for($educationalInfo)->create(['date' => self::dateBefore($educationalInfo->year_of_acceptance), 'level' => 'B2', 'language' => 'en']); //before
         LanguageExam::factory()->for($educationalInfo)->create(['date' => self::dateBefore($educationalInfo->year_of_acceptance), 'level' => 'B2', 'language' => 'fr']); //before
 
@@ -202,24 +211,24 @@ class AlfonsoTest extends TestCase
     {
         $user = User::factory()->create();
         $educationalInfo = EducationalInformation::factory()->for($user)->create([
-            'year_of_acceptance' => Semester::current()->year,
+            'year_of_acceptance' => self::autumnSemester()->year,
         ]);
         $user->addRole(Role::get(Role::SENIOR));
-        StudyLine::factory()->for($educationalInfo)->create(['type' => 'phd', 'start' => Semester::current()->id, 'end' => null]);
+        StudyLine::factory()->for($educationalInfo)->create(['type' => 'phd', 'start' => self::autumnSemester()->id, 'end' => null]);
         $this->assertTrue($user->educationalInformation->isSenior());
         $this->assertTrue($user->educationalInformation->alfonsoExempted());
 
         $user = User::factory()->create();
         $educationalInfo = EducationalInformation::factory()->for($user)->create([
-            'year_of_acceptance' => Semester::current()->year,
+            'year_of_acceptance' => self::autumnSemester()->year,
         ]);
-        StudyLine::factory()->for($educationalInfo)->create(['type' => 'master', 'start' => Semester::current()->id, 'end' => null]);
+        StudyLine::factory()->for($educationalInfo)->create(['type' => 'master', 'start' => self::autumnSemester()->id, 'end' => null]);
         $this->assertFalse($user->educationalInformation->isSenior());
         $this->assertTrue($user->educationalInformation->alfonsoExempted());
 
         $user = User::factory()->create();
         $educationalInfo = EducationalInformation::factory()->for($user)->create([
-            'year_of_acceptance' => Semester::current()->year,
+            'year_of_acceptance' => self::autumnSemester()->year,
         ]);
         StudyLine::factory()->for($educationalInfo)->create(['type' => 'bachelor', 'start' => Semester::previous()->pred()->id, 'end' => null]);
         $this->assertFalse($user->educationalInformation->isSenior());
