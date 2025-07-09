@@ -63,13 +63,13 @@ class HomeController extends Controller
 
         $configurable_text_home_page_news->update(
             [
-                "text" => $request->info_general
+                "rawtext" => $request->info_general
             ]
         );
 
         $configurable_text_home_page_news_collegists->update(
             [
-                "text" => $request->info_collegist
+                "rawtext" => $request->info_collegist
             ]
         );
 
