@@ -31,7 +31,7 @@ class ApplicationController extends Controller
     /**
      * If a collegist wants to start the application, they need to send a POST request to the endpoint that is handled by `confirm_start`
      */
-    public function confirm_start(): RedirectResponse
+    public function confirmStart(): RedirectResponse
     {
         $this->ensureApplicationExists(user());
         return redirect()->route('application')->with('message', __('Jelentkezési folyamat elindítva'));

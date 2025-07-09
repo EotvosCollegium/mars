@@ -86,8 +86,8 @@ Route::prefix('/register')->group(function () {
     Route::get('/guest', [RegisterController::class, 'showTenantRegistrationForm'])->name('register.guest');
 });
 
-Route::bind('user', function (int $value) {
-    return \App\Models\User::withoutGlobalScope('verified')->where('id', $value)->first();
+Route::bind('user', function ($value) {
+    return \App\Models\User::withoutGlobalScope('verified')->findOrFail($value);
 });
 
 Route::middleware([Authenticate::class, LogRequests::class])->group(function () {
@@ -95,7 +95,7 @@ Route::middleware([Authenticate::class, LogRequests::class])->group(function () 
     Route::get('/application', [ApplicationController::class, 'show'])
         ->name('application')
         ->withoutMiddleware(RedirectTenantsToUpdate::class);
-    Route::post('/application/confirm_start', [ApplicationController::class, 'confirm_start'])
+    Route::post('/application/confirm_start', [ApplicationController::class, 'confirmStart'])
         ->name('application.confirm_start')
         ->withoutMiddleware(RedirectTenantsToUpdate::class);
     Route::post('/application', [ApplicationController::class, 'store'])
