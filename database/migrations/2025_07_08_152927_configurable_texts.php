@@ -26,26 +26,26 @@ return new class () extends Migration {
 
         \DB::table('configurable_texts')->insert([
             "key" => "APPLICANT_REGISTRATION",
-            "rawtext" => "Itt az Eötvös Collegium felvételijére lehet regisztrálni. Ha vendégként internetet szeretnél igénybe venni, akkor [a vendégregisztrációt kell elvégezned](/register/guest).
+            "rawtext" => "Itt az Eötvös Collegium felvételijére lehet regisztrálni. Ha vendégként internetet szeretne igénybe venni, akkor [a vendégregisztrációt kell elvégeznie](/register/guest).
 
 If you are a tenant, you [should fill out a different form](/register/guest).
 
-Ha rendelkezel már Urán fiókkal, [belépést követően](/login) adhatod le jelentkezésed.
+Ha rendelkezik már Urán fiókkal, [belépést követően](/login) adhatja le jelentkezését.
 
-###### Az ELTE Eötvös József Collegium egy szakkollégium, nem szociális kollégium. Mielőtt regisztrálnál itt feltétlen nézz utána, hogy mi a különbség a szakkollégiumok és a szociális kollégiumok között.
+###### Az ELTE Eötvös József Collegium egy szakkollégium, nem szociális kollégium. Mielőtt regisztrálna itt, feltétlen nézzen utána, hogy mi a különbség a szakkollégiumok és a szociális kollégiumok között.
 
-Az Eötvös Collegiummal kapcsolatban információkat a [honlapunkon](https://eotvos.elte.hu/), valamint a [felvételi felhívásban](https://eotvos.elte.hu/felveteli) találhatsz. Ha további kérdésed van, bátran keresd a [Választmányt](mailto:STUDENT_COUNCIL_EMAIL), illetve a [Titkárságot](mailto:SECRETARIAT_EMAIL)! Technikai probléma esetén pedig szólj a [rendszergazdáknak](mailto:SYSADMIN_EMAIL).
+Az Eötvös Collegiummal kapcsolatban információkat a [honlapunkon](https://eotvos.elte.hu/), valamint a [felvételi felhívásban](https://eotvos.elte.hu/felveteli) találhat. Ha további kérdése van, bátran keresse a [Választmányt](mailto:STUDENT_COUNCIL_EMAIL), illetve a [Titkárságot](mailto:SECRETARIAT_EMAIL)! Technikai probléma esetén pedig szóljon a [rendszergazdáknak](mailto:SYSADMIN_EMAIL).
 
-A szociális kollégiumokkal kapcsolatban további információt a [kollégiumok oldalán](https://www.elte.hu/kollegiumok) érhetsz el. A szociális kollégiumokkal kapcsolatban segítséget nyújtani nem tudunk."
+A szociális kollégiumokkal kapcsolatban további információt a [kollégiumok oldalán](https://www.elte.hu/kollegiumok) érhet el. A szociális kollégiumokkal kapcsolatban segítséget nyújtani nem tudunk."
         ]);
 
         \DB::table('configurable_texts')->insert([
             "key" => "TENANT_REGISTRATION",
             "rawtext" => "###### Ez az oldal fizetővendégeknek szól, a felvételihez nem itt kell regisztrálni!
 
-[Ha felvételizni szeretnél, kattints ide](/register).
+[Ha felvételizni szeretne, kattintson ide](/register).
 
-Ha vendégként internetet szeretnél igénybe venni, akkor az alábbi űrlapot kell kitöltened.
+Ha vendégként internetet szeretne igénybe venni, akkor az alábbi űrlapot kell kitöltenie.
 
 If you are a tenant, you are in the right place."
         ]);
@@ -58,10 +58,10 @@ If you are a tenant, you are in the right place."
 - Minden mező kötelező, ahol az ellenkezője nincs külön jelezve.
 - Miután minden szükséges kérdést megválaszolt és fájlt feltöltött, véglegesítse jelentkezését a lap alján lévő gombra kattintva. Kérjük, figyeljen a határidőre, mert utána már nem lesz lehetősége véglegesítésre.
 - A jelentkezés véglegesítéséhez Neptun-kódjának megadása is szükséges. Egyes karokon ezek létrehozása elhúzódhat, így szíves türelmét kérjük. Amennyiben ez TODO-ig sem történik meg, kérjük, jelezze a [rendszergazdáknak](mailto:SYSADMIN_EMAIL), akik lehetőséget fognak biztosítani a Neptun-kód nélküli jelentkezésre.
-- **Egyes nyelvi műhelyekbe (Angol-Amerikai, Aurélien Sauvageot francia, Germanisztika, Olasz, Spanyol műhelyek) való jelentkezés feltétele az érintett nyelv legalább középfokú ismerete**. A műhelyekben kutatómunka folyik, pusztán nyelvtanulás céljából ne jelentkezz a nyelvi műhelyekbe.
+- **Egyes nyelvi műhelyekbe (Angol-Amerikai, Aurélien Sauvageot francia, Germanisztika, Olasz, Spanyol műhelyek) való jelentkezés feltétele az érintett nyelv legalább középfokú ismerete**. A műhelyekben kutatómunka folyik, pusztán nyelvtanulás céljából ne jelentkezzen a nyelvi műhelyekbe.
 
 ###### Amennyiben lakhatása még nem biztosított, javasoljuk a szociális kollégiumokba történő jelentkezést is.
-A szociális kollégiumi felvételi az ittenitől teljesen függetlenül zajlik; részletek az [ELTE honlapján](https://www.elte.hu/kollegiumi-jelentkezes) olvashatók.
+A szociális kollégiumi felvételi az ittenitől teljesen függetlenül zajlik. Részletek az [ELTE honlapján](https://www.elte.hu/kollegiumi-jelentkezes) olvashatók.
 
 Amennyiben bármi kérdése lenne a felvételivel kapcsolatban, kérjük, írjon a [Választmánynak](mailto:STUDENT_COUNCIL_EMAIL), illetve a [Titkárságnak](mailto:SECRETARIAT_EMAIL) e-mailben. Ha technikai probléma adódna, jelezze a [rendszergazdáknak](mailto:SYSADMIN_EMAIL)."
         ]);
@@ -82,14 +82,15 @@ A felvételire behívottak névsora és a további teendők a [Collegium honlapj
             "rawtext" => "A pályázatnak az alábbiakat kell tartalmaznia:
 
 - hagyományos, leíró jellegű önéletrajz
-- elsőéves egyetemistaként:
-- szakfelvételi engedély/felvételi határozat (Neptun: Tanulmányok - Hivatalos bejegyzések menüpont alatt letölthető)
-- érettségi bizonyítvány másolata
-- lezárt egyetemi félévek esetén:
-- diploma másolata vagy leckekönyv/törzslap kivonat az eddigi eredményekről
+- amennyiben ebben a felvételi időszakban nyert felvételt az egyetemre (akár alapképzésre, akár mesterképzésre):
+  - besorolási határozat (Oktatási Hivatal állítja ki, az e-Felvételi felületről tölthető le)
+  - érettségi bizonyítványa
+  - összes érettségi tanúsítványa, ha rendelkezik ilyennel (érettségi törzslapkivonatot **nem** szükséges feltöltenie)
+- igazolás minden eddig elvégzett egyetemi félévéről, amennyiben rendelkezik lezárt egyetemi félévvel (pl. leckekönyv, törzslap-kivonat, diplomamelléklet stb.)
+- az összes korábban elvégzett egyetemi képzésének diplomája, ha volt elvégzett korábbi egyetemi képzése
 - opcionális: oklevelek, igazolások, szaktanári ajánlás
 
-###### Az önéletrajz esszé jellegű összefüggő szöveg legyen, ne amerikai stílusú (például EuroPass).
+###### Az önéletrajz esszé jellegű, összefüggő szöveg legyen, ne amerikai stílusú (például EuroPass).
 
 Az interneten számos [minta található](https://www.google.com/search?q=hagyományos+leíró+jellegű+önéletrajz) hagyományos önéletrajzokra, valamint a [8. osztályos magyar könyv is bemutatja az önéletrajzok két típusát](https://nat2012.nkp.hu/tankonyv/magyar_nyelv_8/lecke_02_009)."
         ]);
