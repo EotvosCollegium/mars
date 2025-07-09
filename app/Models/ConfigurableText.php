@@ -9,13 +9,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
-/**
- * App\Models\Checkout
- *
- * @property mixed $key
- * @property mixed $text
- * @mixin \Eloquent
- */
 class ConfigurableText extends Model
 {
     protected $fillable = ['key', 'workshop_id', 'rawtext'];
