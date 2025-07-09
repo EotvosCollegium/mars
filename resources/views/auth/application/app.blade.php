@@ -53,27 +53,25 @@
         </div>
     </div>
     @if (!$user->application->submitted)
-        <nav class="nav-extended">
-            <div class="nav-content">
-                <ul class="tabs tabs-transparent">
-                    <li class="tab">
-                        <a href="{{ route('application', ['page' => 'personal']) }}"
-                            class="{{ request()->get('page') == 'personal' ? 'active' : '' }}">Általános</a>
-                    </li>
-                    <li class="tab">
-                        <a href="{{ route('application', ['page' => 'educational']) }}"
-                            class="{{ request()->get('page') == 'educational' ? 'active' : '' }}">Tanulmányok</a>
-                    </li>
-                    <li class="tab">
-                        <a href="{{ route('application', ['page' => 'questions']) }}"
-                            class="{{ request()->get('page') == 'questions' ? 'active' : '' }}">Egyéb kérdések</a>
-                    </li>
-                    <li class="tab">
-                        <a href="{{ route('application', ['page' => 'files']) }}"
-                            class="{{ request()->get('page') == 'files' ? 'active' : '' }}">Fájlok</a>
-                    </li>
-                </ul>
-            </div>
+        <nav style="height: auto;">
+            <ul class="tabs tabs-transparent" style="display: flex; flex-wrap: wrap; height: auto;">
+                <li class="tab">
+                    <a href="{{ route('application', ['page' => 'personal']) }}"
+                        class="{{ request()->get('page') == 'personal' ? 'active' : '' }}">Személyes adatok</a>
+                </li>
+                <li class="tab">
+                    <a href="{{ route('application', ['page' => 'educational']) }}"
+                        class="{{ request()->get('page') == 'educational' ? 'active' : '' }}">Tanulmányok</a>
+                </li>
+                <li class="tab">
+                    <a href="{{ route('application', ['page' => 'questions']) }}"
+                        class="{{ request()->get('page') == 'questions' ? 'active' : '' }}">Szakmai és motivációs kérdések</a>
+                </li>
+                <li class="tab">
+                    <a href="{{ route('application', ['page' => 'files']) }}"
+                        class="{{ request()->get('page') == 'files' ? 'active' : '' }}">Fájlok</a>
+                </li>
+            </ul>
         </nav>
         @yield('form')
     @else
@@ -86,7 +84,7 @@
         ])
     @endif
 
-    @if (request()->get('page') != 'submit')
+    @if (request()->get('page') != 'submit' && !$user->application->submitted)
         <x-input.button href="{{ route('application', ['page' => 'submit']) }}" style="margin-bottom: 40px"
             class="right coli blue" text="Ellenőrzés és véglegesítés" />
     @endif
