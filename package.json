@@ -20,6 +20,10 @@
         "sass-loader": "^13.2.2"
     },
     "dependencies": {
+        "@fontsource/material-icons": "^5.2.5",
+        "@fontsource/nunito": "^5.2.6",
+        "@fontsource/open-sans": "^5.2.6",
+        "@fontsource/playfair-display": "^5.2.6",
         "@materializecss/materialize": "^1.1.0",
         "jquery": "^3.6.0",
         "moment": "^2.29.4",
