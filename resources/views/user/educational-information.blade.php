@@ -102,7 +102,7 @@
             </div>
         @endif
     </div>
-    <p style="margin-bottom:10px">Szakok: <span style="color:red;" aria-label="required">*</span></p>
+    <p style="margin-bottom:10px">Szakok (összes korábbi és aktuális egyaránt): <span style="color:red;" aria-label="required">*</span></p>
     @foreach($user->educationalInformation?->studyLines ?? [] as $studyLine)
         @include('user.study-line-selector', ['index' => $loop->index, 'value' => $studyLine])
     @endforeach

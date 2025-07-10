@@ -9,4 +9,14 @@ return [
     'register-statement' => 'Beköltözési nyilatkozat',
     'request' => 'Igénylés',
     'status-cert' => 'Tagsági igazolás',
+    'file_types' => [
+        'profile_picture' => 'Profilkép',
+        'receipt' => 'Számla',
+        'resume' => 'Önéletrajz',
+        'besorolasi_hatarozat' => 'Besorolási határozat',
+        'erettsegi' => 'Érettségi bizonyítvány',
+        'elvegzett_felev' => 'Igazolás az elvégzett félévekről',
+        'diploma' => 'Diploma',
+        'application_custom' => 'Egyéb dokumentumok, igazolások',
+    ]
 ];

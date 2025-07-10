@@ -10,7 +10,7 @@
                     <x-input.text s=12 id="graduation_average" text="application.graduation_average" type='number' step="0.01" min="0"
                                   text="Érettségi átlaga" :value="$user->application->graduation_average"
                                   asterisk
-                                  helper='Az összes érettségi tárgy hagyományos átlaga'/>
+                                  helper='Az összes érettségi tárgy százalékos eredményének hagyományos átlaga'/>
                     <div class="col s12">
                         @livewire('parent-child-form', [
                         'title' => "Van lezárt egyetemi félévem",
@@ -121,7 +121,7 @@
                         </div>
                     </div>
                     <div>
-                        <label for="question_2" style="font-size: 15px;color:black">Miért kíván a Collegium tagja lenni? (≈300-500 karakter) <span style="color:red;" aria-label="required">*</span></label>
+                        <label for="question_2" style="font-size: 15px;color:black">Miért kíván a Collegium tagja lenni? (≈500-1000 leütés) <span style="color:red;" aria-label="required">*</span></label>
                         <x-input.textarea id="question_2"
                                         :value="$user->application->question_2"
                                         style="min-height:200px"

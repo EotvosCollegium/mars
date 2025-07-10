@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Utils\DataCompresser;
+use App\Enums\FileType;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -171,6 +172,15 @@ class Application extends Model
         return $this->hasMany('App\Models\File');
     }
 
+    /**
+     * Get files of a specific type.
+     * @param FileType $type
+     * @return HasMany
+     */
+    public function filesOfType(FileType $type): HasMany
+    {
+        return $this->files()->where('type', $type);
+    }
 
     /*
     |--------------------------------------------------------------------------
@@ -414,6 +424,9 @@ class Application extends Model
         if (!isset($this->question_2)) {
             $missingData[] =  'Szakmai és motivációs kérdések: "Miért kíván a Collegium tagja lenni?" kérdés';
         }
+        if ($this->question_2 && mb_strlen($this->question_2) < 500) {
+            $missingData[] =  'Szakmai és motivációs kérdések: "Miért kíván a Collegium tagja lenni?" kérdésre adott válasz túl rövid (min. 500 leütés)';
+        }
         if (!isset($this->question_3)) {
             $missingData[] =  'Szakmai és motivációs kérdések: "Tervez-e tovább tanulni a diplomája megszerzése után? Milyen tervei vannak az egyetem után?" kérdés';
         }
@@ -422,11 +435,37 @@ class Application extends Model
             $missingData[] =  'Szakmai és motivációs kérdések: jelige';
         }
 
-        if (count($this->files) < 2) {
-            $missingData[] =  'Legalább két feltöltött fájl';
+        foreach (FileType::cases() as $type) {
+            if ($this->needsFile($type) && !$this->filesOfType($type)->exists()) {
+                $missingData[] = 'Szükséges dokumentum: ' . __('document.file_types.' . $type->value, [], 'hu');
+            }
         }
 
         return $missingData;
+    }
+
+    /**
+     * Determine whether the applicant needs to upload a file of a specific type.
+     * @param FileType $type
+     * @return bool
+     */
+    public function needsFile(FileType $type): bool
+    {
+        $semester = app(\App\Http\Controllers\Auth\ApplicationController::class)->semester();
+        switch ($type) {
+            case FileType::RESUME:
+                return true;
+            case FileType::BESOROLASI_HATAROZAT:
+                return $this->user->educationalInformation->studyLines()->where('start', '=', $semester->id)->exists();
+            case FileType::ERETTSEGI:
+                return $this->user->educationalInformation->studyLines()->where('start', '=', $semester->id)->whereIn('type', ['bachelor', 'ot', 'other'])->exists();
+            case FileType::ELVEGZETT_FELEV:
+                return $this->user->educationalInformation->studyLines()->where('start', '<>', $semester->id)->exists();
+            case FileType::DIPLOMA:
+                return $this->user->educationalInformation->studyLines()->whereNotNull('end')->exists();
+            default:
+                return false;
+        }
     }
 
     /**
