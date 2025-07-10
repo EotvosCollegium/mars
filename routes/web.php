@@ -94,7 +94,8 @@ Route::middleware([Authenticate::class, LogRequests::class])->group(function () 
     /** Routes that needs to be accessed during the application process */
     Route::get('/application', [ApplicationController::class, 'show'])
         ->name('application')
-        ->withoutMiddleware(RedirectTenantsToUpdate::class);
+        ->withoutMiddleware(RedirectTenantsToUpdate::class)
+        ->middleware(OnlyHungarian::class);
     Route::post('/application/confirm_start', [ApplicationController::class, 'confirmStart'])
         ->name('application.confirm_start')
         ->withoutMiddleware(RedirectTenantsToUpdate::class);

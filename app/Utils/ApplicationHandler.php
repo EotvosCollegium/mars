@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 trait ApplicationHandler
 {
@@ -73,9 +74,10 @@ trait ApplicationHandler
         $request->validate([
             'file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:' . config('custom.general_file_size_limit'),
             'name' => 'required|string|max:255',
+            'type' => ['required', Rule::enum(\App\Enums\FileType::class)],
         ]);
         $path = $request->file('file')->store('uploads');
-        $user->application->files()->create(['path' => $path, 'name' => $request->input('name')]);
+        $user->application->files()->create(['path' => $path, 'type' => $request->input('type'), 'description' => $request->input('name')]);
     }
 
     /**
