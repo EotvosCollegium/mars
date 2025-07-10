@@ -20,7 +20,7 @@ services:
     image: mars_image:latest
     pull_policy: never
     build:
-      context: ./.devcontainer
+      context: .
     depends_on:
       - mars_mysql
     volumes:

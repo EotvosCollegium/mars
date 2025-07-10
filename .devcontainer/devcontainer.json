@@ -2,7 +2,7 @@
 {
 	"name": "Mars development",
 	"dockerComposeFile": [
-		"../docker-compose.yml"
+		"./docker-compose.yml"
 	],
 	"service": "mars_dev",
 	"workspaceFolder": "/workspace/mars",
@@ -18,7 +18,4 @@
 	},
 	"remoteUser": "ubuntu",
 	"postCreateCommand": "make build"
-	// "forwardPorts": [],
-	// "runServices": [],
-	// "shutdownAction": "none",
 }

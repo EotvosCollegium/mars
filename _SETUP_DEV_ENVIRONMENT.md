@@ -2,33 +2,27 @@
 
 There are several ways to set up your development server and environment. Basically, you only need a running php server that uses the /public folder and an sql database connected to it. There are some tips how to achieve that (and even more) below.
 
+## Universal (using dev containers - recommended)
+
+1. Clone Mars: `git clone git@github.com:EotvosCollegium/mars.git`.
+2. You need to install Docker (and WSL2 on Windows). See [requirements here](https://code.visualstudio.com/docs/remote/containers#_system-requirements).
+3. You need to install VS Code
+4. You need to install the [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension in VS Code.
+5. Open the project in VS Code.
+6. VS code should notice that the project is configured to use dev containers and will prompt you if you want to use it. Click yes, and you're all done!
+
+[`.devcontainer.json`](.devcontainer.json) folder contains the settings for it. `make build` (check [`Makefile`](Makefile)) is always run when the environment is opened.
+
+You can open up a terminal inside VS Code
+
+This option is recommended, as it is updated regularly and quite closely resembles an environment one might use in production.
+
 ## Developing on the cloud with gitpod (for starters or for slow machines)
 
 1. Ask for access to our gitpod organization
 2. Go to projects, and go to the bracnhes under the Mars project. Create a new workspace for your branch and open it in the browser or VS Code locally.
 3. You will see three terminals. One for the server, one for npm, and one for the database. You can close the last two once the scripts are finished, but you still need to run `php artisan migrate:fresh --seed` to get the DB seeded. The site is served at `http://localhost:8000` (or check the first few lines server logs). 
-4. Use with care, we have 50 hours of free usage per month. 
-
-## Universal (using Docker - recommended)
-
-This setup uses Docker to run the app and the database,
-therefore it is very easy to set up on any platform that supports Docker (Linux, Windows via WSL2, etc.).
-This setup is also recommended if you don't want to install PHP and other dependencies on your host machine,
-or if you already have a different (incompatible) version of PHP installed.
-
-The instructions can be found in the [docker-dev-setup/README.md file](docker-dev-setup/README.md).
-
-## Universal (using VS Code dev containers  - recommended)
-
- 1. Clone Mars: `git clone git@github.com:EotvosCollegium/mars.git`.
- 2. Install [Composer](https://getcomposer.org/) and run `composer install` in the project directory.
- 3. You need to install Docker (and WSL2 on Windows). See [requirements here](https://code.visualstudio.com/docs/remote/containers#_system-requirements).
- 4. You need to install VS code
- 5. You need to install the Remote Development extension pack in VS code.
- 6. Open the project in VS code. Copy the `.env.example` file to `.env` and run `php artisan key:generate`. Set `DB_HOST` to `mysql` in `.env` file.
- 8. VS code should notice that the project is configured to use dev containers and will promt you if you want to use it. Click yes, and you're all done!
-
-Note: to regenerate the docker configuration, use `php artisan sail:install --devcontainer`
+4. Use with care, we have 50 hours of free usage per month.
 
 ## OS X
 For OS X, [Valet](https://laravel.com/docs/6.x/valet) gives a pretty smooth experience. Easy to download, easy to configure.
