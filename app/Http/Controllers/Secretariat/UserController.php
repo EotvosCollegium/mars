@@ -69,7 +69,7 @@ class UserController extends Controller
             $old_profile->update(['path' => $path]);
             Storage::delete($old_profile->path);
         } else {
-            $user->profilePicture()->create(['path' => $path, 'name' => 'profile_picture']);
+            $user->profilePicture()->create(['path' => $path, 'type' => 'profile_picture']);
         }
         return redirect()->back()->with('message', __('general.successful_modification'));
     }

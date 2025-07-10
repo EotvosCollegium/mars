@@ -11,5 +11,11 @@ return [
         'APPLICATION_INFORMATION_PER_WORKSHOP_AFTER_FINALIZATION' => 'Information about workshops the user applied to',
         'START_APPLICATION' => 'Confirmation text before a user with an already existing account starts their application',
         'TENANT_REGISTRATION' => 'Texts shown on tenant registration page',
+        'APPLICATION_FILE_RESUME' => 'Description for "Önéletrajz" file type',
+        'APPLICATION_FILE_BESOROLASI_HATAROZAT' => 'Description for "Besorolási határozat" file type',
+        'APPLICATION_FILE_ERETTSEGI' => 'Description for "Érettségi" file type',
+        'APPLICATION_FILE_ELVEGZETT_FELEV' => 'Description for "Elvégzett félév" file type',
+        'APPLICATION_FILE_DIPLOMA' => 'Description for "Diploma" file type',
+        'APPLICATION_FILE_APPLICATION_CUSTOM' => 'Description for "Egyéb felvételi dokumentum, igazolás" file type',
     ],
 ];
