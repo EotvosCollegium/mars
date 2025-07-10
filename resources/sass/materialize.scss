@@ -1,3 +1,13 @@
+@import "@fontsource/nunito";
+@import "@fontsource/open-sans";
+@import "@fontsource/playfair-display";
+@import "@fontsource/material-icons";
+@import "@fontsource/material-icons-round";
+@import "@fontsource/material-icons-outlined";
+@import "@fontsource/material-icons-sharp";
+@import "@fontsource/material-icons-two-tone";
+
+
 //custom color
 $coli: (
     "blue": if($isDebug == "true", #5e1a10, #242851),

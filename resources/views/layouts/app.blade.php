@@ -23,6 +23,7 @@
     <script type="text/javascript" src="{{ mix('js/jquery.min.js') }}"></script>
     <script type="text/javascript" src="{{ mix('js/tabulator.min.js') }}" defer></script>
     <script type="text/javascript" src="{{ mix('js/cookieconsent.min.js') }}" defer></script>
+    <script type="text/javascript" src="{{ mix('js/selectize.min.js') }}"></script>
     <script type="text/javascript" src="{{ mix('js/cookieconsent-initialize.js') }}" defer></script>
     <script type="text/javascript" src="{{ mix('js/materialize.js') }}"></script>
     <script type="text/javascript" src="{{ mix('js/hide_pictures.js') }}"></script>
@@ -44,6 +45,8 @@
                 });
             }
         );
+
+        
     </script>
     <style>
     .no-js #loader { display: none;  }
