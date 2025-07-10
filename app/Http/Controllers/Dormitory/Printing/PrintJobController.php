@@ -90,17 +90,15 @@ class PrintJobController extends Controller
 
         $printerConfiguration = PrinterConfiguration::find($validated['printer_configuration']);
 
-        $pageNumber = PrinterHelper::getDocumentPageNumber(Storage::disk('printing')->path($path));
-
-        return self::printDocument($printerConfiguration, $copyNumber, $useFreePrintingCredits, $path, $originalName);
+        return self::printDocument($printerConfiguration, $copyNumber, $useFreePrintingCredits, Storage::disk('printing')->path($path), $originalName);
     }
 
-    public static function printDocument(PrinterConfiguration $printerConfiguration, int $copyNumber, bool $useFreePrintingCredits, string $path, string $originalName)
+    public static function printDocument(PrinterConfiguration $printerConfiguration, int $copyNumber, bool $useFreePrintingCredits, string $file_path, string $originalName)
     {
 
         Gate::authorize('use', $printerConfiguration);
 
-        $pageNumber = PrinterHelper::getDocumentPageNumber(Storage::disk('printing')->path($path));
+        $pageNumber = PrinterHelper::getDocumentPageNumber($file_path);
 
         DB::beginTransaction();
 
@@ -116,7 +114,7 @@ class PrintJobController extends Controller
         $printAccount->updateHistory($useFreePrintingCredits, $cost);
 
         try {
-            $printJob = $printerConfiguration->createPrintJob($useFreePrintingCredits, $cost, Storage::disk('printing')->path($path), $originalName, $copyNumber);
+            $printJob = $printerConfiguration->createPrintJob($useFreePrintingCredits, $cost, $file_path, $originalName, $copyNumber);
             Log::info("User $printAccount->user_id started print job a document for $cost. Job ID: $printJob->job_id. Used free printing credits: $useFreePrintingCredits. File: $originalName");
         } catch (\Exception $e) {
             DB::rollBack();
@@ -127,7 +125,7 @@ class PrintJobController extends Controller
              * Let's keep around the documents for easier troubleshooting
              * TODO: clean up after an interval (e.g. 7 days)
              */
-            // Storage::disk('printing')->delete($path);
+            // Storage::disk('printing')->delete($file_path);
         }
 
         DB::commit();
