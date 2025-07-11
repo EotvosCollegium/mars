@@ -381,10 +381,10 @@ class Application extends Model
             }
         }
 
-        if (!isset($educationalInformation?->alfonso_language) && !$educationalInformation->alfonsoExempted()) {
+        if (!isset($educationalInformation) || !isset($educationalInformation->alfonso_language) && !$educationalInformation->alfonsoExempted()) {
             $missingData[] =  'Tanulmányi adat: megjelölt ALFONSÓ nyelv';
         }
-        if (!isset($educationalInformation?->alfonso_desired_level) && !$educationalInformation->alfonsoExempted()) {
+        if (!isset($educationalInformation) || !isset($educationalInformation->alfonso_desired_level) && !$educationalInformation->alfonsoExempted()) {
             $missingData[] =  'Tanulmányi adat: elérni kívánt ALFONSÓ szint';
         }
 
