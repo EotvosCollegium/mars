@@ -69,6 +69,7 @@ return [
     'semesters' => 'Szemeszterek',
     'set_tenant_until' => 'Ellenőrizd és frissítsd a tervezett kiköltözésed időpontját, hogy visszakapd a hozzáférésed az Uránhoz és az internethez. Ezt fél évente meg kell újítanod.',
     'skandinavisztika_muhely' => 'Skandinavisztika műhely',
+    'some_data_cannot_be_edited' => 'Bizonyos személyes adatokat kizárólag a [rendszergazdák](mailto::SYSADMIN_EMAIL), a [Titkárság](mailto::SECRETARIAT_EMAIL), illetve a [Választmány](mailto::STUDENT_COUNCIL_EMAIL) módosíthatnak. Amennyiben ilyen mezőt szeretne módosítani, keresse fel őket.',
     'spanyol_muhely' => 'Spanyol műhely',
     'some_data_cannot_be_edited' => 'Bizonyos személyes adatokat kizárólag a [rendszergazdák](mailto::SYSADMIN_EMAIL), a [Titkárság](mailto::SECRETARIAT_EMAIL), illetve a [Választmány](mailto::STUDENT_COUNCIL_EMAIL) módosíthatnak. Amennyiben ilyen mezőt szeretne módosítani, keresse fel őket.',
     'street' => 'utca',
