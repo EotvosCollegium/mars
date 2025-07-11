@@ -73,7 +73,7 @@ return [
     'spanyol_muhely' => 'Spanyol műhely',
     'street' => 'utca',
     'street_and_number' => 'Utca, házszám',
-    'study_line' => 'Szak',
+    'study_line' => 'Szak neve',
     'study_line_end' => 'Képzés vége',
     'study_line_level' => 'Képzési szint',
     'study_line_minor' => 'Minor / Specializáció',

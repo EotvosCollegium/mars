@@ -156,40 +156,41 @@ class UserController extends Controller
      */
     public function updateEducationalInformation(Request $request, User $user): RedirectResponse
     {
-        $this->authorize('view', $user);
+        $this->authorize('edit', $user);
         session()->put('section', 'educational_information');
+        $validator = [];
 
-        $request->validate([
-            'year_of_graduation' => 'required|integer|between:1895,' . date('Y'),
-            'year_of_acceptance' => 'required|integer|between:1895,' . date('Y'),
-            'high_school' => 'required|string|max:255',
-            'neptun' => [
-                ($user->application) ? 'nullable' : 'required',
-                'string',
-                'size:6'
-            ],
-            'faculty' => 'array',
-            'faculty.*' => 'exists:faculties,id',
-            'workshop' => 'nullable|array',
-            'workshop.*' => 'exists:workshops,id',
-            'study_lines' => 'array',
-            'study_lines.*.name' => 'required|string|max:255',
-            'study_lines.*.level' => ['required', Rule::in(array_keys(StudyLine::TYPES))],
-            'study_lines.*.training_code' => 'string|max:255',
-            'study_lines.*.minor' => 'nullable|string|max:255',
-            'study_lines.*.start' => 'required',
-            'email' => [
-                ($user->application) ? 'nullable' : 'required',
-                'string',
-                'email',
-                'max:255',
-                new SameOrUnique($user, EducationalInformation::class)
-            ],
-            'research_topics' => ['nullable', 'string', 'max:1000'],
-            'extra_information' => ['nullable', 'string', 'max:1500'],
-        ]);
+        $requiredForCollegist = $user->isCollegist(alumni: true) ? "required" : "nullable";
 
-        $educational_data = $request->only([
+        if(user()->can('editStaticEducationalInformation', $user)){
+            $validator['high_school'] = [$requiredForCollegist, 'string', 'max:255'];
+            $validator['year_of_graduation'] = [$requiredForCollegist, 'integer', 'between:1895,' . date('Y')];
+            $validator['year_of_acceptance'] = [$requiredForCollegist, 'integer', 'between:1895,' . date('Y')];
+            $validator['neptun'] = [$requiredForCollegist, 'string', 'size:6'];
+        }
+
+        $validator['email'] = [$requiredForCollegist, 'string', 'email', 'max:255', new SameOrUnique($user, EducationalInformation::class)];
+
+        $validator['faculty'] = [$requiredForCollegist, 'array'];
+        $validator['faculty.*'] = 'exists:faculties,id';
+
+        $validator['workshop'] = [$requiredForCollegist, 'array'];
+        $validator['workshop.*'] = 'exists:workshops,id';
+
+        $validator['study_lines'] = [$requiredForCollegist, 'array'];
+        $validator['study_lines.*.name'] = [$requiredForCollegist, 'string', 'max:255'];
+        $validator['study_lines.*.type'] = [$requiredForCollegist, Rule::in(array_keys(StudyLine::TYPES))];
+        $validator['study_lines.*.training_code'] = [$requiredForCollegist, 'string', 'max:255'];
+        $validator['study_lines.*.minor'] = ['nullable', 'string', 'max:255'];
+        $validator['study_lines.*.start'] = [$requiredForCollegist, 'exists:semesters,id'];
+        $validator['study_lines.*.end'] = ['nullable', 'exists:semesters,id'];
+
+        $validator['research_topics'] = ['nullable', 'string', 'max:1000'];
+        $validator['extra_information'] = ['nullable', 'string', 'max:1500'];
+
+        $data = $request->validate($validator);
+
+        $educational_data = Arr::only($data, [
             'year_of_graduation',
             'year_of_acceptance',
             'high_school',
@@ -199,10 +200,11 @@ class UserController extends Controller
             'extra_information'
         ]);
 
-        // whether Neptun code is unique (only checked if not null)
+        $error_with_neptun_code = false;
         if (!is_null($request->neptun)
               && EducationalInformation::where('neptun', $request->neptun)->where('user_id', '<>', $user->id)->exists()) {
-            return redirect()->back()->with('error', 'A megadott Neptun-kód már létezik! Ha a kód az Öné, lépjen be a korábbi fiókjával.');
+            $error_with_neptun_code = true;
+            $educational_data = Arr::except($educational_data, ['neptun']);
         }
 
         DB::transaction(function () use ($user, $request, $educational_data) {
@@ -226,11 +228,11 @@ class UserController extends Controller
                 $user->educationalInformation->studyLines()->delete();
                 foreach ($request->input('study_lines') as $studyLine) {
                     $user->educationalInformation->studyLines()->create([
-                        'name' => $studyLine["name"],
-                        'type' => $studyLine["level"],
+                        'name' => $studyLine["name"] ?? null,
+                        'type' => $studyLine["type"] ?? null,
                         'minor' => $studyLine["minor"] ?? null,
-                        'training_code' => $studyLine["training_code"],
-                        'start' => $studyLine["start"],
+                        'training_code' => $studyLine["training_code"] ?? null,
+                        'start' => $studyLine["start"] ?? null,
                         'end' => $studyLine["end"] ?? null,
                     ]);
                 }
@@ -238,7 +240,11 @@ class UserController extends Controller
 
         });
 
-        return redirect()->back()->with('message', __('general.successful_modification'));
+        if($error_with_neptun_code){
+            return redirect()->back()->with('error', 'A Neptun-kód mentése sikertelen. Lépjen be a korábbi fiókjával, vagy keresse a rendszergazdákat.');
+        } else {
+            return redirect()->back()->with('message', __('general.successful_modification'));
+        }
     }
 
     /**
