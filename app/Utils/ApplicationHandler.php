@@ -19,13 +19,16 @@ trait ApplicationHandler
     public function storeQuestionsData(Request $request, User $user): void
     {
         $data = $request->validate([
-            'status' => 'required|in:extern,resident',
-            'graduation_average' => 'required|numeric',
+            'status' => 'nullable|in:extern,resident',
+            'graduation_average' => 'nullable|numeric',
             'semester_average' => 'nullable|array',
-            'semester_average.*' => 'numeric',
-            'competition' => 'nullable',
-            'publication' => 'nullable',
-            'foreign_studies' => 'nullable',
+            'semester_average.*' => 'nullable|string',
+            'competition' => 'nullable|array',
+            'competition.*' => 'nullable|string',
+            'publication' => 'nullable|array',
+            'publication.*' => 'nullable|string',
+            'foreign_studies' => 'nullable|array',
+            'foreign_studies.*' => 'nullable|string',
             'workshop' => 'nullable|array',
             'workshop.*' => 'nullable|exists:workshops,id',
             'question_1' => 'nullable|array',
@@ -37,7 +40,9 @@ trait ApplicationHandler
             'accommodation' => 'nullable|in:on'
         ]);
 
-        $data['applied_for_resident_status'] = $request->input('status') == "resident";
+        if (array_key_exists('applied_for_resident_status', $data)) {
+            $data['applied_for_resident_status'] = $request->input('status') == "resident";
+        }
         $data['accommodation'] = $request->input('accommodation') === "on";
 
         $application = Application::updateOrCreate(
