@@ -98,7 +98,7 @@ class StudyLine extends Model
         if (isset($this->minor)) {
             $name .= ' - minor: ' . $this->minor;
         }
-        return $name;
+        return $name ?? '';
     }
 
     /**

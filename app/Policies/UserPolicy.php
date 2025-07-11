@@ -74,6 +74,21 @@ class UserPolicy
         }
     }
 
+    public function editStaticEducationalInformation(User $user, User $target){
+        if(!$this->edit($user, $target)){
+            return false;
+        }
+        if($user->hasRole([
+            Role::SECRETARY,
+            Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS_AND_COMMITTEE_LEADERS,
+        ])) {
+            return true;
+        }
+        if($user->id == $target->id && !$user->hasRoleOtherThanTenant()){
+            return true;
+        }
+    }
+
     /**
      * @param User $user
      * @return bool
