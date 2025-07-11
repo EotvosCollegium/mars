@@ -41,7 +41,7 @@
         @endif
     </div>
 </div>
-@if($user->educationalInformation)
+
 <form method="POST" action="{{ route('users.language_exams.upload', ['user' => $user]) }}"
         enctype='multipart/form-data'>
     @csrf
@@ -60,6 +60,3 @@
         .jpeg, .png
     </blockquote>
 </form>
-@else
-<p>A nyelvvizsgák feltöltése előtt töltse ki a tanulmányi adatait.</p>
-@endif

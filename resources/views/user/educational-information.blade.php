@@ -1,43 +1,69 @@
 <form method="POST" action="{{ route('users.update.educational', ['user' => $user]) }}">
     @csrf
+    @if (user()->cannot('edit', $user))
+        @markdown(__('user.data_cannot_be_edited_application'),
+            [
+                'SYSADMIN_EMAIL' => config('mail.sys_admin_mail'),
+                'SECRETARIAT_EMAIL' => config('mail.secretary_mail'),
+                'STUDENT_COUNCIL_EMAIL' => config('contacts.mail_valasztmany'),
+            ]
+        )
+    @elseif(user()->cannot('editStaticEducationalInformation', $user))
+        @markdown(__('user.some_data_cannot_be_edited'),
+            [
+                'SYSADMIN_EMAIL' => config('mail.sys_admin_mail'),
+                'SECRETARIAT_EMAIL' => config('mail.secretary_mail'),
+                'STUDENT_COUNCIL_EMAIL' => config('contacts.mail_valasztmany'),
+            ]
+        )
+    @endif
     @if($application ?? false)
         <blockquote>
-            <p>A Neptun-kódot elég véglegesítés előtt kitölteni.</p>
             <p>Az egyetemi e-mail-cím a felvételi eljárást követően is pótolható.</p>
         </blockquote>
     @endif
     <div class="row">
         <x-input.text id="high_school" text="user.high_school"
                       :value="$user->educationalInformation?->high_school"
-                      required/>
+                      :required="$user->isCollegist()"
+                      :disabled="user()->cannot('editStaticEducationalInformation', $user)"
+                      asterisk
+                      />
         <x-input.text s=12 m=6 id="year_of_graduation" text="user.year_of_graduation" type='number' min="1895"
                       :max="date('Y')"
                       :value="$user->educationalInformation?->year_of_graduation"
-                      required/>
-        @if(!($application ?? false))
-            <x-input.text s=12 m=6 id="year_of_acceptance" text="user.year_of_acceptance" type='number' min="1895"
-                          :max="date('Y')"
-                          :value="$user->educationalInformation?->year_of_acceptance"
-                          required/>
-            <x-input.text s=6 id="neptun" text="user.neptun"
-                          :value="$user->educationalInformation?->neptun"
-                          required/>
-            <x-input.text s=6 id='educational-email' text='user.educational-email' name="email"
-                          :value="$user->educationalInformation?->email"
-                          required helper="lehetőleg @student.elte.hu-s"/>
-        @else
-            <x-input.text s=12 m=6 id='year_of_acceptance' text='Collegiumi felvételi éve' type='number'
-                          :value="date('Y')" disabled/>
-            <input type="hidden" name="year_of_acceptance" value="{{date('Y')}}"/>
-            <x-input.text s=6 id="neptun" text="user.neptun"
-                          :value="$user->educationalInformation?->neptun" /> {{-- not required --}}
-            <x-input.text s=6 id='educational-email' text="user.educational-email" name="email"
-                          :value="$user->educationalInformation?->email"
-                          helper="lehetőleg @student.elte.hu-s (nem kötelező, a felvételit követően pótolható)"/> {{-- not required --}}
-        @endif
+                      :required="$user->isCollegist()"
+                      :disabled="user()->cannot('editStaticEducationalInformation', $user)"
+                      asterisk
+                      />
+        <x-input.text s=12 m=6 id="year_of_acceptance" text="user.year_of_acceptance" type='number' min="1895"
+                        :max="date('Y')"
+                        :value="$user->educationalInformation?->year_of_acceptance"
+                        :required="$user->isCollegist()"
+                        :disabled="user()->cannot('editStaticEducationalInformation', $user)"
+                        asterisk
+                    />
+        <x-input.text s=6 id="neptun" text="user.neptun"
+                        :value="$user->educationalInformation?->neptun"
+                        :required="$user->isCollegist()"
+                        :disabled="user()->cannot('editStaticEducationalInformation', $user)"
+                        asterisk
+                        />
+        <x-input.text s=6 id='educational-email' text='user.educational-email' name="email"
+                        :value="$user->educationalInformation?->email"
+                        :helper="
+                        isset($application)
+                        ?
+                            'lehetőleg @student.elte.hu-s (nem kötelező, a felvételit követően pótolható)'
+                        :
+                            'lehetőleg @student.elte.hu-s'"
+                        :required="$user->isCollegist()"
+                        :disabled="user()->cannot('edit', $user)"
+                        :asterisk="!isset($application)"
+                        />
 
         <div class="input-field col s12 m6">
-            <p style="margin-bottom:10px">@lang('user.faculty'):</p>
+            <p style="margin-bottom:10px">@lang('user.faculty'): <span style="color:red;">*</span></p>
             @foreach ($faculties as $faculty)
                 <p>
                     @php $checked = old('faculty') !== null && in_array($faculty->id, old('faculty')) || in_array($faculty->id, $user->faculties->pluck('id')->toArray()) @endphp
@@ -52,7 +78,7 @@
         @if(!isset($application))
             <div class="input-field col s12 m6">
                 <p style="margin-bottom:10px">
-                    @lang('user.workshops'):
+                    @lang('user.workshops'): <span style="color:red;">*</span>
                 </p>
                 @foreach ($workshops as $workshop)
                     <p>
