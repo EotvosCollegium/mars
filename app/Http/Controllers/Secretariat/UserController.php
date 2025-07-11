@@ -102,28 +102,35 @@ class UserController extends Controller
      */
     public function updatePersonalInformation(Request $request, User $user): RedirectResponse
     {
-        $this->authorize('view', $user);
+        $this->authorize('edit', $user);
         session()->put('section', 'personal_information');
 
-        $isCollegist = $user->isCollegist();
+        $validator = [];
 
-        $data = $request->validate([
-            'email' => ['required', 'email', 'max:225', new SameOrUnique($user)],
-            'name' => 'required|string|max:255',
-            'phone_number' => 'required|string|min:8|max:18',
-            'mothers_name' => [Rule::requiredIf($isCollegist), 'max:225'],
-            'place_of_birth' => [Rule::requiredIf($isCollegist), 'string', 'max:225'],
-            'date_of_birth' => [Rule::requiredIf($isCollegist), 'string', 'max:225'],
-            'country' => [Rule::requiredIf($isCollegist), 'string', 'max:255'],
-            'county' => [Rule::requiredIf($isCollegist), 'string', 'max:255'],
-            'zip_code' => [Rule::requiredIf($isCollegist), 'string', 'max:31'],
-            'city' => [Rule::requiredIf($isCollegist), 'string', 'max:255'],
-            'street_and_number' => [Rule::requiredIf($isCollegist), 'string', 'max:255'],
-            'tenant_until' => [Rule::requiredIf($user->isTenant()), 'date', 'after:today'],
-            'relatives_contact_data' => ['nullable', 'string', 'max:255'],
-        ]);
+        $requiredForCollegist = $user->isCollegist(alumni: true) ? "required" : "nullable";
 
-        $user->update(['email' => $request->email, 'name' => $request->name]);
+        if(user()->can('editStaticPersonalInformation', $user)){
+            $validator['name'] = 'required|string|max:255';
+            $validator['email'] = ['required', 'email', 'max:225', new SameOrUnique($user)];
+            $validator['place_of_birth'] = [$requiredForCollegist, 'string', 'max:225'];
+            $validator['date_of_birth'] = [$requiredForCollegist, 'date'];
+            $validator['mothers_name'] = [$requiredForCollegist, 'string', 'max:225'];
+        }
+        $validator['phone_number'] = [$user->roles()->exists() ? 'required' : 'nullable', 'string', 'min:8', 'max:18'];
+        $validator['country'] = [$requiredForCollegist, 'string', 'max:255'];
+        $validator['county'] = [$requiredForCollegist, 'string', 'max:255'];
+        $validator['zip_code'] = [$requiredForCollegist, 'string', 'max:31'];
+        $validator['city'] = [$requiredForCollegist, 'string', 'max:255'];
+        $validator['street_and_number'] = [$requiredForCollegist, 'string', 'max:255'];
+        $validator['relatives_contact_data'] = ['nullable', 'string', 'max:255'];
+        if($user->isTenant()){
+            $validator['tenant_until'] = ['nullable', 'date', 'max:255', 'before_or_equal:' . Carbon::now()->addMonths(6)->toDateString()];
+        }
+
+        $data = $request->validate($validator);
+
+        $user->update(Arr::only($data, ['name', 'email', 'tenant_until']));
+
         $personal_data = Arr::except($data, ['name', 'email', 'tenant_until']);
 
         if (!$user->hasPersonalInformation()) {
@@ -132,10 +139,9 @@ class UserController extends Controller
             $user->personalInformation()->update($personal_data);
         }
 
-        if ($request->has('tenant_until')) {
-            $date = min(Carbon::parse($request->tenant_until), Carbon::now()->addMonths(6));
-            $user->personalInformation()->update(['tenant_until' => $date]);
-            $user->internetAccess()->update(['has_internet_until' => $date]);
+        if (array_key_exists('tenant_until', $data)) {
+            $user->personalInformation()->update(['tenant_until' => $data['tenant_until']]);
+            $user->internetAccess()->update(['has_internet_until' => $data['tenant_until']]);
         }
 
         return redirect()->back()->with('message', __('general.successful_modification'));
