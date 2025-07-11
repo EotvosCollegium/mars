@@ -32,7 +32,8 @@ mix.js('resources/js/materialize_custom.js', 'public/js/materialize.js') // We u
    ], 'public/css/app.css')
    // Add page specific files one by one
    .styles('resources/css/welcome_page.css', 'public/css/welcome_page.css')
-   .js('resources/js/page_based/localizations.js', 'public/js/page_based/localizations.js');
+   .js('resources/js/page_based/localizations.js', 'public/js/page_based/localizations.js')
+   .js('resources/js/hide_pictures.js', 'public/js/hide_pictures.js');
 
 // For fonts downloaded from Google Fonts
 mix.copyDirectory('resources/fonts', 'public/fonts');

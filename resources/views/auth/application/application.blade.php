@@ -5,7 +5,13 @@
             <div class="row" style="margin-bottom: 0">
                 <div class="col s12 xl4">
                     @if ($user->profilePicture)
-                        <img src="{{ url($user->profilePicture->path) }}" style="max-width:100%">
+                        @if ($user->id == user()->id)
+                            <img src="{{ url($user->profilePicture->path) }}" style="max-width:100%">
+                        @else
+                            <div style="display:inline-block;width:100%">
+                                <img src="{{ url($user->profilePicture->path) }}" class="hideable-picture" style="max-width:100%">
+                            </div>
+                        @endif
                     @else
                         <span style="font-style:italic;color:red">Nincs profilkép.</span>
                     @endif
