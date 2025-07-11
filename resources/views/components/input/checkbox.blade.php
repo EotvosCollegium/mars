@@ -12,7 +12,10 @@
                  || "on" == old('recurring')
                  || $checked)
     >
-    <span>{{$label}}</span>
+    <span>{{$label}}
+        @if($attributes->get('asterisk') || $attributes->get('required'))
+            <span style="color:red;">*</span>
+        @endif</span>
 </label>
 @if(!$onlyInput)
 </p></div>

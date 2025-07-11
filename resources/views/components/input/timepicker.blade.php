@@ -12,7 +12,9 @@
             'name' => $id
         ])}}
     >
-    <label for="timepicker_{{$id}}">{{$label}}</label>
+    <label for="timepicker_{{$id}}">{{$label}}@if($attributes->get('asterisk') || $attributes->get('required'))
+            <span style="color:red;">*</span>
+        @endif</label>
     @error($id)
     <span class="helper-text" data-error="{{ $message }}"></span>
     @enderror
