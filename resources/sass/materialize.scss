@@ -366,3 +366,15 @@ body.dark a.btn {
 .markdown_with_red ul {
     margin-left: 20px;
 }
+
+.hideable-picture-overlay {
+    position: relative;
+    z-index: 10;
+    background: rgba(255,255,255,0.95);
+    color: #333;
+    text-align: center;
+    font-weight: bold;
+    padding: 1em;
+    border: 1px solid #ccc;
+    margin: 0.5em 0;
+}
