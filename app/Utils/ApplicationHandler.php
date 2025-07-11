@@ -40,8 +40,8 @@ trait ApplicationHandler
             'accommodation' => 'nullable|in:on'
         ]);
 
-        if (array_key_exists('applied_for_resident_status', $data)) {
-            $data['applied_for_resident_status'] = $request->input('status') == "resident";
+        if (array_key_exists('status', $data)) {
+            $data['applied_for_resident_status'] = $data['status'] == "resident";
         }
         $data['accommodation'] = $request->input('accommodation') === "on";
 
