@@ -9,13 +9,13 @@
                 <div class="row">
                     <x-input.text s=12 id="graduation_average" text="application.graduation_average" type='number' step="0.01" min="0"
                                   text="Érettségi átlaga" :value="$user->application->graduation_average"
-                                  required
+                                  asterisk
                                   helper='Az összes érettségi tárgy hagyományos átlaga'/>
                     <div class="col s12">
                         @livewire('parent-child-form', [
                         'title' => "Van lezárt egyetemi félévem",
                         'name' => 'semester_average',
-                        'helper' => 'Hagyományos átlag a félév(ek)ben (tizedesponttal)',
+                        'helper' => 'Hagyományos átlag a félév(ek)ben (két tizedesjegyre kerekítve)',
                         'optional' => true,
                         'items' => $user->application->semester_average])
                     </div>
@@ -44,11 +44,11 @@
                         'items' => $user->application->foreign_studies])
                     </div>
                     <div class="input-field col s12">
-                        <p style="margin-bottom:10px">Megpályázni kívánt státusz:</p>
+                        <p style="margin-bottom:10px">Megpályázni kívánt státusz: <span style="color:red;">*</span></p>
                         <p>
                             @php $checked = old('status') ?  old('status') == 'resident' : $user->application->applied_for_resident_status @endphp
                             <label class="black-text">
-                                <input type="radio" name="status" value="resident" required
+                                <input type="radio" name="status" value="resident"
                                     {{ $checked ? 'checked' : '' }}>
                                 <span>@lang('role.resident')</span>
                             </label>
@@ -58,7 +58,7 @@
                             @php $checked = old('status') ?  old('status') == 'extern'
                                     : (false === $user->application->applied_for_resident_status) @endphp
                             <label class="black-text">
-                                <input type="radio" name="status" value="extern" required
+                                <input type="radio" name="status" value="extern"
                                     {{ $checked ? 'checked' : '' }}>
                                 <span>@lang('role.extern')</span>
                             </label>
@@ -69,7 +69,7 @@
                     </div>
                     <div class="input-field col s12">
                         <p style="margin-bottom:10px">
-                                Megpályázni kívánt műhely(ek):
+                                Megpályázni kívánt műhely(ek): <span style="color:red;">*</span>
                         </p>
                         <div class="row">
                         @foreach ($workshops as $workshop)
@@ -88,7 +88,7 @@
                         </blockquote>
                     </div>
                     <div class="input-field col s12">
-                        <p style="margin-bottom:10px">Honnan hallott a Collegiumról?</p>
+                        <p style="margin-bottom:10px">Honnan hallott a Collegiumról? <span style="color:red;">*</span></p>
                         @foreach(\App\Models\Application::QUESTION_1 as $answer)
                             @if(in_array($answer, $user->application->question_1 ?? []) !== false)
                                 <p>
@@ -119,18 +119,33 @@
                                           without-label placeholder="egyéb/bővebben..."/>
                         </div>
                     </div>
-                    <x-input.textarea id="question_2" text="Miért kíván a Collegium tagja lenni?"
-                                      helper="≈300-500 karakter" :value="$user->application->question_2"/>
-                    <x-input.textarea id="question_3"
-                                      text="Tervez-e tovább tanulni a diplomája megszerzése után? Milyen tervei vannak az egyetem után?"
-                                      :value="$user->application->question_3"/>
-                    <x-input.textarea id="question_4"
-                                      text="Részt vett-e közéleti tevékenységben? Ha igen, röviden jellemezze!"
-                                      helper="Pl. diákönkormányzati tevékenység, önkéntesség, szervezeti tagság. (nem kötelező)"
-                                      :value="$user->application->question_4"/>
+                    <div>
+                        <label for="question_2" style="font-size: 15px;">Miért kíván a Collegium tagja lenni? (≈300-500 karakter) <span style="color:red;">*</span></label>
+                        <x-input.textarea id="question_2"
+                                        :value="$user->application->question_2"
+                                        style="min-height:200px"
+                        />
+                    </div>
+                    <div>
+                        <label for="question_3" style="font-size: 15px;">Tervez-e tovább tanulni a diplomája megszerzése után? Milyen tervei vannak az egyetem után? <span style="color:red;">*</span></label>
+                        <x-input.textarea id="question_3"
+                                        :value="$user->application->question_3"
+                                        style="min-height:200px"
+                        />
+                    </div>
+                    <div>
+                        <label for="question_4" style="font-size: 15px;">Részt vett-e közéleti tevékenységben? Ha igen, röviden jellemezze! (Pl. diákönkormányzati tevékenység, önkéntesség, szervezeti tagság - nem kötelező)</label> 
+                        <x-input.textarea id="question_4"
+                                        :value="$user->application->question_4"
+                                        style="min-height:200px"
+                        />
+                    </div>
                     <x-input.textarea id="present"
                                       text="Amennyiben nem tud jelen lenni a felvételi teljes ideje alatt (kedd-péntek), kérjük itt indoklással jelezze!"
-                                      :value="$user->application->present"  helper="Változás esetén értesítse a titkárságot!"/>
+                                      :value="$user->application->present"
+                                      helper="Változás esetén értesítse a titkárságot!"
+                                      maxlength="5000"
+                                      />
                     <x-input.checkbox id="accommodation"
                                       text="Igényel-e szállást a felvételi idejére?"
                                       :checked="$user->application->accommodation"/>
