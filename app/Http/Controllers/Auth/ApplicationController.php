@@ -144,5 +144,8 @@ class ApplicationController extends Controller
         if ($user->application()->doesntExist()) {
             $user->application()->create();
         }
+        if($user->personalInformation()->doesntExist()) {
+            $user->personalInformation()->create();
+        }
     }
 }

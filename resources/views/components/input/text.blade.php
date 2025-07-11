@@ -12,7 +12,11 @@
         ])}}
     >
     @if(!$attributes->get('hidden') && !$withoutLabel)
-    <label for="{{$id}}">{{$label}}</label>
+    <label for="{{$id}}">{{$label}}
+        @if($attributes->get('asterisk') || $attributes->get('required'))
+            <span style="color:red;">*</span>
+        @endif
+    </label>
     @endif
     @if($helper ?? null)
     <span class="helper-text">{{ $helper }}</span>
