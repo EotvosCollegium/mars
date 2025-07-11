@@ -33,36 +33,6 @@ Note: to regenerate the docker configuration, use `php artisan sail:install --de
 ## OS X
 For OS X, [Valet](https://laravel.com/docs/6.x/valet) gives a pretty smooth experience. Easy to download, easy to configure.
 
-## Windows and Linux
-
-For Windows and Linux the project has an example [Laravel Homestead](https://laravel.com/docs/homestead) configuration which can be used for local development.
-
-With these steps you should be able to run Mars on your machine:
-
-1. Clone Mars: `git clone git@github.com:EotvosCollegium/mars.git`.
-2. Install [Vagrant](https://www.vagrantup.com/) and [VirtualBox](https://www.virtualbox.org/). (Or other virtualization platforms supported by Vagrant. Don't forget to reconfigure the `provider` in the steps below if you do so.)
-3. Follow the instructions in the [First steps](https://laravel.com/docs/8.x/homestead#first-steps) section:
-    - `vagrant box add laravel/homestead`
-    - `git clone https://github.com/laravel/homestead.git` from a folder where you want to set up Homestead
-    - go into this new directory
-    - `git checkout release`
-    - `init.bat` (`bash init.sh` on Linux)
-4. Set up Homestead: Copy and rename `Homestead.yaml.example` from this repository to `Homestead.yaml` in the Homestead directory (overwrite if needed). Modify this file by changing `folders: - map: /your/local/path/to/mars` .
-5. Create ssh keys to `~/.ssh/homestead_rsa.pub` and `~/.ssh/homestead_rsa`. (You can use something like `ssh-keygen -t rsa -b 4096 -C "your_email@example.com"`.)
-6. On Windows add the `192.168.10.10 mars.local` host entry to `C:\Windows\System32\drivers\etc\hosts`.
-7. Go to your Homestead directory and Run `vagrant up` and `vagrant ssh` to set up and enter your virtual machine.
-8. In the project root (`cd mars`) run `composer install`
-9. Set up Mars: Copy and rename `.env.example` to `.env`, and change these settings:
-   `DB_DATABASE=homestead DB_USERNAME=homestead DB_PASSWORD=secret APP_URL=http://mars.local`.
-10. Run the following commands:
-
--   Run `php artisan migrate:fresh --seed`.
--   Run `php artisan key:generate`.
--   Run `npm install` to install JS related dependencies.
--   Run `npm run dev` to create the CSS and JS files in the `public` directory.
-
-11. The project should be running at [mars.local](http://mars.local/).
-
 ## Optional steps
 
 -   You can add your personal access token from GitHub to use the GitHub API (eg. bug reports are sent through this). [You can generate a token here.](https://github.com/settings/tokens) You have to check the 'public_repo' scope.
