@@ -341,8 +341,18 @@ class Application extends Model
 
         $missingData = [];
 
-        if (!isset($personalInformation)) {
-            $missingData[] = 'Személyes adatok';
+        if (!isset($user->name)) {
+            $missingData[] = 'Személyes adatok (név)';
+        }
+        if (!isset($user->email)) {
+            $missingData[] = 'Személyes adatok (e-mail)';
+        }
+        foreach(['place_of_birth', 'date_of_birth', 'mothers_name', 'phone_number', 
+                 'country', 'county', 'zip_code', 'city', 'street_and_number']
+                 as $personal_info_field){
+            if (!isset($personalInformation) || !isset($personalInformation[$personal_info_field])) {
+                $missingData[] = "Személyes adatok (".__('user.'.$personal_info_field).")";
+            }
         }
 
         if (!isset($educationalInformation)) {
