@@ -342,35 +342,50 @@ class Application extends Model
         $missingData = [];
 
         if (!isset($user->name)) {
-            $missingData[] = 'Személyes adatok (név)';
+            $missingData[] = 'Személyes adat (név)';
         }
         if (!isset($user->email)) {
-            $missingData[] = 'Személyes adatok (e-mail)';
+            $missingData[] = 'Személyes adat (e-mail)';
         }
         foreach(['place_of_birth', 'date_of_birth', 'mothers_name', 'phone_number', 
                  'country', 'county', 'zip_code', 'city', 'street_and_number']
                  as $personal_info_field){
             if (!isset($personalInformation) || !isset($personalInformation[$personal_info_field])) {
-                $missingData[] = "Személyes adatok (".__('user.'.$personal_info_field).")";
+                $missingData[] = "Személyes adat: ".strtolower(__('user.'.$personal_info_field));
             }
         }
-
-        if (!isset($educationalInformation)) {
-            $missingData[] = 'Tanulmányi adatok';
-        }
-
-        if (is_null($educationalInformation?->neptun)) {
-            $missingData[] =  'Neptun-kód';
+        foreach(['high_school', 'year_of_graduation', 'year_of_acceptance', 'neptun']
+                 as $educational_info_field){
+            if (!isset($educationalInformation) || !isset($educationalInformation[$educational_info_field])) {
+                $missingData[] = "Tanulmányi adat: ".strtolower(__('user.'.$educational_info_field));
+            }
         }
 
         // @phpstan-ignore-next-line
         if ($educationalInformation?->studyLines->count() == 0) {
-            $missingData[] =  'Megjelölt szak';
+            $missingData[] =  'Tanulmányi adat (megjelölt szak)';
+        } else {
+            foreach($educationalInformation?->studyLines as $study_line){
+                if(!isset($study_line['name'])){
+                    $missingData[] =  'Tanulmányi adat: valamely tanult szak adata: '.strtolower(__('user.study_line'));
+                }
+                if(!isset($study_line['type'])){
+                    $missingData[] =  'Tanulmányi adat: valamely tanult szak adata: '.strtolower(__('user.study_line_level'));
+                }
+                if(!isset($study_line['training_code'])){
+                    $missingData[] =  'Tanulmányi adat: valamely tanult szak adata: '.strtolower(__('user.study_line_training_code'));
+                }
+                if(!isset($study_line['start'])){
+                    $missingData[] =  'Tanulmányi adat: valamely tanult szak adata: '.strtolower(__('user.study_line_start'));
+                }
+            }
         }
 
-        if (!isset($educationalInformation?->alfonso_language)) {
-            $missingData[] =  'Megjelölt ALFONSÓ nyelv';
-            //level is required when updating language
+        if (!isset($educationalInformation?->alfonso_language) && !$educationalInformation->alfonsoExempted()) {
+            $missingData[] =  'Tanulmányi adat: megjelölt ALFONSÓ nyelv';
+        }
+        if (!isset($educationalInformation?->alfonso_desired_level) && !$educationalInformation->alfonsoExempted()) {
+            $missingData[] =  'Tanulmányi adat: elérni kívánt ALFONSÓ szint';
         }
 
         if (count($this->files) < 2) {

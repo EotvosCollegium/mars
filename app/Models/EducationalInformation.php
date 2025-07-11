@@ -127,7 +127,7 @@ class EducationalInformation extends Model
      * when admitted
      * (so that they are exempt from alfonso requirements).
      */
-    private function isMasterAdmittee(): bool
+    public function isMasterAdmittee(): bool
     {
         return
             // there is no study line that:

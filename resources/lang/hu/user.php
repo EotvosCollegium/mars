@@ -73,7 +73,7 @@ return [
     'some_data_cannot_be_edited' => 'Bizonyos személyes adatokat kizárólag a [rendszergazdák](mailto::SYSADMIN_EMAIL), a [Titkárság](mailto::SECRETARIAT_EMAIL), illetve a [Választmány](mailto::STUDENT_COUNCIL_EMAIL) módosíthatnak. Amennyiben ilyen mezőt szeretne módosítani, keresse fel őket.',
     'street' => 'utca',
     'street_and_number' => 'Utca, házszám',
-    'study_line' => 'Szak',
+    'study_line' => 'Szak neve',
     'study_line_end' => 'Képzés vége',
     'study_line_level' => 'Képzési szint',
     'study_line_minor' => 'Minor / Specializáció',

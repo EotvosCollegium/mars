@@ -147,5 +147,12 @@ class ApplicationController extends Controller
         if($user->personalInformation()->doesntExist()) {
             $user->personalInformation()->create();
         }
+        if($user->educationalInformation()->doesntExist()) {
+            $user->educationalInformation()->create(
+                [
+                    'year_of_acceptance' => date('Y')
+                ]
+            );
+        }
     }
 }
