@@ -12,8 +12,8 @@
             'name' => $id
         ])}}
     >
-    <label for="timepicker_{{$id}}">{{$label}}@if($attributes->get('asterisk') || $attributes->get('required'))
-            <span style="color:red;">*</span>
+    <label for="timepicker_{{$id}}">{{$label}}@if($attributes->get('asterisk'))
+            <span style="color:red;" aria-label="required">*</span>
         @endif</label>
     @error($id)
     <span class="helper-text" data-error="{{ $message }}"></span>

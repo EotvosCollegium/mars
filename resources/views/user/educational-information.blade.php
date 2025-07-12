@@ -28,6 +28,7 @@
                       :required="$user->isCollegist()"
                       :disabled="user()->cannot('editStaticEducationalInformation', $user)"
                       asterisk
+                      maxlength="255"
                       />
         <x-input.text s=12 m=6 id="year_of_graduation" text="user.year_of_graduation" type='number' min="1895"
                       :max="date('Y')"
@@ -39,15 +40,18 @@
         <x-input.text s=12 m=6 id="year_of_acceptance" text="user.year_of_acceptance" type='number' min="1895"
                         :max="date('Y')"
                         :value="$user->educationalInformation?->year_of_acceptance"
-                        :required="$user->isCollegist()"
+                        :required="$user->isCollegist(alumni: true) || isset($user->application)"
                         :disabled="user()->cannot('editStaticEducationalInformation', $user)"
                         asterisk
                     />
         <x-input.text s=6 id="neptun" text="user.neptun"
-                        :value="$user->educationalInformation?->neptun"
-                        :required="$user->isCollegist()"
-                        :disabled="user()->cannot('editStaticEducationalInformation', $user)"
-                        asterisk
+                :value="$user->educationalInformation?->neptun"
+                :required="false"
+                :disabled="user()->cannot('editStaticEducationalInformation', $user)"
+                asterisk
+                minlength="0"
+                maxlength="6"
+                pattern="^$|^[A-Za-z0-9]{6}$"
                         />
         <x-input.text s=6 id='educational-email' text='user.educational-email' name="email"
                         :value="$user->educationalInformation?->email"
@@ -60,15 +64,18 @@
                         :required="$user->isCollegist()"
                         :disabled="user()->cannot('edit', $user)"
                         :asterisk="!isset($application)"
+                        maxlength="255"
                         />
 
         <div class="input-field col s12 m6">
-            <p style="margin-bottom:10px">@lang('user.faculty'): <span style="color:red;">*</span></p>
+            <p style="margin-bottom:10px">@lang('user.faculty'): <span style="color:red;" aria-label="required">*</span></p>
             @foreach ($faculties as $faculty)
                 <p>
                     @php $checked = old('faculty') !== null && in_array($faculty->id, old('faculty')) || in_array($faculty->id, $user->faculties->pluck('id')->toArray()) @endphp
                     <x-input.checkbox only_input :text="$faculty->name" name="faculty[]"
-                                      value="{{ $faculty->id }}" :checked='$checked'/>
+                                      value="{{ $faculty->id }}" :checked='$checked'
+                                      :disabled="user()->cannot('edit', $user)"
+                                      />
                 </p>
             @endforeach
             @error('faculty')
@@ -78,13 +85,15 @@
         @if(!isset($application))
             <div class="input-field col s12 m6">
                 <p style="margin-bottom:10px">
-                    @lang('user.workshops'): <span style="color:red;">*</span>
+                    @lang('user.workshops'): <span style="color:red;" aria-label="required">*</span>
                 </p>
                 @foreach ($workshops as $workshop)
                     <p>
                         @php $checked = $user->workshops->contains($workshop->id) @endphp
                         <x-input.checkbox only_input :text="$workshop->name" id="workshop{{$workshop->id}}" name="workshop[]"
-                                          value="{{ $workshop->id }}" :checked='$checked'/>
+                                          value="{{ $workshop->id }}" :checked='$checked'
+                                          :disabled="user()->cannot('editStaticEducationalInformation', $user)"
+                                          />
                     </p>
                 @endforeach
                 @error('workshop')
@@ -93,23 +102,35 @@
             </div>
         @endif
     </div>
+    <p style="margin-bottom:10px">Szakok: <span style="color:red;" aria-label="required">*</span></p>
     @foreach($user->educationalInformation?->studyLines ?? [] as $studyLine)
         @include('user.study-line-selector', ['index' => $loop->index, 'value' => $studyLine])
     @endforeach
-    <x-input.button type="button" id="addStudyLine" floating icon="add" class="tooltipped" data-tooltip="Szak hozzáadása" onclick="insertEmptyStudyLine()" />
+    @can('edit', $user)
+        <x-input.button type="button" id="addStudyLine" floating icon="add" class="tooltipped" data-tooltip="Szak hozzáadása" onclick="insertEmptyStudyLine()" />
+    @endcan
     {{-- hiding these fields from applications; they are not relevant there --}}
     @if(\Route::current()->getName() != 'application')
     <x-input.textarea
             id='research_topics'
             text='user.research_topics'
-            :value="$user->educationalInformation?->research_topics" />
+            :value="$user->educationalInformation?->research_topics"
+            :disabled="user()->cannot('edit', $user)"
+            maxlength="1000"
+            />
     <x-input.textarea
         id='extra_information'
         text='user.extra_information'
-        :value="$user->educationalInformation?->extra_information" />
+        :value="$user->educationalInformation?->extra_information"
+        :disabled="user()->cannot('edit', $user)"
+        maxlength="1500"
+        />
     @endif
     <div class="row" style="margin: 0">
-            <x-input.button class="right" text="general.save" />
+    @can('edit', $user)
+            <x-input.button class="right" text="general.save"
+        />
+    @endcan
     </div>
 </form>
 
