@@ -342,10 +342,10 @@ class Application extends Model
         $missingData = [];
 
         if (!isset($user->name)) {
-            $missingData[] = 'Személyes adat (név)';
+            $missingData[] = 'Személyes adat: név';
         }
         if (!isset($user->email)) {
-            $missingData[] = 'Személyes adat (e-mail)';
+            $missingData[] = 'Személyes adat: e-mail';
         }
         foreach(['place_of_birth', 'date_of_birth', 'mothers_name', 'phone_number', 
                  'country', 'county', 'zip_code', 'city', 'street_and_number']
@@ -363,7 +363,7 @@ class Application extends Model
 
         // @phpstan-ignore-next-line
         if ($educationalInformation?->studyLines->count() == 0) {
-            $missingData[] =  'Tanulmányi adat (megjelölt szak)';
+            $missingData[] =  'Tanulmányi adat: megjelölt szak';
         } else {
             foreach($educationalInformation?->studyLines as $study_line){
                 if(!isset($study_line['name'])){

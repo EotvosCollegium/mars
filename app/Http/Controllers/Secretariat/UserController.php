@@ -57,7 +57,7 @@ class UserController extends Controller
      */
     public function storeProfilePicture(Request $request, User $user): RedirectResponse
     {
-        $this->authorize('view', $user);
+        $this->authorize('edit', $user);
         session()->put('section', 'profile_picture');
 
         $request->validate([
@@ -82,7 +82,7 @@ class UserController extends Controller
      */
     public function deleteProfilePicture(Request $request, User $user): RedirectResponse
     {
-        $this->authorize('view', $user);
+        $this->authorize('edit', $user);
         session()->put('section', 'profile_picture');
 
         $profile = $user->profilePicture;
@@ -257,7 +257,7 @@ class UserController extends Controller
      */
     public function updateAlfonsoStatus(Request $request, User $user)
     {
-        $this->authorize('view', $user);
+        $this->authorize('edit', $user);
         session()->put('section', 'alfonso');
 
         $validator = Validator::make($request->all(), [
@@ -285,7 +285,7 @@ class UserController extends Controller
      */
     public function uploadLanguageExam(Request $request, User $user)
     {
-        $this->authorize('view', $user);
+        $this->authorize('edit', $user);
         session()->put('section', 'alfonso');
 
         $validator = Validator::make($request->all(), [
@@ -319,7 +319,7 @@ class UserController extends Controller
      */
     public function deleteLanguageExam(Request $request, User $user, LanguageExam $exam)
     {
-        $this->authorize('view', $user);
+        $this->authorize('edit', $user);
         if ($exam->educationalInformation->user->isNot($user)) {
             abort(400, 'The language exam does not belong to the given user.');
         }
@@ -342,7 +342,7 @@ class UserController extends Controller
      */
     public function updateTenantUntil(Request $request, User $user)
     {
-        $this->authorize('view', $user);
+        $this->authorize('edit', $user);
 
         $validator = Validator::make($request->all(), [
             'tenant_until' => 'required|date|after:today',

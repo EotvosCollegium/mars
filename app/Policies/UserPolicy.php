@@ -48,7 +48,7 @@ class UserPolicy
             return true;
         }
         if($user->id == $target->id){
-            if($target->application->exists()){
+            if($target->application()->exists()){
                 return (
                     app(ApplicationController::class)->isActive() &&
                     !$target->application->submitted

@@ -42,7 +42,7 @@ class AlfonsoTest extends TestCase
     /**
      * The autumn semester for the current academic year.
      */
-    private static function autumnSemester(): Semester
+    public static function autumnSemester(): Semester
     {
         $semester = Semester::current();
         return $semester->isAutumn() ? $semester : $semester->pred();

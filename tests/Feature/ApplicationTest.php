@@ -15,6 +15,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
+use Tests\Unit\AlfonsoTest;
 
 /**
  * Test registration functions.
@@ -204,7 +205,15 @@ class ApplicationTest extends TestCase
         $this->assertFalse($user->isExtern());
 
         //personal data
-        $this->assertContains('Személyes adatok', $user->application->missingData());
+        $this->assertContains("Személyes adat: ".strtolower(__('user.place_of_birth')), $user->application->missingData());
+        $this->assertContains("Személyes adat: ".strtolower(__('user.date_of_birth')), $user->application->missingData());
+        $this->assertContains("Személyes adat: ".strtolower(__('user.mothers_name')), $user->application->missingData());
+        $this->assertContains("Személyes adat: ".strtolower(__('user.phone_number')), $user->application->missingData());
+        $this->assertContains("Személyes adat: ".strtolower(__('user.country')), $user->application->missingData());
+        $this->assertContains("Személyes adat: ".strtolower(__('user.county')), $user->application->missingData());
+        $this->assertContains("Személyes adat: ".strtolower(__('user.zip_code')), $user->application->missingData());
+        $this->assertContains("Személyes adat: ".strtolower(__('user.city')), $user->application->missingData());
+        $this->assertContains("Személyes adat: ".strtolower(__('user.street_and_number')), $user->application->missingData());
         $response = $this->post('/users/' . $user->id . '/personal_information', [
             'email' => 'example@test.com',
             'name' => 'John Doe',
@@ -221,21 +230,31 @@ class ApplicationTest extends TestCase
         $response->assertStatus(302);
         $response->assertSessionHasNoErrors();
         $user->load('application');
-        $this->assertNotContains('Személyes adatok', $user->application->missingData());
+        $this->assertNotContains("Személyes adat: ".strtolower(__('user.place_of_birth')), $user->application->missingData());
+        $this->assertNotContains("Személyes adat: ".strtolower(__('user.date_of_birth')), $user->application->missingData());
+        $this->assertNotContains("Személyes adat: ".strtolower(__('user.mothers_name')), $user->application->missingData());
+        $this->assertNotContains("Személyes adat: ".strtolower(__('user.phone_number')), $user->application->missingData());
+        $this->assertNotContains("Személyes adat: ".strtolower(__('user.country')), $user->application->missingData());
+        $this->assertNotContains("Személyes adat: ".strtolower(__('user.county')), $user->application->missingData());
+        $this->assertNotContains("Személyes adat: ".strtolower(__('user.zip_code')), $user->application->missingData());
+        $this->assertNotContains("Személyes adat: ".strtolower(__('user.city')), $user->application->missingData());
+        $this->assertNotContains("Személyes adat: ".strtolower(__('user.street_and_number')), $user->application->missingData());
 
         //educational data
-        $this->assertContains('Tanulmányi adatok', $user->application->missingData());
-        $this->assertContains('Megjelölt szak', $user->application->missingData());
-        $this->assertContains('Megjelölt kar', $user->application->missingData());
+        $this->assertContains("Tanulmányi adat: ".strtolower(__('user.high_school')), $user->application->missingData());
+        $this->assertContains("Tanulmányi adat: ".strtolower(__('user.year_of_graduation')), $user->application->missingData());
+        $this->assertContains("Tanulmányi adat: ".strtolower(__('user.year_of_acceptance')), $user->application->missingData());
+        $this->assertContains("Tanulmányi adat: ".strtolower(__('user.neptun')), $user->application->missingData());
+        $this->assertContains("Tanulmányi adat: megjelölt szak", $user->application->missingData());
         $response = $this->post('/users/' . $user->id . '/educational_information', [
             'year_of_graduation' => '2018',
-            'year_of_acceptance' => '2018',
+            'year_of_acceptance' => date('Y'),
             'high_school' => 'Test high school',
             'neptun' => 'NEPTUN',
             'study_lines' => [[
                 "name" => "Test study line",
-                "level" => "bachelor",
-                "start" => Semester::current()->id,
+                "type" => "bachelor",
+                "start" => AlfonsoTest::autumnSemester()->id,
                 "training_code" => "123456"]],
             'email' => 'study@email.com',
             'faculty' => [Faculty::first()->id],
@@ -243,12 +262,18 @@ class ApplicationTest extends TestCase
         $response->assertStatus(302);
         $response->assertSessionHasNoErrors();
         $user->load(['application', 'workshops', 'faculties']);
-        $this->assertNotContains('Tanulmányi adatok', $user->application->missingData());
-        $this->assertNotContains('Megjelölt szak', $user->application->missingData());
-        $this->assertNotContains('Megjelölt kar', $user->application->missingData());
-
+        $this->assertNotContains("Tanulmányi adat: ".strtolower(__('user.high_school')), $user->application->missingData());
+        $this->assertNotContains("Tanulmányi adat: ".strtolower(__('user.year_of_graduation')), $user->application->missingData());
+        $this->assertNotContains("Tanulmányi adat: ".strtolower(__('user.year_of_acceptance')), $user->application->missingData());
+        $this->assertNotContains("Tanulmányi adat: ".strtolower(__('user.neptun')), $user->application->missingData());
+        $this->assertNotContains("Tanulmányi adat: megjelölt szak", $user->application->missingData());
+        $this->assertNotContains("Tanulmányi adat: valamely tanult szak adata: ".strtolower(__('user.study_line')), $user->application->missingData());
+        $this->assertNotContains("Tanulmányi adat: valamely tanult szak adata: ".strtolower(__('user.study_line_level')), $user->application->missingData());
+        $this->assertNotContains("Tanulmányi adat: valamely tanult szak adata: ".strtolower(__('user.study_line_training_code')), $user->application->missingData());
+        $this->assertNotContains("Tanulmányi adat: valamely tanult szak adata: ".strtolower(__('user.study_line_start')), $user->application->missingData());
         //alfonso
-        $this->assertContains('Megjelölt ALFONSÓ nyelv', $user->application->missingData());
+        $this->assertContains('Tanulmányi adat: megjelölt ALFONSÓ nyelv', $user->application->missingData());
+        $this->assertContains('Tanulmányi adat: elérni kívánt ALFONSÓ szint', $user->application->missingData());
         $response = $this->post('/users/' . $user->id . '/alfonso', [
             'alfonso_language' => 'en',
             'alfonso_desired_level' => 'C1',
@@ -256,7 +281,8 @@ class ApplicationTest extends TestCase
         $response->assertStatus(302);
         $response->assertSessionHasNoErrors();
         $user->load('application');
-        $this->assertNotContains('Megjelölt ALFONSÓ nyelv', $user->application->missingData());
+        $this->assertNotContains('Tanulmányi adat: megjelölt ALFONSÓ nyelv', $user->application->missingData());
+        $this->assertNotContains('Tanulmányi adat: elérni kívánt ALFONSÓ szint', $user->application->missingData());
 
         //profile picture
         //this is not a required field due to privacy reasons
