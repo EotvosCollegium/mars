@@ -28,6 +28,7 @@
                       :required="$user->isCollegist()"
                       :disabled="user()->cannot('editStaticEducationalInformation', $user)"
                       asterisk
+                      maxlength="255"
                       />
         <x-input.text s=12 m=6 id="year_of_graduation" text="user.year_of_graduation" type='number' min="1895"
                       :max="date('Y')"
@@ -44,10 +45,13 @@
                         asterisk
                     />
         <x-input.text s=6 id="neptun" text="user.neptun"
-                        :value="$user->educationalInformation?->neptun"
-                        :required="$user->isCollegist()"
-                        :disabled="user()->cannot('editStaticEducationalInformation', $user)"
-                        asterisk
+                :value="$user->educationalInformation?->neptun"
+                :required="false"
+                :disabled="user()->cannot('editStaticEducationalInformation', $user)"
+                asterisk
+                minlength="0"
+                maxlength="6"
+                pattern="^$|^[A-Za-z0-9]{6}$"
                         />
         <x-input.text s=6 id='educational-email' text='user.educational-email' name="email"
                         :value="$user->educationalInformation?->email"
@@ -60,6 +64,7 @@
                         :required="$user->isCollegist()"
                         :disabled="user()->cannot('edit', $user)"
                         :asterisk="!isset($application)"
+                        maxlength="255"
                         />
 
         <div class="input-field col s12 m6">
@@ -109,12 +114,16 @@
             id='research_topics'
             text='user.research_topics'
             :value="$user->educationalInformation?->research_topics"
-            :disabled="user()->cannot('edit', $user)"/>
+            :disabled="user()->cannot('edit', $user)"
+            maxlength="1000"
+            />
     <x-input.textarea
         id='extra_information'
         text='user.extra_information'
         :value="$user->educationalInformation?->extra_information"
-        :disabled="user()->cannot('edit', $user)"/>
+        :disabled="user()->cannot('edit', $user)"
+        maxlength="1500"
+        />
     @endif
     <div class="row" style="margin: 0">
     @can('edit', $user)

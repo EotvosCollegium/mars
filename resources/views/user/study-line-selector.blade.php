@@ -7,6 +7,7 @@
                         :required="$user->isCollegist(alumni: true)"
                         asterisk
                         :disabled="user()->cannot('edit', $user)"
+                        maxlength="255"
                         />
         <x-input.select id="study_lines[{{ $index }}][type]"
                         xl=2 s=6
@@ -25,6 +26,7 @@
                     helper="Pl. TTK-FIZIKA-NBHU"
                     asterisk
                     :disabled="user()->cannot('edit', $user)"
+                    maxlength="255"
                     />
         <x-input.text id="study_lines[{{ $index }}][minor]"
                     xl=3 s=6
@@ -32,6 +34,7 @@
                     :value="$value?->minor"
 		            helper="Nem kötelező"
                     :disabled="user()->cannot('edit', $user)"
+                    maxlength="255"
                     />
         <x-input.select id="study_lines[{{ $index }}][start]"
                     xl=6 s=6

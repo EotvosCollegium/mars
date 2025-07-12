@@ -29,6 +29,7 @@
             required
             :disabled="user()->cannot('editStaticPersonalInformation', $user)"
             asterisk
+            maxlength="255"
             />
         <x-input.text
             id="email"
@@ -38,6 +39,7 @@
             required
             :disabled="user()->cannot('editStaticPersonalInformation', $user)"
             asterisk
+            maxlength="225"
             />
         @if (!$user->isTenant() || $user->hasRoleOtherThanTenant() || isset($application))
         <x-input.text
@@ -48,6 +50,7 @@
             :required="$user->isCollegist()"
             :disabled="user()->cannot('editStaticPersonalInformation', $user)"
             asterisk
+            maxlength="225"
             />
         <x-input.datepicker
             l=6
@@ -67,6 +70,7 @@
             :required="$user->isCollegist()"
             :disabled="user()->cannot('editStaticPersonalInformation', $user)"
             asterisk
+            maxlength="225"
             />
         @endif
         <x-input.text
@@ -92,6 +96,7 @@
             :required="$user->isCollegist()"
             asterisk
             :disabled="user()->cannot('edit', $user)"
+            maxlength="255"
             />
         <x-input.text
             l=6 id='county'
@@ -101,6 +106,7 @@
             :required="$user->isCollegist()"
             asterisk
             :disabled="user()->cannot('edit', $user)"
+            maxlength="255"
             />
         <x-input.text
             l=6
@@ -110,6 +116,7 @@
             :required="$user->isCollegist()"
             asterisk
             :disabled="user()->cannot('edit', $user)"
+            maxlength="31"
             />
         <x-input.text
             id='city'
@@ -118,6 +125,7 @@
             :required="$user->isCollegist()"
             asterisk
             :disabled="user()->cannot('edit', $user)"
+            maxlength="255"
         />
         <x-input.text
             id='street_and_number'
@@ -126,6 +134,7 @@
             :required="$user->isCollegist()"
             asterisk
             :disabled="user()->cannot('edit', $user)"
+            maxlength="255"
         />
         <x-input.text
             id='relatives_contact_data'
@@ -133,6 +142,7 @@
             :helper="__('user.relatives_contact_data_desc')"
             :value="$user->personalInformation?->relatives_contact_data"
             :disabled="user()->cannot('edit', $user)"
+            maxlength="255"
         />
         @endif
         @if ($user->isTenant() && !isset($application))

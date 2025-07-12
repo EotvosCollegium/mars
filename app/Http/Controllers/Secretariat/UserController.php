@@ -124,7 +124,7 @@ class UserController extends Controller
         $validator['street_and_number'] = [$requiredForCollegist, 'string', 'max:255'];
         $validator['relatives_contact_data'] = ['nullable', 'string', 'max:255'];
         if($user->isTenant()){
-            $validator['tenant_until'] = ['nullable', 'date', 'max:255', 'before_or_equal:' . Carbon::now()->addMonths(6)->toDateString()];
+            $validator['tenant_until'] = ['nullable', 'date', 'before_or_equal:' . Carbon::now()->addMonths(6)->toDateString()];
         }
 
         $data = $request->validate($validator);
@@ -169,7 +169,7 @@ class UserController extends Controller
             $validator['neptun'] = [$requiredForCollegist, 'string', 'size:6'];
         }
 
-        $validator['email'] = [$requiredForCollegist, 'string', 'email', 'max:255', new SameOrUnique($user, EducationalInformation::class)];
+        $validator['email'] = [$requiredForCollegist, 'email', 'max:255', new SameOrUnique($user, EducationalInformation::class)];
 
         $validator['faculty'] = [$requiredForCollegist, 'array'];
         $validator['faculty.*'] = 'exists:faculties,id';
