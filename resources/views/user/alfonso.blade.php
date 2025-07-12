@@ -20,13 +20,18 @@
                     :elements="App\View\Components\Input\Select::convertArray(config('app.alfonso_languages'))"
                     allow-empty="{{ isset($application) ? 'A szabályzat alapján nem fogok részt venni az ALFONSÓ programban' : 'Nem tanulok ALFONSÓt' }}"
                     :helper="isset($application) ? '(később módosítható, nem része a felvételi eljárásnak)' : ''"
+                    :disabled="user()->cannot('editStaticEducationalInformation', $user)"
+                    :asterisk="!$user->educationalInformation->alfonsoExempted()"
                     />
         <x-input.select l=5 id="alfonso_desired_level" text="Elérni kívánt szint"
             :value='$user->educationalInformation?->alfonso_desired_level'
             :elements="['B2','C1']"
             allow-empty="{{ isset($application) ? 'A szabályzat alapján nem fogok részt venni az ALFONSÓ programban' : 'Nem tanulok ALFONSÓt' }}"
+            :disabled="user()->cannot('editStaticEducationalInformation', $user)"
+            :asterisk="!$user->educationalInformation->alfonsoExempted()"
         />
-
-        <x-input.button l=2 class="right" text="general.save" />
+        @can('editStaticEducationalInformation', $user)
+        <x-input.button l=2 class="right" text="general.save"/>
+        @endcan
     </div>
 </form>

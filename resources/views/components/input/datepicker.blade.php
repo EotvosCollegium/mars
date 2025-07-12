@@ -13,7 +13,7 @@
         ])}}
     >
     <label for="{{$id}}">{{$label}}
-        @if($attributes->get('asterisk') || $attributes->get('required'))
+        @if($attributes->get('asterisk'))
             <span style="color:red;">*</span>
         @endif</label>
     @error($id)

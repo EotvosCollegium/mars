@@ -68,7 +68,9 @@
                 <p>
                     @php $checked = old('faculty') !== null && in_array($faculty->id, old('faculty')) || in_array($faculty->id, $user->faculties->pluck('id')->toArray()) @endphp
                     <x-input.checkbox only_input :text="$faculty->name" name="faculty[]"
-                                      value="{{ $faculty->id }}" :checked='$checked'/>
+                                      value="{{ $faculty->id }}" :checked='$checked'
+                                      :disabled="user()->cannot('edit', $user)"
+                                      />
                 </p>
             @endforeach
             @error('faculty')
@@ -84,7 +86,9 @@
                     <p>
                         @php $checked = $user->workshops->contains($workshop->id) @endphp
                         <x-input.checkbox only_input :text="$workshop->name" id="workshop{{$workshop->id}}" name="workshop[]"
-                                          value="{{ $workshop->id }}" :checked='$checked'/>
+                                          value="{{ $workshop->id }}" :checked='$checked'
+                                          :disabled="user()->cannot('editStaticEducationalInformation', $user)"
+                                          />
                     </p>
                 @endforeach
                 @error('workshop')
@@ -96,20 +100,27 @@
     @foreach($user->educationalInformation?->studyLines ?? [] as $studyLine)
         @include('user.study-line-selector', ['index' => $loop->index, 'value' => $studyLine])
     @endforeach
-    <x-input.button type="button" id="addStudyLine" floating icon="add" class="tooltipped" data-tooltip="Szak hozzáadása" onclick="insertEmptyStudyLine()" />
+    @can('edit', $user)
+        <x-input.button type="button" id="addStudyLine" floating icon="add" class="tooltipped" data-tooltip="Szak hozzáadása" onclick="insertEmptyStudyLine()" />
+    @endcan
     {{-- hiding these fields from applications; they are not relevant there --}}
     @if(\Route::current()->getName() != 'application')
     <x-input.textarea
             id='research_topics'
             text='user.research_topics'
-            :value="$user->educationalInformation?->research_topics" />
+            :value="$user->educationalInformation?->research_topics"
+            :disabled="user()->cannot('edit', $user)"/>
     <x-input.textarea
         id='extra_information'
         text='user.extra_information'
-        :value="$user->educationalInformation?->extra_information" />
+        :value="$user->educationalInformation?->extra_information"
+        :disabled="user()->cannot('edit', $user)"/>
     @endif
     <div class="row" style="margin: 0">
-            <x-input.button class="right" text="general.save" />
+    @can('edit', $user)
+            <x-input.button class="right" text="general.save"
+        />
+    @endcan
     </div>
 </form>
 

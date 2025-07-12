@@ -30,7 +30,7 @@
         @endforeach
     </select>
     @if(!$withoutLabel)
-    <label for="{{$id}}">{{$label}}@if($attributes->get('asterisk') || $attributes->get('required'))
+    <label for="{{$id}}">{{$label}}@if($attributes->get('asterisk'))
             <span style="color:red;">*</span>
         @endif</label>
     @endif

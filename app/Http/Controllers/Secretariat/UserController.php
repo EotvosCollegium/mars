@@ -174,8 +174,10 @@ class UserController extends Controller
         $validator['faculty'] = [$requiredForCollegist, 'array'];
         $validator['faculty.*'] = 'exists:faculties,id';
 
-        $validator['workshop'] = [$requiredForCollegist, 'array'];
-        $validator['workshop.*'] = 'exists:workshops,id';
+        if(user()->can('editStaticEducationalInformation', $user)){
+            $validator['workshop'] = [$requiredForCollegist, 'array'];
+            $validator['workshop.*'] = 'exists:workshops,id';
+        }
 
         $validator['study_lines'] = [$requiredForCollegist, 'array'];
         $validator['study_lines.*.name'] = [$requiredForCollegist, 'string', 'max:255'];
@@ -257,7 +259,7 @@ class UserController extends Controller
      */
     public function updateAlfonsoStatus(Request $request, User $user)
     {
-        $this->authorize('edit', $user);
+        $this->authorize('editStaticEducationalInformation', $user);
         session()->put('section', 'alfonso');
 
         $validator = Validator::make($request->all(), [

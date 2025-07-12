@@ -9,7 +9,7 @@
 </div>
 <div class="file-path-wrapper">
     <input class="file-path @error($id) invalid @enderror" placeholder="{{ $label }}
-@if($attributes->get('asterisk') || $attributes->get('required'))
+@if($attributes->get('asterisk'))
  *
 @endif" type="text" disabled>
     @error($id)

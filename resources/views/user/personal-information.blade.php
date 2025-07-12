@@ -148,7 +148,10 @@
                 :disabled="user()->cannot('edit', $user)"
             />
         @endif
-        <x-input.button class="right" text="general.save" />
+
+        @can('edit', $user)
+        <x-input.button class="right" text="general.save"/>
+        @endcan
     </div>
 </form>
 
