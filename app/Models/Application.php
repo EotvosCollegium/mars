@@ -361,11 +361,10 @@ class Application extends Model
             }
         }
 
-        // @phpstan-ignore-next-line
-        if ($educationalInformation?->studyLines->count() == 0) {
+        if (!isset($educationalInformation) || $educationalInformation->studyLines()->count() == 0) {
             $missingData[] =  'Tanulmányi adat: megjelölt szak';
         } else {
-            foreach($educationalInformation?->studyLines as $study_line){
+            foreach($educationalInformation->studyLines as $study_line){
                 if(!isset($study_line['name'])){
                     $missingData[] =  'Tanulmányi adat: valamely tanult szak adata: '.strtolower(__('user.study_line'));
                 }
