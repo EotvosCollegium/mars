@@ -13,8 +13,8 @@
                  || $checked)
     >
     <span>{{$label}}
-        @if($attributes->get('asterisk') || $attributes->get('required'))
-            <span style="color:red;">*</span>
+        @if($attributes->get('asterisk'))
+            <span style="color:red;" aria-label="required">*</span>
         @endif</span>
 </label>
 @if(!$onlyInput)

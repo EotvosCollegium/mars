@@ -44,7 +44,7 @@
                         'items' => $user->application->foreign_studies])
                     </div>
                     <div class="input-field col s12">
-                        <p style="margin-bottom:10px">Megpályázni kívánt státusz: <span style="color:red;">*</span></p>
+                        <p style="margin-bottom:10px">Megpályázni kívánt státusz: <span style="color:red;" aria-label="required">*</span></p>
                         <p>
                             @php $checked = old('status') ?  old('status') == 'resident' : $user->application->applied_for_resident_status @endphp
                             <label class="black-text">
@@ -69,7 +69,7 @@
                     </div>
                     <div class="input-field col s12">
                         <p style="margin-bottom:10px">
-                                Megpályázni kívánt műhely(ek): <span style="color:red;">*</span>
+                                Megpályázni kívánt műhely(ek): <span style="color:red;" aria-label="required">*</span>
                         </p>
                         <div class="row">
                         @foreach ($workshops as $workshop)
@@ -88,7 +88,7 @@
                         </blockquote>
                     </div>
                     <div class="input-field col s12">
-                        <p style="margin-bottom:10px">Honnan hallott a Collegiumról? <span style="color:red;">*</span></p>
+                        <p style="margin-bottom:10px">Honnan hallott a Collegiumról? <span style="color:red;" aria-label="required">*</span></p>
                         @foreach(\App\Models\Application::QUESTION_1 as $answer)
                             @if(in_array($answer, $user->application->question_1 ?? []) !== false)
                                 <p>
@@ -120,14 +120,14 @@
                         </div>
                     </div>
                     <div>
-                        <label for="question_2" style="font-size: 15px;">Miért kíván a Collegium tagja lenni? (≈300-500 karakter) <span style="color:red;">*</span></label>
+                        <label for="question_2" style="font-size: 15px;">Miért kíván a Collegium tagja lenni? (≈300-500 karakter) <span style="color:red;" aria-label="required">*</span></label>
                         <x-input.textarea id="question_2"
                                         :value="$user->application->question_2"
                                         style="min-height:200px"
                         />
                     </div>
                     <div>
-                        <label for="question_3" style="font-size: 15px;">Tervez-e tovább tanulni a diplomája megszerzése után? Milyen tervei vannak az egyetem után? <span style="color:red;">*</span></label>
+                        <label for="question_3" style="font-size: 15px;">Tervez-e tovább tanulni a diplomája megszerzése után? Milyen tervei vannak az egyetem után? <span style="color:red;" aria-label="required">*</span></label>
                         <x-input.textarea id="question_3"
                                         :value="$user->application->question_3"
                                         style="min-height:200px"

@@ -37,13 +37,21 @@ trait ApplicationHandler
             'question_3' => 'nullable|string',
             'question_4' => 'nullable|string',
             'present' => 'nullable|string',
-            'accommodation' => 'nullable|in:on'
+            'accommodation' => 'sometimes|accepted'
         ]);
 
-        if (array_key_exists('status', $data)) {
-            $data['applied_for_resident_status'] = $data['status'] == "resident";
+        if(!isset($data['status'])){
+            $data['applied_for_resident_status'] = null;
+        } else {
+            if($data['status'] == "resident"){
+                $data['applied_for_resident_status'] = true;
+            }
+            if($data['status'] == "extern"){
+                $data['applied_for_resident_status'] = false;
+            }
         }
-        $data['accommodation'] = $request->input('accommodation') === "on";
+
+        $data['accommodation'] = isset($data['accommodation']) && $data['accommodation'];
 
         $application = Application::updateOrCreate(
             ['user_id' => $user->id],

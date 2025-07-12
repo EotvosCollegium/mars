@@ -342,10 +342,10 @@ class Application extends Model
         $missingData = [];
 
         if (!isset($user->name)) {
-            $missingData[] = 'Személyes adat (név)';
+            $missingData[] = 'Személyes adat: név';
         }
         if (!isset($user->email)) {
-            $missingData[] = 'Személyes adat (e-mail)';
+            $missingData[] = 'Személyes adat: e-mail';
         }
         foreach(['place_of_birth', 'date_of_birth', 'mothers_name', 'phone_number', 
                  'country', 'county', 'zip_code', 'city', 'street_and_number']
@@ -361,11 +361,15 @@ class Application extends Model
             }
         }
 
-        // @phpstan-ignore-next-line
-        if ($educationalInformation?->studyLines->count() == 0) {
-            $missingData[] =  'Tanulmányi adat (megjelölt szak)';
+        if ($user->faculties->count() == 0) {
+            $missingData[] =  'Tanulmányi adat: megjelölt kar';
+        }
+
+
+        if (!isset($educationalInformation) || $educationalInformation->studyLines()->count() == 0) {
+            $missingData[] =  'Tanulmányi adat: megjelölt szak';
         } else {
-            foreach($educationalInformation?->studyLines as $study_line){
+            foreach($educationalInformation->studyLines as $study_line){
                 if(!isset($study_line['name'])){
                     $missingData[] =  'Tanulmányi adat: valamely tanult szak adata: '.strtolower(__('user.study_line'));
                 }
@@ -380,40 +384,39 @@ class Application extends Model
                 }
             }
         }
-
-        if (!isset($educationalInformation) || !isset($educationalInformation->alfonso_language) && !$educationalInformation->alfonsoExempted()) {
-            $missingData[] =  'Tanulmányi adat: megjelölt ALFONSÓ nyelv';
+        if(isset($educationalInformation) && isset($educationalInformation->year_of_acceptance)){
+            if (!isset($educationalInformation->alfonso_language) && !$educationalInformation->alfonsoExempted()) {
+                $missingData[] =  'Tanulmányi adat: megjelölt ALFONSÓ nyelv';
+            }
+            if (!isset($educationalInformation->alfonso_desired_level) && !$educationalInformation->alfonsoExempted()) {
+                $missingData[] =  'Tanulmányi adat: elérni kívánt ALFONSÓ szint';
+            }
         }
-        if (!isset($educationalInformation) || !isset($educationalInformation->alfonso_desired_level) && !$educationalInformation->alfonsoExempted()) {
-            $missingData[] =  'Tanulmányi adat: elérni kívánt ALFONSÓ szint';
+
+        if (!isset($this->graduation_average)) {
+            $missingData[] =  'Szakmai és motivációs kérdések: érettségi átlaga';
+        }
+
+        if (!isset($this->applied_for_resident_status)) {
+            $missingData[] =  'Szakmai és motivációs kérdések: megpályázni kívánt státusz';
+        }
+
+        if ($this->appliedWorkshops->count() == 0) {
+            $missingData[] =  'Szakmai és motivációs kérdések: megpályázni kívánt műhely';
+        }
+
+        if (!isset($this->question_1) || $this->question_1 == []) {
+            $missingData[] =  'Szakmai és motivációs kérdések: "Honnan hallott a Collegiumról?" kérdés';
+        }
+        if (!isset($this->question_2)) {
+            $missingData[] =  'Szakmai és motivációs kérdések: "Miért kíván a Collegium tagja lenni?" kérdés';
+        }
+        if (!isset($this->question_3)) {
+            $missingData[] =  'Szakmai és motivációs kérdések: "Tervez-e tovább tanulni a diplomája megszerzése után? Milyen tervei vannak az egyetem után?" kérdés';
         }
 
         if (count($this->files) < 2) {
             $missingData[] =  'Legalább két feltöltött fájl';
-        }
-
-        if ($this->appliedWorkshops->count() == 0) {
-            $missingData[] =  'Megjelölt műhely';
-        }
-
-        if ($user->faculties->count() == 0) {
-            $missingData[] =  'Megjelölt kar';
-        }
-
-        if (!isset($this->graduation_average)) {
-            $missingData[] =  'Érettségi átlaga';
-        }
-        if (!isset($this->applied_for_resident_status)) {
-            $missingData[] =  'Megpályázni kívánt státusz';
-        }
-        if (!isset($this->question_1) || $this->question_1 == []) {
-            $missingData[] =  '"Honnan hallott a Collegiumról?" kérdés';
-        }
-        if (!isset($this->question_2)) {
-            $missingData[] =  '"Miért kíván a Collegium tagja lenni?" kérdés';
-        }
-        if (!isset($this->question_3)) {
-            $missingData[] =  '"Tervez-e tovább tanulni a diplomája megszerzése után? Milyen tervei vannak az egyetem után?" kérdés';
         }
 
         return $missingData;

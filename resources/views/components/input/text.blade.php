@@ -13,8 +13,8 @@
     >
     @if(!$attributes->get('hidden') && !$withoutLabel)
     <label for="{{$id}}">{{$label}}
-        @if($attributes->get('asterisk') || $attributes->get('required'))
-            <span style="color:red;">*</span>
+        @if($attributes->get('asterisk'))
+            <span style="color:red;" aria-label="required">*</span>
         @endif
     </label>
     @endif
