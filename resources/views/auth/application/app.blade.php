@@ -86,6 +86,6 @@
 
     @if (request()->get('page') != 'submit' && !$user->application->submitted)
         <x-input.button href="{{ route('application', ['page' => 'submit']) }}" style="margin-bottom: 40px"
-            class="right coli blue" text="Ellenőrzés és véglegesítés" />
+            class="right coli blue" text="Áttekintés és véglegesítés" />
     @endif
 @endsection
