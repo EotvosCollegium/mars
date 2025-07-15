@@ -361,6 +361,11 @@ class Application extends Model
             }
         }
 
+        if ($user->faculties->count() == 0) {
+            $missingData[] =  'Tanulmányi adat: megjelölt kar';
+        }
+
+
         if (!isset($educationalInformation) || $educationalInformation->studyLines()->count() == 0) {
             $missingData[] =  'Tanulmányi adat: megjelölt szak';
         } else {
@@ -387,32 +392,30 @@ class Application extends Model
             $missingData[] =  'Tanulmányi adat: elérni kívánt ALFONSÓ szint';
         }
 
-        if (count($this->files) < 2) {
-            $missingData[] =  'Legalább két feltöltött fájl';
+        if (!isset($this->graduation_average)) {
+            $missingData[] =  'Szakmai és motivációs kérdések: érettségi átlaga';
+        }
+
+        if (!isset($this->applied_for_resident_status)) {
+            $missingData[] =  'Szakmai és motivációs kérdések: megpályázni kívánt státusz';
         }
 
         if ($this->appliedWorkshops->count() == 0) {
-            $missingData[] =  'Megjelölt műhely';
+            $missingData[] =  'Szakmai és motivációs kérdések: megpályázni kívánt műhely';
         }
 
-        if ($user->faculties->count() == 0) {
-            $missingData[] =  'Megjelölt kar';
-        }
-
-        if (!isset($this->graduation_average)) {
-            $missingData[] =  'Érettségi átlaga';
-        }
-        if (!isset($this->applied_for_resident_status)) {
-            $missingData[] =  'Megpályázni kívánt státusz';
-        }
         if (!isset($this->question_1) || $this->question_1 == []) {
-            $missingData[] =  '"Honnan hallott a Collegiumról?" kérdés';
+            $missingData[] =  'Szakmai és motivációs kérdések: "Honnan hallott a Collegiumról?" kérdés';
         }
         if (!isset($this->question_2)) {
-            $missingData[] =  '"Miért kíván a Collegium tagja lenni?" kérdés';
+            $missingData[] =  'Szakmai és motivációs kérdések: "Miért kíván a Collegium tagja lenni?" kérdés';
         }
         if (!isset($this->question_3)) {
-            $missingData[] =  '"Tervez-e tovább tanulni a diplomája megszerzése után? Milyen tervei vannak az egyetem után?" kérdés';
+            $missingData[] =  'Szakmai és motivációs kérdések: "Tervez-e tovább tanulni a diplomája megszerzése után? Milyen tervei vannak az egyetem után?" kérdés';
+        }
+
+        if (count($this->files) < 2) {
+            $missingData[] =  'Legalább két feltöltött fájl';
         }
 
         return $missingData;

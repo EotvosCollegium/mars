@@ -40,7 +40,7 @@
         <x-input.text s=12 m=6 id="year_of_acceptance" text="user.year_of_acceptance" type='number' min="1895"
                         :max="date('Y')"
                         :value="$user->educationalInformation?->year_of_acceptance"
-                        :required="$user->isCollegist()"
+                        :required="$user->isCollegist(alumni: true) || isset($user->application)"
                         :disabled="user()->cannot('editStaticEducationalInformation', $user)"
                         asterisk
                     />
@@ -102,6 +102,7 @@
             </div>
         @endif
     </div>
+    <p style="margin-bottom:10px">Szakok: <span style="color:red;">*</span></p>
     @foreach($user->educationalInformation?->studyLines ?? [] as $studyLine)
         @include('user.study-line-selector', ['index' => $loop->index, 'value' => $studyLine])
     @endforeach
