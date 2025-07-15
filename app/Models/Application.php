@@ -384,12 +384,13 @@ class Application extends Model
                 }
             }
         }
-
-        if (!isset($educationalInformation) || !isset($educationalInformation->alfonso_language) && !$educationalInformation->alfonsoExempted()) {
-            $missingData[] =  'Tanulmányi adat: megjelölt ALFONSÓ nyelv';
-        }
-        if (!isset($educationalInformation) || !isset($educationalInformation->alfonso_desired_level) && !$educationalInformation->alfonsoExempted()) {
-            $missingData[] =  'Tanulmányi adat: elérni kívánt ALFONSÓ szint';
+        if(isset($educationalInformation->year_of_acceptance)){
+            if (!isset($educationalInformation) || !isset($educationalInformation->alfonso_language) && !$educationalInformation->alfonsoExempted()) {
+                $missingData[] =  'Tanulmányi adat: megjelölt ALFONSÓ nyelv';
+            }
+            if (!isset($educationalInformation) || !isset($educationalInformation->alfonso_desired_level) && !$educationalInformation->alfonsoExempted()) {
+                $missingData[] =  'Tanulmányi adat: elérni kívánt ALFONSÓ szint';
+            }
         }
 
         if (!isset($this->graduation_average)) {

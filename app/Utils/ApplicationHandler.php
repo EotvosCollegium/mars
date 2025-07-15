@@ -40,8 +40,15 @@ trait ApplicationHandler
             'accommodation' => 'sometimes|accepted'
         ]);
 
-        if (array_key_exists('status', $data)) {
-            $data['applied_for_resident_status'] = $data['status'] == "resident";
+        if(!isset($data['status'])){
+            $data['applied_for_resident_status'] = null;
+        } else {
+            if($data['status'] == "resident"){
+                $data['applied_for_resident_status'] = true;
+            }
+            if($data['status'] == "extern"){
+                $data['applied_for_resident_status'] = false;
+            }
         }
 
         $data['accommodation'] = isset($data['accommodation']) && $data['accommodation'];

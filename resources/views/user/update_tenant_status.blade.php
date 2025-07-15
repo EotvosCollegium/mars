@@ -17,7 +17,10 @@
                                 id='tenant_until'
                                 required
                                 text='user.tenant_until'
-                                :value="user()->personalInformation?->tenant_until"/>
+                                :value="user()->personalInformation?->tenant_until"
+                                :min="\Carbon\Carbon::now()->format('Y-m-d')"
+                                :max="\Carbon\Carbon::now()->addMonths(6)->format('Y-m-d')"
+                            />
                             <x-input.button class="right" text="general.save"/>
                         </div>
                     </form>
