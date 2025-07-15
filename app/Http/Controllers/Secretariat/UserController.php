@@ -109,7 +109,7 @@ class UserController extends Controller
 
         $requiredForCollegist = $user->isCollegist(alumni: true) ? "required" : "nullable";
 
-        if(user()->can('editStaticPersonalInformation', $user)){
+        if (user()->can('editStaticPersonalInformation', $user)) {
             $validator['name'] = 'required|string|max:255';
             $validator['email'] = ['required', 'email', 'max:225', new SameOrUnique($user)];
             $validator['place_of_birth'] = [$requiredForCollegist, 'string', 'max:225'];
@@ -123,7 +123,7 @@ class UserController extends Controller
         $validator['city'] = [$requiredForCollegist, 'string', 'max:255'];
         $validator['street_and_number'] = [$requiredForCollegist, 'string', 'max:255'];
         $validator['relatives_contact_data'] = ['nullable', 'string', 'max:255'];
-        if($user->isTenant()){
+        if ($user->isTenant()) {
             $validator['tenant_until'] = ['nullable', 'date', 'before_or_equal:' . Carbon::now()->addMonths(6)->toDateString()];
         }
 
@@ -162,7 +162,7 @@ class UserController extends Controller
 
         $requiredForCollegist = $user->isCollegist(alumni: true) ? "required" : "nullable";
 
-        if(user()->can('editStaticEducationalInformation', $user)){
+        if (user()->can('editStaticEducationalInformation', $user)) {
             $validator['high_school'] = [$requiredForCollegist, 'string', 'max:255'];
             $validator['year_of_graduation'] = [$requiredForCollegist, 'integer', 'between:1895,' . date('Y')];
             $validator['year_of_acceptance'] = [$requiredForCollegist, 'integer', 'between:1895,' . date('Y')];
@@ -174,7 +174,7 @@ class UserController extends Controller
         $validator['faculty'] = [$requiredForCollegist, 'array'];
         $validator['faculty.*'] = 'exists:faculties,id';
 
-        if(user()->can('editStaticEducationalInformation', $user)){
+        if (user()->can('editStaticEducationalInformation', $user)) {
             $validator['workshop'] = [$requiredForCollegist, 'array'];
             $validator['workshop.*'] = 'exists:workshops,id';
         }
@@ -243,7 +243,7 @@ class UserController extends Controller
 
         });
 
-        if($error_with_neptun_code){
+        if ($error_with_neptun_code) {
             return redirect()->back()->with('error', 'A Neptun-kód mentése sikertelen. Keresse a rendszergazdákat, vagy lépjen be a korábbi fiókjával.');
         } else {
             return redirect()->back()->with('message', __('general.successful_modification'));

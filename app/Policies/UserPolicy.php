@@ -40,15 +40,16 @@ class UserPolicy
         ]);
     }
 
-    public function edit(User $user, User $target){
-        if($user->hasRole([
+    public function edit(User $user, User $target)
+    {
+        if ($user->hasRole([
             Role::SECRETARY,
             Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS_AND_COMMITTEE_LEADERS,
         ])) {
             return true;
         }
-        if($user->id == $target->id){
-            if($target->application()->exists()){
+        if ($user->id == $target->id) {
+            if ($target->application()->exists()) {
                 return (
                     app(ApplicationController::class)->isActive() &&
                     !$target->application->submitted
@@ -59,32 +60,34 @@ class UserPolicy
         }
     }
 
-    public function editStaticPersonalInformation(User $user, User $target){
-        if(!$this->edit($user, $target)){
+    public function editStaticPersonalInformation(User $user, User $target)
+    {
+        if (!$this->edit($user, $target)) {
             return false;
         }
-        if($user->hasRole([
+        if ($user->hasRole([
             Role::SECRETARY,
             Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS_AND_COMMITTEE_LEADERS,
         ])) {
             return true;
         }
-        if($user->id == $target->id && !$user->roles()->exists()){
+        if ($user->id == $target->id && !$user->roles()->exists()) {
             return true;
         }
     }
 
-    public function editStaticEducationalInformation(User $user, User $target){
-        if(!$this->edit($user, $target)){
+    public function editStaticEducationalInformation(User $user, User $target)
+    {
+        if (!$this->edit($user, $target)) {
             return false;
         }
-        if($user->hasRole([
+        if ($user->hasRole([
             Role::SECRETARY,
             Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS_AND_COMMITTEE_LEADERS,
         ])) {
             return true;
         }
-        if($user->id == $target->id && !$user->hasRoleOtherThanTenant()){
+        if ($user->id == $target->id && !$user->hasRoleOtherThanTenant()) {
             return true;
         }
     }

@@ -199,7 +199,8 @@ trait HasRoles
         }
     }
 
-    public function hasRoleOtherThanTenant(){
+    public function hasRoleOtherThanTenant()
+    {
         return $this->roles()->whereNot('roles.name', Role::TENANT)->exists();
     }
 }
