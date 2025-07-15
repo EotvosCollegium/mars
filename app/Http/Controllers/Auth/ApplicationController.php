@@ -144,10 +144,10 @@ class ApplicationController extends Controller
         if ($user->application()->doesntExist()) {
             $user->application()->create();
         }
-        if($user->personalInformation()->doesntExist()) {
+        if ($user->personalInformation()->doesntExist()) {
             $user->personalInformation()->create();
         }
-        if($user->educationalInformation()->doesntExist()) {
+        if ($user->educationalInformation()->doesntExist()) {
             $user->educationalInformation()->create(
                 [
                     'year_of_acceptance' => date('Y')

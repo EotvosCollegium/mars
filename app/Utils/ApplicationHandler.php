@@ -40,13 +40,13 @@ trait ApplicationHandler
             'accommodation' => 'sometimes|accepted'
         ]);
 
-        if(!isset($data['status'])){
+        if (!isset($data['status'])) {
             $data['applied_for_resident_status'] = null;
         } else {
-            if($data['status'] == "resident"){
+            if ($data['status'] == "resident") {
                 $data['applied_for_resident_status'] = true;
             }
-            if($data['status'] == "extern"){
+            if ($data['status'] == "extern") {
                 $data['applied_for_resident_status'] = false;
             }
         }

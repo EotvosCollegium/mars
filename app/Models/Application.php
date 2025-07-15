@@ -347,15 +347,13 @@ class Application extends Model
         if (!isset($user->email)) {
             $missingData[] = 'Személyes adat: e-mail';
         }
-        foreach(['place_of_birth', 'date_of_birth', 'mothers_name', 'phone_number', 
-                 'country', 'county', 'zip_code', 'city', 'street_and_number']
-                 as $personal_info_field){
+        foreach (['place_of_birth', 'date_of_birth', 'mothers_name', 'phone_number',
+                 'country', 'county', 'zip_code', 'city', 'street_and_number'] as $personal_info_field) {
             if (!isset($personalInformation) || !isset($personalInformation[$personal_info_field])) {
                 $missingData[] = "Személyes adat: ".strtolower(__('user.'.$personal_info_field));
             }
         }
-        foreach(['high_school', 'year_of_graduation', 'year_of_acceptance', 'neptun']
-                 as $educational_info_field){
+        foreach (['high_school', 'year_of_graduation', 'year_of_acceptance', 'neptun'] as $educational_info_field) {
             if (!isset($educationalInformation) || !isset($educationalInformation[$educational_info_field])) {
                 $missingData[] = "Tanulmányi adat: ".strtolower(__('user.'.$educational_info_field));
             }
@@ -369,22 +367,22 @@ class Application extends Model
         if (!isset($educationalInformation) || $educationalInformation->studyLines()->count() == 0) {
             $missingData[] =  'Tanulmányi adat: megjelölt szak';
         } else {
-            foreach($educationalInformation->studyLines as $study_line){
-                if(!isset($study_line['name'])){
+            foreach ($educationalInformation->studyLines as $study_line) {
+                if (!isset($study_line['name'])) {
                     $missingData[] =  'Tanulmányi adat: valamely tanult szak adata: '.strtolower(__('user.study_line'));
                 }
-                if(!isset($study_line['type'])){
+                if (!isset($study_line['type'])) {
                     $missingData[] =  'Tanulmányi adat: valamely tanult szak adata: '.strtolower(__('user.study_line_level'));
                 }
-                if(!isset($study_line['training_code'])){
+                if (!isset($study_line['training_code'])) {
                     $missingData[] =  'Tanulmányi adat: valamely tanult szak adata: '.strtolower(__('user.study_line_training_code'));
                 }
-                if(!isset($study_line['start'])){
+                if (!isset($study_line['start'])) {
                     $missingData[] =  'Tanulmányi adat: valamely tanult szak adata: '.strtolower(__('user.study_line_start'));
                 }
             }
         }
-        if(isset($educationalInformation) && isset($educationalInformation->year_of_acceptance)){
+        if (isset($educationalInformation) && isset($educationalInformation->year_of_acceptance)) {
             if (!isset($educationalInformation->alfonso_language) && !$educationalInformation->alfonsoExempted()) {
                 $missingData[] =  'Tanulmányi adat: megjelölt ALFONSÓ nyelv';
             }
