@@ -1,5 +1,8 @@
 <table>
     <tbody>
+        @if(!$semesters->contains(\App\Models\Semester::next()))
+            @livewire('edit-status', ['user' => $user, 'semester' => \App\Models\Semester::next()])
+        @endif
         @if(!$semesters->contains(\App\Models\Semester::current()))
             @livewire('edit-status', ['user' => $user, 'semester' => \App\Models\Semester::current()])
         @endif
