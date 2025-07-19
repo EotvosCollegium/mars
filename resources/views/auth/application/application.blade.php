@@ -4,7 +4,7 @@
         <div class="card-content">
             <div class="row" style="margin-bottom: 0">
                 <div class="col s12 xl4">
-                    <div style="display:inline-block;width:100%">
+                    <div style="display:inline-block;width:100%;position:relative;">
                         @if ($user->profilePicture)
                             <img src="{{ url($user->profilePicture->path) }}" style="max-width:100%;max-height:200px;"
                             @if ($user->id != user()->id)

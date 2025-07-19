@@ -7,7 +7,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!pic.parentElement.querySelector('.hideable-picture-overlay')) {
             const overlay = document.createElement('div');
             overlay.className = 'hideable-picture-overlay';
-            overlay.textContent = 'Képek letiltva';
+            const text = document.createElement('div');
+            text.className = 'hideable-picture-label';
+            text.textContent = 'Képek letiltva';
+            overlay.appendChild(text);
             pic.parentElement.insertBefore(overlay, pic);
         }
     });
@@ -15,7 +18,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const pics = document.querySelectorAll('.hideable-picture');
         pics.forEach(function(pic) {
             const overlay = pic.parentElement.querySelector('.hideable-picture-overlay');
-            pic.style.display = hidePictures() ? 'none' : '';
+            if (pic.nodeName !== 'IMG')
+                pic.style.display = hidePictures() ? 'none' : '';
             overlay.style.display = hidePictures() ? '' : 'none';
         });
     }
