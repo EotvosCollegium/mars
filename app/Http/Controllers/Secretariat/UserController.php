@@ -57,7 +57,7 @@ class UserController extends Controller
      */
     public function storeProfilePicture(Request $request, User $user): RedirectResponse
     {
-        $this->authorize('view', $user);
+        $this->authorize('edit', $user);
         session()->put('section', 'profile_picture');
 
         $request->validate([
@@ -66,8 +66,8 @@ class UserController extends Controller
         $path = $request->file('picture')->store('avatars');
         $old_profile = $user->profilePicture;
         if ($old_profile) {
-            Storage::delete($old_profile->path);
             $old_profile->update(['path' => $path]);
+            Storage::delete($old_profile->path);
         } else {
             $user->profilePicture()->create(['path' => $path, 'name' => 'profile_picture']);
         }
@@ -82,7 +82,7 @@ class UserController extends Controller
      */
     public function deleteProfilePicture(Request $request, User $user): RedirectResponse
     {
-        $this->authorize('view', $user);
+        $this->authorize('edit', $user);
         session()->put('section', 'profile_picture');
 
         $profile = $user->profilePicture;
@@ -102,28 +102,35 @@ class UserController extends Controller
      */
     public function updatePersonalInformation(Request $request, User $user): RedirectResponse
     {
-        $this->authorize('view', $user);
+        $this->authorize('edit', $user);
         session()->put('section', 'personal_information');
 
-        $isCollegist = $user->isCollegist();
+        $validator = [];
 
-        $data = $request->validate([
-            'email' => ['required', 'email', 'max:225', new SameOrUnique($user)],
-            'name' => 'required|string|max:255',
-            'phone_number' => 'required|string|min:8|max:18',
-            'mothers_name' => [Rule::requiredIf($isCollegist), 'max:225'],
-            'place_of_birth' => [Rule::requiredIf($isCollegist), 'string', 'max:225'],
-            'date_of_birth' => [Rule::requiredIf($isCollegist), 'string', 'max:225'],
-            'country' => [Rule::requiredIf($isCollegist), 'string', 'max:255'],
-            'county' => [Rule::requiredIf($isCollegist), 'string', 'max:255'],
-            'zip_code' => [Rule::requiredIf($isCollegist), 'string', 'max:31'],
-            'city' => [Rule::requiredIf($isCollegist), 'string', 'max:255'],
-            'street_and_number' => [Rule::requiredIf($isCollegist), 'string', 'max:255'],
-            'tenant_until' => [Rule::requiredIf($user->isTenant()), 'date', 'after:today'],
-            'relatives_contact_data' => ['nullable', 'string', 'max:255'],
-        ]);
+        $requiredForCollegist = $user->isCollegist(alumni: true) ? "required" : "nullable";
 
-        $user->update(['email' => $request->email, 'name' => $request->name]);
+        if (user()->can('editStaticPersonalInformation', $user)) {
+            $validator['name'] = 'required|string|max:255';
+            $validator['email'] = ['required', 'email', 'max:225', new SameOrUnique($user)];
+            $validator['place_of_birth'] = [$requiredForCollegist, 'string', 'max:225'];
+            $validator['date_of_birth'] = [$requiredForCollegist, 'date'];
+            $validator['mothers_name'] = [$requiredForCollegist, 'string', 'max:225'];
+        }
+        $validator['phone_number'] = [$user->roles()->exists() ? 'required' : 'nullable', 'string', 'min:8', 'max:18'];
+        $validator['country'] = [$requiredForCollegist, 'string', 'max:255'];
+        $validator['county'] = [$requiredForCollegist, 'string', 'max:255'];
+        $validator['zip_code'] = [$requiredForCollegist, 'string', 'max:31'];
+        $validator['city'] = [$requiredForCollegist, 'string', 'max:255'];
+        $validator['street_and_number'] = [$requiredForCollegist, 'string', 'max:255'];
+        $validator['relatives_contact_data'] = ['nullable', 'string', 'max:255'];
+        if ($user->isTenant()) {
+            $validator['tenant_until'] = ['nullable', 'date', 'before_or_equal:' . Carbon::now()->addMonths(6)->toDateString()];
+        }
+
+        $data = $request->validate($validator);
+
+        $user->update(Arr::only($data, ['name', 'email', 'tenant_until']));
+
         $personal_data = Arr::except($data, ['name', 'email', 'tenant_until']);
 
         if (!$user->hasPersonalInformation()) {
@@ -132,10 +139,9 @@ class UserController extends Controller
             $user->personalInformation()->update($personal_data);
         }
 
-        if ($request->has('tenant_until')) {
-            $date = min(Carbon::parse($request->tenant_until), Carbon::now()->addMonths(6));
-            $user->personalInformation()->update(['tenant_until' => $date]);
-            $user->internetAccess()->update(['has_internet_until' => $date]);
+        if (array_key_exists('tenant_until', $data)) {
+            $user->personalInformation()->update(['tenant_until' => $data['tenant_until']]);
+            $user->internetAccess()->update(['has_internet_until' => $data['tenant_until']]);
         }
 
         return redirect()->back()->with('message', __('general.successful_modification'));
@@ -150,40 +156,43 @@ class UserController extends Controller
      */
     public function updateEducationalInformation(Request $request, User $user): RedirectResponse
     {
-        $this->authorize('view', $user);
+        $this->authorize('edit', $user);
         session()->put('section', 'educational_information');
+        $validator = [];
 
-        $request->validate([
-            'year_of_graduation' => 'required|integer|between:1895,' . date('Y'),
-            'year_of_acceptance' => 'required|integer|between:1895,' . date('Y'),
-            'high_school' => 'required|string|max:255',
-            'neptun' => [
-                ($user->application) ? 'nullable' : 'required',
-                'string',
-                'size:6'
-            ],
-            'faculty' => 'array',
-            'faculty.*' => 'exists:faculties,id',
-            'workshop' => 'nullable|array',
-            'workshop.*' => 'exists:workshops,id',
-            'study_lines' => 'array',
-            'study_lines.*.name' => 'required|string|max:255',
-            'study_lines.*.level' => ['required', Rule::in(array_keys(StudyLine::TYPES))],
-            'study_lines.*.training_code' => 'string|max:255',
-            'study_lines.*.minor' => 'nullable|string|max:255',
-            'study_lines.*.start' => 'required',
-            'email' => [
-                ($user->application) ? 'nullable' : 'required',
-                'string',
-                'email',
-                'max:255',
-                new SameOrUnique($user, EducationalInformation::class)
-            ],
-            'research_topics' => ['nullable', 'string', 'max:1000'],
-            'extra_information' => ['nullable', 'string', 'max:1500'],
-        ]);
+        $requiredForCollegist = $user->isCollegist(alumni: true) ? "required" : "nullable";
 
-        $educational_data = $request->only([
+        if (user()->can('editStaticEducationalInformation', $user)) {
+            $validator['high_school'] = [$requiredForCollegist, 'string', 'max:255'];
+            $validator['year_of_graduation'] = [$requiredForCollegist, 'integer', 'between:1895,' . date('Y')];
+            $validator['year_of_acceptance'] = [$requiredForCollegist, 'integer', 'between:1895,' . date('Y')];
+            $validator['neptun'] = [$requiredForCollegist, 'string', 'size:6'];
+        }
+
+        $validator['email'] = [$requiredForCollegist, 'email', 'max:255', new SameOrUnique($user, EducationalInformation::class)];
+
+        $validator['faculty'] = [$requiredForCollegist, 'array'];
+        $validator['faculty.*'] = 'exists:faculties,id';
+
+        if (user()->can('editStaticEducationalInformation', $user)) {
+            $validator['workshop'] = [$requiredForCollegist, 'array'];
+            $validator['workshop.*'] = 'exists:workshops,id';
+        }
+
+        $validator['study_lines'] = [$requiredForCollegist, 'array'];
+        $validator['study_lines.*.name'] = [$requiredForCollegist, 'string', 'max:255'];
+        $validator['study_lines.*.type'] = [$requiredForCollegist, Rule::in(array_keys(StudyLine::TYPES))];
+        $validator['study_lines.*.training_code'] = [$requiredForCollegist, 'string', 'max:255'];
+        $validator['study_lines.*.minor'] = ['nullable', 'string', 'max:255'];
+        $validator['study_lines.*.start'] = [$requiredForCollegist, 'exists:semesters,id'];
+        $validator['study_lines.*.end'] = ['nullable', 'exists:semesters,id'];
+
+        $validator['research_topics'] = ['nullable', 'string', 'max:1000'];
+        $validator['extra_information'] = ['nullable', 'string', 'max:1500'];
+
+        $data = $request->validate($validator);
+
+        $educational_data = Arr::only($data, [
             'year_of_graduation',
             'year_of_acceptance',
             'high_school',
@@ -193,13 +202,15 @@ class UserController extends Controller
             'extra_information'
         ]);
 
-        // whether Neptun code is unique (only checked if not null)
+        //If a user exists with the same Neptun code, we should still save all other data and inform the user about the error
+        $error_with_neptun_code = false;
         if (!is_null($request->neptun)
               && EducationalInformation::where('neptun', $request->neptun)->where('user_id', '<>', $user->id)->exists()) {
-            return redirect()->back()->with('error', 'A megadott Neptun-kód már létezik! Ha a kód az Öné, lépjen be a korábbi fiókjával.');
+            $error_with_neptun_code = true;
+            $educational_data = Arr::except($educational_data, ['neptun']);
         }
 
-        DB::transaction(function () use ($user, $request, $educational_data) {
+        DB::transaction(function () use ($user, $data, $educational_data) {
             if (!$user->hasEducationalInformation()) {
                 $user->educationalInformation()->create($educational_data);
             } else {
@@ -208,23 +219,23 @@ class UserController extends Controller
 
             $user->load('educationalInformation');
 
-            if ($request->has('workshop')) {
-                $user->workshops()->sync($request->input('workshop'));
+            if (array_key_exists('workshop', $data)) {
+                $user->workshops()->sync($data['workshop']);
             }
 
-            if ($request->has('faculty')) {
-                $user->faculties()->sync($request->input('faculty'));
+            if (array_key_exists('faculty', $data)) {
+                $user->faculties()->sync($data['faculty']);
             }
 
-            if ($request->has('study_lines')) {
+            if (array_key_exists('study_lines', $data)) {
                 $user->educationalInformation->studyLines()->delete();
-                foreach ($request->input('study_lines') as $studyLine) {
+                foreach ($data['study_lines'] as $studyLine) {
                     $user->educationalInformation->studyLines()->create([
-                        'name' => $studyLine["name"],
-                        'type' => $studyLine["level"],
+                        'name' => $studyLine["name"] ?? null,
+                        'type' => $studyLine["type"] ?? null,
                         'minor' => $studyLine["minor"] ?? null,
-                        'training_code' => $studyLine["training_code"],
-                        'start' => $studyLine["start"],
+                        'training_code' => $studyLine["training_code"] ?? null,
+                        'start' => $studyLine["start"] ?? null,
                         'end' => $studyLine["end"] ?? null,
                     ]);
                 }
@@ -232,7 +243,11 @@ class UserController extends Controller
 
         });
 
-        return redirect()->back()->with('message', __('general.successful_modification'));
+        if ($error_with_neptun_code) {
+            return redirect()->back()->with('error', 'A Neptun-kód mentése sikertelen. Keresse a rendszergazdákat, vagy lépjen be a korábbi fiókjával.');
+        } else {
+            return redirect()->back()->with('message', __('general.successful_modification'));
+        }
     }
 
     /**
@@ -245,20 +260,15 @@ class UserController extends Controller
      */
     public function updateAlfonsoStatus(Request $request, User $user)
     {
-        $this->authorize('view', $user);
+        $this->authorize('editStaticEducationalInformation', $user);
         session()->put('section', 'alfonso');
 
-        $validator = Validator::make($request->all(), [
+        $data = $request->validate([
             'alfonso_language' => ['nullable', Rule::in(array_keys(config('app.alfonso_languages')))],
             'alfonso_desired_level' => 'nullable|in:B2,C1',
         ]);
 
-        $validator->validate();
-
-        $user->educationalInformation?->update($request->only([
-            'alfonso_language',
-            'alfonso_desired_level',
-        ]));
+        $user->educationalInformation?->update($data);
 
         return redirect()->back()->with('message', __('general.successful_modification'));
     }
@@ -273,10 +283,10 @@ class UserController extends Controller
      */
     public function uploadLanguageExam(Request $request, User $user)
     {
-        $this->authorize('view', $user);
+        $this->authorize('edit', $user);
         session()->put('section', 'alfonso');
 
-        $validator = Validator::make($request->all(), [
+        $data = $request->validate([
             'file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:' . config('custom.general_file_size_limit'),
             'language' => ['required', Rule::in(array_merge(array_keys(config('app.alfonso_languages')), ['other']))],
             'level' => ['nullable', Rule::in(['A1', 'A2', 'B1', 'B2', 'C1', 'C2'])],
@@ -284,15 +294,13 @@ class UserController extends Controller
             'date' => 'required|date|before:today',
         ]);
 
-        $validator->validate();
-
-        $path = $request->file('file')->store('uploads');
+        $path = $data['file']->store('uploads');
         $user->educationalInformation->languageExams()->create([
             'path' => $path,
-            'language' => $request->input('language'),
-            'level' => $request->input('level'),
-            'type' => $request->input('type'),
-            'date' => $request->input('date')
+            'language' => $data['language'],
+            'level' => $data['level'],
+            'type' => $data['type'],
+            'date' => $data['date']
         ]);
 
         return redirect()->back()->with('message', __('general.successful_modification'));
@@ -307,7 +315,7 @@ class UserController extends Controller
      */
     public function deleteLanguageExam(Request $request, User $user, LanguageExam $exam)
     {
-        $this->authorize('view', $user);
+        $this->authorize('edit', $user);
         if ($exam->educationalInformation->user->isNot($user)) {
             abort(400, 'The language exam does not belong to the given user.');
         }
@@ -330,16 +338,14 @@ class UserController extends Controller
      */
     public function updateTenantUntil(Request $request, User $user)
     {
-        $this->authorize('view', $user);
+        $this->authorize('edit', $user);
 
-        $validator = Validator::make($request->all(), [
-            'tenant_until' => 'required|date|after:today',
+        $data = $request->validate([
+            'tenant_until' => ['required', 'date', 'before_or_equal:' . Carbon::now()->addMonths(6)->toDateString()]
         ]);
-        $validator->validate();
 
-        $date = min(Carbon::parse($request->tenant_until), Carbon::now()->addMonths(6));
-        $user->personalInformation->update(['tenant_until' => $date]);
-        $user->internetAccess()->update(['has_internet_until' => $date]);
+        $user->personalInformation->update($data);
+        $user->internetAccess()->update(['has_internet_until' => $data['tenant_until']]);
 
         return redirect(route('home'))->with('message', __('general.successful_modification'));
     }
@@ -412,9 +418,8 @@ class UserController extends Controller
 
         $object_id = $request->get('object_id') ?? $request->get('workshop_id');
         $object = $object_id ? $role->getObject($object_id) : null;
-        if ($request->user()->cannot('updatePermission', [$user, $role, $object])) {
-            return redirect()->back()->with('error', 'Ezt a jogosultságot nem tudja kezelni!');
-        }
+
+        $this->authorize('updatePermission', [$user, $role, $object]);
 
         if ($user->addRole($role, $object)) {
             return redirect()->back()->with('message', __('general.successfully_added'));
@@ -437,9 +442,7 @@ class UserController extends Controller
         $object_id = $request->get('object');
         $object = $object_id ? $role->getObject($object_id) : null;
 
-        if ($request->user()->cannot('updatePermission', [$user, $role, $object])) {
-            return redirect()->back()->with('error', 'Ezt a jogosultságot nem tudja kezelni!');
-        }
+        $this->authorize('updatePermission', [$user, $role, $object]);
 
         $user->removeRole($role, $object ?? null);
 

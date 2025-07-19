@@ -4,11 +4,20 @@
         <div class="card-content">
             <div class="row" style="margin-bottom: 0">
                 <div class="col s12 xl4">
-                    @if ($user->profilePicture)
-                        <img src="{{ url($user->profilePicture->path) }}" style="max-width:100%">
-                    @else
-                        <span style="font-style:italic;color:red">Nincs profilkép.</span>
-                    @endif
+                    <div style="display:inline-block;width:100%;position:relative;text-align:center">
+                        @if ($user->profilePicture)
+                            <img src="{{ url($user->profilePicture->path) }}" style="max-width:100%;max-height:200px;"
+                            @if ($user->id != user()->id)
+                                class="hideable-picture"
+                            @endif
+                            >
+                        @else
+                            <span style="font-style:italic;color:red"
+                            @if ($user->id != user()->id)
+                                class="hideable-picture"
+                            @endif>Nincs profilkép.</span>
+                        @endif
+                    </div>
                 </div>
                 <div class="col s12 xl8">
                     <div class="right" style="margin:5px;width:160px">

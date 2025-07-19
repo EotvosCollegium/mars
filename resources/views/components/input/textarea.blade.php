@@ -7,7 +7,9 @@
             'name' => $id,
             'class' => "materialize-textarea validate"
         ])}}>{{old($id, $value ?? '')}}</textarea>
-    <label for="{{$id}}">{{$label}}</label>
+    <label for="{{$id}}">{{$label}}@if($attributes->get('asterisk'))
+            <span style="color:red;" aria-label="required">*</span>
+        @endif</label>
     @if($helper ?? null)
     <span class="helper-text">{{ $helper }}</span>
     @endif

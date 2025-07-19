@@ -10,13 +10,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * App\Models\StudyLine
  *
- * @property int $start
- * @property int $end
- * @property string $name
- * @property string $minor
- * @property string $type
- * @property string $training_code
- * @property Semester $startSemester
+ * @property int|null $start
+ * @property int|null $end
+ * @property string|null $name
+ * @property string|null $minor
+ * @property string|null $type
+ * @property string|null $training_code
+ * @property Semester|null $startSemester
  * @property ?Semester $endSemester
  * @property int $id
  * @property int $educational_information_id
@@ -98,7 +98,7 @@ class StudyLine extends Model
         if (isset($this->minor)) {
             $name .= ' - minor: ' . $this->minor;
         }
-        return $name;
+        return $name ?? '';
     }
 
     /**

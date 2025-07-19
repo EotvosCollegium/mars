@@ -366,3 +366,27 @@ body.dark a.btn {
 .markdown_with_red ul {
     margin-left: 20px;
 }
+
+.hideable-picture-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    background-color: rgba(0, 0, 0, 0.5);
+    margin: auto;
+
+    display: flex;
+    align-items: center;
+    padding: auto;
+}
+
+.hideable-picture-label {
+    color: orange;
+    font-size: 1.5rem;
+    font-weight: bold;
+    width: 100%;
+    text-align: center;
+}

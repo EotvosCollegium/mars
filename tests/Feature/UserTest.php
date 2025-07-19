@@ -24,8 +24,6 @@ class UserTest extends TestCase
     public function createUser(): User
     {
         $user = User::factory()->create(['verified' => false]);
-        $user->roles()->attach(Role::collegist()->id);
-        $user->application()->create();
         $this->actingAs($user);
 
         return $user;

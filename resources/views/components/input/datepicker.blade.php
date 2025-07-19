@@ -12,7 +12,10 @@
             'name' => $id
         ])}}
     >
-    <label for="{{$id}}">{{$label}}</label>
+    <label for="{{$id}}">{{$label}}
+        @if($attributes->get('asterisk'))
+            <span style="color:red;" aria-label="required">*</span>
+        @endif</label>
     @error($id)
     <span class="helper-text" data-error="{{ $message }}"></span>
     @enderror
@@ -27,10 +30,16 @@
     <script>
         $(document).ready(function() {
             $('.datepicker_{{$id}}').datepicker({
-                format: '{{$format}}',
-                firstDay: 1,
-                yearRange: {{$yearRange}},
-                showClearBtn: true
+            format: '{{$format}}',
+            firstDay: 1,
+            yearRange: {{$yearRange}},
+            showClearBtn: true,
+            @if($attributes->get('max'))
+            maxDate: new Date('{{$attributes->get('max')}}'),
+            @endif
+            @if($attributes->get('min'))
+            minDate: new Date('{{$attributes->get('min')}}'),
+            @endif
             });
         });
     </script>

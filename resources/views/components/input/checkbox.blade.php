@@ -12,7 +12,10 @@
                  || "on" == old('recurring')
                  || $checked)
     >
-    <span>{{$label}}</span>
+    <span>{{$label}}
+        @if($attributes->get('asterisk'))
+            <span style="color:red;" aria-label="required">*</span>
+        @endif</span>
 </label>
 @if(!$onlyInput)
 </p></div>

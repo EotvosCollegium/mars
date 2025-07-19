@@ -34,7 +34,7 @@ class ApplicationController extends Controller
     public function confirmStart(): RedirectResponse
     {
         $this->ensureApplicationExists(user());
-        return redirect()->route('application')->with('message', __('Jelentkezési folyamat elindítva'));
+        return redirect()->route('application')->with('message', 'Jelentkezési folyamat elindítva');
     }
 
     /**
@@ -143,6 +143,16 @@ class ApplicationController extends Controller
     {
         if ($user->application()->doesntExist()) {
             $user->application()->create();
+        }
+        if ($user->personalInformation()->doesntExist()) {
+            $user->personalInformation()->create();
+        }
+        if ($user->educationalInformation()->doesntExist()) {
+            $user->educationalInformation()->create(
+                [
+                    'year_of_acceptance' => date('Y')
+                ]
+            );
         }
     }
 }

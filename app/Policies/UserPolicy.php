@@ -6,6 +6,7 @@ use App\Models\Role;
 use App\Models\RoleObject;
 use App\Models\User;
 use App\Models\Workshop;
+use App\Http\Controllers\Auth\ApplicationController;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Support\Facades\Cache;
 
@@ -37,6 +38,58 @@ class UserPolicy
             Role::STUDENT_COUNCIL_SECRETARY,
             Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS_AND_COMMITTEE_LEADERS,
         ]);
+    }
+
+    public function edit(User $user, User $target)
+    {
+        if ($user->hasRole([
+            Role::SECRETARY,
+            Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS_AND_COMMITTEE_LEADERS,
+        ])) {
+            return true;
+        }
+        if ($user->id == $target->id) {
+            if ($target->application()->exists()) {
+                return (
+                    app(ApplicationController::class)->isActive() &&
+                    !$target->application->submitted
+                );
+            } else {
+                return true;
+            }
+        }
+    }
+
+    public function editStaticPersonalInformation(User $user, User $target)
+    {
+        if (!$this->edit($user, $target)) {
+            return false;
+        }
+        if ($user->hasRole([
+            Role::SECRETARY,
+            Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS_AND_COMMITTEE_LEADERS,
+        ])) {
+            return true;
+        }
+        if ($user->id == $target->id && !$user->roles()->exists()) {
+            return true;
+        }
+    }
+
+    public function editStaticEducationalInformation(User $user, User $target)
+    {
+        if (!$this->edit($user, $target)) {
+            return false;
+        }
+        if ($user->hasRole([
+            Role::SECRETARY,
+            Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS_AND_COMMITTEE_LEADERS,
+        ])) {
+            return true;
+        }
+        if ($user->id == $target->id && !$user->hasRoleOtherThanTenant()) {
+            return true;
+        }
     }
 
     /**

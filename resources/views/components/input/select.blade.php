@@ -30,7 +30,9 @@
         @endforeach
     </select>
     @if(!$withoutLabel)
-    <label for="{{$id}}">{{$label}}</label>
+    <label for="{{$id}}">{{$label}}@if($attributes->get('asterisk'))
+            <span style="color:red;" aria-label="required">*</span>
+        @endif</label>
     @endif
     @if($helper ?? null)
     <span class="helper-text">{{ $helper }}</span>

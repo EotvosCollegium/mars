@@ -19,13 +19,16 @@ trait ApplicationHandler
     public function storeQuestionsData(Request $request, User $user): void
     {
         $data = $request->validate([
-            'status' => 'required|in:extern,resident',
-            'graduation_average' => 'required|numeric',
+            'status' => 'nullable|in:extern,resident',
+            'graduation_average' => 'nullable|numeric|min:0',
             'semester_average' => 'nullable|array',
-            'semester_average.*' => 'numeric',
-            'competition' => 'nullable',
-            'publication' => 'nullable',
-            'foreign_studies' => 'nullable',
+            'semester_average.*' => 'nullable|numeric|min:0',
+            'competition' => 'nullable|array',
+            'competition.*' => 'nullable|string',
+            'publication' => 'nullable|array',
+            'publication.*' => 'nullable|string',
+            'foreign_studies' => 'nullable|array',
+            'foreign_studies.*' => 'nullable|string',
             'workshop' => 'nullable|array',
             'workshop.*' => 'nullable|exists:workshops,id',
             'question_1' => 'nullable|array',
@@ -34,11 +37,21 @@ trait ApplicationHandler
             'question_3' => 'nullable|string',
             'question_4' => 'nullable|string',
             'present' => 'nullable|string',
-            'accommodation' => 'nullable|in:on'
+            'accommodation' => 'sometimes|accepted'
         ]);
 
-        $data['applied_for_resident_status'] = $request->input('status') == "resident";
-        $data['accommodation'] = $request->input('accommodation') === "on";
+        if (!isset($data['status'])) {
+            $data['applied_for_resident_status'] = null;
+        } else {
+            if ($data['status'] == "resident") {
+                $data['applied_for_resident_status'] = true;
+            }
+            if ($data['status'] == "extern") {
+                $data['applied_for_resident_status'] = false;
+            }
+        }
+
+        $data['accommodation'] = isset($data['accommodation']) && $data['accommodation'];
 
         $application = Application::updateOrCreate(
             ['user_id' => $user->id],

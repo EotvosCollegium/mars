@@ -8,7 +8,10 @@
     <input type="file" id="{{ $id }}" {{ $attributes->merge(['name' => $id]) }}>
 </div>
 <div class="file-path-wrapper">
-    <input class="file-path @error($id) invalid @enderror" placeholder="{{ $label }}" type="text" disabled>
+    <input class="file-path @error($id) invalid @enderror" placeholder="{{ $label }}
+@if($attributes->get('asterisk'))
+ *
+@endif" type="text" disabled>
     @error($id)
         <span class="helper-text" data-error="{{ $message }}"></span>
     @enderror
