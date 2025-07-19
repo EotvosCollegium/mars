@@ -41,7 +41,7 @@
                         :max="date('Y')"
                         :value="$user->educationalInformation?->year_of_acceptance"
                         :required="$user->isCollegist(alumni: true) || isset($user->application)"
-                        :disabled="user()->cannot('editStaticEducationalInformation', $user)"
+                        :disabled="user()->cannot('editStaticEducationalInformation', $user) || isset($user->application)"
                         asterisk
                     />
         <x-input.text s=6 id="neptun" text="user.neptun"

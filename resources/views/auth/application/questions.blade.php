@@ -17,7 +17,8 @@
                         'name' => 'semester_average',
                         'helper' => 'Hagyományos átlag a félév(ek)ben (két tizedesjegyre kerekítve)',
                         'optional' => true,
-                        'items' => $user->application->semester_average])
+                        'items' => $user->application->semester_average,
+                        'inputAttributes' => ['type' => 'number', 'step' => '0.01', 'min' => '0']])
                     </div>
                     <div class="col s12">
                         @livewire('parent-child-form', [
@@ -120,21 +121,21 @@
                         </div>
                     </div>
                     <div>
-                        <label for="question_2" style="font-size: 15px;">Miért kíván a Collegium tagja lenni? (≈300-500 karakter) <span style="color:red;" aria-label="required">*</span></label>
+                        <label for="question_2" style="font-size: 15px;color:black">Miért kíván a Collegium tagja lenni? (≈300-500 karakter) <span style="color:red;" aria-label="required">*</span></label>
                         <x-input.textarea id="question_2"
                                         :value="$user->application->question_2"
                                         style="min-height:200px"
                         />
                     </div>
                     <div>
-                        <label for="question_3" style="font-size: 15px;">Tervez-e tovább tanulni a diplomája megszerzése után? Milyen tervei vannak az egyetem után? <span style="color:red;" aria-label="required">*</span></label>
+                        <label for="question_3" style="font-size: 15px;color:black">Tervez-e tovább tanulni a diplomája megszerzése után? Milyen tervei vannak az egyetem után? <span style="color:red;" aria-label="required">*</span></label>
                         <x-input.textarea id="question_3"
                                         :value="$user->application->question_3"
                                         style="min-height:200px"
                         />
                     </div>
                     <div>
-                        <label for="question_4" style="font-size: 15px;">Részt vett-e közéleti tevékenységben? Ha igen, röviden jellemezze! (Pl. diákönkormányzati tevékenység, önkéntesség, szervezeti tagság - nem kötelező)</label> 
+                        <label for="question_4" style="font-size: 15px;color:black">Részt vett-e közéleti tevékenységben? Ha igen, röviden jellemezze! (Pl. diákönkormányzati tevékenység, önkéntesség, szervezeti tagság - nem kötelező)</label>
                         <x-input.textarea id="question_4"
                                         :value="$user->application->question_4"
                                         style="min-height:200px"
@@ -147,7 +148,7 @@
                                       maxlength="5000"
                                       />
                     <x-input.checkbox id="accommodation"
-                                      text="Igényel-e szállást a felvételi idejére?"
+                                      text="Igényel szállást a felvételi idejére?"
                                       :checked="$user->application->accommodation"/>
                     <div class="col s12">
                         <label>A szállással kapcsolatban figyelje a titkárság tájékoztatását. Az igénylés nem garantál szálláshelyet.</label>

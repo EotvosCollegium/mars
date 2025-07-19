@@ -20,9 +20,9 @@ trait ApplicationHandler
     {
         $data = $request->validate([
             'status' => 'nullable|in:extern,resident',
-            'graduation_average' => 'nullable|numeric',
+            'graduation_average' => 'nullable|numeric|min:0',
             'semester_average' => 'nullable|array',
-            'semester_average.*' => 'nullable|string',
+            'semester_average.*' => 'nullable|numeric|min:0',
             'competition' => 'nullable|array',
             'competition.*' => 'nullable|string',
             'publication' => 'nullable|array',
