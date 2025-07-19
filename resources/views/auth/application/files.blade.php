@@ -1,9 +1,6 @@
 @extends('auth.application.app')
 
 @section('form')
-    @include('utils.user.profile-picture', ['user' => $user])
-
-    {{-- uploaded files --}}
     <div class="card">
         <div class="card-content">
             <div class="card-title">Feltöltött fájlok</div>
