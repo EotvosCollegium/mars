@@ -15,6 +15,7 @@ class ParentChildForm extends Component
     public $helper; // helper text for the field
     public $hidden; // hidden state
     public $optional; // if true, the form is hidden by default (meaning no data is given), and a checkbox is added whether the user wants to add data or not
+    public $inputAttributes = ['type' => 'text']; // attributes for the input field, can be overridden by the caller
 
     /**
      * Mount the component.
