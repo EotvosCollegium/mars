@@ -76,13 +76,13 @@
             @endpush
         </div>
     </div>
+    <div class="row center">
+        <button type="button" class="btn grey toggle-hideable-pictures"></button>
+    </div>
     @foreach($applications as $application)
         @include('auth.application.application', ['user' => $application->user, 'expanded' => false])
     @endforeach
     <hr>
-    <div class="row center">
-        <button type="button" class="btn grey toggle-hideable-pictures"></button>
-    </div>
     <h6>Összesen: <b class="right">{{$applications->count()}} jelentkező</b></h6>
     @can('finalize', \App\Models\Application::class)
         @if($applicationDeadline && $applicationDeadline < now())
