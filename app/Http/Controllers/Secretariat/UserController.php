@@ -165,11 +165,8 @@ class UserController extends Controller
         if (user()->can('editStaticEducationalInformation', $user)) {
             $validator['high_school'] = [$requiredForCollegist, 'string', 'max:255'];
             $validator['year_of_graduation'] = [$requiredForCollegist, 'integer', 'between:1895,' . date('Y')];
-            $validator['neptun'] = [$requiredForCollegist, 'string', 'size:6'];
-        }
-
-        if (user()->can('editStaticEducationalInformation', $user) && !isset($user->application)) {
             $validator['year_of_acceptance'] = [$requiredForCollegist, 'integer', 'between:1895,' . date('Y')];
+            $validator['neptun'] = [$requiredForCollegist, 'string', 'size:6'];
         }
 
         $validator['email'] = [$requiredForCollegist, 'email', 'max:255', new SameOrUnique($user, EducationalInformation::class)];
