@@ -34,7 +34,7 @@ class Select extends Input
         $this->elements = $elements;
         if ($elements instanceof Collection) {
             $this->elements = $this->elements->sortBy('name');
-        } else if (isset($elements[0]->name)) {
+        } elseif (isset($elements[0]->name)) {
             usort($this->elements, fn ($e1, $e2) => $e1->name <=> $e2->name);
         }
         $this->placeholder = $placeholder;
