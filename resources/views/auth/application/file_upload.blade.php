@@ -70,7 +70,7 @@ $extensions = $extensions ?? '.pdf,.jpg,.png,.jpeg';
                         <x-input.file s=12 m=6 id="{{ 'file' . $type->value}}" name="file" accept="{{  $extensions }}" text="Fájl kiválasztása"
                             helper="{{  $extensions }} fájlok tölthetőek fel, maximum {{ config('custom.general_file_size_limit') / 1000 }} MB-os méretig."
                             required asterisk />
-                        <x-input.text s=12 m=4 id="{{ 'name' . $type->value }}" name="name" text="Fájl megnevezése" maxlength="250" required asterisk />
+                        <x-input.text s=12 m=4 id="{{ 'name' . $type->value }}" name="name" text="Fájl megnevezése" maxlength="250" required asterisk :value="$default_name ?? ''" />
                         <x-input.button id="{{ 'submit' . $type->value }}" class="s12 m2" only_input class="right" text="general.upload" />
                     </div>
                 </form>

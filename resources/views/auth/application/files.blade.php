@@ -16,12 +16,14 @@
         'application' => $user->application,
         'type' => App\Enums\FileType::RESUME,
         'extensions' => '.pdf',
+        'default_name' => "Önéletrajz",
     ])
 
     @include('auth.application.file_upload', [
         'application' => $user->application,
         'type' => App\Enums\FileType::BESOROLASI_HATAROZAT,
         'extensions' => '.pdf',
+        'default_name' =>  "Besorolási határozat",
     ])
 
     @include('auth.application.file_upload', [
