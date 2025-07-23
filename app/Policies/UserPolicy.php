@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\Role;
 use App\Models\RoleObject;
+use App\Models\RoleUser;
 use App\Models\User;
 use App\Models\Workshop;
 use App\Http\Controllers\Auth\ApplicationController;
@@ -224,8 +225,7 @@ class UserPolicy
         if ($role->name == Role::APPLICATION_COMMITTEE_MEMBER) {
             return $user->hasRole([
                 Role::WORKSHOP_LEADER,
-                Role::WORKSHOP_ADMINISTRATOR,
-                Role::STUDENT_COUNCIL => [Role::PRESIDENT, Role::SCIENCE_VICE_PRESIDENT]
+                Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS
             ]);
         }
 
@@ -261,9 +261,16 @@ class UserPolicy
         }
 
         if ($role->name == Role::APPLICATION_COMMITTEE_MEMBER) {
-            return $user->roleWorkshops->contains($object->id)
+            return $user->hasManyThrough(
+                Workshop::class,
+                RoleUser::class,
+                'user_id',
+                'id',
+                'id',
+                'workshop_id'
+            )->where('role_id', Role::get(Role::WORKSHOP_LEADER)->id)->where('id', $object->id)->exists()
                     || $user->hasRole([
-                        Role::STUDENT_COUNCIL => [Role::PRESIDENT, Role::SCIENCE_VICE_PRESIDENT]
+                        Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS
                     ]);
         }
 
@@ -276,13 +283,21 @@ class UserPolicy
         }
 
         if ($role->name == Role::WORKSHOP_ADMINISTRATOR) {
-            return ($user->hasRole(Role::WORKSHOP_LEADER)
-                    && $user->roleWorkshops->contains($object->id)
-            ) || $user->hasRole([
-                Role::STUDENT_COUNCIL_SECRETARY,
-                Role::SECRETARY,
-                Role::STUDENT_COUNCIL => Role::SCIENCE_VICE_PRESIDENT
-            ]);
+            return
+                $user->hasManyThrough(
+                    Workshop::class,
+                    RoleUser::class,
+                    'user_id',
+                    'id',
+                    'id',
+                    'workshop_id'
+                )->where('role_id', Role::get(Role::WORKSHOP_LEADER)->id)->where('id', $object->id)->exists()
+                ||
+                    $user->hasRole([
+                        Role::STUDENT_COUNCIL_SECRETARY,
+                        Role::SECRETARY,
+                        Role::STUDENT_COUNCIL => Role::SCIENCE_VICE_PRESIDENT
+                    ]);
         }
 
         if ($role->name == Role::STUDENT_COUNCIL_SECRETARY) {
