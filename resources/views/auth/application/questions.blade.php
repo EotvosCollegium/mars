@@ -157,10 +157,10 @@
                     <x-input.checkbox id="publication_consent"
                                     text="Hozzájárul ahhoz, hogy a felvételire behívottak névsorában a teljes neve és megpályázott műhelye szerepeljen?"
                                     :checked="$user->application->publication_consent"/>
-                    <div id="codeword-wrapper">
-                        <x-input.text id="codeword"
+                    <div id="pseudonym-wrapper">
+                        <x-input.text id="pseudonym"
                                     text="Jelige"
-                                    :value="$user->application->codeword"
+                                    :value="$user->application->pseudonym"
                                     helper="A neve helyett a listában ez a szó fog szerepelni (5-20 karakter)."
                                     minlength="5"
                                     maxlength="20" />
@@ -180,19 +180,19 @@
 
 @push('scripts')
 <script>
-    const handleCodewordVisibility = () => {
-        const codewordWrapper = document.getElementById('codeword-wrapper');
+    const handlePseudonymVisibility = () => {
+        const pseudonymWrapper = document.getElementById('pseudonym-wrapper');
         const publicationConsent = document.querySelector('input[name="publication_consent"]');
         if (!publicationConsent.checked) {
-            codewordWrapper.style.display = 'block';
+            pseudonymWrapper.style.display = 'block';
         } else {
-            codewordWrapper.style.display = 'none';
+            pseudonymWrapper.style.display = 'none';
         }
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-        handleCodewordVisibility();
-        document.querySelector('input[name="publication_consent"]').addEventListener('change', handleCodewordVisibility);
+        handlePseudonymVisibility();
+        document.querySelector('input[name="publication_consent"]').addEventListener('change', handlePseudonymVisibility);
     });
 </script>
 @endpush

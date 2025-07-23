@@ -35,7 +35,7 @@ use Illuminate\Support\Collection;
  * @property boolean $accommodation
  * @property string $present
  * @property boolean $publication_consent
- * @property string $codeword
+ * @property string $pseudonym
  * @property string $note
  * @property int $id
  * @property int $user_id
@@ -89,7 +89,7 @@ class Application extends Model
         'accommodation',
         'present',
         'publication_consent',
-        'codeword',
+        'pseudonym',
         'note'
     ];
 
@@ -418,7 +418,7 @@ class Application extends Model
             $missingData[] =  'Szakmai és motivációs kérdések: "Tervez-e tovább tanulni a diplomája megszerzése után? Milyen tervei vannak az egyetem után?" kérdés';
         }
 
-        if (!$this->publication_consent && !isset($this->codeword)) {
+        if (!$this->publication_consent && !isset($this->pseudonym)) {
             $missingData[] =  'Szakmai és motivációs kérdések: jelige';
         }
 

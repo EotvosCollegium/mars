@@ -72,7 +72,7 @@ return [
         'question_2' => "\"Miért kíván a Collegium tagja lenni?\" question",
         'reserved_from' => 'start date',
         'reserved_until' => 'end date',
-        'codeword' => 'codeword',
+        'pseudonym' => 'pseudonym',
     ],
     'before' => 'The :attribute must be a date before :date.',
     'before_or_equal' => 'The :attribute must be a date before or equal to :date.',
