@@ -164,7 +164,8 @@
                                     helper="A neve helyett a listában ez a szó fog szerepelni (5-20 ékezet nélküli nagybetű)."
                                     minlength="5"
                                     maxlength="20"
-                                    pattern="^[A-Z]{5,20}$" />
+                                    pattern="^[A-Z]{5,20}$"
+                                    asterisk />
                     </div>
                 </div>
 
