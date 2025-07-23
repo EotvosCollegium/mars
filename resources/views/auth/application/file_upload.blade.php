@@ -2,6 +2,7 @@
 $active = $active ?? $application->needsFile($type);
 $optional = $optional ?? false;
 $files = $application->filesOfType($type)->get();
+$extensions = $extensions ?? '.pdf,.jpg,.png,.jpeg';
 ?>
 <ul class="collapsible">
     <li @class(['active' => $active, 'form-disabled' => !$active])>
@@ -66,8 +67,8 @@ $files = $application->filesOfType($type)->get();
                     enctype='multipart/form-data'>
                     @csrf
                     <div class="row" style="margin-top: 20px;">
-                        <x-input.file s=12 m=6 id="{{ 'file' . $type->value}}" name="file" accept=".pdf,.jpg,.png,.jpeg" text="Fájl kiválasztása"
-                            helper=".pdf,.jpg,.png,.jpeg fájlok tölthetőek fel, maximum {{ config('custom.general_file_size_limit') / 1000 }} MB-os méretig."
+                        <x-input.file s=12 m=6 id="{{ 'file' . $type->value}}" name="file" accept="{{  $extensions }}" text="Fájl kiválasztása"
+                            helper="{{  $extensions }} fájlok tölthetőek fel, maximum {{ config('custom.general_file_size_limit') / 1000 }} MB-os méretig."
                             required asterisk />
                         <x-input.text s=12 m=4 id="{{ 'name' . $type->value }}" name="name" text="Fájl megnevezése" maxlength="250" required asterisk />
                         <x-input.button id="{{ 'submit' . $type->value }}" class="s12 m2" only_input class="right" text="general.upload" />

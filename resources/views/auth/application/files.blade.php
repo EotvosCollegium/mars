@@ -15,11 +15,13 @@
     @include('auth.application.file_upload', [
         'application' => $user->application,
         'type' => App\Enums\FileType::RESUME,
+        'extensions' => '.pdf',
     ])
 
     @include('auth.application.file_upload', [
         'application' => $user->application,
         'type' => App\Enums\FileType::BESOROLASI_HATAROZAT,
+        'extensions' => '.pdf',
     ])
 
     @include('auth.application.file_upload', [
