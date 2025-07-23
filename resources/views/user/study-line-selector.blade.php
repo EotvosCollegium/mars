@@ -40,7 +40,7 @@
                     xl=6 s=6
                     text="user.study_line_start"
                     :value="$value?->start"
-                    :elements="\App\Models\Semester::all()"
+                    :elements="\App\Models\Semester::allUntilCurrent()"
                     :required="$user->isCollegist(alumni: true)"
                     asterisk
                     :disabled="user()->cannot('edit', $user)"
@@ -49,7 +49,7 @@
                     xl=5 s=5
                     text="user.study_line_end"
                     :value="$value?->end"
-                    :elements="\App\Models\Semester::all()"
+                    :elements="\App\Models\Semester::allUntilCurrent()"
                     allow-empty="Nincs teljesítve"
                     helper="Csak teljesítés után töltendő ki"
                     :disabled="user()->cannot('edit', $user)"
