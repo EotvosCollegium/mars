@@ -13,9 +13,6 @@
                         <x-input.checkbox id="check_1" text="Kijelentem, hogy a fenti adatok a valóságnak megfelelnek."
                                           required/>
                         <x-input.checkbox id="check_2"
-                                          text="Hozzájárulok ahhoz, hogy a felvételire való behívásom esetén a nevem megjelenjen a Collegium honlapján."
-                                          required/>
-                        <x-input.checkbox id="check_3"
                                           text="Hozzájárulok ahhoz, hogy felvételem esetén az Eötvös Collegium tanulmányi ügyekkel megbízott munkatársa a NEPTUN-ban hozzáférést kapjon a tanulmányaimmal kapcsolatos adatokhoz."
                                           required/>
                     </div>
