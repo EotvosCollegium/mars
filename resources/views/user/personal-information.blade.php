@@ -61,6 +61,7 @@
             :required="$user->isCollegist()"
             :disabled="user()->cannot('editStaticPersonalInformation', $user)"
             asterisk="true"
+            :max="now()->subDay()->toDateString()"
             />
         <x-input.text
             id='mothers_name'
