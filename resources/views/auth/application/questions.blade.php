@@ -165,6 +165,7 @@
                                     minlength="5"
                                     maxlength="20"
                                     pattern="^[A-Z]{5,20}$"
+                                    oninput="this.value = this.value.toUpperCase()"
                                     asterisk />
                     </div>
                 </div>
