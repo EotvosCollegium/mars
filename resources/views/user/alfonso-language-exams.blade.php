@@ -60,6 +60,7 @@
                 />
             <x-input.datepicker s=12 m=3 id="date" text="Dátum" required
                 asterisk
+                :max="now()->subDay()->toDateString()"
                 />
         </div>
         <x-input.button only_input class="right" text="general.upload"/>
