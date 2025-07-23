@@ -262,13 +262,13 @@ class UserPolicy
 
         if ($role->name == Role::APPLICATION_COMMITTEE_MEMBER) {
             return $user->hasManyThrough(
-                        Workshop::class,
-                        RoleUser::class,
-                        'user_id',
-                        'id',
-                        'id',
-                        'workshop_id'
-                    )->whereIn('role_id', [Role::get(Role::WORKSHOP_LEADER)->id])->get()->contains($object->id)
+                Workshop::class,
+                RoleUser::class,
+                'user_id',
+                'id',
+                'id',
+                'workshop_id'
+            )->whereIn('role_id', [Role::get(Role::WORKSHOP_LEADER)->id])->get()->contains($object->id)
                     || $user->hasRole([
                         Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS
                     ]);
