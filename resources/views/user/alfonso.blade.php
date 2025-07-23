@@ -1,14 +1,11 @@
 
 @if(isset($application))
 <blockquote>
-<p>A Collegiumban az ALFONSÓ nyelvi program keretében nyelvoktatás folyik.
-    <a href="https://eotvos.elte.hu/collegium/mukodes/szabalyzatok" target="_blank"
-        style="text-decoration:underline">
-        A program szabályzata elérhető itt.</a>
-</p>
-<p>Az igények előrejelzése miatt kérjük, adja meg, milyen nyelven tervezi elkezdeni a programot.
-Felvételt követően lehetőség lesz módosítani a nyelven és a szinten.</p>
-<p>Amennyiben Önnek nem kötelező a szabályzat alapján részt vennie a nyelvi programban, akkor nem szükséges megjelölnie az ALFONSÓ program keretében elérni kívánt szintet.</p>
+<p>A Collegiumban az ALFONSÓ nyelvi program keretében nyelvoktatás folyik.</p>
+<p>Az igények felmérése miatt kérjük, adja meg, milyen nyelven tervezi elkezdeni a programot és milyen szintet kíván elérni. Felvételt követően lehetőség lesz módosítani ezeket.</p>
+<p style="margin-top:1em">Amennyiben Önnek nem kötelező a szabályzat alapján részt vennie a nyelvi programban, akkor nem szükséges megjelölnie az ALFONSÓ program keretében elérni kívánt szintet.</p>
+<p><em><a href="https://eotvos.elte.hu/collegium/mukodes/szabalyzatok" target="_blank" style="text-decoration:underline">Alfonsó szabályzat</a> 2. § (2) A collegiumi nyelvoktatásban való részvétel minden első-, másod- vagy harmadéves, újonnan
+felvett, BA/BSc-képzésben vagy osztatlan tanárképzésben résztvevő collegista számára kötelező.</em></p>
 </blockquote>
 
 @endif
