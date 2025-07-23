@@ -220,5 +220,23 @@
                 }
             });
         });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const motivationTextarea = document.getElementById('question_2');
+            const charCount = document.createElement('p');
+            charCount.style.textAlign = 'right';
+            charCount.style.textSize = '0.8em';
+            charCount.style.fontFamily = 'monospace';
+            motivationTextarea.parentElement.appendChild(charCount);
+
+            const setCharCount = () => {
+                const currentLength = motivationTextarea.value.length;
+                charCount.textContent = `${currentLength}`;
+                charCount.style.color = currentLength < 500 ? 'red' : 'grey';
+            };
+
+            setCharCount();
+            motivationTextarea.addEventListener('input', setCharCount);
+        });
     </script>
 @endpush
