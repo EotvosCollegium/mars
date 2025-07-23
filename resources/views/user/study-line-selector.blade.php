@@ -40,7 +40,7 @@
                     xl=6 s=6
                     text="user.study_line_start"
                     :value="$value?->start"
-                    :elements="\App\Models\Semester::allUntilCurrent()"
+                    :elements="\App\Models\Semester::allUntilCurrent()->concat([\App\Models\Semester::next()])"
                     :required="$user->isCollegist(alumni: true)"
                     asterisk
                     :disabled="user()->cannot('edit', $user)"
