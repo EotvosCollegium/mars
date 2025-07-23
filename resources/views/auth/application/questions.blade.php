@@ -128,7 +128,7 @@
                         />
                     </div>
                     <div>
-                        <label for="question_3" style="font-size: 15px;color:black">Tervez-e tovább tanulni a diplomája megszerzése után? Milyen tervei vannak az egyetem után? <span style="color:red;" aria-label="required">*</span></label>
+                        <label for="question_3" style="font-size: 15px;color:black">Tervez-e továbbtanulni a diplomája megszerzése után? Milyen tervei vannak az egyetem után? <span style="color:red;" aria-label="required">*</span></label>
                         <x-input.textarea id="question_3"
                                         :value="$user->application->question_3"
                                         style="min-height:200px"

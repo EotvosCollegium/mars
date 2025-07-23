@@ -278,7 +278,7 @@
                             </tr>
                             <tr>
                                 <td colspan="2">
-                                    <p style="font-weight: bold;">Tervez-e tovább tanulni a diplomája
+                                    <p style="font-weight: bold;">Tervez-e továbbtanulni a diplomája
                                         megszerzése
                                         után?
                                         Milyen tervei vannak az egyetem után?</p>
