@@ -31,7 +31,12 @@ class Select extends Input
     public function __construct($id, Collection|array $elements, $formatter = null, $placeholder = null, $withoutPlaceholder = false, $withoutLabel = false, $default = null, $text = null, $s = 12, $m = null, $l = null, $xl = null, $onlyInput = false, $allowEmpty = false, $helper = null)
     {
         parent::__construct($id, $text, $s, $m, $l, $xl, $onlyInput);
-        $this->elements = (isset($elements[0]->name) ? $elements->sortBy('name') : $elements);
+        $this->elements = $elements;
+        if ($elements instanceof Collection) {
+            $this->elements = $this->elements->sortBy('name');
+        } else if (isset($elements[0]->name)) {
+            usort($this->elements, fn ($e1, $e2) => $e1->name <=> $e2->name);
+        }
         $this->placeholder = $placeholder;
         $this->withoutPlaceholder = $withoutPlaceholder;
         $this->withoutLabel = $withoutLabel;
@@ -45,9 +50,6 @@ class Select extends Input
 
     /**
      * Convert an array with keys to a collection of objects with id and name.
-     *
-     * @param $array
-     * @return \Illuminate\Support\Collection
      */
     public static function convertArray($array)
     {
