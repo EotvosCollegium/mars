@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-enum FileType : string
+enum FileType: string
 {
     case PROFILE_PICTURE = 'profile_picture';
     case RECEIPT = 'receipt';
