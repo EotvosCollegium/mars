@@ -7,7 +7,7 @@
             @csrf
             <div class="card-content">
                 <div class="row">
-                    <x-input.text s=12 id="graduation_average" text="application.graduation_average" type='number' step="0.01" min="0"
+                    <x-input.text s=12 id="graduation_average" text="application.graduation_average" type='number' step='0.1' min='0' max='100'
                                   text="Érettségi átlaga" :value="$user->application->graduation_average"
                                   asterisk
                                   helper='Az összes érettségi tárgy százalékos eredményének hagyományos átlaga'/>
