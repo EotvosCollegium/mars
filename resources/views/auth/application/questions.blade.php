@@ -185,10 +185,13 @@
         const handlePseudonymVisibility = () => {
             const pseudonymWrapper = document.getElementById('pseudonym-wrapper');
             const publicationConsent = document.querySelector('input[name="publication_consent"]');
+            const pseudonymInput = document.getElementById('pseudonym');
             if (!publicationConsent.checked) {
                 pseudonymWrapper.style.display = 'block';
+                pseudonymInput.disabled = false;
             } else {
                 pseudonymWrapper.style.display = 'none';
+                pseudonymInput.disabled = true;
             }
         }
 
