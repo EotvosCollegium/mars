@@ -28,8 +28,8 @@ class ParentChildForm extends Component
         if (is_null($items) || count($items) == 0) {
             $items = [''];
         }
-        $this->items = $items;
-        $this->hidden = $optional ? count($items) == 1 && $items[0] == '' : false;
+        $this->items = old($this->name) ?? $items;
+        $this->hidden = $optional ? count($this->items) == 1 && $this->items[0] == '' : false;
         $this->optional = $optional;
     }
 
