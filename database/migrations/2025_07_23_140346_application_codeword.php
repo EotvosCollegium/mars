@@ -12,7 +12,7 @@ return new class () extends Migration {
     {
         Schema::table('applications', function (Blueprint $table) {
             $table->boolean('publication_consent')->default(false)->nullable(false)->after('accommodation');
-            $table->string('codeword', 20)->nullable()->after('publication_consent');
+            $table->string('pseudonym', 20)->nullable()->after('publication_consent');
         });
     }
 
@@ -23,7 +23,7 @@ return new class () extends Migration {
     {
         Schema::table('applications', function (Blueprint $table) {
             $table->dropColumn('publication_consent');
-            $table->dropColumn('codeword');
+            $table->dropColumn('pseudonym');
         });
     }
 };
