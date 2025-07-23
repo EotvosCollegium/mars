@@ -40,6 +40,7 @@ class ApplicantsExport implements FromCollection, WithTitle, WithMapping, WithHe
     {
         return [
             'Név',
+            'Jelige',
             'E-mail',
             'Behívott',
             'Felvett',
@@ -59,7 +60,7 @@ class ApplicantsExport implements FromCollection, WithTitle, WithMapping, WithHe
             'Alfonsó',
             'Honnan hallott a Collegiumról?',
             'Felvételi alatt itt lesz?',
-            'Igényel szállást?'
+            'Igényel szállást?',
         ];
     }
 
@@ -69,6 +70,7 @@ class ApplicantsExport implements FromCollection, WithTitle, WithMapping, WithHe
 
         return [
             $user->name,
+            $application->pseudonym,
             $user->email,
             $application->calledIn,
             $application->admitted,
@@ -92,7 +94,7 @@ class ApplicantsExport implements FromCollection, WithTitle, WithMapping, WithHe
                 : ""),
             implode(" \n", $application->question_1),
             $application->present ?? true,
-            $application->accommodation
+            $application->accommodation,
         ];
     }
 }
