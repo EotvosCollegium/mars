@@ -301,7 +301,7 @@ class UserController extends Controller
         $user->educationalInformation->languageExams()->create([
             'path' => $path,
             'language' => $data['language'],
-            'level' => $data['level'],
+            'level' => $data['level'] ?? null,
             'type' => $data['type'],
             'date' => $data['date']
         ]);
