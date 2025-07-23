@@ -78,11 +78,12 @@
 
                     <div class="card-title">
                         @if(isset($application))
-                            <a href="{{route('admission.applicants.show', ['application' => $application->id])}}">
-                                {{ $user->name }}
-                            </a>
+                            <a href="{{route('admission.applicants.show', ['application' => $application->id])}}">{{ $user->name }}</a>
                         @else
                             {{ $user->name }}
+                        @endif
+                        @if(!$user->application->publication_consent && isset($user->application->codeword))
+                            <span style="color:gray">({{ $user->application->codeword }})</span>
                         @endif
                     </div>
                     <p style="margin-bottom: 5px"><a href="mailto:{{ $user->email }}">{{ $user->email }}</a></p>

@@ -34,6 +34,8 @@ use Illuminate\Support\Collection;
  * @property string $question_4
  * @property boolean $accommodation
  * @property string $present
+ * @property boolean $publication_consent
+ * @property string $codeword
  * @property string $note
  * @property int $id
  * @property int $user_id
@@ -86,13 +88,16 @@ class Application extends Model
         'question_4',
         'accommodation',
         'present',
+        'publication_consent',
+        'codeword',
         'note'
     ];
 
     protected $casts = [
         'submitted' => 'bool',
         'applied_for_resident_status' => 'bool',
-        'admitted_for_resident_status' => 'bool'
+        'admitted_for_resident_status' => 'bool',
+        'publication_consent' => 'bool',
     ];
 
     public const QUESTION_1 = [
@@ -411,6 +416,10 @@ class Application extends Model
         }
         if (!isset($this->question_3)) {
             $missingData[] =  'Szakmai és motivációs kérdések: "Tervez-e tovább tanulni a diplomája megszerzése után? Milyen tervei vannak az egyetem után?" kérdés';
+        }
+
+        if (!$this->publication_consent && !isset($this->codeword)) {
+            $missingData[] =  'Szakmai és motivációs kérdések: jelige';
         }
 
         if (count($this->files) < 2) {
