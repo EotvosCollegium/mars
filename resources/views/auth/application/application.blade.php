@@ -82,8 +82,8 @@
                         @else
                             {{ $user->name }}
                         @endif
-                        @if(!$user->application->publication_consent && isset($user->application->codeword))
-                            <span style="color:gray">({{ $user->application->codeword }})</span>
+                        @if(!$user->application->publication_consent && isset($user->application->pseudonym))
+                            <span style="color:gray">({{ $user->application->pseudonym }})</span>
                         @endif
                     </div>
                     <p style="margin-bottom: 5px"><a href="mailto:{{ $user->email }}">{{ $user->email }}</a></p>

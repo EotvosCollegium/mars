@@ -39,7 +39,7 @@ trait ApplicationHandler
             'present' => 'nullable|string',
             'accommodation' => 'sometimes|accepted',
             'publication_consent' => 'sometimes|accepted',
-            'codeword' => ['string', 'min:5', 'max:20', 'nullable', 'unique:App\Models\Application,codeword,' . $user->application->id]
+            'pseudonym' => ['string', 'min:5', 'max:20', 'nullable', 'unique:App\Models\Application,pseudonym,' . $user->application->id]
         ]);
 
         if (!isset($data['status'])) {
@@ -54,6 +54,7 @@ trait ApplicationHandler
         }
 
         $data['accommodation'] = isset($data['accommodation']) && $data['accommodation'];
+        $data['publication_consent'] = isset($data['publication_consent']) && $data['publication_consent'];
 
         $application = Application::updateOrCreate(
             ['user_id' => $user->id],
