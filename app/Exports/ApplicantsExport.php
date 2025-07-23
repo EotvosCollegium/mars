@@ -70,7 +70,7 @@ class ApplicantsExport implements FromCollection, WithTitle, WithMapping, WithHe
 
         return [
             $user->name,
-            $application->pseudonym,
+            $application->publication_consent ? "" : $application->pseudonym,
             $user->email,
             $application->calledIn,
             $application->admitted,
