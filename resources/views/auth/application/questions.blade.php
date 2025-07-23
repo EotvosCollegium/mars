@@ -161,9 +161,10 @@
                         <x-input.text id="pseudonym"
                                     text="Jelige"
                                     :value="$user->application->pseudonym"
-                                    helper="A neve helyett a listában ez a szó fog szerepelni (5-20 karakter)."
+                                    helper="A neve helyett a listában ez a szó fog szerepelni (5-20 ékezet nélküli nagybetű)."
                                     minlength="5"
-                                    maxlength="20" />
+                                    maxlength="20"
+                                    pattern="^[A-Z]{5,20}$" />
                     </div>
                 </div>
 
