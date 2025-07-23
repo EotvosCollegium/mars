@@ -180,20 +180,40 @@
 @endsection
 
 @push('scripts')
-<script>
-    const handlePseudonymVisibility = () => {
-        const pseudonymWrapper = document.getElementById('pseudonym-wrapper');
-        const publicationConsent = document.querySelector('input[name="publication_consent"]');
-        if (!publicationConsent.checked) {
-            pseudonymWrapper.style.display = 'block';
-        } else {
-            pseudonymWrapper.style.display = 'none';
+    <script>
+        const handlePseudonymVisibility = () => {
+            const pseudonymWrapper = document.getElementById('pseudonym-wrapper');
+            const publicationConsent = document.querySelector('input[name="publication_consent"]');
+            if (!publicationConsent.checked) {
+                pseudonymWrapper.style.display = 'block';
+            } else {
+                pseudonymWrapper.style.display = 'none';
+            }
         }
-    }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        handlePseudonymVisibility();
-        document.querySelector('input[name="publication_consent"]').addEventListener('change', handlePseudonymVisibility);
-    });
-</script>
+        document.addEventListener('DOMContentLoaded', () => {
+            handlePseudonymVisibility();
+            document.querySelector('input[name="publication_consent"]').addEventListener('change', handlePseudonymVisibility);
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            let textIsDirty = false;
+            document.querySelectorAll('textarea').forEach(
+                (textarea) => textarea.addEventListener('input', () => {
+                    textIsDirty = true;
+                })
+            );
+
+            document.querySelector('button[type="submit"]').addEventListener('click', () => {
+                textIsDirty = false;
+            });
+
+            window.addEventListener('beforeunload', (event) => {
+                if (textIsDirty) {
+                    event.preventDefault();
+                    event.returnValue = '';
+                }
+            });
+        });
+    </script>
 @endpush
