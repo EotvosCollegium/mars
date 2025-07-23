@@ -24,7 +24,7 @@
         @endif
         <x-input.text
             id="name"
-            text="user.name"
+            text="user.full_name"
             :value="$user->name"
             required
             :disabled="user()->cannot('editStaticPersonalInformation', $user)"
