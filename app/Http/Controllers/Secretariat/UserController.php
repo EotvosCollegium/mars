@@ -160,7 +160,10 @@ class UserController extends Controller
         session()->put('section', 'educational_information');
         $validator = [];
 
-        $requiredForCollegist = $user->isCollegist(alumni: true) ? "required" : "nullable";
+        $requiredForCollegist = $user->isCollegist(alumni: true) ? "" : "nullable";
+        /*
+            If a field is omitted from the input, the request should succeed.
+        */
 
         if (user()->can('editStaticEducationalInformation', $user)) {
             $validator['high_school'] = [$requiredForCollegist, 'string', 'max:255'];
