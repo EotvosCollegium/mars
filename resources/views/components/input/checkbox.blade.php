@@ -9,7 +9,7 @@
             'name' => $id
         ])}}
         @checked(in_array($attributes['value'], (old($id)['option'] ?? []))
-                 || "on" == old('recurring')
+                 || "on" == old($id)
                  || $checked)
     >
     <span>{{$label}}
