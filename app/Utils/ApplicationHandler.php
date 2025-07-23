@@ -37,7 +37,9 @@ trait ApplicationHandler
             'question_3' => 'nullable|string',
             'question_4' => 'nullable|string',
             'present' => 'nullable|string',
-            'accommodation' => 'sometimes|accepted'
+            'accommodation' => 'sometimes|accepted',
+            'publication_consent' => 'sometimes|accepted',
+            'codeword' => ['string', 'min:5', 'max:20', 'nullable', 'unique:App\Models\Application,codeword,' . $user->application->id]
         ]);
 
         if (!isset($data['status'])) {
