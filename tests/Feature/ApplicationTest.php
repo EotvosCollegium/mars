@@ -340,6 +340,7 @@ class ApplicationTest extends TestCase
             'question_1' => ['answer 1'],
             'question_2' => 'answer 2',
             'question_3' => 'answer 3',
+            'publication_consent' => '1',
         ]);
         $response->assertStatus(302);
         $response->assertSessionHasNoErrors();
