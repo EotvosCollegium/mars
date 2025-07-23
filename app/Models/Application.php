@@ -428,7 +428,7 @@ class Application extends Model
             $missingData[] =  'Szakmai és motivációs kérdések: "Miért kíván a Collegium tagja lenni?" kérdésre adott válasz túl rövid (min. 500 leütés)';
         }
         if (!isset($this->question_3)) {
-            $missingData[] =  'Szakmai és motivációs kérdések: "Tervez-e tovább tanulni a diplomája megszerzése után? Milyen tervei vannak az egyetem után?" kérdés';
+            $missingData[] =  'Szakmai és motivációs kérdések: "Tervez-e továbbtanulni a diplomája megszerzése után? Milyen tervei vannak az egyetem után?" kérdés';
         }
 
         if (!$this->publication_consent && !isset($this->pseudonym)) {
