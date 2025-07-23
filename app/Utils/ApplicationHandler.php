@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 trait ApplicationHandler
 {
@@ -37,7 +38,9 @@ trait ApplicationHandler
             'question_3' => 'nullable|string',
             'question_4' => 'nullable|string',
             'present' => 'nullable|string',
-            'accommodation' => 'sometimes|accepted'
+            'accommodation' => 'sometimes|accepted',
+            'publication_consent' => 'sometimes|accepted',
+            'pseudonym' => ['string', 'min:5', 'max:20', 'regex:/^[A-Z]+$/', 'nullable', 'unique:App\Models\Application,pseudonym,' . $user->application->id]
         ]);
 
         if (!isset($data['status'])) {
@@ -52,6 +55,7 @@ trait ApplicationHandler
         }
 
         $data['accommodation'] = isset($data['accommodation']) && $data['accommodation'];
+        $data['publication_consent'] = isset($data['publication_consent']) && $data['publication_consent'];
 
         $application = Application::updateOrCreate(
             ['user_id' => $user->id],
@@ -70,9 +74,10 @@ trait ApplicationHandler
         $request->validate([
             'file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:' . config('custom.general_file_size_limit'),
             'name' => 'required|string|max:255',
+            'type' => ['required', Rule::enum(\App\Enums\FileType::class)],
         ]);
         $path = $request->file('file')->store('uploads');
-        $user->application->files()->create(['path' => $path, 'name' => $request->input('name')]);
+        $user->application->files()->create(['path' => $path, 'type' => $request->input('type'), 'description' => $request->input('name')]);
     }
 
     /**

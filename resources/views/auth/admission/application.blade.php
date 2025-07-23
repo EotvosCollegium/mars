@@ -17,10 +17,11 @@
                 @csrf
                 <blockquote>Az új fájlról a felvételiztető bizottság tagjai értesítést kapnak.</blockquote>
                 <div class="row">
-                    <x-input.file s=12 m=6 id="file" accept=".pdf,.jpg,.png,.jpeg" text="general.browse"
+                    <x-input.file s=12 m=4 id="file" accept=".pdf,.jpg,.png,.jpeg" text="general.browse"
                                   helper=".pdf,.jpg,.png,.jpeg fájlok tölthetőek fel, maximum {{config('custom.general_file_size_limit')/1000}} MB-os méretig."
                                   required/>
-                    <x-input.text s=12 m=6 id="name" text="Fájl megnevezése" maxlength="250" required/>
+                    <x-input.select s=12 m=4 id="type" :elements="array_map(fn($type) => $type->value, \App\Enums\FileType::cases())"  :formatter="fn ($type) => __('document.file_types.' . $type, [], 'hu')" />
+                    <x-input.text s=12 m=4 id="name" text="Fájl megnevezése" maxlength="250" required/>
                 </div>
                 <x-input.button floating class="right" icon="upload"/>
             </div>

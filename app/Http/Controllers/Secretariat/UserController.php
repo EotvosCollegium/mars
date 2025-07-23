@@ -69,7 +69,7 @@ class UserController extends Controller
             $old_profile->update(['path' => $path]);
             Storage::delete($old_profile->path);
         } else {
-            $user->profilePicture()->create(['path' => $path, 'name' => 'profile_picture']);
+            $user->profilePicture()->create(['path' => $path, 'type' => 'profile_picture']);
         }
         return redirect()->back()->with('message', __('general.successful_modification'));
     }
@@ -160,7 +160,10 @@ class UserController extends Controller
         session()->put('section', 'educational_information');
         $validator = [];
 
-        $requiredForCollegist = $user->isCollegist(alumni: true) ? "required" : "nullable";
+        $requiredForCollegist = $user->isCollegist(alumni: true) ? "" : "nullable";
+        /*
+            If a field is omitted from the input, the request should succeed.
+        */
 
         if (user()->can('editStaticEducationalInformation', $user)) {
             $validator['high_school'] = [$requiredForCollegist, 'string', 'max:255'];

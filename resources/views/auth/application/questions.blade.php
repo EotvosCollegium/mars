@@ -10,7 +10,7 @@
                     <x-input.text s=12 id="graduation_average" text="application.graduation_average" type='number' step="0.01" min="0"
                                   text="Érettségi átlaga" :value="$user->application->graduation_average"
                                   asterisk
-                                  helper='Az összes érettségi tárgy hagyományos átlaga'/>
+                                  helper='Az összes érettségi tárgy százalékos eredményének hagyományos átlaga'/>
                     <div class="col s12">
                         @livewire('parent-child-form', [
                         'title' => "Van lezárt egyetemi félévem",
@@ -121,7 +121,7 @@
                         </div>
                     </div>
                     <div>
-                        <label for="question_2" style="font-size: 15px;color:black">Miért kíván a Collegium tagja lenni? (≈300-500 karakter) <span style="color:red;" aria-label="required">*</span></label>
+                        <label for="question_2" style="font-size: 15px;color:black">Miért kíván a Collegium tagja lenni? (≈500-1000 leütés) <span style="color:red;" aria-label="required">*</span></label>
                         <x-input.textarea id="question_2"
                                         :value="$user->application->question_2"
                                         style="min-height:200px"
@@ -154,8 +154,19 @@
                         <label>A szállással kapcsolatban figyelje a titkárság tájékoztatását. Az igénylés nem garantál szálláshelyet.</label>
                     </div>
 
+                    <x-input.checkbox id="publication_consent"
+                                    text="Hozzájárul ahhoz, hogy a felvételire behívottak névsorában a teljes neve és megpályázott műhelye szerepeljen?"
+                                    :checked="$user->application->publication_consent"/>
+                    <div id="pseudonym-wrapper">
+                        <x-input.text id="pseudonym"
+                                    text="Jelige"
+                                    :value="$user->application->pseudonym"
+                                    helper="A neve helyett a listában ez a szó fog szerepelni (5-20 ékezet nélküli nagybetű)."
+                                    minlength="5"
+                                    maxlength="20"
+                                    pattern="^[A-Z]{5,20}$" />
+                    </div>
                 </div>
-
 
             </div>
             <div class="card-action">
@@ -167,3 +178,42 @@
     </div>
 
 @endsection
+
+@push('scripts')
+    <script>
+        const handlePseudonymVisibility = () => {
+            const pseudonymWrapper = document.getElementById('pseudonym-wrapper');
+            const publicationConsent = document.querySelector('input[name="publication_consent"]');
+            if (!publicationConsent.checked) {
+                pseudonymWrapper.style.display = 'block';
+            } else {
+                pseudonymWrapper.style.display = 'none';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            handlePseudonymVisibility();
+            document.querySelector('input[name="publication_consent"]').addEventListener('change', handlePseudonymVisibility);
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            let textIsDirty = false;
+            document.querySelectorAll('textarea').forEach(
+                (textarea) => textarea.addEventListener('input', () => {
+                    textIsDirty = true;
+                })
+            );
+
+            document.querySelector('button[type="submit"]').addEventListener('click', () => {
+                textIsDirty = false;
+            });
+
+            window.addEventListener('beforeunload', (event) => {
+                if (textIsDirty) {
+                    event.preventDefault();
+                    event.returnValue = '';
+                }
+            });
+        });
+    </script>
+@endpush

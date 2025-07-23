@@ -71,7 +71,8 @@ return [
         'question_1_other' => "\"Honnan hallott a Collegiumról?\" question's other value",
         'question_2' => "\"Miért kíván a Collegium tagja lenni?\" question",
         'reserved_from' => 'start date',
-        'reserved_until' => 'end date'
+        'reserved_until' => 'end date',
+        'pseudonym' => 'pseudonym',
     ],
     'before' => 'The :attribute must be a date before :date.',
     'before_or_equal' => 'The :attribute must be a date before or equal to :date.',

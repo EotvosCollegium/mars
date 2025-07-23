@@ -36,6 +36,16 @@ class ConfigurableTextController extends Controller
                 $text_fields[] = $configurable_text;
             }
         }
+        foreach (\App\Enums\FileType::cases() as $type) {
+            if ($type == \App\Enums\FileType::PROFILE_PICTURE || $type == \App\Enums\FileType::RECEIPT) {
+                continue; // Used internally, no user-visible description
+            }
+
+            $configurable_text = ConfigurableText::getConfigurableText("APPLICATION_FILE_" . strtoupper($type->value));
+            if (user()->can('edit', $configurable_text)) {
+                $text_fields[] = $configurable_text;
+            }
+        }
         return view(
             'configurable_texts.manage',
             [

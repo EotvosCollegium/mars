@@ -78,11 +78,12 @@
 
                     <div class="card-title">
                         @if(isset($application))
-                            <a href="{{route('admission.applicants.show', ['application' => $application->id])}}">
-                                {{ $user->name }}
-                            </a>
+                            <a href="{{route('admission.applicants.show', ['application' => $application->id])}}">{{ $user->name }}</a>
                         @else
                             {{ $user->name }}
+                        @endif
+                        @if(!$user->application->publication_consent && isset($user->application->pseudonym))
+                            <span style="color:gray">({{ $user->application->pseudonym }})</span>
                         @endif
                     </div>
                     <p style="margin-bottom: 5px"><a href="mailto:{{ $user->email }}">{{ $user->email }}</a></p>
@@ -268,7 +269,7 @@
                                 <td colspan="2">
                                     <p style="font-weight: bold;">Miért kíván a Collegium tagja lenni?</p>
                                     <p>
-                                        {{ $user->application->question_2 }}
+                                        <div style="white-space: pre-wrap">{{ $user->application->question_2 }}</div>
                                         @if(!$user->application->question_2)
                                             <span style="font-style:italic;color:red">hiányzó adat</span>
                                         @endif
@@ -282,7 +283,7 @@
                                         után?
                                         Milyen tervei vannak az egyetem után?</p>
                                     <p>
-                                        {{ $user->application->question_3}}
+                                        <div style="white-space: pre-wrap">{{ $user->application->question_3 }}</div>
                                         @if(!$user->application->question_3)
                                             <span style="font-style:italic;color:red">hiányzó adat</span>
                                         @endif
@@ -306,16 +307,12 @@
                                         <div class="row" style="margin-bottom: 0; padding: 10px">
                                             <div class="col" style="margin-top: 5px">
                                                 <a href="{{ url($file->path) }}"
-                                                   target="_blank">{{ $file->name }}</a>
+                                                   target="_blank">{{ $file->description }} ({{ __('document.file_types.' . $file->type->value, [], 'hu') }})</a>
                                             </div>
                                         </div>
                                     @empty
                                         <span style="font-style:italic;color:red">hiányzó adat</span>
                                     @endforelse
-                                    @if(count($user->application->files ?? []) > 0 && count($user->application->files ?? []) < 2)
-                                        <span
-                                            style="font-style:italic;color:red">legalább 2 fájlt fel kell tölteni</span>
-                                    @endif
                                 </td>
                             </tr>
                             <tr>
