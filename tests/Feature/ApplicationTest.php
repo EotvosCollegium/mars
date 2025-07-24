@@ -329,7 +329,7 @@ class ApplicationTest extends TestCase
         $this->assertContains('Szakmai és motivációs kérdések: megpályázni kívánt műhely', $user->application->missingData());
         $this->assertContains('Szakmai és motivációs kérdések: "Honnan hallott a Collegiumról?" kérdés', $user->application->missingData());
         $this->assertContains('Szakmai és motivációs kérdések: "Miért kíván a Collegium tagja lenni?" kérdés', $user->application->missingData());
-        $this->assertContains('Szakmai és motivációs kérdések: "Tervez-e tovább tanulni a diplomája megszerzése után? Milyen tervei vannak az egyetem után?" kérdés', $user->application->missingData());
+        $this->assertContains('Szakmai és motivációs kérdések: "Tervez-e továbbtanulni a diplomája megszerzése után? Milyen tervei vannak az egyetem után?" kérdés', $user->application->missingData());
         $response = $this->post('/application', [
             'page' => 'questions',
             'status' => 'extern',
@@ -348,7 +348,7 @@ class ApplicationTest extends TestCase
         $this->assertNotContains('Szakmai és motivációs kérdések: megpályázni kívánt műhely', $user->application->missingData());
         $this->assertNotContains('Szakmai és motivációs kérdések: "Honnan hallott a Collegiumról?" kérdés', $user->application->missingData());
         $this->assertNotContains('Szakmai és motivációs kérdések: "Miért kíván a Collegium tagja lenni?" kérdés', $user->application->missingData());
-        $this->assertNotContains('Szakmai és motivációs kérdések: "Tervez-e tovább tanulni a diplomája megszerzése után? Milyen tervei vannak az egyetem után?" kérdés', $user->application->missingData());
+        $this->assertNotContains('Szakmai és motivációs kérdések: "Tervez-e továbbtanulni a diplomája megszerzése után? Milyen tervei vannak az egyetem után?" kérdés', $user->application->missingData());
 
         $user->load(['workshops', 'faculties', 'educationalInformation.studyLines']);
 

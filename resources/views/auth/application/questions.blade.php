@@ -7,7 +7,7 @@
             @csrf
             <div class="card-content">
                 <div class="row">
-                    <x-input.text s=12 id="graduation_average" text="application.graduation_average" type='number' step="0.01" min="0"
+                    <x-input.text s=12 id="graduation_average" text="application.graduation_average" type='number' step='0.1' min='0' max='100'
                                   text="Érettségi átlaga" :value="$user->application->graduation_average"
                                   asterisk
                                   helper='Az összes érettségi tárgy százalékos eredményének hagyományos átlaga'/>
@@ -128,7 +128,7 @@
                         />
                     </div>
                     <div>
-                        <label for="question_3" style="font-size: 15px;color:black">Tervez-e tovább tanulni a diplomája megszerzése után? Milyen tervei vannak az egyetem után? <span style="color:red;" aria-label="required">*</span></label>
+                        <label for="question_3" style="font-size: 15px;color:black">Tervez-e továbbtanulni a diplomája megszerzése után? Milyen tervei vannak az egyetem után? <span style="color:red;" aria-label="required">*</span></label>
                         <x-input.textarea id="question_3"
                                         :value="$user->application->question_3"
                                         style="min-height:200px"
@@ -164,7 +164,9 @@
                                     helper="A neve helyett a listában ez a szó fog szerepelni (5-20 ékezet nélküli nagybetű)."
                                     minlength="5"
                                     maxlength="20"
-                                    pattern="^[A-Z]{5,20}$" />
+                                    pattern="^[A-Z]{5,20}$"
+                                    oninput="this.value = this.value.toUpperCase()"
+                                    asterisk />
                     </div>
                 </div>
 
@@ -184,10 +186,13 @@
         const handlePseudonymVisibility = () => {
             const pseudonymWrapper = document.getElementById('pseudonym-wrapper');
             const publicationConsent = document.querySelector('input[name="publication_consent"]');
+            const pseudonymInput = document.getElementById('pseudonym');
             if (!publicationConsent.checked) {
                 pseudonymWrapper.style.display = 'block';
+                pseudonymInput.disabled = false;
             } else {
                 pseudonymWrapper.style.display = 'none';
+                pseudonymInput.disabled = true;
             }
         }
 
@@ -214,6 +219,24 @@
                     event.returnValue = '';
                 }
             });
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const motivationTextarea = document.getElementById('question_2');
+            const charCount = document.createElement('p');
+            charCount.style.textAlign = 'right';
+            charCount.style.textSize = '0.8em';
+            charCount.style.fontFamily = 'monospace';
+            motivationTextarea.parentElement.appendChild(charCount);
+
+            const setCharCount = () => {
+                const currentLength = motivationTextarea.value.length;
+                charCount.textContent = `${currentLength}`;
+                charCount.style.color = currentLength < 500 ? 'red' : 'grey';
+            };
+
+            setCharCount();
+            motivationTextarea.addEventListener('input', setCharCount);
         });
     </script>
 @endpush

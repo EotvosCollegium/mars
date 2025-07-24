@@ -86,6 +86,13 @@ class Workshop extends Model
         self::TORTENESZ => 'teal darken-4',
     ];
 
+    protected static function booted(): void
+    {
+        static::addGlobalScope('orderByName', function ($builder) {
+            $builder->orderBy('name');
+        });
+    }
+
     /**
      * Defines the BelongsToMany connection to users.
      */

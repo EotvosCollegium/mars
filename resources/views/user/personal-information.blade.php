@@ -24,7 +24,7 @@
         @endif
         <x-input.text
             id="name"
-            text="user.name"
+            text="user.full_name"
             :value="$user->name"
             required
             :disabled="user()->cannot('editStaticPersonalInformation', $user)"
@@ -61,6 +61,7 @@
             :required="$user->isCollegist()"
             :disabled="user()->cannot('editStaticPersonalInformation', $user)"
             asterisk="true"
+            :max="now()->subDay()->toDateString()"
             />
         <x-input.text
             id='mothers_name'
