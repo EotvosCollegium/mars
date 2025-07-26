@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Route;
+use App\Models\User;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -57,6 +59,10 @@ class AppServiceProvider extends ServiceProvider
 
         $this->loadGoogleStorageDriver('google');
         $this->loadGoogleStorageDriver('google_admin');
+
+        Route::bind('user', function ($value) {
+            return User::withoutGlobalScope('verified')->findOrFail($value);
+        });
     }
 
     /**
