@@ -123,6 +123,8 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
     Route::post('/users/{user}/roles/{role}', [UserController::class, 'addRole'])->name('users.roles.add');
     Route::delete('/users/{user}/roles/{role}', [UserController::class, 'removeRole'])->name('users.roles.delete');
     Route::post('/users/update_password', [UserController::class, 'updatePassword'])->name('users.update.password')->withoutMiddleware(LogRequests::class);
+    Route::post('/users/{user}/access_tokens/create', [UserController::class, 'createAccessToken'])->name('users.access-token.create');
+    Route::delete('/users/{user}/access_tokens/{token}', [UserController::class, 'revokeAccessToken'])->name('users.access-token.revoke');
     Route::get('/users/tenant_update/show', [UserController::class, 'showTenantUpdate'])->name('users.tenant-update.show');
 
     /** Localization */
