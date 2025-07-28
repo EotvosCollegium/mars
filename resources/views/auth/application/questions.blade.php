@@ -17,7 +17,7 @@
                         'name' => 'semester_average',
                         'helper' => 'Hagyományos átlag a félév(ek)ben (két tizedesjegyre kerekítve)',
                         'optional' => true,
-                        'items' => $user->application->semester_average,
+                        'items' => empty($user->application->semester_average) ? [null, null] : $user->application->semester_average,
                         'inputAttributes' => ['type' => 'number', 'step' => '0.01', 'min' => '0']])
                     </div>
                     <div class="col s12">
