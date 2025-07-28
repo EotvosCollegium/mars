@@ -16,6 +16,7 @@ class ParentChildForm extends Component
     public $hidden; // hidden state
     public $optional; // if true, the form is hidden by default (meaning no data is given), and a checkbox is added whether the user wants to add data or not
     public $inputAttributes = ['type' => 'text']; // attributes for the input field, can be overridden by the caller
+    public $default_value = [''];
 
     /**
      * Mount the component.
@@ -28,8 +29,12 @@ class ParentChildForm extends Component
         if (is_null($items) || count($items) == 0) {
             $items = [''];
         }
-        $this->items = old($this->name) ?? $items;
-        $this->hidden = $optional ? count($this->items) == 1 && $this->items[0] == '' : false;
+        $this->hidden = $optional ? count($items) == 1 && $items[0] == '' : false;
+
+        if (count($items) == 1 && $items[0] == '') {
+            $items = $this->default_value;
+        }
+        $this->items = $items;
         $this->optional = $optional;
     }
 
