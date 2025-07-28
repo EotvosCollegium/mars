@@ -52,6 +52,7 @@
                 />
             <x-input.select s=12 m=3 id="language" text="Nyelv"
                 :elements="App\View\Components\Input\Select::convertArray(array_merge(config('app.alfonso_languages'), ['other' => ' Egyéb']))"
+                :sortElements="false"
                 asterisk/>
             <x-input.select s=12 m=3 id="level" text="Szint" :elements="['A1', 'A2', 'B1', 'B2','C1', 'C2']"
                 helper="Nem kötelező kitölteni, ha nem lehet átszámítani a fenti értékekre." />

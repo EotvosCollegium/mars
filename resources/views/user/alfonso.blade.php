@@ -33,6 +33,7 @@ felvett, BA/BSc-képzésben vagy osztatlan tanárképzésben résztvevő collegi
         <x-input.select l=5 id="alfonso_language" text="Az Alfonsó program keretében választott nyelv"
                     value='{{ $user->educationalInformation?->alfonso_language }}'
                     :elements="App\View\Components\Input\Select::convertArray(config('app.alfonso_languages'))"
+                    :sortElements="false"
                     allow-empty="{{ isset($application) ? '-' : 'Nem tanulok ALFONSÓt' }}"
                     :disabled="user()->cannot('editStaticEducationalInformation', $user)"
                     :asterisk="!$user->educationalInformation->alfonsoExempted()"
