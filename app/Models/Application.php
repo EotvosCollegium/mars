@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * App\Models\Application
@@ -197,6 +198,35 @@ class Application extends Model
     {
         return $query->whereHas('applicationWorkshops', function ($query) {
             $query->where('admitted', true);
+        });
+    }
+
+    /**
+     * Scope a query to only include applications visible to the current user.
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeVisibleToCurrentUser(Builder $query): Builder
+    {
+        $user = Auth::user();
+
+        $accessible_workshops = \App\Policies\ApplicationPolicy::getAccessibleWorkshops($user);
+        $view_unfinished = $user->can('viewUnfinished', Application::class);
+
+        return $query->where(function ($query) use ($user, $accessible_workshops, $view_unfinished) {
+            $query->where('user_id', $user->id);
+
+            $query->orWhereHas('applicationWorkshops', function ($query) use ($accessible_workshops) {
+                $query->whereIn('workshop_id', $accessible_workshops->pluck('id'));
+            });
+
+            if ($view_unfinished) {
+                $query->orWhereDoesntHave('applicationWorkshops');
+            }
+        })->where(function ($query) use ($view_unfinished) {
+            if (!$view_unfinished) {
+                $query->where('submitted', true);
+            }
         });
     }
 

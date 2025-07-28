@@ -1,8 +1,12 @@
 {{-- desktop profile pic --}}
 <div class="card horizontal hide-on-med-and-down">
     <div class="card-image">
+        @if (isset($user->application) && !isset($user->profilePicture))
+            <p style="font-style:italic;width:300px;text-align:center">Nincs profilkép.</p>
+        @else
         <img src="{{ url($user->profilePicture ? $user->profilePicture->path : '/img/avatar.png') }}"
                 style="max-width:300px; max-height:500px;">
+        @endif
     </div>
     <div class="card-stacked">
         <div class="card-content">
@@ -40,7 +44,12 @@
 {{-- mobile profile pic --}}
 <div class="card hide-on-large-only">
     <div class="card-image" >
-        <img style="max-height: 500px; object-fit: contain;" src="{{ url($user->profilePicture ? $user->profilePicture->path : '/img/avatar.png') }}">
+        @if (isset($user->application) && !isset($user->profilePicture))
+            <p style="font-style:italic;width:100%;text-align:center">Nincs profilkép.</p>
+        @else
+        <img src="{{ url($user->profilePicture ? $user->profilePicture->path : '/img/avatar.png') }}"
+                style="max-height: 500px; object-fit: contain;">
+        @endif
     </div>
         <div class="card-content">
             <div class="card-title">{{$user->name}}</div>

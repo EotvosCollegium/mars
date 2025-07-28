@@ -18,6 +18,7 @@
                         'helper' => 'Hagyományos átlag a félév(ek)ben (két tizedesjegyre kerekítve)',
                         'optional' => true,
                         'items' => $user->application->semester_average,
+                        'default_value' => [null, null], 
                         'inputAttributes' => ['type' => 'number', 'step' => '0.01', 'min' => '0']])
                     </div>
                     <div class="col s12">
@@ -142,7 +143,7 @@
                         />
                     </div>
                     <x-input.textarea id="present"
-                                      text="Amennyiben nem tud jelen lenni a felvételi teljes ideje alatt (kedd-péntek), kérjük itt indoklással jelezze!"
+                                      text="Amennyiben nem tud jelen lenni a felvételi teljes ideje alatt (hétfő-szerda), kérjük itt indoklással jelezze!"
                                       :value="$user->application->present"
                                       helper="Változás esetén értesítse a titkárságot!"
                                       maxlength="5000"

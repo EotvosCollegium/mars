@@ -25,6 +25,7 @@
                     :value="$value?->training_code"
                     :required="$user->isCollegist(alumni: true)"
                     helper="Pl. TTK-FIZIKA-NBHU"
+                    elaborated-helper="A Neptunban belépést követően a legfelső sávban található."
                     asterisk
                     :disabled="user()->cannot('edit', $user)"
                     maxlength="255"

@@ -12,7 +12,7 @@
                             @endif
                             >
                         @else
-                            <span style="font-style:italic;color:red"
+                            <span style="font-style:italic"
                             @if ($user->id != user()->id)
                                 class="hideable-picture"
                             @endif>Nincs profilkép.</span>
