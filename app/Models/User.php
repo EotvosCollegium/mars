@@ -28,6 +28,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
+use Laravel\Sanctum\HasApiTokens;
 
 /**
  * App\Models\User
@@ -120,6 +121,7 @@ use Illuminate\Support\Facades\Mail;
  */
 class User extends Authenticatable implements HasLocalePreference
 {
+    use HasApiTokens;
     use NotificationCounter;
     use Notifiable;
     use HasFactory;
