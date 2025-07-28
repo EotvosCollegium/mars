@@ -7,6 +7,7 @@ use App\Models\Role;
 use App\Models\User;
 use App\Models\Workshop;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Database\Eloquent\Collection;
 
 class ApplicationPolicy
 {
@@ -130,4 +131,15 @@ class ApplicationPolicy
         return $user->hasRole([Role::SYS_ADMIN, Role::SECRETARY]);
     }
 
+    /**
+     * @param User $user
+     * @return Collection|Workshop[]
+     */
+    public static function getAccessibleWorkshops(User $user): Collection
+    {
+        if ($user->cannot('viewAll', Application::class)) {
+            return $user->roleWorkshops->concat($user->applicationCommitteWorkshops);
+        }
+        return Workshop::all();
+    }
 }

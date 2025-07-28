@@ -380,4 +380,14 @@ class UserPolicy
     {
         return $user->hasRole(Role::SECRETARY);
     }
+
+    /**
+     * @param User $user
+     * @param User $target
+     * @return bool
+     */
+    public function manageAccessTokens(User $user, User $target): bool
+    {
+        return $user->id == $target->id && $user->hasRole([Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS]);
+    }
 }

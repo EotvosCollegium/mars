@@ -1,0 +1,24 @@
+type Query {
+    applications(
+      submitted: Boolean @eq
+    ): [Application!]! @all @builder(method: "\\App\\Models\\Application@scopeVisibleToCurrentUser")
+}
+
+type User {
+    id: ID!
+    name: String!
+}
+
+type Workshop {
+    id: ID!
+    name: String!
+}
+
+type Application {
+    id: ID!
+    user: User!
+    submitted: Boolean!
+    applied_for_resident_status: Boolean
+    appliedWorkshops: [Workshop!] @hasManyThrough
+    admittedWorkshops: [Workshop!] @hasManyThrough
+}

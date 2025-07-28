@@ -380,6 +380,54 @@ class UserController extends Controller
     }
 
     /**
+     * Revoke a personal access token for the user.
+     * @param Request $request
+     * @param User $user
+     * @param int $token
+     * @return RedirectResponse
+     * @throws AuthorizationException
+     */
+    public function revokeAccessToken(Request $request, User $user, int $token): RedirectResponse
+    {
+        $this->authorize('manageAccessTokens', $user);
+        session()->put('section', 'access_tokens');
+
+        $token = $user->tokens()->find($token);
+        if (!$token) {
+            return redirect()->back()->with('error', 'Access token not found.');
+        }
+
+        $token->delete();
+
+        return redirect()->back()->with('message', __('general.successful_modification'));
+    }
+
+    /**
+     * Creates a new personal access token for the user.
+     * @param Request $request
+     * @param User $user
+     * @return RedirectResponse
+     * @throws AuthorizationException
+     */
+    public function createAccessToken(Request $request, User $user): RedirectResponse
+    {
+        $this->authorize('manageAccessTokens', $user);
+        session()->put('section', 'access_tokens');
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'expires_at' => 'nullable|date|after:today',
+        ]);
+        if (isset($validatedData['expires_at'])) {
+            $expiresAt = \Carbon\Carbon::parse($validatedData['expires_at']);
+        } else {
+            $expiresAt = null;
+        }
+        $token = $user->createToken($validatedData['name'], ['*'], $expiresAt);
+
+        return redirect()->back()->with('message', __('general.successfully_added'))->with('new-access-token', $token->plainTextToken);
+    }
+
+    /**
      * Shows a list of users.
      * @return \Illuminate\Contracts\View\View
      */
