@@ -79,6 +79,17 @@
         </div>
     </li>
 </ul>
+@can('manageAccessTokens', $user)
+    {{-- Access Tokens --}}
+    <ul class="collapsible">
+        <li @if(session()->get('section') == "access_tokens") class="active" @endif>
+            <div class="collapsible-header"><b>@lang('user.access_tokens')</b></div>
+            <div class="collapsible-body">
+                @include('user.access_tokens', ['user' => $user])
+            </div>
+        </li>
+    </ul>
+@endcan
 @if(user()->id == $user->id)
     {{-- Change Password--}}
     <ul class="collapsible">
