@@ -19,7 +19,12 @@
     </label>
     @endif
     @if($helper ?? null)
-    <span class="helper-text">{{ $helper }}</span>
+        <span class="helper-text">
+            {{ $helper }}
+            @if ($elaboratedHelper)
+                <i class="material-icons tooltipped" style="font-size: 1.25em; vertical-align: -0.2em; cursor: default" data-tooltip="{{ $elaboratedHelper }}">info_outline</i>
+            @endif
+        </span>
     @endif
     @error($id)
         <span class="helper-text" data-error="{{ $message }}"></span>
