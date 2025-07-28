@@ -85,8 +85,7 @@ class AdmissionController extends Controller
         $authUser = $request->user();
         $this->authorize('viewSome', Application::class);
 
-        $applications = Application::query();
-        $accessible_workshops = $this->getAccessibleWorkshops($authUser);
+        $applications = Application::visibleToCurrentUser();
         $filtered_workshop = $this->getFilteredWorkshop($request);
         $status_filter = $request->input('status_filter') ?? 'submitted';
         $should_show_unsubmitted = $status_filter == 'everybody' || $status_filter == 'unsubmitted';
@@ -95,9 +94,8 @@ class AdmissionController extends Controller
             abort(403, 'You are not authorized to access unsubmitted applications.');
         }
 
-        $applications->where(function ($query) use ($accessible_workshops, $filtered_workshop, $status_filter, $should_show_unsubmitted) {
-            $query->whereHas('applicationWorkshops', function ($query) use ($accessible_workshops, $filtered_workshop, $status_filter) {
-                $query->whereIn('workshop_id', $accessible_workshops->pluck('id'));
+        $applications->where(function ($query) use ($filtered_workshop, $status_filter, $should_show_unsubmitted) {
+            $query->whereHas('applicationWorkshops', function ($query) use ($filtered_workshop, $status_filter) {
                 if ($filtered_workshop) {
                     $query->where('workshop_id', $filtered_workshop->id);
                 }
@@ -131,7 +129,7 @@ class AdmissionController extends Controller
         return view('auth.admission.index', [
             'applications' => $applications,
             'workshop' => $request->input('workshop'), //filtered workshop
-            'workshops' => $accessible_workshops, //workshops that can be chosen to filter
+            'workshops' => \App\Policies\ApplicationPolicy::getAccessibleWorkshops($authUser), //workshops that can be chosen to filter
             'status_filter' => $status_filter,
             'applicationDeadline' => $this->getDeadline(),
             'periodicEvent' => $this->periodicEvent()
@@ -279,18 +277,6 @@ class AdmissionController extends Controller
             return Workshop::find($request->get('workshop'));
         }
         return null;
-    }
-
-    /**
-     * @param User $user
-     * @return Collection|Workshop[]
-     */
-    public function getAccessibleWorkshops(User $user): Collection
-    {
-        if ($user->cannot('viewAll', Application::class)) {
-            return $user->roleWorkshops->concat($user->applicationCommitteWorkshops);
-        }
-        return Workshop::all();
     }
 
     /**
