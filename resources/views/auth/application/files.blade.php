@@ -12,6 +12,8 @@
         </div>
     </div>
 
+    @include('utils.user.profile-picture', ['user' => $user])
+
     @include('auth.application.file_upload', [
         'application' => $user->application,
         'type' => App\Enums\FileType::RESUME,

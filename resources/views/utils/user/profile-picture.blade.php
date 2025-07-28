@@ -27,7 +27,7 @@
                 @csrf
                 <div class="card-action valign-center">
                     <x-input.file s="12" l="7" xl="8" id="picture" style="margin-top:auto" accept=".jpg,.png,.jpeg"
-                                    text="Profilkép választása - nem kötelező" required helper=".jpg,.png,.jpeg fájlok tölthetőek fel,
+                                    text="Profilkép választása" required helper=".jpg,.png,.jpeg fájlok tölthetőek fel,
                                     maximum {{config('custom.general_file_size_limit')/1000}} MB-os méretig."/>
                     <x-input.button only_input class="right" style="margin-top: 20px" text="general.upload"/>
                 </div>
@@ -50,7 +50,7 @@
                         enctype="multipart/form-data">
                     @csrf
                     <x-input.file s="12" id="picture" style="margin-top:auto; margin-bottom: 20px" accept=".jpg,.png,.jpeg"
-                                    text="Profilkép választása - nem kötelező" required
+                                    text="Profilkép választása" required
                                     helper=".jpg,.png,.jpeg fájlok tölthetőek fel, maximum {{config('custom.general_file_size_limit')/1000}} MB-os méretig."/>
                     <x-input.button only_input class="right" style="margin-top: 10px; margin-left: 10px" text="general.upload"/>
                 </form>
