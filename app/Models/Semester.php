@@ -78,7 +78,7 @@ class Semester extends Model
     public static function allUntilCurrent()
     {
         return Semester::all()->filter(function ($value, $key) {
-            return $value->getStartDate() < Carbon::now();
+            return $value->getStartDate() <= Carbon::now();
         });
     }
 
