@@ -138,7 +138,7 @@ class ApplicationPolicy
     public static function getAccessibleWorkshops(User $user): Collection
     {
         if ($user->cannot('viewAll', Application::class)) {
-            return $user->roleWorkshops->concat($user->applicationCommitteWorkshops);
+            return $user->roleWorkshops->merge($user->applicationCommitteWorkshops);
         }
         return Workshop::all();
     }
