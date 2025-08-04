@@ -12156,7 +12156,8 @@ $jscomp.polyfill = function (e, r, p, m) {
           this.options.dropdownOptions.autoFocus = false; 
 
           var placeholder = this.el.getAttribute('searchable');
-          var element = $('<div class="input-field col s12"><input type="text" class="dropDownsearch" style="margin: 5px 0px 16px 15px; width: 96%;"> <label for="first_name">'+ placeholder + '</label></div>');
+          var randomId = M.guid();
+          var element = $(`<div class="input-field col s12"><input type="text" id="search-${randomId}" class="dropDownsearch" style="margin: 5px 0px 16px 15px; width: 96%;"> <label for="search-${randomId}">${placeholder}</label></div>`);
           $(this.dropdownOptions).append(element);
           element.children().first().on('keyup', function(event){
             applySeachInList(this.value);
