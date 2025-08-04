@@ -20,7 +20,7 @@
                     <div class="markdown_with_red">
                         @markdown(\App\Models\ConfigurableText::getText("APPLICANT_REGISTRATION"))
                     </div>
-                    
+
                     @else
 
                     <div class="markdown_with_red">
@@ -40,7 +40,7 @@
                         <x-input.text id="password" text="registration.password" type="password" required autocomplete="new-password" />
                         <x-input.text id="confirmpwd" text="registration.confirmpwd" name="password_confirmation" type="password" required autocomplete="new-password" />
                         @if ($user_type == \App\Models\Role::TENANT)
-                        <x-input.text id='phone_number' type='tel' required pattern="[+][0-9]{1,4}[-\s()0-9]*" minlength="8" maxlength="18" text='user.phone_number' helper='+36 (20) 123-4567' />
+                        <x-input.text id='phone_number' type='tel' required pattern="\+[0-9]{1,4}[\-\s\(\)0-9]*" minlength="8" maxlength="18" text='user.phone_number' helper='+36 (20) 123-4567' />
                         <x-input.datepicker id='tenant_until' required text='user.tenant_until' />
                         @else
                         <div class="col">
