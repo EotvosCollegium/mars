@@ -24,6 +24,7 @@
         @endif
         <x-input.text
             id="name"
+            autocomplete="name"
             text="user.full_name"
             :value="$user->name"
             required
@@ -34,6 +35,7 @@
         <x-input.text
             id="email"
             type="email"
+            autocomplete="email"
             text="user.email"
             :value="$user->email"
             required
@@ -77,6 +79,7 @@
         <x-input.text
             id='phone_number'
             type='tel'
+            autocomplete='tel'
             pattern="[+][0-9]{1,4}[-\s()0-9]*"
             minlength="8"
             maxlength="18"
@@ -101,6 +104,7 @@
             />
         <x-input.text
             l=6 id='county'
+            autocomplete='address-level1'
             text='user.county'
             required
             :value="$user->personalInformation?->county"
@@ -112,6 +116,7 @@
         <x-input.text
             l=6
             id='zip_code'
+            autocomplete='postal-code'
             text='user.zip_code'
             :value="$user->personalInformation?->zip_code"
             :required="$user->isCollegist()"
@@ -121,6 +126,7 @@
             />
         <x-input.text
             id='city'
+            autocomplete='address-level2'
             text='user.city'
             :value="$user->personalInformation?->city"
             :required="$user->isCollegist()"
@@ -130,6 +136,7 @@
         />
         <x-input.text
             id='street_and_number'
+            autocomplete='street-address'
             text='user.street_and_number'
             :value="$user->personalInformation?->street_and_number"
             :required="$user->isCollegist()"
