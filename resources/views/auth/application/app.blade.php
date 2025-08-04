@@ -57,7 +57,7 @@
             <ul class="tabs tabs-transparent" style="display: flex; flex-wrap: wrap; height: auto;">
                 <li class="tab">
                     <a href="{{ route('application', ['page' => 'personal']) }}"
-                        class="{{ request()->get('page') == 'personal' ? 'active' : '' }}">Személyes adatok</a>
+                        class="{{ request()->get('page', 'personal') == 'personal' ? 'active' : '' }}">Személyes adatok</a>
                 </li>
                 <li class="tab">
                     <a href="{{ route('application', ['page' => 'educational']) }}"
