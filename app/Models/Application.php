@@ -157,6 +157,14 @@ class Application extends Model
     }
 
     /**
+     * The workshops models that the user was called in by.
+     */
+    public function calledInWorkshops(): HasManyThrough
+    {
+        return $this->appliedWorkshops()->where('application_workshops.called_in', true);
+    }
+
+    /**
      * The Workshop models that the user admitted to.
      */
     public function admittedWorkshops(): HasManyThrough
