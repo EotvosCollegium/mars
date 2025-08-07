@@ -1,5 +1,5 @@
 @component('mail::message')
-    <h1>@lang('mail.dear') Felvételiztető!</h1>
+    <h1>Kedves Felvételiztető!</h1>
     <p>
         {{ $modifier->name }} módosította {{ $application->user->name }} felvételi adatlapjához tartozó megjegyzést.
     </p>
@@ -12,6 +12,6 @@
         @endif
     </p>
     @component('mail::button', ['url'=>  route('admission.applicants.show', ['application' => $application->id])])
-        Adatlap megtakintése
+        Adatlap megtekintése
     @endcomponent
 @endcomponent
