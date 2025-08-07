@@ -1,8 +1,8 @@
 //custom color
 $coli: (
-    "blue": if($isDebug == "true", #5e1a10, #242851),
-    "orange": if($isDebug == "true", #dc3c1c, #b38f2f),
-    "lightblue": #6e76e5
+    "blue": #137e00,
+    "orange": #ffae00,
+    "lightblue": #abffa5
 );
 //import and overwrite default colors
 @import "~@materializecss/materialize/sass/components/color-variables";
