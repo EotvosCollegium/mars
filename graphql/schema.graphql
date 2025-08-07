@@ -20,5 +20,6 @@ type Application {
     submitted: Boolean!
     applied_for_resident_status: Boolean
     appliedWorkshops: [Workshop!] @hasManyThrough
+    calledInWorkshops: [Workshop!] @hasManyThrough
     admittedWorkshops: [Workshop!] @hasManyThrough
 }
