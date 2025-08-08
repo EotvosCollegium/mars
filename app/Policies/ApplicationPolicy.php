@@ -27,12 +27,13 @@ class ApplicationPolicy
     }
     public function update(User $user, Application $target): bool
     {
-        if(!$target->submitted)
+        if (!$target->submitted) {
             return $user->hasRole([
                 Role::SECRETARY,
                 Role::DIRECTOR,
                 Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS
             ]);
+        }
         return $user->can('viewAll', Application::class) ||
                 $target->appliedWorkshops
                 ->intersect($user->applicationCommitteWorkshops)
