@@ -9,10 +9,21 @@
 	"customizations": {
 		"vscode": {
 			"settings": {
-				"php-cs-fixer.executablePath": "${workspaceFolder}/vendor/bin/php-cs-fixer"
+				"php-cs-fixer.executablePath": "/workspace/mars/vendor/bin/php-cs-fixer",
+				"editor.formatOnSave": true,
+				"editor.formatOnSaveMode": "modifications",
+				"[php]": {
+					"editor.defaultFormatter": "junstyle.php-cs-fixer"
+				},
+				"cSpell.language": "en,hu"
 			},
 			"extensions": [
-				"junstyle.php-cs-fixer"
+				"bmewburn.vscode-intelephense-client",
+				"graphql.vscode-graphql-syntax",
+				"junstyle.php-cs-fixer",
+				"laravel.vscode-laravel",
+				"streetsidesoftware.code-spell-checker",
+				"streetsidesoftware.code-spell-checker-hungarian"
 			]
 		}
 	},
