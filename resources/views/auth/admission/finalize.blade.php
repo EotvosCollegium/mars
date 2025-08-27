@@ -55,12 +55,7 @@
             <div class="row">
                 <div class="col">
                     <blockquote>Ezzel együtt minden más felvételiző (az újrafelvételizők mellőzésével) elutasításra, anyagai törlésre, valamint az összes
-                        felvételihez kapcsolódó (felvételiztető) jog elvételre kerül. Az alábbi felhasználók kerülnek törlésre:</blockquote>
-                    @foreach($users_to_delete as $user)
-                        <a href="{{route('admission.applicants.show', ['application' => $user->application->id])}}">
-                            {{ $user->name }}
-                        </a><br/>
-                    @endforeach
+                        felvételihez kapcsolódó (felvételiztető) jog elvételre kerül.</blockquote>
                 </div>
                 <div class="col">
                     <blockquote>A művelet végrehajtása előtt ajánlott biztonsági mentést készíteni az adatbázisról. A lezárást célszerű parancssoron keresztül, a szerveren végrehajtani.</blockquote>
