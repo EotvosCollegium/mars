@@ -238,8 +238,8 @@ class AdmissionController extends Controller
                 $application->user->internetAccess->extendInternetAccess($this->semester()->getStartDate()->addMonth());
             }
 
-            foreach (Application::all() as $application){
-                if($application->user->verified){
+            foreach (Application::all() as $application) {
+                if ($application->user->verified) {
                     // soft deletes application, keep them for future reference
                     // (see https://github.com/EotvosCollegium/mars/issues/332#issuecomment-2014058021)
                     $application->delete();
