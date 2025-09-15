@@ -66,8 +66,9 @@ class UserController extends Controller
         $path = $request->file('picture')->store('avatars');
         $old_profile = $user->profilePicture;
         if ($old_profile) {
+            $old_path = $old_profile->path;
             $old_profile->update(['path' => $path]);
-            Storage::delete($old_profile->path);
+            Storage::delete($old_path);
         } else {
             $user->profilePicture()->create(['path' => $path, 'type' => 'profile_picture']);
         }
