@@ -26,7 +26,9 @@
                         </span>
                     </span>
                     <div class="row">
-                        <x-input.text id="passcode" text="voting.passcode" required />
+                        <div class="input-field col s12">
+                            <x-input.text id="passcode" text="voting.passcode" required inputmode="numeric" />
+                        </div>
                     </div>
                 </div>
                 <div class="card-action row">

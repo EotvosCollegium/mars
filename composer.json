@@ -19,7 +19,8 @@
         "livewire/livewire": "^3.0",
         "maatwebsite/excel": "^3.1",
         "masbug/flysystem-google-drive-ext": "^2.2",
-        "nuwave/lighthouse": "^6.62"
+        "nuwave/lighthouse": "^6.62",
+        "spomky-labs/otphp": "^11.3"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.7",
