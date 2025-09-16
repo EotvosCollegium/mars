@@ -12,75 +12,6 @@
     <div class="col s12">
         <div class="card">
             <div class="card-content">
-                <span class="card-title">{{ $general_assembly->title }}
-                    @if($general_assembly->isOpen())
-                    <span class="right">
-                        <a href="{{ route('general_assemblies.show_code', $general_assembly) }}">
-                            @livewire('passcode', ['isFullscreen' => false])
-                        </a>
-                    </span>
-                    @endif
-                </span>
-                <table>
-                    <tbody>
-                        <tr>
-                            <th scope="row">@lang('voting.opened_at')</th>
-                            <td>{{ $general_assembly->opened_at }}
-
-                                @can('administer', $general_assembly)
-                                @if(!$general_assembly->hasBeenOpened())
-                                <form action="{{ route('general_assemblies.open', $general_assembly->id) }}" method="POST">
-                                    @csrf
-                                    <x-input.button text="voting.open_sitting" class="green" />
-                                </form>
-                                @endif
-                                @endcan
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">@lang('voting.closed_at')</th>
-                            <td>{{ $general_assembly->closed_at }}
-
-                                @can('administer', $general_assembly)
-                                @if($general_assembly->isOpen())
-                                    <form action="{{ route('general_assemblies.close', $general_assembly->id) }}" method="POST">
-                                        @csrf
-                                        <x-input.button text="voting.close_sitting" class="red" />
-                                    </form>
-                                @endif
-                                @endcan
-                            </td>
-                        </tr>
-                        <tr>
-                            @php
-                                $attendees = $general_assembly->attendees();
-                            @endphp
-                            <th scope="row">@lang('voting.attendees') ({{$attendees->count()}} fő)*</th>
-                            <td>
-                                <ul>
-                                @foreach ($attendees->sortBy('name') as $attendee)
-                                    <li>{{ $attendee->uniqueName }}</li>
-                                @endforeach
-                                </ul>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <blockquote>
-                    * Résztvevőnek számít az, aki legfeljebb 2 jelenlét-ellenőrzésen nem vett részt (amennyiben összesen legfeljebb 2 volt, úgy az összes jelenlét-ellenőrzésen részt vettek számítanak). Csak aktív státuszú collegisták szavazhatnak.
-                </blockquote>
-                @if(!Auth::user()->isActive())
-                <blockquote class="red-text">@lang('voting.not_active')</blockquote>
-                @endif
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col s12">
-        <div class="card">
-            <div class="card-content">
                 <span class="card-title">@lang('voting.questions')</span>
                 <table>
                     <thead>
@@ -219,6 +150,78 @@
                     @endforeach
                     </tbody>
                 </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col s12">
+        <div class="card">
+            <div class="card-content">
+                <span class="card-title">{{ $general_assembly->title }}
+                    @if($general_assembly->isOpen())
+                    <span class="right">
+                        <a href="{{ route('general_assemblies.show_code', $general_assembly) }}">
+                            @livewire('passcode', ['isFullscreen' => false])
+                        </a>
+                    </span>
+                    @endif
+                </span>
+                <table>
+                    <tbody>
+                        <tr>
+                            <th scope="row">@lang('voting.opened_at')</th>
+                            <td>{{ $general_assembly->opened_at }}
+
+                                @can('administer', $general_assembly)
+                                @if(!$general_assembly->hasBeenOpened())
+                                <form action="{{ route('general_assemblies.open', $general_assembly->id) }}" method="POST">
+                                    @csrf
+                                    <x-input.button text="voting.open_sitting" class="green" />
+                                </form>
+                                @endif
+                                @endcan
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">@lang('voting.closed_at')</th>
+                            <td>{{ $general_assembly->closed_at }}
+
+                                @can('administer', $general_assembly)
+                                @if($general_assembly->isOpen())
+                                    <form action="{{ route('general_assemblies.close', $general_assembly->id) }}" method="POST">
+                                        @csrf
+                                        <x-input.button text="voting.close_sitting" class="red" />
+                                    </form>
+                                @endif
+                                @endcan
+                            </td>
+                        </tr>
+                        <tr>
+                            @php
+                                $attendees = $general_assembly->attendees();
+                            @endphp
+                            <th scope="row">@lang('voting.attendees') ({{$attendees->count()}} fő)*</th>
+                            <td>
+                                <details>
+                                    <summary>Résztvevők mutatása</summary>
+                                    <ul>
+                                        @foreach ($attendees->sortBy('name') as $attendee)
+                                            <li>{{ $attendee->uniqueName }}</li>
+                                        @endforeach
+                                    </ul>
+                                </details>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <blockquote>
+                    * Résztvevőnek számít az, aki legfeljebb 2 jelenlét-ellenőrzésen nem vett részt (amennyiben összesen legfeljebb 2 volt, úgy az összes jelenlét-ellenőrzésen részt vettek számítanak). Csak aktív státuszú collegisták szavazhatnak.
+                </blockquote>
+                @if(!Auth::user()->isActive())
+                <blockquote class="red-text">@lang('voting.not_active')</blockquote>
+                @endif
             </div>
         </div>
     </div>

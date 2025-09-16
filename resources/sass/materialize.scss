@@ -134,6 +134,10 @@ table.ranking-stats td.round-of-elimination {
     font-weight: bold;
 }
 
+summary {
+    cursor: pointer;
+}
+
 /* Settings for dark mode */
 $transition-effects: color 1s ease, background-color 0.5s ease;
 
