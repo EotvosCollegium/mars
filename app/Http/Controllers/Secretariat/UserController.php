@@ -318,7 +318,7 @@ class UserController extends Controller
      */
     public function deleteLanguageExam(Request $request, User $user, LanguageExam $exam)
     {
-        $this->authorize('edit', $user);
+        $this->authorize('editStaticEducationalInformation', $user);
         if ($exam->educationalInformation->user->isNot($user)) {
             abort(400, 'The language exam does not belong to the given user.');
         }
