@@ -5,12 +5,13 @@ namespace App\Providers;
 use App\Listeners\MailGate;
 use App\Models\FreePrintingCredits;
 use App\Models\GeneralAssemblies\GeneralAssembly;
-use App\Models\PeriodicEvent;
+use App\Models\LanguageExam;
 use App\Models\PrintAccount;
 use App\Models\RoleUser;
 use App\Models\SemesterStatus;
 use App\Observers\FreePrintingCreditsObserver;
 use App\Observers\GeneralAssemblyObserver;
+use App\Observers\LanguageExamObserver;
 use App\Observers\PrintAccountObserver;
 use App\Observers\RoleUserObserver;
 use App\Observers\StatusObserver;
@@ -48,5 +49,6 @@ class EventServiceProvider extends ServiceProvider
         PrintAccount::observe(PrintAccountObserver::class);
         RoleUser::observe(RoleUserObserver::class);
         GeneralAssembly::observe(GeneralAssemblyObserver::class);
+        LanguageExam::observe(LanguageExamObserver::class);
     }
 }
