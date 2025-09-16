@@ -11,7 +11,9 @@
                         <th>Szint</th>
                         <th>Típus</th>
                         <th>Dátum</th>
-                        <th></th> {{-- for the delete buttons --}}
+                        @can('editStaticEducationalInformation', $user)
+                            <th></th> {{-- for the delete buttons --}}
+                        @endcan
                     </tr>
                 </thead>
                 <tbody>
@@ -27,13 +29,15 @@
                             {{$exam->date->format('Y-m-d')}}
                             @endif
                         </td>
-                        <td>
-                            <form method="POST" action="{{ route('users.language_exams.delete', ['user' => $user, 'exam' => $exam]) }}">
-                                @csrf
-                                @method('delete')
-                                <x-input.button floating icon="delete" class="red right" />
-                            </form>
-                        </td>
+                        @can('editStaticEducationalInformation', $user)
+                            <td>
+                                <form method="POST" action="{{ route('users.language_exams.delete', ['user' => $user, 'exam' => $exam]) }}">
+                                    @csrf
+                                    @method('delete')
+                                    <x-input.button floating icon="delete" class="red right" />
+                                </form>
+                            </td>
+                        @endcan
                     </tr>
                 @endforeach
                 </tbody>
