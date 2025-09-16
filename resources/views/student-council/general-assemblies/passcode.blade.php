@@ -3,7 +3,7 @@
     <div
         @if($isFullscreen)class="center" style="font-size: 15em;"@endif
     >
-    @lang('voting.passcode'): <span style="font-family: Monospace;">{{$this->passcode}}</span>
+    @if(!$isFullscreen)@lang('voting.passcode'): @endif<span style="font-family: sans-serif;">{{$this->passcode}}</span>
     </div>
     @endcan
 </div>
