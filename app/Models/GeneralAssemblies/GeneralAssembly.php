@@ -14,6 +14,8 @@ use Carbon\Carbon;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
+use OTPHP\TOTP;
+use ParagonIE\ConstantTime\Base32;
 
 /**
  * App\Models\GeneralAssemblies\GeneralAssembly
@@ -207,11 +209,18 @@ class GeneralAssembly extends Model
     }
 
     /**
-     * Returns a random 6 char string, refreshed every minute.
+     * Returns a TOTP-based 6 digit passcode, refreshed every minute.
      */
-    public static function getTemporaryPasscode($offset = "0 minute"): string
+    public static function getTemporaryPasscode($offset = 'now'): string
     {
-        return substr(hash('sha256', date('Y-m-d H:i', strtotime($offset))), 0, 6);
+        $appKey = config('app.key');
+        // Remove 'base64:' prefix if present
+        if (str_starts_with($appKey, 'base64:')) {
+            $appKey = Base32::encode(base64_decode(substr($appKey, 7)));
+        }
+        $totp = TOTP::create($appKey, 60, 'sha1', 6);
+        $timestamp = strtotime($offset);
+        return $totp->at($timestamp);
     }
 
     /**
@@ -220,7 +229,7 @@ class GeneralAssembly extends Model
      */
     public static function isTemporaryPasscode(string $value): bool
     {
-        return $value == self::getTemporaryPasscode()
-            || $value == self::getTemporaryPasscode('-1 minute');
+        return $value === self::getTemporaryPasscode()
+            || $value === self::getTemporaryPasscode('-60 seconds');
     }
 }
