@@ -123,11 +123,32 @@ class EpistolaController extends Controller
         });
     }
 
-    public function preview()
+    public function preview(Request $request)
     {
         $this->authorize('view', EpistolaNews::class);
 
-        return (new EpistolaCollegii(self::getActiveNews()));
+        $data = $request->validate([
+            'ids' => 'nullable|array',
+            'ids.*' => 'integer|exists:epistola,id',
+            'date' => 'nullable|date',
+        ]);
+
+        $ids = $data['ids'] ?? null;
+        $date = $data['date'] ?? null;
+
+        $epistolas = $ids ? EpistolaNews::whereIn('id', $ids)->get() : self::getActiveNews();
+
+        return new EpistolaCollegii($epistolas, $date);
+    }
+
+    /**
+     * Public listing page to select epistolas for preview
+     */
+    public function listAll()
+    {
+        $this->authorize('view', EpistolaNews::class);
+        $epistolas = EpistolaNews::orderByDesc('date_for_sorting')->get();
+        return view('student-council.communication-committee.epistola_list', ['epistolas' => $epistolas]);
     }
 
     public function send()
