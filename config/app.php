@@ -10,12 +10,11 @@ return [
     | This value is the name of your application. This value is used when the
     | framework needs to place the application's name in a notification or
     | any other location as required by the application or its packages.
-    |
     */
 
     'name' => env('APP_NAME', 'Urán'),
 
-    'version' => '3.35.10', // update on release
+    'version' => '3.35.11', // update on release
 
     'logo_blue_path' => env('APP_ENV', "local") != "production" ? '/img/mars.png' : '/img/uran_blue.png',
 
