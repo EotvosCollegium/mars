@@ -25,7 +25,7 @@ class QuestionController extends Controller
     /**
      * Saves a new question.
      */
-    protected function createQuestion(Request $request, Semester|GeneralAssembly $parent = null): Question
+    protected function createQuestion(Request $request, Semester|GeneralAssembly $parent = null, $opened_at = null, $closed_at = null): Question
     {
         $validator = Validator::make($request->all(), [
             'title' => 'required|string',
@@ -55,6 +55,8 @@ class QuestionController extends Controller
             'title' => $validatedData['title'],
             'max_options' => isset($validatedData['max_options']) ? $validatedData['max_options'] : null,
             'question_type' => $validatedData['question_type'],
+            'opened_at' => $opened_at,
+            'closed_at' => $closed_at,
         ]);
         if ($validatedData['question_type'] == Question::SELECTION || $validatedData['question_type'] == Question::RANKING) {
             foreach ($options as $option) {
