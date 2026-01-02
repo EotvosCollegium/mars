@@ -70,7 +70,9 @@ class AnonymousQuestionController extends QuestionController
             abort(403, "tried to add a question to a closed semester");
         }
 
-        $question = $this->createQuestion($request, $semester);
+        $event = $this->periodicEventForSemester($semester);
+
+        $this->createQuestion($request, $semester, $event?->start_date, $event?->end_date);
 
         session()->put('section', $semester->id);
         return redirect()->route('anonymous_questions.index_semesters')

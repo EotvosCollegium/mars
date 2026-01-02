@@ -74,7 +74,7 @@
             <table class="inner-body" align="center" width="570" cellpadding="0" cellspacing="0" role="presentation">
                 <tr>
                     <td class="content-cell">
-                        <p class="date">{{ now()->format('Y. m. d.') }}</p>
+                        <p class="date">{{ $preview_date->format('Y. m. d.') }}</p>
                         <h1>
                             Kedves Collegisták!<br>
                             Az alábbiakban a collegiumi Választmány hírlevelét olvashatjátok.<br>

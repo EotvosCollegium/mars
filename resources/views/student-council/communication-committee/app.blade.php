@@ -30,6 +30,11 @@
             <i class="large material-icons">add</i>
           </a>
         @endcan
+        @can('view', \App\Models\EpistolaNews::class)
+        <a class="btn-floating blue right" style="margin-left: 10px" href="{{ route('epistola.list') }}">
+            <i class="large material-icons">history</i>
+          </a>
+        @endcan
     </div>
 </div>
 <div class="cards-container">
