@@ -80,7 +80,7 @@
             id='phone_number'
             type='tel'
             autocomplete='tel'
-            pattern="[+][0-9]{1,4}[-\s()0-9]*"
+            pattern="\+[0-9]{1,4}[\-\s\(\)0-9]*"
             minlength="8"
             maxlength="18"
             text='user.phone_number'

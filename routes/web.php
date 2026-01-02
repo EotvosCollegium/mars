@@ -258,6 +258,7 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
 
 
     Route::get('/communication_committee/epistola', [EpistolaController::class, 'index'])->name('epistola');
+    Route::get('/communication_committee/epistola/list', [EpistolaController::class, 'listAll'])->name('epistola.list');
     Route::get('/communication_committee/epistola/new', [EpistolaController::class, 'new'])->name('epistola.new');
     Route::get('/communication_committee/epistola/edit/{epistola}', [EpistolaController::class, 'edit'])->name('epistola.edit');
     Route::post('/communication_committee/epistola/update_or_create', [EpistolaController::class, 'updateOrCreate'])->name('epistola.update_or_create');
