@@ -8,7 +8,7 @@
 </div>
 <blockquote>
     A fenti listában meg kell jelennie a következő tisztségeknek: műhelytitkár, választmányi tag, bizottsági tag, CHÖK titkár, kuratóriumi diáktag, rendszergazda, etikai biztos.<br>
-    Ha bármelyiket betöltöd, de nem jelenik meg, akkor jelezd azt a CHÖK titkárnak (műhelytitkár esetén a tudományos alelnöknek).
+    Ha bármelyiket betöltöd, de nem jelenik meg, akkor jelezd azt a CHÖK titkárnak (műhelytitkár esetén a szakmai alelnöknek).
 </blockquote>
 Collegiumhoz kötődő rendezvényszervezés, vagy egyéb, a Collegiumhoz kötődő közéleti tevékenység:
 <table>
