@@ -14,7 +14,7 @@ return [
 
     'name' => env('APP_NAME', 'Urán'),
 
-    'version' => '3.35.11', // update on release
+    'version' => '3.35.12', // update on release
 
     'logo_blue_path' => env('APP_ENV', "local") != "production" ? '/img/mars.png' : '/img/uran_blue.png',
 
