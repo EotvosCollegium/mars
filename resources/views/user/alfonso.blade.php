@@ -13,20 +13,20 @@ felvett, BA/BSc-képzésben vagy osztatlan tanárképzésben résztvevő collegi
 <form method="POST" action="{{ route('users.update.alfonso', ['user' => $user]) }}">
     @csrf
     @if (user()->cannot('edit', $user))
-        @markdown(__('user.data_cannot_be_edited_application'),
-            [
+        @markdown(
+            __('user.data_cannot_be_edited_application', [
                 'SYSADMIN_EMAIL' => config('mail.sys_admin_mail'),
                 'SECRETARIAT_EMAIL' => config('mail.secretary_mail'),
                 'STUDENT_COUNCIL_EMAIL' => config('contacts.mail_valasztmany'),
-            ]
+            ])
         )
     @elseif(user()->cannot('editStaticEducationalInformation', $user))
-        @markdown(__('user.some_data_cannot_be_edited'),
-            [
+        @markdown(
+            __('user.some_data_cannot_be_edited', [
                 'SYSADMIN_EMAIL' => config('mail.sys_admin_mail'),
                 'SECRETARIAT_EMAIL' => config('mail.secretary_mail'),
                 'STUDENT_COUNCIL_EMAIL' => config('contacts.mail_valasztmany'),
-            ]
+            ])
         )
     @endif
     <div class="row">

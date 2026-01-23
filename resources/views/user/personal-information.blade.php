@@ -4,24 +4,24 @@
 
 <form method="POST" action="{{ route('users.update.personal', ['user' => $user]) }}" enctype="multipart/form-data">
     @csrf
+    @if (user()->cannot('edit', $user))
+        @markdown(
+            __('user.data_cannot_be_edited_application', [
+                'SYSADMIN_EMAIL' => config('mail.sys_admin_mail'),
+                'SECRETARIAT_EMAIL' => config('mail.secretary_mail'),
+                'STUDENT_COUNCIL_EMAIL' => config('contacts.mail_valasztmany'),
+            ])
+        )
+    @elseif(user()->cannot('editStaticPersonalInformation', $user))
+        @markdown(
+            __('user.some_data_cannot_be_edited', [
+                'SYSADMIN_EMAIL' => config('mail.sys_admin_mail'),
+                'SECRETARIAT_EMAIL' => config('mail.secretary_mail'),
+                'STUDENT_COUNCIL_EMAIL' => config('contacts.mail_valasztmany'),
+            ])
+        )
+    @endif
     <div class="row">
-        @if (user()->cannot('edit', $user))
-            @markdown(__('user.data_cannot_be_edited_application'),
-                [
-                    'SYSADMIN_EMAIL' => config('mail.sys_admin_mail'),
-                    'SECRETARIAT_EMAIL' => config('mail.secretary_mail'),
-                    'STUDENT_COUNCIL_EMAIL' => config('contacts.mail_valasztmany'),
-                ]
-            )
-        @elseif(user()->cannot('editStaticPersonalInformation', $user))
-            @markdown(__('user.some_data_cannot_be_edited'),
-                [
-                    'SYSADMIN_EMAIL' => config('mail.sys_admin_mail'),
-                    'SECRETARIAT_EMAIL' => config('mail.secretary_mail'),
-                    'STUDENT_COUNCIL_EMAIL' => config('contacts.mail_valasztmany'),
-                ]
-            )
-        @endif
         <x-input.text
             id="name"
             autocomplete="name"

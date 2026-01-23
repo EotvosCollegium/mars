@@ -18,7 +18,7 @@
                         vedd fel a kapcsolatot a rendszergazdákkal</a>.
                 </p>
                 <p>Először ellenőrizd a személyes és tanulmányi adataid, minden hiányosságot és változást ments el.</p>
-                <p>A kérvényeket a <a href="mailto:{{ config('mail.secretary_email')}}"> titkárság</a> számára küldd el
+                <p>A kérvényeket a <a href="mailto:{{ config('mail.secretary_mail')}}"> titkárság</a> számára küldd el
                     időben.</p>
                 <p>A kérdőív kitöltése bármikor abbahagyható, és a határidőig később folytatható.</p>
                 <p>A válaszaidhoz a Tanári Kar, a Választmány elnöke és szakmai alelnöke, a CHÖK-titkár, a titkárság, az igazgató és a
