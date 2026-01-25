@@ -280,6 +280,14 @@ class Role extends Model
     }
 
     /**
+     * Returns the role for the (director's) secretary.
+     */
+    public static function secretary(): Role
+    {
+        return self::where('name', self::SECRETARY)->first();
+    }
+
+    /**
      * Returns the role for the system administrators.
      */
     public static function sysAdmin(): Role

@@ -4,6 +4,8 @@ namespace App\Http\Controllers\StudentsCouncil;
 
 use App\Models\User;
 use App\Models\Semester;
+use App\Models\Role;
+use App\Models\RoleObject;
 use App\Models\CommunityService;
 use App\Http\Controllers\Controller;
 use App\Mail\CommunityServiceStatusChanged;
@@ -86,5 +88,45 @@ class CommunityServiceController extends Controller
         Mail::to($communityService->requester)->queue(new CommunityServiceStatusChanged($communityService));
 
         return back()->with('message', "Sikeresen elutasítottad a közösségi tevékenységet!");
+    }
+
+    /**
+     * Returns, for the approving user, the role
+     * that is going to be used on the certificate
+     * as a title
+     * (or null if there is none).
+     */
+    private static function approvingRole(User $user): Role|RoleObject|null {
+        if ($user->hasRole(Role::SECRETARY)) return Role::secretary();
+        else if ($user->hasRole(Role::STUDENT_COUNCIL)) {
+            return $user->roles()->where('role_id', Role::studentsCouncil()->id)->first()->pivot->object;
+        } else return null;
+    }
+
+    /**
+     * Creates a PDF file that certifies that the given user has done the community service described.
+     * Can only be done by the approver.
+     */
+    public function generateCertificate(CommunityService $communityService)
+    {
+        // this also checks whether it has been approved
+        $this->authorize('generateCertificate', $communityService);
+
+        $requester = $communityService->requester;
+        $approver = Auth::user();
+        $approvingRole = self::approvingRole($approver);
+        $documentPath = \App\Utils\LatexHelper::generatePDF(
+            'latex.community-service',
+            [
+                'requester_name' => $requester->name,
+                'requester_neptun' => $requester->educationalInformation->neptun,
+                'approver_name' => Auth::user()->name,
+                'approver_title' => is_null($approvingRole) ? "" : $approvingRole->translatedName,
+                'service_description' => $communityService->description,
+                'service_date' => 'TODO',
+                'current_date' => date("Y.m.d.")
+            ]
+        );
+        return response()->download($documentPath);
     }
 }

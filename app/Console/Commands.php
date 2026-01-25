@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Log;
 
 /**
  * Collection of exec commands.
- * The commands return values accordingly in deug mode as well.
+ * The commands return values accordingly in debug mode as well.
  */
 class Commands
 {

@@ -10,6 +10,7 @@ use App\Models\PrinterConfiguration;
 use App\Console\Commands;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Dormitory\Printing\PrintJobController;
+use App\Utils\LatexHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -213,29 +214,6 @@ class DocumentController extends Controller
         }
     }
 
-    // Returns the .tex file in debug mode
-    private function generatePDF($path, $data)
-    {
-        $renderedLatex = view($path)->with($data)->render();
-
-        $filename =  md5(rand(0, 100000) . date('c'));
-        Storage::disk('latex')->put($filename . '.tex', $renderedLatex);
-
-        $outputDir = Storage::disk('latex')->path('/');
-
-        $pathTex = Storage::disk('latex')->path($filename . ".tex");
-        $pathPdf = Storage::disk('latex')->path($filename . ".pdf");
-
-        // TODO: figure out result
-        Commands::latexToPdf($pathTex, $outputDir);
-
-        if (config('app.debug') && !config('commands.run_in_debug')) {
-            return $pathTex;
-        } else {
-            return $pathPdf;
-        }
-    }
-
     private function generateStatement($template_name)
     {
         $user = user();
@@ -248,7 +226,7 @@ class DocumentController extends Controller
         }
         $info = $user->personalInformation;
 
-        $pdf = $this->generatePDF(
+        $pdf = LatexHelper::generatePDF(
             $template_name,
             [ 'name' => $user->name,
               'address' => $info->getAddress(),
@@ -284,12 +262,13 @@ class DocumentController extends Controller
             ];
         }
 
-        $pdf = $this->generatePDF(
+        $pdf = LatexHelper::generatePDF(
             'latex.import',
-            [ 'name' => $user->name,
+            [
+              'name' => $user->name,
               'items' => $items,
               'date' => date("Y.m.d"),
-        ]
+            ]
         );
         return ['success' => true, 'pdf' => $pdf];
     }
@@ -312,7 +291,7 @@ class DocumentController extends Controller
         $personalInfo = $user->personalInformation;
         $educationalInfo = $user->educationalInformation;
 
-        $pdf = $this->generatePDF(
+        $pdf = LatexHelper::generatePDF(
             'latex.status-cert',
             [ 'name' => $user->name,
               'address' => $user->zip_code . ' ' . $personalInfo->getAddress(),

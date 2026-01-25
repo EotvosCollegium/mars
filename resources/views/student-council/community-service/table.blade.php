@@ -42,7 +42,14 @@
                                                     <i class="material-icons">close</i>
                                                 </button>
                                             </form>
-                                        @endif
+                                        @elsecan('generateCertificate', $communityService)
+                                        <form action={{ route('community_service.generate_certificate', ['community_service' => $communityService->id])}} method="POST">
+                                            @csrf
+                                            <button type="submit" class="btn waves-effect waves-light">
+                                                Igazolás letöltése
+                                            </button>
+                                        </form>
+                                        @endcan
                                     </td>
                                     @endif
                                 </tr>
