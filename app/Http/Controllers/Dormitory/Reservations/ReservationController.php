@@ -257,9 +257,9 @@ class ReservationController extends \App\Http\Controllers\Controller
         }
 
         return redirect()->route(
-            'reservations.show',
-            $reservation
-        )->with(
+                'reservations.items.index',
+                ['type' => $item->isWashingMachine() ? \App\Enums\ReservableItemType::WASHING_MACHINE : \App\Enums\ReservableItemType::ROOM]
+            )->with(
             'message',
             $reservation->verified ? __('general.successful_modification') : __('reservations.verifiers_notified')
         );
