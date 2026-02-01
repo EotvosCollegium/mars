@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Jobs\PeriodicEventsProcessor;
 use App\Utils\HasPeriodicEvent;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -15,7 +14,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @warning PeriodicEvents should only be modified by the HasPeriodicEvent trait.
  * @warning Do not attach other models to PeriodicEvents, use the connected Semester ids instead.
  * @see HasPeriodicEvent
- * @see PeriodicEventsProcessor
  *
  * @property int $id
  * @property string $event_model
@@ -111,41 +109,4 @@ class PeriodicEvent extends Model
     {
         return $this->extended_end_date != null;
     }
-
-    /**
-     * Handle the start of the PeriodicEvent.
-     */
-    public function handleStart(): void
-    {
-        //Get the corresponding controller and call its start method
-        app($this->event_model)->handlePeriodicEventStart();
-
-        $this->start_handled = now();
-        $this->save(['timestamps' => false]); // save without updating timestamps
-    }
-
-    /**
-     * Handle the end of the PeriodicEvent.
-     */
-    public function handleEnd(): void
-    {
-        //Get the corresponding controller and call its start method
-        app($this->event_model)->handlePeriodicEventEnd();
-
-        $this->end_handled = now();
-        $this->save(['timestamps' => false]); // save without updating timestamps
-    }
-
-    /**
-     * Handle the end of the PeriodicEvent.
-     */
-    public function handleReminder(): void
-    {
-        $days_left = (int)$this->endDate()->diffInDays(now()) * (-1);
-
-        //Get the corresponding controller and call its start method
-        app($this->event_model)->handlePeriodicEventReminder($days_left);
-    }
-
-
 }

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Secretariat;
 
 use App\Http\Controllers\Controller;
-use App\Jobs\PeriodicEventsProcessor;
 use App\Mail\EvaluationFormClosed;
 use App\Mail\StatusDeactivated;
 use App\Models\Faculty;

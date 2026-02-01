@@ -62,8 +62,6 @@ class StatusTest extends TestCase
         $user->setCollegist(Role::RESIDENT);
         $user->setStatusFor(Semester::next(), SemesterStatus::ACTIVE);
 
-        app(SemesterEvaluationController::class)->handlePeriodicEventEnd();
-
         $this->assertTrue($user->isActive(Semester::next()));
         $this->assertFalse($user->hasRole(Role::ALUMNI));
     }

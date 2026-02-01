@@ -4,7 +4,6 @@ use App\Http\Middleware\Locale;
 use App\Http\Middleware\LogRequests;
 use App\Http\Middleware\NotifyAboutEvaluation;
 use App\Http\Middleware\RedirectTenantsToUpdate;
-use App\Jobs\PeriodicEventsProcessor;
 use App\Jobs\PingRouters;
 use App\Jobs\ProcessWifiConnections;
 use App\Jobs\UpdatePrintJobs;
@@ -45,9 +44,6 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withSchedule(function (Schedule $schedule) {
-        $schedule->job(new PeriodicEventsProcessor())->daily()->at('13:00')->onFailure(function () {
-            Log::error('Error processing periodic events.');
-        });
         $schedule->job(new PingRouters())->everyMinute()->onFailure(function () {
             Log::error('Error pinging routers');
         });

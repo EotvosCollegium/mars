@@ -2,7 +2,6 @@
 
 namespace App\Utils;
 
-use App\Jobs\PeriodicEventsProcessor;
 use App\Models\PeriodicEvent;
 use App\Models\Semester;
 use Carbon\Carbon;
@@ -22,10 +21,8 @@ use Illuminate\Support\Facades\DB;
  * Usage:
  * Use the periodicEvent() method or the other getters to get the PeriodicEvent's data.
  * Use the updatePeriodicEvent() method to create or update the current PeriodicEvent.
- * Overwrite handlePeriodicEventStart() and handlePeriodicEventEnd() methods to attach actions for these events.
  *
  * @see PeriodicEvent
- * @see PeriodicEventsProcessor
  */
 trait HasPeriodicEvent
 {
@@ -99,37 +96,6 @@ trait HasPeriodicEvent
             return $event;
         });
 
-    }
-
-    /**
-     * Handle periodic event start event.
-     * @see PeriodicEventsProcessor
-     * @see PeriodicEvent
-     */
-    public function handlePeriodicEventStart(): void
-    {
-        // Do nothing by default
-    }
-
-    /**
-     * Handle periodic event end event.
-     * @see PeriodicEventsProcessor
-     * @see PeriodicEvent
-     */
-    public function handlePeriodicEventEnd(): void
-    {
-        // Do nothing by default
-    }
-
-    /**
-     * Handle periodic event reminder. Runs daily until the end date.
-     * @param int $daysBeforeEnd the number of days left until the end date. The last day is 0.
-     * @see PeriodicEventsProcessor
-     * @see PeriodicEvent
-     */
-    public function handlePeriodicEventReminder(int $daysBeforeEnd): void
-    {
-        // Do nothing by default
     }
 
     /**
