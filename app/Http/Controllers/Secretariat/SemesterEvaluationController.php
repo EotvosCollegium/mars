@@ -4,10 +4,7 @@ namespace App\Http\Controllers\Secretariat;
 
 use App\Http\Controllers\Controller;
 use App\Jobs\PeriodicEventsProcessor;
-use App\Mail\EvaluationFormAvailable;
-use App\Mail\EvaluationFormAvailableDetails;
 use App\Mail\EvaluationFormClosed;
-use App\Mail\EvaluationFormReminder;
 use App\Mail\StatusDeactivated;
 use App\Models\Faculty;
 use App\Models\GeneralAssemblies\GeneralAssembly;
@@ -64,34 +61,6 @@ class SemesterEvaluationController extends Controller
         ]);
 
         return back()->with('message', __('general.successful_modification'));
-    }
-
-    /**
-     * Send email that the form is available.
-     * @return void
-     */
-    public function handlePeriodicEventStart(): void
-    {
-        Mail::to(config('contacts.mail_membra'))->queue(new EvaluationFormAvailable($this->getDeadline()));
-        if (User::secretary()) {
-            Mail::to(User::secretary())->queue(new EvaluationFormAvailableDetails(User::secretary()->name, $this->getDeadline()));
-        }
-        if (User::president()) {
-            Mail::to(User::president())->queue(new EvaluationFormAvailableDetails(User::president()->name, $this->getDeadline()));
-        }
-    }
-
-    /**
-     * Send reminder that the form is available.
-     * @param int $daysBeforeEnd
-     * @return void
-     */
-    public function handlePeriodicEventReminder(int $daysBeforeEnd): void
-    {
-        if ($daysBeforeEnd < 3) {
-            $userCount = SemesterEvaluationController::usersHaventFilledOutTheForm($this->semester())->count();
-            Mail::to(config('contacts.mail_membra'))->queue(new EvaluationFormReminder($userCount, $this->getDeadline()));
-        }
     }
 
     /**
