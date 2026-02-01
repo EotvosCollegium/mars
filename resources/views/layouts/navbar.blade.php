@@ -212,6 +212,13 @@
                                         </a>
                                     </li>
                                 @endcan
+                                @can('viewAny', \App\Models\SemesterSetting::class)
+                                    <li>
+                                        <a class="waves-effect" href="{{ route('semester_settings.index') }}">
+                                            <i class="material-icons left">edit_square</i> Félév állítás
+                                        </a>
+                                    </li>
+                                @endcan
                             </ul>
                         </div>
                     </li>

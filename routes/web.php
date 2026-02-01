@@ -52,6 +52,7 @@ use App\Http\Middleware\RedirectTenantsToUpdate;
 use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SemesterSettingController;
 
 /**
  * This file contains the routes of the application.
@@ -359,5 +360,11 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
         Route::post('/{semester}/sheets/', [AnonymousQuestionController::class, 'storeAnswerSheet'])->name('store_answer_sheet')
             ->withoutMiddleware([LogRequests::class]);
         Route::get('/{semester}/sheets/', [AnonymousQuestionController::class, 'exportAnswerSheets'])->name('export_answer_sheets');
+    });
+
+    Route::prefix('/semester_settings')->name('semester_settings.')->group(function () {
+        Route::get('/', [SemesterSettingController::class, 'index'])->name('index');
+        Route::get('/{semester}/edit', [SemesterSettingController::class, 'edit'])->name('edit');
+        Route::put('/{semesterSetting}/update', [SemesterSettingController::class, 'update'])->name('update');
     });
 });

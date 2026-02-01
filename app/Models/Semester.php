@@ -12,8 +12,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 use InvalidArgumentException;
 use App\Models\User;
+use App\Models\SemesterSetting;
 use App\Models\AnonymousQuestions\AnswerSheet;
 use App\Models\Question;
+use App\Enums\SemesterSettingType;
 
 /**
  * A semester is identified by a year and by it's either autumn or spring.
@@ -263,6 +265,11 @@ class Semester extends Model
      */
     public static function current(): Semester
     {
+        $set_current = SemesterSetting::findSemesterByName(SemesterSettingType::GLOBAL);
+        if($set_current){
+            return $set_current;
+        }
+
         $today = Carbon::today()->format('Ymd');
         if (!Cache::get('semester.current.' . $today)) {
             $now = Carbon::now();
