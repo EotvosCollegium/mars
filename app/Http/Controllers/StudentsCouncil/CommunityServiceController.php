@@ -53,6 +53,7 @@ class CommunityServiceController extends Controller
         $request->validate([
             'approver' => 'required|exists:users,id',
             'description' => 'required|string',
+            'date_of_service' => 'nullable|string',
         ]);
 
         $communityService = CommunityService::create([
@@ -61,6 +62,7 @@ class CommunityServiceController extends Controller
             'semester_id' => Semester::current()->id,
             'approved' => null,
             'description' => $request->description,
+            'date_of_service' => $request->date_of_service
         ]);
 
         Mail::to($communityService->approver)->queue(new CommunityServiceRequested($communityService));
@@ -123,7 +125,7 @@ class CommunityServiceController extends Controller
                 'approver_name' => Auth::user()->name,
                 'approver_title' => is_null($approvingRole) ? "" : $approvingRole->translatedName,
                 'service_description' => $communityService->description,
-                'service_date' => 'TODO',
+                'date_of_service' => $communityService->date_of_service,
                 'current_date' => date("Y.m.d.")
             ]
         );

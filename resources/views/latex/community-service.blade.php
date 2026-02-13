@@ -60,7 +60,7 @@
 \renewcommand{\headrulewidth}{0pt}
 
 \cfoot{
-	{\footnotesize 
+	{\footnotesize
 	\begin{minipage}[t]{0.4\textwidth}
 	  \begin{flushright}
 		  \textsc{
@@ -105,11 +105,13 @@
 Alulírott \textit{ {{ \App\Utils\LatexHelper::sanitizeLatex($approver_name) }} }
 hivatalosan igazolom, hogy
 \textbf{ {{ \App\Utils\LatexHelper::sanitizeLatex($requester_name) }}}
-(Neptun kód: \textbf{ {{ \App\Utils\LatexHelper::sanitizeLatex($requester_neptun) }}}) az alábbi tevékenységet végezte:
+(Neptun-kód: \textbf{ {{ \App\Utils\LatexHelper::sanitizeLatex($requester_neptun) }}}) az alábbi tevékenységet végezte:
 
 \begin{itemize}
 \item Megnevezés: \textit{ {{ \App\Utils\LatexHelper::sanitizeLatex($service_description) }} }
-\item Dátum: \textit{ {{ \App\Utils\LatexHelper::sanitizeLatex($service_date) }} }
+@if(!is_null($date_of_service))
+\item Dátum: \textit{ {{ \App\Utils\LatexHelper::sanitizeLatex($date_of_service) }} }
+@endif
 \end{itemize}
 
 

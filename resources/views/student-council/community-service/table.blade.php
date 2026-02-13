@@ -2,6 +2,12 @@
     <div class="card">
         <div class="card-content">
             <span class="card-title">{{ $semester->tag }}</span>
+            @can('approveAny', App\Models\CommunityService::class)
+                <blockquote>
+                    Az általad jóváhagyott tevékenységekről igazolást
+                    a kerek 'Letöltés' gombbal tudsz generáltatni.
+                </blockquote>
+            @endcan
             <div class="row">
                 <div class="col s12">
                     <table style="width:100%">
@@ -9,6 +15,7 @@
                             <tr>
                                 <th>Leírás</th>
                                 <th>Dátum</th>
+                                <th>Benyújtva</th>
                                 <th>Kérvényező</th>
                                 <th>Jóváhagyó</th>
                                 <th>Státusz</th>
@@ -18,6 +25,7 @@
                             @foreach ($semester->communityServices as $communityService)
                                 <tr>
                                     <td style="word-break: break-all">{{ $communityService->description }}</td>
+                                    <td>{{ $communityService->date_of_service ?: '–' }}</td>
                                     <td>{{ $communityService->created_at->format('Y. m. d.') }}</td>
                                     <td>{{ $communityService->requester->name }}</td>
                                     <td>{{ $communityService->approver->name }}</td>
@@ -45,8 +53,8 @@
                                         @elsecan('generateCertificate', $communityService)
                                         <form action={{ route('community_service.generate_certificate', ['community_service' => $communityService->id])}} method="POST">
                                             @csrf
-                                            <button type="submit" class="btn waves-effect waves-light">
-                                                Igazolás letöltése
+                                            <button type="submit" class="btn-floating btn-small waves-effect waves-light">
+                                                <i class="material-icons">download</i>
                                             </button>
                                         </form>
                                         @endcan

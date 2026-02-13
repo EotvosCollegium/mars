@@ -21,7 +21,7 @@ class LatexHelper
     }
 
     /**
-     * Converts string to a relatively safe Latex code by putting every character into a seperate \symbol{...}
+     * Converts string to relatively safe LaTeX code by putting every character into a seperate \symbol{...}
      * @param  string  $data
      * @return string
      */
@@ -41,10 +41,10 @@ class LatexHelper
     /**
      * Generates a LaTeX file by inserting data into a view consisting of LaTeX code,
      * then runs the LaTeX compiler on the code.
-     * 
+     *
      * Returns the path of the PDF file
      * (or in debug mode, the path of the .tex file instead).
-     * 
+     *
      * Beware: sanitizing has to be done in the template itself!
      */
     public static function generatePDF($path, $data)
