@@ -39,7 +39,8 @@ class CommunityServicePolicy
      */
     public function approveAny(User $user)
     {
-        return $user->hasRole([Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS_AND_COMMITTEE_LEADERS]);
+        return $user->hasRole([Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS_AND_COMMITTEE_LEADERS,
+                               Role::SECRETARY]);
     }
 
     /**

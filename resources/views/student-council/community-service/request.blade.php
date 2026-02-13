@@ -4,7 +4,7 @@
     <div class="row">
         <x-input.text m=12 id="description" required text="Rendezvény, feladatkör, tevékenység" />
         <x-input.text m=6 id="date_of_service" text="Tevékenység dátuma" />
-        <x-input.select m=4 id="approver" :elements="\App\Models\User::studentCouncilLeaders()" text="jóváhagyó"/>
+        <x-input.select m=4 id="approver" :elements="array_merge([\App\Models\User::secretary()], \App\Models\User::studentCouncilLeaders()->toArray())" text="jóváhagyó"/>
         <x-input.button m=2 class="right" text="Mentés" />
     </div>
 </form>

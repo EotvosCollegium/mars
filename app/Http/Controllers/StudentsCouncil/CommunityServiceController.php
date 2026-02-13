@@ -117,12 +117,22 @@ class CommunityServiceController extends Controller
         $requester = $communityService->requester;
         $approver = Auth::user();
         $approvingRole = self::approvingRole($approver);
+
+        if (Role::SECRETARY == $approvingRole->name) {
+            // in this case, the director's name looks better
+            $director = User::director();
+            if (!is_null($director)) {
+                $approver = $director;
+                $approvingRole = Role::director();
+            }
+        }
+
         $documentPath = \App\Utils\LatexHelper::generatePDF(
             'latex.community-service',
             [
                 'requester_name' => $requester->name,
                 'requester_neptun' => $requester->educationalInformation->neptun,
-                'approver_name' => Auth::user()->name,
+                'approver_name' => $approver->name,
                 'approver_title' => is_null($approvingRole) ? "" : $approvingRole->translatedName,
                 'service_description' => $communityService->description,
                 'date_of_service' => $communityService->date_of_service,
