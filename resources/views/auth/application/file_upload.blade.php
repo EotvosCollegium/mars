@@ -1,8 +1,8 @@
 <?php
-$active = $active ?? $application->needsFile($type);
-$optional = $optional ?? false;
+$active ??= $application->needsFile($type);
+$optional ??= false;
 $files = $application->filesOfType($type)->get();
-$extensions = $extensions ?? '.pdf,.jpg,.png,.jpeg';
+$extensions ??= '.pdf,.jpg,.png,.jpeg';
 ?>
 <ul class="collapsible">
     <li @class(['active' => $active, 'form-disabled' => !$active])>
