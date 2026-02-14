@@ -52,12 +52,12 @@ class ConfigurableValue extends Model
 
     public static function getText(string $key, ?int $workshop_id = null): string
     {
-        return self::getConfigurableValue($key, $workshop_id)->text ?? "";
+        return self::getConfigurableValue($key, $workshop_id, 'text')->text ?? "";
     }
 
     public static function getNumber(string $key, ?int $workshop_id = null): int
     {
-        return self::getConfigurableValue($key, $workshop_id)->number ?? 0;
+        return self::getConfigurableValue($key, $workshop_id, 'number')->number ?? 0;
     }
 
     public static function fromSummary(string $summary)
@@ -68,7 +68,7 @@ class ConfigurableValue extends Model
         return self::getConfigurableValue($key, $workshop_id);
     }
 
-    public static function getConfigurableValue(string $key, ?int $workshop_id = null): ConfigurableValue
+    public static function getConfigurableValue(string $key, ?int $workshop_id = null, string $expectedType = 'text'): ConfigurableValue
     {
         return self::firstOrCreate(
             [
@@ -76,8 +76,8 @@ class ConfigurableValue extends Model
                 'workshop_id' => $workshop_id,
             ],
             [
-                'raw_value' => '',
-                'value_type' => 'text',
+                'raw_value' => $expectedType === 'number' ? '0' : '',
+                'value_type' => $expectedType,
             ]
         );
     }
