@@ -18,13 +18,13 @@
                     @if($user_type == \App\Models\Role::COLLEGIST)
 
                     <div class="markdown_with_red">
-                        @markdown(\App\Models\ConfigurableText::getText("APPLICANT_REGISTRATION"))
+                        @markdown(\App\Models\ConfigurableValue::getText("APPLICANT_REGISTRATION"))
                     </div>
 
                     @else
 
                     <div class="markdown_with_red">
-                        @markdown(\App\Models\ConfigurableText::getText("TENANT_REGISTRATION"))
+                        @markdown(\App\Models\ConfigurableValue::getText("TENANT_REGISTRATION"))
                     </div>
 
                     @endif
