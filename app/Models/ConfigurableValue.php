@@ -17,9 +17,9 @@ class ConfigurableValue extends Model
 
     private static function getSummary(string $key, ?int $workshop_id = null)
     {
-        $summary = "${key};";
+        $summary = "{$key};";
         if ($workshop_id != null) {
-            $summary .= "${workshop_id}";
+            $summary .= "{$workshop_id}";
         }
         return $summary;
     }
@@ -34,12 +34,12 @@ class ConfigurableValue extends Model
             [
                 "SYSADMIN_EMAIL",
                 "SECRETARIAT_EMAIL",
-                "STUDENT_COUNCIL_EMAIL"
+                "STUDENT_COUNCIL_EMAIL",
             ],
             [
                 config('mail.sys_admin_mail'),
                 config('mail.secretary_mail'),
-                config('contacts.mail_valasztmany')
+                config('contacts.mail_valasztmany'),
             ],
             $text
         );
@@ -73,11 +73,11 @@ class ConfigurableValue extends Model
         return self::firstOrCreate(
             [
                 'key' => $key,
-                'workshop_id' => $workshop_id
+                'workshop_id' => $workshop_id,
             ],
             [
                 'raw_value' => '',
-                'value_type' => 'text'
+                'value_type' => 'text',
             ]
         );
     }
@@ -96,7 +96,7 @@ class ConfigurableValue extends Model
                         "Not a text value: value_type is '{$this->value_type}', expected 'text'"
                     );
                 }
-                
+
                 return self::substituteVariables($this->raw_value);
             }
         );
@@ -111,7 +111,7 @@ class ConfigurableValue extends Model
                         "Not a number value: value_type is '{$this->value_type}', expected 'number'"
                     );
                 }
-                
+
                 return intval($this->raw_value);
             }
         );

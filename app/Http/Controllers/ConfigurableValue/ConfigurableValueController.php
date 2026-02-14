@@ -18,7 +18,7 @@ class ConfigurableValueController extends Controller
         'START_APPLICATION',
         'APPLICATION_INFORMATION_PRIOR_TO_FINALIZATION',
         'APPLICATION_FILES',
-        'APPLICATION_INFORMATION_AFTER_FINALIZATION'
+        'APPLICATION_INFORMATION_AFTER_FINALIZATION',
     ];
 
     public function index()
@@ -50,7 +50,7 @@ class ConfigurableValueController extends Controller
         return view(
             'configurable_texts.manage',
             [
-                'text_fields' => $text_fields
+                'text_fields' => $text_fields,
             ]
         );
     }
@@ -58,7 +58,7 @@ class ConfigurableValueController extends Controller
     public function store(Request $request)
     {
         $this->authorize('editAny', ConfigurableValue::class);
-        $validated = array();
+        $validated = [];
         foreach ($request->toArray() as $key => $value) {
             $configurableValue = ConfigurableValue::fromSummary($key);
             if ($configurableValue) {

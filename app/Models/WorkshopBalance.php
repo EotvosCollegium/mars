@@ -67,7 +67,8 @@ class WorkshopBalance extends Model
      * @param Semester $semester
      * @return void
      */
-    public static function generateBalances(Semester $semester): void {
+    public static function generateBalances(Semester $semester): void
+    {
         $workshop_balance_resident = ConfigurableValue::getNumber('WORKSHOP_BALANCE_RESIDENT');
         $workshop_balance_extern = ConfigurableValue::getNumber('WORKSHOP_BALANCE_EXTERN');
 
@@ -78,7 +79,7 @@ class WorkshopBalance extends Model
             foreach ($workshops as $workshop) {
                 $balances[] = [
                     'semester_id' => $semester->id,
-                    'workshop_id' => $workshop->id
+                    'workshop_id' => $workshop->id,
                 ];
             }
 
@@ -121,7 +122,7 @@ class WorkshopBalance extends Model
                     'allocated_balance' => $balance,
                     'extern' => $extern,
                     'resident' => $resident,
-                    'not_yet_paid' => $not_yet_paid
+                    'not_yet_paid' => $not_yet_paid,
                 ]);
         }
     }

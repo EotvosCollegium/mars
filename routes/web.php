@@ -163,7 +163,7 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
         Route::post('/reset', [InternetController::class, 'resetWifiPassword'])->name('password.reset');
         Route::post('/report', [InternetController::class, 'reportFault'])->name('report_fault');
         Route::resource('mac_addresses', MacAddressController::class)->only([
-            'index', 'store', 'update', 'destroy'
+            'index', 'store', 'update', 'destroy',
         ]);
 
         Route::get('/admin', [AdminInternetController::class, 'index'])->name('admin.index');
@@ -315,7 +315,7 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
 
     Route::prefix('reservations')->name('reservations.')->group(function () {
         Route::resource('items', ReservableItemController::class)->only([
-            'index', 'create', 'store', 'show', 'delete'
+            'index', 'create', 'store', 'show', 'delete',
         ]);
         Route::post('/items/{item}/report_fault', [ReservableItemController::class, 'reportFault'])->name('items.report_fault');
         Route::post('/items/{item}/toggle_out_of_order', [ReservableItemController::class, 'toggleOutOfOrder'])->name('items.toggle_out_of_order');

@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -22,25 +21,25 @@ return new class extends Migration
         DB::table('configurable_values')->insert([
             'key' => 'TOTAL_KKT_RESIDENT',
             'value_type' => 'number',
-            'raw_value' => '4000'
+            'raw_value' => '4000',
         ]);
 
         DB::table('configurable_values')->insert([
             'key' => 'TOTAL_KKT_EXTERN',
             'value_type' => 'number',
-            'raw_value' => '3000'
+            'raw_value' => '3000',
         ]);
 
         DB::table('configurable_values')->insert([
             'key' => 'WORKSHOP_BALANCE_RESIDENT',
             'value_type' => 'number',
-            'raw_value' => '1000'
+            'raw_value' => '1000',
         ]);
 
         DB::table('configurable_values')->insert([
             'key' => 'WORKSHOP_BALANCE_EXTERN',
             'value_type' => 'number',
-            'raw_value' => '1000'
+            'raw_value' => '1000',
         ]);
     }
 

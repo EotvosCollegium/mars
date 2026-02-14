@@ -70,7 +70,7 @@ class EconomicController extends Controller
             'users_not_paid' => User::hasToPayKKTNetreg()->get(),
             'transactions' => Transaction::whereIn('payment_type_id', [PaymentType::kkt()->id, PaymentType::netreg()->id])
                 ->where('semester_id', Semester::current()->id)
-                ->get()
+                ->get(),
         ]);
     }
 
@@ -179,7 +179,7 @@ class EconomicController extends Controller
             'semester_id' => $workshop_balance->semester->id,
             'amount' => (-1) * $request->amount,
             'payment_type_id' => PaymentType::workshopExpense()->id,
-            'moved_to_checkout' => now()
+            'moved_to_checkout' => now(),
         ]);
 
         return redirect()->back()->with('message', __('general.successful_modification'));
