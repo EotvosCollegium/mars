@@ -3,11 +3,9 @@
 namespace App\Http\Controllers\StudentsCouncil;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Network\InternetController;
 use App\Models\Checkout;
+use App\Models\ConfigurableValue;
 use App\Models\PaymentType;
-use App\Models\Role;
-use App\Models\RoleObject;
 use App\Models\Semester;
 use App\Models\Transaction;
 use App\Models\User;
@@ -15,8 +13,8 @@ use App\Models\WorkshopBalance;
 use App\Utils\CheckoutHandler;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
@@ -51,7 +49,12 @@ class EconomicController extends Controller
         return view(
             'student-council.economic-committee.app',
             array_merge($this->getData($this->checkout()), [
-                'users_not_paid' => User::hasToPayKKTNetreg()->get()
+                'users_not_paid' => User::hasToPayKKTNetreg()->with('educationalInformation')->get(),
+                'kkt_non_payers_with_rooms' => User::hasToPayKKTNetreg()->has('room')->pluck('id')->toArray(),
+                'total_kkt_resident' => ConfigurableValue::getNumber('TOTAL_KKT_RESIDENT'),
+                'total_kkt_extern' => ConfigurableValue::getNumber('TOTAL_KKT_EXTERN'),
+                'workshop_balance_resident' => ConfigurableValue::getNumber('WORKSHOP_BALANCE_RESIDENT'),
+                'workshop_balance_extern' => ConfigurableValue::getNumber('WORKSHOP_BALANCE_EXTERN'),
             ])
         );
     }
@@ -67,47 +70,27 @@ class EconomicController extends Controller
             'users_not_paid' => User::hasToPayKKTNetreg()->get(),
             'transactions' => Transaction::whereIn('payment_type_id', [PaymentType::kkt()->id, PaymentType::netreg()->id])
                 ->where('semester_id', Semester::current()->id)
-                ->get()
+                ->get(),
         ]);
     }
 
-    /**
-     * Pay kkt and netreg to the receiver given.
-     * Also updates workshop balances
-     * and the internet access expiry date.
-     * Returns an array with the two transaction objects
-     * and the new expiry date.
-     *
-     * Used here and in the tests.
-     */
-    public static function payKKTNetregLogic(User $payer, User $receiver, int $kkt_amount, int $netreg_amount): array
+    public function configureKKTNetreg(Request $request)
     {
-        // Creating transactions
-        $kkt = Transaction::create([
-            'checkout_id' => Checkout::studentsCouncil()->id,
-            'receiver_id' => $receiver->id,
-            'payer_id' => $payer->id,
-            'semester_id' => Semester::current()->id,
-            'amount' => $kkt_amount,
-            'payment_type_id' => PaymentType::kkt()->id,
-            'comment' => null,
-            'moved_to_checkout' => null,
-        ]);
+        $this->authorize('administrate', Checkout::studentsCouncil());
 
-        $netreg = Transaction::create([
-            'checkout_id' => Checkout::admin()->id,
-            'receiver_id' => $receiver->id,
-            'payer_id' => $payer->id,
-            'semester_id' => Semester::current()->id,
-            'amount' => $netreg_amount,
-            'payment_type_id' => PaymentType::netreg()->id,
-            'comment' => null,
-            'moved_to_checkout' => null,
-        ]);
+        Validator::make($request->all(), [
+            'total_kkt_resident' => 'required|integer|gte:workshop_balance_resident|min:0',
+            'total_kkt_extern' => 'required|integer|gte:workshop_balance_extern|min:0',
+            'workshop_balance_resident' => 'required|integer|min:0',
+            'workshop_balance_extern' => 'required|integer|min:0',
+        ])->validate();
 
-        $new_expiry_date = $payer->internetAccess->extendInternetAccess();
+        ConfigurableValue::getConfigurableValue('TOTAL_KKT_RESIDENT')->update(['raw_value' => $request->total_kkt_resident, 'value_type' => 'number']);
+        ConfigurableValue::getConfigurableValue('TOTAL_KKT_EXTERN')->update(['raw_value' => $request->total_kkt_extern, 'value_type' => 'number']);
+        ConfigurableValue::getConfigurableValue('WORKSHOP_BALANCE_RESIDENT')->update(['raw_value' => $request->workshop_balance_resident, 'value_type' => 'number']);
+        ConfigurableValue::getConfigurableValue('WORKSHOP_BALANCE_EXTERN')->update(['raw_value' => $request->workshop_balance_extern, 'value_type' => 'number']);
 
-        return [$kkt, $netreg, $new_expiry_date];
+        return redirect()->back()->with('message', __('general.successful_modification'));
     }
 
     /**
@@ -119,16 +102,36 @@ class EconomicController extends Controller
 
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|integer|exists:users,id',
-            'kkt' => 'required|integer|min:0',
-            'netreg' => 'required|integer|min:0',
+            'calculated_amount' => 'required|integer|min:0',
         ]);
         $validator->validate();
 
         $payer = User::findOrFail($request->user_id);
-        // the current user will be the receiver
-        [$kkt, $netreg, $new_internet_expire_date]
-            = self::payKKTNetregLogic($payer, Auth::user(), $request->kkt, $request->netreg);
 
+        $expected_amount = $payer->room ? ConfigurableValue::getNumber('TOTAL_KKT_RESIDENT') : ConfigurableValue::getNumber('TOTAL_KKT_EXTERN');
+        if ($request->calculated_amount != $expected_amount) {
+            Log::error('KKT/Netreg payment failed due to incorrect amount', [
+                'user_id' => Auth::id(),
+                'payer_id' => $payer->id,
+                'expected_amount' => $expected_amount,
+                'actual_amount' => $request->calculated_amount,
+            ]);
+
+            return redirect()->back()->with('error', 'Sikertelen befizetés: az összeg nem megfelelő. Keresd fel a Rendszergazdákat!');
+        }
+
+        $transaction = Transaction::create([
+            'checkout_id' => Checkout::studentsCouncil()->id,
+            'receiver_id' => Auth::id(),
+            'payer_id' => $payer->id,
+            'semester_id' => Semester::current()->id,
+            'amount' => $expected_amount,
+            'payment_type_id' => PaymentType::kkt()->id,
+            'comment' => null,
+            'moved_to_checkout' => null,
+        ]);
+
+        $new_internet_expire_date = $payer->internetAccess?->extendInternetAccess();
         $internet_expiration_message = null;
         if ($new_internet_expire_date !== null) {
             $internet_expiration_message = __('internet.expiration_extended', [
@@ -138,7 +141,7 @@ class EconomicController extends Controller
 
         Mail::to($payer)->queue(new \App\Mail\Transactions(
             $payer->name,
-            [$kkt, $netreg],
+            [$transaction],
             "Tranzakció létrehozva",
             $internet_expiration_message
         ));
@@ -176,7 +179,7 @@ class EconomicController extends Controller
             'semester_id' => $workshop_balance->semester->id,
             'amount' => (-1) * $request->amount,
             'payment_type_id' => PaymentType::workshopExpense()->id,
-            'moved_to_checkout' => now()
+            'moved_to_checkout' => now(),
         ]);
 
         return redirect()->back()->with('message', __('general.successful_modification'));
