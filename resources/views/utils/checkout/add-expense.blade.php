@@ -30,7 +30,7 @@
                 <x-input.text m=6 l=6 id="expense-comment" name="comment" required text="Megjegyzés" />
                 <x-input.text type="number" m=6 l=6 id="expense-amount" name="amount" min=0 required text="Összeg" />
                 @can('administrate', $checkout)
-                <x-input.select m=6 l=6 id="expense-payer" name="payer" text="Fizető" :elements="\App\Models\User::collegists()" default="{{user()->id}}" :formatter="function($user) { return $user->uniqueName; }" />
+                <x-input.select m=6 l=6 id="expense-payer" name="payer" text="Fizető" :elements="\App\Models\User::collegist()->with('educationalInformation')->get()" default="{{user()->id}}" :formatter="function($user) { return $user->uniqueName; }" />
                 <x-input.checkbox m=6 l=6 id="expense-paid" name="paid" checked text="A tartozás kifizetésre került"/>
                 @endcan
                 <x-input.file s="12" id="expense-receipt" name="receipt" style="margin-top:auto" accept=".pdf,.jpg,.png,.jpeg,.gif"

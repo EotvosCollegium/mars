@@ -253,6 +253,7 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
 
     Route::get('/economic_committee/kktnetreg', [EconomicController::class, 'indexKKTNetreg'])->name('kktnetreg');
     Route::post('/economic_committee/kktnetreg/pay', [EconomicController::class, 'payKKTNetreg'])->name('kktnetreg.pay');
+    Route::post('/economic_committee/kktnetreg/configure', [EconomicController::class, 'configureKKTNetreg'])->name('kktnetreg.configure');
     Route::get('/economic_committee/calculate_workshop_balance', [EconomicController::class, 'calculateWorkshopBalance'])->name('economic_committee.workshop_balance');
     Route::put('/economic_committee/workshop_balance/{workshop_balance}', [EconomicController::class, 'modifyWorkshopBalance'])->name('economic_committee.workshop_balance.update');
 
