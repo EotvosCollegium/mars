@@ -6,7 +6,7 @@
             <div class="card-title">Feltöltött fájlok</div>
             <blockquote>
                 <div class="markdown_with_red">
-                    @markdown(\App\Models\ConfigurableText::getText('APPLICATION_FILES'))
+                    @markdown(\App\Models\ConfigurableValue::getText('APPLICATION_FILES'))
                 </div>
             </blockquote>
         </div>
