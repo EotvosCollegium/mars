@@ -67,7 +67,7 @@ class Checkout extends Model
                 'transactions' => function ($query) {
                     $query->where('checkout_id', $this->id);
 
-                    $query->with('type');
+                    $query->with(['type', 'receipt.path']);
                 },
                 'workshopBalances.workshop',
             ]);

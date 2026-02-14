@@ -28,7 +28,7 @@ use App\Http\Controllers\Network\AdminInternetController;
 use App\Http\Controllers\Network\InternetController;
 use App\Http\Controllers\Network\MacAddressController;
 use App\Http\Controllers\Network\RouterController;
-use App\Http\Controllers\ConfigurableText\ConfigurableTextController;
+use App\Http\Controllers\ConfigurableValue\ConfigurableValueController;
 use App\Http\Controllers\IssuesController;
 use App\Http\Controllers\Secretariat\DocumentController;
 use App\Http\Controllers\Secretariat\GuestsController;
@@ -163,7 +163,7 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
         Route::post('/reset', [InternetController::class, 'resetWifiPassword'])->name('password.reset');
         Route::post('/report', [InternetController::class, 'reportFault'])->name('report_fault');
         Route::resource('mac_addresses', MacAddressController::class)->only([
-            'index', 'store', 'update', 'destroy'
+            'index', 'store', 'update', 'destroy',
         ]);
 
         Route::get('/admin', [AdminInternetController::class, 'index'])->name('admin.index');
@@ -182,8 +182,8 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
     Route::get('/network/admin/checkout/transaction/delete/{transaction}', [EconomicController::class, 'deleteTransaction'])->name('admin.checkout.transaction.delete');
 
     Route::prefix('configurable_texts')->name('configurable_texts.')->group(function () {
-        Route::get('/', [ConfigurableTextController::class, 'index'])->name('index');
-        Route::post('/store', [ConfigurableTextController::class, 'store'])->name('store');
+        Route::get('/', [ConfigurableValueController::class, 'index'])->name('index');
+        Route::post('/store', [ConfigurableValueController::class, 'store'])->name('store');
     });
 
     /** Routers */
@@ -253,6 +253,7 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
 
     Route::get('/economic_committee/kktnetreg', [EconomicController::class, 'indexKKTNetreg'])->name('kktnetreg');
     Route::post('/economic_committee/kktnetreg/pay', [EconomicController::class, 'payKKTNetreg'])->name('kktnetreg.pay');
+    Route::post('/economic_committee/kktnetreg/configure', [EconomicController::class, 'configureKKTNetreg'])->name('kktnetreg.configure');
     Route::get('/economic_committee/calculate_workshop_balance', [EconomicController::class, 'calculateWorkshopBalance'])->name('economic_committee.workshop_balance');
     Route::put('/economic_committee/workshop_balance/{workshop_balance}', [EconomicController::class, 'modifyWorkshopBalance'])->name('economic_committee.workshop_balance.update');
 
@@ -314,7 +315,7 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
 
     Route::prefix('reservations')->name('reservations.')->group(function () {
         Route::resource('items', ReservableItemController::class)->only([
-            'index', 'create', 'store', 'show', 'delete'
+            'index', 'create', 'store', 'show', 'delete',
         ]);
         Route::post('/items/{item}/report_fault', [ReservableItemController::class, 'reportFault'])->name('items.report_fault');
         Route::post('/items/{item}/toggle_out_of_order', [ReservableItemController::class, 'toggleOutOfOrder'])->name('items.toggle_out_of_order');

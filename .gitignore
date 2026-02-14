@@ -33,3 +33,4 @@ _ide_helper_models.php
 .phpstorm.meta.php
 *.DS_Store
 .vscode
+.php-cs-fixer.cache

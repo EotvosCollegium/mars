@@ -60,27 +60,16 @@ class WorkshopBalance extends Model
     /**
      * Generates all the workshops' allocated balance in the current semester.
      * For all active members in a workshop who paid kkt:
-     *      paid kkt * (isResident ? $workshop_balance_resident
-     *                              : $workshop_balance_extern)
-     *                / member's workshops' count
-     * Uses the config values for the ratios if they are null.
+     *      (hasRoom ? $workshop_balance_resident : $workshop_balance_extern)
+     *           / member's workshops' count
      *
      * @param Semester $semester
-     * @param ?float $workshop_balance_resident
-     * @param ?float $workshop_balance_extern
      * @return void
      */
-    public static function generateBalances(
-        Semester $semester,
-        ?float $workshop_balance_resident = null,
-        ?float $workshop_balance_extern = null
-    ): void {
-        if (is_null($workshop_balance_resident)) {
-            $workshop_balance_resident = config("custom.workshop_balance_resident");
-        }
-        if (is_null($workshop_balance_extern)) {
-            $workshop_balance_extern = config("custom.workshop_balance_extern");
-        }
+    public static function generateBalances(Semester $semester): void
+    {
+        $workshop_balance_resident = ConfigurableValue::getNumber('WORKSHOP_BALANCE_RESIDENT');
+        $workshop_balance_extern = ConfigurableValue::getNumber('WORKSHOP_BALANCE_EXTERN');
 
         $workshops = Workshop::with('users:id')->get();
 
@@ -89,7 +78,7 @@ class WorkshopBalance extends Model
             foreach ($workshops as $workshop) {
                 $balances[] = [
                     'semester_id' => $semester->id,
-                    'workshop_id' => $workshop->id
+                    'workshop_id' => $workshop->id,
                 ];
             }
 
@@ -98,36 +87,42 @@ class WorkshopBalance extends Model
 
         $active_users = User::active($semester->id)->with(['roles' => function ($q) {
             $q->where('name', Role::COLLEGIST);
-        }, 'workshops:id'])->get()->keyBy('id')->all();
+        }, 'workshops:id', 'room'])->get()->keyBy('id')->all();
 
         foreach ($workshops as $workshop) {
             $balance = 0;
             $resident = 0;
             $extern = 0;
             $not_yet_paid = 0;
+
             foreach ($workshop->users as $member) {
-                if (isset($active_users[$member->id])) {
-                    $amount = $member->paidKKTInSemester($semester);
-                    if (!is_null($amount)) {
-                        if ($member->isResident()) {
-                            $amount *= $workshop_balance_resident;
+                $member = $active_users[$member->id] ?? null;
+                if ($member !== null) {
+                    if ($member->paidKKTInSemester($semester) !== null) {
+                        if ($member->room !== null) {
+                            $amount = $workshop_balance_resident;
                             $resident++;
                         } else {
-                            $amount *= $workshop_balance_extern;
+                            $amount = $workshop_balance_extern;
                             $extern++;
                         }
+
                         $balance += $amount / $member->workshops->count();
                     } else {
                         $not_yet_paid++;
                     }
                 }
             }
+
+            // Round the balance to the nearest multiple of 5 forints.
+            $balance = round($balance / 5) * 5;
+
             self::where(['semester_id' => $semester->id, 'workshop_id' => $workshop->id])
                 ->update([
                     'allocated_balance' => $balance,
                     'extern' => $extern,
                     'resident' => $resident,
-                    'not_yet_paid' => $not_yet_paid
+                    'not_yet_paid' => $not_yet_paid,
                 ]);
         }
     }
