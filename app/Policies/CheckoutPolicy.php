@@ -60,7 +60,7 @@ class CheckoutPolicy
             Role::SYS_ADMIN,
             Role::STUDENT_COUNCIL => [
                 Role::ECONOMIC_VICE_PRESIDENT,
-            ]
+            ],
         ]);
     }
 
