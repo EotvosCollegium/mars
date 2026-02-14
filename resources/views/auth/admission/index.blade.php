@@ -7,7 +7,7 @@
 @section('content')
     @include('auth.admission.period')
 
-    @can('editAny', \App\Models\ConfigurableText::class)
+    @can('editAny', \App\Models\ConfigurableValue::class)
     <div class="card">
         <div class="card-content">
             <div class="row">

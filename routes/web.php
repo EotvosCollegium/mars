@@ -28,7 +28,7 @@ use App\Http\Controllers\Network\AdminInternetController;
 use App\Http\Controllers\Network\InternetController;
 use App\Http\Controllers\Network\MacAddressController;
 use App\Http\Controllers\Network\RouterController;
-use App\Http\Controllers\ConfigurableText\ConfigurableTextController;
+use App\Http\Controllers\ConfigurableValue\ConfigurableValueController;
 use App\Http\Controllers\IssuesController;
 use App\Http\Controllers\Secretariat\DocumentController;
 use App\Http\Controllers\Secretariat\GuestsController;
@@ -182,8 +182,8 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
     Route::get('/network/admin/checkout/transaction/delete/{transaction}', [EconomicController::class, 'deleteTransaction'])->name('admin.checkout.transaction.delete');
 
     Route::prefix('configurable_texts')->name('configurable_texts.')->group(function () {
-        Route::get('/', [ConfigurableTextController::class, 'index'])->name('index');
-        Route::post('/store', [ConfigurableTextController::class, 'store'])->name('store');
+        Route::get('/', [ConfigurableValueController::class, 'index'])->name('index');
+        Route::post('/store', [ConfigurableValueController::class, 'store'])->name('store');
     });
 
     /** Routers */

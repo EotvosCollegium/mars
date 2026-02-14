@@ -8,7 +8,7 @@ use App\Models\Role;
 use App\Models\RoleObject;
 use App\Models\RoleUser;
 use App\Models\User;
-use App\Models\ConfigurableText;
+use App\Models\ConfigurableValue;
 use App\Models\Workshop;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
@@ -31,10 +31,10 @@ class HomeController extends Controller
             $epistola = EpistolaController::getActiveNews();
         }
 
-        $information_general = ConfigurableText::getText('HOME_PAGE_NEWS');
+        $information_general = ConfigurableValue::getText('HOME_PAGE_NEWS');
 
         if (user()->hasRole(Role::COLLEGIST)) {
-            $information_collegist = ConfigurableText::getText('HOME_PAGE_NEWS_COLLEGISTS');
+            $information_collegist = ConfigurableValue::getText('HOME_PAGE_NEWS_COLLEGISTS');
         }
 
         return view('home', [
@@ -56,20 +56,20 @@ class HomeController extends Controller
 
     public function editNews(Request $request)
     {
-        $configurable_text_home_page_news = ConfigurableText::getConfigurableText('HOME_PAGE_NEWS');
+        $configurable_text_home_page_news = ConfigurableValue::getConfigurableValue('HOME_PAGE_NEWS');
         $this->authorize("edit", $configurable_text_home_page_news);
-        $configurable_text_home_page_news_collegists = ConfigurableText::getConfigurableText('HOME_PAGE_NEWS_COLLEGISTS');
+        $configurable_text_home_page_news_collegists = ConfigurableValue::getConfigurableValue('HOME_PAGE_NEWS_COLLEGISTS');
         $this->authorize("edit", $configurable_text_home_page_news_collegists);
 
         $configurable_text_home_page_news->update(
             [
-                "rawtext" => $request->info_general
+                "raw_value" => $request->info_general
             ]
         );
 
         $configurable_text_home_page_news_collegists->update(
             [
-                "rawtext" => $request->info_collegist
+                "raw_value" => $request->info_collegist
             ]
         );
 

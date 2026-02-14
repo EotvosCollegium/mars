@@ -4,7 +4,7 @@
     <div class="card">
         <div class="card-content">
             <div class="markdown_with_red">
-                @markdown(\App\Models\ConfigurableText::getText("START_APPLICATION"))
+                @markdown(\App\Models\ConfigurableValue::getText("START_APPLICATION"))
             </div>
             <form method="POST" action="{{ route('application.confirm_start') }}">
                 @csrf

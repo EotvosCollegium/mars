@@ -20,7 +20,7 @@ $extensions = $extensions ?? '.pdf,.jpg,.png,.jpeg';
         </div>
         <div class="collapsible-body">
             <div class="markdown_with_red">
-                @markdown(\App\Models\ConfigurableText::getText("APPLICATION_FILE_" . strtoupper($type->value)))
+                @markdown(\App\Models\ConfigurableValue::getText("APPLICATION_FILE_" . strtoupper($type->value)))
             </div>
 
 

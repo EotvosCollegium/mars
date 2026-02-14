@@ -4,10 +4,10 @@ namespace App\Policies;
 
 use App\Models\Role;
 use App\Models\User;
-use App\Models\ConfigurableText;
+use App\Models\ConfigurableValue;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class ConfigurableTextPolicy
+class ConfigurableValuePolicy
 {
     use HandlesAuthorization;
 
@@ -23,7 +23,7 @@ class ConfigurableTextPolicy
         return $user->hasRole([Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS]);
     }
 
-    public function edit(User $user, ConfigurableText $configurableText)
+    public function edit(User $user, ConfigurableValue $configurableValue)
     {
         return $user->hasRole([Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS]);
     }
