@@ -4,6 +4,9 @@ $coli: (
     "orange": if($isDebug == "true", #dc3c1c, #b38f2f),
     "lightblue": #6e76e5
 );
+
+//navbar height
+$navbar-height: 56px;
 //import and overwrite default colors
 @import "~@materializecss/materialize/sass/components/color-variables";
 $colors: map-merge(
@@ -408,7 +411,7 @@ body.dark a.btn {
 }
 
 .navbar-fixed nav.top-nav .nav-wrapper .row {
-    height: 56px;
+    height: $navbar-height;
     align-items: center;
     overflow: hidden;
 }
