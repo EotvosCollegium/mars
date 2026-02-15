@@ -401,3 +401,20 @@ body.dark a.btn {
 .form-disabled {
     opacity: 0.5;
 }
+
+/* Fix navbar overflow issue */
+.navbar-fixed nav.top-nav {
+    overflow: hidden;
+}
+
+.navbar-fixed nav.top-nav .nav-wrapper .row {
+    height: 56px;
+    align-items: center;
+    overflow: hidden;
+}
+
+.navbar-fixed nav.top-nav .nav-wrapper .row .col {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
