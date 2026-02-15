@@ -406,10 +406,6 @@ body.dark a.btn {
 }
 
 /* Fix navbar overflow issue */
-.navbar-fixed nav.top-nav {
-    overflow: hidden;
-}
-
 .navbar-fixed nav.top-nav .nav-wrapper .row {
     height: $navbar-height;
     align-items: center;
