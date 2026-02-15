@@ -7,6 +7,9 @@ $coli: (
 
 //navbar height
 $navbar-height: 56px;
+
+//navbar responsive breakpoint - when to hide username and shorten breadcrumbs
+$navbar-collapse-breakpoint: 1280px;
 //import and overwrite default colors
 @import "~@materializecss/materialize/sass/components/color-variables";
 $colors: map-merge(
@@ -423,7 +426,7 @@ body.dark a.btn {
 }
 
 /* Responsive profile - hide username on constrained screens */
-@media (max-width: 1400px) {
+@media (max-width: $navbar-collapse-breakpoint) {
     .navbar-fixed nav.top-nav .nav-wrapper ul.right li a .username-text {
         display: none;
     }
