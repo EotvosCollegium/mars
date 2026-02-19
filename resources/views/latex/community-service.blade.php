@@ -94,7 +94,7 @@
 
 \begin{document}
 
-\vspace{20mm}
+\vspace*{2mm}
 
 \begin{center}
   {\LARGE Igazolás}
@@ -102,15 +102,14 @@
 
 \vspace{10mm}
 
-Alulírott \textit{ {{ \App\Utils\LatexHelper::sanitizeLatex($approver_name) }} }
-hivatalosan igazolom, hogy
-\textbf{ {{ \App\Utils\LatexHelper::sanitizeLatex($requester_name) }}}
-(Neptun-kód: \textbf{ {{ \App\Utils\LatexHelper::sanitizeLatex($requester_neptun) }}}) az alábbi tevékenységet végezte:
+Alulírott\textit{ {{ \App\Utils\LatexHelper::sanitizeLatex($approver_name) }} }hivatalosan igazolom,
+hogy\textbf{ {{ \App\Utils\LatexHelper::sanitizeLatex($requester_name) }}} (Neptun-kód:\textbf{ {{ \App\Utils\LatexHelper::sanitizeLatex($requester_neptun) }}})
+az alábbi tevékenységet végezte:
 
 \begin{itemize}
-\item Megnevezés: \textit{ {{ \App\Utils\LatexHelper::sanitizeLatex($service_description) }} }
+\item Megnevezés:\textit{ {{ \App\Utils\LatexHelper::sanitizeLatex($service_description) }} }
 @if(!is_null($date_of_service))
-\item Dátum: \textit{ {{ \App\Utils\LatexHelper::sanitizeLatex($date_of_service) }} }
+\item Dátum:\textit{ {{ \App\Utils\LatexHelper::sanitizeLatex($date_of_service) }} }
 @endif
 \end{itemize}
 
