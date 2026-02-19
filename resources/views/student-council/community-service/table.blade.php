@@ -4,8 +4,9 @@
             <span class="card-title">{{ $semester->tag }}</span>
             @can('approveAny', App\Models\CommunityService::class)
                 <blockquote>
-                    Az általad jóváhagyott tevékenységekről igazolást
-                    a kerek 'Letöltés' gombbal tudsz generáltatni.
+                    Ha jóváhagy egy tevékenységet,
+                    a jóváhagyás után megjelenik egy 'Letöltés' gomb,
+                    amivel PDF-formátumú igazolást lehet generálni.
                 </blockquote>
             @endcan
             <div class="row">
