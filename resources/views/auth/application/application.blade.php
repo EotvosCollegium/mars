@@ -126,6 +126,27 @@
                                     {{ $user->personalInformation?->street_and_number }}
                                 </td>
                             </tr>
+                            <tr>
+                                <th scope="row"">
+                                    <span class="tooltipped" data-tooltip="@lang('user.transit_time_tooltip')" style="text-decoration: underline dotted">
+                                        @lang('user.transit_time')
+                                    </span>
+                                    (@lang('user.calculated_automatically'))
+                                </th>
+                                <td>
+                                    @if(!$user->personalInformation?->transit_time)
+                                        <span style="font-style:italic;color:red">hiányzó adat</span>
+                                    @else
+                                        @php
+                                        $seconds = $user->personalInformation?->transit_time;
+                                        $hours = intdiv($seconds, 3600);
+                                        if (0 != $hours) echo "$hours óra ";
+                                        $minutes = intdiv($seconds, 60) - $hours * 60;
+                                        echo "$minutes perc";
+                                        @endphp
+                                    @endif
+                                </td>
+                            </tr>
                             @if($user->educationalInformation)
                                 <tr>
                                     <th scope="row">@lang('user.high_school')</th>
