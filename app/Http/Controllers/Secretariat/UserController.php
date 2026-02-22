@@ -110,7 +110,8 @@ class UserController extends Controller
                 "origin" => [ "address" => $address],
                 "destination" => ["address" => env('COLLEGE_ADDRESS')],
                 "travelMode" => "TRANSIT",
-                "arrivalTime" => "2026-02-22T17:00:00Z"
+                //                                        v yes, this really works:D
+                "arrivalTime" => date("Y-m-d", strtotime("sunday this week")) . "T17:00:00Z"
         ]);
         Log::debug($response);
 
