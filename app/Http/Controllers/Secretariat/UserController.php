@@ -28,6 +28,8 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -95,6 +97,45 @@ class UserController extends Controller
     }
 
     /**
+     * Communicates with the Google Maps API with the data given in .env.
+     * Returns null in case of error.
+     */
+    private static function fetchTransitTime(string $address): int|null
+    {
+        $response = Http::withHeaders([
+                'Content-Type' => 'application/json',
+                'X-Goog-Api-Key' => env('GOOGLE_MAPS_API_KEY'),
+                'X-Goog-FieldMask' => 'routes.duration'
+            ])->post('https://routes.googleapis.com/directions/v2:computeRoutes', [
+                "origin" => [ "address" => $address],
+                "destination" => ["address" => env('COLLEGE_ADDRESS')],
+                "travelMode" => "TRANSIT",
+                "arrivalTime" => "2026-02-22T17:00:00Z"
+        ]);
+        Log::debug($response);
+
+        if (!$response->ok()) {
+            Log::warning("Google Maps API request was unsuccessful; skipping.");
+            return null;
+        } else {
+            $responseJson = $response->json();
+            if (!array_key_exists('routes', $responseJson)) {
+                Log::warning("No routes found; skipping.");
+                return null;
+            } else {
+                try {
+                    // it has an 's' at the end
+                    $durationString = $response->json()['routes'][0]['duration'];
+                    return intval(substr($durationString, 0, -1));
+                } catch(\Exception $e) {
+                    Log::warning("Could not fetch duration from Maps API response; skipping.");
+                    return null;
+                }
+            }
+        }
+    }
+
+    /**
      * Updates the personal information of a user.
      * @param Request $request
      * @param User $user
@@ -130,6 +171,9 @@ class UserController extends Controller
 
         $data = $request->validate($validator);
 
+        // trying to fetch transit time
+        $data['transit_time'] = self::fetchTransitTime($data['country'] . ", " . $data['zip_code'] . ' ' . $data['city'] . ", " . $data['street_and_number']);
+
         $user->update(Arr::only($data, ['name', 'email', 'tenant_until']));
 
         $personal_data = Arr::except($data, ['name', 'email', 'tenant_until']);
@@ -138,6 +182,12 @@ class UserController extends Controller
             $user->personalInformation()->create($personal_data);
         } else {
             $user->personalInformation()->update($personal_data);
+            if (is_null($data['transit_time'])) {
+                // then it doesn't set it to NULL; we have to set it manually
+                $personalInfo = $user->personalInformation()->first();
+                $personalInfo->transit_time = null;
+                $personalInfo->save();
+            }
         }
 
         if (array_key_exists('tenant_until', $data)) {

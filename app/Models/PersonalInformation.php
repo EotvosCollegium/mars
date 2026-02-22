@@ -68,6 +68,7 @@ class PersonalInformation extends Model
         'zip_code',
         'city',
         'street_and_number',
+        'transit_time',
         'tenant_until',
         'profile_picture_id',
         'relatives_contact_data',
