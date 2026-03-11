@@ -26,7 +26,7 @@ class LatexHelper
      * @param  string  $data
      * @return string
      */
-    public static function sanitizeLatex(string|null $data): string
+    public static function sanitizeLatex(?string $data): string
     {
         if ($data == null) {
             return "";
