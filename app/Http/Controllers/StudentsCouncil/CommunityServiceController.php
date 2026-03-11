@@ -24,7 +24,7 @@ class CommunityServiceController extends Controller
             'semesters' => Semester::withWhereHas('communityServices', function ($query) use ($request) {
                 $query->where('approver_id', $request->user()->id)
                     ->orWhere('requester_id', $request->user()->id);
-            })->get()
+            })->get(),
         ]);
     }
 
@@ -62,7 +62,7 @@ class CommunityServiceController extends Controller
             'semester_id' => Semester::current()->id,
             'approved' => null,
             'description' => $request->description,
-            'date_of_service' => $request->date_of_service
+            'date_of_service' => $request->date_of_service,
         ]);
 
         Mail::to($communityService->approver)->queue(new CommunityServiceRequested($communityService));
@@ -140,7 +140,7 @@ class CommunityServiceController extends Controller
                 'approver_title' => is_null($approvingRole) ? "" : $approvingRole->translatedName,
                 'service_description' => $communityService->description,
                 'date_of_service' => $communityService->date_of_service,
-                'current_date' => date("Y.m.d.")
+                'current_date' => date("Y.m.d."),
             ]
         );
         return response()->download($documentPath);

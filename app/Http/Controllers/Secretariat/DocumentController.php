@@ -98,8 +98,8 @@ class DocumentController extends Controller
             'secretariat.document.import',
             array_merge(
                 [
-                'items' => user()->importItems,
-            ],
+                    'items' => user()->importItems,
+                ],
                 $this->printingBladeData()
             )
         );
@@ -112,7 +112,7 @@ class DocumentController extends Controller
         ImportItem::create([
             'user_id' => user()->id,
             'name' => $request->item,
-            'serial_number' => $request->serial_number ?? null
+            'serial_number' => $request->serial_number ?? null,
         ]);
         return redirect()->back()->with('message', __('general.successful_modification'));
     }
@@ -211,15 +211,15 @@ class DocumentController extends Controller
     {
         if ($this->printingAvailable()) {
             return [
-                    'printing_conf_name_hun' => $this->printingConfiguration()->description_hun,
-                    'printing_conf_name_eng' => $this->printingConfiguration()->description_eng,
-                    'current_balance' => user()->printAccount->balance,
-                    'printing_available' => $this->printingAvailable()
-                ];
+                'printing_conf_name_hun' => $this->printingConfiguration()->description_hun,
+                'printing_conf_name_eng' => $this->printingConfiguration()->description_eng,
+                'current_balance' => user()->printAccount->balance,
+                'printing_available' => $this->printingAvailable(),
+            ];
         } else {
             return [
-                    'printing_available' => false
-                ];
+                'printing_available' => false,
+            ];
         }
     }
 
@@ -230,7 +230,7 @@ class DocumentController extends Controller
         if (!$user->hasPersonalInformation()) {
             return [
                 'success' => false,
-                'redirect' => back()->withInput()->with('error', __('document.missing_personal_info'))
+                'redirect' => back()->withInput()->with('error', __('document.missing_personal_info')),
             ];
         }
         $info = $user->personalInformation;
@@ -238,13 +238,13 @@ class DocumentController extends Controller
         $pdf = LatexHelper::generatePDF(
             $template_name,
             [ 'name' => $user->name,
-              'address' => $info->getAddress(),
-              'phone' => $info->phone_number,
-              'email' => $user->email,
-              'place_and_of_birth' => $info->getPlaceAndDateOfBirth(),
-              'mothers_name' => $info->mothers_name,
-              'date' => date("Y.m.d"),
-        ]
+                'address' => $info->getAddress(),
+                'phone' => $info->phone_number,
+                'email' => $user->email,
+                'place_and_of_birth' => $info->getPlaceAndDateOfBirth(),
+                'mothers_name' => $info->mothers_name,
+                'date' => date("Y.m.d"),
+            ]
         );
         return ['success' => true, 'pdf' => $pdf];
     }
@@ -267,16 +267,16 @@ class DocumentController extends Controller
         if ($items->isEmpty()) {
             return [
                 'success' => false,
-                'redirect' => back()->withInput()->with('error', "Még nem adtad meg a tárgyakat, amiket behoznál.")
+                'redirect' => back()->withInput()->with('error', "Még nem adtad meg a tárgyakat, amiket behoznál."),
             ];
         }
 
         $pdf = LatexHelper::generatePDF(
             'latex.import',
             [
-              'name' => $user->name,
-              'items' => $items,
-              'date' => date("Y.m.d"),
+                'name' => $user->name,
+                'items' => $items,
+                'date' => date("Y.m.d"),
             ]
         );
         return ['success' => true, 'pdf' => $pdf];
@@ -287,14 +287,14 @@ class DocumentController extends Controller
         if (!$user->hasPersonalInformation()) {
             return [
                 'success' => false,
-                'redirect' => back()->withInput()->with('error', "A személyes adataid hiányoznak a dokumentum kitöltéséhez. Kérj segítséget egy rendszergazdától.")
+                'redirect' => back()->withInput()->with('error', "A személyes adataid hiányoznak a dokumentum kitöltéséhez. Kérj segítséget egy rendszergazdától."),
             ];
         }
 
         if (!$user->hasEducationalInformation()) {
             return [
                 'success' => false,
-                'redirect' => back()->withInput()->with('error', "A tanulmányi adataid hiányoznak a dokumentum kitöltéséhez. Kérj segítséget egy rendszergazdától")
+                'redirect' => back()->withInput()->with('error', "A tanulmányi adataid hiányoznak a dokumentum kitöltéséhez. Kérj segítséget egy rendszergazdától"),
             ];
         }
         $personalInfo = $user->personalInformation;
@@ -303,14 +303,14 @@ class DocumentController extends Controller
         $pdf = LatexHelper::generatePDF(
             'latex.status-cert',
             [ 'name' => $user->name,
-              'address' => $user->zip_code . ' ' . $personalInfo->getAddress(),
-              'place_and_date_of_birth' => $personalInfo->getPlaceAndDateOfBirth(),
-              'mothers_name' => $personalInfo->mothers_name,
-              'neptun' => $educationalInfo->neptun,
-              'from' => $educationalInfo->year_of_acceptance,
-              'until' => Semester::current()->getEndDate()->format('Y.m.d.'), // TODO: check active semesters
-              // TODO: add status
-        ]
+                'address' => $user->zip_code . ' ' . $personalInfo->getAddress(),
+                'place_and_date_of_birth' => $personalInfo->getPlaceAndDateOfBirth(),
+                'mothers_name' => $personalInfo->mothers_name,
+                'neptun' => $educationalInfo->neptun,
+                'from' => $educationalInfo->year_of_acceptance,
+                'until' => Semester::current()->getEndDate()->format('Y.m.d.'), // TODO: check active semesters
+                // TODO: add status
+            ]
         );
 
         return ['success' => true, 'pdf' => $pdf];

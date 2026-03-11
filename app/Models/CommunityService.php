@@ -76,7 +76,7 @@ class CommunityService extends Model
     protected function status(): Attribute
     {
         return Attribute::make(
-            get: fn () => match ($this->approved) {
+            get: fn() => match ($this->approved) {
                 null =>  'függőben',
                 true => 'jóváhagyott',
                 false => 'elutasított',
