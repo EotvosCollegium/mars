@@ -98,11 +98,15 @@ class CommunityServiceController extends Controller
      * as a title
      * (or null if there is none).
      */
-    private static function approvingRole(User $user): Role|RoleObject|null {
-        if ($user->hasRole(Role::SECRETARY)) return Role::secretary();
-        else if ($user->hasRole(Role::STUDENT_COUNCIL)) {
+    private static function approvingRole(User $user): Role|RoleObject|null
+    {
+        if ($user->hasRole(Role::SECRETARY)) {
+            return Role::secretary();
+        } elseif ($user->hasRole(Role::STUDENT_COUNCIL)) {
             return $user->roles()->where('role_id', Role::studentsCouncil()->id)->first()->pivot->object;
-        } else return null;
+        } else {
+            return null;
+        }
     }
 
     /**
