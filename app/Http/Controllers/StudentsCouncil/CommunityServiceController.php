@@ -121,8 +121,9 @@ class CommunityServiceController extends Controller
         $requester = $communityService->requester;
         $approver = Auth::user();
         $approvingRole = self::approvingRole($approver);
+        $isForSecretariat = Role::SECRETARY == $approvingRole->name;
 
-        if (Role::SECRETARY == $approvingRole->name) {
+        if ($isForSecretariat) {
             // in this case, the director's name looks better
             $director = User::director();
             if (!is_null($director)) {
@@ -141,6 +142,7 @@ class CommunityServiceController extends Controller
                 'service_description' => $communityService->description,
                 'date_of_service' => $communityService->date_of_service,
                 'current_date' => date("Y.m.d."),
+                'is_for_secretariat' => $isForSecretariat
             ]
         );
         return response()->download($documentPath);

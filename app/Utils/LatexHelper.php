@@ -14,7 +14,9 @@ class LatexHelper
      */
     private static function convertCharToSymbol(string $char): string
     {
-        if ($char == ' ' || $char == 'ő' || $char == 'ű') {
+        // space, en dash and hungarumlauts
+        if ($char == ' ' || $char == '–'
+            || $char == 'ő' || $char == 'ű') {
             return $char;
         } else {
             return "\\symbol{" . mb_ord($char) . "}";

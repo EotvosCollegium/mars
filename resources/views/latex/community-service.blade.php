@@ -105,7 +105,10 @@
 
 \vspace{10mm}
 
-Alulírott\textit{ {{ \App\Utils\LatexHelper::sanitizeLatex($approver_name) }} }hivatalosan igazolom,
+Alulírott\textit{ {{
+	\App\Utils\LatexHelper::sanitizeLatex($approver_name)
+	. ($is_for_secretariat ? "}, az ELTE Eötvös József Collegium igazgatója, " : "}")
+	}}hivatalosan igazolom,
 hogy\textbf{ {{ \App\Utils\LatexHelper::sanitizeLatex($requester_name) }}} (Neptun-kód:\textbf{ {{ \App\Utils\LatexHelper::sanitizeLatex($requester_neptun) }}})
 az alábbi tevékenységet végezte:
 
@@ -123,12 +126,12 @@ Budapest, {{ \App\Utils\LatexHelper::sanitizeLatex($current_date) }}
 
 \hspace{100mm}
 \vtop{\hsize=60mm
-    \hrule\kern1ex
+    % \hrule\kern1ex   % for a line above the name
     \begin{center}
     \textbf{ {{ \App\Utils\LatexHelper::sanitizeLatex($approver_name) }} }\\
     \em
-    {{ \App\Utils\LatexHelper::sanitizeLatex($approver_title) }}\\
-    ELTE Eötvös József Collegium
+    {{ \App\Utils\LatexHelper::sanitizeLatex(strtolower($approver_title)) }}\\
+    Eötvös József Collegium
     \end{center}
 }
 
