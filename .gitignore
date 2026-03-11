@@ -28,6 +28,7 @@ npm-debug.log
 yarn-error.log
 /.vagrant
 /.idea
+composer.phar
 _ide_helper.php
 _ide_helper_models.php
 .phpstorm.meta.php

@@ -10,12 +10,7 @@
 @section('content')
 
 @can('create', \App\Models\CommunityService::class)
-<div class="card">
-    <div class="card-content">
-        <span class="card-title">Új közösségi tevékenység hozzáadása</span>
-        @include('student-council.community-service.request')
-    </div>
-</div>
+@include('student-council.community-service.request', ['isForSecretariat' => false])
 @endcan
 
 

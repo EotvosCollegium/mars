@@ -19,12 +19,20 @@ use Illuminate\Support\Facades\Storage;
 
 class DocumentController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         Gate::authorize('document.any');
+
+        // add semesters for the certificate feature
+        $data = $this->printingBladeData();
+        $data['semesters'] = Semester::withWhereHas('communityServices', function ($query) use ($request) {
+                $query->where('approver_id', $request->user()->id)
+                    ->orWhere('requester_id', $request->user()->id);
+            })->get();
+        $data['showApprove'] = true;
+
         return view(
-            'secretariat.document.index',
-            $this->printingBladeData()
+            'secretariat.document.index', $data
         );
     }
 

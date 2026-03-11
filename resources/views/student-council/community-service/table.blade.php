@@ -2,13 +2,6 @@
     <div class="card">
         <div class="card-content">
             <span class="card-title">{{ $semester->tag }}</span>
-            @can('approveAny', App\Models\CommunityService::class)
-                <blockquote>
-                    Ha jóváhagy egy tevékenységet,
-                    a jóváhagyás után megjelenik egy 'Letöltés' gomb,
-                    amivel PDF-formátumú igazolást lehet generálni.
-                </blockquote>
-            @endcan
             <div class="row">
                 <div class="col s12">
                     <table style="width:100%">
