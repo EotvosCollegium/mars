@@ -9,17 +9,33 @@
         <span class="card-title">
             @if($isForSecretariat) Új igazolás @else Új közösségi tevékenység @endif
         </span>
+        @if($isForSecretariat)
+        <p>
+            <strong>Kérjük, hogy a titkárságtól csak
+                az alábbi tevékenységekhez kérj igazolást:</strong>
+        </p>
+        <ul class="browser-default">
+            <li>... <span style="color: red;">(ezt beszéljük majd meg pontosan)</span></li>
+            <li>...</li>
+            <li>...</li>
+        </ul>
+        <p>
+            Ellenkező esetben a <em>Közösségi tevékenységek</em> fül alatt,
+            a megfelelő választmányi taghoz nyisd le a kérelmedet,
+            mert csak ők tudják ellenőrizni, hogy helyes-e.
+        </p>
         <blockquote>
-            @if($isForSecretariat)
-            <p>
-                Ha igazolást szeretnél, kérjük, olyan formában add meg a leírást és a dátumot,
-                ahogy szeretnéd, hogy a papírra kerüljön <br/>
-                (pl. <i>"Előadás 'A dehoppanálás kreatív alkamazásai' címmel a XXVII. Eötvös Konferencián"</i>
-                és <i>"2026. április 24–25.".</i>).
-            </p>
-            @endif
-            <p>A választott jóváhagyó e-mailben fog értesítést kapni a kérelemről.</p>
+            Kérjük, olyan formában add meg a leírást és a dátumot,
+            ahogy szeretnéd, hogy a papírra kerüljön <br/>
+            (pl. <i>"Előadás 'A dehoppanálás kreatív alkamazásai' címmel a XXVII. Eötvös Konferencián"</i>
+            és <i>"2026. április 24–25.".</i>).
+            A titkárság e-mailben fog értesítést kapni a kérelemről.
         </blockquote>
+        @else
+        <blockquote>
+            A választott jóváhagyó e-mailben fog értesítést kapni a kérelemről.
+        </blockquote>
+        @endif
         <form method="POST" action="{{ route('community_service.create') }}">
             @csrf
             <div class="row">
