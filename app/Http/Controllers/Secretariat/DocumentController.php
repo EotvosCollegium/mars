@@ -26,13 +26,14 @@ class DocumentController extends Controller
         // add semesters for the certificate feature
         $data = $this->printingBladeData();
         $data['semesters'] = Semester::withWhereHas('communityServices', function ($query) use ($request) {
-                $query->where('approver_id', $request->user()->id)
-                    ->orWhere('requester_id', $request->user()->id);
-            })->get();
+            $query->where('approver_id', $request->user()->id)
+                ->orWhere('requester_id', $request->user()->id);
+        })->get();
         $data['showApprove'] = true;
 
         return view(
-            'secretariat.document.index', $data
+            'secretariat.document.index',
+            $data
         );
     }
 

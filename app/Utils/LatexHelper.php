@@ -16,8 +16,9 @@ class LatexHelper
     {
         if ($char == ' ' || $char == 'ő' || $char == 'ű') {
             return $char;
+        } else {
+            return "\\symbol{" . mb_ord($char) . "}";
         }
-        else return "\\symbol{" . mb_ord($char) . "}";
     }
 
     /**
