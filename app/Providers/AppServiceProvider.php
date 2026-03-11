@@ -7,9 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
+use App\Mail\CaesarProxyTransport;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -56,6 +58,10 @@ class AppServiceProvider extends ServiceProvider
 
         // Throw error when trying to access an attribute that does not exist.
         Model::preventAccessingMissingAttributes(config('app.preventAccessingMissingAttributes'));
+
+        Mail::extend('caesar-proxy', function () {
+            return new CaesarProxyTransport();
+        });
 
         $this->loadGoogleStorageDriver('google');
         $this->loadGoogleStorageDriver('google_admin');
