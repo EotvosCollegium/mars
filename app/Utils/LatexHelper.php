@@ -14,10 +14,10 @@ class LatexHelper
      */
     private static function convertCharToSymbol(string $char): string
     {
-        if ($char == ' ') {
-            return ' ';
+        if ($char == ' ' || $char == 'ő' || $char == 'ű') {
+            return $char;
         }
-        return "\\symbol{" . mb_ord($char) . "}";
+        else return "\\symbol{" . mb_ord($char) . "}";
     }
 
     /**
