@@ -13,7 +13,7 @@ return [
         'profile_picture' => 'Profile picture',
         'receipt' => 'Receipt',
         'resume' => 'Resumé',
-        'besorolasi_hatarozat' => '',
+        'besorolasi_hatarozat' => 'Admission decision',
         'erettsegi' => 'Secondary school certificate',
         'elvegzett_felev' => 'Certificate about previous semesters',
         'diploma' => 'Diploma',
