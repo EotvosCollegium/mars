@@ -105,7 +105,7 @@ class InternetAccess extends Model
         }
         $this->update([
             'wifi_username' => $username,
-            'wifi_password' => self::generateWifiPassword()
+            'wifi_password' => self::generateWifiPassword(),
         ]);
 
         return $username;

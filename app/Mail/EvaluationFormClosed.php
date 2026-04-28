@@ -20,7 +20,7 @@ class EvaluationFormClosed extends Mailable
      *
      * @return void
      */
-    public function __construct(string $recipient, array|null $deactivated = null)
+    public function __construct(string $recipient, ?array $deactivated = null)
     {
         $this->recipient = $recipient;
         $this->deactivated = $deactivated;

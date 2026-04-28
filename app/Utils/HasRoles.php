@@ -73,7 +73,7 @@ trait HasRoles
 
         // Input is an array of role objects => convert objects to IDs
         if ($allRoles[0] instanceof Role) {
-            $allRoles = array_map(fn ($role) => $role->id, $allRoles);
+            $allRoles = array_map(fn($role) => $role->id, $allRoles);
         }
 
         // Input is an array of role IDs => filter based on IDs

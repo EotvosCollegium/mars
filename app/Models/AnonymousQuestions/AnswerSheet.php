@@ -30,7 +30,7 @@ class AnswerSheet extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'year_of_acceptance'
+        'year_of_acceptance',
     ];
 
     /**
@@ -62,14 +62,14 @@ class AnswerSheet extends Model
      * with their anonymous data.
      * The default semester is the current one.
      */
-    public static function createForUser(User $user, Semester|null $semester = null): AnswerSheet
+    public static function createForUser(User $user, ?Semester $semester = null): AnswerSheet
     {
         if (is_null($semester)) {
             $semester = Semester::current();
         }
 
         return $semester->answerSheets()->create([
-            'year_of_acceptance' => $user->educationalInformation->year_of_acceptance
+            'year_of_acceptance' => $user->educationalInformation->year_of_acceptance,
         ]);
     }
 
@@ -78,7 +78,7 @@ class AnswerSheet extends Model
      * with their anonymous data.
      * The default semester is the current one.
      */
-    public static function createForCurrentUser(Semester|null $semester = null): AnswerSheet
+    public static function createForCurrentUser(?Semester $semester = null): AnswerSheet
     {
         return self::createForUser(user(), $semester);
     }
@@ -94,7 +94,7 @@ class AnswerSheet extends Model
     {
         $row = [
             $this->semester->tag,
-            $this->year_of_acceptance
+            $this->year_of_acceptance,
         ];
         foreach ($this->semester->questions()->orderBy('id')->get() as $question) {
             if ($question->question_type == Question::TEXT_ANSWER) {

@@ -29,13 +29,13 @@ class CaesarProxyTransport extends AbstractTransport
         $headers->remove('To');
         $headers->remove('Subject');
 
-        $bcc = implode("\r\n", array_map(fn (Address $addr) => 'Bcc: ' . $addr->toString(), $email->getBcc()));
+        $bcc = implode("\r\n", array_map(fn(Address $addr) => 'Bcc: ' . $addr->toString(), $email->getBcc()));
         if ($bcc) {
             $bcc .= "\r\n";
         }
 
         $data = json_encode([
-            'to' => implode(',', array_map(fn (Address $addr) => $addr->toString(), $email->getTo())),
+            'to' => implode(',', array_map(fn(Address $addr) => $addr->toString(), $email->getTo())),
             'subject' => $email->getSubject(),
             'message' => $email->getBody()->bodyToString(),
             'headers' => $headers->toString() . $bcc . $email->getBody()->getPreparedHeaders()->toString(),
@@ -45,8 +45,8 @@ class CaesarProxyTransport extends AbstractTransport
 
         $options = [
             'http' => [
-                'header'  => "Content-Type: application/json\r\n" .
-                             "X-Signature: $signature\r\n",
+                'header'  => "Content-Type: application/json\r\n"
+                             . "X-Signature: $signature\r\n",
                 'method'  => 'POST',
                 'content' => $data,
             ],

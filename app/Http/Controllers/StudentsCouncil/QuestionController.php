@@ -27,20 +27,20 @@ class QuestionController extends Controller
      */
     protected function createQuestion(Request $request, Semester|GeneralAssembly|null $parent = null, $opened_at = null, $closed_at = null): Question
     {
-        $fn_is_selection_or_ranking = fn () => $request['question_type'] == Question::SELECTION || $request['question_type'] == Question::RANKING;
-        $fn_not_selection_or_ranking = fn () => !$fn_is_selection_or_ranking();
+        $fn_is_selection_or_ranking = fn() => $request['question_type'] == Question::SELECTION || $request['question_type'] == Question::RANKING;
+        $fn_not_selection_or_ranking = fn() => !$fn_is_selection_or_ranking();
         $validator = Validator::make($request->all(), [
             'title' => 'required|string',
             'question_type' => [
                 'required',
-                Rule::in(Question::QUESTION_TYPES)
+                Rule::in(Question::QUESTION_TYPES),
             ],
             'max_options' => [Rule::requiredIf($fn_is_selection_or_ranking), Rule::excludeIf($fn_not_selection_or_ranking), 'min:1', 'integer'],
             'options' => [Rule::requiredIf($fn_is_selection_or_ranking), Rule::excludeIf($fn_not_selection_or_ranking), 'min:1', 'array'],
             'options.*' => [Rule::requiredIf($fn_is_selection_or_ranking), Rule::excludeIf($fn_not_selection_or_ranking), 'min:1', 'max:255', 'string'],
         ]);
         $validatedData = $validator->safe()->only(['question_type', 'options']);
-        $options = array();
+        $options = [];
         if ($validatedData['question_type'] == Question::SELECTION || $validatedData['question_type'] == Question::RANKING) {
             $options = array_filter($validatedData['options'], function ($s) {
                 return $s != null;
@@ -55,7 +55,7 @@ class QuestionController extends Controller
 
         $question = $parent->questions()->create([
             'title' => $validatedData['title'],
-            'max_options' => isset($validatedData['max_options']) ? $validatedData['max_options'] : null,
+            'max_options' => $validatedData['max_options'] ?? null,
             'question_type' => $validatedData['question_type'],
             'opened_at' => $opened_at,
             'closed_at' => $closed_at,
@@ -64,7 +64,7 @@ class QuestionController extends Controller
             foreach ($options as $option) {
                 $question->options()->create([
                     'title' => $option,
-                    'votes' => 0
+                    'votes' => 0,
                 ]);
             }
         }
@@ -76,13 +76,15 @@ class QuestionController extends Controller
         // validation ensures we have answers
         // to all of these questions
         $answer = $validatedData[$question->formKey()];
-        if ($question->question_type == Question::TEXT_ANSWER ||
-            $question->question_type == Question::RANKING) {
+        if ($question->question_type == Question::TEXT_ANSWER
+            || $question->question_type == Question::RANKING) {
             $question->storeAnswers(user(), $answer, $answerSheet);
         } elseif ($question->question_type == Question::SELECTION) {
             if ($question->isMultipleChoice()) {
                 $options = array_map(
-                    function (int $id) {return QuestionOption::find($id);},
+                    function (int $id) {
+                        return QuestionOption::find($id);
+                    },
                     $answer
                 );
                 $question->storeAnswers(user(), $options, $answerSheet);
