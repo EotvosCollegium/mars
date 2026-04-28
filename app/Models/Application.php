@@ -434,6 +434,12 @@ class Application extends Model
                     $missingData[] =  'Tanulmányi adat: valamely tanult szak adata: '.strtolower(__('user.study_line_start'));
                 }
             }
+
+            foreach (FileType::cases() as $type) { // for this, we need to have study lines
+                if ($this->needsFile($type) && !$this->filesOfType($type)->exists()) {
+                    $missingData[] = 'Szükséges dokumentum: ' . __('document.file_types.' . $type->value, [], 'hu');
+                }
+            }
         }
         if (isset($educationalInformation) && isset($educationalInformation->year_of_acceptance)) {
             if (!isset($educationalInformation->alfonso_language) && !$educationalInformation->alfonsoExempted()) {
@@ -471,12 +477,6 @@ class Application extends Model
 
         if (!$this->publication_consent && !isset($this->pseudonym)) {
             $missingData[] =  'Szakmai és motivációs kérdések: jelige';
-        }
-
-        foreach (FileType::cases() as $type) {
-            if ($this->needsFile($type) && !$this->filesOfType($type)->exists()) {
-                $missingData[] = 'Szükséges dokumentum: ' . __('document.file_types.' . $type->value, [], 'hu');
-            }
         }
 
         return $missingData;

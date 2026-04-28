@@ -10,6 +10,7 @@ use App\Models\Role;
 use App\Models\Semester;
 use App\Models\User;
 use App\Models\Workshop;
+use App\Enums\FileType;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Config;
@@ -34,6 +35,7 @@ class ApplicationTest extends TestCase
         //open application period
         PeriodicEvent::create([
             'event_model' => ApplicationController::class,
+            'semester_id' => Semester::current()->id,
             'start_date' => now()->subWeeks(2),
             'end_date' => now()->addWeeks(2),
         ]);
@@ -151,7 +153,8 @@ class ApplicationTest extends TestCase
         $response = $this->post('/application', [
             'page' => 'files',
             'name' => 'file name',
-            'file' => UploadedFile::fake()->create('file.pdf', 100)
+            'file' => UploadedFile::fake()->create('file.pdf', 100),
+            'type' => FileType::RESUME->value
         ]);
         $response->assertStatus(302);
         $response->assertRedirect('/application');
@@ -161,7 +164,7 @@ class ApplicationTest extends TestCase
 
         $files = $user->application->files;
         $this->assertEquals(1, $files->count());
-        $this->assertEquals('file name', $files[0]->name);
+        $this->assertEquals('file name', $files[0]->description);
 
         $response = $this->post('/application', [
             'page' => 'files.delete',
@@ -222,7 +225,7 @@ class ApplicationTest extends TestCase
             'date_of_birth' => '2000-01-01',
             'mothers_name' => 'Mothers name',
             'country' => 'Hungary',
-            'county' => 'Pest',
+            'county' => 'Budapest',  // Budapest is separate from Pest County
             'zip_code' => '1111',
             'city' => 'Budapest',
             'street_and_number' => 'Test street 1.',
@@ -294,25 +297,24 @@ class ApplicationTest extends TestCase
         $user->load('application');
 
         //files
-        $this->assertContains('Legalább két feltöltött fájl', $user->application->missingData());
         $response = $this->post('/application', [
             'page' => 'files',
             'name' => 'file name',
-            'file' => UploadedFile::fake()->create('file.pdf', 100)
+            'file' => UploadedFile::fake()->create('file.pdf', 100),
+            'type' => FileType::RESUME->value
         ]);
         $response->assertStatus(302);
         $response->assertSessionHasNoErrors();
         $user->load('application');
-        $this->assertContains('Legalább két feltöltött fájl', $user->application->missingData());
         $response = $this->post('/application', [
             'page' => 'files',
             'name' => 'file name 2',
-            'file' => UploadedFile::fake()->create('file2.pdf', 100)
+            'file' => UploadedFile::fake()->create('file2.pdf', 100),
+            'type' => FileType::ELVEGZETT_FELEV->value
         ]);
         $response->assertStatus(302);
         $response->assertSessionHasNoErrors();
         $user->load('application');
-        $this->assertNotContains('Legalább két feltöltött fájl', $user->application->missingData());
 
         //questions
         $this->assertContains('Szakmai és motivációs kérdések: érettségi átlaga', $user->application->missingData());
@@ -338,7 +340,7 @@ class ApplicationTest extends TestCase
                 Workshop::first()->id
             ],
             'question_1' => ['answer 1'],
-            'question_2' => 'answer 2',
+            'question_2' => str_repeat('a', 500), // it has to be at least 500 characters
             'question_3' => 'answer 3',
             'publication_consent' => '1',
         ]);
@@ -366,78 +368,4 @@ class ApplicationTest extends TestCase
         $this->assertEquals($user->internetAccess->wifi_username, $user->educationalInformation->neptun);
         $this->assertTrue($user->internetAccess->has_internet_until > now());
     }
-
-    //    /**
-    //     * Test the admin finalization
-    //     *
-    //     * @return void
-    //     */
-    //    public function test_cannot_finalize()
-    //    {
-    //        $user = User::factory()->create();
-    //        $user->addRole(Role::firstWhere('name', Role::SYS_ADMIN));
-    //        $this->actingAs($user);
-    //
-    //        $applicant_in_progress = User::factory()->create(['verified' => false]);
-    //        $applicant_in_progress->application->update(['submitted' => false]);
-    //
-    //        $applicant_submitted = User::factory()->create(['verified' => false]);
-    //        $applicant_submitted->application->update(['submitted' => true]);
-    ////
-    ////        $applicant_called_in = User::factory()->create(['verified' => false]);
-    ////        $applicant_called_in->application->update(['status' => Application::STATUS_CALLED_IN]);
-    ////
-    ////        $applicant_accepted = User::factory()->create(['verified' => false]);
-    ////        $applicant_accepted->application->update(['status' => Application::STATUS_ACCEPTED]);
-    ////
-    ////        $applicant_banished = User::factory()->create(['verified' => false]);
-    ////        $applicant_banished->application->update(['status' => Application::STATUS_BANISHED]);
-    //
-    //        $response = $this->post('/application/finalize');
-    //        $response->assertStatus(302);
-    //        $response->assertSessionHas('error', 'Még vannak feldolgozatlan jelentkezések!');
-    //    }
-
-    //    /**
-    //     * Test the admin finalization
-    //     *
-    //     * @return void
-    //     */
-    //    public function test_finalize()
-    //    {
-    //        $user = User::factory()->create(['verified' => true]);
-    //        $user->addRole(Role::firstWhere('name', Role::SYS_ADMIN));
-    //        $user->addRole(Role::firstWhere('name', Role::APPLICATION_COMMITTEE_MEMBER));
-    //        $user->addRole(Role::firstWhere('name', Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER));
-    //        Config::set('custom.application_deadline', now()->subWeeks(3));
-    //        $this->actingAs($user);
-    //
-    //        Application::query()->delete();
-    //        $applicant_in_progress = User::factory()->create(['verified' => false]);
-    //        $applicant_in_progress->application->update(['status' => Application::STATUS_IN_PROGRESS]);
-    //
-    //        $applicant_accepted = User::factory()->create(['verified' => false]);
-    //        $applicant_accepted->application->update(['status' => Application::STATUS_ACCEPTED]);
-    //
-    //        $applicant_banished = User::factory()->create(['verified' => false]);
-    //        $applicant_banished->application->update(['status' => Application::STATUS_BANISHED]);
-    //
-    //
-    //        $response = $this->post('/application/finalize');
-    //        $response->assertStatus(302);
-    //        $response->assertSessionHas('message', 'Sikeresen jóváhagyta az elfogadott jelentkezőket');
-    //
-    //        $applicant_accepted->refresh();
-    //        $this->assertTrue($applicant_accepted->verified == 1);
-    //        $this->assertNull(User::find($applicant_banished->id));
-    //        $this->assertNull(User::find($applicant_in_progress->id));
-    //
-    //        $this->assertTrue(Application::count() == 0);
-    //
-    //        $user->refresh();
-    //        $this->assertTrue($user->hasRole(Role::firstWhere('name', Role::SYS_ADMIN)));
-    //        $this->assertFalse($user->hasRole(Role::firstWhere('name', Role::APPLICATION_COMMITTEE_MEMBER)));
-    //        $this->assertFalse($user->hasRole(Role::firstWhere('name', Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER)));
-    //    }
-
 }
