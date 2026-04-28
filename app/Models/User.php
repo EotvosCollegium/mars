@@ -911,7 +911,7 @@ class User extends Authenticatable implements HasLocalePreference
      * @param int|Semester $semester
      * @return SemesterStatus|null The user's status in the semester or null.
      */
-    public function getStatus(int|Semester $semester = null): SemesterStatus|null
+    public function getStatus(int|Semester|null $semester = null): SemesterStatus|null
     {
 
         return $this->semesterStatuses->find($semester ?? Semester::current())?->getRelationValue("pivot");
@@ -923,7 +923,7 @@ class User extends Authenticatable implements HasLocalePreference
      * @param ?Semester $semester
      * @return bool
      */
-    public function isActive(Semester $semester = null): bool
+    public function isActive(Semester|null $semester = null): bool
     {
         return $this->getStatus($semester)?->status == SemesterStatus::ACTIVE;
     }

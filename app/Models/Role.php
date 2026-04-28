@@ -196,7 +196,7 @@ class Role extends Model
      * @return RoleObject|Workshop|null
      * @throws InvalidArgumentException
      */
-    public function getObject(int|string|Workshop|RoleObject $object = null): Workshop|RoleObject|null
+    public function getObject(int|string|Workshop|RoleObject|null $object = null): Workshop|RoleObject|null
     {
         if ($object instanceof Workshop) {
             return $object;
@@ -228,7 +228,7 @@ class Role extends Model
      * Checks if a role-object pair is valid.
      * @param RoleObject|Workshop|null $object
      */
-    public function isValid(Workshop|RoleObject $object = null): bool
+    public function isValid(Workshop|RoleObject|null $object = null): bool
     {
         if ($this->has_objects
             && $object instanceof RoleObject
@@ -250,7 +250,7 @@ class Role extends Model
      * @param RoleObject|Workshop|null $object
      * @return Collection|User[]
      */
-    public function getUsers(Workshop|RoleObject $object = null): Collection|array
+    public function getUsers(Workshop|RoleObject|null $object = null): Collection|array
     {
         return User::withRole($this, $object)->get();
     }

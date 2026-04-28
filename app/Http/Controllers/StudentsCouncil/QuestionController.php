@@ -25,7 +25,7 @@ class QuestionController extends Controller
     /**
      * Saves a new question.
      */
-    protected function createQuestion(Request $request, Semester|GeneralAssembly $parent = null, $opened_at = null, $closed_at = null): Question
+    protected function createQuestion(Request $request, Semester|GeneralAssembly|null $parent = null, $opened_at = null, $closed_at = null): Question
     {
         $fn_is_selection_or_ranking = fn () => $request['question_type'] == Question::SELECTION || $request['question_type'] == Question::RANKING;
         $fn_not_selection_or_ranking = fn () => !$fn_is_selection_or_ranking();

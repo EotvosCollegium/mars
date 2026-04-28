@@ -21,6 +21,8 @@ class CaesarProxyTransport extends AbstractTransport
 
     protected function doSend(SentMessage $sentMessage): void
     {
+        // Symfony would expect Message instead of RawMessage, but it works this way as well. So:
+        // @phpstan-ignore argument.type
         $email = MessageConverter::toEmail($sentMessage->getOriginalMessage());
 
         $headers = $email->getPreparedHeaders();

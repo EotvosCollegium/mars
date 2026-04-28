@@ -280,7 +280,7 @@ class AdmissionController extends Controller
 
     /**
      * Helper function to get admittted applications.
-     * @return array
+     * @return \Illuminate\Database\Eloquent\Collection<int, Application>
      */
     private function getAdmitted()
     {

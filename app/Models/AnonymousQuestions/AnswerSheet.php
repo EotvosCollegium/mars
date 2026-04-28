@@ -62,7 +62,7 @@ class AnswerSheet extends Model
      * with their anonymous data.
      * The default semester is the current one.
      */
-    public static function createForUser(User $user, Semester $semester = null): AnswerSheet
+    public static function createForUser(User $user, Semester|null $semester = null): AnswerSheet
     {
         if (is_null($semester)) {
             $semester = Semester::current();
@@ -78,7 +78,7 @@ class AnswerSheet extends Model
      * with their anonymous data.
      * The default semester is the current one.
      */
-    public static function createForCurrentUser(Semester $semester = null): AnswerSheet
+    public static function createForCurrentUser(Semester|null $semester = null): AnswerSheet
     {
         return self::createForUser(user(), $semester);
     }

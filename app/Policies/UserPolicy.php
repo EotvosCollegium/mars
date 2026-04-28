@@ -177,7 +177,7 @@ class UserPolicy
      * @param Role|null $role
      * @return bool
      */
-    public function updateAnyPermission(User $user, User $target, Role $role = null): bool
+    public function updateAnyPermission(User $user, User $target, Role|null $role = null): bool
     {
         if (!isset($role)) {
             return $user->hasRole([
@@ -250,7 +250,7 @@ class UserPolicy
      * @param RoleObject|Workshop|null $object
      * @return bool
      */
-    public function updatePermission(User $user, User $target, Role $role, Workshop|RoleObject $object = null): bool
+    public function updatePermission(User $user, User $target, Role $role, Workshop|RoleObject|null $object = null): bool
     {
         if ($role->name == Role::TENANT) {
             return $user->hasRole([Role::STAFF]);
