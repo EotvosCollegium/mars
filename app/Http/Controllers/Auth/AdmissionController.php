@@ -40,8 +40,8 @@ class AdmissionController extends Controller
 
     public function __construct()
     {
-        $this->underlyingControllerName =
-            \App\Http\Controllers\Auth\ApplicationController::class;
+        $this->underlyingControllerName
+            = \App\Http\Controllers\Auth\ApplicationController::class;
     }
 
     /**
@@ -80,7 +80,7 @@ class AdmissionController extends Controller
     {
         $request->validate([
             'status_filter' => 'in:everybody,unsubmitted,submitted,called_in,admitted',
-            'return_excel' => 'nullable|boolean'
+            'return_excel' => 'nullable|boolean',
         ]);
         $authUser = $request->user();
         $this->authorize('viewSome', Application::class);
@@ -132,7 +132,7 @@ class AdmissionController extends Controller
             'workshops' => \App\Policies\ApplicationPolicy::getAccessibleWorkshops($authUser), //workshops that can be chosen to filter
             'status_filter' => $status_filter,
             'applicationDeadline' => $this->getDeadline(),
-            'periodicEvent' => $this->periodicEvent()
+            'periodicEvent' => $this->periodicEvent(),
         ]);
     }
 
@@ -177,7 +177,7 @@ class AdmissionController extends Controller
             $this->authorize('editSubmissionStatus', Application::class);
             $application->update(
                 [
-                    "submitted" => 1
+                    "submitted" => 1,
                 ]
             );
         }
@@ -185,7 +185,7 @@ class AdmissionController extends Controller
             $this->authorize('editSubmissionStatus', Application::class);
             $application->update(
                 [
-                    "submitted" => 0
+                    "submitted" => 0,
                 ]
             );
         }
@@ -204,7 +204,7 @@ class AdmissionController extends Controller
         $admitted = $this->getAdmitted();
         return view('auth.admission.finalize', [
             'semester' => $this->semester(),
-            'admitted_applications' => $admitted
+            'admitted_applications' => $admitted,
         ]);
     }
 

@@ -18,5 +18,5 @@ return [
         'elvegzett_felev' => 'Certificate about previous semesters',
         'diploma' => 'Diploma',
         'application_custom' => 'Other documents, certificates',
-    ]
+    ],
 ];

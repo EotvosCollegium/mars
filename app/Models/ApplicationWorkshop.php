@@ -19,12 +19,12 @@ class ApplicationWorkshop extends Pivot
         'workshop_id',
         'application_id',
         'called_in',
-        'admitted'
+        'admitted',
     ];
 
     protected $casts = [
         'called_in' => 'bool',
-        'admitted' => 'bool'
+        'admitted' => 'bool',
     ];
 
     /**
