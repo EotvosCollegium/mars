@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * A pivot class between users and the workshops they apply for.
+ */
 class ApplicationWorkshop extends Pivot
 {
     use HasFactory;

@@ -243,6 +243,7 @@ class AdmissionController extends Controller
                     // soft deletes application, keep them for future reference
                     // (see https://github.com/EotvosCollegium/mars/issues/332#issuecomment-2014058021)
                     $application->delete();
+                    $application->applicationWorkshops()->delete();
                 } else {
                     $files = File::where('application_id', $application->id)
                             ->orWhere('user_id', $application->user->id);
@@ -252,6 +253,7 @@ class AdmissionController extends Controller
                     $files->delete();
                     $application->forceDelete();
                     $application->user->forceDelete();
+                    $application->applicationWorkshops()->forceDelete();
                 }
             }
 

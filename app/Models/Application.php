@@ -132,7 +132,7 @@ class Application extends Model
 
 
     /**
-     * The ApplicationWorkshop models that the user applied for (includes status of application).
+     * ApplicationWorkshop is a pivot class that includes status of application.
      */
     public function applicationWorkshops(): HasMany
     {
@@ -141,7 +141,7 @@ class Application extends Model
 
 
     /**
-     * The Workshop models that the user applied for.
+     * This points to the 'real' Workshop class (not the pivoting element).
      * @return HasManyThrough
      */
     public function appliedWorkshops(): HasManyThrough
