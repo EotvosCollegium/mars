@@ -38,7 +38,7 @@
                     @csrf
                     <div class="col">
                         <blockquote>A megjegyzéseket a felvételiző nem látja, de azok láthatóak a többi felvételiztető számára (akár más műhelyekből is).<br/>
-                            A módosításokról a felvételiztető bizottság tagjai értesítést kapnak.</blockquote>
+                            <i>Csak akkor írj ide</i>, ha szeretnéd, hogy <i>minden</i> releváns felvételiztető e-mailt kapjon a megjegyzésről!</blockquote>
                     </div>
                     <x-input.textarea id="note"
                                       text="Megjegyzés"

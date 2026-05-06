@@ -45,7 +45,7 @@ class PrinterConfigurationController extends Controller
     {
         if ($request->has("no_paper")) {
             $this->authorize('reportError', $printer_configuration);
-            if ($printer_configuration->paper_out_at === null || now()->diffInMinutes($printer_configuration->paper_out_at) > 30) {
+            if ($printer_configuration->paper_out_at === null || now()->diffInMinutes($printer_configuration->paper_out_at, true) > 30) {
                 Mail::to(User::withRole(Role::SYS_ADMIN)->get())->queue(new NoPaper(user()->name));
                 $printer_configuration->update(['paper_out_at' => now()]);
             }
