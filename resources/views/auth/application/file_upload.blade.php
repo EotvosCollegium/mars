@@ -1,8 +1,8 @@
 <?php
-$active = $active ?? $application->needsFile($type);
-$optional = $optional ?? false;
+$active ??= $application->needsFile($type);
+$optional ??= false;
 $files = $application->filesOfType($type)->get();
-$extensions = $extensions ?? '.pdf,.jpg,.png,.jpeg';
+$extensions ??= '.pdf,.jpg,.png,.jpeg';
 ?>
 <ul class="collapsible">
     <li @class(['active' => $active, 'form-disabled' => !$active])>
@@ -20,7 +20,7 @@ $extensions = $extensions ?? '.pdf,.jpg,.png,.jpeg';
         </div>
         <div class="collapsible-body">
             <div class="markdown_with_red">
-                @markdown(\App\Models\ConfigurableText::getText("APPLICATION_FILE_" . strtoupper($type->value)))
+                @markdown(\App\Models\ConfigurableValue::getText("APPLICATION_FILE_" . strtoupper($type->value)))
             </div>
 
 

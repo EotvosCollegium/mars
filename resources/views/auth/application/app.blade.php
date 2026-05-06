@@ -32,17 +32,17 @@
                 @if (!$user->application->submitted)
 
                     <div class="markdown_with_red">
-                        @markdown(\App\Models\ConfigurableText::getText("APPLICATION_INFORMATION_PRIOR_TO_FINALIZATION"))
+                        @markdown(\App\Models\ConfigurableValue::getText("APPLICATION_INFORMATION_PRIOR_TO_FINALIZATION"))
                     </div>
                     
                 @else
 
                     <div class="markdown_with_red">
-                        @markdown(\App\Models\ConfigurableText::getText("APPLICATION_INFORMATION_AFTER_FINALIZATION"))
+                        @markdown(\App\Models\ConfigurableValue::getText("APPLICATION_INFORMATION_AFTER_FINALIZATION"))
                     </div>
                     @foreach ($user->application->appliedWorkshops()->get() as $workshop)
                         <div class="markdown_with_red">
-                            @markdown(\App\Models\ConfigurableText::getText("APPLICATION_INFORMATION_PER_WORKSHOP_AFTER_FINALIZATION", $workshop->id))
+                            @markdown(\App\Models\ConfigurableValue::getText("APPLICATION_INFORMATION_PER_WORKSHOP_AFTER_FINALIZATION", $workshop->id))
                         </div>
                     @endforeach
                 @endif

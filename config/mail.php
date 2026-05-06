@@ -12,6 +12,9 @@ return [
     'secretary_mail' => env('MAIL_SECRETARY'),
     'membra_mail' => env('MAIL_MEMBRA'),
 
+    'mail_proxy_secret' => env('MAIL_PROXY_SECRET'),
+    'mail_proxy_url' => env('MAIL_PROXY_URL'),
+
     /*
     |--------------------------------------------------------------------------
     | Mail Driver

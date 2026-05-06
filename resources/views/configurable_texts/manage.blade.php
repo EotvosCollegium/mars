@@ -23,7 +23,7 @@
                                 <x-input.textarea
                                     :id="$text_field->summary()"
                                     :text="__('configurable_texts.fields.' . $text_field->key).($text_field->workshop ? ' ('.$text_field->workshop?->name.')':'')"
-                                    :value="$text_field->rawtext"
+                                    :value="$text_field->raw_value"
                                 />
                             @endforeach
                             <div class="right-align">
