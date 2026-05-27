@@ -24,7 +24,8 @@ class RoomPolicy
             Role::SECRETARY,
             Role::STAFF,
             Role::COLLEGIST,
-            Role::SYS_ADMIN
+            Role::SYS_ADMIN,
+            Role::RECEPTIONIST,
         ]);
     }
 
