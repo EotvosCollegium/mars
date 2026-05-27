@@ -11,6 +11,13 @@ class FaultPolicy
 {
     use HandlesAuthorization;
 
+    public function before(User $user)
+    {
+        if ($user->isAdmin()) {
+            return true;
+        }
+    }
+
     /**
      * Determine whether the user can create fault.
      *
@@ -19,7 +26,7 @@ class FaultPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasRole([Role::STAFF, Role::COLLEGIST, Role::TENANT]);
+        return $user->hasRole([Role::STAFF, Role::COLLEGIST, Role::TENANT, Role::RECEPTIONIST]);
     }
 
     /**
