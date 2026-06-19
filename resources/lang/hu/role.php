@@ -37,6 +37,7 @@ return [
     'other' => 'Egyéb',
     'president' => 'Elnök',
     'printer' => 'Nyomtató',
+    'print-account-handler' => 'Nyomtatásiszámla-kezelő',
     'reception' => 'Porta',
     'receptionist' => 'Portás',
     'resident' => 'Bentlakó',

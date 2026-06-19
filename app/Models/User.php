@@ -1018,6 +1018,14 @@ class User extends Authenticatable implements HasLocalePreference
     }
 
     /**
+     * @return array|User[]|Collection the print account handlers
+     */
+    public static function printAccountHandlers(): Collection|array
+    {
+        return self::withRole(ROLE::PRINT_ACCOUNT_HANDLER)->get();
+    }
+
+    /**
      * @return array|User[]|Collection the collegists (without alumni)
      */
     public static function collegists(): Collection|array
