@@ -2,7 +2,7 @@
 <span class="card-title">Egyenleg módosítása</span>
 <blockquote>A tranzakció a rendszergazdai kasszába fog kerülni.</blockquote>
 <div class="row">
-<form method="POST" action="{{ route('print-account.update') }}">
+<form method="POST" action="{{ route('print-account.update') }}" @if(!auth()->user()->isAdmin()) onsubmit="confirm('Biztosan szeretnéd az egyenleget módosítani?')" @endif>
         @csrf
         @method('PUT')
         <x-input.select l=5 id="user" text="general.user" :elements="$users" :formatter="fn($user) => $user->uniqueName"/>

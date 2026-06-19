@@ -15,6 +15,8 @@
             </div>
         </div>
     </div>
+    
+    @if(auth()->user()->isAdmin())
     <div class="col s12">
         <div class="card">
             <div class="card-content">
@@ -35,6 +37,7 @@
     <div class="col s12">
         @include("dormitory.print.history", ['route' => route('print.print-job.index.admin'), 'admin' => true])
     </div>
+    @endif
 </div>
 
 @endsection

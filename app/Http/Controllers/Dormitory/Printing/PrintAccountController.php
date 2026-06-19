@@ -35,17 +35,17 @@ class PrintAccountController extends Controller
 
         $printAccount = User::find($request->get('user'))->printAccount;
 
-        // If user can not even transfer balance, we can stop here
-        $this->authorize('transferBalance', $printAccount);
-
         $otherAccount = $request->other_user ? User::find($request->get('other_user'))->printAccount : null;
 
         // This is a transfer between accounts
         if ($otherAccount !== null) {
+            $this->authorize('transferBalance', $printAccount);
             return $this->transferBalance($printAccount, $otherAccount, $request->get('amount'));
         }
-        // This is a modification of the current account
+
+        // This is a modification of a user's account (balance modification)
         else {
+            $this->authorize('modifyBy', [$printAccount, $request->get('amount')]);
             return $this->modifyBalance($printAccount, $request->get('amount'));
         }
     }
@@ -109,8 +109,6 @@ class PrintAccountController extends Controller
     private function modifyBalance(PrintAccount $printAccount, int $amount)
     {
         DB::beginTransaction();
-        // Only admins can modify accounts
-        $this->authorize('modify', $printAccount);
 
         if ($amount < 0 && $printAccount->balance < abs($amount)) {
             return $this->returnNoBalance();
