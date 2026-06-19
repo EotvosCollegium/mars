@@ -120,7 +120,10 @@ class HomeController extends Controller
      */
     private function getHomePageContacts(): array
     {
-        $contacts = ['admins' => User::admins()];
+        $contacts = [
+            'admins' => User::admins(),
+            'print-account-handlers' => User::printAccountHandlers(),
+        ];
         $director = User::director();
         $secretary = User::secretary();
         $staff = User::staff();

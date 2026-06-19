@@ -36,6 +36,7 @@ return [
     'locale-admin' => 'Locale admin',
     'other' => 'Other',
     'president' => 'President',
+    'print-account-handler' => 'Print account handler',
     'printer' => 'Printer',
     'reception' => 'Reception desk',
     'receptionist' => 'Receptionist',

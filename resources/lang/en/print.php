@@ -15,6 +15,7 @@ return [
     'balance_change' => 'Balance change',
     'cancel' => 'Cancel',
     'cancel_job' => 'Abort',
+    'cannot_add_negative_amount' => 'You cannot withdraw money from a user\'s printing account',
     'cannot_cancel' => 'Unable to cancel the print job',
     'changed_balance' => 'Modified print balance',
     'confirm_cancel' => 'Are you sure you wish to abort printing this document?',

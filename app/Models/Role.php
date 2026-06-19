@@ -58,6 +58,7 @@ class Role extends Model
     public const ALUMNI = 'alumni';
     public const RECEPTIONIST = 'receptionist';
     public const SENIOR = 'senior';
+    public const PRINT_ACCOUNT_HANDLER = 'print-account-handler';
 
     //Students' Committe role's objects
     public const PRESIDENT = 'president';

@@ -15,6 +15,7 @@ return [
     'balance_change' => 'Egyenlegváltozás',
     'cancel' => 'Mégse',
     'cancel_job' => 'Megszakítás',
+    'cannot_add_negative_amount' => 'Nem vehetsz ki pénzt egy felhasználó nyomtatási számlájáról',
     'cannot_cancel' => 'Nem lehetett megszakítani a nyomtatást',
     'changed_balance' => 'Megváltozott nyomtatási egyenleg',
     'confirm_cancel' => 'Biztos, hogy meg szeretnéd szakítani a dokumentum nyomtatását?',

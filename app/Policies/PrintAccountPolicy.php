@@ -28,7 +28,7 @@ class PrintAccountPolicy
 
     public function handleAny(User $user)
     {
-        return false;
+        return $user->hasRole(Role::PRINT_ACCOUNT_HANDLER);
     }
 
     public function view(User $user, PrintAccount $printAccount): bool
@@ -38,7 +38,16 @@ class PrintAccountPolicy
 
     public function modify(User $user): bool
     {
-        return false;
+        return $user->hasRole(Role::PRINT_ACCOUNT_HANDLER);
+    }
+
+    public function modifyBy(User $user, PrintAccount $printAccount, int $amount): bool
+    {
+        if($user->hasRole(Role::PRINT_ACCOUNT_HANDLER)){
+            return $amount > 0;
+        } else {
+            return false;
+        }
     }
     /**
      * Determine whether the user can transfer balance from the print account.
