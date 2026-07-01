@@ -15,6 +15,7 @@ class ApplicationWorkshop extends Pivot
     protected $fillable = [
         'workshop_id',
         'application_id',
+        'motivation_letter',
         'called_in',
         'admitted'
     ];

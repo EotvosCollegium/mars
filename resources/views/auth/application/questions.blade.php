@@ -75,10 +75,21 @@
                         </p>
                         <div class="row">
                         @foreach ($workshops as $workshop)
-                            <div class="col s6">
-                                @php $checked = $user->application->appliedWorkshops->contains($workshop->id) @endphp
+                            @php
+                                $applicationWorkshop = $user->application->applicationWorkshops->firstWhere('workshop_id', $workshop->id);
+                                $checked = $user->application->appliedWorkshops->contains($workshop->id);
+                            @endphp
+                            <div class="col s12">
                                 <x-input.checkbox only_input id="workshop_{{$workshop->id}}" :text="$workshop->name" name="workshop[]"
-                                                  value="{{ $workshop->id }}" checked='{{$checked}}'/>
+                                                  value="{{ $workshop->id }}" checked='{{$checked}}' data-workshop-id="{{$workshop->id}}"/>
+                                <div id="workshop_letter_wrapper_{{$workshop->id}}" style="margin: 0 0 20px 32px; display: {{ $checked ? 'block' : 'none' }};">
+
+                                    <label for="workshop_letter[{{$workshop->id}}]" style="font-size: 15px;color:black">Kérjük, röviden írja le, miért szeretne ebbe a műhelybe jelentkezni. <span style="color:red;" aria-label="required">*</span></label>
+                                    <x-input.textarea id="workshop_letter[{{$workshop->id}}]"
+                                        :value="$applicationWorkshop?->motivation_letter"
+                                        maxlength="1000"
+                                    />
+                                </div>
                             </div>
                         @endforeach
                         </div>
@@ -238,6 +249,22 @@
 
             setCharCount();
             motivationTextarea.addEventListener('input', setCharCount);
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const updateWorkshopLetterField = (workshopId) => {
+                const checkbox = document.querySelector(`input[data-workshop-id="${workshopId}"]`);
+                const wrapper = document.getElementById(`workshop_letter_wrapper_${workshopId}`);
+
+                const isChecked = checkbox.checked;
+                wrapper.style.display = isChecked ? 'block' : 'none';
+            };
+
+            document.querySelectorAll('input[data-workshop-id]').forEach((checkbox) => {
+                const workshopId = checkbox.dataset.workshopId;
+                updateWorkshopLetterField(workshopId);
+                checkbox.addEventListener('change', () => updateWorkshopLetterField(workshopId));
+            });
         });
     </script>
 @endpush

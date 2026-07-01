@@ -255,6 +255,22 @@
                                 </td>
                             </tr>
                             <tr>
+                                <th scope="row">Motivációs levél a megpályázott műhelyekhez</th>
+                                <td>
+                                    @forelse ($user->application->applicationWorkshops as $workshop)
+                                        <div style="margin-bottom: 12px;">
+                                            <strong>{{ $workshop->workshop->name }}</strong>
+                                            <div style="white-space: pre-wrap; margin-top: 4px;">{{ $workshop->motivation_letter }}</div>
+                                            @if(! $workshop->motivation_letter)
+                                                <span style="font-style:italic;color:red">hiányzó adat</span>
+                                            @endif
+                                        </div>
+                                    @empty
+                                        <span style="font-style:italic;color:red">hiányzó adat</span>
+                                    @endforelse
+                                </td>
+                            </tr>
+                            <tr>
                                 <td colspan="2">
                                     <p style="font-weight: bold;">Honnan hallott a Collegiumról?</p>
                                     <p>

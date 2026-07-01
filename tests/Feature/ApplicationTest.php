@@ -330,12 +330,17 @@ class ApplicationTest extends TestCase
         $this->assertContains('Szakmai és motivációs kérdések: "Honnan hallott a Collegiumról?" kérdés', $user->application->missingData());
         $this->assertContains('Szakmai és motivációs kérdések: "Miért kíván a Collegium tagja lenni?" kérdés', $user->application->missingData());
         $this->assertContains('Szakmai és motivációs kérdések: "Tervez-e továbbtanulni a diplomája megszerzése után? Milyen tervei vannak az egyetem után?" kérdés', $user->application->missingData());
+        $workshop = Workshop::all()->first();
+
         $response = $this->post('/application', [
             'page' => 'questions',
             'status' => 'extern',
             'graduation_average' => '4',
             'workshop' => [
-                Workshop::first()->id
+                $workshop->id
+            ],
+            'workshop_letter' => [
+                $workshop->id => 'Rövid motivációs levél a kiválasztott műhelyhez.'
             ],
             'question_1' => ['answer 1'],
             'question_2' => 'answer 2',
@@ -346,13 +351,15 @@ class ApplicationTest extends TestCase
         $response->assertSessionHasNoErrors();
         $user->load('application');
         $this->assertNotContains('Szakmai és motivációs kérdések: megpályázni kívánt műhely', $user->application->missingData());
+        $this->assertNotContains('Szakmai és motivációs kérdések: ' . $workshop->name . 'hez tartozó motivációs levél', $user->application->missingData());
         $this->assertNotContains('Szakmai és motivációs kérdések: "Honnan hallott a Collegiumról?" kérdés', $user->application->missingData());
         $this->assertNotContains('Szakmai és motivációs kérdések: "Miért kíván a Collegium tagja lenni?" kérdés', $user->application->missingData());
         $this->assertNotContains('Szakmai és motivációs kérdések: "Tervez-e továbbtanulni a diplomája megszerzése után? Milyen tervei vannak az egyetem után?" kérdés', $user->application->missingData());
 
-        $user->load(['workshops', 'faculties', 'educationalInformation.studyLines']);
+        $user->load(['workshops', 'faculties', 'educationalInformation.studyLines', 'application.applicationWorkshops']);
 
         $this->assertEquals([], $user->application->missingData());
+        $this->assertEquals('Rövid motivációs levél a kiválasztott műhelyhez.', $user->application->applicationWorkshops->first()->motivation_letter);
 
         $response = $this->post('/application', [
             'page' => 'submit'
