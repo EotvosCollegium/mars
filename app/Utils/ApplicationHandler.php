@@ -42,7 +42,7 @@ trait ApplicationHandler
             'present' => 'nullable|string',
             'accommodation' => 'sometimes|accepted',
             'publication_consent' => 'sometimes|accepted',
-            'pseudonym' => ['string', 'min:5', 'max:20', 'regex:/^[A-Z]+$/', 'nullable', 'unique:App\Models\Application,pseudonym,' . $user->application->id]
+            'pseudonym' => ['string', 'min:5', 'max:20', 'regex:/^[A-Z]+$/', 'nullable', 'unique:App\Models\Application,pseudonym,' . $user->application->id],
         ]);
 
         if (!isset($data['status'])) {
