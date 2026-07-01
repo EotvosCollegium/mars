@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Auth;
 use App\Exports\ApplicantsExport;
 use App\Http\Controllers\Controller;
 use App\Mail\ApplicationFileUploaded;
-use App\Mail\ApplicationNoteChanged;
 use App\Models\Application;
 use App\Models\ApplicationWorkshop;
 use App\Models\Semester;
@@ -160,14 +159,6 @@ class AdmissionController extends Controller
     public function update(Request $request, Application $application): RedirectResponse
     {
         $this->authorize('update', $application);
-        if ($request->has('note')) {
-            $request->validate([
-                'note' => 'string',
-            ]);
-            $oldValue = $application->note;
-            $application->update(['note' => $request->input('note')]);
-            Mail::bcc($application->committeeMembers())->queue(new ApplicationNoteChanged(user(), $application, $oldValue));
-        }
         if ($request->has('file')) {
             $this->authorize('editStatus', Application::class);
             $this->storeFile($request, $application->user);

@@ -28,27 +28,6 @@
         </form>
     </div>
     @endcan
-    <div class="card">
-        <form method="POST"
-              action="{{route('admission.applicants.update', ['application' => $user->application->id])}}">
-            @csrf
-            <div class="card-content">
-                <div class="card-title">Felvételizővel kapcsolatos megjegyzés</div>
-                <div class="row">
-                    @csrf
-                    <div class="col">
-                        <blockquote>A megjegyzéseket a felvételiző nem látja, de azok láthatóak a többi felvételiztető számára (akár más műhelyekből is).<br/>
-                            <i>Csak akkor írj ide</i>, ha szeretnéd, hogy <i>minden</i> releváns felvételiztető e-mailt kapjon a megjegyzésről!</blockquote>
-                    </div>
-                    <x-input.textarea id="note"
-                                      text="Megjegyzés"
-                                      helper="pl. státusz változás, lemondás"
-                                      :value="$user->application->note"/>
-                </div>
-                <x-input.button floating class="right" icon="save"/>
-            </div>
-        </form>
-    </div>
     @can('editSubmissionStatus', \App\Models\Application::class)
     <div class="card">
         <form method="POST" action="{{ route('admission.applicants.update', ['application' => $user->application]) }}"

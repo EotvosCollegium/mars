@@ -38,7 +38,6 @@ use Illuminate\Support\Facades\Auth;
  * @property string $present
  * @property boolean $publication_consent
  * @property string $pseudonym
- * @property string $note
  * @property int $id
  * @property int $user_id
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -55,7 +54,6 @@ use Illuminate\Support\Facades\Auth;
  * @method static \Illuminate\Database\Eloquent\Builder|Application whereGraduationAverage($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Application whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Application whereLanguageExam($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Application whereNote($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Application wherePresent($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Application wherePublication($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Application whereQuestion1($value)
@@ -92,7 +90,7 @@ class Application extends Model
         'present',
         'publication_consent',
         'pseudonym',
-        'note'
+        //'note' //Not used since 2026. Retaining data from previous application in the database.
     ];
 
     protected $casts = [
