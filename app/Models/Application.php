@@ -454,6 +454,12 @@ class Application extends Model
             $missingData[] =  'Szakmai és motivációs kérdések: megpályázni kívánt műhely';
         }
 
+        foreach ($this->applicationWorkshops as $applicationWorkshop) {
+            if (blank($applicationWorkshop->motivation_letter)) {
+                $missingData[] = 'Szakmai és motivációs kérdések: ' . $applicationWorkshop->workshop->name . 'hez tartozó motivációs levél';
+            }
+        }
+
         if (!isset($this->question_1) || $this->question_1 == []) {
             $missingData[] =  'Szakmai és motivációs kérdések: "Honnan hallott a Collegiumról?" kérdés';
         }
@@ -507,16 +513,20 @@ class Application extends Model
     /**
      * Sync the applied workshops.
      * @param array|null $workshop_ids
+     * @param array|null $workshop_letters
      * @return void
      */
-    public function syncAppliedWorkshops(?array $workshop_ids): void
+    public function syncAppliedWorkshops(?array $workshop_ids, ?array $workshop_letters = null): void
     {
         foreach (Workshop::all() as $workshop) {
             if (in_array($workshop->id, $workshop_ids ?? [])) {
                 // make sure applied workshop exists
                 $this
                     ->applicationWorkshops()
-                    ->updateOrCreate(['workshop_id' => $workshop->id]);
+                    ->updateOrCreate(
+                        ['workshop_id' => $workshop->id],
+                        ['motivation_letter' => $workshop_letters[$workshop->id] ?? null]
+                    );
             } else {
                 // delete application to workshop
                 $this->applicationWorkshops()->where('workshop_id', $workshop->id)->delete();
