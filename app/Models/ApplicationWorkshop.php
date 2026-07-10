@@ -5,10 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * A pivot class between users and the workshops they apply for.
+ */
 class ApplicationWorkshop extends Pivot
 {
     use HasFactory;
+    use SoftDeletes;
 
     protected $table = 'application_workshops';
 
@@ -16,12 +21,12 @@ class ApplicationWorkshop extends Pivot
         'workshop_id',
         'application_id',
         'called_in',
-        'admitted'
+        'admitted',
     ];
 
     protected $casts = [
         'called_in' => 'bool',
-        'admitted' => 'bool'
+        'admitted' => 'bool',
     ];
 
     /**

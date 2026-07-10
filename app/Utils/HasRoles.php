@@ -26,7 +26,7 @@ trait HasRoles
      * @param Workshop|RoleObject|string|null $object
      * @return Builder
      */
-    public function scopeWithRole(Builder $query, Role|int|string $role, Workshop|RoleObject|string $object = null): Builder
+    public function scopeWithRole(Builder $query, Role|int|string $role, Workshop|RoleObject|string|null $object = null): Builder
     {
         $role = Role::get($role);
         if ($object) {
@@ -73,7 +73,7 @@ trait HasRoles
 
         // Input is an array of role objects => convert objects to IDs
         if ($allRoles[0] instanceof Role) {
-            $allRoles = array_map(fn ($role) => $role->id, $allRoles);
+            $allRoles = array_map(fn($role) => $role->id, $allRoles);
         }
 
         // Input is an array of role IDs => filter based on IDs
@@ -145,7 +145,7 @@ trait HasRoles
      * @param RoleObject|Workshop|null $object
      * @return bool
      */
-    public function addRole(Role $role, Workshop|RoleObject $object = null): bool
+    public function addRole(Role $role, Workshop|RoleObject|null $object = null): bool
     {
         if (!$role->isValid($object)) {
             return false;
@@ -181,7 +181,7 @@ trait HasRoles
      * @param RoleObject|Workshop|null $object
      * @return void
      */
-    public function removeRole(Role $role, Workshop|RoleObject $object = null): void
+    public function removeRole(Role $role, Workshop|RoleObject|null $object = null): void
     {
         if ($role->has_objects && isset($object)) {
             $this->roles()->where('roles.id', $role->id)->wherePivot('object_id', $object->id)->detach($role->id);

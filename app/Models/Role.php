@@ -80,7 +80,7 @@ class Role extends Model
     public const STUDENT_COUNCIL_LEADERS = [
         self::PRESIDENT,
         self::SCIENCE_VICE_PRESIDENT,
-        self::ECONOMIC_VICE_PRESIDENT
+        self::ECONOMIC_VICE_PRESIDENT,
     ];
     public const COMMITTEE_LEADERS = [
         self::CULTURAL_LEADER,
@@ -143,16 +143,16 @@ class Role extends Model
         self::BOARD_OF_TRUSTEES_MEMBER,
         self::ETHICS_COMMISSIONER,
         self::ALUMNI,
-        self::RECEPTIONIST
+        self::RECEPTIONIST,
     ];
 
     protected $fillable = [
-        'name', 'has_objects', 'has_workshops'
+        'name', 'has_objects', 'has_workshops',
     ];
 
     protected $casts = [
         'has_objects' => 'boolean',
-        'has_workshops' => 'boolean'
+        'has_workshops' => 'boolean',
     ];
 
     public $timestamps = false;
@@ -178,7 +178,7 @@ class Role extends Model
         }
         return Cache::remember('role_' . $role, 86400, function () use ($role) {
             if (is_numeric($role)) {
-                $role = Role::find((int)$role);
+                $role = Role::find((int) $role);
             } else {
                 $role = Role::where('name', $role)->first();
             }
@@ -197,7 +197,7 @@ class Role extends Model
      * @return RoleObject|Workshop|null
      * @throws InvalidArgumentException
      */
-    public function getObject(int|string|Workshop|RoleObject $object = null): Workshop|RoleObject|null
+    public function getObject(int|string|Workshop|RoleObject|null $object = null): Workshop|RoleObject|null
     {
         if ($object instanceof Workshop) {
             return $object;
@@ -208,11 +208,11 @@ class Role extends Model
         return Cache::remember('role_' . $this->id . '_object_' . $object, 86400, function () use ($object) {
             /* @var RoleObject|Workshop|null $object */
             if ($this->has_objects && is_numeric($object)) {
-                $object = $this->objects()->find((int)$object);
+                $object = $this->objects()->find((int) $object);
             } elseif ($this->has_objects) {
                 $object = $this->objects()->firstWhere('name', $object);
             } elseif ($this->has_workshops && is_numeric($object)) {
-                $object = Workshop::find((int)$object);
+                $object = Workshop::find((int) $object);
             } elseif ($this->has_workshops) {
                 $object = Workshop::firstWhere('name', $object);
             } elseif (!isset($object)) {
@@ -229,7 +229,7 @@ class Role extends Model
      * Checks if a role-object pair is valid.
      * @param RoleObject|Workshop|null $object
      */
-    public function isValid(Workshop|RoleObject $object = null): bool
+    public function isValid(Workshop|RoleObject|null $object = null): bool
     {
         if ($this->has_objects
             && $object instanceof RoleObject
@@ -251,7 +251,7 @@ class Role extends Model
      * @param RoleObject|Workshop|null $object
      * @return Collection|User[]
      */
-    public function getUsers(Workshop|RoleObject $object = null): Collection|array
+    public function getUsers(Workshop|RoleObject|null $object = null): Collection|array
     {
         return User::withRole($this, $object)->get();
     }
@@ -304,7 +304,7 @@ class Role extends Model
     public function translatedName(): Attribute
     {
         return Attribute::make(
-            get: fn () => __('role.' . $this->name)
+            get: fn() => __('role.' . $this->name)
         );
     }
 

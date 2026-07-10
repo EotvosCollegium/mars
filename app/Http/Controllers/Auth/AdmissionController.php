@@ -40,8 +40,8 @@ class AdmissionController extends Controller
 
     public function __construct()
     {
-        $this->underlyingControllerName =
-            \App\Http\Controllers\Auth\ApplicationController::class;
+        $this->underlyingControllerName
+            = \App\Http\Controllers\Auth\ApplicationController::class;
     }
 
     /**
@@ -80,7 +80,7 @@ class AdmissionController extends Controller
     {
         $request->validate([
             'status_filter' => 'in:everybody,unsubmitted,submitted,called_in,admitted',
-            'return_excel' => 'nullable|boolean'
+            'return_excel' => 'nullable|boolean',
         ]);
         $authUser = $request->user();
         $this->authorize('viewSome', Application::class);
@@ -132,7 +132,7 @@ class AdmissionController extends Controller
             'workshops' => \App\Policies\ApplicationPolicy::getAccessibleWorkshops($authUser), //workshops that can be chosen to filter
             'status_filter' => $status_filter,
             'applicationDeadline' => $this->getDeadline(),
-            'periodicEvent' => $this->periodicEvent()
+            'periodicEvent' => $this->periodicEvent(),
         ]);
     }
 
@@ -177,7 +177,7 @@ class AdmissionController extends Controller
             $this->authorize('editSubmissionStatus', Application::class);
             $application->update(
                 [
-                    "submitted" => 1
+                    "submitted" => 1,
                 ]
             );
         }
@@ -185,7 +185,7 @@ class AdmissionController extends Controller
             $this->authorize('editSubmissionStatus', Application::class);
             $application->update(
                 [
-                    "submitted" => 0
+                    "submitted" => 0,
                 ]
             );
         }
@@ -204,7 +204,7 @@ class AdmissionController extends Controller
         $admitted = $this->getAdmitted();
         return view('auth.admission.finalize', [
             'semester' => $this->semester(),
-            'admitted_applications' => $admitted
+            'admitted_applications' => $admitted,
         ]);
     }
 
@@ -243,6 +243,7 @@ class AdmissionController extends Controller
                     // soft deletes application, keep them for future reference
                     // (see https://github.com/EotvosCollegium/mars/issues/332#issuecomment-2014058021)
                     $application->delete();
+                    $application->applicationWorkshops()->delete();
                 } else {
                     $files = File::where('application_id', $application->id)
                             ->orWhere('user_id', $application->user->id);
@@ -252,6 +253,7 @@ class AdmissionController extends Controller
                     $files->delete();
                     $application->forceDelete();
                     $application->user->forceDelete();
+                    $application->applicationWorkshops()->forceDelete();
                 }
             }
 
@@ -278,7 +280,7 @@ class AdmissionController extends Controller
 
     /**
      * Helper function to get admittted applications.
-     * @return array
+     * @return \Illuminate\Database\Eloquent\Collection<int, Application>
      */
     private function getAdmitted()
     {

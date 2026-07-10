@@ -34,3 +34,4 @@ _ide_helper_models.php
 *.DS_Store
 .vscode
 .php-cs-fixer.cache
+/composer.phar

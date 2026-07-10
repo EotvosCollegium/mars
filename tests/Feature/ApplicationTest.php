@@ -10,6 +10,7 @@ use App\Models\Role;
 use App\Models\Semester;
 use App\Models\User;
 use App\Models\Workshop;
+use App\Enums\FileType;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Config;
@@ -34,6 +35,7 @@ class ApplicationTest extends TestCase
         //open application period
         PeriodicEvent::create([
             'event_model' => ApplicationController::class,
+            'semester_id' => Semester::current()->id,
             'start_date' => now()->subWeeks(2),
             'end_date' => now()->addWeeks(2),
         ]);
@@ -90,7 +92,7 @@ class ApplicationTest extends TestCase
         $response = $this->post('/application', [
             'page' => 'questions',
             'status' => 'resident',
-            'graduation_average' => '4'
+            'graduation_average' => '4',
         ]);
         $response->assertStatus(302);
         $response->assertSessionHasNoErrors();
@@ -107,12 +109,12 @@ class ApplicationTest extends TestCase
             'page' => 'questions',
             "graduation_average" => "3",
             "semester_average" => [
-                "3.3", "3.5", "3231"
+                "3.3", "3.5", "3231",
             ],
             "status" => "resident",
             "question_1" => [
                 "question 1_1",
-                "question 1_2"
+                "question 1_2",
             ],
             "question_2" => "question 2",
             "question_3" => "question 3",
@@ -151,7 +153,8 @@ class ApplicationTest extends TestCase
         $response = $this->post('/application', [
             'page' => 'files',
             'name' => 'file name',
-            'file' => UploadedFile::fake()->create('file.pdf', 100)
+            'file' => UploadedFile::fake()->create('file.pdf', 100),
+            'type' => FileType::RESUME->value,
         ]);
         $response->assertStatus(302);
         $response->assertRedirect('/application');
@@ -161,11 +164,11 @@ class ApplicationTest extends TestCase
 
         $files = $user->application->files;
         $this->assertEquals(1, $files->count());
-        $this->assertEquals('file name', $files[0]->name);
+        $this->assertEquals('file name', $files[0]->description);
 
         $response = $this->post('/application', [
             'page' => 'files.delete',
-            'id' => $files[0]->id
+            'id' => $files[0]->id,
         ]);
         $response->assertStatus(302);
         $response->assertRedirect('/application');
@@ -192,7 +195,7 @@ class ApplicationTest extends TestCase
             'email' => 'example@test.com',
             'password' => 'secret12345',
             'password_confirmation' => 'secret12345',
-            'user_type' => 'collegist'
+            'user_type' => 'collegist',
         ]);
         $response->assertStatus(302);
         $response->assertSessionHasNoErrors();
@@ -205,15 +208,15 @@ class ApplicationTest extends TestCase
         $this->assertFalse($user->isExtern());
 
         //personal data
-        $this->assertContains("Személyes adat: ".strtolower(__('user.place_of_birth')), $user->application->missingData());
-        $this->assertContains("Személyes adat: ".strtolower(__('user.date_of_birth')), $user->application->missingData());
-        $this->assertContains("Személyes adat: ".strtolower(__('user.mothers_name')), $user->application->missingData());
-        $this->assertContains("Személyes adat: ".strtolower(__('user.phone_number')), $user->application->missingData());
-        $this->assertContains("Személyes adat: ".strtolower(__('user.country')), $user->application->missingData());
-        $this->assertContains("Személyes adat: ".strtolower(__('user.county')), $user->application->missingData());
-        $this->assertContains("Személyes adat: ".strtolower(__('user.zip_code')), $user->application->missingData());
-        $this->assertContains("Személyes adat: ".strtolower(__('user.city')), $user->application->missingData());
-        $this->assertContains("Személyes adat: ".strtolower(__('user.street_and_number')), $user->application->missingData());
+        $this->assertContains("Személyes adat: " . strtolower(__('user.place_of_birth')), $user->application->missingData());
+        $this->assertContains("Személyes adat: " . strtolower(__('user.date_of_birth')), $user->application->missingData());
+        $this->assertContains("Személyes adat: " . strtolower(__('user.mothers_name')), $user->application->missingData());
+        $this->assertContains("Személyes adat: " . strtolower(__('user.phone_number')), $user->application->missingData());
+        $this->assertContains("Személyes adat: " . strtolower(__('user.country')), $user->application->missingData());
+        $this->assertContains("Személyes adat: " . strtolower(__('user.county')), $user->application->missingData());
+        $this->assertContains("Személyes adat: " . strtolower(__('user.zip_code')), $user->application->missingData());
+        $this->assertContains("Személyes adat: " . strtolower(__('user.city')), $user->application->missingData());
+        $this->assertContains("Személyes adat: " . strtolower(__('user.street_and_number')), $user->application->missingData());
         $response = $this->post('/users/' . $user->id . '/personal_information', [
             'email' => 'example@test.com',
             'name' => 'John Doe',
@@ -222,7 +225,7 @@ class ApplicationTest extends TestCase
             'date_of_birth' => '2000-01-01',
             'mothers_name' => 'Mothers name',
             'country' => 'Hungary',
-            'county' => 'Pest',
+            'county' => 'Budapest',  // Budapest is separate from Pest County
             'zip_code' => '1111',
             'city' => 'Budapest',
             'street_and_number' => 'Test street 1.',
@@ -230,21 +233,21 @@ class ApplicationTest extends TestCase
         $response->assertStatus(302);
         $response->assertSessionHasNoErrors();
         $user->load('application');
-        $this->assertNotContains("Személyes adat: ".strtolower(__('user.place_of_birth')), $user->application->missingData());
-        $this->assertNotContains("Személyes adat: ".strtolower(__('user.date_of_birth')), $user->application->missingData());
-        $this->assertNotContains("Személyes adat: ".strtolower(__('user.mothers_name')), $user->application->missingData());
-        $this->assertNotContains("Személyes adat: ".strtolower(__('user.phone_number')), $user->application->missingData());
-        $this->assertNotContains("Személyes adat: ".strtolower(__('user.country')), $user->application->missingData());
-        $this->assertNotContains("Személyes adat: ".strtolower(__('user.county')), $user->application->missingData());
-        $this->assertNotContains("Személyes adat: ".strtolower(__('user.zip_code')), $user->application->missingData());
-        $this->assertNotContains("Személyes adat: ".strtolower(__('user.city')), $user->application->missingData());
-        $this->assertNotContains("Személyes adat: ".strtolower(__('user.street_and_number')), $user->application->missingData());
+        $this->assertNotContains("Személyes adat: " . strtolower(__('user.place_of_birth')), $user->application->missingData());
+        $this->assertNotContains("Személyes adat: " . strtolower(__('user.date_of_birth')), $user->application->missingData());
+        $this->assertNotContains("Személyes adat: " . strtolower(__('user.mothers_name')), $user->application->missingData());
+        $this->assertNotContains("Személyes adat: " . strtolower(__('user.phone_number')), $user->application->missingData());
+        $this->assertNotContains("Személyes adat: " . strtolower(__('user.country')), $user->application->missingData());
+        $this->assertNotContains("Személyes adat: " . strtolower(__('user.county')), $user->application->missingData());
+        $this->assertNotContains("Személyes adat: " . strtolower(__('user.zip_code')), $user->application->missingData());
+        $this->assertNotContains("Személyes adat: " . strtolower(__('user.city')), $user->application->missingData());
+        $this->assertNotContains("Személyes adat: " . strtolower(__('user.street_and_number')), $user->application->missingData());
 
         //educational data
-        $this->assertContains("Tanulmányi adat: ".strtolower(__('user.high_school')), $user->application->missingData());
-        $this->assertContains("Tanulmányi adat: ".strtolower(__('user.year_of_graduation')), $user->application->missingData());
-        $this->assertContains("Tanulmányi adat: ".strtolower(__('user.year_of_acceptance')), $user->application->missingData());
-        $this->assertContains("Tanulmányi adat: ".strtolower(__('user.neptun')), $user->application->missingData());
+        $this->assertContains("Tanulmányi adat: " . strtolower(__('user.high_school')), $user->application->missingData());
+        $this->assertContains("Tanulmányi adat: " . strtolower(__('user.year_of_graduation')), $user->application->missingData());
+        $this->assertContains("Tanulmányi adat: " . strtolower(__('user.year_of_acceptance')), $user->application->missingData());
+        $this->assertContains("Tanulmányi adat: " . strtolower(__('user.neptun')), $user->application->missingData());
         $this->assertContains("Tanulmányi adat: megjelölt szak", $user->application->missingData());
         $response = $this->post('/users/' . $user->id . '/educational_information', [
             'year_of_graduation' => '2018',
@@ -262,15 +265,15 @@ class ApplicationTest extends TestCase
         $response->assertStatus(302);
         $response->assertSessionHasNoErrors();
         $user->load(['application', 'workshops', 'faculties']);
-        $this->assertNotContains("Tanulmányi adat: ".strtolower(__('user.high_school')), $user->application->missingData());
-        $this->assertNotContains("Tanulmányi adat: ".strtolower(__('user.year_of_graduation')), $user->application->missingData());
-        $this->assertNotContains("Tanulmányi adat: ".strtolower(__('user.year_of_acceptance')), $user->application->missingData());
-        $this->assertNotContains("Tanulmányi adat: ".strtolower(__('user.neptun')), $user->application->missingData());
+        $this->assertNotContains("Tanulmányi adat: " . strtolower(__('user.high_school')), $user->application->missingData());
+        $this->assertNotContains("Tanulmányi adat: " . strtolower(__('user.year_of_graduation')), $user->application->missingData());
+        $this->assertNotContains("Tanulmányi adat: " . strtolower(__('user.year_of_acceptance')), $user->application->missingData());
+        $this->assertNotContains("Tanulmányi adat: " . strtolower(__('user.neptun')), $user->application->missingData());
         $this->assertNotContains("Tanulmányi adat: megjelölt szak", $user->application->missingData());
-        $this->assertNotContains("Tanulmányi adat: valamely tanult szak adata: ".strtolower(__('user.study_line')), $user->application->missingData());
-        $this->assertNotContains("Tanulmányi adat: valamely tanult szak adata: ".strtolower(__('user.study_line_level')), $user->application->missingData());
-        $this->assertNotContains("Tanulmányi adat: valamely tanult szak adata: ".strtolower(__('user.study_line_training_code')), $user->application->missingData());
-        $this->assertNotContains("Tanulmányi adat: valamely tanult szak adata: ".strtolower(__('user.study_line_start')), $user->application->missingData());
+        $this->assertNotContains("Tanulmányi adat: valamely tanult szak adata: " . strtolower(__('user.study_line')), $user->application->missingData());
+        $this->assertNotContains("Tanulmányi adat: valamely tanult szak adata: " . strtolower(__('user.study_line_level')), $user->application->missingData());
+        $this->assertNotContains("Tanulmányi adat: valamely tanult szak adata: " . strtolower(__('user.study_line_training_code')), $user->application->missingData());
+        $this->assertNotContains("Tanulmányi adat: valamely tanult szak adata: " . strtolower(__('user.study_line_start')), $user->application->missingData());
         //alfonso
         $this->assertContains('Tanulmányi adat: megjelölt ALFONSÓ nyelv', $user->application->missingData());
         $this->assertContains('Tanulmányi adat: elérni kívánt ALFONSÓ szint', $user->application->missingData());
@@ -287,39 +290,38 @@ class ApplicationTest extends TestCase
         //profile picture
         //this is not a required field due to privacy reasons
         $response = $this->post('/users/' . $user->id . '/profile_picture', [
-            'picture' => UploadedFile::fake()->image('image.png', 100)
+            'picture' => UploadedFile::fake()->image('image.png', 100),
         ]);
         $response->assertStatus(302);
         $response->assertSessionHasNoErrors();
         $user->load('application');
 
         //files
-        $this->assertContains('Legalább két feltöltött fájl', $user->application->missingData());
         $response = $this->post('/application', [
             'page' => 'files',
             'name' => 'file name',
-            'file' => UploadedFile::fake()->create('file.pdf', 100)
+            'file' => UploadedFile::fake()->create('file.pdf', 100),
+            'type' => FileType::RESUME->value,
         ]);
         $response->assertStatus(302);
         $response->assertSessionHasNoErrors();
         $user->load('application');
-        $this->assertContains('Legalább két feltöltött fájl', $user->application->missingData());
         $response = $this->post('/application', [
             'page' => 'files',
             'name' => 'file name 2',
-            'file' => UploadedFile::fake()->create('file2.pdf', 100)
+            'file' => UploadedFile::fake()->create('file2.pdf', 100),
+            'type' => FileType::ELVEGZETT_FELEV->value,
         ]);
         $response->assertStatus(302);
         $response->assertSessionHasNoErrors();
         $user->load('application');
-        $this->assertNotContains('Legalább két feltöltött fájl', $user->application->missingData());
 
         //questions
         $this->assertContains('Szakmai és motivációs kérdések: érettségi átlaga', $user->application->missingData());
         $response = $this->post('/application', [
             'page' => 'questions',
             'status' => 'extern',
-            'graduation_average' => '4'
+            'graduation_average' => '4',
         ]);
         $response->assertStatus(302);
         $response->assertSessionHasNoErrors();
@@ -335,10 +337,10 @@ class ApplicationTest extends TestCase
             'status' => 'extern',
             'graduation_average' => '4',
             'workshop' => [
-                Workshop::first()->id
+                Workshop::first()->id,
             ],
             'question_1' => ['answer 1'],
-            'question_2' => 'answer 2',
+            'question_2' => str_repeat('a', 500), // it has to be at least 500 characters
             'question_3' => 'answer 3',
             'publication_consent' => '1',
         ]);
@@ -355,7 +357,7 @@ class ApplicationTest extends TestCase
         $this->assertEquals([], $user->application->missingData());
 
         $response = $this->post('/application', [
-            'page' => 'submit'
+            'page' => 'submit',
         ]);
         $response->assertStatus(302);
         $user->load('application');
@@ -366,78 +368,4 @@ class ApplicationTest extends TestCase
         $this->assertEquals($user->internetAccess->wifi_username, $user->educationalInformation->neptun);
         $this->assertTrue($user->internetAccess->has_internet_until > now());
     }
-
-    //    /**
-    //     * Test the admin finalization
-    //     *
-    //     * @return void
-    //     */
-    //    public function test_cannot_finalize()
-    //    {
-    //        $user = User::factory()->create();
-    //        $user->addRole(Role::firstWhere('name', Role::SYS_ADMIN));
-    //        $this->actingAs($user);
-    //
-    //        $applicant_in_progress = User::factory()->create(['verified' => false]);
-    //        $applicant_in_progress->application->update(['submitted' => false]);
-    //
-    //        $applicant_submitted = User::factory()->create(['verified' => false]);
-    //        $applicant_submitted->application->update(['submitted' => true]);
-    ////
-    ////        $applicant_called_in = User::factory()->create(['verified' => false]);
-    ////        $applicant_called_in->application->update(['status' => Application::STATUS_CALLED_IN]);
-    ////
-    ////        $applicant_accepted = User::factory()->create(['verified' => false]);
-    ////        $applicant_accepted->application->update(['status' => Application::STATUS_ACCEPTED]);
-    ////
-    ////        $applicant_banished = User::factory()->create(['verified' => false]);
-    ////        $applicant_banished->application->update(['status' => Application::STATUS_BANISHED]);
-    //
-    //        $response = $this->post('/application/finalize');
-    //        $response->assertStatus(302);
-    //        $response->assertSessionHas('error', 'Még vannak feldolgozatlan jelentkezések!');
-    //    }
-
-    //    /**
-    //     * Test the admin finalization
-    //     *
-    //     * @return void
-    //     */
-    //    public function test_finalize()
-    //    {
-    //        $user = User::factory()->create(['verified' => true]);
-    //        $user->addRole(Role::firstWhere('name', Role::SYS_ADMIN));
-    //        $user->addRole(Role::firstWhere('name', Role::APPLICATION_COMMITTEE_MEMBER));
-    //        $user->addRole(Role::firstWhere('name', Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER));
-    //        Config::set('custom.application_deadline', now()->subWeeks(3));
-    //        $this->actingAs($user);
-    //
-    //        Application::query()->delete();
-    //        $applicant_in_progress = User::factory()->create(['verified' => false]);
-    //        $applicant_in_progress->application->update(['status' => Application::STATUS_IN_PROGRESS]);
-    //
-    //        $applicant_accepted = User::factory()->create(['verified' => false]);
-    //        $applicant_accepted->application->update(['status' => Application::STATUS_ACCEPTED]);
-    //
-    //        $applicant_banished = User::factory()->create(['verified' => false]);
-    //        $applicant_banished->application->update(['status' => Application::STATUS_BANISHED]);
-    //
-    //
-    //        $response = $this->post('/application/finalize');
-    //        $response->assertStatus(302);
-    //        $response->assertSessionHas('message', 'Sikeresen jóváhagyta az elfogadott jelentkezőket');
-    //
-    //        $applicant_accepted->refresh();
-    //        $this->assertTrue($applicant_accepted->verified == 1);
-    //        $this->assertNull(User::find($applicant_banished->id));
-    //        $this->assertNull(User::find($applicant_in_progress->id));
-    //
-    //        $this->assertTrue(Application::count() == 0);
-    //
-    //        $user->refresh();
-    //        $this->assertTrue($user->hasRole(Role::firstWhere('name', Role::SYS_ADMIN)));
-    //        $this->assertFalse($user->hasRole(Role::firstWhere('name', Role::APPLICATION_COMMITTEE_MEMBER)));
-    //        $this->assertFalse($user->hasRole(Role::firstWhere('name', Role::AGGREGATED_APPLICATION_COMMITTEE_MEMBER)));
-    //    }
-
 }

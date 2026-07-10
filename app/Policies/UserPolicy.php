@@ -52,8 +52,8 @@ class UserPolicy
         if ($user->id == $target->id) {
             if ($target->application()->exists()) {
                 return (
-                    app(ApplicationController::class)->isActive() &&
-                    !$target->application->submitted
+                    app(ApplicationController::class)->isActive()
+                    && !$target->application->submitted
                 );
             } else {
                 return true;
@@ -137,7 +137,7 @@ class UserPolicy
             Role::DIRECTOR,
             Role::WORKSHOP_LEADER,
             Role::STUDENT_COUNCIL_SECRETARY,
-            Role::STUDENT_COUNCIL => [Role::PRESIDENT, Role::SCIENCE_VICE_PRESIDENT]
+            Role::STUDENT_COUNCIL => [Role::PRESIDENT, Role::SCIENCE_VICE_PRESIDENT],
         ]);
     }
 
@@ -177,7 +177,7 @@ class UserPolicy
      * @param Role|null $role
      * @return bool
      */
-    public function updateAnyPermission(User $user, User $target, Role $role = null): bool
+    public function updateAnyPermission(User $user, User $target, ?Role $role = null): bool
     {
         if (!isset($role)) {
             return $user->hasRole([
@@ -185,7 +185,7 @@ class UserPolicy
                 Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS_AND_COMMITTEE_LEADERS,
                 Role::STUDENT_COUNCIL_SECRETARY,
                 Role::WORKSHOP_ADMINISTRATOR,
-                Role::WORKSHOP_LEADER
+                Role::WORKSHOP_LEADER,
             ]);
         }
 
@@ -206,7 +206,7 @@ class UserPolicy
                 Role::WORKSHOP_LEADER,
                 Role::STUDENT_COUNCIL_SECRETARY,
                 Role::SECRETARY,
-                Role::STUDENT_COUNCIL => Role::SCIENCE_VICE_PRESIDENT
+                Role::STUDENT_COUNCIL => Role::SCIENCE_VICE_PRESIDENT,
             ]);
         }
 
@@ -225,7 +225,7 @@ class UserPolicy
         if ($role->name == Role::APPLICATION_COMMITTEE_MEMBER) {
             return $user->hasRole([
                 Role::WORKSHOP_LEADER,
-                Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS
+                Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS,
             ]);
         }
 
@@ -236,7 +236,7 @@ class UserPolicy
         if ($role->name == Role::STUDENT_COUNCIL) {
             return $user->hasRole([
                 Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS_AND_COMMITTEE_LEADERS,
-                Role::STUDENT_COUNCIL_SECRETARY
+                Role::STUDENT_COUNCIL_SECRETARY,
             ]);
         }
 
@@ -250,7 +250,7 @@ class UserPolicy
      * @param RoleObject|Workshop|null $object
      * @return bool
      */
-    public function updatePermission(User $user, User $target, Role $role, Workshop|RoleObject $object = null): bool
+    public function updatePermission(User $user, User $target, Role $role, Workshop|RoleObject|null $object = null): bool
     {
         if ($role->name == Role::TENANT) {
             return $user->hasRole([Role::STAFF]);
@@ -270,7 +270,7 @@ class UserPolicy
                 'workshop_id'
             )->where('role_id', Role::get(Role::WORKSHOP_LEADER)->id)->where('id', $object->id)->exists()
                     || $user->hasRole([
-                        Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS
+                        Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS,
                     ]);
         }
 
@@ -292,11 +292,10 @@ class UserPolicy
                     'id',
                     'workshop_id'
                 )->where('role_id', Role::get(Role::WORKSHOP_LEADER)->id)->where('id', $object->id)->exists()
-                ||
-                    $user->hasRole([
+                    || $user->hasRole([
                         Role::STUDENT_COUNCIL_SECRETARY,
                         Role::SECRETARY,
-                        Role::STUDENT_COUNCIL => Role::SCIENCE_VICE_PRESIDENT
+                        Role::STUDENT_COUNCIL => Role::SCIENCE_VICE_PRESIDENT,
                     ]);
         }
 

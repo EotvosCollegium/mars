@@ -105,7 +105,7 @@ class InternetAccess extends Model
         }
         $this->update([
             'wifi_username' => $username,
-            'wifi_password' => self::generateWifiPassword()
+            'wifi_password' => self::generateWifiPassword(),
         ]);
 
         return $username;
@@ -123,7 +123,7 @@ class InternetAccess extends Model
      * @param string|Carbon|null $newDate
      * @return Carbon
      */
-    public function extendInternetAccess(Carbon|string $newDate = null): Carbon
+    public function extendInternetAccess(Carbon|string|null $newDate = null): Carbon
     {
         if ($newDate != null) {
             $newDate = Carbon::parse($newDate);
