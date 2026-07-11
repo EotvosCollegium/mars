@@ -32,6 +32,8 @@ trait ApplicationHandler
             'foreign_studies.*' => 'nullable|string',
             'workshop' => 'nullable|array',
             'workshop.*' => 'nullable|exists:workshops,id',
+            'workshop_letter' => 'nullable|array',
+            'workshop_letter.*' => 'nullable|string|max:1000',
             'question_1' => 'nullable|array',
             'question_1.*' => 'nullable|string',
             'question_2' => 'nullable|string',
@@ -40,7 +42,7 @@ trait ApplicationHandler
             'present' => 'nullable|string',
             'accommodation' => 'sometimes|accepted',
             'publication_consent' => 'sometimes|accepted',
-            'pseudonym' => ['string', 'min:5', 'max:20', 'regex:/^[A-Z]+$/', 'nullable', 'unique:App\Models\Application,pseudonym,' . $user->application->id]
+            'pseudonym' => ['string', 'min:5', 'max:20', 'regex:/^[A-Z]+$/', 'nullable', 'unique:App\Models\Application,pseudonym,' . $user->application->id],
         ]);
 
         if (!isset($data['status'])) {
@@ -57,11 +59,13 @@ trait ApplicationHandler
         $data['accommodation'] = isset($data['accommodation']) && $data['accommodation'];
         $data['publication_consent'] = isset($data['publication_consent']) && $data['publication_consent'];
 
+        $workshopLetters = $data['workshop_letter'] ?? [];
+
         $application = Application::updateOrCreate(
             ['user_id' => $user->id],
             $data
         );
-        $application->syncAppliedWorkshops($request->input('workshop'));
+        $application->syncAppliedWorkshops($data['workshop'], $workshopLetters);
     }
 
     /**
