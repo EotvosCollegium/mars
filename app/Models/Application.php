@@ -38,7 +38,6 @@ use Illuminate\Support\Facades\Auth;
  * @property string $present
  * @property boolean $publication_consent
  * @property string $pseudonym
- * @property string $note
  * @property int $id
  * @property int $user_id
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -55,7 +54,6 @@ use Illuminate\Support\Facades\Auth;
  * @method static \Illuminate\Database\Eloquent\Builder|Application whereGraduationAverage($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Application whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Application whereLanguageExam($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Application whereNote($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Application wherePresent($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Application wherePublication($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Application whereQuestion1($value)
@@ -92,7 +90,7 @@ class Application extends Model
         'present',
         'publication_consent',
         'pseudonym',
-        'note'
+        //'note' //Not used since 2026. Retaining data from previous application in the database.
     ];
 
     protected $casts = [
@@ -112,7 +110,7 @@ class Application extends Model
         "kari, egyetemi nyílt napon vagy hasonló rendezvényen láttam",
         "a Facebook/Instagram hirdetést láttam",
         "egy Facebook oldalon vagy csoportban posztolták",
-        "az ELTE honlapján olvastam róla"
+        "az ELTE honlapján olvastam róla",
     ];
 
     /*
@@ -253,7 +251,7 @@ class Application extends Model
     protected function admitted(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->applicationWorkshops()->where('admitted', true)->exists(),
+            get: fn() => $this->applicationWorkshops()->where('admitted', true)->exists(),
         );
     }
 
@@ -266,7 +264,7 @@ class Application extends Model
     protected function calledIn(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->applicationWorkshops()->where('called_in', true)->exists(),
+            get: fn() => $this->applicationWorkshops()->where('called_in', true)->exists(),
         );
     }
 
@@ -278,8 +276,8 @@ class Application extends Model
     protected function semesterAverage(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => DataCompresser::decompressData($value),
-            set: fn ($value) => DataCompresser::compressData($value),
+            get: fn($value) => DataCompresser::decompressData($value),
+            set: fn($value) => DataCompresser::compressData($value),
         );
     }
 
@@ -291,8 +289,8 @@ class Application extends Model
     protected function languageExam(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => DataCompresser::decompressData($value),
-            set: fn ($value) => DataCompresser::compressData($value),
+            get: fn($value) => DataCompresser::decompressData($value),
+            set: fn($value) => DataCompresser::compressData($value),
         );
     }
 
@@ -304,8 +302,8 @@ class Application extends Model
     public function competition(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => DataCompresser::decompressData($value),
-            set: fn ($value) => DataCompresser::compressData($value),
+            get: fn($value) => DataCompresser::decompressData($value),
+            set: fn($value) => DataCompresser::compressData($value),
         );
     }
 
@@ -317,8 +315,8 @@ class Application extends Model
     public function publication(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => DataCompresser::decompressData($value),
-            set: fn ($value) => DataCompresser::compressData($value),
+            get: fn($value) => DataCompresser::decompressData($value),
+            set: fn($value) => DataCompresser::compressData($value),
         );
     }
 
@@ -330,8 +328,8 @@ class Application extends Model
     public function foreignStudies(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => DataCompresser::decompressData($value),
-            set: fn ($value) => DataCompresser::compressData($value),
+            get: fn($value) => DataCompresser::decompressData($value),
+            set: fn($value) => DataCompresser::compressData($value),
         );
     }
 
@@ -343,8 +341,8 @@ class Application extends Model
     public function question1(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => DataCompresser::decompressData($value),
-            set: fn ($value) => DataCompresser::compressData($value),
+            get: fn($value) => DataCompresser::decompressData($value),
+            set: fn($value) => DataCompresser::compressData($value),
         );
     }
 
@@ -356,7 +354,7 @@ class Application extends Model
     public function question1Custom(): Attribute
     {
         return Attribute::make(
-            get: fn (): string => $this->getCustomValue($this->question_1, self::QUESTION_1)
+            get: fn(): string => $this->getCustomValue($this->question_1, self::QUESTION_1)
         );
     }
 
@@ -401,14 +399,14 @@ class Application extends Model
             $missingData[] = 'Személyes adat: e-mail';
         }
         foreach (['place_of_birth', 'date_of_birth', 'mothers_name', 'phone_number',
-                 'country', 'county', 'zip_code', 'city', 'street_and_number'] as $personal_info_field) {
+            'country', 'county', 'zip_code', 'city', 'street_and_number'] as $personal_info_field) {
             if (!isset($personalInformation) || !isset($personalInformation[$personal_info_field])) {
-                $missingData[] = "Személyes adat: ".strtolower(__('user.'.$personal_info_field));
+                $missingData[] = "Személyes adat: " . strtolower(__('user.' . $personal_info_field));
             }
         }
         foreach (['high_school', 'year_of_graduation', 'year_of_acceptance', 'neptun'] as $educational_info_field) {
             if (!isset($educationalInformation) || !isset($educationalInformation[$educational_info_field])) {
-                $missingData[] = "Tanulmányi adat: ".strtolower(__('user.'.$educational_info_field));
+                $missingData[] = "Tanulmányi adat: " . strtolower(__('user.' . $educational_info_field));
             }
         }
 
@@ -422,16 +420,16 @@ class Application extends Model
         } else {
             foreach ($educationalInformation->studyLines as $study_line) {
                 if (!isset($study_line['name'])) {
-                    $missingData[] =  'Tanulmányi adat: valamely tanult szak adata: '.strtolower(__('user.study_line'));
+                    $missingData[] =  'Tanulmányi adat: valamely tanult szak adata: ' . strtolower(__('user.study_line'));
                 }
                 if (!isset($study_line['type'])) {
-                    $missingData[] =  'Tanulmányi adat: valamely tanult szak adata: '.strtolower(__('user.study_line_level'));
+                    $missingData[] =  'Tanulmányi adat: valamely tanult szak adata: ' . strtolower(__('user.study_line_level'));
                 }
                 if (!isset($study_line['training_code'])) {
-                    $missingData[] =  'Tanulmányi adat: valamely tanult szak adata: '.strtolower(__('user.study_line_training_code'));
+                    $missingData[] =  'Tanulmányi adat: valamely tanult szak adata: ' . strtolower(__('user.study_line_training_code'));
                 }
                 if (!isset($study_line['start'])) {
-                    $missingData[] =  'Tanulmányi adat: valamely tanult szak adata: '.strtolower(__('user.study_line_start'));
+                    $missingData[] =  'Tanulmányi adat: valamely tanult szak adata: ' . strtolower(__('user.study_line_start'));
                 }
             }
         }
@@ -454,6 +452,12 @@ class Application extends Model
 
         if ($this->appliedWorkshops->count() == 0) {
             $missingData[] =  'Szakmai és motivációs kérdések: megpályázni kívánt műhely';
+        }
+
+        foreach ($this->applicationWorkshops as $applicationWorkshop) {
+            if (blank($applicationWorkshop->motivation_letter)) {
+                $missingData[] = 'Szakmai és motivációs kérdések: ' . $applicationWorkshop->workshop->name . 'hez tartozó motivációs levél';
+            }
         }
 
         if (!isset($this->question_1) || $this->question_1 == []) {
@@ -509,16 +513,20 @@ class Application extends Model
     /**
      * Sync the applied workshops.
      * @param array|null $workshop_ids
+     * @param array|null $workshop_letters
      * @return void
      */
-    public function syncAppliedWorkshops(?array $workshop_ids): void
+    public function syncAppliedWorkshops(?array $workshop_ids, ?array $workshop_letters = null): void
     {
         foreach (Workshop::all() as $workshop) {
             if (in_array($workshop->id, $workshop_ids ?? [])) {
                 // make sure applied workshop exists
                 $this
                     ->applicationWorkshops()
-                    ->updateOrCreate(['workshop_id' => $workshop->id]);
+                    ->updateOrCreate(
+                        ['workshop_id' => $workshop->id],
+                        ['motivation_letter' => $workshop_letters[$workshop->id] ?? null]
+                    );
             } else {
                 // delete application to workshop
                 $this->applicationWorkshops()->where('workshop_id', $workshop->id)->delete();
