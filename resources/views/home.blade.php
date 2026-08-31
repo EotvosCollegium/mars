@@ -136,31 +136,6 @@
                 </div>
 
                 @endif
-                <!-- Admins -->
-                @if(isset($contacts['admins']))
-                <h5>@lang('role.sys-admins')</h5>
-                <i><a href="mailto:{{ config('contacts.developer_email') }}">{{config('contacts.developer_email')}}</a></i><br>
-                @foreach($contacts['admins'] as $admin)
-                    @if(!$loop->first)|@endif
-                    <i>{{$admin->name}}</i>
-                    @if($admin->room)
-                        ({{$admin->room}}. szoba)
-                    @endif
-                @endforeach
-                @endif
-
-                <!-- Print Account Handlers -->
-                @if(isset($contacts['print-account-handlers']) && count($contacts['print-account-handlers']) > 0)
-                <h5>@lang('role.print-account-handler')</h5>
-                @foreach($contacts['print-account-handlers'] as $handler)
-                    @if(!$loop->first)|@endif
-                    <i>{{$handler->name}}</i>
-                    @if($handler->room)
-                        ({{$handler->room}}. szoba)
-                    @endif
-                @endforeach
-                <br>
-                @endif
 
                 <h5>@lang('general.others')</h5>
                 @foreach($contacts['other'] as $key => $other)
