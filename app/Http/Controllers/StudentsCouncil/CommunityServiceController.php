@@ -4,6 +4,8 @@ namespace App\Http\Controllers\StudentsCouncil;
 
 use App\Models\User;
 use App\Models\Semester;
+use App\Models\Role;
+use App\Models\RoleObject;
 use App\Models\CommunityService;
 use App\Http\Controllers\Controller;
 use App\Mail\CommunityServiceStatusChanged;
@@ -22,7 +24,7 @@ class CommunityServiceController extends Controller
             'semesters' => Semester::withWhereHas('communityServices', function ($query) use ($request) {
                 $query->where('approver_id', $request->user()->id)
                     ->orWhere('requester_id', $request->user()->id);
-            })->get()
+            })->get(),
         ]);
     }
 
@@ -51,6 +53,7 @@ class CommunityServiceController extends Controller
         $request->validate([
             'approver' => 'required|exists:users,id',
             'description' => 'required|string',
+            'date_of_service' => 'nullable|string',
         ]);
 
         $communityService = CommunityService::create([
@@ -59,6 +62,7 @@ class CommunityServiceController extends Controller
             'semester_id' => Semester::current()->id,
             'approved' => null,
             'description' => $request->description,
+            'date_of_service' => $request->date_of_service,
         ]);
 
         Mail::to($communityService->approver)->queue(new CommunityServiceRequested($communityService));
@@ -86,5 +90,61 @@ class CommunityServiceController extends Controller
         Mail::to($communityService->requester)->queue(new CommunityServiceStatusChanged($communityService));
 
         return back()->with('message', "Sikeresen elutasítottad a közösségi tevékenységet!");
+    }
+
+    /**
+     * Returns, for the approving user, the role
+     * that is going to be used on the certificate
+     * as a title
+     * (or null if there is none).
+     */
+    private static function approvingRole(User $user): Role|RoleObject|null
+    {
+        if ($user->hasRole(Role::SECRETARY)) {
+            return Role::secretary();
+        } elseif ($user->hasRole(Role::STUDENT_COUNCIL)) {
+            return $user->roles()->where('role_id', Role::studentsCouncil()->id)->first()->pivot->object;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Creates a PDF file that certifies that the given user has done the community service described.
+     * Can only be done by the approver.
+     */
+    public function generateCertificate(CommunityService $communityService)
+    {
+        // this also checks whether it has been approved
+        $this->authorize('generateCertificate', $communityService);
+
+        $requester = $communityService->requester;
+        $approver = Auth::user();
+        $approvingRole = self::approvingRole($approver);
+        $isForSecretariat = Role::SECRETARY == $approvingRole->name;
+
+        if ($isForSecretariat) {
+            // in this case, the director's name looks better
+            $director = User::director();
+            if (!is_null($director)) {
+                $approver = $director;
+                $approvingRole = Role::director();
+            }
+        }
+
+        $documentPath = \App\Utils\LatexHelper::generatePDF(
+            'latex.community-service',
+            [
+                'requester_name' => $requester->name,
+                'requester_neptun' => $requester->educationalInformation->neptun,
+                'approver_name' => $approver->name,
+                'approver_title' => is_null($approvingRole) ? "" : $approvingRole->translatedName,
+                'service_description' => $communityService->description,
+                'date_of_service' => $communityService->date_of_service,
+                'current_date' => date("Y.m.d."),
+                'is_for_secretariat' => $isForSecretariat
+            ]
+        );
+        return response()->download($documentPath);
     }
 }

@@ -284,6 +284,7 @@ Route::middleware([Authenticate::class, LogRequests::class, EnsureVerified::clas
     Route::post('/community_service/reject/{community_service}', [CommunityServiceController::class, 'reject'])->name('community_service.reject');
     Route::post('/community_service/create', [CommunityServiceController::class, 'create'])->name('community_service.create');
     Route::get('/community_service/search', [CommunityServiceController::class, 'search'])->name('community_service.search');
+    Route::post('/community_service/generate_certificate/{community_service}', [CommunityServiceController::class, 'generateCertificate'])->name('community_service.generate_certificate');
 
     /** voting */
     Route::get("/general_assemblies", [GeneralAssemblyController::class, 'index'])->name('general_assemblies.index');

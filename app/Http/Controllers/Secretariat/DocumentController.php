@@ -10,6 +10,7 @@ use App\Models\PrinterConfiguration;
 use App\Console\Commands;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Dormitory\Printing\PrintJobController;
+use App\Utils\LatexHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -18,12 +19,21 @@ use Illuminate\Support\Facades\Storage;
 
 class DocumentController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         Gate::authorize('document.any');
+
+        // add semesters for the certificate feature
+        $data = $this->printingBladeData();
+        $data['semesters'] = Semester::withWhereHas('communityServices', function ($query) use ($request) {
+            $query->where('approver_id', $request->user()->id)
+                ->orWhere('requester_id', $request->user()->id);
+        })->get();
+        $data['showApprove'] = true;
+
         return view(
             'secretariat.document.index',
-            $this->printingBladeData()
+            $data
         );
     }
 
@@ -88,8 +98,8 @@ class DocumentController extends Controller
             'secretariat.document.import',
             array_merge(
                 [
-                'items' => user()->importItems,
-            ],
+                    'items' => user()->importItems,
+                ],
                 $this->printingBladeData()
             )
         );
@@ -102,7 +112,7 @@ class DocumentController extends Controller
         ImportItem::create([
             'user_id' => user()->id,
             'name' => $request->item,
-            'serial_number' => $request->serial_number ?? null
+            'serial_number' => $request->serial_number ?? null,
         ]);
         return redirect()->back()->with('message', __('general.successful_modification'));
     }
@@ -201,38 +211,15 @@ class DocumentController extends Controller
     {
         if ($this->printingAvailable()) {
             return [
-                    'printing_conf_name_hun' => $this->printingConfiguration()->description_hun,
-                    'printing_conf_name_eng' => $this->printingConfiguration()->description_eng,
-                    'current_balance' => user()->printAccount->balance,
-                    'printing_available' => $this->printingAvailable()
-                ];
+                'printing_conf_name_hun' => $this->printingConfiguration()->description_hun,
+                'printing_conf_name_eng' => $this->printingConfiguration()->description_eng,
+                'current_balance' => user()->printAccount->balance,
+                'printing_available' => $this->printingAvailable(),
+            ];
         } else {
             return [
-                    'printing_available' => false
-                ];
-        }
-    }
-
-    // Returns the .tex file in debug mode
-    private function generatePDF($path, $data)
-    {
-        $renderedLatex = view($path)->with($data)->render();
-
-        $filename =  md5(rand(0, 100000) . date('c'));
-        Storage::disk('latex')->put($filename . '.tex', $renderedLatex);
-
-        $outputDir = Storage::disk('latex')->path('/');
-
-        $pathTex = Storage::disk('latex')->path($filename . ".tex");
-        $pathPdf = Storage::disk('latex')->path($filename . ".pdf");
-
-        // TODO: figure out result
-        Commands::latexToPdf($pathTex, $outputDir);
-
-        if (config('app.debug') && !config('commands.run_in_debug')) {
-            return $pathTex;
-        } else {
-            return $pathPdf;
+                'printing_available' => false,
+            ];
         }
     }
 
@@ -243,21 +230,21 @@ class DocumentController extends Controller
         if (!$user->hasPersonalInformation()) {
             return [
                 'success' => false,
-                'redirect' => back()->withInput()->with('error', __('document.missing_personal_info'))
+                'redirect' => back()->withInput()->with('error', __('document.missing_personal_info')),
             ];
         }
         $info = $user->personalInformation;
 
-        $pdf = $this->generatePDF(
+        $pdf = LatexHelper::generatePDF(
             $template_name,
             [ 'name' => $user->name,
-              'address' => $info->getAddress(),
-              'phone' => $info->phone_number,
-              'email' => $user->email,
-              'place_and_of_birth' => $info->getPlaceAndDateOfBirth(),
-              'mothers_name' => $info->mothers_name,
-              'date' => date("Y.m.d"),
-        ]
+                'address' => $info->getAddress(),
+                'phone' => $info->phone_number,
+                'email' => $user->email,
+                'place_and_of_birth' => $info->getPlaceAndDateOfBirth(),
+                'mothers_name' => $info->mothers_name,
+                'date' => date("Y.m.d"),
+            ]
         );
         return ['success' => true, 'pdf' => $pdf];
     }
@@ -280,16 +267,17 @@ class DocumentController extends Controller
         if ($items->isEmpty()) {
             return [
                 'success' => false,
-                'redirect' => back()->withInput()->with('error', "Még nem adtad meg a tárgyakat, amiket behoznál.")
+                'redirect' => back()->withInput()->with('error', "Még nem adtad meg a tárgyakat, amiket behoznál."),
             ];
         }
 
-        $pdf = $this->generatePDF(
+        $pdf = LatexHelper::generatePDF(
             'latex.import',
-            [ 'name' => $user->name,
-              'items' => $items,
-              'date' => date("Y.m.d"),
-        ]
+            [
+                'name' => $user->name,
+                'items' => $items,
+                'date' => date("Y.m.d"),
+            ]
         );
         return ['success' => true, 'pdf' => $pdf];
     }
@@ -299,30 +287,30 @@ class DocumentController extends Controller
         if (!$user->hasPersonalInformation()) {
             return [
                 'success' => false,
-                'redirect' => back()->withInput()->with('error', "A személyes adataid hiányoznak a dokumentum kitöltéséhez. Kérj segítséget egy rendszergazdától.")
+                'redirect' => back()->withInput()->with('error', "A személyes adataid hiányoznak a dokumentum kitöltéséhez. Kérj segítséget egy rendszergazdától."),
             ];
         }
 
         if (!$user->hasEducationalInformation()) {
             return [
                 'success' => false,
-                'redirect' => back()->withInput()->with('error', "A tanulmányi adataid hiányoznak a dokumentum kitöltéséhez. Kérj segítséget egy rendszergazdától")
+                'redirect' => back()->withInput()->with('error', "A tanulmányi adataid hiányoznak a dokumentum kitöltéséhez. Kérj segítséget egy rendszergazdától"),
             ];
         }
         $personalInfo = $user->personalInformation;
         $educationalInfo = $user->educationalInformation;
 
-        $pdf = $this->generatePDF(
+        $pdf = LatexHelper::generatePDF(
             'latex.status-cert',
             [ 'name' => $user->name,
-              'address' => $user->zip_code . ' ' . $personalInfo->getAddress(),
-              'place_and_date_of_birth' => $personalInfo->getPlaceAndDateOfBirth(),
-              'mothers_name' => $personalInfo->mothers_name,
-              'neptun' => $educationalInfo->neptun,
-              'from' => $educationalInfo->year_of_acceptance,
-              'until' => Semester::current()->getEndDate()->format('Y.m.d.'), // TODO: check active semesters
-              // TODO: add status
-        ]
+                'address' => $user->zip_code . ' ' . $personalInfo->getAddress(),
+                'place_and_date_of_birth' => $personalInfo->getPlaceAndDateOfBirth(),
+                'mothers_name' => $personalInfo->mothers_name,
+                'neptun' => $educationalInfo->neptun,
+                'from' => $educationalInfo->year_of_acceptance,
+                'until' => Semester::current()->getEndDate()->format('Y.m.d.'), // TODO: check active semesters
+                // TODO: add status
+            ]
         );
 
         return ['success' => true, 'pdf' => $pdf];

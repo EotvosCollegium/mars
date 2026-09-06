@@ -39,11 +39,14 @@ class CommunityServicePolicy
      */
     public function approveAny(User $user)
     {
-        return $user->hasRole([Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS_AND_COMMITTEE_LEADERS]);
+        return $user->hasRole([Role::STUDENT_COUNCIL => Role::STUDENT_COUNCIL_LEADERS_AND_COMMITTEE_LEADERS,
+            Role::SECRETARY]);
     }
 
     /**
-     * Determine whether the user is the approver for the given community service.
+     * Determine whether the user can approve the given community service
+     * (they are the approver, they haven't approved or rejected it before,
+     * and the service was in the current semester).
      * @param User $user
      * @param CommunityService $communityService
      * @return bool
@@ -55,5 +58,10 @@ class CommunityServicePolicy
         }
 
         return $communityService->approver->id === $user->id;
+    }
+
+    public function generateCertificate(User $user, CommunityService $communityService)
+    {
+        return 1 == $communityService->approved && $communityService->approver->id === $user->id;
     }
 }
