@@ -4,6 +4,12 @@ $coli: (
     "orange": if($isDebug == "true", #dc3c1c, #b38f2f),
     "lightblue": #6e76e5
 );
+
+//navbar height
+$navbar-height: 56px;
+
+//navbar responsive breakpoint - when to hide username and shorten breadcrumbs
+$navbar-collapse-breakpoint: 1280px;
 //import and overwrite default colors
 @import "~@materializecss/materialize/sass/components/color-variables";
 $colors: map-merge(
@@ -400,4 +406,43 @@ body.dark a.btn {
 
 .form-disabled {
     opacity: 0.5;
+}
+
+/* Fix navbar overflow issue with responsive breadcrumbs and profile */
+.navbar-fixed nav.top-nav .nav-wrapper .row {
+    height: $navbar-height;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* Individual breadcrumb items should have ellipsis when too long */
+.navbar-fixed nav.top-nav .nav-wrapper .breadcrumb {
+    max-width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* Responsive profile - hide username on constrained screens */
+@media (max-width: $navbar-collapse-breakpoint) {
+    .navbar-fixed nav.top-nav .nav-wrapper ul.right li a .username-text {
+        display: none;
+    }
+    
+    .navbar-fixed nav.top-nav .nav-wrapper ul.right li a i.material-icons.left {
+        margin-right: 0;
+    }
+    
+    /* Reduce breadcrumb width */
+    .navbar-fixed nav.top-nav .nav-wrapper .breadcrumb {
+        max-width: 200px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .navbar-fixed nav.top-nav .nav-wrapper .breadcrumb {
+        max-width: 150px;
+    }
 }
