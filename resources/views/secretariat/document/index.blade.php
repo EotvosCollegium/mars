@@ -6,13 +6,27 @@
 
 @section('content')
 
+@php
+    $currentUser = Auth::user();
+@endphp
+
 <div class="row">
     <div class="col s12">
         <div class="card">
             <div class="card-content">
                 <span class="card-title">Dokumentumok</span>
                 @include("secretariat.document.printing_info")
-                <blockquote>Igazolásokat a titkárságtól tudsz igényelni az "Igénylés" gombra kattintva, erről a titkárság értesítést kap. Az igazolásokat általában a következő munkanapon veheted át. Csak az aláírt és lepecsételt igazolások érvényesek! Az igazolásokat jellemzően a titkárság nyomtatja.</blockquote>
+                <blockquote>
+                    @if($currentUser->hasRole(\App\Models\Role::SECRETARY))
+                    Az alábbi paneleken a különböző félévekben beérkezett,
+                    tevékenységekre vonatkozó igazolási kérelmek szerepelnek.<br/>
+                    Ha jóváhagy egy tevékenységet,
+                    a jóváhagyás után megjelenik egy 'Letöltés' gomb,
+                    amivel PDF-formátumú igazolást lehet generálni.
+                    @else
+                    Igazolásokat a titkárságtól tudsz igényelni az "Igénylés" gombra kattintva, erről a titkárság értesítést kap. Az igazolásokat általában a következő munkanapon veheted át. Csak az aláírt és lepecsételt igazolások érvényesek! Az igazolásokat jellemzően a titkárság nyomtatja.
+                    @endif
+                </blockquote>
                 {{-- TODO: show printing errors --}}
                 <table>
                     <tbody>
@@ -105,6 +119,11 @@
                 </table>
             </div>
         </div>
+        @if($currentUser->hasRole(\App\Models\Role::SECRETARY))
+        @include('student-council.community-service.table')
+        @elseif($currentUser->can('create', \App\Models\CommunityService::class))
+        @include('student-council.community-service.request', ['isForSecretariat' => true])
+        @endif
     </div>
 </div>
 @endsection

@@ -42,7 +42,7 @@
             }
         \textsc{
 		    {\scriptsize
-                {{ \App\Utils\LatexSanitizer::sanitizeLatex(\App\Models\User::director()?->name) }}\\
+                {{ \App\Utils\LatexHelper::sanitizeLatex(\App\Models\User::director()?->name) }}\\
                 igazgató\\
                 }
             }
@@ -53,7 +53,7 @@
 		\begin{flushleft}
 			{\scriptsize H-1118 Budapest, Ménesi út 11-13\\
 			Tel.: +36 1 460 4481 • Fax.: +36 1 209 2044 \\
-			E-mail:	{{ \App\Utils\LatexSanitizer::sanitizeLatex(config("mail.secretary_mail")) }} • {{ \App\Utils\LatexSanitizer::sanitizeLatex(\App\Models\User::director()?->email) }}
+			E-mail:	{{ \App\Utils\LatexHelper::sanitizeLatex(config("mail.secretary_mail")) }} • {{ \App\Utils\LatexHelper::sanitizeLatex(\App\Models\User::director()?->email) }}
 		%	valasztmany@eotvos.elte.hu • elnok@eotvos.elte.hu\\
 			Honlap: https://eotvos.elte.hu/ }
 		\end{flushleft}
@@ -76,16 +76,16 @@
 \begin{document}
 \maketitle
 
-Alulírott {{ \App\Utils\LatexSanitizer::sanitizeLatex(\App\Models\User::director()?->name) }}, az ELTE Eötvös József Collegium igazgatója, hivatalosan igazolom, hogy {{ \App\Utils\LatexSanitizer::sanitizeLatex($name) }} (Neptun-kód: {{ \App\Utils\LatexSanitizer::sanitizeLatex($neptun) }}) az ELTE Eötvös József Collegium tagja {{ \App\Utils\LatexSanitizer::sanitizeLatex($from) }}. szeptemberétől.
+Alulírott {{ \App\Utils\LatexHelper::sanitizeLatex(\App\Models\User::director()?->name) }}, az ELTE Eötvös József Collegium igazgatója, hivatalosan igazolom, hogy {{ \App\Utils\LatexHelper::sanitizeLatex($name) }} (Neptun-kód: {{ \App\Utils\LatexHelper::sanitizeLatex($neptun) }}) az ELTE Eötvös József Collegium tagja {{ \App\Utils\LatexHelper::sanitizeLatex($from) }}. szeptemberétől.
 
-A tagság érvényességének befejezése: {{ \App\Utils\LatexSanitizer::sanitizeLatex($until) }}
+A tagság érvényességének befejezése: {{ \App\Utils\LatexHelper::sanitizeLatex($until) }}
 
 Személyes adatai:
 \begin{itemize}
 	\itemsep0em
-	\item születési helye és ideje: {{ \App\Utils\LatexSanitizer::sanitizeLatex($place_and_date_of_birth) }}
-	\item anyja neve: {{ \App\Utils\LatexSanitizer::sanitizeLatex($mothers_name) }}
-	\item állandó lakcíme: {{ \App\Utils\LatexSanitizer::sanitizeLatex($address) }}
+	\item születési helye és ideje: {{ \App\Utils\LatexHelper::sanitizeLatex($place_and_date_of_birth) }}
+	\item anyja neve: {{ \App\Utils\LatexHelper::sanitizeLatex($mothers_name) }}
+	\item állandó lakcíme: {{ \App\Utils\LatexHelper::sanitizeLatex($address) }}
 \end{itemize}
 
 
@@ -95,7 +95,7 @@ Kelt: Budapest, \today
 
 \begin{flushright}
 \begin{minipage}[t]{0.4\textwidth}
-	\signature{ {{ \App\Utils\LatexSanitizer::sanitizeLatex(\App\Models\User::director()?->name) }} }{igazgató}{Eötvös József Collegium}
+	\signature{ {{ \App\Utils\LatexHelper::sanitizeLatex(\App\Models\User::director()?->name) }} }{igazgató}{Eötvös József Collegium}
 \end{minipage}
 \end{flushright}
 

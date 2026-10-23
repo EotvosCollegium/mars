@@ -9,6 +9,7 @@
                             <tr>
                                 <th>Leírás</th>
                                 <th>Dátum</th>
+                                <th>Benyújtva</th>
                                 <th>Kérvényező</th>
                                 <th>Jóváhagyó</th>
                                 <th>Státusz</th>
@@ -18,6 +19,7 @@
                             @foreach ($semester->communityServices as $communityService)
                                 <tr>
                                     <td style="word-break: break-all">{{ $communityService->description }}</td>
+                                    <td>{{ $communityService->date_of_service ?: '–' }}</td>
                                     <td>{{ $communityService->created_at->format('Y. m. d.') }}</td>
                                     <td>{{ $communityService->requester->name }}</td>
                                     <td>{{ $communityService->approver->name }}</td>
@@ -42,7 +44,14 @@
                                                     <i class="material-icons">close</i>
                                                 </button>
                                             </form>
-                                        @endif
+                                        @elsecan('generateCertificate', $communityService)
+                                        <form action={{ route('community_service.generate_certificate', ['community_service' => $communityService->id])}} method="POST">
+                                            @csrf
+                                            <button type="submit" class="btn-floating btn-small waves-effect waves-light">
+                                                <i class="material-icons">download</i>
+                                            </button>
+                                        </form>
+                                        @endcan
                                     </td>
                                     @endif
                                 </tr>

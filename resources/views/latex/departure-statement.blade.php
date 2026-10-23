@@ -31,18 +31,18 @@
 
 \vspace*{2em}
 
-\noindent{}Név: {{ \App\Utils\LatexSanitizer::sanitizeLatex($name) }} \\
-Állandó lakcím: {{ \App\Utils\LatexSanitizer::sanitizeLatex($address) }} \\
-Telefonszám: {{ \App\Utils\LatexSanitizer::sanitizeLatex($phone) }} \\
-E-mail: {{ \App\Utils\LatexSanitizer::sanitizeLatex($email) }} \\
-Születési hely és idő: {{ \App\Utils\LatexSanitizer::sanitizeLatex($place_and_of_birth) }} \\
-Anyja neve: {{ \App\Utils\LatexSanitizer::sanitizeLatex($mothers_name) }} \\
+\noindent{}Név: {{ \App\Utils\LatexHelper::sanitizeLatex($name) }} \\
+Állandó lakcím: {{ \App\Utils\LatexHelper::sanitizeLatex($address) }} \\
+Telefonszám: {{ \App\Utils\LatexHelper::sanitizeLatex($phone) }} \\
+E-mail: {{ \App\Utils\LatexHelper::sanitizeLatex($email) }} \\
+Születési hely és idő: {{ \App\Utils\LatexHelper::sanitizeLatex($place_and_of_birth) }} \\
+Anyja neve: {{ \App\Utils\LatexHelper::sanitizeLatex($mothers_name) }} \\
 Kiköltözés dátuma: \\
 \\
 A szobát a leltár szerint átadtam.
 
 \vspace{2em}
-\noindent{}Budapest, {{ \App\Utils\LatexSanitizer::sanitizeLatex($date) }}
+\noindent{}Budapest, {{ \App\Utils\LatexHelper::sanitizeLatex($date) }}
 
 \hfill\lotofdots
 
@@ -55,7 +55,7 @@ A szobát a leltár szerint átadtam.
 \vspace{2em}
 
 \noindent{}A szobát ellenőriztük, állapota rendezett, kitakarított.\\
-Budapest, {{ \App\Utils\LatexSanitizer::sanitizeLatex($date) }}
+Budapest, {{ \App\Utils\LatexHelper::sanitizeLatex($date) }}
 
 \vspace{3em}
 

@@ -36,7 +36,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class CommunityService extends Model
 {
-    protected $fillable = ['requester_id', 'approver_id', 'description', 'approved', 'semester_id'];
+    protected $fillable = ['requester_id', 'approver_id', 'description', 'date_of_service', 'approved', 'semester_id'];
     protected $casts = [
         'approved' => 'boolean',
     ];
@@ -76,7 +76,7 @@ class CommunityService extends Model
     protected function status(): Attribute
     {
         return Attribute::make(
-            get: fn () => match ($this->approved) {
+            get: fn() => match ($this->approved) {
                 null =>  'függőben',
                 true => 'jóváhagyott',
                 false => 'elutasított',

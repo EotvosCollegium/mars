@@ -34,11 +34,11 @@
 \noindent{}Tisztelt Igazgató Úr!
 
 \vspace*{1em}
-\noindent{}Kérem engedélyezze a tulajdonomban lévő eszközök behozatalát az Eötvös József Collegiumba:
+\noindent{}Kérem, engedélyezze a tulajdonomban lévő eszközök behozatalát az Eötvös József Collegiumba:
 
 \begin{enumerate}
 @foreach($items as $item)
-    \item {{ \App\Utils\LatexSanitizer::sanitizeLatex($item->name) }} @if(isset($item->serial_number)) ({{ \App\Utils\LatexSanitizer::sanitizeLatex($item->serial_number) }}) @endif
+    \item {{ \App\Utils\LatexHelper::sanitizeLatex($item->name) }} @if(isset($item->serial_number)) ({{ \App\Utils\LatexHelper::sanitizeLatex($item->serial_number) }}) @endif
 @endforeach
 \end{enumerate}
 
@@ -63,11 +63,11 @@
 birtokolt programokat és egyéb tartalmakat.
 
 \vspace{2em}
-\noindent{}Budapest, {{ \App\Utils\LatexSanitizer::sanitizeLatex($date) }}
+\noindent{}Budapest, {{ \App\Utils\LatexHelper::sanitizeLatex($date) }}
 
 \hfill\lotofdots
 
-\hfill {{ \App\Utils\LatexSanitizer::sanitizeLatex($name) }} \hspace{3.5em}
+\hfill {{ \App\Utils\LatexHelper::sanitizeLatex($name) }} \hspace{3.5em}
 
 \vspace{3em}
 
